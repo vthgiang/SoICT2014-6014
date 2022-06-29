@@ -7,7 +7,6 @@ import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../.
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 function CreateDirectlyForm(props) {
-
     const formatDate = (date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -204,7 +203,7 @@ function CreateDirectlyForm(props) {
                 goods: goods,
                 stock: state.stock,
                 requestType: 2,
-                type: 1,
+                type: 2,
                 status: 1,
                 approvers: state.approvers,
                 supplier: state.supplier,

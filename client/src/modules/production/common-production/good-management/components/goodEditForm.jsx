@@ -42,7 +42,7 @@ function GoodEditForm(props) {
                 goodId: props.goodId,
                 type: props.type,
                 baseUnit: props.baseUnit,
-                packingRule: props.packingRule,
+                // packingRule: props.packingRule,
                 units: props.units,
                 materials: props.materials,
                 manufacturingMills: props.manufacturingMills,
@@ -380,7 +380,7 @@ function GoodEditForm(props) {
         materials,
         manufacturingMills,
         goodId,
-        packingRule,
+        // packingRule,
         pricePerBaseUnit,
         pricePerBaseUnitError,
         salesPriceVariance,
@@ -594,7 +594,7 @@ function GoodEditForm(props) {
                                 <textarea type="text" className="form-control" value={description ? description : ''} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm
-                                packingRule={packingRule}
+                                // packingRule={packingRule}
                                 id={goodId}
                                 baseUnit={baseUnit}
                                 // onValidate={validateUnitCreateForm}

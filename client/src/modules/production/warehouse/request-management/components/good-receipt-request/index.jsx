@@ -8,6 +8,7 @@ import CreateForm from '../common-components/createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import ApproveForm from '../common-components/approveForm';
 import GoodReceiptCreateFormModal from '../../../bill-management/components/good-receipts/goodReceiptCreateFormModal';
+import { dataListStatus } from "../common-components/config"
 
 function GoodReceiptRequestManagementTable(props) {
 
@@ -61,6 +62,18 @@ function GoodReceiptRequestManagementTable(props) {
         window.$("#modal-approve-form").modal("show");
     };
 
+    const getListStatus = (request) => {
+        let listStatus = [];
+        if (request.requestType == 1 && request.type == 1) {
+            listStatus = dataListStatus.listStatusReceipt1();
+        } else if ((request.requestType == 2 && request.type == 1) || (request.requestType == 1 && request.type == 2)) {
+            listStatus = dataListStatus.listStatusReceipt2();
+        } else if (request.requestType == 3 && request.type == 1) {
+            listStatus = dataListStatus.listStatusReceipt3();
+        }
+        return listStatus;
+    }
+
     const handleCreateReceiptBill = async (request) => {
         await setState({
             ...state,
@@ -97,9 +110,10 @@ function GoodReceiptRequestManagementTable(props) {
             }
             <ApproveForm
                 requestId={state.requestApprove ? state.requestApprove._id : ''}
-                requestApprove={state.requestApprove} 
-                createGoodTakesType={2} 
-                />
+                requestApprove={state.requestApprove}
+                fromStock={true}
+                createGoodTakesType={2}
+            />
             <GoodReceiptCreateFormModal
                 createType={3} // 3: create from request in request screen
                 requestId={state.request ? state.request._id : ''}
@@ -196,7 +210,23 @@ function GoodReceiptRequestManagementTable(props) {
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{getSourceRequest(request.requestType, request.type)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{ color: request.status <= 5 ? translate(`production.request_management.receipt_request_from_order.${request.status}.color`) : translate(`production.request_management.purchasing_request.${request.status}.color`) }}>{request.status <= 5 ? translate(`production.request_management.receipt_request_from_order.${request.status}.content`) : translate(`production.request_management.purchasing_request.${request.status}.content`)}</td>
+                                    <td>
+                                        <div>
+                                            <div className="timeline-index">
+                                                <div className="timeline-progress" style={{ width: (parseInt(request.status) - 1) / (getListStatus(request).length - 1) * 100 + "%" }}></div>
+                                                <div className="timeline-items">
+                                                    {getListStatus(request).map((status, index) => (
+                                                        <div className={`tooltip-abc${status.value > request.status ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${status.value > request.status ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${status.value > request.status ? "" : "-completed"}`}><p style={{ color: "white" }}>{status.value > request.status ? status.wait : status.completed}</p></span>
+                                                        </div>
+                                                    ))
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>

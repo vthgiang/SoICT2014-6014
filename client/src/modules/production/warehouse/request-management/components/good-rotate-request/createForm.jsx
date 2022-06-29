@@ -184,7 +184,7 @@ function CreateForm(props) {
         return stockArr;
     };
 
-    //Phần đơn vị phê duyệt
+    //Phần đơn vị 
 
     const handleOrganizationalUnitValueChange = (value) => {
         let organizationalUnitValue = value[0];
@@ -233,9 +233,6 @@ function CreateForm(props) {
 
         return organizationalUnitArr;
     }
-
-
-    // phần nhà cung cấp 
 
     // Phần lưu dữ liệu
 

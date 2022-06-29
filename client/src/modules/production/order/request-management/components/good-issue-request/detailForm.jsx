@@ -4,8 +4,8 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../../common-components';
 import { formatDate } from '../../../../../../helpers/formatDate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
-import { timelineText } from "./config"
-import "../request.css";
+import "../../../../manufacturing/request-management/components/request.css";
+import { timelineText } from "../../../../manufacturing/request-management/components/common-components/config"
 
 function DetailForm(props) {
 
@@ -19,59 +19,10 @@ function DetailForm(props) {
     if (requestManagements.currentRequest) {
         currentRequest = requestManagements.currentRequest
     }
-
     let timelineTextArr = [];
-    let timelineTextArr2 = [];
-    let number = 0;
-    if (currentRequest && currentRequest.type == '1') {
-        switch (currentRequest.requestType) {
-            case 1:
-                timelineTextArr = timelineText.timelineTextPurchase1();
-                timelineTextArr2 = timelineText.timelineTextPurchase2();
-                number = 4;
-                break;
-            case 2:
-                timelineTextArr = timelineText.timelineTextReceipt1();
-                number = 4;
-                break;
-            case 3:
-                timelineTextArr = timelineText.timelineTextReceipt2();
-                number = 3;
-                break;
-        }
+    if (currentRequest && currentRequest.type == '2')
+        timelineTextArr = timelineText.timelineTextIssue();
 
-    } else if (currentRequest && currentRequest.type == '2') {
-        switch (currentRequest.requestType) {
-            case 1:
-                timelineTextArr = timelineText.timelineTextReceipt1();
-                number = 4;
-                break;
-            case 2:
-                timelineTextArr = timelineText.timelineTextIssue1();
-                number = 4;
-                break;
-            case 3:
-                timelineTextArr = timelineText.timelineTextIssue2();
-                number = 3;
-                break;
-        }
-    }
-    else if (currentRequest && currentRequest.type == '3') {
-        switch (currentRequest.requestType) {
-            case 1:
-                timelineTextArr = timelineText.timelineTextIssue1();
-                number = 4;
-                break;
-            case 3:
-                timelineTextArr = timelineText.timelineTextReturn();
-                number = 3;
-                break;
-        }
-    } else if (currentRequest && currentRequest.type == '4') {
-        timelineTextArr = timelineText.timelineTextRotate();
-        number = 5;
-    }
-    console.log(timelineTextArr);
     return (
         <React.Fragment>
             <DialogModal
@@ -85,22 +36,10 @@ function DetailForm(props) {
             >
                 <form id={`form-detail-request`}>
                     {currentRequest.status && <div className="timeline-create">
-                        <div className="timeline-progress" style={{ width: parseInt(currentRequest.status) > 5 ? "100%" : (parseInt(currentRequest.status - 1)) / number * 100 + "%" }}></div>
+                        <div className="timeline-progress" style={{ width: (parseInt(currentRequest.status - 1)) / 4 * 100 + "%" }}></div>
                         <div className="timeline-items">
                             {timelineTextArr && timelineTextArr.length > 0 && timelineTextArr.map((item, index) => (
                                 <div className={`timeline-item ${index < parseInt(currentRequest.status) ? "active" : ""}`} key={index} >
-                                    <div className={`timeline-contain`}>
-                                        {item.text}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>}
-                    {currentRequest.status && currentRequest.type == '1' && currentRequest.requestType == '1' && <div className="timeline-create">
-                        <div className="timeline-progress" style={{ width: (parseInt(currentRequest.status) - 6) / 3 * 100 + "%" }}></div>
-                        <div className="timeline-items">
-                            {timelineTextArr2 && timelineTextArr2.length > 0 && timelineTextArr2.map((item, index) => (
-                                <div className={`timeline-item ${index < parseInt(currentRequest.status) - 5 ? "active" : ""}`} key={index} >
                                     <div className={`timeline-contain`}>
                                         {item.text}
                                     </div>

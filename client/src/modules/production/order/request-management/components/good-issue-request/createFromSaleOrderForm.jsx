@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
@@ -6,7 +6,9 @@ import GoodComponentRequest from '../../../../common-production/request-manageme
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
-function CreateDirectlyForm(props) {
+import { PurchaseOrderActions } from "../../../purchase-order/redux/actions";
+
+function CreateFromSaleOrderForm(props) {
 
     const formatDate = (date) => {
         var d = new Date(date),
@@ -25,7 +27,6 @@ function CreateDirectlyForm(props) {
         code: generateCode("PDN"),
         desiredTime: formatDate((new Date()).toISOString()),
         description: "",
-        listGoods: [],
         stock: "",
     });
 
@@ -50,6 +51,7 @@ function CreateDirectlyForm(props) {
         });
 
     }
+
     // Phần người phê duyệt
 
     const getApprover = () => {
@@ -103,6 +105,63 @@ function CreateDirectlyForm(props) {
         return msg === undefined;
     };
 
+    // Phần đơn mua hàng
+
+    const getSaleOrder = () => {
+        let mapOptions = [];
+        console.log(props);
+        const { salesOrders } = props;
+        if (salesOrders) {
+            mapOptions = [{
+                value: "", 
+                text: "---Chọn đơn mua hàng---",
+            }];
+
+            salesOrders.listSalesOrders.map((saleOrder) => {
+                mapOptions.push({
+                    value: saleOrder._id,
+                    text: saleOrder.code,
+                });
+            });
+        }
+        return mapOptions;
+    }
+
+    const handleSaleOrderChange = (value) => {
+        let saleOrder = value[0];
+        validateSaleOrder(saleOrder, true);
+    };
+
+    const validateSaleOrder = (value, willUpdateState = true) => {
+        let msg = undefined;
+        let saleOrder ;
+        const { translate, salesOrders } = props;
+        if (!value) {
+            msg = translate("manage_warehouse.bill_management.validate_stock");
+        }
+        if (willUpdateState) {
+            let listGoods = [];
+            if (value) {
+                let saleOrderIds = salesOrders.listSalesOrders.map(x => x._id);
+                saleOrder = salesOrders.listSalesOrders[saleOrderIds.indexOf(value)];
+                listGoods = salesOrders.listSalesOrders[saleOrderIds.indexOf(value)].goods.map((good) => {
+                    return {
+                        goodId: good.good._id,
+                        goodObject: good.good,
+                        quantity: good.quantity
+                    }
+                });
+            }
+            setState({
+                ...state,
+                saleOrder: value,
+                errorSaleOrder: msg,
+                listGoods: listGoods,
+            });
+        }
+        return msg === undefined;
+    };
+
     // phần kho
     const handleStockChange = (value) => {
         let stock = value[0];
@@ -139,45 +198,6 @@ function CreateDirectlyForm(props) {
         return stockArr;
     };
 
-    // phần nhà cung cấp 
-
-    const getSuplierOptions = () => {
-        let mapOptions = [];
-        const { list } = props.crm.customers;
-        if (list) {
-            mapOptions = [{
-                value: "title", //Title không được chọn
-                text: "---Chọn nhà cung cấp---",
-            }];
-            list.map((item) => {
-                mapOptions.push({
-                    value: item._id,
-                    text: item.name,
-                });
-            });
-        }
-        return mapOptions;
-    };
-
-    const handleSupplierChange = async (value) => {
-        validateSupplier(value[0], true);
-    };
-
-    const validateSupplier = (value, willUpdateState = true) => {
-        let msg = undefined;
-        if (!value || value === "" || value === "title") {
-            msg = "Giá trị không được bỏ trống!";
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                supplier: value,
-                supplierError: msg,
-            });
-        }
-        return msg;
-    };
-
     // Phần lưu dữ liệu
 
     const isFormValidated = () => {
@@ -204,13 +224,13 @@ function CreateDirectlyForm(props) {
                 goods: goods,
                 stock: state.stock,
                 requestType: 2,
-                type: 1,
+                type: 2,
                 status: 1,
                 approvers: state.approvers,
-                supplier: state.supplier,
+                saleOrder: state.saleOrder,
             }
-            console.log(data);
             props.createRequest(data);
+            props.updatePurchaseOrder(saleOrder, {status: 3});
         }
     }
 
@@ -222,25 +242,22 @@ function CreateDirectlyForm(props) {
     }
 
     const { translate, bigModal } = props;
-    const { code, desiredTime, errorIntendReceiveTime, description, errorStock, stock, errorApprover, approver, supplier, supplierError } = state;
+    const { code, desiredTime, errorDesiredTime, description, approver, errorApprover, errorStock, stock, errorSaleOrder, saleOrder, listGoods } = state;
     const dataStock = getStock();
     const dataApprover = getApprover();
-    const dataSupplier = getSuplierOptions();
-
+    const dataSaleOrder = getSaleOrder();
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-create-directly-request"
-                formID="modal-create-directly-request"
+                modalID="modal-create-request-from-sale-order"
+                formID="modal-create-request-from-sale-order"
                 title={translate('production.request_management.add_request')}
-                msg_success={translate('production.request_management.create_successfully')}
-                msg_failure={translate('production.request_management.create_failed')}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={bigModal ? 75 : 50}
                 maxWidth={500}
             >
-                <form id="modal-create-directly-request">
+                <form id="modal-create-request-from-sale-order">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate("production.request_management.base_infomation")}</legend>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -248,13 +265,14 @@ function CreateDirectlyForm(props) {
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
                                 <input type="text" disabled={true} value={code} className="form-control"></input>
                             </div>
+
                             <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                 <label>
                                     {translate("production.request_management.unit_receiving_request")}
                                     <span className="text-red"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-stock-directly-request`}
+                                    id={`select-stock`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={stock}
@@ -264,28 +282,13 @@ function CreateDirectlyForm(props) {
                                 />
                                 <ErrorLabel content={errorStock} />
                             </div>
-                            <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
-                                <label>{"Nhà cung cấp"}<span className="text-red"> * </span></label>
-                                <SelectBox
-                                    id={`select-create-purchase-order-directly-supplier`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={supplier}
-                                    items={dataSupplier}
-                                    onChange={handleSupplierChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={supplierError} />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                 <label>
                                     {translate("production.request_management.approver_in_order")}
                                     <span className="text-red"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-approver-directly-request`}
+                                    id={`select-approver`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={approver}
@@ -295,15 +298,32 @@ function CreateDirectlyForm(props) {
                                 />
                                 <ErrorLabel content={errorApprover} />
                             </div>
-                            <div className={`form-group ${!errorIntendReceiveTime ? "" : "has-error"}`}>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group ${!errorSaleOrder ? "" : "has-error"}`}>
+                                <label>
+                                    {"Đơn mua hàng"}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-sale-order`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={saleOrder}
+                                    items={dataSaleOrder}
+                                    onChange={handleSaleOrderChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorSaleOrder} />
+                            </div>
+                            <div className={`form-group ${!errorDesiredTime ? "" : "has-error"}`}>
                                 <label>{translate('production.request_management.desiredTime')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`purchasing-request-create-desiredTime-directly-request`}
+                                    id={`purchasing-request-create-desiredTime`}
                                     value={desiredTime}
                                     onChange={handleDesiredTimeChange}
-                                    disabled={false}
                                 />
-                                <ErrorLabel content={errorIntendReceiveTime} />
+                                <ErrorLabel content={errorDesiredTime} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -313,7 +333,7 @@ function CreateDirectlyForm(props) {
                             </div>
                         </div>
                     </fieldset>
-                    <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} selectBoxName={"create-receipt-request-directly"} />
+                    <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} requestId={saleOrder} listGoods={listGoods} selectBoxName={"create-receipt-request-from-purchase-order"}/>
                 </form>
             </DialogModal>
         </React.Fragment >
@@ -325,6 +345,7 @@ const mapStateToProps = (state) => state;
 const mapDispatchToProps = {
     createRequest: RequestActions.createRequest,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
+    updatePurchaseOrder: PurchaseOrderActions.updatePurchaseOrder,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateDirectlyForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateFromSaleOrderForm));

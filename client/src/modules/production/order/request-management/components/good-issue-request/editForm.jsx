@@ -1,35 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
-import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
+import { formatDate, formatToTimeZoneDate } from '../../../../../../helpers/formatDate';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
-function CreateDirectlyForm(props) {
+import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
 
-    const formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        return [day, month, year].join('-');
-    }
+function EditForm(props) {
 
     const [state, setState] = useState({
-        code: generateCode("PDN"),
-        desiredTime: formatDate((new Date()).toISOString()),
+        code: generateCode("GPR"),
+        desiredTime: "",
         description: "",
         listGoods: [],
-        stock: "",
     });
-
-    // Thời gian mong muốn 
 
     const handleDesiredTimeChange = (value) => {
         if (value.length === 0) {
@@ -38,10 +24,9 @@ function CreateDirectlyForm(props) {
         setState({
             ...state,
             desiredTime: value
-        })
+        });
     }
 
-    // Mô tả
     const handleDescriptionChange = (e) => {
         const { value } = e.target;
         setState({
@@ -50,9 +35,46 @@ function CreateDirectlyForm(props) {
         });
 
     }
-    // Phần người phê duyệt
 
-    const getApprover = () => {
+    // phần kho
+    const handleStockChange = (value) => {
+        let stock = value[0];
+        validateStock(stock, true);
+    };
+
+    const validateStock = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (!value) {
+            msg = translate("production.request_management.validate_stock");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                stock: value,
+                errorStock: msg,
+            });
+        }
+        return msg === undefined;
+    };
+
+    const getStock = () => {
+        const { stocks, translate } = props;
+        let stockArr = [{ value: "", text: translate("production.request_management.choose_stock") }];
+
+        stocks.listStocks.map((item) => {
+            stockArr.push({
+                value: item._id,
+                text: item.name,
+            });
+        });
+
+        return stockArr;
+    };
+
+     // Phần người phê duyệt
+
+     const getApprover = () => {
         let mapOptions = [];
         const { user } = props;
         if (user) {
@@ -103,45 +125,9 @@ function CreateDirectlyForm(props) {
         return msg === undefined;
     };
 
-    // phần kho
-    const handleStockChange = (value) => {
-        let stock = value[0];
-        validateStock(stock, true);
-    };
+     // phần nhà cung cấp 
 
-    const validateStock = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate("production.request_management.validate_stock");
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                stock: value,
-                errorStock: msg,
-            });
-        }
-        return msg === undefined;
-    };
-
-    const getStock = () => {
-        const { stocks, translate } = props;
-        let stockArr = [{ value: "", text: translate("production.request_management.choose_stock") }];
-
-        stocks.listStocks.map((item) => {
-            stockArr.push({
-                value: item._id,
-                text: item.name,
-            });
-        });
-
-        return stockArr;
-    };
-
-    // phần nhà cung cấp 
-
-    const getSuplierOptions = () => {
+     const getSuplierOptions = () => {
         let mapOptions = [];
         const { list } = props.crm.customers;
         if (list) {
@@ -178,8 +164,6 @@ function CreateDirectlyForm(props) {
         return msg;
     };
 
-    // Phần lưu dữ liệu
-
     const isFormValidated = () => {
         let { approver, stock, listGoods } = state;
         let result = validateApprover(approver, false) &&
@@ -209,9 +193,48 @@ function CreateDirectlyForm(props) {
                 approvers: state.approvers,
                 supplier: state.supplier,
             }
-            console.log(data);
-            props.createRequest(data);
+            props.editRequest(state.requestId, data);
         }
+    }
+
+    if (props.requestId !== state.requestId) {
+        const { listGoods, goods, translate } = props;
+        const { listGoodsByType } = goods;
+        let goodOptions = [{
+            value: "1",
+            text: translate('production.request_management.choose_good')
+        }];
+
+        loop:
+        for (let i = 0; i < listGoodsByType.length; i++) {
+            for (let j = 0; j < listGoods.length; j++) {
+                if (listGoods[j].goodId === listGoodsByType[i]._id) {
+                    continue loop;
+                }
+            }
+            goodOptions.push({
+                value: listGoodsByType[i]._id,
+                text: listGoodsByType[i].code + " - " + listGoodsByType[i].name
+            });
+        }
+
+        setState({
+            ...state,
+            requestId: props.requestId,
+            code: props.code,
+            desiredTime: props.desiredTime,
+            description: props.description,
+            listGoods: listGoods,
+            stock: props.stock,
+            status: props.status,
+            approver: props.approver,
+            supplier: props.supplier,
+            errorDescription: undefined,
+            errorDesiredTime: undefined,
+            goodOptions: goodOptions,
+            errorGood: undefined,
+            errorQuantity: undefined,
+        });
     }
 
     const onHandleGoodChange = (data) => {
@@ -221,8 +244,8 @@ function CreateDirectlyForm(props) {
         });
     }
 
-    const { translate, bigModal } = props;
-    const { code, desiredTime, errorIntendReceiveTime, description, errorStock, stock, errorApprover, approver, supplier, supplierError } = state;
+    const { translate, requestManagements } = props;
+    const { requestId, code, desiredTime, errorDesiredTime, description, errorDescription, listGoods, errorStock, stock, errorApprover, approver , supplier, supplierError } = state;
     const dataStock = getStock();
     const dataApprover = getApprover();
     const dataSupplier = getSuplierOptions();
@@ -230,17 +253,17 @@ function CreateDirectlyForm(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-create-directly-request"
-                formID="modal-create-directly-request"
+                modalID={`modal-edit-request`} isLoading={requestManagements.isLoading}
+                formID="form-edit-request"
                 title={translate('production.request_management.add_request')}
                 msg_success={translate('production.request_management.create_successfully')}
                 msg_failure={translate('production.request_management.create_failed')}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={bigModal ? 75 : 50}
+                size={50}
                 maxWidth={500}
             >
-                <form id="modal-create-directly-request">
+                <form id={`form-edit-request-${requestId}`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate("production.request_management.base_infomation")}</legend>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -248,13 +271,14 @@ function CreateDirectlyForm(props) {
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
                                 <input type="text" disabled={true} value={code} className="form-control"></input>
                             </div>
+
                             <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                 <label>
                                     {translate("production.request_management.unit_receiving_request")}
                                     <span className="text-red"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-stock-directly-request`}
+                                    id={`select-stock-${requestId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={stock}
@@ -264,6 +288,7 @@ function CreateDirectlyForm(props) {
                                 />
                                 <ErrorLabel content={errorStock} />
                             </div>
+
                             <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
                                 <label>{"Nhà cung cấp"}<span className="text-red"> * </span></label>
                                 <SelectBox
@@ -295,15 +320,15 @@ function CreateDirectlyForm(props) {
                                 />
                                 <ErrorLabel content={errorApprover} />
                             </div>
-                            <div className={`form-group ${!errorIntendReceiveTime ? "" : "has-error"}`}>
+                            <div className={`form-group ${!errorDesiredTime ? "" : "has-error"}`}>
                                 <label>{translate('production.request_management.desiredTime')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`purchasing-request-create-desiredTime-directly-request`}
-                                    value={desiredTime}
+                                    id={`request-edit-desiredTime-${requestId}`}
+                                    value={formatDate(desiredTime)}
                                     onChange={handleDesiredTimeChange}
                                     disabled={false}
                                 />
-                                <ErrorLabel content={errorIntendReceiveTime} />
+                                <ErrorLabel content={errorDesiredTime} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -313,7 +338,7 @@ function CreateDirectlyForm(props) {
                             </div>
                         </div>
                     </fieldset>
-                    <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} selectBoxName={"create-receipt-request-directly"} />
+                    <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} requestId={requestId} listGoods={listGoods} />
                 </form>
             </DialogModal>
         </React.Fragment >
@@ -323,8 +348,8 @@ function CreateDirectlyForm(props) {
 const mapStateToProps = (state) => state;
 
 const mapDispatchToProps = {
-    createRequest: RequestActions.createRequest,
+    editRequest: RequestActions.editRequest,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateDirectlyForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

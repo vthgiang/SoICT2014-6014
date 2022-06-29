@@ -19,7 +19,7 @@ function GoodCreateForm(props) {
         name: "",
         baseUnit: "",
         units: [],
-        packingRule: '',
+        // packingRule: '',
         prices: [],
         materials: [],
         quantity: 0,
@@ -60,7 +60,7 @@ function GoodCreateForm(props) {
                 type: props.type,
                 baseUnit: props.baseUnit ? props.baseUnit : "",
                 units: props.units ? props.units : [],
-                packingRule: props.packingRule ? props.packingRule : '',
+                // packingRule: props.packingRule ? props.packingRule : '',
                 materials: props.materials ? props.materials : [],
                 description: props.description ? props.description : "",
                 code: props.code ? props.code : "",
@@ -252,7 +252,7 @@ function GoodCreateForm(props) {
         setState({
             ...state,
             units: litsUnits,
-            packingRule: packingRule,
+            // packingRule: packingRule,
         });
     };
 
@@ -393,7 +393,7 @@ function GoodCreateForm(props) {
         name,
         category,
         units,
-        packingRule,
+        // packingRule,
         prices,
         baseUnit,
         description,
@@ -615,7 +615,7 @@ function GoodCreateForm(props) {
                                 <label>{translate("manage_warehouse.good_management.description")}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
-                            <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} packingRule={packingRule} onDataChange={handleListUnitChange} />
+                            <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
                             <PriceCreateForm productDefaultPrice={state.pricePerBaseUnit} initialData={priceInfomation} onDataChange={handlePriceChange} />
                             <VariantCreateForm
                                 productCode={state.code}

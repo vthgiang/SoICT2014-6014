@@ -28,16 +28,8 @@ function getArrayTimeFromString(stringDate) {
 /* Tạo yêu cầu*/
 
 exports.createRequest = async (user, data, portal) => {
-    let stockManagersArray = [];
-    if (data.requestType != 3) { // lấy dữ liệu người phê duyệt trong kho trong trường hợp tạo phiếu ở trong module kho
-        let stock = await Stock(connect(DB_CONNECTION, portal))
-            .findById({ _id: data.stock })
-            .populate({ path: "organizationalUnit" });
-        stockManagersArray = await getAllManagersOfUnitByRole(portal, stock.organizationalUnit.managers);
-    }
     let newRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal)).create({
         code: data.code,
-        bill: data.bill ? data.bill : null,
         creator: user._id,
         goods: data.goods.map(item => {
             return {
@@ -76,6 +68,9 @@ exports.createRequest = async (user, data, portal) => {
         requestType: data.requestType ? data.requestType : 1,
         type: data.type ? data.type : 1,
         supplier: data.supplier ? data.supplier : null,
+        purchaseOrder: data.purchaseOrder ? data.purchaseOrder : null,
+        saleOrder: data.saleOrder ? data.saleOrder : null,
+        bill: data.bill ? data.bill : null,
     });
 
     /* Tạo thông báo cho người phê duyệt khi tạo yêu cầu */
@@ -148,6 +143,8 @@ exports.createRequest = async (user, data, portal) => {
             { path: "goods.good", select: "code name baseUnit" },
             { path: "goods.lots.lot" },
             { path: "bill", select: "code" },
+            { path: "purchaseOrder", select: "code" },
+            { path: "saleOrder", select: "code" },
             { path: "approvers.information.approver" },
             { path: "refuser.refuser", select: "name" },
             { path: "stock" },
@@ -164,6 +161,7 @@ exports.createRequest = async (user, data, portal) => {
 
 exports.getAllRequestByCondition = async (query, portal) => {
     let { page, limit } = query;
+    console.log(query);
     let option = {};
     if (query.requestFrom == 'stock') {
         if (query.type == 1) {
@@ -205,6 +203,13 @@ exports.getAllRequestByCondition = async (query, portal) => {
                         $and: [
                             { requestType: 1 },
                             { type: 3 },
+                            { status: { '$gte': 2 } }
+                        ],
+                    },
+                    {
+                        $and: [
+                            { requestType: 2 },
+                            { type: 2 },
                             { status: { '$gte': 2 } }
                         ],
                     },
@@ -269,6 +274,8 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 { path: "goods.good", select: "code name baseUnit" },
                 { path: "goods.lots.lot" },
                 { path: "bill", select: "code" },
+                { path: "purchaseOrder", select: "code" },
+                { path: "saleOrder", select: "code" },
                 { path: "approvers.information.approver" },
                 { path: "refuser.refuser", select: "name" },
                 { path: "stock" },
@@ -290,6 +297,8 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 { path: "goods.good", select: "code name baseUnit" },
                 { path: "goods.lots.lot" },
                 { path: "bill", select: "code" },
+                { path: "purchaseOrder", select: "code" },
+                { path: "saleOrder", select: "code" },
                 { path: "approvers.information.approver" },
                 { path: "refuser.refuser", select: "name" },
                 { path: "stock" },
@@ -317,6 +326,8 @@ exports.getRequestById = async (id, portal) => {
         { path: "goods.good", select: "_id code name baseUnit" },
         { path: "goods.lots.lot" },
         { path: "bill", select: "code" },
+        { path: "purchaseOrder", select: "code" },
+        { path: "saleOrder", select: "code" },
         { path: "approvers.information.approver" },
         { path: "refuser.refuser", select: "name" },
         { path: "stock" },
@@ -430,6 +441,9 @@ exports.editRequest = async (user, id, data, portal) => {
         }
     }) : oldRequest.goods;
     oldRequest.supplier = data.supplier ? data.supplier : oldRequest.supplier;
+    oldRequest.purchaseOrder = data.purchaseOrder ? data.purchaseOrder : oldRequest.purchaseOrder;
+    oldRequest.saleOrder = data.saleOrder ? data.saleOrder : oldRequest.saleOrder;
+    oldRequest.bill = data.bill ? data.bill : oldRequest.bill;
     oldRequest.refuser = data.refuser ? data.refuser : oldRequest.refuser;
     // Chỉnh sửa người phê duyệt hoặc thêm người phê duyệt mới
     if (data.approvers && data.approvers.length > 0) {
@@ -463,23 +477,27 @@ exports.editRequest = async (user, id, data, portal) => {
 
     // Tự động Thêm người phê duyệt trong đơn hàng vào approvers
 
-    if (oldRequest.requestType == 1 && oldRequest.type == 1 && oldRequest.status == 2) {
-        let orderManagerArray = await getAllManagersOfUnitByRole(portal, oldRequest.orderUnit.managers);
-        let information = orderManagerArray ? orderManagerArray.map((item) => {
-            return {
-                approver: item.userId._id,
-                approvedTime: null,
-                note: item.note ? item.note : null,
-            }
-        }) : [];
-        let data = {
-            information: information,
-            approveType: 2
-        }
-        oldRequest.approvers.push(data);
-    }
+    // if (oldRequest.requestType == 1 && oldRequest.type == 1 && oldRequest.status == 2) {
+    //     let orderManagerArray = await getAllManagersOfUnitByRole(portal, oldRequest.orderUnit.managers);
+    //     let information = orderManagerArray ? orderManagerArray.map((item) => {
+    //         return {
+    //             approver: item.userId._id,
+    //             approvedTime: null,
+    //             note: item.note ? item.note : null,
+    //         }
+    //     }) : [];
+    //     let data = {
+    //         information: information,
+    //         approveType: 2
+    //     }
+    //     oldRequest.approvers.push(data);
+    // }
     // Tự động Thêm người phê duyệt trong kho vào approvers
-    if (oldRequest.requestType == 1 && oldRequest.type == 1 && oldRequest.status == 6) {
+    if ((oldRequest.requestType == 1 && oldRequest.type == 1 && oldRequest.status == 6) ||
+        (oldRequest.requestType == 1 && oldRequest.type == 2 && oldRequest.status == 2) ||
+        (oldRequest.requestType == 1 && oldRequest.type == 3 && oldRequest.status == 2) || 
+        (oldRequest.requestType == 2 && oldRequest.type == 1 && oldRequest.status == 2) ||
+        (oldRequest.requestType == 2 && oldRequest.type == 2 && oldRequest.status == 2)) {
         let stock = await getStock(oldRequest.stock, portal);
         let warehouseManagerArray = await getAllManagersOfUnitByRole(portal, stock.organizationalUnit.managers[0]._id);
         let information = warehouseManagerArray ? warehouseManagerArray.map((item) => {
@@ -555,6 +573,8 @@ exports.editRequest = async (user, id, data, portal) => {
             { path: "goods.good", select: "code name baseUnit" },
             { path: "goods.lots.lot" },
             { path: "bill", select: "code" },
+            { path: "purchaseOrder", select: "code" },
+            { path: "saleOrder", select: "code" },
             { path: "approvers.information.approver" },
             { path: "refuser.refuser", select: "name" },
             { path: "stock" },
