@@ -169,6 +169,24 @@ export function tasks(state = {
                 loadingCreator: false,
                 isLoading: false
             };
+        case taskManagementConstants.GET_TASK_HAS_EVALUATION_REQUEST:
+            return {
+                ...state,
+                evaluatedTask: null,
+                isLoading: true,
+            };
+        case taskManagementConstants.GET_TASK_HAS_EVALUATION_SUCCESS:
+            return {
+                ...state,
+                evaluatedTask: action.payload,
+                isLoading: false
+            };
+        case taskManagementConstants.GET_TASK_HAS_EVALUATION_FAILURE:
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false
+            };
         case taskManagementConstants.ADDNEW_TASK_REQUEST:
             return {
                 ...state,

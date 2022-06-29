@@ -9,6 +9,7 @@ export const taskManagementActions = {
     getPaginateTasksByUser,
     getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
+    getAllTasksThatHasEvaluation,
 
     addTask,
     editTask,
@@ -206,6 +207,34 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
             .catch(error => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+/**
+ * lấy công việc có đánh giá của đơn vị
+ * @param {*} unit đơn vị
+ * @param {*} month tháng
+ */
+
+function getAllTasksThatHasEvaluation(unit, startDate, endDate) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GET_TASK_HAS_EVALUATION_REQUEST
+        });
+
+        taskManagementService.getAllTasksThatHasEvaluation(unit, startDate, endDate)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_HAS_EVALUATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_HAS_EVALUATION_FAILURE,
                     error
                 })
             })

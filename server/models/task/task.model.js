@@ -317,6 +317,21 @@ const TaskSchema = new Schema(
                             type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
                             default: -1,
                         },
+                        valueDelivery: {
+                            // Giá trị mang lại của công việc và chi phí bỏ ra để thực hiện công việc
+                            value: { // Giá trị mang lại
+                                type: Number,
+                            },
+                            valueUnit: { // Đơn vị giá trị mang lại
+                                type: String,
+                            },
+                            cost: { // Chi phí bỏ ra
+                                type: Number,
+                            },
+                            costUnit: { // Đơn vị tính chi phí bỏ ra
+                                type: String,
+                            }
+                        }
                     },
                 ],
                 taskInformations: [
@@ -903,17 +918,17 @@ const TaskSchema = new Schema(
             // Số bé hơn 1
             timeWeight: {
                 type: Number,
-                default: 1/3,
+                default: 1 / 3,
             },
             // Số bé hơn 1
             qualityWeight: {
                 type: Number,
-                default: 1/3,
+                default: 1 / 3,
             },
             // Số bé hơn 1
             costWeight: {
                 type: Number,
-                default: 1/3,
+                default: 1 / 3,
             },
         },
         memberWeight: {

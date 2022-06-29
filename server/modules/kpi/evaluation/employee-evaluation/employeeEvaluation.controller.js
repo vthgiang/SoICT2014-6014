@@ -351,10 +351,8 @@ exports.getEmployeeKpiPerformance = async (req, res) => {
         let employeeKpiPerformance = []
         for (let id of req.query.ids) {
             const data = await KPIMemberService.getEmployeeKpiPerformance(req.portal, id);
-            console.log(354, data.performance)
             employeeKpiPerformance.push(data.performance);
         }
-        console.log(357, employeeKpiPerformance)
 
         await Logger.info(req.user.email, ` get all employee kpi set by month `, req.portal);
         res.status(200).json({

@@ -339,15 +339,19 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         for (let i = 0; i < employees.length; i++) {
 
             let ratio = await EmployeeEvaluationService.getEmployeeKpiPerformance(portal, employees[i]);
+            completeRatio[employees[i]] = {};
+            console.log(342, ratio)
             totalRatio += ratio.completeRatio;
-            completeRatio[employees[i]] = ratio.completeRatio;
+            completeRatio[employees[i]].ratio = ratio.completeRatio;
+
         }
+        console.log(347, completeRatio)
         const avg = totalRatio / employees.length;
         const { employeeImportances } = organizationalUnitKpiSet;
 
         for (let key in completeRatio) {
             let importance;
-            completeRatio[key].ratio /= avg;
+            completeRatio[key].ratio = completeRatio[key].ratio / avg;
 
             for (let j = 0; j < employeeImportances.length; j++) {
                 if (key === employeeImportances[j].employee) {
@@ -356,8 +360,10 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                     importance = 100;
                 }
             }
+            console.log(360, completeRatio)
             completeRatio[key] = { ...completeRatio[key], importance }
         }
+        console.log(362, completeRatio)
         // Phan chia cac muc tieu kpi cho nhan vien
         //Lay danh sach muc tieu kpi don vi theo trong so giam dan
         let otherKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -387,13 +393,14 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 }
             ])
 
+        console.log(390, otherKpis)
         // Gan kpi cho nhan vien
         let kpiEmployee = []
         let numOfKpis = Math.round(completeRatio[employee].ratio * otherKpis.length);
         if (numOfKpis > otherKpis.length) {
             numOfKpis = otherKpis.length;
         }
-
+        console.log(397, completeRatio[employee].ratio, numOfKpis)
         // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
         if (otherKpis.length > 0 && completeRatio[employee].importance < 90) {
             let weightOver = 0;

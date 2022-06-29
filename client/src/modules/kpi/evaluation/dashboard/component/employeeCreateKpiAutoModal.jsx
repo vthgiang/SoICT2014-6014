@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, DialogModal, SelectBox } from '../../../../../common-components';
+import { DialogModal } from '../../../../../common-components';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
@@ -32,18 +32,18 @@ function EmployeeCreateKpiAutoModal(props) {
     const { translate, user, createKpiUnit, department } = props;
     const { organizationalUnit, organizationalUnitId, month, childrenOrganizationalUnit } = props;
 
-    const childrenUnit = childrenOrganizationalUnit?.children || [];
+    // const childrenUnit = childrenOrganizationalUnit?.children || [];
 
-    let options = childrenUnit.map(x => {
-        return {
-            value: x.id,
-            text: x.name
-        }
-    })
-    options.unshift({
-        value: childrenOrganizationalUnit?.id,
-        text: childrenOrganizationalUnit?.name,
-    })
+    // let options = childrenUnit.map(x => {
+    //     return {
+    //         value: x.id,
+    //         text: x.name
+    //     }
+    // })
+    // options.unshift({
+    //     value: childrenOrganizationalUnit?.id,
+    //     text: childrenOrganizationalUnit?.name,
+    // })
 
     const [employeeImportancesState, setEmployeeImportancesState] = useState(null);
     const [state, setState] = useState({
@@ -94,8 +94,8 @@ function EmployeeCreateKpiAutoModal(props) {
         let data = {
             employees: employeeIds,
             approver: localStorage.getItem("userId"),
-            month: date,
-            organizationalUnit: idUnit
+            month: '2022-06',
+            organizationalUnit: organizationalUnitId
         };
 
         props.createEmployeeKpiSetAuto(data)
@@ -154,8 +154,7 @@ function EmployeeCreateKpiAutoModal(props) {
                 <form id="form-employee-create-kpi-auto" onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
 
                     <div className="row" style={{ marginBottom: 10 }}>
-                        <div className="col-sm-6">
-                            {/* Đơn vị nguồn */}
+                        {/* <div className="col-sm-6">
                             <div className={`form-group`} >
                                 <label style={{ width: "auto" }}>Đơn vị nguồn</label>
                                 <SelectBox
@@ -168,11 +167,10 @@ function EmployeeCreateKpiAutoModal(props) {
                                     value={idUnit}
                                     options={{ placeholder: '' }}
                                 />
-                                {/* <ErrorLabel content={unitOrganizationalCopyError} /> */}
                             </div>
-                        </div>
+                        </div> */}
 
-                        <div className="col-sm-6">
+                        {/* <div className="col-sm-6">
                             <div className={`qlcv form-group`} >
                                 <label style={{ width: "auto", display: 'block' }}>Tháng</label>
                                 <DatePicker
@@ -185,7 +183,7 @@ function EmployeeCreateKpiAutoModal(props) {
                                     disabled={false}
                                 />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     {
                         (idUnit && date && !createKpiUnit.currentKPI)
