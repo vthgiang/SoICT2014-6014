@@ -1162,6 +1162,7 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_SUCCESS:
+            console.log(1165, action.payload)
             var task = { ...state.task, taskOutputs: action.payload.data.content }
             return {
                 ...state,
@@ -1184,6 +1185,24 @@ export function performtasks(state = {}, action) {
                 task: task
             }
         case performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+
+        case performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_SUCCESS:
+            console.log(1198, action.payload)
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_FAILURE:
             return {
                 ...state,
                 error: action.error

@@ -51,9 +51,15 @@ const checkTypeFile = (data) => {
 const checkRoleAccountable = (userId, accountable) => {
     let check;
     const accountableEmployee = accountable?.find(taskOutput => taskOutput.accountableEmployee._id == userId);
-    check = accountableEmployee ? true : false;
-    return check;
+    check = accountableEmployee ? accountableEmployee : null;
+    return accountableEmployee;
 }
+
+const getActionAccountable = (userId, accountable) => {
+    const accountableEmployee = accountable?.find(taskOutput => taskOutput.accountableEmployee._id == userId);
+    return accountableEmployee?.action;
+}
+
 
 const formatActionAccountable = (value) => {
     switch (value) {
@@ -94,7 +100,7 @@ function TaskOutputsTab(props) {
                 files: [],
                 descriptionDefault: ""
             },
-            newCommentOfTaskOutputEdited: {
+            newCommentEdited: {
                 creator: idUser,
                 description: "",
                 files: [],
@@ -103,10 +109,11 @@ function TaskOutputsTab(props) {
             showFile: [],
             showComment: [],
             CommentOfTaskOutputFilePaste: [],
-            editAction: ""
+            editAction: "",
+            editComment: ""
         }
     })
-    const { newAction, showFile, showComment, editAction, newActionEdited, newCommentOfTaskOutput, newCommentOfTaskOutputEdited } = state;
+    const { newAction, showFile, showComment, editAction, newActionEdited, newCommentOfTaskOutput, newCommentEdited, editComment } = state;
     const { task } = performtasks;
 
     useEffect(() => {
@@ -163,7 +170,6 @@ function TaskOutputsTab(props) {
         let { newCommentOfTaskOutput } = state;
         newCommentOfTaskOutput[taskOutputId] = {
             ...newCommentOfTaskOutput[taskOutputId],
-            status: "not_edited_yet",
             files: files
         }
         setState(state => {
@@ -174,7 +180,56 @@ function TaskOutputsTab(props) {
         })
     }
 
-    const handleChangleCommentOfTaskOutput = (value, taskOutput) => {
+    const onEditCommentFilesChange = (files) => {
+        setState({
+            ...state,
+            newCommentEdited: {
+                ...state.newCommentEdited,
+                files: files,
+            }
+        })
+    }
+
+    const handleEditComment = (actionComent) => {
+        setState({
+            ...state,
+            editComment: actionComent._id,
+            newCommentEdited: {
+                ...state.newCommentEdited,
+                descriptionDefault: actionComent.description
+            }
+        })
+    }
+
+    const handleSaveEditComment = async (e, taskId, taskOutputId, commentId, description) => {
+        e.preventDefault();
+        let { newCommentEdited } = state;
+        let data = new FormData();
+        newCommentEdited.files.forEach(x => {
+            data.append("files", x)
+        })
+        if (newCommentEdited.description === "") {
+            data.append("description", description)
+        } else {
+            data.append("description", newCommentEdited.description)
+        }
+        data.append("creator", newCommentEdited.creator)
+        if (newCommentEdited.description || newCommentEdited.files) {
+            await props.editCommentOfTaskOutput(taskId, taskOutputId, commentId, data);
+        }
+        setState({
+            ...state,
+            newCommentEdited: {
+                ...state.newCommentEdited,
+                description: "",
+                files: [],
+                descriptionDefault: null
+            },
+            editComment: ""
+        })
+    }
+
+    const handleCreateCommentOfTaskOutput = (value, taskOutput) => {
         let { newCommentOfTaskOutput } = state;
         newCommentOfTaskOutput[taskOutput._id] = {
             ...newCommentOfTaskOutput[taskOutput._id],
@@ -349,10 +404,9 @@ function TaskOutputsTab(props) {
         }
         if (status === "reject") {
             Swal.fire({
-                html: "<h3>Từ chối kết quả giao dịch này<br/>Lý do từ chối:</h3>",
+                html: "<h3>Từ chối kết quả giao nộp này</h3>",
                 icon: "error",
                 showCancelButton: true,
-                input: "text",
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 cancelButtonText: "No",
@@ -364,7 +418,6 @@ function TaskOutputsTab(props) {
                         taskOutputId,
                         {
                             action: "reject",
-                            description: res.value,
                             creator: idUser,
                         }
                     )
@@ -373,52 +426,30 @@ function TaskOutputsTab(props) {
         }
     }
 
-    const handleDeleteFile = (fileId, fileName, actionId, type) => {
-        let { performtasks, translate } = props
+    const handleDeleteFile = (taskId, taskOutputId, file) => {
         Swal.fire({
-            html: `<div style="max-width: 100%; max-height: 100%" >Xác nhận xóa ${fileName} ? <div>`,
+            html: `<div style="max-width: 100%; max-height: 100%" >Xác nhận xóa ${file.name} ? <div>`,
             showCancelButton: true,
             cancelButtonText: `Hủy bỏ`,
             confirmButtonText: `Đồng ý`,
         }).then((result) => {
             if (result.isConfirmed) {
-                save(performtasks?.task?._id)
+                props.deleteFileOfTaskOutput(taskId, taskOutputId, file._id);
             }
         })
         setState({
             ...state,
             deleteFile: {
-                fileId: fileId,
-                actionId: actionId,
-                fileName: fileName,
-                type: type
+                fileId: file._id,
+                fileName: file.name,
             }
         });
-    }
-
-    const save = (taskId) => {
-        let { deleteFile } = state
-        if (deleteFile.type === "action") {
-            props.deleteFileAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
-        } else if (deleteFile.type === "task") {
-            props.deleteFileTask(deleteFile.fileId, deleteFile.actionId, taskId)
-        }
     }
 
     if (!performtasks?.task?.taskOutputs) {
         return <div>Chưa có thông tin</div>
     }
 
-    const checkTest = (value) => {
-        if (value === "approved") {
-            return <i className="fa fa-check-square-o" aria-hidden="true"></i>
-        }
-        if (value === "rejected") {
-            return <i className="fa fa-times text-danger"></i>
-        }
-        // return <i className="fa fa-circle text-warning"></i>
-        return <i className="fa fa-square-o"></i>
-    }
 
     return (
         <div>
@@ -468,7 +499,7 @@ function TaskOutputsTab(props) {
                                                     }} ><i className="fa fa-history" aria-hidden="true"></i> Lịch sử giao nộp</a>
                                                 }
                                                 {
-                                                    role === "responsible" && (taskOutput.status !== "unfinished" && taskOutput.status !== "approved") &&
+                                                    role === "responsible" && (taskOutput.status == "unfinished" && taskOutput.status !== "approved" || taskOutput.status == "rejected") &&
                                                     <>
                                                         <a className="edit text-yellow" style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleEditAction(taskOutput)}><i className="material-icons">edit</i></a>
                                                         <a className="delete text-red" style={{ display: "flex", alignItems: "center" }} onClick={() => { props.deleteSubmissionResults(performtasks.task._id, taskOutput._id) }}><i className="material-icons" id="delete-event"></i></a>
@@ -539,14 +570,15 @@ function TaskOutputsTab(props) {
                                                                         }
                                                                     }} >Phê duyệt</a></li>
                                                                     <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowFile(taskOutput.submissionResults._id)} ><i className="fa fa-paperclip" aria-hidden="true"></i> Tập tin đính kèm ({taskOutput.submissionResults.files && taskOutput.submissionResults.files.length})</a></li>
+                                                                    <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowComment(taskOutput._id)} ><i className="fa fa-comments-o margin-r-5" aria-hidden="true"></i> Trao đổi ({taskOutput.comments && taskOutput.comments.length})</a></li>
                                                                 </ul>
 
                                                                 {
-                                                                    checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected") &&
+                                                                    checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected" || taskOutput.status === "approved") &&
                                                                     <div style={{ display: "flex" }}>
                                                                         <span style={{ paddingRight: "10px" }}>Phê duyệt kết quả:</span>
-                                                                        <a style={{ cursor: "pointer", paddingRight: "15px" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>
-                                                                        <a style={{ cursor: "pointer" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>
+                                                                        <a style={{ cursor: "pointer", paddingRight: "15px", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "approve" ? "700" : "" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>
+                                                                        <a style={{ cursor: "pointer", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "reject" ? "700" : "" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>
                                                                     </div>
                                                                 }
 
@@ -626,7 +658,7 @@ function TaskOutputsTab(props) {
                                                                             {taskOutput.submissionResults.files.map((file, index) => {
                                                                                 return <div key={index}>
                                                                                     <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => {
-                                                                                        handleDeleteFile(file._id, file.name, taskOutput.submissionResults._id, "action")
+                                                                                        handleDeleteFile(task._id, taskOutput._id, file)
                                                                                     }}><i className="fa fa-times"></i></a>
                                                                                 </div>
                                                                             })}
@@ -637,120 +669,138 @@ function TaskOutputsTab(props) {
                                                     </div>
                                                 )
                                             }
-                                            {/* Sửa thành trao đổi */}
-                                            {/* {
-                                                checkRoleAccountable(idUser, taskOutput.accountableEmployees) &&
-                                                <div>
-                                                    <img className="user-img-level2"
-                                                        src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
-                                                    />
-                                                    <ContentMaker
-                                                        idQuill={`add-comment-action-${taskOutput._id}`}
-                                                        imageDropAndPasteQuill={false}
-                                                        inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
-                                                        onFilesChange={(files) => onCommentFilesChange(files, taskOutput._id)}
-                                                        onFilesError={onFilesError}
-                                                        files={newCommentOfTaskOutput[`${taskOutput._id}`]?.files}
-                                                        text={newCommentOfTaskOutput[`${taskOutput._id}`]?.descriptionDefault}
-                                                        placeholder={"Thêm yêu cầu chỉnh sửa"}
-                                                        submitButtonText={"Yêu cầu chỉnh sửa"}
-                                                        onTextChange={(value, imgs) => handleChangleCommentOfTaskOutput(value, taskOutput)}
-                                                        onSubmit={(e) => submitComment(taskOutput._id, task._id)}
-                                                    />
-                                                </div>
-                                            } */}
                                             {showComment.some(x => x === taskOutput._id) &&
-                                                <div className="comment-content-child">
-                                                    {reverseArr(taskOutput.submissionResults.comments).map(child => {
-                                                        let listImage = child.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
-                                                        return <div key={child._id}>
-                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
-                                                            { // Đang edit thì ẩn đi
-                                                                <div>
-                                                                    <div className="content-level2">
-                                                                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                                                            <a style={{ cursor: "pointer", fontWeight: "bold" }}>{child.creator?.name} </a>
-                                                                            {child.status === "not_edited_yet" && role === "responsible" &&
-                                                                                // color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "2px 4px", borderRadius: "10px"
-                                                                                <div style={{ cursor: "pointer" }}
-                                                                                    onClick={() => {
-                                                                                        props.editCommentOfTaskOutput(task._id, taskOutput._id, child._id, { status: "edited", creator: idUser })
-                                                                                    }}
-                                                                                >
-                                                                                    <a>Xác nhận chỉnh sửa</a>
-                                                                                </div>
-                                                                            }
-                                                                            {child.status === "not_edited_yet" && role !== "responsible" && <div>Chưa chỉnh sửa</div>}
-                                                                            {child.status === "edited" && <i className='fa fa-check text-success'> Đã chỉnh sửa</i>}
+                                                <div>
+                                                    <div style={{ fontWeight: 600, marginBottom: 10 }}>Trao đổi</div>
+                                                    <div>
+                                                        <img className="user-img-level1"
+                                                            src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
+                                                        />
+                                                        <ContentMaker
+                                                            idQuill={`add-comment-action-${taskOutput._id}`}
+                                                            imageDropAndPasteQuill={false}
+                                                            inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                                            onFilesChange={(files) => onCommentFilesChange(files, taskOutput._id)}
+                                                            onFilesError={onFilesError}
+                                                            files={newCommentOfTaskOutput[`${taskOutput._id}`]?.files}
+                                                            text={newCommentOfTaskOutput[`${taskOutput._id}`]?.descriptionDefault}
+                                                            placeholder={"Nhập bình luận trao đổi"}
+                                                            submitButtonText={"Thêm"}
+                                                            onTextChange={(value, imgs) => handleCreateCommentOfTaskOutput(value, taskOutput)}
+                                                            onSubmit={(e) => submitComment(taskOutput._id, task._id)}
+                                                        />
+                                                    </div>
+
+                                                    <div className="comment-content-child">
+                                                        {reverseArr(taskOutput.comments).map(child => {
+                                                            let listImage = child.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                                            return <div key={child._id}>
+                                                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
+                                                                {editComment !== child._id &&
+                                                                    <div>
+                                                                        <div className="content-level1">
+                                                                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                                                                <a style={{ cursor: "pointer", fontWeight: "bold" }}>{child.creator?.name} </a>
+                                                                            </div>
+
+                                                                            {child.description.split('\n').map((taskOutput, idx) => {
+                                                                                return (
+                                                                                    <span key={idx}>
+                                                                                        {parse(taskOutput)}
+                                                                                    </span>
+                                                                                );
+                                                                            })}
+
+                                                                            {child.creator?._id === idUser &&
+                                                                                <div className="btn-group pull-right">
+                                                                                    <span data-toggle="dropdown">
+                                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                                    </span>
+                                                                                    <ul className="dropdown-menu">
+                                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => { handleEditComment(child) }} >Sửa bình luận</a></li>
+                                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => { }} >Xóa bình luận</a></li>
+                                                                                    </ul>
+                                                                                </div>}
                                                                         </div>
-
-                                                                        {child.description.split('\n').map((taskOutput, idx) => {
-                                                                            return (
-                                                                                <span key={idx}>
-                                                                                    {parse(taskOutput)}
-                                                                                </span>
-                                                                            );
-                                                                        })}
-
-                                                                        {child.creator?._id === idUser &&
-                                                                            <div className="btn-group pull-right">
-                                                                                <span data-toggle="dropdown">
-                                                                                    <i className="fa fa-ellipsis-h"></i>
-                                                                                </span>
-                                                                                <ul className="dropdown-menu">
-                                                                                    {/* <li><a style={{ cursor: "pointer" }} onClick={() => handleEditCommentOfTaskComment(child)} >{translate("task.task_perform.edit_comment")}</a></li> */}
-                                                                                    {/* <li><a style={{ cursor: "pointer" }} onClick={() => props.deleteCommentOfTaskComment(child._id, task._id)} >{translate("task.task_perform.delete_comment")}</a></li> */}
-                                                                                </ul>
-                                                                            </div>}
-                                                                    </div>
-                                                                    <ul className="list-inline tool-level2">
-                                                                        <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
-                                                                        {child.files.length > 0 &&
-                                                                            <React.Fragment>
-                                                                                <li style={{ display: "inline-table" }}>
-                                                                                    <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> Tập tin đính kèm ({child.files && child.files.length})</i></b></a></div></li>
-                                                                                {showFile.some(obj => obj === child._id) &&
+                                                                        <ul className="list-inline tool-level1">
+                                                                            <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
+                                                                            {child.files.length > 0 &&
+                                                                                <React.Fragment>
                                                                                     <li style={{ display: "inline-table" }}>
-                                                                                        {child.files.map((elem, index) => {
-                                                                                            return <div key={index} className="show-files-task">
-                                                                                                {isImage(elem.name) ?
-                                                                                                    <ApiImage
-                                                                                                        listImage={listImage}
-                                                                                                        className="attachment-img files-attach"
-                                                                                                        style={{ marginTop: "5px" }}
-                                                                                                        src={elem.url}
-                                                                                                        file={elem}
-                                                                                                        requestDownloadFile={requestDownloadFile}
-                                                                                                    />
-                                                                                                    :
-                                                                                                    <div style={{ marginTop: "2px" }}>
-                                                                                                        <a style={{ cursor: "pointer" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
-                                                                                                        <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
-                                                                                                            <u>{elem && checkTypeFile(elem.url) ?
-                                                                                                                <i className="fa fa-eye"></i> : ""}</u>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                }
-                                                                                            </div>
-                                                                                        })}
-                                                                                    </li>
-                                                                                }
-                                                                            </React.Fragment>}
-                                                                    </ul>
-                                                                </div>
-                                                            }
-                                                        </div>
-                                                    })}
+                                                                                        <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> Tập tin đính kèm ({child.files && child.files.length})</i></b></a></div></li>
+                                                                                    {showFile.some(obj => obj === child._id) &&
+                                                                                        <li style={{ display: "inline-table" }}>
+                                                                                            {child.files.map((elem, index) => {
+                                                                                                return <div key={index} className="show-files-task">
+                                                                                                    {isImage(elem.name) ?
+                                                                                                        <ApiImage
+                                                                                                            listImage={listImage}
+                                                                                                            className="attachment-img files-attach"
+                                                                                                            style={{ marginTop: "5px" }}
+                                                                                                            src={elem.url}
+                                                                                                            file={elem}
+                                                                                                            requestDownloadFile={requestDownloadFile}
+                                                                                                        />
+                                                                                                        :
+                                                                                                        <div style={{ marginTop: "2px" }}>
+                                                                                                            <a style={{ cursor: "pointer" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                            <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
+                                                                                                                <u>{elem && checkTypeFile(elem.url) ?
+                                                                                                                    <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    }
+                                                                                                </div>
+                                                                                            })}
+                                                                                        </li>
+                                                                                    }
+                                                                                </React.Fragment>}
+                                                                        </ul>
+                                                                    </div>
+                                                                }
+                                                                {editComment === child._id &&
+                                                                    <React.Fragment>
+                                                                        <div>
+                                                                            <ContentMaker
+                                                                                idQuill={`edit-comment-${child._id}`}
+                                                                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                                                                onFilesChange={onEditCommentFilesChange}
+                                                                                onFilesError={onFilesError}
+                                                                                files={newCommentEdited.files}
+                                                                                text={newCommentEdited.descriptionDefault}
+                                                                                submitButtonText={"Lưu"}
+                                                                                cancelButtonText={"Hủy bỏ"}
+                                                                                handleEdit={(e) => handleEditComment(e)}
+                                                                                onTextChange={(value, imgs) => {
+                                                                                    setState({
+                                                                                        ...state,
+                                                                                        newCommentEdited: {
+                                                                                            ...state.newCommentEdited,
+                                                                                            description: value
+                                                                                        }
+                                                                                    })
+                                                                                }}
+                                                                                onSubmit={(e) => { handleSaveEditComment(e, task._id, taskOutput._id, child._id, child.description) }}
+                                                                            />
+                                                                            {/* Hiện file đã tải lên */}
+                                                                            {child.files.length > 0 &&
+                                                                                <div className="tool-level2" style={{ marginTop: -8, fontSize: '12px' }}>
+                                                                                    {child.files.map((file, index) => {
+                                                                                        return <div key={index}>
+                                                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { }}><i className="fa fa-times"></i></a>
+                                                                                        </div>
+                                                                                    })}
+                                                                                </div>}
+                                                                        </div>
+                                                                    </React.Fragment>
+                                                                }
+                                                            </div>
+                                                        })}
+                                                    </div>
                                                 </div>
+
                                             }
                                         </ShowMoreShowLess>
-
-                                        {/* <div style={{ display: "flex", justifyContent: "center" }}>
-                                            <button className="btn btn-default btn-sm" style={{ width: "60%" }} onClick={async () => {
-                                                await setTaskOutput(taskOutput);
-                                                showVersionsTaskOutput(taskOutput);
-                                            }}>Xem các phiên bản chỉnh sửa</button>
-                                        </div> */}
                                     </div>
                                 </div>
                             </div>
@@ -775,6 +825,7 @@ const actionCreators = {
     editSubmissionResults: performTaskAction.editSubmissionResults,
     deleteFileAction: performTaskAction.deleteFileAction,
     deleteSubmissionResults: performTaskAction.deleteSubmissionResults,
+    deleteFileOfTaskOutput: performTaskAction.deleteFileOfTaskOutput,
     createCommentOfTaskOutput: performTaskAction.createCommentOfTaskOutput,
     editCommentOfTaskOutput: performTaskAction.editCommentOfTaskOutput,
 };

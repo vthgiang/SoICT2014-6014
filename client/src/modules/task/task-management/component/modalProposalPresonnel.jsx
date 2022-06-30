@@ -93,10 +93,11 @@ function ModalProposalPresonnel(props) {
                     <ErrorLabel content={errorOnFormula} />
                     <br />
                     <div><span style={{ fontWeight: 800 }}>Ví dụ 1: </span>averagePoint - 10 * numberOfTaskInprocess</div>
-                    <div><span style={{ fontWeight: 800 }}>Ví dụ 2: </span>averagePoint - 5 * numberOfTaskInprocess</div>
+                    <div><span style={{ fontWeight: 800 }}>Ví dụ 2: </span>averagePoint/numberOfTaskNotEvaluated - 5 * numberOfTaskInprocess</div>
                     <br />
                     <div><span style={{ fontWeight: 600 }}>averagePoint</span> - Điểm trung bình các công việc kết thúc đã được đánh giám</div>
                     <div><span style={{ fontWeight: 600 }}>numberOfTaskInprocess</span> - Số lượng công việc đang tham gia</div>
+                    <div><span style={{ fontWeight: 600 }}>numberOfTaskNotEvaluated</span> - Công việc kết thúc chưa được đánh gia</div>
                 </div>
                 <div>
                     <table id="proposal-table" className="table table-striped table-bordered table-hover">

@@ -981,7 +981,7 @@ const TaskSchema = new Schema(
                             ref: "User",
                         },
                         version: { // trường này cho biết comments tương ứng với từng version
-                            type: String,
+                            type: Number,
                         },
                         description: {
                             type: String,

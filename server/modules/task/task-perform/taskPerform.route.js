@@ -125,6 +125,8 @@ router.post('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth,
 router.patch('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editSubmissionResults);
 router.delete('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth, PerformTaskController.deleteSubmissionResults);
 router.patch('/tasks/:taskId/task-outputs', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskOutputs);
+
+router.patch('/tasks/:taskId/task-outputs/:taskOutputId/documents/:fileId', auth, PerformTaskController.deleteFileOfTaskOutput);
 router.get('/tasks/:taskId/task-outputs', auth, PerformTaskController.getTaskOutputs);
 router.patch('/tasks/:taskId/task-outputs/:taskOutputId/approve', auth, PerformTaskController.approveTaskOutputs);
 

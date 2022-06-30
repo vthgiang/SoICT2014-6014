@@ -84,6 +84,7 @@ export const performTaskAction = {
     approveTaskOutputs,
     editSubmissionResults,
     deleteSubmissionResults,
+    deleteFileOfTaskOutput,
 
     createCommentOfTaskOutput,
     editCommentOfTaskOutput
@@ -1341,6 +1342,19 @@ function deleteSubmissionResults(taskId, taskOutputId) {
             .then(
                 payload => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_FAILURE, error })
+            );
+    };
+}
+
+
+function deleteFileOfTaskOutput(taskId, taskOutputId, fileId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_REQUEST });
+
+        performTaskService.deleteFileOfTaskOutput(taskId, taskOutputId, fileId)
+            .then(
+                payload => dispatch({ type: performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_FAILURE, error })
             );
     };
 }

@@ -4855,7 +4855,7 @@ exports.proposalPersonnel = async (portal, params, body) => {
                 sumPoint = sumPoint + sumPointOfEvaluations / evaluations.length;
             };
         })
-
+        let numberOfTaskNotEvaluated = taskFinished?.length - numberOfTaskEvaluated;
         averagePoint = sumPoint / numberOfTaskEvaluated;
         let user = {
             user: users[i],

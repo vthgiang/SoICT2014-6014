@@ -2054,9 +2054,6 @@ exports.createSubmissionResults = async (req, res) => {
             })
         }
 
-        // let task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
-        // let taskAction = task.taskActions?.[0];
-        console.log(2059, files)
         let taskOutputs = await PerformTaskService.createSubmissionResults(req.portal, req.params, req.body, files);
 
         res.status(200).json({
@@ -2113,7 +2110,6 @@ exports.getTaskOutputs = async (req, res) => {
 exports.approveTaskOutputs = async (req, res) => {
     try {
         let taskOutputs = await PerformTaskService.approveTaskOutputs(req.portal, req.params, req.body);
-        console.log(2117, taskOutputs)
         res.status(200).json({
             success: true,
             messages: ['approve_task_outputs_success'],
@@ -2138,7 +2134,6 @@ exports.editSubmissionResults = async (req, res) => {
                 files.push({ name: elem.originalname, url: path })
             })
         }
-        console.log(2141)
         let taskOutputs = await PerformTaskService.editSubmissionResults(req.portal, req.params, req.body, files);
         res.status(200).json({
             success: true,
@@ -2174,6 +2169,25 @@ exports.deleteSubmissionResults = async (req, res) => {
     }
 }
 
+exports.deleteFileOfTaskOutput = async (req, res) => {
+    try {
+        let taskOutput = await PerformTaskService.deleteFileOfTaskOutput(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file of task output  `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_success'],
+            content: taskOutput
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `delete file of task output  `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_file_failure'],
+            content: error
+        })
+    }
+}
+
 exports.createCommentOfTaskOutput = async (req, res) => {
     try {
         let files = [];
@@ -2185,7 +2199,6 @@ exports.createCommentOfTaskOutput = async (req, res) => {
             })
         }
         let taskOutputs = await PerformTaskService.createCommentOfTaskOutput(req.portal, req.params, req.body, files);
-        console.log(2200, taskOutputs)
         res.status(200).json({
             success: true,
             messages: ['create_comment_of_task_outputs_success'],

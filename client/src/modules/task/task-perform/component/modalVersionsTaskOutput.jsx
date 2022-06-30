@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import { checkIfHasCommonItems } from '../../task-management/component/functionHelpers';
+import { getStorage } from '../../../../config';
 
 const isImage = (src) => {
     let string = src.toLowerCase().split(".");
@@ -40,10 +41,37 @@ const checkTypeFile = (data) => {
     else return false;
 }
 
+const reverseArr = (arr) => {
+    return [].concat(arr).reverse()
+}
+
 function ModalVersionsTaskOutput(props) {
     const { taskOutput } = props;
-    const [state, setState] = useState({ currentFilepri: null, version: null, versionIdx: null })
+    const idUser = getStorage("userId");
+    const [state, setState] = useState({
+        currentFilepri: null,
+        version: null,
+        versionIdx: null,
+        comment: [],
+        showFile: []
+    })
 
+    const handleShowFile = (id) => {
+        let a;
+        let { showFile } = state
+        if (showFile.some(obj => obj === id)) {
+            a = showFile.filter(x => x !== id);
+            setState({
+                ...state,
+                showFile: a
+            })
+        } else {
+            setState({
+                ...state,
+                showFile: [...state.showFile, id]
+            })
+        }
+    }
     const showFilePreview = (data) => {
         setState({
             ...state,
@@ -57,7 +85,8 @@ function ModalVersionsTaskOutput(props) {
             ...state,
             version: item,
             content: item._id,
-            versionIdx: index
+            versionIdx: index + 1,
+            comments: taskOutput.comments.filter((comment) => comment.version == index + 1)
         })
     };
 
@@ -66,7 +95,7 @@ function ModalVersionsTaskOutput(props) {
         props.downloadFile(path, fileName);
     }
 
-    const { version, versionIdx } = state;
+    const { version, versionIdx, comments, showFile } = state;
 
     return (
         <React.Fragment>
@@ -112,8 +141,8 @@ function ModalVersionsTaskOutput(props) {
                             }
                         </div>
                     </div>
-                    <div style={{ cursor: "pointer" }}>
-                        <div>Tập tin đính kèm:</div>
+                    {version.files.length > 0 && <div style={{ cursor: "pointer" }}>
+                        <div><strong>Tập tin đính kèm:</strong></div>
                         <ul>
                             {version.files.map((elem, index) => {
                                 let listImage = version.files?.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
@@ -141,6 +170,7 @@ function ModalVersionsTaskOutput(props) {
                             })}
                         </ul>
                     </div>
+                    }
                     {version.accountableEmployees.map((item, idx) => {
                         return (
                             <div key={idx}>
@@ -152,7 +182,69 @@ function ModalVersionsTaskOutput(props) {
                             </div >
                         )
                     })}
-                </div>}
+                    {comments?.length > 0 &&
+                        <div>
+                            <div style={{ marginBottom: "10px", marginTop: "10px" }}><strong>Trao đổi:</strong></div>
+                            {reverseArr(comments).map(child => {
+                                let listImage = child.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                return <div key={child._id}>
+                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
+
+                                    <div>
+                                        <div className="content-level1">
+                                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                                <a style={{ cursor: "pointer", fontWeight: "bold" }}>{child.creator?.name} </a>
+                                            </div>
+
+                                            {child.description.split('\n').map((taskOutput, idx) => {
+                                                return (
+                                                    <span key={idx}>
+                                                        {parse(taskOutput)}
+                                                    </span>
+                                                );
+                                            })}
+                                        </div>
+                                        <ul className="list-inline tool-level1">
+                                            <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
+                                            {child.files.length > 0 &&
+                                                <React.Fragment>
+                                                    <li style={{ display: "inline-table" }}>
+                                                        <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> Tập tin đính kèm ({child.files && child.files.length})</i></b></a></div></li>
+                                                    {showFile.some(obj => obj === child._id) &&
+                                                        <li style={{ display: "inline-table" }}>
+                                                            {child.files.map((elem, index) => {
+                                                                return <div key={index} className="show-files-task">
+                                                                    {isImage(elem.name) ?
+                                                                        <ApiImage
+                                                                            listImage={listImage}
+                                                                            className="attachment-img files-attach"
+                                                                            style={{ marginTop: "5px" }}
+                                                                            src={elem.url}
+                                                                            file={elem}
+                                                                            requestDownloadFile={requestDownloadFile}
+                                                                        />
+                                                                        :
+                                                                        <div style={{ marginTop: "2px" }}>
+                                                                            <a style={{ cursor: "pointer" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                            <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
+                                                                                <u>{elem && checkTypeFile(elem.url) ?
+                                                                                    <i className="fa fa-eye"></i> : ""}</u>
+                                                                            </a>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            })}
+                                                        </li>
+                                                    }
+                                                </React.Fragment>}
+                                        </ul>
+                                    </div>
+                                </div>
+                            })}
+                        </div>
+                    }
+                </div>
+                }
             </DialogModal >
         </React.Fragment >
     );

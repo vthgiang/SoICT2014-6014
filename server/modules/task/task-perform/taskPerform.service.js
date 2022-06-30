@@ -7965,6 +7965,23 @@ exports.approveTaskOutputs = async (portal, params, body) => {
       files: taskOutput.submissionResults.files,
       accountableEmployees: accountableEmployees,
     }
+
+    const comments = taskOutput.comments?.map((comment) => {
+      let commentOfVersion = comment?.version || -1;
+      if (!comment?.version) {
+        commentOfVersion = taskOutput.versions.length + 1;
+      }
+      return {
+        _id: comment._id,
+        createdAt: comment.createdAt,
+        creator: comment.creator,
+        description: comment.description,
+        updatedAt: comment.updatedAt,
+        files: comment.files,
+        version: commentOfVersion,
+      }
+    })
+
     const newVersion = await Task(connect(DB_CONNECTION, portal))
       .findOneAndUpdate(
         {
@@ -7975,6 +7992,9 @@ exports.approveTaskOutputs = async (portal, params, body) => {
           $push: {
             "taskOutputs.$.versions": version
           },
+          $set: {
+            "taskOutputs.$.comments": comments
+          }
         },
         { new: true });
   }
@@ -8035,6 +8055,23 @@ exports.editSubmissionResults = async (portal, params, body, files) => {
       files: taskOutput.submissionResults.files,
       accountableEmployees: taskOutput.accountableEmployees,
     }
+
+    const comments = taskOutput.comments?.map((comment) => {
+      let commentOfVersion = comment.version;
+      if (!comment?.version) {
+        commentOfVersion = taskOutput.versions.length + 1;
+      }
+      return {
+        _id: comment._id,
+        createdAt: comment.createdAt,
+        creator: comment.creator,
+        description: comment.description,
+        updatedAt: comment.updatedAt,
+        files: comment.files,
+        version: commentOfVersion
+      }
+    })
+
     const newVersion = await Task(connect(DB_CONNECTION, portal))
       .findOneAndUpdate(
         {
@@ -8046,7 +8083,8 @@ exports.editSubmissionResults = async (portal, params, body, files) => {
             "taskOutputs.$.versions": version
           },
           $set: {
-            "taskOutputs.$.status": "waiting_for_approval"
+            "taskOutputs.$.status": "waiting_for_approval",
+            "taskOutputs.$.comments": comments
           }
         },
         { new: true });
@@ -8153,6 +8191,10 @@ exports.deleteSubmissionResults = async (portal, params) => {
         select: "name email avatar",
       },
       {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
         path: "taskOutputs.submissionResults.creator",
         select: "name email avatar",
       },
@@ -8161,6 +8203,7 @@ exports.deleteSubmissionResults = async (portal, params) => {
         select: "name email avatar",
       }
     ])
+
 
   return task.taskOutputs;
 }
@@ -8193,7 +8236,15 @@ exports.editTaskOutputs = async (portal, params, body) => {
         select: "name email avatar",
       },
       {
-        path: "taskOutputs.submissionResults.logs.creator",
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
         select: "name email avatar",
       },
       {
@@ -8201,6 +8252,58 @@ exports.editTaskOutputs = async (portal, params, body) => {
         select: "name email avatar",
       }
     ])
+
+  return task.taskOutputs;
+}
+
+exports.deleteFileOfTaskOutput = async (portal, params) => {
+  const currentTask = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+
+  const taskOutput = currentTask?.taskOutputs.find((item) => item._id == params.taskOutputId);
+  const files = taskOutput?.submissionResults?.files.filter((item) => item._id != params.fileId);
+  const file = taskOutput?.submissionResults?.files.find((item) => item._id == params.fileId);
+
+  if (taskOutput.status == "unfinished") {
+    fs.unlinkSync(file.url);
+  }
+  const newEditTask = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId)
+      },
+      {
+        $set: {
+          "taskOutputs.$.submissionResults.files": files,
+          "updateAt": Date.now(),
+        }
+      })
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
   return task.taskOutputs;
 }
 
@@ -8208,7 +8311,6 @@ exports.createCommentOfTaskOutput = async (portal, params, body, files) => {
   const comment = {
     creator: mongoose.Types.ObjectId(body.creator),
     description: body.description,
-    status: "not_edited_yet",
     files: files
   }
 
@@ -8220,17 +8322,29 @@ exports.createCommentOfTaskOutput = async (portal, params, body, files) => {
       },
       {
         $push: {
-          "taskOutputs.$.submissionResults.comments": comment,
+          "taskOutputs.$.comments": comment,
         },
       },
       { new: true })
     .populate([
       {
-        path: "taskOutputs.submissionResults.logs.creator",
+        path: "taskActions.creator",
         select: "name email avatar",
       },
       {
-        path: "taskOutputs.submissionResults.comments.creator",
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
         select: "name email avatar",
       },
       {
@@ -8239,23 +8353,29 @@ exports.createCommentOfTaskOutput = async (portal, params, body, files) => {
       }
     ])
 
+
   return task.taskOutputs;
 }
 
 exports.editCommentOfTaskOutput = async (portal, params, body, files) => {
   const currentTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId })
   const taskOutput = currentTask.taskOutputs.find((item) => item._id == params.taskOutputId);
-  const comments = taskOutput.submissionResults.comments.map((item) => {
-    let status = item.status;
+  const comments = taskOutput.comments.map((item) => {
+    let files = item.files;
+    let description = item.description;
+    let updateAt = item.updatedAt
     if (item._id == params.commentId) {
-      status = body.status
+      files = [...item.files, ...files]
+      description = body.description;
+      updateAt = Date.now()
     }
     return {
       _id: item._id,
       creator: item.creator,
-      description: item.description,
-      status: status,
-      files: item.files
+      description: description,
+      files: files,
+      createdAt: item.createdAt,
+      updatedAt: updateAt
     }
   })
   const newEditTask = await Task(connect(DB_CONNECTION, portal))
@@ -8263,11 +8383,10 @@ exports.editCommentOfTaskOutput = async (portal, params, body, files) => {
       {
         _id: params.taskId,
         "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
-        // "taskOutputs.submissionResults.comments._id": mongoose.Types.ObjectId(params.commentId),
       },
       {
         $set: {
-          "taskOutputs.$.submissionResults.comments": comments,
+          "taskOutputs.$.comments": comments,
         },
       },
       { new: true })
@@ -8282,7 +8401,7 @@ exports.editCommentOfTaskOutput = async (portal, params, body, files) => {
         select: "name email avatar",
       },
       {
-        path: "taskOutputs.submissionResults.logs.creator",
+        path: "taskOutputs.versions.creator",
         select: "name email avatar",
       },
       {
@@ -8290,7 +8409,7 @@ exports.editCommentOfTaskOutput = async (portal, params, body, files) => {
         select: "name email avatar",
       },
       {
-        path: "taskOutputs.submissionResults.comments.creator",
+        path: "taskOutputs.comments.creator",
         select: "name email avatar",
       },
       {
@@ -8298,6 +8417,7 @@ exports.editCommentOfTaskOutput = async (portal, params, body, files) => {
         select: "name email avatar",
       }
     ])
+
 
   return task.taskOutputs;
 }

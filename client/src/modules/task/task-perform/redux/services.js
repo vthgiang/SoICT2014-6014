@@ -85,9 +85,10 @@ export const performTaskService = {
     approveTaskOutputs,
     editSubmissionResults,
     deleteSubmissionResults,
+    deleteFileOfTaskOutput,
 
     createCommentOfTaskOutput,
-    editCommentOfTaskOutput
+    editCommentOfTaskOutput,
 };
 
 /**
@@ -891,6 +892,14 @@ function editTaskOutputs(taskId, data) {
         data: data
     }, true, true, 'task.task_perform');
 }
+
+function deleteFileOfTaskOutput(taskId, taskOutputId, fileId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/documents/${fileId}`,
+        method: 'PATCH',
+    }, true, true, 'task.task_perform');
+}
+
 
 function createCommentOfTaskOutput(taskId, taskOutputId, newComment) {
     return sendRequest({
