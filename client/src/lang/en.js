@@ -5576,6 +5576,8 @@ export default {
             add_err_empty_end_date: "End date should not be empty",
             col_start_time: "Start time",
             col_expected_end_time: "Expected end time",
+            calculate: "Caculate",
+            time_to_reduce: "Time to reduce",
 
             // Thông báo trả về từ server
             get_task_project_success: 'Get project success',

@@ -6421,6 +6421,8 @@ export default {
             add_err_empty_end_date: "Hãy chọn ngày kết thúc",
             col_start_time: "Thời điểm bắt đầu",
             col_expected_end_time: "Thời điểm kết thúc dự kiến",
+            calculate: "Tính toán",
+            time_to_reduce: "Thời gian thực hiện dự án cần giảm",
 
             // Thông điệp trả về từ server 
             get_task_project_success: 'Lấy thông tin dự án thành công',
