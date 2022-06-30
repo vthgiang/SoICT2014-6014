@@ -54,9 +54,15 @@ function DecisionForImplement(props) {
     const { id } = state;
 
     useEffect(() => {
+        props.getAllEmployee();
+    }, [])
+
+    useEffect(() => {
         const decisionData = props.biddingContract?.decideToImplement ? props.biddingContract?.decideToImplement : initDecision;
         const resWithUnitCopy = [...decisionData.responsibleEmployeesWithUnit]
-        props.getAllEmployee();
+        // if (!employeesManager?.listAllEmployees) {
+        //     props.getAllEmployee();
+        // }
         setState({ ...state, id: props.id })
         setDecision(decisionData)
         setResponsibleEmployeesWithUnit({

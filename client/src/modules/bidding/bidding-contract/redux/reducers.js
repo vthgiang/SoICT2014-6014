@@ -41,29 +41,30 @@ export function biddingContract(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listBiddingContract: action.payload !== undefined ? action.payload : [],
-                totalList: action.payload.totalList,
+                listBiddingContract: action.payload?.listBiddingContract !== undefined ? action.payload?.listBiddingContract : [],
+                totalList: action.payload?.totalList,
             };
         case BiddingContractConstant.DELETE_BIDDING_CONTRACT_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listBiddingContract: action.payload !== undefined ? action.payload : [],
-                totalList: action.payload.totalList,
+                listBiddingContract: action.payload?.listBiddingContract !== undefined ? action.payload?.listBiddingContract : [],
+                totalList: action.payload?.totalList,
             };
         case BiddingContractConstant.CREATE_PROJECT_BY_BIDDING_CONTRACT_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listBiddingContract: action.payload !== undefined ? action.payload : [],
-                listBiddingContractStatistic: action.payload !== undefined ? action.payload : [],
-                // totalList: action.payload.totalList,
+                listBiddingContractStatistic: action.payload?.listBiddingContract !== undefined ? action.payload?.listBiddingContract : [],
+                totalList: action.payload?.totalList,
             };
         case BiddingContractConstant.UPDATE_BIDDING_CONTRACT_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listBiddingContract: action.payload !== undefined ? action.payload : [],
+                listBiddingContract: action.payload?.listBiddingContract !== undefined ? action.payload?.listBiddingContract : [],
+                totalList: action.payload?.totalList,
             };
         case BiddingContractConstant.GET_BIDDING_CONTRACT_FAILURE:
         case BiddingContractConstant.CREATE_BIDDING_CONTRACT_FAILURE:
