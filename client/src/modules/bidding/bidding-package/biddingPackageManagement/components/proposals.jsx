@@ -434,6 +434,14 @@ function Proposals(props) {
                                     />}
                                 </div>
                                 <div className="form-group">
+                                    {/* style={{display: "flex", justifyContent: "flex-end"}} */}
+                                    <div className='pull-right'>
+                                        <ModalViewEmployee
+                                            id={id ?? ""}
+                                            listEmployee={listEmpInfoFormated}
+                                        />
+                                        <a style={{ cursor: "pointer" }} onClick={() => handleShowViewEmployee(id)}>Xem thông tin nhân viên</a>
+                                    </div>
                                     <label>Số người thực hiện<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name={`numberOfEmployees-${currentIndex}`} onChange={(value) => handleChangeForm("numberOfEmployees", value)} value={currentTask?.numberOfEmployees} placeholder="Số người thực hiện" autoComplete="off" />
                                 </div>
@@ -564,7 +572,7 @@ function Proposals(props) {
                 </div>
                 <br />
 
-                <DataTableSetting
+                {/* <DataTableSetting
                     columnName={translate('table.action')}
                     columnArr={[
                         "Mã công việc",
@@ -580,7 +588,7 @@ function Proposals(props) {
                     tableId={`task-proposal-table-result`}
                     tableContainerId="task-proposal-table-result-container"
                     tableWidth="1300px"
-                />
+                /> */}
                 {
                     !isTable ? <ViewTaskInGantt
                         taskList={proposals?.tasks}
@@ -594,9 +602,9 @@ function Proposals(props) {
                                 <th>Thẻ công việc</th>
                                 <th>Thời gian thực hiện</th>
                                 <th>Mô tả công việc</th>
-                                <th>Nhân sự trực tiếp</th>
-                                <th>Nhân sự dự phòng</th>
-                                {/* <th>{translate('task_template.action')}</th> */}
+                                {proposals?.tasks[0]?.directEmployees?.length > 0 && <th>Nhân sự trực tiếp</th>}
+                                {proposals?.tasks[0]?.backupEmployees?.length > 0 && <th>Nhân sự dự phòng</th>}
+                                {proposals?.tasks[0]?.directEmployees?.length <= 0 && <th>Số người thực hiện</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -610,8 +618,9 @@ function Proposals(props) {
                                             <td>{convertTagIdToTagName(alltag, item?.tag)}</td>
                                             <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
                                             <td>{item?.taskDescription}</td>
-                                            <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
-                                            <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                            {item?.directEmployees?.length > 0 && <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>}
+                                            {item?.backupEmployees?.length > 0 && <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>}
+                                            {item?.directEmployees?.length <= 0 && <td>{item?.numberOfEmployees}</td>}
                                         </tr>
                                     )
                                 })

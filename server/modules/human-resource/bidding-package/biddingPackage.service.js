@@ -743,7 +743,19 @@ const compareProfessionalSkill = (skill1, skill2) => {
 }
 
 
-exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], allTask = [], startDate = Date.now(), estimateTime = 0, unitOfTime = "days", prevTask = null, biddingPackage, oldEmployees = []) => {
+exports.getEmployeeInfoWithTask = async (
+    allUser = [], 
+    listAllEmployees = [], 
+    allTask = [], 
+    startDate = Date.now(), 
+    estimateTime = 0, 
+    unitOfTime = "days", 
+    prevTask = null, 
+    biddingPackage, 
+    oldEmployees = [], 
+    allTag = [],
+    currentTag = "",
+) => {
     let start = startDate ?? Date.now();
     let end = moment(start).add(Number(estimateTime), unitOfTime).toDate();
     let allEmployee = [];
@@ -765,6 +777,7 @@ exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], al
                 notAvailable: 0, // chỉ số kiểm tra người đó có làm nhiều hơn 2 cv liên tiếp hay ko, nếu numOfInvole == 2 -> notAvailable = 1 (không cho làm nữa, đẩy nó xuống cuối mảng), nếu numOfFree == 2 -> notAvailable = 0
                 task: [],
                 isKeyPeople: checkIskeyPeople(x._id, keyPeople) ? 1 : 0,
+                suitabilityWithTag: 5, // độ phù hợp với tag
             }
         }
     } else {
@@ -781,6 +794,7 @@ exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], al
                 notAvailable: x.notAvailable,
                 task: [],
                 isKeyPeople: checkIskeyPeople(x.empId, keyPeople) ? 1 : 0,
+                suitabilityWithTag: x.suitabilityWithTag,
             }
         }
     }
@@ -817,14 +831,21 @@ exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], al
                     item.notAvailable = 0;
                 }
             }
-            if (String(item.empId) === String("62a80f13679d48374c40a12e")) {
-                console.log(
-                    // prevTask,
-                    !checkDirectEmp ?? "có nhân viên",
-                    item.numOfFree,
-                    item.numOfInvole,
-                    item.notAvailable
-                );
+        }
+    }
+
+    // xử lý độ phù hợp với tag
+    if (allTag?.length && allTag.length > 0) {
+        for (let i in taskInEstimateTime) {
+            let item = taskInEstimateTime[i];
+            let checkTag = allTag.find(x => String(x._id) === String(currentTag));
+            if (checkTag) {
+                let listSuitability = checkTag.employeeWithSuitability;
+                for (let s of listSuitability) {
+                    if(String(item.empId) === String(s.employee)) {
+                        item.suitabilityWithTag = s.suitability
+                    }
+                }
             }
         }
     }
@@ -846,6 +867,9 @@ exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], al
         }
         else if (a.isKeyPeople !== b.isKeyPeople) {
             return b.isKeyPeople - a.isKeyPeople // < 0, thì a là key, => a đứng trc b 
+        }
+        else if (a.suitabilityWithTag !== b.suitabilityWithTag) {
+            return (b.suitabilityWithTag - a.suitabilityWithTag)
         }
         else if (a.numOfTask !== b.numOfTask) {
             return a.numOfTask - b.numOfTask // < 0 thì a xếp trước b
@@ -904,7 +928,19 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
         startOfTask = endOfTask;
 
         // danh sách tất cả nhân viên với task
-        let empWithTask = await this.getEmployeeInfoWithTask(allUser, listAllEmployees, allTask, startOfTask, t.estimateTime, unitOfTime, prevTask, biddingPackage, oldEmployees);
+        let empWithTask = await this.getEmployeeInfoWithTask(
+            allUser, 
+            listAllEmployees, 
+            allTask, 
+            startOfTask, 
+            t.estimateTime, 
+            unitOfTime, 
+            prevTask, 
+            biddingPackage, 
+            oldEmployees, 
+            allTag, 
+            t.tag,
+        );
         endOfTask = moment(startOfTask).add(Number(t.estimateTime), unitOfTime).toDate();
         oldEmployees = empWithTask;
 
@@ -918,35 +954,87 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
         let directEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let backupEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let proposalEmpArr = [directEmpAvailable, backupEmpAvailable];
-        let numOfEmpRequireArr = [t.numberOfEmployees, t.numberOfEmployees];
 
-        let data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
+        // let numBackupEmpRequired = t.numberOfEmployees;
+        let numDirectpEmpRequired = t.numberOfEmployees;
+        let numBackupEmpRequired = listEmpByTag?.length - numDirectpEmpRequired;
+        let numOfEmpRequireArr = [numDirectpEmpRequired, numBackupEmpRequired];
 
-        if (data.isComplete == 1) {
-            console.log(data.result[0]);
+        // let data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
+        let data = {
+            isComplete: 0,
+        }
 
-            const newTask = {
+        while(numBackupEmpRequired > 0) {
+            numOfEmpRequireArr = [numDirectpEmpRequired, numBackupEmpRequired];
+            data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
+            
+            if (data.isComplete == 1) {
+                // console.log(data.result[0]);
+
+                const newTask = {
+                    ...t,
+                    directEmployees: data.result[0],
+                    backupEmployees: data.result[1],
+                };
+                prevTask = newTask;
+
+                compareVersion.push({
+                    isComplete: 1,
+                    code: t.code,
+                    tag: t.tag,
+                    name: t.taskName,
+                    old: t,
+                    new: newTask
+                })
+
+                proposalTask.push(newTask);
+
+                isComplete = 1;
+                break;
+            } else {
+                isComplete = 0;
+            }
+
+            numBackupEmpRequired = numBackupEmpRequired - 1;
+        }
+        if (isComplete === 0) {
+            console.log(data);
+            const newTaskErr = {
                 ...t,
-                directEmployees: data.result[0],
-                backupEmployees: data.result[1],
+                directEmployees: [],
+                backupEmployees: [],
             };
-            prevTask = newTask;
+            prevTask = newTaskErr;
 
             compareVersion.push({
+                isComplete: 0,
                 code: t.code,
                 tag: t.tag,
                 name: t.taskName,
                 old: t,
-                new: newTask
+                new: newTaskErr
             })
 
-            proposalTask.push(newTask);
+            proposalTask.push(newTaskErr);
 
-            isComplete = 1;
-        } else {
             isComplete = 0;
         }
     }
+
+    let countResult = 0;
+    for (let item of compareVersion) {
+        if (item.isComplete === 1) {
+            countResult = countResult + 1;
+        }
+    }
+    if (countResult === tasks.length) {
+        isComplete = 1;
+    } else {
+        isComplete = 0;
+    }
+
+    console.log(proposalTask.map(x => {return {d: x.directEmployees, b: x.backupEmployees}}));
 
     return {
         type: type,
