@@ -4,11 +4,21 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../../common-components';
 import { formatDate } from '../../../../../../helpers/formatDate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
+import { timelineText } from "./config"
 
 function DetailForm(props) {
 
     const { translate, requestDetail } = props;
-
+    let timelineTextArr = [];
+    let timelineTextArr2 = [];
+    if (requestDetail && requestDetail.type == '1'){
+        timelineTextArr = timelineText.timelineTextPurchase1();
+        timelineTextArr2 = timelineText.timelineTextPurchase2();
+    }
+    else if (requestDetail && requestDetail.type == '2')
+        timelineTextArr = timelineText.timelineTextReceipt();
+    else if (requestDetail && requestDetail.type == '3')
+        timelineTextArr = timelineText.timelineTextIssue();
     return (
         <React.Fragment>
             <DialogModal
@@ -22,6 +32,30 @@ function DetailForm(props) {
             >
                 {requestDetail ? (
                     <form id={`form-detail-request`}>
+                        {requestDetail.status && <div className="timeline-create">
+                            <div className="timeline-progress" style={{ width: parseInt(requestDetail.status) > 5 ? "100%" : (parseInt(requestDetail.status) - 1) / 4 * 100 + "%" }}></div>
+                            <div className="timeline-items">
+                                {timelineTextArr && timelineTextArr.length > 0 && timelineTextArr.map((item, index) => (
+                                    <div className={`timeline-item ${index < parseInt(requestDetail.status) ? "active" : ""}`} key={index} >
+                                        <div className={`timeline-contain`}>
+                                            {item.text}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>}
+                        {requestDetail.status && requestDetail.type == '1' && <div className="timeline-create">
+                            <div className="timeline-progress" style={{ width: (parseInt(requestDetail.status) - 6) / 3 * 100 + "%" }}></div>
+                            <div className="timeline-items">
+                                {timelineTextArr2 && timelineTextArr2.length > 0 && timelineTextArr2.map((item, index) => (
+                                    <div className={`timeline-item ${index < parseInt(requestDetail.status) - 5 ? "active" : ""}`} key={index} >
+                                        <div className={`timeline-contain`}>
+                                            {item.text}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>}
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
@@ -38,10 +72,6 @@ function DetailForm(props) {
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                {/* <div className="form-group">
-                                    <strong>{translate('production.request_management.approver_in_factory')}:&emsp;</strong>
-                                    {requestDetail.approverInFactory && requestDetail.approverInFactory[0].approver.name}
-                                </div> */}
                                 <div className="form-group">
                                     <strong>{translate('production.request_management.desiredTime')}:&emsp;</strong>
                                     {formatDate(requestDetail.desiredTime)}
@@ -49,10 +79,6 @@ function DetailForm(props) {
                                 <div className="form-group">
                                     <strong>{translate('production.request_management.description')}:&emsp;</strong>
                                     {requestDetail.description}
-                                </div>
-                                <div className="form-group">
-                                    <strong>{translate('production.request_management.status')}:&emsp;</strong>
-                                    {requestDetail.status && <span style={{ color: translate(`production.request_management.purchasing_request.${requestDetail.status}.color`) }}>{translate(`production.request_management.purchasing_request.${requestDetail.status}.content`)}</span>}
                                 </div>
                             </div>
                         </div>

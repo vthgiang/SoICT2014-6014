@@ -358,18 +358,32 @@ function EditForm(props) {
     const { translate, requestManagements } = props;
     const { requestId, code, desiredTime, errorDesiredTime, description, listGoods,
         approver, errorApprover, errorStock, stock, worksValueError, worksValue, sourceType, errorOnSourceProduct, errorSupplier, supplier, isAutoSelectStock } = state;
-    let dataSource = [
+    const dataSource = [
         {
             value: '0',
-            text: 'Chọn nguồn yêu cầu',
+            text: 'Chọn nguồn hàng hóa',
         },
         {
             value: '1',
-            text: 'Yêu cầu từ nhà máy sản xuất',
+            text: 'Hàng từ nhà máy sản xuất',
         },
         {
             value: '2',
-            text: 'Yêu cầu từ nhà cung cấp',
+            text: 'Nhập hàng từ nhà cung cấp',
+        }
+    ];
+    const dataSource2 = [
+        {
+            value: '0',
+            text: 'Chọn đơn vị tiếp nhận hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Xuất hàng đến nhà máy sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Xuất hàng đến khách hàng',
         }
     ];
     const dataApprover = getApprover();
@@ -398,15 +412,31 @@ function EditForm(props) {
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
                                 <input type="text" disabled={true} value={code} className="form-control"></input>
                             </div>
+                            <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("production.request_management.unit_receiving_request")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-stock-${requestId}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={stock}
+                                    items={dataStock}
+                                    onChange={handleStockChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorStock} />
+                            </div>
                             <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
-                                <label>{"Nguồn yêu cầu"}</label>
+                                <label>{props.stockRequestType == '1' ? "Nguồn hàng hóa" : 'Nơi tiếp nhận hàng hóa'}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
                                     id={`select-source-type-edit-${requestId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={sourceType}
-                                    items={dataSource}
+                                    items={props.stockRequestType == '1' ? dataSource : dataSource2}
                                     onChange={handleSourceChange}
                                     multiple={false}
                                 />
@@ -423,6 +453,22 @@ function EditForm(props) {
                                     disabled={false}
                                 />
                                 <ErrorLabel content={errorDesiredTime} />
+                            </div>
+                            <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("production.request_management.approver_in_stock")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-approver-${requestId}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={approver}
+                                    items={dataApprover}
+                                    onChange={handleApproverChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorApprover} />
                             </div>
                             {sourceType === "2" ?
                                 (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
@@ -475,42 +521,7 @@ function EditForm(props) {
                         {
                             !isAutoSelectStock &&
                             <div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                        <label>
-                                            {translate("production.request_management.unit_receiving_request")}
-                                            <span className="text-red"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-stock-${requestId}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={stock}
-                                            items={dataStock}
-                                            onChange={handleStockChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={errorStock} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>
-                                            {translate("production.request_management.approver_in_stock")}
-                                            <span className="text-red"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-approver-${requestId}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={approver}
-                                            items={dataApprover}
-                                            onChange={handleApproverChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={errorApprover} />
-                                    </div>
-                                </div>
+
                             </div>
                         }
                         {

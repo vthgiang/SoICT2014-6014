@@ -320,9 +320,9 @@ function BaseInformationComponent(props) {
 
     useEffect(() => {
         if (state.type !== "5")
-            props.getAllRequestByCondition({ requestType: 3, type: 2 });
+            props.getAllRequestByCondition({ requestType: 3, type: 2, requestFrom: 'stock' });
         else
-            props.getAllRequestByCondition({ requestType: 3, type: 4 });
+            props.getAllRequestByCondition({ requestType: 3, type: 4, requestFrom: 'stock' });
     }, [state.type])
 
     const isFormValidated = () => {

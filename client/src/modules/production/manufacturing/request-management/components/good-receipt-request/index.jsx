@@ -6,6 +6,8 @@ import DetailForm from '../common-components/detailForm';
 import EditForm from './editForm';
 import CreateForm from './createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import "../request.css";
+import { dataListStatus } from "../common-components/config"
 
 function ReceiptRequestManagementTable(props) {
 
@@ -48,6 +50,7 @@ function ReceiptRequestManagementTable(props) {
     }
     const { totalPages, page } = requestManagements;
     const { code, createdAt, planCode, desiredTime } = state;
+    const listStatus = dataListStatus.listStatusReceipt();
 
     return (
         <React.Fragment>
@@ -157,10 +160,25 @@ function ReceiptRequestManagementTable(props) {
                                     <td>{index + 1}</td>
                                     <td>{request.code}</td>
                                     <td>{request.creator && request.creator.name}</td>
-                                    {/* <td>{request.approverInFactory && request.approverInFactory[0].approver.name}</td> */}
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{ color: request.status <= 5 ? translate(`production.request_management.receipt_request_from_manufacturing.${request.status}.color`) : '' }}>{request.status <= 5 ? translate(`production.request_management.receipt_request_from_manufacturing.${request.status}.content`) : ''}</td>
+                                    <td>
+                                        <div>
+                                            <div className="timeline-index">
+                                                <div className="timeline-progress" style={{ width: (parseInt(request.status) - 1) / (listStatus.length - 1) * 100 + "%" }}></div>
+                                                <div className="timeline-items">
+                                                    {listStatus.map((status, index) => (
+                                                        <div className={`tooltip-abc${status.value > request.status ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${status.value > request.status ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${status.value > request.status ? "" : "-completed"}`}><p style={{ color: "white" }}>{status.value > request.status ? status.wait : status.completed}</p></span>
+                                                        </div>
+                                                    ))
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>

@@ -34,7 +34,6 @@ const init = async () => {
         name: Terms.ROOT_ROLES.SYSTEM_ADMIN.name,
         type: roleAbstract._id
     });
-    console.log("roleSystemAdmin", roleSystemAdmin);
 }
 
 
@@ -78,7 +77,6 @@ const getSystemAdminPage = async (data) => {
 }
 
 const addSystemAdminPage = async (data, currentRole) => {
-    console.log("data day: ", data);
     init();
     let newSystemAdminPage;
     if (data && data.length !== 0) {
@@ -96,14 +94,12 @@ const addSystemAdminPage = async (data, currentRole) => {
             })
         }
     }
-    console.log("newSystemAdminPage", newSystemAdminPage);
     let systemAdminPage = await Link(systemDB).findById({ _id: newSystemAdminPage._id });
     return systemAdminPage;
 }
 
 const deleteSystemAdminPage = async (pageIds) => {
     init();
-    console.log("run into delete");
     let pages = await Link(systemDB)
         .deleteMany({ _id: { $in: pageIds.map(item => mongoose.Types.ObjectId(item)) } });
     await Privilege(systemDB)

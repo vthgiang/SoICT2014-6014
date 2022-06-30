@@ -6261,7 +6261,7 @@ export default {
                 add_lot: "Tạo lô sản xuất",
                 base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                conversion_rate: "Trọng số chuyển đổi",
+                conversion_rate: "Trọng số chuyển đổi sang đơn vị tính cơ bản",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
                 quantity_base_unit: "Số lượng cần sản xuất",
                 product_lot_code: "Mã lô thành phẩm",

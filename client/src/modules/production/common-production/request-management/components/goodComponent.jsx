@@ -264,7 +264,7 @@ function GoodComponentRequest(props) {
                         <span className="text-red"> * </span>
                     </label>
                     <SelectBox
-                        id={`select-type`}
+                        id={`select-type-${selectBoxName ? selectBoxName : ""}`}
                         className="form-control select2"
                         style={{ width: "100%" }}
                         value={good.type}
@@ -301,12 +301,12 @@ function GoodComponentRequest(props) {
                 <div className="pull-right" style={{ marginBottom: "10px" }}>
                     {state.editGood ?
                         <React.Fragment>
-                            <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('production.request_management.cancel_editing_good')}</button>
-                            <button className="btn btn-success" disabled={!isGoodValidated()} onClick={handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('production.request_management.save_good')}</button>
+                            <p type="button" className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('production.request_management.cancel_editing_good')}</p>
+                            <p type="button" className="btn btn-success" disabled={!isGoodValidated()} onClick={handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('production.request_management.save_good')}</p>
                         </React.Fragment> :
-                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isGoodValidated()} onClick={handleAddGood}>{translate('production.request_management.add_good')}</button>
+                        <p type="button" className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isGoodValidated()} onClick={handleAddGood}>{translate('production.request_management.add_good')}</p>
                     }
-                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>{translate('production.request_management.delete_good')}</button>
+                    <p type="button" className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>{translate('production.request_management.delete_good')}</p>
                 </div>
             </fieldset>
             <table className="table table-striped">
