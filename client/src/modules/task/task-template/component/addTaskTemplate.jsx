@@ -264,10 +264,6 @@ function AddTaskTemplate(props) {
     }
 
     useEffect(() => {
-        props.getDepartment(); // => user.organizationalUnitsOfUser
-    }, [])
-
-    useEffect(() => {
         const { department, user } = props;
         const { newTemplate } = state;
 
@@ -366,6 +362,10 @@ function AddTaskTemplate(props) {
                 // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
+        }
+
+        if (!user.organizationalUnitsOfUser) {
+            props.getDepartment(); // => user.organizationalUnitsOfUser
         }
 
         // Khi truy vấn lấy các đơn vị mà user là manager đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
