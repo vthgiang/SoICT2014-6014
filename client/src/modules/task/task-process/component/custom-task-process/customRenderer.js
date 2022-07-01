@@ -64,6 +64,7 @@ export default class CustomRenderer extends BaseRenderer {
                 }
             }
         }
+
         let accountable = element.businessObject.$attrs.accountableName ? element.businessObject.$attrs.accountableName : ""
         let accountableName = ""
         if (Array.isArray(accountable)) {
@@ -85,27 +86,26 @@ export default class CustomRenderer extends BaseRenderer {
             }
         }
         // 87
-        let taskOutputs = element.businessObject.$attrs.taskOutputs ? element.businessObject.$attrs.taskOutputs : ""
-        let taskOutputName = ""
-        if (Array.isArray(taskOutputs)) {
-            for (i = 0; i < taskOutputs.length; i++) {
-                if (i !== taskOutputs.length - 1) {
-                    taskOutputName = taskOutputName + taskOutputs[i] + " \n "
-                } else {
-                    taskOutputName = taskOutputName + taskOutputs[i]
-                }
-            }
-        } else {
-            let taskOutput1 = taskOutputs.split(",")
-            for (i = 0; i < taskOutput1.length; i++) {
-                if (i !== taskOutputs.length - 1) {
-                    taskOutput1 = taskOutputName + taskOutputs[i] + ", "
-                } else {
-                    taskOutputName = taskOutputName + taskOutputs[i]
-                }
-            }
-        }
-        console.log(108, taskOutputName)
+        let taskOutputs = element.businessObject.$attrs.taskOutputs ? element.businessObject.$attrs.taskOutputs : [];
+        // let taskOutputName = ""
+        // if (Array.isArray(taskOutputs)) {
+        //     for (i = 0; i < taskOutputs.length; i++) {
+        //         if (i !== taskOutputs.length - 1) {
+        //             taskOutputName = taskOutputName + taskOutputs[i] + " \n "
+        //         } else {
+        //             taskOutputName = taskOutputName + taskOutputs[i]
+        //         }
+        //     }
+        // } else {
+        //     let taskOutput1 = taskOutputs.split(",")
+        //     for (i = 0; i < taskOutput1.length; i++) {
+        //         if (i !== taskOutputs.length - 1) {
+        //             taskOutput1 = taskOutputName + taskOutputs[i] + ", "
+        //         } else {
+        //             taskOutputName = taskOutputName + taskOutputs[i]
+        //         }
+        //     }
+        // }
 
         let manager = element.businessObject.$attrs.managerName ? element.businessObject.$attrs.managerName : ""
         let managerName = ""
@@ -200,18 +200,40 @@ export default class CustomRenderer extends BaseRenderer {
             div2.setAttributeNode(att2);
             div2.innerHTML = accountableName ? accountableName : "";
             foreignObject1.appendChild(div2);
-            // svgAppend(parentNode, foreignObject1);
-
-            let div4 = document.createElement('div');
-            let att4 = document.createAttribute("class");        // Create a "href" attribute
-            att4.value = "list-task-process-responsible";            // Set the value of the href attribute
-            div4.setAttributeNode(att4);
-            att4 = document.createAttribute("style");        // Create a "href" attribute
-            div4.setAttributeNode(att4);
-            div4.innerHTML = taskOutputName ? taskOutputName : "";
-            foreignObject1.appendChild(div4);
             svgAppend(parentNode, foreignObject1);
 
+            let foreignObjectTaskOutput = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+            foreignObjectTaskOutput.setAttribute('x', 5);
+            foreignObjectTaskOutput.setAttribute('y', 130);
+            foreignObjectTaskOutput.setAttribute('height', 200);
+            foreignObjectTaskOutput.setAttribute('width', 200);
+            if (Array.isArray(taskOutputs)) {
+                for (i = 0; i < taskOutputs.length; i++) {
+                    let divTaskOutput = document.createElement('div');
+                    divTaskOutput.setAttribute("style", "display: flex")
+
+                    let divTaskOutputName = document.createElement('div');
+                    let attTaskOutputName = document.createAttribute("class");        // Create a "href" attribute
+                    attTaskOutputName.value = "list-task-output";            // Set the value of the href attribute
+                    divTaskOutputName.setAttributeNode(attTaskOutputName);
+                    attTaskOutputName = document.createAttribute("style");        // Create a "href" attribute
+                    divTaskOutputName.setAttributeNode(attTaskOutputName);
+
+                    let icon = document.createElement("i")
+                    let attIcon = document.createAttribute("class");
+                    attIcon = "fa fa-check";
+                    icon.setAttribute("class", attIcon);
+
+                    divTaskOutputName.innerHTML = taskOutputs[i].title;
+                    if (taskOutputs[i] && taskOutputs[i].status === "approved") {
+                        divTaskOutput.append(icon, divTaskOutputName)
+                    } else {
+                        divTaskOutput.append(divTaskOutputName)
+                    }
+                    foreignObjectTaskOutput.appendChild(divTaskOutput);
+                }
+                svgAppend(parentNode, foreignObjectTaskOutput);
+            }
 
             let progress = element.businessObject.$attrs.progress
 
@@ -363,14 +385,33 @@ export default class CustomRenderer extends BaseRenderer {
             div2.innerHTML = accountableName ? accountableName : "";
             foreignObject1.appendChild(div2);
 
-            let div4 = document.createElement('div');
-            let att4 = document.createAttribute("class");        // Create a "href" attribute
-            att4.value = "list-task-process-gate-way-responsible";            // Set the value of the href attribute
-            div4.setAttributeNode(att4);
-            att4 = document.createAttribute("style");        // Create a "href" attribute
-            div4.setAttributeNode(att4);
-            div4.innerHTML = taskOutputName ? taskOutputName : "";
-            foreignObject1.appendChild(div4);
+
+            if (Array.isArray(taskOutputs)) {
+                for (i = 0; i < taskOutputs.length; i++) {
+                    let divTaskOutput = document.createElement('div');
+                    divTaskOutput.setAttribute("style", "display: flex")
+
+                    let divTaskOutputName = document.createElement('div');
+                    let attTaskOutputName = document.createAttribute("class");        // Create a "href" attribute
+                    attTaskOutputName.value = "list-task-output";            // Set the value of the href attribute
+                    divTaskOutputName.setAttributeNode(attTaskOutputName);
+                    attTaskOutputName = document.createAttribute("style");        // Create a "href" attribute
+                    divTaskOutputName.setAttributeNode(attTaskOutputName);
+
+                    let icon = document.createElement("i")
+                    let attIcon = document.createAttribute("class");
+                    attIcon = "fa fa-check";
+                    icon.setAttribute("class", attIcon);
+                    divTaskOutputName.innerHTML = taskOutputs[i].title;
+                    if (taskOutputs[i] && taskOutputs[i].status === "approved") {
+                        divTaskOutput.append(icon, divTaskOutputName)
+                    } else {
+                        divTaskOutput.append(divTaskOutputName)
+                    }
+                    foreignObject1.appendChild(divTaskOutput);
+                }
+                svgAppend(parentNode, foreignObject1);
+            }
 
 
             let div3 = document.createElement('div');

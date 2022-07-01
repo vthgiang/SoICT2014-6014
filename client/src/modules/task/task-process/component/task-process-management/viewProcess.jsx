@@ -85,7 +85,7 @@ function ViewProcess(props) {
         for (let i in processChilds) {
             ListProcessChilds[`${processChilds[i].codeInProcess}`] = processChilds[i];
         }
-        console.log(props.data);
+        console.log(88);
         setState({
             ...state,
             idProcess: props.idProcess,
@@ -120,9 +120,9 @@ function ViewProcess(props) {
 
                 if (infoTask) {
                     for (let i in infoTask) {
-                        console.log(122, i)
                         let responsible = []
                         let accountable = []
+                        console.log(infoTask[i].responsibleEmployees)
                         infoTask[i].responsibleEmployees.forEach(x => {
                             responsible.push(x.name)
                         })

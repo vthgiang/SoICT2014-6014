@@ -183,7 +183,6 @@ function OutgoingDataTab(props) {
         }
 
         if (taskOutputs.length !== 0) {
-            console.log(186, taskOutputs)
             props.editTaskOutputs(task._id, taskOutputs)
             setTaskOutputs([])
         }

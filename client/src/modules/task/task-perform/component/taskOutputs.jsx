@@ -8,7 +8,6 @@ import { ApiImage, ContentMaker, DateTimeConverter, QuillEditor, SelectBox, Show
 import { performTaskAction } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
 import Swal from 'sweetalert2';
-import { xor } from 'lodash';
 import { ModalVersionsTaskOutput } from './modalVersionsTaskOutput';
 import "./taskOutput.css"
 
@@ -485,7 +484,7 @@ function TaskOutputsTab(props) {
                                         {/* <div><strong>Người đã phê duyệt: </strong>{getAcoutableEmployees(taskOutput.accountableEmployees)}</div> */}
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div>
-                                                <span style={{ fontWeight: 600 }}>{taskOutput.submissionResults?.description ? `Kết quả giao nộp lần ${taskOutput.versions.length + 1}` : "Chưa giao nộp kết quả"}</span>
+                                                <span style={{ fontWeight: 600 }}>{taskOutput.submissionResults?.description ? `Kết quả giao nộp lần ${taskOutput.status === "approved" || taskOutput.status === "rejected" ? taskOutput.versions.length : taskOutput.versions.length + 1}` : "Chưa giao nộp kết quả"}</span>
                                                 {
                                                     taskOutput.status === "inprogess" && role === "responsible" &&
                                                     <a style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => { handleApprove("waiting_for_approval", taskOutput._id) }}>Yêu cầu phê duyệt</a>
@@ -499,7 +498,7 @@ function TaskOutputsTab(props) {
                                                     }} ><i className="fa fa-history" aria-hidden="true"></i> Lịch sử giao nộp</a>
                                                 }
                                                 {
-                                                    role === "responsible" && (taskOutput.status == "unfinished" && taskOutput.status !== "approved" || taskOutput.status == "rejected") &&
+                                                    role === "responsible" && (taskOutput.status == "inprogess" || taskOutput.status == "waiting_for_approval" || taskOutput.status == "rejected") &&
                                                     <>
                                                         <a className="edit text-yellow" style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleEditAction(taskOutput)}><i className="material-icons">edit</i></a>
                                                         <a className="delete text-red" style={{ display: "flex", alignItems: "center" }} onClick={() => { props.deleteSubmissionResults(performtasks.task._id, taskOutput._id) }}><i className="material-icons" id="delete-event"></i></a>

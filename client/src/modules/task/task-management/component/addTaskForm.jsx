@@ -390,7 +390,6 @@ function AddTaskForm(props) {
     }
 
     const handleChangeTaskOutputs = (data) => {
-        console.log(391, data)
         setState({
             ...state,
             newTask: {
@@ -593,7 +592,6 @@ function AddTaskForm(props) {
     }
 
     const handleProposalPersonnel = () => {
-        console.log(596)
         window.$('#modal-proposal-presonnel').modal('show');
     }
 

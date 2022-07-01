@@ -12,7 +12,6 @@ import { ModalEditProcessNoInit } from './modalEditProcessNoInit';
 import { forwardRef } from 'react';
 import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-import { ModalViewTaskOutput } from './modalViewTaskOutput';
 
 function TaskProcessManagement(props) {
 	const TableId = "table-task-process-template";
@@ -165,20 +164,6 @@ function TaskProcessManagement(props) {
 				}
 				{
 					state.currentRow !== undefined &&
-					<ModalViewTaskOutput
-						title={translate("task.task_process.view_task_process_modal")}
-						listOrganizationalUnit={listOrganizationalUnit}
-						data={currentRow}
-						idProcess={currentRow._id}
-						xmlDiagram={currentRow.xmlDiagram}
-						processName={currentRow.processName}
-						processDescription={currentRow.processDescription}
-						infoTask={currentRow.taskList}
-						creator={currentRow.creator}
-					/>
-				}
-				{
-					state.currentRow !== undefined &&
 					<ModalEditProcess
 						title={'Chỉnh sửa quy trình'}
 						listOrganizationalUnit={listOrganizationalUnit}
@@ -255,9 +240,6 @@ function TaskProcessManagement(props) {
 										<td>
 											<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
 												<i className="material-icons">view_list</i>
-											</a>
-											<a onClick={() => { viewTaskOutputs(item) }} title={"Chi tiết kết quả giao nộp"}>
-												<i className="material-icons">content_copy</i>
 											</a>
 											{isManager(item) &&
 												<React.Fragment>

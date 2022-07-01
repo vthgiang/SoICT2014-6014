@@ -7088,11 +7088,11 @@ exports.getAllPreceedingTasks = async (portal, params) => {
             select: "name email avatar",
           },
           {
-            path: "taskOutputs.submissionResults.logs.creator",
+            path: "taskOutputs.submissionResults.creator",
             select: "name email avatar",
           },
           {
-            path: "taskOutputs.submissionResults.comments.creator",
+            path: "taskOutputs.comments.creator",
             select: "name email avatar",
           },
           {
@@ -8114,6 +8114,10 @@ exports.editSubmissionResults = async (portal, params, body, files) => {
       },
       {
         path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
         select: "name email avatar",
       },
       {

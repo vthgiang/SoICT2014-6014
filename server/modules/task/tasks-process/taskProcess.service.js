@@ -76,7 +76,7 @@ exports.getAllXmlDiagram = async (portal, query) => {
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'viewer', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits" });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" });
-    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'processTemplates.process'});
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'processTemplates.process' });
 
     let totalCount = 0;
     if (JSON.stringify(taskProcesses) !== JSON.stringify([])) {
@@ -92,7 +92,7 @@ exports.getAllXmlDiagram = async (portal, query) => {
  * Lấy diagram theo id
  * @param {*} params 
  */
-exports.getXmlDiagramById = async(portal, params) => {
+exports.getXmlDiagramById = async (portal, params) => {
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(params.diagramId);
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(data, { path: 'creator', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(data, { path: 'manager', select: 'name' });
@@ -133,10 +133,10 @@ exports.createXmlDiagram = async (portal, body) => {
     for (const x in body.infoTemplate) {
         // console.log(body.infoTemplate[x]);
         processTemplates.push({
-            process:body.infoTemplate[x]._id,
-            code:body.infoTemplate[x].code,
-            followingTasks:body.infoTemplate[x].followingTasks,
-            preceedingTasks:body.infoTemplate[x].preceedingTasks
+            process: body.infoTemplate[x]._id,
+            code: body.infoTemplate[x].code,
+            followingTasks: body.infoTemplate[x].followingTasks,
+            preceedingTasks: body.infoTemplate[x].preceedingTasks
         })
     }
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).create({
@@ -239,10 +239,10 @@ exports.editXmlDiagram = async (portal, params, body) => {
     }
     for (const x in body.infoTemplate) {
         processTemplates.push({
-            process:body.infoTemplate[x].process,
-            code:body.infoTemplate[x].code,
-            followingTasks:body.infoTemplate[x].followingTasks,
-            preceedingTasks:body.infoTemplate[x].preceedingTasks
+            process: body.infoTemplate[x].process,
+            code: body.infoTemplate[x].code,
+            followingTasks: body.infoTemplate[x].followingTasks,
+            preceedingTasks: body.infoTemplate[x].preceedingTasks
         })
     }
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.diagramId,
@@ -294,13 +294,13 @@ exports.deleteXmlDiagram = async (portal, diagramId, query) => {
 }
 exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
     // console.log(taskProcessId);
-    
+
     // await Privilege(connect(DB_CONNECTION, portal)).findOneAndDelete({ resourceId: diagramId, resourceType: "ProcessTemplate" })
-    await TaskProcess(connect(DB_CONNECTION, portal)).findById(taskProcessId,(error,data1)=>{
+    await TaskProcess(connect(DB_CONNECTION, portal)).findById(taskProcessId, (error, data1) => {
         // console.log(data1);
-        data1.tasks.forEach(value=>{
+        data1.tasks.forEach(value => {
             // console.log(value);
-            Task(connect(DB_CONNECTION, portal)).findByIdAndRemove(value,(error,data2)=>{
+            Task(connect(DB_CONNECTION, portal)).findByIdAndRemove(value, (error, data2) => {
                 // console.log(data2);
             })
         })
@@ -311,7 +311,7 @@ exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
     let queryData = {
         userId: query.userId,
         name: query.name,
-        pageNumber : query.pageNumber,
+        pageNumber: query.pageNumber,
         // pageNumber: 1,
         noResultsPerPage: query.noResultsPerPage,
     }
@@ -336,29 +336,31 @@ isStartTask = (task) => {
  * lấy process theo id
  * @param {String} processId Id của quy trình
  */
-exports.getProcessById = async(portal, params) => {
+exports.getProcessById = async (portal, params) => {
     let data = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId);
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'creator', select: 'name' });
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'manager', select: 'name' });
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'viewer', select: 'name' });
-    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'tasks', populate: [
-        { path: "parent", select: "name" },
-        { path: "taskTemplate", select: "formula" },
-        { path: "organizationalUnit", },
-        { path: "collaboratedWithOrganizationalUnits", },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.results.organizationalUnit", select: "name _id" },
-        { path: "evaluations.results.kpis" },
-        { path: "taskActions.creator", select: 'name email avatar' },
-        { path: "taskActions.comments.creator", select: 'name email avatar' },
-        { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
-        { path: "taskComments.creator", select: 'name email avatar' },
-        { path: "taskComments.comments.creator", select: 'name email avatar' },
-        { path: "documents.creator", select: 'name email avatar' },
-        { path: "process" },
-    ] });
-    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'processChilds'});
+    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, {
+        path: 'tasks', populate: [
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit", },
+            { path: "collaboratedWithOrganizationalUnits", },
+            { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+            { path: "evaluations.results.employee", select: "name email _id" },
+            { path: "evaluations.results.organizationalUnit", select: "name _id" },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: 'name email avatar' },
+            { path: "taskActions.comments.creator", select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+            { path: "taskComments.creator", select: 'name email avatar' },
+            { path: "taskComments.comments.creator", select: 'name email avatar' },
+            { path: "documents.creator", select: 'name email avatar' },
+            { path: "process" },
+        ]
+    });
+    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'processChilds' });
     return data
 }
 /**
@@ -461,10 +463,10 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         let startDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
         splitterProcessChild = processChild.endDate.split("-");
         let endDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
-        let item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({_id:dataProcess[i].process._id});
-        
-        if (item){
-            await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(dataProcess[i].process._id, { $set: { codeInProcess: dataProcess[i].code, processTemplate: processChild._id }}, { new: true });
+        let item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ _id: dataProcess[i].process._id });
+
+        if (item) {
+            await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(dataProcess[i].process._id, { $set: { codeInProcess: dataProcess[i].code, processTemplate: processChild._id } }, { new: true });
             listProcess.push(item._id);
         } else {
             let newTaskProcess1 = await TaskProcess(connect(DB_CONNECTION, portal)).create({
@@ -480,7 +482,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                 status: "not_initialized",
                 codeInProcess: dataProcess[i].code,
                 processTemplate: processChild._id,
-                processParent : taskProcessId,
+                processParent: taskProcessId,
             })
             listProcess.push(newTaskProcess1._id);
         }
@@ -506,13 +508,13 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                     })
                 }
 
-            }else {
+            } else {
                 console.log('25');
                 item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
                 console.log('26');
                 if (item) {
                     if (item.status === "inprocess") {
-                        
+
                         listFollowingTask.push({
                             task: item._id,
                             link: data[x].followingTasks[i].link,
@@ -525,7 +527,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                             link: data[x].followingTasks[i].link,
                         })
                     }
-    
+
                 }
             }
         }
@@ -537,7 +539,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                     task: item._id,
                     link: data[x].preceedingTasks[i].link,
                 })
-            }else {
+            } else {
                 item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: data[x].preceedingTasks[i].task });
                 if (item) {
                     listPreceedingTask.push({
@@ -597,7 +599,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                             link: dataProcess[x].followingTasks[i].link,
                         })
                     }
-    
+
                 }
             }
         }
@@ -636,31 +638,31 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
     }
     let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask, processChilds: listProcess } }, { new: true })
-    .populate([
-        { path: 'creator', select: 'name' },
-        // { path: 'viewer', select: 'name' },
-        { path: 'manager', select: 'name' },
-        {
-            path: 'tasks', populate: [
-                { path: "parent", select: "name" },
-                { path: "taskTemplate", select: "formula" },
-                { path: "organizationalUnit", },
-                { path: "collaboratedWithOrganizationalUnits", },
-                { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
-                { path: "evaluations.results.employee", select: "name email _id" },
-                { path: "evaluations.results.organizationalUnit", select: "name _id" },
-                { path: "evaluations.results.kpis" },
-                { path: "taskActions.creator", select: 'name email avatar' },
-                { path: "taskActions.comments.creator", select: 'name email avatar' },
-                { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
-                { path: "taskComments.creator", select: 'name email avatar' },
-                { path: "taskComments.comments.creator", select: 'name email avatar' },
-                { path: "documents.creator", select: 'name email avatar' },
-                { path: "process" },
-            ]
-        },
-        { path: 'processTemplate', select: 'processName' },
-    ]);
+        .populate([
+            { path: 'creator', select: 'name' },
+            // { path: 'viewer', select: 'name' },
+            { path: 'manager', select: 'name' },
+            {
+                path: 'tasks', populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", },
+                    { path: "collaboratedWithOrganizationalUnits", },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                    { path: "taskComments.creator", select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", select: 'name email avatar' },
+                    { path: "documents.creator", select: 'name email avatar' },
+                    { path: "process" },
+                ]
+            },
+            { path: 'processTemplate', select: 'processName' },
+        ]);
     let myProcess = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate([
         { path: 'creator', select: 'name' },
         { path: 'viewer', select: 'name' },
@@ -668,9 +670,9 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
         { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
     ]);;
-    if( body.template === false ) {
+    if (body.template === false) {
         return { process: newProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
-    }else {
+    } else {
         return { process: myProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
     }
 }
@@ -719,10 +721,10 @@ exports.getAllTaskProcess = async (portal, query) => {
                     { path: "process" },
                 ]
             },
-            { path: 'processTemplate'},
-            { path: 'processTemplate', populate: { path:'processTemplates.process'}},
+            { path: 'processTemplate' },
+            { path: 'processTemplate', populate: { path: 'processTemplates.process' } },
             { path: 'processParent', select: 'processName' },
-            { path: 'processChilds'}
+            { path: 'processChilds' }
         ]);
 
 
@@ -806,17 +808,17 @@ exports.editProcessInfo = async (portal, params, body) => {
     // console.log(body);
     // if (body)
     const array = Object.values(body.info);
-    const arrayProcess = Object.values(body.processChilds);
+    const arrayProcess = body.processChilds ? Object.values(body.processChilds) : [];
     // console.log(array);
-    const item = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate( body.id ,{
-        $set:{
-            xmlDiagram:body.xmlDiagram
+    const item = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(body.id, {
+        $set: {
+            xmlDiagram: body.xmlDiagram
         }
-    },(error,data)=>{
+    }, (error, data) => {
         // if (error) console.log(error) ;
         // if (data) console.log(data);
     })
-    if (item.status ==='not_initialized'){
+    if (item.status === 'not_initialized') {
         let newTaskItem;
         let listTask = [];
         let listProcess = [];
@@ -891,10 +893,10 @@ exports.editProcessInfo = async (portal, params, body) => {
             let startDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
             splitterProcessChild = processChild.endDate.split("-");
             let endDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
-            let item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({_id:arrayProcess[i].process._id});
-            
-            if (item){
-                await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(arrayProcess[i].process._id, { $set: { codeInProcess: arrayProcess[i].code, processTemplate: processChild._id }}, { new: true });
+            let item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ _id: arrayProcess[i].process._id });
+
+            if (item) {
+                await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(arrayProcess[i].process._id, { $set: { codeInProcess: arrayProcess[i].code, processTemplate: processChild._id } }, { new: true });
                 listProcess.push(item._id);
             } else {
                 let newTaskProcess1 = await TaskProcess(connect(DB_CONNECTION, portal)).create({
@@ -910,7 +912,7 @@ exports.editProcessInfo = async (portal, params, body) => {
                     status: "not_initialized",
                     codeInProcess: arrayProcess[i].code,
                     processTemplate: processChild._id,
-                    processParent : taskProcessId,
+                    processParent: taskProcessId,
                 })
                 listProcess.push(newTaskProcess1._id);
             }
@@ -939,13 +941,13 @@ exports.editProcessInfo = async (portal, params, body) => {
                         })
                     }
 
-                }else {
+                } else {
                     console.log('25');
                     item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: array[x].followingTasks[i].task });
                     console.log('26');
                     if (item) {
                         if (item.status === "inprocess") {
-                            
+
                             listFollowingTask.push({
                                 task: item._id,
                                 link: array[x].followingTasks[i].link,
@@ -958,7 +960,7 @@ exports.editProcessInfo = async (portal, params, body) => {
                                 link: array[x].followingTasks[i].link,
                             })
                         }
-        
+
                     }
                 }
             }
@@ -970,7 +972,7 @@ exports.editProcessInfo = async (portal, params, body) => {
                         task: item._id,
                         link: array[x].preceedingTasks[i].link,
                     })
-                }else {
+                } else {
                     item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: array[x].preceedingTasks[i].task });
                     if (item) {
                         listPreceedingTask.push({
@@ -1030,7 +1032,7 @@ exports.editProcessInfo = async (portal, params, body) => {
                                 link: arrayProcess[x].followingTasks[i].link,
                             })
                         }
-        
+
                     }
                 }
             }
@@ -1080,42 +1082,42 @@ exports.editProcessInfo = async (portal, params, body) => {
                     startDate: start,
                     endDate: end,
                     viewer: viewer,
-                    tasks: listTask, 
+                    tasks: listTask,
                     processChilds: listProcess
                 }
             },
             { new: true }
         )
-        
-    }else {
-        array.forEach(data=>{
+
+    } else {
+        array.forEach(data => {
             // console.log(data);
             let splitter = data.startDate.split("-");
             let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
             splitter = data.endDate.split("-");
             let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-            
-            Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate( data._id ,{
-                $set:{
-                    name:data.name,
-                    description:data.description,
-                    startDate:data.startDate,
-                    endDate:data.endDate,
-                    creator:data.creator,
-                    priority:data.priority,
-                    level:data.level,
-                    responsibleEmployees:data.responsibleEmployees,
-                    accountableEmployees:data.accountableEmployees,
-                    consultedEmployees:data.consultedEmployees,
+
+            Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(data._id, {
+                $set: {
+                    name: data.name,
+                    description: data.description,
+                    startDate: data.startDate,
+                    endDate: data.endDate,
+                    creator: data.creator,
+                    priority: data.priority,
+                    level: data.level,
+                    responsibleEmployees: data.responsibleEmployees,
+                    accountableEmployees: data.accountableEmployees,
+                    consultedEmployees: data.consultedEmployees,
                     // parent:data.parent,
                     // taskProject:data.taskProject,
-                    codeInProcess:data.codeInProcess,
-                    organizationalUnit:data.organizationalUnit,
-                    collaboratedWithOrganizationalUnits:data.collaboratedWithOrganizationalUnits,
-                    quillDescriptionDefault:data.quillDescriptionDefault,
-    
+                    codeInProcess: data.codeInProcess,
+                    organizationalUnit: data.organizationalUnit,
+                    collaboratedWithOrganizationalUnits: data.collaboratedWithOrganizationalUnits,
+                    quillDescriptionDefault: data.quillDescriptionDefault,
+
                 }
-            },(error,data)=>{
+            }, (error, data) => {
                 // if (error) console.log(error) ;
                 // if (data) console.log(data);
             })
@@ -1140,9 +1142,9 @@ exports.editProcessInfo = async (portal, params, body) => {
             { new: true }
         )
     }
-    
+
     // let newTask12= await Task(connect(DB_CONNECTION, portal)).findOne()
-    
+
     let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId)
         .populate([
             { path: 'creator', select: 'name' },

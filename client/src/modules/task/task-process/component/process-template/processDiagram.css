@@ -321,6 +321,25 @@
 
 }
 
+.list-task-output {
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1em;
+    font-weight: bold;
+    max-width: 150px;
+    max-height: 30px;
+    background-color: white;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* số dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    white-space: -moz-pre-wrap;
+    /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;
+}
 
 .list-task-process-gate-way-responsible {
     margin-top: 5px;

@@ -12,8 +12,7 @@ import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../process-template/processDiagram.css';
-import { ViewProcessChild } from "./viewProcessChild";
-import { ModalTaskOutputs } from "./modalTaskOutputs";
+import { TaskOutputTab } from "./taskOutputTab";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -75,7 +74,9 @@ function ViewTaskOutputs(props) {
             ],
         })
     )
+
     const generateId = 'viewtaskoutputtab';
+
     useEffect(() => {
         modeler.attachTo('#' + generateId);
         var eventBus = modeler.get('eventBus');
@@ -92,7 +93,9 @@ function ViewTaskOutputs(props) {
 
         modeler.on('element.click', 1000, (e) => interactPopup(e));
     }, [])
+
     useEffect(() => {
+        console.log(99)
         let info = {};
         let infoTask = props.data.tasks;
         for (let i in infoTask) {
@@ -103,7 +106,6 @@ function ViewTaskOutputs(props) {
         for (let i in processChilds) {
             ListProcessChilds[`${processChilds[i].codeInProcess}`] = processChilds[i];
         }
-        console.log(props.data);
         setState({
             ...state,
             idProcess: props.idProcess,
@@ -142,17 +144,20 @@ function ViewTaskOutputs(props) {
                         let responsible = []
                         let accountable = []
                         let taskOutputs = []
+                        infoTask[i].responsibleEmployees.forEach(x => {
+                            responsible.push(x.name)
+                        })
+                        infoTask[i].accountableEmployees.forEach(x => {
+                            accountable.push(x.name)
+                        })
                         if (infoTask[i].taskOutputs?.length > 0) {
                             infoTask[i].taskOutputs.forEach(x => {
                                 let check = formatStatusTaskOutput(x.status);
                                 let title = x.title;
-                                taskOutputs.push(title)
+                                taskOutputs.push({ title: x.title, status: x.status })
                             })
-                        } else {
-                            taskOutputs.push("Không có yêu cầu kết quả giao nộp")
                         }
 
-                        console.log(155, taskOutputs)
                         let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
                         element1 && modeling.updateProperties(element1, {
                             progress: infoTask[i].progress,
@@ -174,20 +179,20 @@ function ViewTaskOutputs(props) {
                             checkStatusTaskOutputs = "approved"
                         }
 
-                        if (checkStatusTaskOutputs === "approved") {
-                            element1 && modeling.setColor(element1, {
-                                fill: '#84ffb8',
-                                stroke: '#14984c', //E02001
-                            });
-                        }
-                        if (checkStatusTaskOutputs === "unfinished") {
-                            element1 && modeling.setColor(element1, {
-                                fill: 'rgba(254, 202, 202)',
-                                stroke: 'rgba(239, 68, 68)', //E02001
-                                width: '5px'
-                            });
+                        // if (checkStatusTaskOutputs === "approved") {
+                        //     element1 && modeling.setColor(element1, {
+                        //         fill: '#84ffb8',
+                        //         stroke: '#14984c', //E02001
+                        //     });
+                        // }
+                        // if (checkStatusTaskOutputs === "unfinished") {
+                        //     element1 && modeling.setColor(element1, {
+                        //         fill: 'rgba(254, 202, 202)',
+                        //         stroke: 'rgba(239, 68, 68)', //E02001
+                        //         width: '5px'
+                        //     });
 
-                        }
+                        // }
                     }
                 }
 
@@ -410,7 +415,6 @@ function ViewTaskOutputs(props) {
 
     const { translate, role, user } = props;
 
-    console.log(processChilds);
     const { isTabPane } = props
     // if (id){
     //     console.log(info[`${id}`]);
@@ -420,73 +424,44 @@ function ViewTaskOutputs(props) {
     return (
         <React.Fragment>
             <div>
-                {id !== undefined && showInfo &&
+                {/* {id !== undefined && showInfo &&
                     <ModalTaskOutputs action={"view-process"} id={id} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
-                }
-                {/* {id !== undefined && showProcessChild &&
-                    <ViewProcessChild id={id}
-                        processChild={(processChilds && processChilds[`${id}`]) && processChilds[`${id}`]} />
                 } */}
+
                 <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
                     {/* Quy trình công việc */}
-                    <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
-                        {/* Diagram */}
-                        <div id={generateId}></div>
+                    <div className={`${isTabPane ? '' : 'col-md-8'}`} style={{ paddingRight: "0px" }}>
+                        <div className="contain-border">
+                            {/* Diagram */}
+                            <div id={generateId}></div>
 
-                        {/* Zoom button */}
-                        <div className="row">
-                            <div className="io-zoom-controls">
-                                <ul className="io-zoom-reset io-control io-control-list">
-                                    <li>
-                                        <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
-                                            <i className="fa fa-crosshairs"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
-                                            <i className="fa fa-plus"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
-                                            <i className="fa fa-minus"></i>
-                                        </a>
-                                    </li>
-                                </ul>
+                            {/* Zoom button */}
+                            <div className="row">
+                                <div className="io-zoom-controls">
+                                    <ul className="io-zoom-reset io-control io-control-list">
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
+                                                <i className="fa fa-crosshairs"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
+                                                <i className="fa fa-plus"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
+                                                <i className="fa fa-minus"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div className={`${isTabPane ? "" : "col-md-4"}`}>
-                        <div className='description-box without-border'>
-                            {/* tên quy trình */}
-                            <div>
-                                <strong>{translate("task.task_process.process_name")}:</strong>
-                                <span>{processName}</span>
-                            </div>
-
-                            {/* mô tả quy trình */}
-                            <div>
-                                <strong>{translate("task.task_process.process_description")}:</strong>
-                                <span>{processDescription}</span>
-                            </div>
-
-                            {/* mô tả quy trình */}
-                            <div>
-                                <strong>{translate("task.task_process.process_status")}:</strong>
-                                <span>{formatStatus(status)}</span>
-                            </div>
-
-                            {/* thời gian thực hiện quy trình */}
-                            <div>
-                                <strong>{translate("task.task_process.time_of_process")}:</strong>
-                                <span>{formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {formatDate(endDate)}</span>
-                            </div>
-
-                            <div>
-                                <strong>{translate("task.task_process.notice")}:</strong>
-                            </div>
-
+                        {/* <div style={{ marginTop: "15px" }}>
+                            <strong>{translate("task.task_process.notice")}:</strong>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>Không có yêu cầu kết quả giao nộp
                             </div>
@@ -496,6 +471,16 @@ function ViewTaskOutputs(props) {
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <div style={{ backgroundColor: "rgba(254, 202, 202)", height: "30px", width: "40px", border: "2px solid rgba(239, 68, 68)", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>Chưa hoàn thành
                             </div>
+                        </div> */}
+                    </div>
+
+                    <div className={`${isTabPane ? "" : "col-md-4"}`}>
+                        <div className='description-box without-border'>
+                            {id !== undefined && showInfo &&
+                                <TaskOutputTab action={"view-process"} id={id} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
+                            }
+                            {/* tên quy trình */}
+
                         </div>
                     </div>
                 </div>

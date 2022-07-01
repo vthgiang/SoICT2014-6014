@@ -9,7 +9,7 @@ import { taskManagementActions } from '../redux/actions';
 import { TaskFormValidator } from './taskFormValidator';
 
 function ModalProposalPresonnel(props) {
-    const [formula, setFormula] = useState("averagePoint - 10 * numberOfTaskInprocess");
+    const [formula, setFormula] = useState("40 + averagePoint*0.3 + (100 - 5* numberOfTaskInprocess)*0.3");
     const { newTask } = props
     const { organizationalUnit, collaboratedWithOrganizationalUnits, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = newTask;
     const { tasks } = props;
@@ -78,7 +78,7 @@ function ModalProposalPresonnel(props) {
                 hasNote={false}
             >
                 <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
-                    <label className="control-label" htmlFor="inputFormula">Công thức<span className="text-red">*</span></label>
+                    <label className="control-label" htmlFor="inputFormula">Công thức tính điểm đề xuất<span className="text-red">*</span></label>
                     <div style={{ display: "flex" }}>
                         <input type="text" className="form-control" id="inputFormula" placeholder="averagePoint - 10 * numberOfTaskInprocess"
                             value={formula} onChange={handleChangeFormula}
@@ -95,9 +95,9 @@ function ModalProposalPresonnel(props) {
                     <div><span style={{ fontWeight: 800 }}>Ví dụ 1: </span>averagePoint - 10 * numberOfTaskInprocess</div>
                     <div><span style={{ fontWeight: 800 }}>Ví dụ 2: </span>averagePoint/numberOfTaskNotEvaluated - 5 * numberOfTaskInprocess</div>
                     <br />
-                    <div><span style={{ fontWeight: 600 }}>averagePoint</span> - Điểm trung bình các công việc kết thúc đã được đánh giám</div>
+                    <div><span style={{ fontWeight: 600 }}>averagePoint</span> - Điểm trung bình các công việc kết thúc đã được đánh giá</div>
                     <div><span style={{ fontWeight: 600 }}>numberOfTaskInprocess</span> - Số lượng công việc đang tham gia</div>
-                    <div><span style={{ fontWeight: 600 }}>numberOfTaskNotEvaluated</span> - Công việc kết thúc chưa được đánh gia</div>
+                    <div><span style={{ fontWeight: 600 }}>numberOfTaskNotEvaluated</span> - Công việc kết thúc chưa được đánh giá</div>
                 </div>
                 <div>
                     <table id="proposal-table" className="table table-striped table-bordered table-hover">
@@ -105,7 +105,7 @@ function ModalProposalPresonnel(props) {
                             <tr>
                                 <th style={{ width: "8%" }}>STT</th>
                                 <th>Tên</th>
-                                <th>Điểm phù hợp tính theo công thức</th>
+                                <th>Điểm đề xuất</th>
                                 <th style={{ textAlign: 'center' }}>Hành động</th>
                             </tr>
                         </thead>

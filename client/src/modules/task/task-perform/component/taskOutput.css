@@ -15,6 +15,10 @@
     padding-right: 10px;
 }
 
+.p {
+    margin-bottom: 0px !important;
+}
+
 .text-input-task-output {
     border-radius: 10px !important;
     padding: 5px 0px !important;

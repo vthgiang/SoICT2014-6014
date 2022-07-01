@@ -4856,13 +4856,16 @@ exports.proposalPersonnel = async (portal, params, body) => {
             };
         })
         let numberOfTaskNotEvaluated = taskFinished?.length - numberOfTaskEvaluated;
-        averagePoint = sumPoint / numberOfTaskEvaluated;
+        averagePoint = numberOfTaskEvaluated ? sumPoint / numberOfTaskEvaluated : averagePoint;
         let user = {
             user: users[i],
             point: eval(formula)
         }
+
         tasksOfUser.push(user)
     }
+
+    tasksOfUser = tasksOfUser.sort((a, b) => (a.point < b.point) ? 1 : -1)
 
     return tasksOfUser;
 }

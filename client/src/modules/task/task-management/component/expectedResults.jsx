@@ -37,7 +37,6 @@ function ExpectedResults(props) {
     const [expectedResults, setExpectedResults] = useState(initValue)
 
     const handleChangeDescription = async (value, imgs) => {
-        console.log(39, value)
         setNewExpectedResult({
             ...newExpectedResult,
             description: value,
