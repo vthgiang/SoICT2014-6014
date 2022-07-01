@@ -103,8 +103,8 @@ class TopTenCommandBarChart extends Component {
                         </div>
                         {/* <div className="box-tools pull-right">
                                 <div className="btn-group pull-rigth">
-                                    <button type="button" className={`btn ${barChart === true ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
-                                    <button type="button" className={`btn ${barChart === false ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
+                                    <button type="button" className={`btn ${bar-chart === true ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
+                                    <button type="button" className={`btn ${bar-chart === false ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
                                 </div>
                             </div> */}
 

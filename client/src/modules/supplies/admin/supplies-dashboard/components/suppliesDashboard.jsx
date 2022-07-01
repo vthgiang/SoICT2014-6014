@@ -7,8 +7,9 @@ import {SuppliesDashboardActions} from '../redux/actions';
 import Swal from 'sweetalert2';
 import {DatePicker} from '../../../../../common-components';
 import {getTableConfiguration} from '../../../../../helpers/tableConfiguration';
-import BoughtPieChart from "../../supplies/components/piechar/BoughtPieChart";
-import ExistPieChart from "../../supplies/components/piechar/ExistPieChart";
+import BoughtPieChart from "./pie-chart/BoughtPieChart";
+import ExistPieChart from "./pie-chart/ExistPieChart";
+import OrganizationUnitSupplyChart from "./bar-chart/OrganizationUnitSupplyChart";
 
 function SuppliesDashboard(props) {
 
@@ -155,7 +156,7 @@ function SuppliesDashboard(props) {
     let {pieChart, barChart, numberData} = props.suppliesDashboardReducer;
 
     console.log('DEBUG: pieChart: ', pieChart);
-    console.log('DEBUG: barChart: ', barChart);
+    console.log('DEBUG: bar-chart: ', barChart);
     console.log('DEBUG: numberData: ', numberData);
 
     let format = year == "true" ? "year" : "month-year";
@@ -247,7 +248,7 @@ function SuppliesDashboard(props) {
                     <div className="col-xs-6">
                         <div className="box box-solid">
                             <div className="box-header">
-                                <div className="box-title">{`Thống kê giá trị các vật tư từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                                <div className="box-title">{`Thống kê giá trị các vật tư đã mua từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <BoughtPieChart
@@ -261,7 +262,7 @@ function SuppliesDashboard(props) {
                     <div className="col-xs-6">
                         <div className="box box-solid">
                             <div className="box-header">
-                                <div className="box-title">{`Thống kê giá trị các vật tư từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                                <div className="box-title">{`Thống kê giá trị các vật tư hiện có từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <ExistPieChart
@@ -271,6 +272,16 @@ function SuppliesDashboard(props) {
                         </div>
                     </div>
 
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        {
+                            (barChart.organizationUnitsPriceSupply.length > 0) &&
+                            <OrganizationUnitSupplyChart
+                                organizationUnitsPriceSupply={barChart.organizationUnitsPriceSupply}
+                            />
+                        }
+                    </div>
                 </div>
             </div>
         </React.Fragment>
