@@ -18,6 +18,16 @@ module.exports = {
     Timesheet: require('./human-resource/timesheet.model'),
     Field: require('./human-resource/field.model'),
 
+    Tag: require('./human-resource/tag.model'),
+    Major: require('./human-resource/major.model'),
+    Certificate: require('./human-resource/certificate.model'),
+    CareerPosition: require('./human-resource/careerPosition.model'),
+    CareerField: require('./human-resource/careerField.model'),
+    CareerAction: require('./human-resource/careerAction.model'),
+    BiddingPackage: require('./human-resource/biddingPackage.model'),
+
+    BiddingContract: require('./human-resource/biddingContract.model'),
+
 
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
@@ -87,9 +97,9 @@ module.exports = {
     ProductCategory: require('./customer-care/productCategory.model'),
     ProductDiscount: require('./customer-care/productDiscount.model'),
     CustomerCareTask: require('./customer-care/customerCareTask.model'),
-    CustomerCareTaskTemplate:require('./customer-care/customerCareTaskTemplate.model'),
-    CustomerCareUnit:require('./customer-care/customerCareUnit.model'),
-    CustomerCareUnitKPI:require('./customer-care/customerCareUnitKPI.model'),
+    CustomerCareTaskTemplate: require('./customer-care/customerCareTaskTemplate.model'),
+    CustomerCareUnit: require('./customer-care/customerCareUnit.model'),
+    CustomerCareUnitKPI: require('./customer-care/customerCareUnitKPI.model'),
     //order
     BankAccount: require('./production/order/bankAccount.model'),
     Discount: require('./production/order/discount.model'),
@@ -124,9 +134,10 @@ module.exports = {
     TransportVehicle: require('./production/transport/transportVehicle.model'),
     TransportSchedule: require('./production/transport/transportSchedule.model'),
     TransportDepartment: require('./production/transport/transportDepartment.model'),
-    
+
     // project
     Project: require('./project/project.model'),
+    ProjectTemplate: require('./project/projectTemplate.model'),
     ProjectChangeRequest: require('./project/projectChangeRequest.model'),
 
     // news feed

@@ -257,7 +257,8 @@ exports.getDetailBill = async (id, portal) => {
 
 exports.getBillsByStatus = async (query, portal) => {
     const { group, status, fromStock, type } = query;
-    return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock, type })
+    console.log(query);
+    return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock })
         .populate([
             { path: 'creator', select: "_id name email avatar" },
             { path: 'approvers.approver', select: "_id name email avatar" },

@@ -2,10 +2,10 @@ const ModuleConfigurationService = require('./moduleConfiguration.service');
 const Log = require(`../../../logs`);
 
 
-// Lấy thông tin cấu hình module quản lý nhân sự
+// Lấy thông tin cấu hình
 exports.getConfiguration = async (req, res) => {
     try {
-        let config = await ModuleConfigurationService.getHumanResourceConfiguration(req.portal);
+        let config = await ModuleConfigurationService.getAllConfiguration(req.portal);
 
         await Log.info(req.user.email, 'GET_CONFIGURATION', req.portal);
 

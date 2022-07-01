@@ -790,6 +790,53 @@ exports.links = [
     //     url: '/hr-search-for-package',
     //     apis: ['@all']
     // },
+    
+    {
+        url: '/hr-list-major',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-bidding-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding/bidding-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-certificate',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-career-position',
+        apis: ['@all']
+    }, {
+        url: '/hr-search-for-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-management-package',
+        apis: ['@all']
+    },
+    {
+        url: '/bidding-dashboard',
+        apis: ['@all']
+    },
+    {
+        url: '/bidding-list-contract',
+        apis: ['@all']
+    }, {
+        url: '/bidding-search-for-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-management-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-list-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-project-template',
+        apis: ['@all']
+    }, {
+        url: '/tags-management',
+        apis: ['@all']
+    },
+
     {
         url: '/kpi-units/create-for-admin',
         apis: ['@all']
@@ -1098,6 +1145,14 @@ exports.links = [
         apis: ['@all']
     },
     {
+        url: '/project/projects-template-list',
+        apis: ['@all']
+    },
+    {
+        url: '/project/project-template-details',
+        apis: ['@all']
+    },
+    {
         url: '/project/tasks-list',
         apis: ['@all']
     },
@@ -1168,6 +1223,10 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/employees-infomation',
+        apis: ['@all']
+    },
+    {
+        url: '/majors',
         apis: ['@all']
     }
 ];

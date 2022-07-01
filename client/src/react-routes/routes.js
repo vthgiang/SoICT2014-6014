@@ -58,6 +58,18 @@ const KPIUnitManager = lazy(() => import("../modules/kpi/organizational-unit/man
 const KPIUnitEvaluate = lazy(() => import("../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation"))
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi"))
 
+const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
+const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
+const SearchKeyEmployee = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchKeyEmployees"))
+const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
+const Major = lazy(() => import("../modules/human-resource/major/component"))
+const Contract = lazy(() => import("../modules/bidding/bidding-contract/component"))
+const BiddingPackagesManagement = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components"))
+const BiddingPackageDetailPage = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components/biddingPackageDetailPage"))
+const ProjectTemplateManagement = lazy(() => import("../modules/bidding/project-template/components"))
+const BidDashboard = lazy(() => import("../modules/bidding/bidding-dashboard/component"))
+const TagManagement = lazy(() => import("../modules/bidding/tags/component"))
+
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
 const DashBoardEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/dashboard/component/employeeKpiDashboard"))
@@ -1107,6 +1119,149 @@ class Routes extends Component {
                         component={TrainingPlan}
                     />
 
+                    {/* Quản lý gói thầu */}
+                    {/* <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_search_for_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-search-for-package",
+                                name: "list_search_for_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-search-for-package"}
+                        path={"/hr-search-for-package"}
+                        pageName={"list_search_for_package"}
+                        layout={Layout}
+                        component={SearchEmployeeForPackage}
+                    /> */}
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_search_for_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-search-for-package",
+                                name: "list_search_for_package",
+                                icon: "fa-regular fa-file-magnifying-glass",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-search-for-package"}
+                        path={"/hr-search-for-package"}
+                        pageName={"list_search_for_package"}
+                        layout={Layout}
+                        component={SearchKeyEmployee}
+                    />
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_major"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-major",
+                                name: "list_major",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-major"}
+                        path={"/hr-list-major"}
+                        pageName={"list_major"}
+                        layout={Layout}
+                        component={Major}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_career_position"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-career-position",
+                                name: "list_career_position",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-career-position"}
+                        path={"/hr-list-career-position"}
+                        pageName={"list_career_position"}
+                        layout={Layout}
+                        component={CareerPosition}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_bidding_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-bidding-package",
+                                name: "list_bidding_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-bidding-package"}
+                        path={"/hr-list-bidding-package"}
+                        pageName={"list_bidding_package"}
+                        layout={Layout}
+                        component={BiddingPackagesManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"detail_bidding_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding/bidding-package",
+                                name: "detail_bidding_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding/bidding-package"}
+                        path={"/bidding/bidding-package"}
+                        pageName={"detail_bidding_package"}
+                        layout={Layout}
+                        component={BiddingPackageDetailPage}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_certificate"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-certificate",
+                                name: "list_certificate",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-certificate"}
+                        path={"/hr-list-certificate"}
+                        pageName={"list_certificate"}
+                        layout={Layout}
+                        component={Certificate}
+                    />
+
                     <PrivateRoute
                         isLoading={false}
                         key={"training_plan_employee"}
@@ -1127,6 +1282,121 @@ class Routes extends Component {
                         component={CourseOfUser}
                     />
 
+                    {/* bidding - routes */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"bidding_dashboard"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding-dashboard",
+                                name: "bidding_dashboard",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-dashboard"}
+                        path={"/bidding-dashboard"}
+                        pageName={"bidding_dashboard"}
+                        layout={Layout}
+                        component={BidDashboard}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_bidding_contract"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding-list-contract",
+                                name: "list_bidding_contract",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-list-contract"}
+                        path={"/bidding-list-contract"}
+                        pageName={"list_bidding_contract"}
+                        layout={Layout}
+                        component={Contract}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/bidding-project-template"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/projects-list",
+                                name: "bidding_project_template_list",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-project-template"}
+                        path={"/bidding-project-template"}
+                        pageName={"bidding_project_template_list"}
+                        layout={Layout}
+                        component={ProjectTemplateManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/tags-management"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/tags-management",
+                                name: "manage_tag",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/tags-management"}
+                        path={"/tags-management"}
+                        pageName={"manage_tag"}
+                        layout={Layout}
+                        component={TagManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_search_for_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding-search-for-package",
+                                name: "list_search_for_package",
+                                icon: "fa-regular fa-file-magnifying-glass",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-search-for-package"}
+                        path={"/bidding-search-for-package"}
+                        pageName={"list_search_for_package"}
+                        layout={Layout}
+                        component={SearchKeyEmployee}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_bidding_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding-list-package",
+                                name: "list_bidding_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-list-package"}
+                        path={"/bidding-list-package"}
+                        pageName={"list_bidding_package"}
+                        layout={Layout}
+                        component={BiddingPackagesManagement}
+                    />
 
                     {/* kpi - routes */}
                     <PrivateRoute
@@ -3135,6 +3405,49 @@ class Routes extends Component {
                         pageName={"tasks_list"}
                         layout={Layout}
                         component={Project}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/projects-template-list"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/projects-list",
+                                name: "project_template_list",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/projects-template-list"}
+                        path={"/project/projects-template-list"}
+                        pageName={"project_template_list"}
+                        layout={Layout}
+                        component={Project}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/project-template-details"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/projects-template-list",
+                                name: "projects_template_list",
+                                icon: "fa fa-folder-open",
+                            },
+                            {
+                                link: "/project/project-template-details",
+                                name: "project_details",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/project-template-details"}
+                        path={"/project/project-template-details"}
+                        pageName={"project_template_details"}
+                        layout={Layout}
+                        component={ProjectDetailPage}
                     />
                     {/* <PrivateRoute
                         isLoading={false}

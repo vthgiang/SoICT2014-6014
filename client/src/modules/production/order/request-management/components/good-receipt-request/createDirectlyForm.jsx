@@ -3,11 +3,23 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
-import { formatToTimeZoneDate, formatDate } from '../../../../../../helpers/formatDate';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 function CreateDirectlyForm(props) {
+
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
 
     const [state, setState] = useState({
         code: generateCode("PDN"),
@@ -25,7 +37,7 @@ function CreateDirectlyForm(props) {
         }
         setState({
             ...state,
-            desiredTime: formatToTimeZoneDate(value)
+            desiredTime: value
         })
     }
 
@@ -187,7 +199,7 @@ function CreateDirectlyForm(props) {
             })
             const data = {
                 code: state.code,
-                desiredTime: formatToTimeZoneDate(state.desiredTime),
+                desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
                 stock: state.stock,

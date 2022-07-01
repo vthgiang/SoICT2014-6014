@@ -464,16 +464,17 @@ function ModalCreateTaskByProcessTemplate(props) {
         //console.log(element, state)
         let nameStr = element.type.split(':');
         setState(state => {
-            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
-                element.type === "bpmn:SequenceFlow" || element.type === "bpmn:ServiceTask"
-            ) {
+            console.log(465, state)
+            if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
                 if (!state.info[`${element.businessObject.id}`] ||
                     (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                     state.info[`${element.businessObject.id}`] = {
                         ...state.info[`${element.businessObject.id}`],
                         organizationalUnit: props.listOrganizationalUnit[0]?._id,
-                    }
+                    };
+                    // state.id = `${element.businessObject.id}`
                 }
+                console.log(474, state);
 
                 return {
                     ...state,
@@ -668,6 +669,7 @@ function ModalCreateTaskByProcessTemplate(props) {
         const infos = state.info
         infos[`${state.id}`] = info;
         state.info[`${state.id}`] = info
+        // console.log(670, info, value, state);
         setState({
             ...state,
             info: infos

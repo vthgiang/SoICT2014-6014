@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, UploadFile, SelectBox, DatePicker } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -23,8 +24,9 @@ function DegreeAddModal(props) {
 
     const { id } = props;
 
-    const { name, issuedBy, year, degreeType, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
+    const { name, files, issuedBy, major, degreeQualification, year, degreeType, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
     let listFields = props.field.listFields;
+    let listMajor = props.major.listMajor;
 
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
@@ -32,6 +34,7 @@ function DegreeAddModal(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: value,
                     file: value[0].fileName,
                     urlFile: value[0].urlFile,
                     fileUpload: value[0].fileUpload
@@ -41,6 +44,7 @@ function DegreeAddModal(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: undefined,
                     file: "",
                     urlFile: "",
                     fileUpload: ""
@@ -130,10 +134,23 @@ function DegreeAddModal(props) {
      * @param {*} value : id Ngành nghề lĩnh vực
      */
     const handleFieldChange = (value) => {
-        // console.log(value);
         setState({
             ...state,
             field: value[0]
+        });
+    }
+
+    const handleMajorChange = (value) => {
+        setState({
+            ...state,
+            major: value[0]
+        });
+    }
+
+    const handlerDegreeQualificationChange = (value) => {
+        setState({
+            ...state,
+            degreeQualification: value[0]
         });
     }
 
@@ -148,15 +165,29 @@ function DegreeAddModal(props) {
 
     /** Bắt sự kiện submit form */
     const save = () => {
-        let { field } = state;
+        let { field, degreeQualification } = state;
+        degreeQualification = Number(degreeQualification)
         let valueField = props.field;
         if (isFormValidated()) {
             if (!field && valueField && valueField.listFields && valueField.listFields[0]) {
                 field = props.field.listFields[0]._id
             }
-            return props.handleChange({ ...state, field: field });
+            return props.handleChange({ ...state, field: field, degreeQualification: degreeQualification });
         }
     }
+
+    let professionalSkillArr = [
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
+        { value: 5, text: "Kỹ sư" },
+        { value: 6, text: "Thạc sĩ" },
+        { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
+        { value: 0, text: "Không có" },
+    ];
 
     return (
         <React.Fragment>
@@ -166,6 +197,20 @@ function DegreeAddModal(props) {
                 formID={`form-create-certificate-${id}`}
                 title={translate('human_resource.profile.add_diploma')}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    name: "",
+                    issuedBy: "",
+                    year: "",
+                    field: "",
+                    degreeType: "excellent",
+                    files: undefined,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-create-certificate-${id}`}>
@@ -193,6 +238,31 @@ function DegreeAddModal(props) {
                             onChange={handleFieldChange}
                         />
                     </div>
+                    <div className="form-group">
+                        <label>Chuyên ngành
+                            <a href='/hr-list-major' target="_blank"> (Quản lý) </a>
+                        </label>
+                        <SelectBox
+                            id={`create-major${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={major}
+                            items={[...listMajor.map(y => { return { value: y._id, text: y.name } }), { value: '', text: 'Chọn ngành nghề' }]}
+                            onChange={handleMajorChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Trình độ</label>
+                        <SelectBox
+                            id={`create-professional${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={degreeQualification}
+                            items={professionalSkillArr}
+                            onChange={handlerDegreeQualificationChange}
+                        />
+                    </div>
+
                     <div className="row">
                         {/* Năm tốt nghiệp */}
                         <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear && "has-error"}`}>
@@ -221,7 +291,7 @@ function DegreeAddModal(props) {
                     {/* File đính kèm*/}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} deleteValue={true} />
                     </div>
                 </form>
             </DialogModal>
@@ -230,8 +300,8 @@ function DegreeAddModal(props) {
 };
 
 function mapState(state) {
-    const { field } = state;
-    return { field };
+    const { field, major } = state;
+    return { field, major };
 };
 
 const addModal = connect(mapState, null)(withTranslate(DegreeAddModal));

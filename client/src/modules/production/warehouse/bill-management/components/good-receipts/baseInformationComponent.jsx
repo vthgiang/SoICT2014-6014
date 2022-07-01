@@ -302,9 +302,9 @@ function BaseInformationComponent(props) {
 
     useEffect(() => {
         if (state.type !== "3")
-            props.getAllRequestByCondition({ requestType: 3, type: 1 });
+            props.getAllRequestByCondition({ requestType: 3, type: 1, requestFrom: 'stock' });
         else
-            props.getAllRequestByCondition({ requestType: 3, type: 4 });
+            props.getAllRequestByCondition({ requestType: 3, type: 4, requestFrom: 'stock' });
     }, [state.type])
 
     useEffect(() => {

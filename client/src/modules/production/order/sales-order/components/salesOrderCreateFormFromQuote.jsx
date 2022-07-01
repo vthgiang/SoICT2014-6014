@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { SalesOrderActions } from "../redux/actions";
@@ -6,6 +6,7 @@ import { LotActions } from "../../../warehouse/inventory-management/redux/action
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { DialogModal, SelectBox, ErrorLabel } from "../../../../../common-components";
 import AddManufacturingWorkForGood from "./createSalesOrderFromQuote/addManufacturingWorkForGood";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
 
 function SalesOrderCreateFormFromQuote(props) {
 
@@ -23,6 +24,10 @@ function SalesOrderCreateFormFromQuote(props) {
             }
         })
     }
+
+    useEffect(() => {
+        props.getUser();
+    }, [])
 
     const getQuoteOptions = () => {
         let options = [];
@@ -130,11 +135,11 @@ function SalesOrderCreateFormFromQuote(props) {
                     text: "---Chọn người phê duyệt---",
                 },
             ];
-            let users = getUsersInDepartments();
+            let users = props.user.list;
             let mapOptions = users.map((item) => {
                 return {
-                    value: item.user._id,
-                    text: item.user.name + " - " + item.roleName,
+                    value: item.id,
+                    text: item.name,
                 };
             });
 
@@ -551,14 +556,15 @@ function SalesOrderCreateFormFromQuote(props) {
 
 function mapStateToProps(state) {
     const { listBusinessDepartments } = state.businessDepartments;
-    const { quotes, lots, goods } = state;
-    return { quotes, lots, goods, listBusinessDepartments };
+    const { quotes, lots, goods, user } = state;
+    return { quotes, lots, goods, listBusinessDepartments, user };
 }
 
 const mapDispatchToProps = {
     createNewSalesOrder: SalesOrderActions.createNewSalesOrder,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     getManufacturingWorksByProductId: GoodActions.getManufacturingWorksByProductId,
+    getUser: UserActions.get,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderCreateFormFromQuote));

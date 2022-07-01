@@ -139,29 +139,6 @@ const BillSchema = new Schema({
         }
     }],
 
-    // LSX
-    responsibles: [{ // Danh sách người thực hiện
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    }],
-
-    // LSX
-    accountables: [{ // Người giám sát
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    }],
-
-    customer: {
-        type: Schema.Types.ObjectId,
-        ref: 'Customer'
-    },
-
-    supplier: {
-        type: Schema.Types.ObjectId,
-        ref: 'Customer'
-    },
-
-    // LSX
     receiver: {
         name: {
             type: String

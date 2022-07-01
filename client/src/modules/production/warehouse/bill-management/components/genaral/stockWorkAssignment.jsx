@@ -656,7 +656,7 @@ function StockWorkAssignment(props) {
                         {/* Độ ưu tiên công việc */}
                         <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12 form-group">
                             <label className="control-label">{translate('task.task_management.detail_priority')}<span className="text-red">*</span></label>
-                            <select className="form-control" value={priority} onChange={handleChangeTaskPriority}>
+                            <select style={{ borderRadius: "5px", width: "97%", marginLeft: "3.5%", border: "1px solid #d2d6de" }} className="form-control" value={priority} onChange={handleChangeTaskPriority}>
                                 <option value={5}>{translate('task.task_management.urgent')}</option>
                                 <option value={4}>{translate('task.task_management.high')}</option>
                                 <option value={3}>{translate('task.task_management.standard')}</option>

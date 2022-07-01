@@ -217,6 +217,7 @@ class SelectBox extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
+
         if (nextState.searching) {
             if (SelectBox.isEqual(nextProps.items, nextState.items)) {
                 return false;

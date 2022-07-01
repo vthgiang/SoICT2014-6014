@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import ReceiptRequest from './good-receipt-request/index';
+import IssueRequest from './good-issue-request/index';
 import PurchaseRequest from './good-purchase-request/index';
 import { RequestActions } from '../../../common-production/request-management/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
@@ -12,6 +13,7 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import { LazyLoadComponent } from '../../../../../common-components/index';
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { PurchaseOrderActions } from "../../purchase-order/redux/actions";
+import { SalesOrderActions } from "../../sales-order/redux/actions";
 
 function RequestManagement(props) {
 
@@ -30,13 +32,14 @@ function RequestManagement(props) {
 
     useEffect(() => {
         const { page, limit, currentRole } = state;
-        props.getAllRequestByCondition(state);
+        props.getAllRequestByCondition({type: state.type, requestType: state.requestType, requestFrom: state.requestFrom});
         props.getAllGoodsByType({ type: 'material' });
         props.getUser();
         props.getAllStocks();
         props.getAllDepartments();
         props.getCustomers();
         props.getAllPurchaseOrders({ page, limit, currentRole, status: 2 });
+        props.getAllSalesOrders({ page, limit, currentRole  });
     }, []);
 
     const handleCodeChange = (e) => {
@@ -95,7 +98,7 @@ function RequestManagement(props) {
         let count = 0;
         approvers.forEach(approver => {
             let approveType = request.status == 2 ? 2 : 3;
-            if ( approver.approveType == approveType) {
+            if (approver.approveType == approveType) {
                 const userId = localStorage.getItem("userId");
                 let approverIds = approver.information.map(x => x.approver._id);
                 if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
@@ -188,6 +191,19 @@ function RequestManagement(props) {
         await props.getAllRequestByCondition({ type, requestType, requestFrom });
     };
 
+    const handleIssueRequest = async () => {
+        const requestType = 2;
+        const type = 2;
+        const requestFrom = "order"
+        await setState({
+            ...state,
+            type: type,
+            requestType: requestType,
+            requestFrom: requestFrom
+        })
+        await props.getAllRequestByCondition({ type, requestType, requestFrom });
+    };
+
     const { translate } = props;
     const { requestType, type } = state;
 
@@ -196,6 +212,7 @@ function RequestManagement(props) {
             <ul className="nav nav-tabs">
                 <li className="active"><a href="#good-purchasing-request" data-toggle="tab" onClick={() => handlePurchasingRequest()}>{translate('production.request_management.purchase_request')}</a></li>
                 <li><a href="#good-receipt-request" data-toggle="tab" onClick={() => handleReceiptRequest()}>{translate('production.request_management.receipt_request')}</a></li>
+                <li><a href="#good-issue-request" data-toggle="tab" onClick={() => handleIssueRequest()}>{translate('production.request_management.issue_request')}</a></li>
             </ul>
             <div className="tab-content">
                 <div className="tab-pane active" id="good-purchasing-request">
@@ -238,6 +255,26 @@ function RequestManagement(props) {
                         </LazyLoadComponent>
                     }
                 </div>
+                <div className="tab-pane" id="good-issue-request">
+                    {requestType == 2 && type == 2 &&
+                        <LazyLoadComponent>
+                            <IssueRequest
+                                setPage={setPage}
+                                setLimit={setLimit}
+                                checkRoleApprover={checkRoleApprover}
+                                handleFinishedApproval={handleFinishedApproval}
+                                handleCancelRequest={handleCancelRequest}
+                                handleCodeChange={handleCodeChange}
+                                handleCreatedAtChange={handleCreatedAtChange}
+                                handleDesiredTimeChange={handleDesiredTimeChange}
+                                handleStatusChange={handleStatusChange}
+                                handleSubmitSearch={handleSubmitSearch}
+                                checkRoleApproverReceiptRequestToStock={checkRoleApproverReceiptRequestToStock}
+                                handleFinishedApprovalReceiptRequestToStock={handleFinishedApprovalReceiptRequestToStock}
+                            />
+                        </LazyLoadComponent>
+                    }
+                </div>
             </div>
         </div>
     );
@@ -255,6 +292,7 @@ const mapDispatchToProps = {
     getAllDepartments: DepartmentActions.get,
     getCustomers: CrmCustomerActions.getCustomers,
     getAllPurchaseOrders: PurchaseOrderActions.getAllPurchaseOrders,
+    getAllSalesOrders: SalesOrderActions.getAllSalesOrders,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RequestManagement));

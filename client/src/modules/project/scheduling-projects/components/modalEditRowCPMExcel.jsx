@@ -10,18 +10,20 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper'
 import { checkIfHasCommonItems, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from "../../projects/redux/actions";
-import { convertUserIdToUserName, getAmountOfWeekDaysInMonth, getCurrentProjectDetails, getEstimateHumanCostFromParams, getEstimateMemberCost, getNearestIntegerNumber, getProjectParticipants } from '../../projects/components/functionHelper';
+import { convertUserIdToUserName, getAmountOfWeekDaysInMonth, getCurrentProjectDetails, getEstimateHumanCostFromParams, getEstimateMemberCost, getNearestIntegerNumber, getProjectParticipants, getProjectParticipantsByArrId } from '../../projects/components/functionHelper';
 
 const ModalEditRowCPMExcel = (props) => {
     const { currentRow, translate, project, currentEditRowIndex, user } = props;
+    const [projectData, setProjectData] = useState(props.projectData);
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
-    const projectDetail = getCurrentProjectDetails(project);
+    const projectDetail = projectData ?? getCurrentProjectDetails(project);
     const userId = getStorage("userId");
     const [currentRowCode, setCurrentRowCode] = useState(undefined);
     const [currentRowIndex, setCurrentRowIndex] = useState(undefined);
     const [currentEstimateNormalCost, setCurrentEstimateNormalCost] = useState(numberWithCommas(currentRow?.estimateNormalCost));
     const [currentEstimateMaxCost, setCurrentEstimateMaxCost] = useState(numberWithCommas(currentRow?.estimateMaxCost));
     const [currentEstimateNormalTime, setCurrentEstimateNormalTime] = useState(numberWithCommas(currentRow?.estimateNormalTime));
+    const [currentDescription, setCurrentDescription] = useState(currentRow?.description);
     const [currentAssetCost, setCurrentAssetCost] = useState('');
     const [currentHumanCost, setCurrentHumanCost] = useState('');
     const [currentResponsibleEmployees, setCurrentResponsibleEmployees] = useState([]);
@@ -38,9 +40,15 @@ const ModalEditRowCPMExcel = (props) => {
         errorOnNormalTime: undefined,
         errorOnTotalWeight: undefined,
     })
+
+    useEffect(() => {
+        setProjectData(props.projectData)
+    }, [JSON.stringify(props.projectData)])
+
     // Điều kiện để rerender lại modal khi thay đổi id của row
     if (currentRow.code !== currentRowCode) {
         setCurrentRowCode(currentRow.code);
+        setCurrentDescription(currentRow.description);
         setCurrentAssetCost(currentRow?.currentAssetCost || '1,000,000');
         setCurrentHumanCost(currentRow?.currentHumanCost || '');
         setCurrentEstimateMaxCost(currentRow?.estimateMaxCost || '');
@@ -231,6 +239,7 @@ const ModalEditRowCPMExcel = (props) => {
             estimateOptimisticTime: currentRow?.estimateOptimisticTime,
             estimateNormalCost: currentEstimateNormalCost,
             estimateMaxCost: currentEstimateMaxCost,
+            description: currentDescription,
             currentResponsibleEmployees,
             currentAccountableEmployees,
             currentAssetCost,
@@ -262,7 +271,8 @@ const ModalEditRowCPMExcel = (props) => {
 
     useEffect(() => {
         let result = 0;
-        const projectDetail = getCurrentProjectDetails(project);
+        console.log(266, projectData);
+        const projectDetail = projectData ?? getCurrentProjectDetails(project);
 
         setCurrentResWeightArr(currentResponsibleEmployees.map((resItem, resIndex) => {
             return {
@@ -315,7 +325,7 @@ const ModalEditRowCPMExcel = (props) => {
             errorOnNormalTime: messageNormalTime,
         })
     }, [currentResponsibleEmployees, currentAccountableEmployees, currentAssetCost, currentEstimateNormalTime,
-        currentTotalResWeight, currentTotalAccWeight])
+        currentTotalResWeight, currentTotalAccWeight, projectData])
 
     return (
         <React.Fragment>
@@ -417,7 +427,7 @@ const ModalEditRowCPMExcel = (props) => {
                                             id={`responsible-select-box-edit-row-cpm-excel-${currentRowCode}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={getProjectParticipants(projectDetail)}
+                                            items={projectData ? getProjectParticipantsByArrId(projectDetail, listUsers) : getProjectParticipants(projectDetail)}
                                             onChange={handleChangeTaskResponsibleEmployees}
                                             value={currentResponsibleEmployees}
                                             multiple={true}
@@ -435,7 +445,7 @@ const ModalEditRowCPMExcel = (props) => {
                                             id={`accounatable-select-box-edit-row-cpm-excel-${currentRowCode}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={getProjectParticipants(projectDetail)}
+                                            items={projectData ? getProjectParticipantsByArrId(projectDetail, listUsers) : getProjectParticipants(projectDetail)}
                                             onChange={handleChangeTaskAccountableEmployees}
                                             value={currentAccountableEmployees}
                                             multiple={true}
@@ -482,6 +492,21 @@ const ModalEditRowCPMExcel = (props) => {
                                         {currentEstimateNormalCost}
                                     </div>
                                     <ErrorLabel content={Number(currentEstimateNormalCost.replace(/,/g, '')) > Number(currentEstimateMaxCost.replace(/,/g, '')) && "Ngân sách đang thấp hơn chi phí ước lượng"} />
+                                </div>
+                            </div>
+
+                            {/* Chỉnh sửa mô tả công việc */}
+                            <div className="row">
+                                <div className="col-md-12 form-group">
+                                    <label className="control-label">Mô tả công việc</label>
+                                    <textarea type="text" rows={3} style={{ minHeight: '103.5px' }}
+                                        name={`task_description`}
+                                        onChange={(e) => setCurrentDescription(e.target?.value)}
+                                        value={currentDescription}
+                                        className="form-control"
+                                        placeholder="Mô tả công việc"
+                                        autoComplete="off"
+                                    />
                                 </div>
                             </div>
                         </fieldset>

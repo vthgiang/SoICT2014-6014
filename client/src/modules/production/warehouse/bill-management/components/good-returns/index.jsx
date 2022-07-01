@@ -25,7 +25,7 @@ function ReturnManagement(props) {
     })
 
     useEffect(() => {
-        props.getAllRequestByCondition({ requestType: 3, type: 3 });
+        props.getAllRequestByCondition({ requestType: 3, type: 3, requestFrom: 'stock' });
     }, [])
 
     const showFilePreview = (data) => {
