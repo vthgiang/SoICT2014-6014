@@ -4,6 +4,7 @@ const TaskService = require(`../task-management/task.service`);
 const { connect } = require(`../../../helpers/dbHelper`);
 const nodemailer = require("nodemailer");
 const mongoose = require('mongoose');
+const NotificationServices = require(`../../notification/notification.service`)
 
 /**
  * Lấy tất cả xml diagram
@@ -76,7 +77,8 @@ exports.getAllXmlDiagram = async (portal, query) => {
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'viewer', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits" });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" });
-    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'processTemplates.process'});
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'processTemplates.process' });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'listProcess', select: 'name startDate endDate' });
 
     let totalCount = 0;
     if (JSON.stringify(taskProcesses) !== JSON.stringify([])) {
@@ -92,7 +94,7 @@ exports.getAllXmlDiagram = async (portal, query) => {
  * Lấy diagram theo id
  * @param {*} params 
  */
-exports.getXmlDiagramById = async(portal, params) => {
+exports.getXmlDiagramById = async (portal, params) => {
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(params.diagramId);
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(data, { path: 'creator', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(data, { path: 'manager', select: 'name' });
@@ -133,10 +135,10 @@ exports.createXmlDiagram = async (portal, body) => {
     for (const x in body.infoTemplate) {
         // console.log(body.infoTemplate[x]);
         processTemplates.push({
-            process:body.infoTemplate[x]._id,
-            code:body.infoTemplate[x].code,
-            followingTasks:body.infoTemplate[x].followingTasks,
-            preceedingTasks:body.infoTemplate[x].preceedingTasks
+            process: body.infoTemplate[x]._id,
+            code: body.infoTemplate[x].code,
+            followingTasks: body.infoTemplate[x].followingTasks,
+            preceedingTasks: body.infoTemplate[x].preceedingTasks
         })
     }
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).create({
@@ -239,10 +241,10 @@ exports.editXmlDiagram = async (portal, params, body) => {
     }
     for (const x in body.infoTemplate) {
         processTemplates.push({
-            process:body.infoTemplate[x].process,
-            code:body.infoTemplate[x].code,
-            followingTasks:body.infoTemplate[x].followingTasks,
-            preceedingTasks:body.infoTemplate[x].preceedingTasks
+            process: body.infoTemplate[x].process,
+            code: body.infoTemplate[x].code,
+            followingTasks: body.infoTemplate[x].followingTasks,
+            preceedingTasks: body.infoTemplate[x].preceedingTasks
         })
     }
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.diagramId,
@@ -294,13 +296,13 @@ exports.deleteXmlDiagram = async (portal, diagramId, query) => {
 }
 exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
     // console.log(taskProcessId);
-    
+
     // await Privilege(connect(DB_CONNECTION, portal)).findOneAndDelete({ resourceId: diagramId, resourceType: "ProcessTemplate" })
-    await TaskProcess(connect(DB_CONNECTION, portal)).findById(taskProcessId,(error,data1)=>{
+    await TaskProcess(connect(DB_CONNECTION, portal)).findById(taskProcessId, (error, data1) => {
         // console.log(data1);
-        data1.tasks.forEach(value=>{
+        data1.tasks.forEach(value => {
             // console.log(value);
-            Task(connect(DB_CONNECTION, portal)).findByIdAndRemove(value,(error,data2)=>{
+            Task(connect(DB_CONNECTION, portal)).findByIdAndRemove(value, (error, data2) => {
                 // console.log(data2);
             })
         })
@@ -311,7 +313,7 @@ exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
     let queryData = {
         userId: query.userId,
         name: query.name,
-        pageNumber : query.pageNumber,
+        pageNumber: query.pageNumber,
         // pageNumber: 1,
         noResultsPerPage: query.noResultsPerPage,
     }
@@ -324,7 +326,7 @@ exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
 isStartTask = (task) => {
     let preTask = task.preceedingTasks;
     for (let i in preTask) {
-        let type = preTask[i].task.split("_");
+        let type = preTask[i].task?preTask[i].task.split("_"):["1"];
         if (type[0] === "Event") {
             return true;
         }
@@ -336,29 +338,31 @@ isStartTask = (task) => {
  * lấy process theo id
  * @param {String} processId Id của quy trình
  */
-exports.getProcessById = async(portal, params) => {
+exports.getProcessById = async (portal, params) => {
     let data = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId);
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'creator', select: 'name' });
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'manager', select: 'name' });
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'viewer', select: 'name' });
-    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'tasks', populate: [
-        { path: "parent", select: "name" },
-        { path: "taskTemplate", select: "formula" },
-        { path: "organizationalUnit", },
-        { path: "collaboratedWithOrganizationalUnits", },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.results.organizationalUnit", select: "name _id" },
-        { path: "evaluations.results.kpis" },
-        { path: "taskActions.creator", select: 'name email avatar' },
-        { path: "taskActions.comments.creator", select: 'name email avatar' },
-        { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
-        { path: "taskComments.creator", select: 'name email avatar' },
-        { path: "taskComments.comments.creator", select: 'name email avatar' },
-        { path: "documents.creator", select: 'name email avatar' },
-        { path: "process" },
-    ] });
-    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'processChilds'});
+    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, {
+        path: 'tasks', populate: [
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit", },
+            { path: "collaboratedWithOrganizationalUnits", },
+            { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+            { path: "evaluations.results.employee", select: "name email _id" },
+            { path: "evaluations.results.organizationalUnit", select: "name _id" },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: 'name email avatar' },
+            { path: "taskActions.comments.creator", select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+            { path: "taskComments.creator", select: 'name email avatar' },
+            { path: "taskComments.comments.creator", select: 'name email avatar' },
+            { path: "documents.creator", select: 'name email avatar' },
+            { path: "process" },
+        ]
+    });
+    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'processChilds' });
     return data
 }
 /**
@@ -375,18 +379,35 @@ exports.createTaskByProcess = async (portal, processId, body) => {
     let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     splitter = body.endDate.split("-");
     let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    // console.log(body);
-    let newTaskProcess = await TaskProcess(connect(DB_CONNECTION, portal)).create({
-        // processTemplate: processId ? processId : null,
-        xmlDiagram: body.xmlDiagram,
-        processName: body.processName,
-        processDescription: body.processDescription,
-        startDate: startDateProcess,
-        endDate: endDateProcess,
-        creator: body.creator,
-        viewer: body.viewer,
-        manager: body.manager,
-    })
+    let newTaskProcess
+    if (processId !== undefined && processId !== null && processId !== "undefined") {
+        newTaskProcess = await TaskProcess(connect(DB_CONNECTION, portal)).create({
+            processTemplate: processId,
+            xmlDiagram: body.xmlDiagram,
+            processName: body.processName,
+            processDescription: body.processDescription,
+            startDate: startDateProcess,
+            endDate: endDateProcess,
+            creator: body.creator,
+            viewer: body.viewer,
+            manager: body.manager,
+            officeHours: body.officeHours,
+            convertDayToHour: body.convertDayToHour
+        })
+    } else {
+        newTaskProcess = await TaskProcess(connect(DB_CONNECTION, portal)).create({
+            xmlDiagram: body.xmlDiagram,
+            processName: body.processName,
+            processDescription: body.processDescription,
+            startDate: startDateProcess,
+            endDate: endDateProcess,
+            creator: body.creator,
+            viewer: body.viewer,
+            manager: body.manager,
+            officeHours: body.officeHours,
+            convertDayToHour: body.convertDayToHour
+        })
+    }
 
     let listTask = [];
     let listProcess = [];
@@ -399,7 +420,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         let startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         splitter = data[i].endDate.split("-");
         let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
         taskInformations = data[i].taskInformations;
         taskActions = data[i].taskActions;
 
@@ -410,18 +430,15 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                 description: taskActions[i].description,
             }
         }
-
         let status = "wait_for_approval";
         if (isStartTask(data[i])) {
             status = "inprocess";
         }
-
         let formula = data[i].formula;
         if (data[i].formula === '') {
             formula = "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100";
             // formula = "progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10";
         }
-
         let collaboratedWithOrganizationalUnits = data[i].collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item } })
         let process = taskProcessId;
         newTaskItem = await Task(connect(DB_CONNECTION, portal)).create({
@@ -449,9 +466,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             informedEmployees: data[i].informedEmployees,
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
-
         let x = await TaskService.sendEmailForCreateTask(portal, newTaskItem);
-
         mailInfoArr.push(x);
         listTask.push(newTaskItem._id);
     }
@@ -461,10 +476,9 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         let startDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
         splitterProcessChild = processChild.endDate.split("-");
         let endDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
-        let item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({_id:dataProcess[i].process._id});
-        
-        if (item){
-            await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(dataProcess[i].process._id, { $set: { codeInProcess: dataProcess[i].code, processTemplate: processChild._id }}, { new: true });
+        let item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ _id: dataProcess[i].process._id });
+        if (item) {
+            await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(dataProcess[i].process._id, { $set: { codeInProcess: dataProcess[i].code, processTemplate: processChild._id } }, { new: true });
             listProcess.push(item._id);
         } else {
             let newTaskProcess1 = await TaskProcess(connect(DB_CONNECTION, portal)).create({
@@ -480,8 +494,24 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                 status: "not_initialized",
                 codeInProcess: dataProcess[i].code,
                 processTemplate: processChild._id,
-                processParent : taskProcessId,
+                processParent: taskProcessId,
+                officeHours: body.officeHours,
+                convertDayToHour: body.convertDayToHour
             })
+            const dataNotification = {
+                organizationalUnits: [],
+                title: `Cần khởi tạo công việc cho quy trình ${processChild.processName}`,
+                level: "emergency",
+                content: `<p> khởi tạo công việc cho quy trình ${processChild.processName} , <a href="${process.env.WEBSITE}process?processId=${newTaskProcess1._id}" target="blank>Xem ngay</a></p>`,
+                sender: `${processChild.creator.name}`,
+                users: processChild.manager,
+                associatedDataObject: {
+                    dataType: 6,
+                    description: `<p><strong>khởi tạo công việc cho quy trình ${processChild.processName}.</p>`
+                }
+            };
+            NotificationServices.createNotification(portal, portal, dataNotification)
+            await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processChild._id, { $inc: { 'numberOfUse': 1 }, $push: { "listProcess": newTaskProcess1._id } }, { new: true });
             listProcess.push(newTaskProcess1._id);
         }
     }
@@ -499,20 +529,17 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                     })
                 }
                 else {
-                    console.log('24');
                     listFollowingTask.push({
                         task: item._id,
                         link: data[x].followingTasks[i].link,
                     })
                 }
 
-            }else {
-                console.log('25');
+            } else {
                 item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
-                console.log('26');
                 if (item) {
                     if (item.status === "inprocess") {
-                        
+
                         listFollowingTask.push({
                             task: item._id,
                             link: data[x].followingTasks[i].link,
@@ -525,11 +552,10 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                             link: data[x].followingTasks[i].link,
                         })
                     }
-    
+
                 }
             }
         }
-        console.log('27');
         for (let i in data[x].preceedingTasks) {
             let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: data[x].preceedingTasks[i].task });
 
@@ -538,7 +564,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                     task: item._id,
                     link: data[x].preceedingTasks[i].link,
                 })
-            }else {
+            } else {
                 item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: data[x].preceedingTasks[i].task });
                 if (item) {
                     listPreceedingTask.push({
@@ -549,7 +575,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             }
 
         }
-        console.log('28');
         await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
             { process: taskProcessId, codeInProcess: data[x].code },
             {
@@ -561,7 +586,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             { new: true }
         )
     }
-    console.log('29');
     for (let x in dataProcess) {
         let listFollowingProcess = [];
         let listPreceedingProcess = [];
@@ -582,7 +606,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                         link: dataProcess[x].followingTasks[i].link,
                     })
                 }
-
             } else {
                 item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: dataProcess[x].followingTasks[i].task });
                 if (item) {
@@ -599,11 +622,10 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                             link: dataProcess[x].followingTasks[i].link,
                         })
                     }
-    
+
                 }
             }
         }
-        console.log('30');
         for (let i in dataProcess[x].preceedingTasks) {
             let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: dataProcess[x].preceedingTasks[i].task });
             if (item) {
@@ -611,7 +633,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                     task: item._id,
                     link: dataProcess[x].preceedingTasks[i].link,
                 })
-
             } else {
                 item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: dataProcess[x].preceedingTasks[i].task });
                 if (item) {
@@ -623,7 +644,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             }
 
         }
-        console.log('31');
         await TaskProcess(connect(DB_CONNECTION, portal)).findOneAndUpdate(
             { processParent: taskProcessId, codeInProcess: dataProcess[x].code },
             {
@@ -635,38 +655,35 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             { new: true }
         )
     }
-    console.log('32');
     if (processId !== "undefined") {
-        await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
+        await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 }, $push: { "listProcess": taskProcessId } }, { new: true });
     }
-    console.log('33');
     let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask, processChilds: listProcess } }, { new: true })
-    .populate([
-        { path: 'creator', select: 'name' },
-        // { path: 'viewer', select: 'name' },
-        { path: 'manager', select: 'name' },
-        {
-            path: 'tasks', populate: [
-                { path: "parent", select: "name" },
-                { path: "taskTemplate", select: "formula" },
-                { path: "organizationalUnit", },
-                { path: "collaboratedWithOrganizationalUnits", },
-                { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
-                { path: "evaluations.results.employee", select: "name email _id" },
-                { path: "evaluations.results.organizationalUnit", select: "name _id" },
-                { path: "evaluations.results.kpis" },
-                { path: "taskActions.creator", select: 'name email avatar' },
-                { path: "taskActions.comments.creator", select: 'name email avatar' },
-                { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
-                { path: "taskComments.creator", select: 'name email avatar' },
-                { path: "taskComments.comments.creator", select: 'name email avatar' },
-                { path: "documents.creator", select: 'name email avatar' },
-                { path: "process" },
-            ]
-        },
-        { path: 'processTemplate', select: 'processName' },
-    ]);
-    console.log('34');
+        .populate([
+            { path: 'creator', select: 'name' },
+            // { path: 'viewer', select: 'name' },
+            { path: 'manager', select: 'name' },
+            {
+                path: 'tasks', populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", },
+                    { path: "collaboratedWithOrganizationalUnits", },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                    { path: "taskComments.creator", select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", select: 'name email avatar' },
+                    { path: "documents.creator", select: 'name email avatar' },
+                    { path: "process" },
+                ]
+            },
+            { path: 'processTemplate', select: 'processName' },
+        ]);
     let myProcess = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate([
         { path: 'creator', select: 'name' },
         { path: 'viewer', select: 'name' },
@@ -674,11 +691,9 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
         { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
     ]);
-    console.log('35');
-    if( body.template === false ) {
-        console.log('36');
+    if (body.template === false) {
         return { process: newProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
-    }else {
+    } else {
         return { process: myProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
     }
 }
@@ -694,8 +709,28 @@ exports.getAllTaskProcess = async (portal, query) => {
     let pageNumber = parseInt(query.pageNumber);
     let userId = query.userId;
     let currentRole = query.currentRole;
-
-    let data = await TaskProcess(connect(DB_CONNECTION, portal)).find({
+    let startDate = query.startDate;
+    let endDate = query.endDate;
+    let processTemplate = query.processTemplate
+    let start, end, filterDate, startTime, endTime;
+    if (startDate && endDate) {
+        // startTime = startDate.split("-");
+        // start = new Date(startTime[1], startTime[0] - 1);
+        // // Convert endDate từ string sang date
+        // endTime = endDate.split("-");
+        // end = new Date(endTime[1], endTime[0] - 1);
+        endTime = new Date(endDate);
+        endTime.setMonth(endTime.getMonth() + 1);
+        // filterDate = {
+        //     $match: {
+        //         endDate: { $gte: start, $lte: end }
+        //     },
+        //     $match: {
+        //         startDate: { $gte: start, $lte: end }
+        //     }
+        // }
+    }
+    let filter = {
         processName: { $regex: name, $options: 'i' },
         $or: [
             { viewer: { $in: [userId] } },
@@ -703,7 +738,22 @@ exports.getAllTaskProcess = async (portal, query) => {
             { viewer: { $in: [currentRole] } },
             { manager: { $in: [currentRole] } },
         ]
-    }).skip(noResultsPerPage * (pageNumber - 1)).limit(noResultsPerPage)
+    }
+    if (startDate && endDate && processTemplate) {
+        filter = {
+            processName: { $regex: name, $options: 'i' },
+            endDate: { $gte: new Date(startDate), $lte: new Date(endTime) },
+            startDate: { $gte: new Date(startDate), $lte: new Date(endTime) },
+            processTemplate: processTemplate,
+            $or: [
+                { viewer: { $in: [userId] } },
+                { manager: { $in: [userId] } },
+                { viewer: { $in: [currentRole] } },
+                { manager: { $in: [currentRole] } },
+            ]
+        }
+    }
+    let data = await TaskProcess(connect(DB_CONNECTION, portal)).find(filter).skip(noResultsPerPage * (pageNumber - 1)).limit(noResultsPerPage)
         .populate([
             { path: 'creator', select: 'name' },
             { path: 'viewer', select: 'name' },
@@ -727,10 +777,10 @@ exports.getAllTaskProcess = async (portal, query) => {
                     { path: "process" },
                 ]
             },
-            { path: 'processTemplate'},
-            { path: 'processTemplate', populate: { path:'processTemplates.process'}},
+            { path: 'processTemplate' },
+            { path: 'processTemplate', populate: { path: 'processTemplates.process' } },
             { path: 'processParent', select: 'processName' },
-            { path: 'processChilds'}
+            { path: 'processChilds' }
         ]);
 
 
@@ -805,6 +855,76 @@ exports.updateDiagram = async (portal, params, body) => {
         pageTotal: totalPages
     }
 }
+
+convertT = (actualStartDate, actualEndDate,convertDayToHour, officeHours,cv) => {
+    let day1 = new Date(actualEndDate);
+    let day2 = new Date(actualStartDate);
+    let totalTime1 = 0;
+    let totalTime2 = 0;
+    convertDayToHour = parseFloat(convertDayToHour);
+    let days = 0;
+    if (officeHours.length !== 0) {
+        //totalTime2 = props.dataTaskProcess[j].convertDayToHour;
+        officeHours.forEach(value => {
+            let arrayAdministrativeStartTime = value.startTime.split(" ");
+            arrayAdministrativeStartTime = arrayAdministrativeStartTime[0].split(":").concat(arrayAdministrativeStartTime[1]);
+            if (arrayAdministrativeStartTime[2] === "PM") {
+                arrayAdministrativeStartTime[0] = parseInt(arrayAdministrativeStartTime[0]) + 12
+            }
+            let arrayAdministrativeEndTime = value.endTime.split(" ");
+            arrayAdministrativeEndTime = arrayAdministrativeEndTime[0].split(":").concat(arrayAdministrativeEndTime[1]);
+            if (arrayAdministrativeEndTime[2] === "PM") {
+                arrayAdministrativeEndTime[0] = parseInt(arrayAdministrativeEndTime[0]) + 12
+            }
+            if (day2.getHours() * 60 + day2.getMinutes() < arrayAdministrativeStartTime[0] * 60 + parseInt(arrayAdministrativeStartTime[1])) {
+                totalTime1 = totalTime1 + (arrayAdministrativeEndTime[0] * 60 + parseInt(arrayAdministrativeEndTime[1]) - arrayAdministrativeStartTime[0] * 60 - parseInt(arrayAdministrativeStartTime[1])) / 60;
+            } else if (day2.getHours() * 60 + day2.getMinutes() < arrayAdministrativeEndTime[0] * 60 + parseInt(arrayAdministrativeEndTime[1])) {
+                totalTime1 = totalTime1 + (arrayAdministrativeEndTime[0] * 60 + parseInt(arrayAdministrativeEndTime[1]) - day2.getHours() * 60 - day2.getMinutes()) / 60;
+            }
+            if (day1.getHours() * 60 + day1.getMinutes() < arrayAdministrativeStartTime[0] * 60 + parseInt(arrayAdministrativeStartTime[1])) {
+                totalTime2 = totalTime2 + 0;
+            } else if (day1.getHours() * 60 + day1.getMinutes() < arrayAdministrativeEndTime[0] * 60 + parseInt(arrayAdministrativeEndTime[1])) {
+                totalTime2 = totalTime2 + (day1.getHours() * 60 + day1.getMinutes() - arrayAdministrativeStartTime[0] * 60 - parseInt(arrayAdministrativeStartTime[1])) / 60;
+            } else {
+                totalTime2 = totalTime2 + (arrayAdministrativeEndTime[0] * 60 + parseInt(arrayAdministrativeEndTime[1]) - arrayAdministrativeStartTime[0] * 60 - parseInt(arrayAdministrativeStartTime[1])) / 60;
+            }
+        })
+        day1.setHours(0);
+        day1.setMinutes(0);
+        day2.setDate(day2.getDate() + 1)
+        day2.setHours(0);
+        day2.setMinutes(0)
+        var difference = Math.abs(day1 - day2);
+        days = difference / (1000 * 3600)
+        days = parseInt(days / 24) * convertDayToHour + totalTime1 + totalTime2;
+        switch (cv) {
+            case "days":
+                days = days / convertDayToHour
+                days = Math.round(days * 100) / 100
+                break;
+            case "hours":
+                days = Math.round(days * 100) / 100
+                break;
+            case "weeks":
+                days = days / (convertDayToHour * 7)
+                days = Math.round(days * 100) / 100
+                break;
+            case "months":
+                days = days / (convertDayToHour * 7 * 30)
+                break;
+            default:
+            // code block
+        }
+        // if ((days - d1 *24) >10){
+        //     days = d1 * props.dataTaskProcess[j].convertDayToHour +(days - d1 *24) + props.dataTaskProcess[j].convertDayToHour -24
+        // } else {
+        //     days = d1 * props.dataTaskProcess[j].convertDayToHour + (days - d1 *24)
+        // }
+
+        // days = Math.round(days * 100) / 100
+    }
+    return days;
+}
 /**
  * Cập nhật thông tin quy trình công việc
  * @param {String} params tham số 
@@ -813,147 +933,179 @@ exports.updateDiagram = async (portal, params, body) => {
 exports.editProcessInfo = async (portal, params, body) => {
     // console.log(body);
     // if (body)
-    const array = Object.values(body.info);
-    const arrayProcess = Object.values(body.processChilds);
-    // console.log(array);
-    const item = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate( body.id ,{
-        $set:{
-            xmlDiagram:body.xmlDiagram
-        }
-    },(error,data)=>{
-        // if (error) console.log(error) ;
-        // if (data) console.log(data);
-    })
-    if (item.status ==='not_initialized'){
-        let newTaskItem;
-        let listTask = [];
-        let listProcess = [];
-        let mailInfoArr = [];
-        let taskProcessId = item._id;
-        for (let i in array) {
-            let taskInformations, taskActions, cloneActions = [];
-
-            let splitter = array[i].startDate.split("-");
-            let startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-            splitter = array[i].endDate.split("-");
-            let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
-            taskInformations = array[i].taskInformations;
-            taskActions = array[i].taskActions;
-
-            for (let i in taskActions) {
-                cloneActions[i] = {
-                    mandatory: taskActions[i].mandatory,
-                    name: taskActions[i].name,
-                    description: taskActions[i].description,
+    if (body.finished) {
+        const item = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(body.id, {
+            $set: {
+                status: "finished",
+                actualEndDate:new Date()
+            }
+        }, (error, data) => {
+            // if (error) console.log(error) ;
+            // if (data) console.log(data);
+        })
+        .populate([
+            {
+                path: 'tasks', 
+            },
+        ]);
+        if (item.processTemplate){
+            let itemProcessTemplate = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(item.processTemplate)
+            // .populate([
+            // {
+            //     path: 'tasks', populate: [
+            //         { path: "fastest"},
+            //         { path: "slowest"}
+            //     ]
+            // },
+            // ]);
+            // console.log(itemProcessTemplate.tasks[0].fastest);
+            let listTaskProcessT = itemProcessTemplate.tasks
+            let listTaskProcess = item.tasks
+            // console.log(listTaskProcess[0].actualStartDate,listTaskProcess[0].actualEndDate,item.convertDayToHour,item.officeHours,"hours");
+            for (let x=0;x<listTaskProcess.length;x++){
+                // console.log(listTaskProcess[x].actualStartDate,listTaskProcess[x].actualEndDate,item.convertDayToHour,item.officeHours,"hours");
+                let time3 = convertT(listTaskProcess[x].actualStartDate,listTaskProcess[x].actualEndDate,item.convertDayToHour,item.officeHours,"hours")
+                let time1 = listTaskProcessT[x].fastest?.time ? parseInt(listTaskProcessT[x].fastest?.time): time3+1;
+                let time2 = listTaskProcessT[x].slowest?.time ? parseInt(listTaskProcessT[x].slowest?.time): 0;
+                if (time3<time1){
+                    listTaskProcessT[x].fastest.time = time3;
+                    listTaskProcessT[x].fastest.task=listTaskProcess[x]._id
+                }
+                if (time3>time2){
+                    listTaskProcessT[x].slowest.time = time3;
+                    listTaskProcessT[x].slowest.task=listTaskProcess[x]._id
                 }
             }
-
-            let status = "wait_for_approval";
-            if (isStartTask(array[i])) {
-                status = "inprocess";
-            }
-            let formula = array[i].formula;
-            if (array[i].formula === '') {
-                formula = "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100";
-                // formula = "progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10";
-            }
-
-            let collaboratedWithOrganizationalUnits = array[i].collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item } })
-            let process = taskProcessId;
-            newTaskItem = await Task(connect(DB_CONNECTION, portal)).create({
-                process: process,
-                codeInProcess: array[i].codeInProcess,
-                numberOfDaysTaken: array[i].numberOfDaysTaken,
-                organizationalUnit: array[i].organizationalUnit,
-                collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
-                creator: body.creator, //id của người tạo
-                name: array[i].name,
-                description: array[i].description,
-                startDate: startDate,
-                endDate: endDate,
-                formula: formula,
-                priority: array[i].priority,
-                taskTemplate: null,
-                taskInformations: taskInformations,
-                taskActions: cloneActions,
-                parent: null,
-                level: 1,
-                status: status,
-                responsibleEmployees: array[i].responsibleEmployees,
-                accountableEmployees: array[i].accountableEmployees,
-                consultedEmployees: array[i].consultedEmployees,
-                informedEmployees: array[i].informedEmployees,
-                confirmedByEmployees: array[i].responsibleEmployees.concat(array[i].accountableEmployees).concat(array[i].consultedEmployees).includes(array[i].creator) ? array[i].creator : []
-            });
-
-            let x = await TaskService.sendEmailForCreateTask(portal, newTaskItem);
-
-            mailInfoArr.push(x);
-            listTask.push(newTaskItem._id);
+            await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(item.processTemplate, {
+                $set: {
+                    tasks: listTaskProcessT
+                }
+            }, (error, data) => {
+                // if (error) console.log(error) ;
+                // if (data) console.log(data);
+            })
         }
-        for (let i in arrayProcess) {
-            let processChild = arrayProcess[i].process
-            console.log(processChild);
-            let splitterProcessChild = processChild.startDate.split("-");
-            let startDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
-            splitterProcessChild = processChild.endDate.split("-");
-            let endDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
-            let item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({_id:arrayProcess[i].process._id});
-            
-            if (item){
-                await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(arrayProcess[i].process._id, { $set: { codeInProcess: arrayProcess[i].code, processTemplate: processChild._id }}, { new: true });
-                listProcess.push(item._id);
-            } else {
-                let newTaskProcess1 = await TaskProcess(connect(DB_CONNECTION, portal)).create({
-                    // processTemplate: processId ? processId : null,
-                    xmlDiagram: processChild.xmlDiagram,
-                    processName: processChild.processName,
-                    processDescription: processChild.processDescription,
-                    startDate: startDateProcessChild,
-                    endDate: endDateProcessChild,
-                    creator: processChild.creator,
-                    viewer: processChild.viewer,
-                    manager: processChild.manager,
-                    status: "not_initialized",
-                    codeInProcess: arrayProcess[i].code,
-                    processTemplate: processChild._id,
-                    processParent : taskProcessId,
-                })
-                listProcess.push(newTaskProcess1._id);
+    } else {
+        const array = Object.values(body.info);
+        const arrayProcess = Object.values(body.processChilds);
+        // console.log(array);
+        const item = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(body.id, {
+            $set: {
+                xmlDiagram: body.xmlDiagram
             }
-        }
-        for (let x in array) {
-            let listFollowingTask = [];
-            let listPreceedingTask = [];
-            for (let i in array[x].followingTasks) {
-                let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: array[x].followingTasks[i].task });
-                console.log('21');
+        }, (error, data) => {
+            // if (error) console.log(error) ;
+            // if (data) console.log(data);
+        })
+        if (item.status === 'not_initialized') {
+            let newTaskItem;
+            let listTask = [];
+            let listProcess = [];
+            let mailInfoArr = [];
+            let taskProcessId = item._id;
+            for (let i in array) {
+                let taskInformations, taskActions, cloneActions = [];
+
+                let splitter = array[i].startDate.split("-");
+                let startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                splitter = array[i].endDate.split("-");
+                let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+                taskInformations = array[i].taskInformations;
+                taskActions = array[i].taskActions;
+
+                for (let i in taskActions) {
+                    cloneActions[i] = {
+                        mandatory: taskActions[i].mandatory,
+                        name: taskActions[i].name,
+                        description: taskActions[i].description,
+                    }
+                }
+
+                let status = "wait_for_approval";
+                if (isStartTask(array[i])) {
+                    status = "inprocess";
+                }
+                let formula = array[i].formula;
+                if (array[i].formula === '') {
+                    formula = "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100";
+                    // formula = "progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10";
+                }
+
+                let collaboratedWithOrganizationalUnits = array[i].collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item } })
+                let process = taskProcessId;
+                newTaskItem = await Task(connect(DB_CONNECTION, portal)).create({
+                    process: process,
+                    codeInProcess: array[i].codeInProcess,
+                    numberOfDaysTaken: array[i].numberOfDaysTaken,
+                    organizationalUnit: array[i].organizationalUnit,
+                    collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
+                    creator: body.creator, //id của người tạo
+                    name: array[i].name,
+                    description: array[i].description,
+                    startDate: startDate,
+                    endDate: endDate,
+                    formula: formula,
+                    priority: array[i].priority,
+                    taskTemplate: null,
+                    taskInformations: taskInformations,
+                    taskActions: cloneActions,
+                    parent: null,
+                    level: 1,
+                    status: status,
+                    responsibleEmployees: array[i].responsibleEmployees,
+                    accountableEmployees: array[i].accountableEmployees,
+                    consultedEmployees: array[i].consultedEmployees,
+                    informedEmployees: array[i].informedEmployees,
+                    confirmedByEmployees: array[i].responsibleEmployees.concat(array[i].accountableEmployees).concat(array[i].consultedEmployees).includes(array[i].creator) ? array[i].creator : []
+                });
+
+                let x = await TaskService.sendEmailForCreateTask(portal, newTaskItem);
+
+                mailInfoArr.push(x);
+                listTask.push(newTaskItem._id);
+            }
+            for (let i in arrayProcess) {
+                let processChild = arrayProcess[i].process
+                console.log(processChild);
+                let splitterProcessChild = processChild.startDate.split("-");
+                let startDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
+                splitterProcessChild = processChild.endDate.split("-");
+                let endDateProcessChild = new Date(splitterProcessChild[2], splitterProcessChild[1] - 1, splitterProcessChild[0]);
+                let item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ _id: arrayProcess[i].process._id });
+
                 if (item) {
-                    console.log('22');
-                    if (item.status === "inprocess") {
-                        console.log('23');
-                        listFollowingTask.push({
-                            task: item._id,
-                            link: array[x].followingTasks[i].link,
-                            activated: true,
-                        })
-                    }
-                    else {
-                        console.log('24');
-                        listFollowingTask.push({
-                            task: item._id,
-                            link: array[x].followingTasks[i].link,
-                        })
-                    }
-
-                }else {
-                    console.log('25');
-                    item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: array[x].followingTasks[i].task });
-                    console.log('26');
+                    await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(arrayProcess[i].process._id, { $set: { codeInProcess: arrayProcess[i].code, processTemplate: processChild._id } }, { new: true });
+                    listProcess.push(item._id);
+                } else {
+                    let newTaskProcess1 = await TaskProcess(connect(DB_CONNECTION, portal)).create({
+                        // processTemplate: processId ? processId : null,
+                        xmlDiagram: processChild.xmlDiagram,
+                        processName: processChild.processName,
+                        processDescription: processChild.processDescription,
+                        startDate: startDateProcessChild,
+                        endDate: endDateProcessChild,
+                        creator: processChild.creator,
+                        viewer: processChild.viewer,
+                        manager: processChild.manager,
+                        status: "not_initialized",
+                        codeInProcess: arrayProcess[i].code,
+                        processTemplate: processChild._id,
+                        processParent: taskProcessId,
+                    })
+                    listProcess.push(newTaskProcess1._id);
+                }
+            }
+            for (let x in array) {
+                let listFollowingTask = [];
+                let listPreceedingTask = [];
+                for (let i in array[x].followingTasks) {
+                    let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: array[x].followingTasks[i].task });
+                    console.log('21');
                     if (item) {
+                        console.log('22');
                         if (item.status === "inprocess") {
-                            
+                            console.log('23');
                             listFollowingTask.push({
                                 task: item._id,
                                 link: array[x].followingTasks[i].link,
@@ -961,69 +1113,73 @@ exports.editProcessInfo = async (portal, params, body) => {
                             })
                         }
                         else {
+                            console.log('24');
                             listFollowingTask.push({
                                 task: item._id,
                                 link: array[x].followingTasks[i].link,
                             })
                         }
-        
+
+                    } else {
+                        console.log('25');
+                        item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: array[x].followingTasks[i].task });
+                        console.log('26');
+                        if (item) {
+                            if (item.status === "inprocess") {
+
+                                listFollowingTask.push({
+                                    task: item._id,
+                                    link: array[x].followingTasks[i].link,
+                                    activated: true,
+                                })
+                            }
+                            else {
+                                listFollowingTask.push({
+                                    task: item._id,
+                                    link: array[x].followingTasks[i].link,
+                                })
+                            }
+
+                        }
                     }
                 }
-            }
-            for (let i in array[x].preceedingTasks) {
-                let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: array[x].preceedingTasks[i].task });
+                for (let i in array[x].preceedingTasks) {
+                    let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: array[x].preceedingTasks[i].task });
 
-                if (item) {
-                    listPreceedingTask.push({
-                        task: item._id,
-                        link: array[x].preceedingTasks[i].link,
-                    })
-                }else {
-                    item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: array[x].preceedingTasks[i].task });
                     if (item) {
                         listPreceedingTask.push({
                             task: item._id,
                             link: array[x].preceedingTasks[i].link,
                         })
+                    } else {
+                        item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: array[x].preceedingTasks[i].task });
+                        if (item) {
+                            listPreceedingTask.push({
+                                task: item._id,
+                                link: array[x].preceedingTasks[i].link,
+                            })
+                        }
                     }
+
                 }
 
+                await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                    { process: taskProcessId, codeInProcess: array[x].code },
+                    {
+                        $set: {
+                            followingTasks: listFollowingTask,
+                            preceedingTasks: listPreceedingTask,
+                        }
+                    },
+                    { new: true }
+                )
             }
-
-            await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-                { process: taskProcessId, codeInProcess: array[x].code },
-                {
-                    $set: {
-                        followingTasks: listFollowingTask,
-                        preceedingTasks: listPreceedingTask,
-                    }
-                },
-                { new: true }
-            )
-        }
-        for (let x in arrayProcess) {
-            let listFollowingProcess = [];
-            let listPreceedingProcess = [];
-            for (let i in arrayProcess[x].followingTasks) {
-                // console.log(dataProcess[x].followingTasks[i].task);
-                let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: arrayProcess[x].followingTasks[i].task });
-                if (item) {
-                    if (item.status === "inprocess") {
-                        listFollowingProcess.push({
-                            task: item._id,
-                            link: arrayProcess[x].followingTasks[i].link,
-                            activated: true,
-                        })
-                    }
-                    else {
-                        listFollowingProcess.push({
-                            task: item._id,
-                            link: arrayProcess[x].followingTasks[i].link,
-                        })
-                    }
-
-                } else {
-                    item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: arrayProcess[x].followingTasks[i].task });
+            for (let x in arrayProcess) {
+                let listFollowingProcess = [];
+                let listPreceedingProcess = [];
+                for (let i in arrayProcess[x].followingTasks) {
+                    // console.log(dataProcess[x].followingTasks[i].task);
+                    let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: arrayProcess[x].followingTasks[i].task });
                     if (item) {
                         if (item.status === "inprocess") {
                             listFollowingProcess.push({
@@ -1038,145 +1194,164 @@ exports.editProcessInfo = async (portal, params, body) => {
                                 link: arrayProcess[x].followingTasks[i].link,
                             })
                         }
-        
+
+                    } else {
+                        item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: arrayProcess[x].followingTasks[i].task });
+                        if (item) {
+                            if (item.status === "inprocess") {
+                                listFollowingProcess.push({
+                                    task: item._id,
+                                    link: arrayProcess[x].followingTasks[i].link,
+                                    activated: true,
+                                })
+                            }
+                            else {
+                                listFollowingProcess.push({
+                                    task: item._id,
+                                    link: arrayProcess[x].followingTasks[i].link,
+                                })
+                            }
+
+                        }
                     }
                 }
-            }
-            for (let i in arrayProcess[x].preceedingTasks) {
-                let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: arrayProcess[x].preceedingTasks[i].task });
-                if (item) {
-                    listPreceedingProcess.push({
-                        task: item._id,
-                        link: arrayProcess[x].preceedingTasks[i].link,
-                    })
-
-                } else {
-                    item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: arrayProcess[x].preceedingTasks[i].task });
+                for (let i in arrayProcess[x].preceedingTasks) {
+                    let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: arrayProcess[x].preceedingTasks[i].task });
                     if (item) {
                         listPreceedingProcess.push({
                             task: item._id,
                             link: arrayProcess[x].preceedingTasks[i].link,
                         })
+
+                    } else {
+                        item = await TaskProcess(connect(DB_CONNECTION, portal)).findOne({ processParent: taskProcessId, codeInProcess: arrayProcess[x].preceedingTasks[i].task });
+                        if (item) {
+                            listPreceedingProcess.push({
+                                task: item._id,
+                                link: arrayProcess[x].preceedingTasks[i].link,
+                            })
+                        }
                     }
+
                 }
 
+                await TaskProcess(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                    { processParent: taskProcessId, codeInProcess: arrayProcess[x].code },
+                    {
+                        $set: {
+                            followingTasks: listFollowingProcess,
+                            preceedingTasks: listPreceedingProcess,
+                        }
+                    },
+                    { new: true }
+                )
             }
+            let { processName, processDescription, status, startDate, endDate, viewer } = body;
 
-            await TaskProcess(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-                { processParent: taskProcessId, codeInProcess: arrayProcess[x].code },
+            let splitterStartDate = startDate.split('-');
+            let start = new Date(splitterStartDate[2], splitterStartDate[1] - 1, splitterStartDate[0]);
+            let splitterEndDate = endDate.split('-');
+            let end = new Date(splitterEndDate[2], splitterEndDate[1] - 1, splitterEndDate[0]);
+            let diagram = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.processId,
                 {
                     $set: {
-                        followingTasks: listFollowingProcess,
-                        preceedingTasks: listPreceedingProcess,
+                        processName: processName,
+                        processDescription: processDescription,
+                        status: "wait_for_approval",
+                        startDate: start,
+                        endDate: end,
+                        viewer: viewer,
+                        tasks: listTask,
+                        processChilds: listProcess
+                    }
+                },
+                { new: true }
+            )
+
+        } else {
+            array.forEach(data => {
+                // console.log(data);
+                let splitter = data.startDate.split("-");
+                let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                splitter = data.endDate.split("-");
+                let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+                Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(data._id, {
+                    $set: {
+                        name: data.name,
+                        description: data.description,
+                        startDate: data.startDate,
+                        endDate: data.endDate,
+                        creator: data.creator,
+                        priority: data.priority,
+                        level: data.level,
+                        responsibleEmployees: data.responsibleEmployees,
+                        accountableEmployees: data.accountableEmployees,
+                        consultedEmployees: data.consultedEmployees,
+                        // parent:data.parent,
+                        // taskProject:data.taskProject,
+                        codeInProcess: data.codeInProcess,
+                        organizationalUnit: data.organizationalUnit,
+                        collaboratedWithOrganizationalUnits: data.collaboratedWithOrganizationalUnits,
+                        quillDescriptionDefault: data.quillDescriptionDefault,
+
+                    }
+                }, (error, data) => {
+                    // if (error) console.log(error) ;
+                    // if (data) console.log(data);
+                })
+            })
+            let { processName, processDescription, status, startDate, endDate, viewer } = body;
+
+            let splitterStartDate = startDate.split('-');
+            let start = new Date(splitterStartDate[2], splitterStartDate[1] - 1, splitterStartDate[0]);
+            let splitterEndDate = endDate.split('-');
+            let end = new Date(splitterEndDate[2], splitterEndDate[1] - 1, splitterEndDate[0]);
+            let diagram = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.processId,
+                {
+                    $set: {
+                        processName: processName,
+                        processDescription: processDescription,
+                        status: status,
+                        startDate: start,
+                        endDate: end,
+                        viewer: viewer,
                     }
                 },
                 { new: true }
             )
         }
-        let { processName, processDescription, status, startDate, endDate, viewer } = body;
-
-        let splitterStartDate = startDate.split('-');
-        let start = new Date(splitterStartDate[2], splitterStartDate[1] - 1, splitterStartDate[0]);
-        let splitterEndDate = endDate.split('-');
-        let end = new Date(splitterEndDate[2], splitterEndDate[1] - 1, splitterEndDate[0]);
-        let diagram = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.processId,
-            {
-                $set: {
-                    processName: processName,
-                    processDescription: processDescription,
-                    status: "wait_for_approval",
-                    startDate: start,
-                    endDate: end,
-                    viewer: viewer,
-                    tasks: listTask, 
-                    processChilds: listProcess
-                }
-            },
-            { new: true }
-        )
-        
-    }else {
-        array.forEach(data=>{
-            // console.log(data);
-            let splitter = data.startDate.split("-");
-            let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-            splitter = data.endDate.split("-");
-            let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-            
-            Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate( data._id ,{
-                $set:{
-                    name:data.name,
-                    description:data.description,
-                    startDate:data.startDate,
-                    endDate:data.endDate,
-                    creator:data.creator,
-                    priority:data.priority,
-                    level:data.level,
-                    responsibleEmployees:data.responsibleEmployees,
-                    accountableEmployees:data.accountableEmployees,
-                    consultedEmployees:data.consultedEmployees,
-                    // parent:data.parent,
-                    // taskProject:data.taskProject,
-                    codeInProcess:data.codeInProcess,
-                    organizationalUnit:data.organizationalUnit,
-                    collaboratedWithOrganizationalUnits:data.collaboratedWithOrganizationalUnits,
-                    quillDescriptionDefault:data.quillDescriptionDefault,
-    
-                }
-            },(error,data)=>{
-                // if (error) console.log(error) ;
-                // if (data) console.log(data);
-            })
-        })
-        let { processName, processDescription, status, startDate, endDate, viewer } = body;
-
-        let splitterStartDate = startDate.split('-');
-        let start = new Date(splitterStartDate[2], splitterStartDate[1] - 1, splitterStartDate[0]);
-        let splitterEndDate = endDate.split('-');
-        let end = new Date(splitterEndDate[2], splitterEndDate[1] - 1, splitterEndDate[0]);
-        let diagram = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.processId,
-            {
-                $set: {
-                    processName: processName,
-                    processDescription: processDescription,
-                    status: status,
-                    startDate: start,
-                    endDate: end,
-                    viewer: viewer,
-                }
-            },
-            { new: true }
-        )
     }
-    
-    // let newTask12= await Task(connect(DB_CONNECTION, portal)).findOne()
-    
-    let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId)
-        .populate([
-            { path: 'creator', select: 'name' },
-            // { path: 'viewer', select: 'name' },
-            { path: 'manager', select: 'name' },
-            {
-                path: 'tasks', populate: [
-                    { path: "parent", select: "name" },
-                    { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit collaboratedWithOrganizationalUnits", },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
-                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
-                    { path: "evaluations.results.kpis" },
-                    { path: "taskActions.creator", select: 'name email avatar' },
-                    { path: "taskActions.comments.creator", select: 'name email avatar' },
-                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
-                    { path: "taskComments.creator", select: 'name email avatar' },
-                    { path: "taskComments.comments.creator", select: 'name email avatar' },
-                    { path: "documents.creator", select: 'name email avatar' },
-                    { path: "process" },
-                ]
-            },
-            { path: 'processTemplate', select: 'processName' },
-        ]);
-    return newProcess
+
+        // let newTask12= await Task(connect(DB_CONNECTION, portal)).findOne()
+
+        let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId)
+            .populate([
+                { path: 'creator', select: 'name' },
+                // { path: 'viewer', select: 'name' },
+                { path: 'manager', select: 'name' },
+                {
+                    path: 'tasks', populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit collaboratedWithOrganizationalUnits", },
+                        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+                        { path: "evaluations.results.employee", select: "name email _id" },
+                        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                        { path: "evaluations.results.kpis" },
+                        { path: "taskActions.creator", select: 'name email avatar' },
+                        { path: "taskActions.comments.creator", select: 'name email avatar' },
+                        { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                        { path: "taskComments.creator", select: 'name email avatar' },
+                        { path: "taskComments.comments.creator", select: 'name email avatar' },
+                        { path: "documents.creator", select: 'name email avatar' },
+                        { path: "process" },
+                    ]
+                },
+                { path: 'processTemplate', select: 'processName' },
+            ]);
+        return newProcess
+
 }
 
 /**
