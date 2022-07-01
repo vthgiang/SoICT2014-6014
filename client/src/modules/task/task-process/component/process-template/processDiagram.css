@@ -342,3 +342,9 @@
     height: 100%;
     background-color: #fff;
 }
+.doneP{
+    color: green;
+}
+.doneP :hover{
+    color: green;
+}

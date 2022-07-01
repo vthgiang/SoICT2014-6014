@@ -104,7 +104,7 @@ function ModalEditProcessNoInit(props) {
         for (let i in infoProcessTemplates) {
             infoTemplate[`${infoProcessTemplates[i].code}`] = infoProcessTemplates[i];
         }
-        console.log(props.data.processChilds);
+        // console.log(props.data.processChilds);
         props.getDepartment();
         let { user } = props;
         let defaultUnit;
@@ -120,7 +120,7 @@ function ModalEditProcessNoInit(props) {
 
         props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
         let modeling = modeler.get("modeling");;
-        console.log(state.processChilds);
+        // console.log(state.processChilds);
         modeler.importXML(props.data.xmlDiagram, function (err) {
             // chỉnh màu sắc task
             let infoTask = props.data.tasks
@@ -137,7 +137,7 @@ function ModalEditProcessNoInit(props) {
                         var outgoing = element1.outgoing;
                         outgoing.forEach(x => {
                             // console.log(x.businessObject.targetRef.id)
-                            if (infos[x.businessObject.targetRef.id].status === "inprocess") {
+                            if (infos[x.businessObject.targetRef.id]?.status === "inprocess") {
                                 var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
                                 modeling.setColor(outgoingEdge, {
@@ -378,7 +378,7 @@ function ModalEditProcessNoInit(props) {
         // console.log(value);
         let processChilds = state.processChilds
         processChilds[`${state.id}`].process[name] = value
-        console.log(processChilds);
+        // console.log(processChilds);
         await setState(state => {
             return {
                 ...state,
@@ -612,7 +612,7 @@ function ModalEditProcessNoInit(props) {
             xmlStr = xml;
         });
         let elementList = modeler.get('elementRegistry')._elements
-        console.log(elementList);
+        // console.log(elementList);
         await setState(state => {
             let { info } = state;
             for (let j in info) {

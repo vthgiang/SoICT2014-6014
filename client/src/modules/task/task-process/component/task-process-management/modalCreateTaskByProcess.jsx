@@ -2,7 +2,7 @@ import React, { Component, useEffect, useMemo, useState } from "react";
 import { connect } from 'react-redux';
 import { getStorage } from '../../../../../config';
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, SelectBox, ErrorLabel, DatePicker } from "../../../../../common-components";
+import { DialogModal, SelectBox, ErrorLabel, DatePicker, TimePicker } from "../../../../../common-components";
 import { TaskProcessActions } from "../../redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
@@ -106,7 +106,9 @@ function ModalCreateTaskByProcess(props) {
         processName: '',
         processDescription: '',
         indexRenderer: 0,
+        officeHours:[]
     })
+    const [officeHourCurrent, setOfficeHourCurrent] = useState({name:"", startTime:"",endTime:""})
     const initialDiagram = InitialDiagram
     const [modeler, setModeler] = useState(new BpmnModeler({
         additionalModules: [
@@ -679,11 +681,25 @@ function ModalCreateTaskByProcess(props) {
             })
            
     }
+    const totalTImeOnec = (startTime,endTime)=>{
+        let start = startTime.split(" ");
+        start = start[0].split(":").concat(start[1]);
+        if (start[2] === "PM") {
+            start[0] = parseInt(start[0])+12
+        }
+        // start = start[0].split(":").push(start[1])
+        let end  = endTime.split(" ");
+        end = end[0].split(":").concat(end[1]);
+        if (end[2] === "PM") {
+            end[0] = parseInt(end[0])+12
+        }
+        let result = end[0]-start[0] + Math.round( (parseInt(end[1]) - parseInt(start[1]))/60 * 100) / 100
+        return result
 
-    console.log(modeler.get('elementRegistry')._elements);
+    }
     // Hàm lưu thông tin 
     const save = async () => {
-        let { info, infoProcess,  startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
+        let { info, infoProcess, officeHours, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
         // console.log("info", info)
         let xmlStr;
         modeler.saveXML({ format: true }, function (err, xml) {
@@ -799,7 +815,10 @@ function ModalCreateTaskByProcess(props) {
                 xmlDiagram: xmlStr,
             }
         })
-
+        let ttHours = 0
+        for (let i in officeHours) {
+            ttHours = ttHours + totalTImeOnec(officeHours[i].startTime,officeHours[i].endTime)
+        }
         for (let i in info) {
             info[i].startDate = info[i].startDate ? info[i].startDate : startDate;
             info[i].endDate = info[i].endDate ? info[i].endDate : endDate;
@@ -819,7 +838,9 @@ function ModalCreateTaskByProcess(props) {
             processList: infoProcess,
             startDate: startDate,
             endDate: endDate,
-            template: false
+            template: false,
+            officeHours:officeHours,
+            convertDayToHour: ttHours
         }
         props.createTaskByProcess(data, state.idProcess);
         console.log(data);
@@ -835,11 +856,37 @@ function ModalCreateTaskByProcess(props) {
             processName: '',
             processDescription: '',
             indexRenderer: 0,
+            officeHours:[]
         })
+    }
+
+    const onChangeOfficeHoursCurrent = (e) =>{
+        setOfficeHourCurrent({
+            ...officeHourCurrent,
+            name:e.target.value
+        })
+    }
+    const handleDeleteOfficeHours = (index) => {
+        const listOfficeHours = [...state.officeHours];
+        listOfficeHours.splice(index,1)
+        setState({
+            ...state,
+            officeHours:listOfficeHours
+        })
+    }
+    const handleAddOfficeHours = async (index) => {
+        const listOfficeHours = [...state.officeHours];
+        listOfficeHours.push(officeHourCurrent)
+        await setState({
+            ...state,
+            officeHours:listOfficeHours
+        })
+        console.log(listOfficeHours);
+        await setOfficeHourCurrent({name:"", startTime:"",endTime:""})
     }
     let idProcess = ""
     const { translate, department, role, user } = props;
-    const { id, name, info,infoProcess, showInfo, showInfoProcess, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
+    const { id, name, info,infoProcess, showInfo,officeHours, showInfoProcess, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
         selected, errorOnProcessName, errorOnProcessDescription, startDate, endDate } = state;
     const { listOrganizationalUnit } = props;
     // if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
@@ -968,6 +1015,73 @@ function ModalCreateTaskByProcess(props) {
                                                 <ErrorLabel content={errorOnManager} />
                                             </div>
                                         </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                            <label>Thông tin giờ làm việc hành chính<span className="text-red">*</span></label>
+                                        </div>
+                                        <table id="project-table" className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tên ca</th>
+                                                    <th>Thời gian bắt đầu</th>
+                                                    <th>Thời gian kết thúc</th>
+                                                    <th>{translate('task_template.action')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {officeHours && officeHours.length >0 &&
+                                                    officeHours.map((item, index) => (
+                                                        <tr key={index}>
+                                                            <td>{item.name}</td>
+                                                            <td>
+                                                                {item.startTime}
+                                                            </td>
+                                                            <td>
+                                                                {item.endTime}
+                                                            </td>
+                                                            <td>
+                                                                <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteOfficeHours(index)}><i className="material-icons">delete</i></a>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                            }
+                                                <tr key={`add-time-input`}>
+                                                    <td>
+                                                        <div className={`form-group`}>
+                                                        <input type="text"
+                                                            value={officeHourCurrent.name}
+                                                            className="form-control" placeholder="Tên ca"
+                                                            onChange={onChangeOfficeHoursCurrent}
+                                                        />
+                                                    </div>
+                                                    </td>
+                                                    <td style={{ maxWidth: 250 }}>
+                                                        <div className={`form-group`}>
+                                                        <TimePicker 
+                                                            id={`create-timeP-start-time`}
+                                                            value={officeHourCurrent.startTime}
+                                                            onChange={(e) => setOfficeHourCurrent({...officeHourCurrent,startTime:e})}
+                                                            disabled={false}
+                                                        />
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ maxWidth: 250 }}>
+                                                        <div className={`form-group`}>
+                                                        <TimePicker 
+                                                            id={`create-timeP-end-time`}
+                                                            value={officeHourCurrent.endTime}
+                                                            onChange={(e) => setOfficeHourCurrent({...officeHourCurrent,endTime:e})}
+                                                            disabled={false}
+                                                        />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a className="save text-green" title={translate('general.save')} onClick={handleAddOfficeHours} ><i className="material-icons">add_circle</i></a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
