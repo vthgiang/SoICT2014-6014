@@ -5951,7 +5951,9 @@ exports.confirmTask = async (portal, taskId, userId) => {
 /** Yêu cầu kết thúc công việc */
 exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   const { userId, taskStatus, description, type, role } = data;
-  let task = await this.getTaskById(portal, taskId, userId);
+  let task = await this.getTaskById(portal, taskId, userId).populate([
+    { path: 'process' },
+]);
   const requestStatusNumber = type === 'request' ? 1
     : type === 'cancel_request' ? 2
       : type === 'approval' ? 3
@@ -6028,7 +6030,27 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   //         "status": 'inprocess'
   //     }
   // }
-
+  if (type === 'approval' && task.codeInProcess){
+      let folTask = task.followingTasks;
+      for (let i in folTask) {
+          let type = folTask[i].task?folTask[i].task.split("_"):["1"];
+          if (type[0] === "Event") {
+            const dataNotification = {
+                organizationalUnits: [],
+                title: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc`,
+                level: "emergency",
+                content: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc , <a href="${process.env.WEBSITE}process?processId=${newTaskProcess1._id}" target="blank>Xem ngay</a></p>`,
+                sender: `${task.process.creator}`,
+                users: task.process.manager,
+                associatedDataObject: {
+                    dataType: 6,
+                    description: `<p><strong>Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc.</p>`
+                }
+            };
+            NotificationServices.createNotification(portal, portal, dataNotification)
+          }
+      }
+  }
   await Task(connect(DB_CONNECTION, portal))
     .findByIdAndUpdate(taskId, {
       ...keyUpdate,
