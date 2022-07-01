@@ -49,49 +49,40 @@ function FormCreateTaskByProcess(props) {
         // Lấy tất cả nhân viên trong công ty
         props.getAllUserInAllUnitsOfCompany();
     }, [])
-
-    const formatIdArr = (idArr) => {
-        if (idArr?.length === 0) { return [] }
-        else if (idArr[0]._id) {
-            return idArr.map(x => x?._id)
-        }
-        else return idArr;
-    }
-
     useEffect(() => {
         const { department } = props;
         const { taskItem } = state;
         if (props.isProcess && props.id !== state.id) {
             let { info, listOrganizationalUnit } = props;
-            console.log(58, info);
-            const newInfo = {
-                ...state,
-                id: props.id,
-                taskItem: {
-                    numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : null,
-                    collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? formatIdArr(info.collaboratedWithOrganizationalUnits) : [],
-                    // code: (info && info.code) ? info.code : "",
-                    startDate: (info && info.startDate) ? info.startDate : props.startDate,
-                    endDate: (info && info.endDate) ? info.endDate : props.endDate,
-                    organizationalUnit: (info && info.organizationalUnit?._id) ? info.organizationalUnit._id : info.organizationalUnit,
-                    name: (info && info.name) ? info.name : '',
-                    responsibleEmployees: (info && info.responsibleEmployees) ? formatIdArr(info.responsibleEmployees) : [],
-                    accountableEmployees: (info && info.accountableEmployees) ? formatIdArr(info.accountableEmployees) : [],
-                    consultedEmployees: (info && info.consultedEmployees) ? formatIdArr(info.consultedEmployees) : [],
-                    informedEmployees: (info && info.informedEmployees) ? formatIdArr(info.informedEmployees) : [],
-                    description: (info && info.description) ? info.description : '',
-                    creator: (info && info.creator) ? info.creator._id : getStorage("userId"),
-                    formula: (info && info.formula) ? info.formula : '',
-                    priority: (info && info.priority) ? info.priority : 3,
-                    taskActions: (info && info.taskActions) ? info.taskActions : [],
-                    taskInformations: (info && info.taskInformations) ? info.taskInformations : [],
-                    followingTasks: (info && info.followingTasks) ? info.followingTasks : [],
-                    preceedingTasks: (info && info.preceedingTasks) ? info.preceedingTasks : [],
-                },
-                showMore: props.isProcess ? false : true,
-                showActionForm: true,
-            }
-            setState(newInfo)
+            setState(state => {
+                return {
+                    ...state,
+                    id: props.id,
+                    taskItem: {
+                        numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : null,
+                        collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits.map(item => { if (item) return item._id }) : [],
+                        // code: (info && info.code) ? info.code : "",
+                        startDate: (info && info.startDate) ? info.startDate : props.startDate,
+                        endDate: (info && info.endDate) ? info.endDate : props.endDate,
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : [],
+                        name: (info && info.name) ? info.name : '',
+                        responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees.map(x => x?._id) : [],
+                        accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees.map(x => x?._id) : [],
+                        consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees.map(x => x?._id) : [],
+                        informedEmployees: (info && info.informedEmployees) ? info.informedEmployees.map(x => x?._id) : [],
+                        description: (info && info.description) ? info.description : '',
+                        creator: (info && info.creator) ? info.creator._id : getStorage("userId"),
+                        formula: (info && info.formula) ? info.formula : '',
+                        priority: (info && info.priority) ? info.priority : 3,
+                        taskActions: (info && info.taskActions) ? info.taskActions : [],
+                        taskInformations: (info && info.taskInformations) ? info.taskInformations : [],
+                        followingTasks: (info && info.followingTasks) ? info.followingTasks : [],
+                        preceedingTasks: (info && info.preceedingTasks) ? info.preceedingTasks : [],
+                    },
+                    showMore: props.isProcess ? false : true,
+                    showActionForm: true,
+                }
+            })
             props.getDepartment();
             let { user } = props;
             let defaultUnit;
@@ -129,7 +120,7 @@ function FormCreateTaskByProcess(props) {
                 props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             }
         }
-    }, [props.isProcess, props.id])
+    }, [props.isProcess,props.id])
     // static getDerivedStateFromProps = (props, prevState) => {
     //     if (props.taskTemplateId !== prevState.taskTemplateId) {
     //         return {
@@ -313,7 +304,7 @@ function FormCreateTaskByProcess(props) {
         props.onChangeTemplateData(state.taskItem);
     }
 
-    const formatDate = (date) => {
+    const formatDate=(date) => {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -326,7 +317,7 @@ function FormCreateTaskByProcess(props) {
 
         return [day, month, year].join('-');
     }
-    const formatMonth = (date) => {
+    const formatMonth=(date) => {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -422,7 +413,7 @@ function FormCreateTaskByProcess(props) {
     const { department, user, translate } = props;
     const { isProcess } = props;
     // console.log(state);
-    var units, taskActions, taskInformations, listRole, departmentsThatUserIsManager, listDepartment, listRoles, usercompanys, userdepartments = [];
+    var units, taskActions, taskInformations, listRole, departmentsThatUserIsManager, listRoles, usercompanys, userdepartments = [];
     var { taskItem, id, showMore } = state;
     // console.log(taskItem)
     if (taskItem && taskItem.taskActions) taskActions = taskItem.taskActions;
@@ -433,9 +424,6 @@ function FormCreateTaskByProcess(props) {
     }
     if (department.departmentsThatUserIsManager) {
         departmentsThatUserIsManager = department.departmentsThatUserIsManager;
-    }
-    if (department.list) {
-        listDepartment = department.list;
     }
     if (user.usercompanys) usercompanys = user.usercompanys;
     if (user.userdepartments) userdepartments = user.userdepartments;
@@ -450,7 +438,7 @@ function FormCreateTaskByProcess(props) {
     }
 
     let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-    console.log(445, taskItem);
+    console.log(taskItem);
     return (
         <React.Fragment>
             {/**Form chứa thông tin của mẫu công việc đang sửa */}
@@ -459,15 +447,13 @@ function FormCreateTaskByProcess(props) {
                     {/**Đơn vị của mẫu công việc */}
                     <div className={`form-group ${taskItem.errorOnUnit === undefined ? "" : "has-error"}`} >
                         <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}>*</span></label>
-                        {/* {departmentsThatUserIsManager !== undefined && taskItem.organizationalUnit !== "" && */}
-                        {listDepartment && taskItem.organizationalUnit !== "" &&
+                        {departmentsThatUserIsManager !== undefined && taskItem.organizationalUnit !== "" &&
                             <SelectBox
-                                id={`edit-unit-select-box-${id}`}
+                                id={`edit-unit-select-box-${taskItem._id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
-                                    // departmentsThatUserIsManager.map(x => {
-                                    listDepartment.map(x => {
+                                    departmentsThatUserIsManager.map(x => {
                                         return { value: x._id, text: x.name };
                                     })
                                 }
@@ -485,7 +471,7 @@ function FormCreateTaskByProcess(props) {
                         <div className="form-group">
                             <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
                             <SelectBox
-                                id={`multiSelectUnitThatHaveCollaboratedTaskByProcess-${id}`}
+                                id="multiSelectUnitThatHaveCollaboratedTaskByProcess"
                                 lassName="form-control select2"
                                 style={{ width: "100%" }}
                                 items={usersInUnitsOfCompany.filter(item => String(item.id) !== String(taskItem.organizationalUnit)).map(x => {
@@ -593,7 +579,7 @@ function FormCreateTaskByProcess(props) {
                         <label className="control-label" >{translate('task_template.performer')} <span style={{ color: "red" }}>*</span></label>
                         {allUnitsMember &&
                             <SelectBox
-                                id={isProcess ? `create-task-responsible-select-box-${id}` : "edit-responsible-select-box"}
+                                id={isProcess ? `create-task-responsible-select-box-${taskItem._id}-${id}` : "edit-responsible-select-box"}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={allUnitsMember}
@@ -610,7 +596,7 @@ function FormCreateTaskByProcess(props) {
                         <label className="control-label">{translate('task_template.approver')} <span style={{ color: "red" }}>*</span></label>
                         {allUnitsMember &&
                             <SelectBox
-                                id={isProcess ? `create-task-accountable-select-box-${id}` : "edit-accountable-select-box"}
+                                id={isProcess ? `create-task-accountable-select-box-${taskItem._id}-${id}` : "edit-accountable-select-box"}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={allUnitsMember}
@@ -627,7 +613,7 @@ function FormCreateTaskByProcess(props) {
                             <label className="control-label">{translate('task_template.consultant')}</label>
                             {allUnitsMember &&
                                 <SelectBox
-                                    id={isProcess ? `create-task-consulted-select-box-${id}` : "edit-consulted-select-box"}
+                                    id={isProcess ? `create-task-consulted-select-box-${taskItem._id}-${id}` : "edit-consulted-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
@@ -644,7 +630,7 @@ function FormCreateTaskByProcess(props) {
                             <label className="control-label">{translate('task_template.observer')}</label>
                             {allUnitsMember &&
                                 <SelectBox
-                                    id={isProcess ? `create-task-informed-select-box-${id}` : "edit-informed-select-box"}
+                                    id={isProcess ? `create-task-informed-select-box-${taskItem._id}-${id}` : "edit-informed-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
