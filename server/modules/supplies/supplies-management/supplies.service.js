@@ -247,7 +247,7 @@ exports.getDashboardSupplies = async (portal, query) => {
         .find({})
         .sort({ 'createDate': 'desc' });
 
-    let result = { listSupplies, listInvoice, listAllocation }
+    // let result = { listSupplies, listInvoice, listAllocation }
 
     // new query
     let { time } = query;
@@ -438,7 +438,7 @@ exports.getDashboardSupplies = async (portal, query) => {
     console.log('data pie chart - bought: ', data.pieChart.boughtSupplies);
     console.log('data pie chart - exist: ', data.pieChart.existSupplies);
     console.log('data bar chart - organization: ', data.barChart.organizationUnitsPriceSupply);
-    return result;
+    return data;
 }
 
 exports.getDashboardSuppliesForOrganization = async (portal, query) => {

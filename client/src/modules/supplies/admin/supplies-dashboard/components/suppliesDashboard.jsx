@@ -1,15 +1,12 @@
-import React, { Component } from 'react';
-import { useEffect, useState } from "react";
-import { connect } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {connect} from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import isEqual from 'lodash/isEqual';
-import { SuppliesActions } from '../../supplies/redux/actions';
-import { SuppliesDashboardActions } from '../redux/actions';
+import {SuppliesActions} from '../../supplies/redux/actions';
+import {SuppliesDashboardActions} from '../redux/actions';
 import Swal from 'sweetalert2';
-import { DatePicker, SelectBox } from '../../../../../common-components';
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-import { SuppliesDashboardService } from '../redux/service';
-import StatisticalSuppliesByType from './statisticalSuppliesByType';
+import {DatePicker} from '../../../../../common-components';
+import {getTableConfiguration} from '../../../../../helpers/tableConfiguration';
 
 function SuppliesDashboard(props) {
 
@@ -39,7 +36,7 @@ function SuppliesDashboard(props) {
         purchaseDateBefore: [year, endMonth].join('-'),
     }
 
-    const defaultConfig = { limit: 10 }
+    const defaultConfig = {limit: 10}
     const dashboardSuppliesId = "dashboard_supplies_by_type";
     const dashboardSupplies = getTableConfiguration(dashboardSuppliesId, defaultConfig).limit;
 
@@ -60,7 +57,7 @@ function SuppliesDashboard(props) {
     })
 
     useEffect(() => {
-        props.getSuppliesDashboard();
+        props.getSuppliesDashboard({endTime: state.defaultStartMonth, startTime: state.defaultEndMonth});
     }, []);
 
     const handleChangeSupplies = (value) => {
@@ -76,7 +73,7 @@ function SuppliesDashboard(props) {
     }
 
     const handlePaginationSupplies = (page) => {
-        const { limit } = state;
+        const {limit} = state;
         let pageConvert = (page - 1) * (limit);
 
         setState({
@@ -100,20 +97,20 @@ function SuppliesDashboard(props) {
         let purchaseDateBefore = new Date(INFO_SEARCH.purchaseDateBefore);
 
         if (purchaseDateAfter.getTime() > purchaseDateBefore.getTime()) {
-            const { translate } = props;
-            Swal.fire({
+            const {translate} = props;
+            await Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            props.getSuppliesDashboard({ name: "purchase-date-data", endTime: purchaseDateBefore, startTime: purchaseDateAfter })
+            props.getSuppliesDashboard({endTime: purchaseDateBefore, startTime: purchaseDateAfter})
         }
     }
 
     const setCountInvoice = (value) => {
-        let { countInvoice } = state;
+        let {countInvoice} = state;
 
         if (!isEqual(countInvoice, value)) {
             setState(state => {
@@ -126,7 +123,7 @@ function SuppliesDashboard(props) {
     }
 
     const setCountAllocation = (value) => {
-        let { countAllocation } = state;
+        let {countAllocation} = state;
 
         if (!isEqual(countAllocation, value)) {
             setState(state => {
@@ -139,7 +136,7 @@ function SuppliesDashboard(props) {
     }
 
     const setValueInvoice = (value) => {
-        let { valueInvoice } = state;
+        let {valueInvoice} = state;
 
         if (!isEqual(valueInvoice, value)) {
             setState(state => {
@@ -151,118 +148,94 @@ function SuppliesDashboard(props) {
         }
     }
 
-    const { translate } = props;
-    let { listSupplies, countInvoiceState, countAllocationState, valueInvoiceState } = state;
-    let { purchaseDateAfter, purchaseDateBefore } = INFO_SEARCH;
-    // let { suppliesData, valueInvoice, countInvoice, countAllocation } = state;
-    let { suppliesData, valueInvoice, countInvoice, countAllocation } = props.suppliesDashboardReducer;
+    const {translate} = props;
+    let {purchaseDateAfter, purchaseDateBefore} = INFO_SEARCH;
+    let {pieChart, barChart, numberData} = props.suppliesDashboardReducer;
+
+    console.log('DEBUG: pieChart: ', pieChart);
+    console.log('DEBUG: barChart: ', barChart);
+    console.log('DEBUG: numberData: ', numberData);
 
     let format = year == "true" ? "year" : "month-year";
     let startValue = year == "true" ? purchaseDateAfter.slice(0, 4) : purchaseDateAfter.slice(5, 7) + ' - ' + purchaseDateAfter.slice(0, 4);
     let endValue = year == "true" ? purchaseDateBefore.slice(0, 4) : purchaseDateBefore.slice(5, 7) + ' - ' + purchaseDateBefore.slice(0, 4);
 
-    // let listSuppliesAmount = {}
-    // if (this.state.listSupplies.length !== 0) {
-    //     let countInvoice = [], countAllocation = [], valueInvoice = [], idSupplies = [], shortName = [], listSuppliesData = []
-    //     this.state.listSupplies.forEach(element => {
-    //         let index = suppliesData.findIndex(value => value._id === element)
-    //         countInvoice = [...countInvoice, countInvoiceState[index]]
-    //         countAllocation = [...countAllocation, countAllocationState[index]]
-    //         valueInvoice = [...valueInvoice, valueInvoiceState[index]]
-    //         idSupplies = [...idSupplies, suppliesData[index]._id]
-    //         shortName = [...shortName, suppliesData[index].suppliesName]
-    //         listSuppliesData = [...listSuppliesData, suppliesData[index]]
-    //     });
-    //     listSuppliesAmount = {
-    //         countInvoice: countInvoice,
-    //         countAllocation: countAllocation,
-    //         valueInvoice: valueInvoice,
-    //         idSupplies: idSupplies,
-    //         shortName: shortName,
-    //         listSuppliesData: listSuppliesData,
-    //     }
-    // } else {
-    //     listSuppliesAmount = {
-    //         countInvoice: this.state.countInvoice,
-    //         countAllocation: this.state.countAllocation,
-    //         valueInvoice: this.state.valueInvoice,
-    //         idSupplies: this.state.suppliesData.map(x => {
-    //             return x._id;
-    //         }),
-    //         shortName: this.state.suppliesData.map(x => {
-    //             return x.suppliesName;
-    //         }),
-    //         listSuppliesData: this.state.suppliesData,
-    //     }
-    // }
 
     return (
         <React.Fragment>
             <div className='qlcv'>
-                <div className='row'>
-                    <div className='col-md-12'>
-                        {/* <div className="form-inline">
-                            <div className="form-group">
-                                <label>{translate('asset.dashboard.statistic_by')}</label>
-                                <SelectBox
-                                    id="selectSuppliesOfStatistic2"
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={suppliesData.map(x => {
-                                        return { value: x._id, text: x.suppliesName }
-                                    })}
-                                    onChange={handleChangeSupplies}
-                                    value={listSupplies}
-                                    multiple={true}
-                                />
-                            </div>
-                        </div> */}
-
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label >{translate('task.task_management.from')}</label>
-                                <DatePicker
-                                    id={`purchase_after${year}`}
-                                    dateFormat={format}
-                                    value={startValue}
-                                    onChange={handleChangeDateAfter}
-                                    disabled={false}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label >{translate('task.task_management.to')}</label>
-                                <DatePicker
-                                    id={`purchase_before${year}`}
-                                    dateFormat={format}
-                                    value={endValue}
-                                    onChange={handleChangeDateBefore}
-                                    disabled={false}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <button className="btn btn-success" onClick={handleSearchData}>{translate('task.task_management.search')}</button>
+                <div className="form-inline">
+                    <div className="row">
+                        <div className="form-group">
+                            <label style={{width: 'auto', marginLeft: 12, marginRight: 10}}>{translate('task.task_management.from')}</label>
+                            <DatePicker
+                                id={`purchase_after${year}`}
+                                dateFormat={format}
+                                value={startValue}
+                                onChange={handleChangeDateAfter}
+                                disabled={false}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label style={{width: 'auto', marginLeft: 12, marginRight: 10}}>{translate('task.task_management.to')}</label>
+                            <DatePicker
+                                id={`purchase_before${year}`}
+                                dateFormat={format}
+                                value={endValue}
+                                onChange={handleChangeDateBefore}
+                                disabled={false}
+                            />
+                        </div>
+                        <button className="btn btn-success"
+                                onClick={handleSearchData}>{translate('task.task_management.search')}</button>
+                    </div>
+                </div>
+                <div className="row" style={{marginTop: 10}}>
+                    <div className="col-md-6 col-sm-6 col-xs-6">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-green"><i className="fa fa-check"></i></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">{`Tổng số vật tư: ${numberData.supplies.totalSupplies}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị: ${numberData.supplies.suppliesPrice}`}</span>
+                                <a href="/manage-info-asset?status=ready_to_use">{translate('asset.general_information.view_more')}
+                                    <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="box box-solid">
-                            <div className="box-header">
-                                <div className="box-title">Biểu đồ thống kê vật tư</div>
+                    <div className="col-md-6 col-sm-6 col-xs-6">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-aqua"><i className="fa fa-play"></i></span>
+                            <div className="info-box-content" style={{paddingBottom: 0}}>
+                                <span className="info-box-text">{`Tổng số hóa đơn: ${numberData.purchaseInvoice.totalPurchaseInvoice}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị: ${numberData.purchaseInvoice.purchaseInvoicesPrice}`}</span>
+                                <a href="/manage-info-asset?status=in_use">{translate('asset.general_information.view_more')}
+                                    <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
-                            <div className="box-body qlcv">
-                                {
-                                    (countInvoice || countAllocation || valueInvoice) &&
-                                    <StatisticalSuppliesByType
-                                        countInvoice={countInvoice}
-                                        countAllocation={countAllocation}
-                                        valueInvoice={valueInvoice}
-                                        suppliesData={suppliesData}
-                                    />
-                                }
+                        </div>
+                    </div>
 
+                    <div className="col-md-6 col-sm-6 col-xs-6">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-yellow"><i className="fa fa-warning"></i></span>
+                            <div className="info-box-content" style={{paddingBottom: 0}}>
+                                <span className="info-box-text">{`Tổng số cấp phát: ${numberData.allocationHistory.allocationHistoryTotal}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị: ${numberData.allocationHistory.allocationHistoryPrice}`}</span>
+                                <a href="/manage-info-asset?status=broken">{translate('asset.general_information.view_more')}
+                                    <i className="fa  fa-arrow-circle-o-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-md-6 col-sm-6 col-xs-6">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-red"><i className="fa fa-calendar-times-o"></i></span>
+                            <div className="info-box-content" style={{paddingBottom: 0}}>
+                                <span className="info-box-text">{`Tổng số yêu cầu chưa xử lý: ${numberData.purchaseRequest.waitingForApprovalTotal}`}</span>
+                                <span className="info-box-text">{`Tổng số yêu cầu đã chấp nhận: ${numberData.purchaseRequest.approvedTotal}`}</span>
+                                <span className="info-box-text">{`Tổng số yêu cầu đã từ chối: ${numberData.purchaseRequest.disapprovedTotal}`}</span>
+                                <a href="/manage-info-asset?status=disposed">{translate('asset.general_information.view_more')}
+                                    <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -273,8 +246,8 @@ function SuppliesDashboard(props) {
 }
 
 function mapState(state) {
-    const { suppliesReducer, suppliesDashboardReducer } = state;
-    return { suppliesReducer, suppliesDashboardReducer };
+    const {suppliesReducer, suppliesDashboardReducer} = state;
+    return {suppliesReducer, suppliesDashboardReducer};
 }
 
 const mapDispatchToProps = {
@@ -283,4 +256,4 @@ const mapDispatchToProps = {
 }
 
 const dashboardSuppliesConnect = connect(mapState, mapDispatchToProps)(withTranslate(SuppliesDashboard));
-export { dashboardSuppliesConnect as SuppliesDashboard };
+export {dashboardSuppliesConnect as SuppliesDashboard};

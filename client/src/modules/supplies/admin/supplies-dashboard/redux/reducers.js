@@ -4,10 +4,32 @@ import { SuppliesDashboardConstants } from "./constants";
 const initState = {
     isLoading: false,
     error: '',
-    suppliesData: [],
-    countInvoice: [],
-    countAllocation: [],
-    valueInvoice: [],
+    numberData: {
+        supplies: {
+            totalSupplies: 0,
+            suppliesPrice: 0,
+        },
+        purchaseInvoice: {
+            totalPurchaseInvoice: 0,
+            purchaseInvoicesPrice: 0,
+        },
+        purchaseRequest: {
+            approvedTotal: 0,
+            disapprovedTotal: 0,
+            waitingForApprovalTotal: 0
+        },
+        allocationHistory: {
+            allocationHistoryTotal: 0,
+            allocationHistoryPrice: 0
+        }
+    },
+    pieChart: {
+        boughtSupplies: [],
+        existSupplies: []
+    },
+    barChart: {
+        organizationUnitsPriceSupply: []
+    },
 }
 
 export function suppliesDashboardReducer(state = initState, action) {
@@ -17,10 +39,9 @@ export function suppliesDashboardReducer(state = initState, action) {
             if (action.payload !== undefined) {
                 return {
                     ...state,
-                    suppliesData: action.payload.suppliesData,
-                    countInvoice: action.payload.countInvoice,
-                    countAllocation: action.payload.countAllocation,
-                    valueInvoice: action.payload.valueInvoice,
+                    numberData: action.payload.numberData,
+                    pieChart: action.payload.pieChart,
+                    barChart: action.payload.barChart,
                     isLoading: false
                 };
             } else {
