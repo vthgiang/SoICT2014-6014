@@ -7,6 +7,8 @@ import {SuppliesDashboardActions} from '../redux/actions';
 import Swal from 'sweetalert2';
 import {DatePicker} from '../../../../../common-components';
 import {getTableConfiguration} from '../../../../../helpers/tableConfiguration';
+import BoughtPieChart from "../../supplies/components/piechar/BoughtPieChart";
+import ExistPieChart from "../../supplies/components/piechar/ExistPieChart";
 
 function SuppliesDashboard(props) {
 
@@ -186,12 +188,12 @@ function SuppliesDashboard(props) {
                                 disabled={false}
                             />
                         </div>
-                        <button className="btn btn-success"
+                        <button className="btn btn-success" style={{marginLeft: 12, marginRight: 10}}
                                 onClick={handleSearchData}>{translate('task.task_management.search')}</button>
                     </div>
                 </div>
                 <div className="row" style={{marginTop: 10}}>
-                    <div className="col-md-6 col-sm-6 col-xs-6">
+                    <div className="col-md-6 col-sm-12 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-green"><i className="fa fa-check"></i></span>
                             <div className="info-box-content">
@@ -203,7 +205,7 @@ function SuppliesDashboard(props) {
                         </div>
                     </div>
 
-                    <div className="col-md-6 col-sm-6 col-xs-6">
+                    <div className="col-md-6 col-sm-12 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-play"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
@@ -215,7 +217,7 @@ function SuppliesDashboard(props) {
                         </div>
                     </div>
 
-                    <div className="col-md-6 col-sm-6 col-xs-6">
+                    <div className="col-md-6 col-sm-12 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-warning"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
@@ -227,7 +229,7 @@ function SuppliesDashboard(props) {
                         </div>
                     </div>
 
-                    <div className="col-md-6 col-sm-6 col-xs-6">
+                    <div className="col-md-6 col-sm-12 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-red"><i className="fa fa-calendar-times-o"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
@@ -239,6 +241,36 @@ function SuppliesDashboard(props) {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className="row" style={{marginTop: 10}}>
+                    {/* Biểu đồ thống kê giá trị vật tư đã mua từ xxx - xxx */}
+                    <div className="col-xs-6">
+                        <div className="box box-solid">
+                            <div className="box-header">
+                                <div className="box-title">{`Thống kê giá trị các vật tư từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <BoughtPieChart
+                                    boughtSupplies={pieChart.boughtSupplies}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Biểu đồ thống kê giá trị vật tư hiện có từ xxx - xxx */}
+                    <div className="col-xs-6">
+                        <div className="box box-solid">
+                            <div className="box-header">
+                                <div className="box-title">{`Thống kê giá trị các vật tư từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <ExistPieChart
+                                    existSupplies={pieChart.existSupplies}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </React.Fragment>

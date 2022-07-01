@@ -50,7 +50,6 @@ class AssetByGroup extends Component {
         });
         
         this.props.getAllAssetGroup()
-        console.log("props",this.props)
         AssetTypeService.getAssetTypes().then(res => {
             if (res.data.success) {
                 this.setState({ assetType: res.data.content.tree })
