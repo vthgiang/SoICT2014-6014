@@ -22,7 +22,7 @@ const ModalProposeEmpForTask = (props) => {
         // isComplete: 0,
     });
     const [isLoading, setLoading] = useState(false);
-    const [showFormula, setShowFormula] = useState(false);
+    const [showFormula, setShowFormula] = useState(true);
     const [showListTag, setShowListTag] = useState(true);
     const [showKeyMember, setShowKeyMember] = useState(true);
 
@@ -88,20 +88,22 @@ const ModalProposeEmpForTask = (props) => {
     return (
         <React.Fragment>
             <DialogModal
-                size='75' modalID={`modal-view-propose-emp-for-task-${id}`}
+                size='100' modalID={`modal-view-propose-emp-for-task-${id}`}
                 formID={`form-view-propose-emp-for-task-${id}`}
-                title="Đề xuất nhân sự tự động"
+                title="Cơ chế đề xuất nhân sự tự động"
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
                 disableSubmit={!proposedData?.isComplete}
+                hasSaveButton={false}
             >
                 <div className='box-body' style={{ lineHeight: 2 }}>
                     {/* hiển thị công thức tính ở đây này */}
                     <div>
-                        <a className='pull-right' style={{ cursor: 'pointer' }} onClick={() => setShowFormula(!showFormula)}>{showFormula ? "Ẩn cơ chế đề xuất" : "Hiển thị cơ chế đề xuất"}</a>
-                        <br />
-                        {!showFormula ? null : <div style={{ lineHeight: 2 }}>
+                        {/* <a className='pull-right' style={{ cursor: 'pointer' }} onClick={() => setShowFormula(!showFormula)}>{showFormula ? "Ẩn cơ chế đề xuất" : "Hiển thị cơ chế đề xuất"}</a> */}
+                        {/* <br /> */}
+                        {/* !showFormula ? null :  */}
+                        {<div style={{ lineHeight: 2 }}>
                             <p>Các nhân viên sẽ được sắp xếp theo danh sách độ ưu tiên phân công vào công việc giảm dần.</p>
                             <p>Trong đó, độ ưu tiên này sẽ dựa vào các tiêu chí:</p>
                             <ul>
@@ -134,7 +136,8 @@ const ModalProposeEmpForTask = (props) => {
                                 </li>
                                 <li>Giữa các nhân viên sẽ được sắp xếp theo thứ tự ưu tiên trình độ từ Tiến sĩ - Thạc sĩ - Kỹ sư...</li>
                                 <li>Giữa nhân viên cũng sẽ được sắp xếp theo số lượng công việc nhân viên đó phải làm trong thời gian diễn ra công việc đang muốn phân công</li>
-                                <li>Các nhân sự ứng có khả năng thực hiện công việc sẽ lấy ra theo danh sách nhân viên phù hợp với các thẻ công việc (cần tối thiểu 2 nhân sự ứng với mỗi thẻ công việc)
+                                <li>Các nhân sự ứng có khả năng thực hiện công việc sẽ lấy ra theo danh sách nhân viên phù hợp với công việc dựa trên các tag đã chọn. 
+                                    Bên cạnh đó các nhân viên cũng được sắp xếp theo thứ tự độ phù hợp với các tag đã chọn từ cao đến thấp
                                     ( <a style={{ cursor: 'pointer' }} onClick={() => setShowListTag(!showListTag)}>{showListTag ? "Ẩn danh sách" : "Hiển thị danh sách"}</a> )
                                     {!showListTag ? null : <>
                                         <table id="tag-explain-show-data" className="table not-has-action table-striped table-bordered table-hover">
@@ -148,7 +151,7 @@ const ModalProposeEmpForTask = (props) => {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    allTag?.filter(x => dataProp?.proposals?.tasks?.find(t => String(t?.tag) === String(x?._id))).map((item, listIndex) => {
+                                                    allTag?.filter(x => dataProp?.proposals?.tasks?.find(t => t?.tag?.find(tg => String(tg) === String(x?._id)))).map((item, listIndex) => {
                                                         return (
                                                             <tr key={`tag-${listIndex}`}>
                                                                 <td>{listIndex + 1}</td>
@@ -171,72 +174,67 @@ const ModalProposeEmpForTask = (props) => {
                         </div>}
                     </div>
 
-                    <p style={{ color: 'green', lineHeight: 2 }}>* Nhấn nút "Đề xuất" bên dưới để tính toán đề xuất nhân sự *</p>
-                    <button type='button' className='btn btn-success' onClick={() => handlePropose()}>Đề xuất</button>
-                    <br />
-                    <br />
-                    {isLoading === true && <div style={{ display: 'flex', justifyContent: 'center' }}>Đang tính toán đề xuất...</div>}
-                    {!proposedData ? null :
-                        <div>
-                            {isLoading === false && proposedData.isComplete === 0 && <div style={{ display: 'flex', justifyContent: 'center', color: 'red' }}>Không tính toán được, hãy kiểm tra lại danh sách nhân viên cho từng công việc!</div>}
-                            {isLoading === false && proposedData.isComplete === 1 && <>
-                                <div style={{ display: 'flex', justifyContent: 'center', color: 'green' }}>Đã tính toán xong - hãy nhấn lưu để áp dụng kết quả đề xuất!</div>
-                                <table id="proposal-result-show-data" className="table not-has-action table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Công việc</th>
-                                            {proposedData?.compareVersion[0]?.old?.directEmployees?.length <= 0 && <th>Nhân sự phù hợp</th>}
-                                            {proposedData?.compareVersion[0]?.old?.directEmployees?.length > 0 && <th>Nhân sự phân công ban đầu</th>}
-                                            <th>Nhân sự đề xuất tự động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            proposedData.compareVersion?.map((item, listIndex) => {
-                                                return (
-                                                    <tr key={`tag-${listIndex}`}>
-                                                        <td>{listIndex + 1}</td>
-                                                        <td>{item?.name}</td>
-                                                        {item?.old?.directEmployees?.length <= 0 && <td>
-                                                            {allTag?.find(x => String(item?.tag) === String(x?._id)) ? 
-                                                                allTag?.find(x => String(item?.tag) === String(x?._id)).employees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')
-                                                                : "N/A"
-                                                            }
-                                                        </td>}
-                                                        {item?.old?.directEmployees?.length > 0 && <td>
-                                                            <div><strong>Nhân sự trực tiếp: </strong>
-                                                                {item?.old?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}
-                                                            </div>
-                                                            <div><strong>Nhân sự dự phòng: </strong>
-                                                                {item?.old?.backupEmployees?.length > 0 ? item?.old?.backupEmployees?.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ') : "N/A"}
-                                                            </div>
-                                                        </td>}
-                                                        <td>
-                                                            <div><strong>Nhân sự trực tiếp: </strong>
-                                                                {item?.new?.directEmployees.map(userItem => {
-                                                                    return <span> {/** &cedil; */}
-                                                                        <span style={checkInArr(userItem, item?.old?.directEmployees) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{`${convertEmpIdToName(allEmployee, userItem)}`}</span>&#44;
-                                                                    </span>
-                                                                })}
-                                                            </div>
-                                                            <div><strong>Nhân sự dự phòng: </strong>
-                                                                {item?.new?.backupEmployees?.length > 0 ? item?.new?.backupEmployees?.map(userItem => {
-                                                                    return <span> {/** &cedil; */}
-                                                                        <span style={checkInArr(userItem, item?.old?.backupEmployees) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{`${convertEmpIdToName(allEmployee, userItem)}`}</span>&#44;
-                                                                    </span>
-                                                                }) : "N/A"}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
-                            </>}
-                        </div>
-                    }
+                    <div style={{ display: "none" }}>
+                        <p style={{ color: 'green', lineHeight: 2 }}>* Nhấn nút "Đề xuất" bên dưới để tính toán đề xuất nhân sự *</p>
+                        <button type='button' className='btn btn-success' onClick={() => handlePropose()}>Đề xuất</button>
+                        <br />
+                        <br />
+                        {isLoading === true && <div style={{ display: 'flex', justifyContent: 'center' }}>Đang tính toán đề xuất...</div>}
+                        {!proposedData ? null :
+                            <div>
+                                {isLoading === false && proposedData.isComplete === 0 && <div style={{ display: 'flex', justifyContent: 'center', color: 'red' }}>Không tính toán được, hãy kiểm tra lại danh sách nhân viên cho từng công việc!</div>}
+                                {isLoading === false && proposedData.isComplete === 1 && <>
+                                    <div style={{ display: 'flex', justifyContent: 'center', color: 'green' }}>Đã tính toán xong - hãy nhấn lưu để áp dụng kết quả đề xuất!</div>
+                                    <table id="proposal-result-show-data" className="table not-has-action table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Công việc</th>
+                                                <th>Nhân sự phân công ban đầu</th>
+                                                <th>Nhân sự đề xuất tự động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                proposedData.compareVersion?.map((item, listIndex) => {
+                                                    return (
+                                                        <tr key={`tag-${listIndex}`}>
+                                                            <td>{listIndex + 1}</td>
+                                                            <td>{item?.name}</td>
+                                                            <td>
+                                                                <div><strong>Nhân sự trực tiếp: </strong>
+                                                                    {item?.old?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}
+                                                                </div>
+                                                                <div><strong>Nhân sự dự phòng: </strong>
+                                                                    {item?.old?.backupEmployees?.length > 0 ? item?.old?.backupEmployees?.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ') : "N/A"}
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div><strong>Nhân sự trực tiếp: </strong>
+                                                                    {item?.new?.directEmployees.map(userItem => {
+                                                                        return <span> {/** &cedil; */}
+                                                                            <span style={checkInArr(userItem, item?.old?.directEmployees) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{`${convertEmpIdToName(allEmployee, userItem)}`}</span>&#44;
+                                                                        </span>
+                                                                    })}
+                                                                </div>
+                                                                <div><strong>Nhân sự dự phòng: </strong>
+                                                                    {item?.new?.backupEmployees?.length > 0 ? item?.new?.backupEmployees?.map(userItem => {
+                                                                        return <span> {/** &cedil; */}
+                                                                            <span style={checkInArr(userItem, item?.old?.backupEmployees) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{`${convertEmpIdToName(allEmployee, userItem)}`}</span>&#44;
+                                                                        </span>
+                                                                    }) : "N/A"}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                    </table>
+                                </>}
+                            </div>
+                        }
+                    </div>
                 </div>
 
             </DialogModal>

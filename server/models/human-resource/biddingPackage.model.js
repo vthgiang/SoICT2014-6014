@@ -147,15 +147,19 @@ const BiddingPackageSchema = new Schema(
                     type: String
                 }],
                 // tag của cviec
-                tag: {
+                tag: [{
                     // type: String,
                     type: Schema.Types.ObjectId,
                     ref: "Tag",
-                },
+                }],
                 numberOfEmployees: {
                     type: Number,
                     default: 1,
                 },
+                suitableEmployees: [{
+                    type: Schema.Types.ObjectId,
+                    ref: "Employee",
+                }],
                 // nhân sự trực tiếp
                 directEmployees: [{
                     type: Schema.Types.ObjectId,

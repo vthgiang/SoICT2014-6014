@@ -12,6 +12,7 @@ import "./timelineStyle.css";
 import { ViewTaskInGantt } from './viewTaskInGantt';
 import { TagActions } from '../../../tags/redux/actions';
 import CreateTagForm from '../../../tags/component/createForm';
+import { BiddingPackageService } from '../redux/services';
 
 function Proposals(props) {
     const EDIT_TYPE = "EDIT_TYPE", ADD_TYPE = "ADD_TYPE" // , RESET_TYPE = "RESET_TYPE", DELETE_TYPE = "DELETE_TYPE", CANCEL_TYPE = "CANCEL_TYPE";
@@ -27,11 +28,12 @@ function Proposals(props) {
     const initTaskData = {
         code: "",
         // tag: proposals.tags?.length ? proposals.tags[0].name : "",
-        tag: null,
+        tag: [],
         preceedingTasks: [],
         taskName: "",
         taskDescription: "",
         numberOfEmployees: 1,
+        suitableEmployees: [],
         directEmployees: [],
         backupEmployees: [],
         estimateTime: 1,
@@ -74,6 +76,14 @@ function Proposals(props) {
             },
         ]
     })
+    const [proposedData, setProposedData] = useState({
+        // type: "",
+        // id: "",
+        // compareVersion: [],
+        // proposal: null,
+        // isComplete: 0,
+    });
+    const [isLoading, setLoading] = useState(false);
     const handleGoToStep = (index, e = undefined) => {
         if (e) e.preventDefault();
         if (index === 0 || index === 1) {
@@ -135,17 +145,17 @@ function Proposals(props) {
     }
 
     const handleChangeSelectValue = (key, value) => {
-        if (key === "tag") {
-            setState({
-                ...state,
-                currentTask: {
-                    ...state.currentTask,
-                    [key]: value[0],
-                    directEmployees: [],
-                    backupEmployees: [],
-                }
-            })
-        } else {
+        // if (key === "tag") {
+        //     setState({
+        //         ...state,
+        //         currentTask: {
+        //             ...state.currentTask,
+        //             [key]: value[0],
+        //             directEmployees: [],
+        //             backupEmployees: [],
+        //         }
+        //     })
+        // } else {
             setState({
                 ...state,
                 currentTask: {
@@ -153,7 +163,44 @@ function Proposals(props) {
                     [key]: value
                 }
             })
+        // }
+    }
+
+    const handleGetSuitableEmpByTag = () => {
+        let { currentTask } = state;
+        let tag = currentTask.tag;
+        let tagList = [];
+        let res = [];
+
+        tagList = alltag?.filter(x => tag.find(t => String(t) === String(x._id)));
+        
+        if (tagList.length === 0) {
+            res = [];
         }
+        if (tagList.length === 1) {
+            res = [...tagList[0].employees];
+        }
+        else {
+            let listEmpByTag = [];
+            for (let t of tagList) {
+                listEmpByTag = [...t.employees, ...listEmpByTag];
+            }
+
+            for(let x of listEmpByTag) {
+                let chk = listEmpByTag.filter(o => String(o) === String(x));
+                if (chk?.length > 1 && res.indexOf(String(x)) === -1) {
+                    res.push(String(x));
+                } 
+            }
+        }
+
+        setState({
+            ...state,
+            currentTask: {
+                ...state.currentTask,
+                suitableEmployees: res
+            }
+        })
     }
 
     const handleDeleteTask = (listIndex) => {
@@ -251,6 +298,60 @@ function Proposals(props) {
     }
     // end --- hàm xử lý tasks
 
+    // hàm xử lý nhân viên khi đề xuất
+    const handleChangeEmployee = (key, value, index) => {
+        let newList = proposals.tasks.map((x, idx) => {
+
+            if (idx === index) {
+                x = { 
+                    ...x,
+                    [key]: value 
+                }
+            }
+            return x;
+        })
+
+        let newProposal = {
+            ...proposals,
+            tasks: newList,
+        }
+
+        setProposals(newProposal);
+        props.handleChange("proposals", newProposal);
+    }
+
+    const calcPropose = async () => {
+        setLoading(true);
+        await BiddingPackageService.proposeEmployeeForTask(bidId, {
+            type: proposalType,
+            tags: proposals?.tags,
+            tasks: proposals?.tasks,
+            biddingPackage: biddingPackage,
+            unitOfTime: proposals?.unitOfTime,
+            executionTime: proposals?.executionTime
+        }).then(res => {
+            const { data } = res;
+            let newProposal = data.content?.proposal;
+
+            setProposedData(data.content);
+            setProposals(newProposal);
+            props.handleChange("proposals", newProposal);
+
+        }).catch(err => {
+            setProposedData({
+                id: null,
+                type: "",
+                compareVersion: [],
+                proposal: null,
+                isComplete: 0,
+            })
+        }).finally(() => {
+            setLoading(false)
+        })
+    }
+    
+    // end
+
     const handleShowViewEmployee = (id) => {
         setTimeout(() => {
             window.$(`#modal-view-employee-${id}`).modal('show');
@@ -322,6 +423,22 @@ function Proposals(props) {
         return listEmpByTag;
     }
     let listEmpbyTag = getListEmpByTag(currentTask.tag);
+
+    const getListSuitableEmpSelectBox = (listSuitableEmp) => {
+        let res = [];
+        if (allEmployee) {
+            res = allEmployee?.filter(item => listSuitableEmp?.indexOf(String(item?._id)) !== -1)?.map (o => {
+                // let text = o.fullName + " (" + o.emailInCompany + ")"
+                let text = o.fullName
+                    return {
+                        value: o._id,
+                        text: text
+                    }
+            })
+        }
+        
+        return res;
+    }
 
     let listPreTask = proposals?.tasks?.map(x => { return { text: x.code, value: x.code?.trim() } }) ?? []
 
@@ -430,10 +547,10 @@ function Proposals(props) {
                                         onChange={(value) => handleChangeSelectValue("tag", value)}
                                         options={{ placeholder: "Chọn thẻ cho công việc" }}
                                         value={currentTask?.tag}
-                                        multiple={false}
+                                        multiple={true}
                                     />}
                                 </div>
-                                <div className="form-group">
+                                <div className={`form-group`}>
                                     {/* style={{display: "flex", justifyContent: "flex-end"}} */}
                                     <div className='pull-right'>
                                         <ModalViewEmployee
@@ -442,6 +559,21 @@ function Proposals(props) {
                                         />
                                         <a style={{ cursor: "pointer" }} onClick={() => handleShowViewEmployee(id)}>Xem thông tin nhân viên</a>
                                     </div>
+                                    <label className="control-label">Nhân sự phù hợp<span className="text-red">*</span>
+                                        ( <a style={{ cursor: "pointer" }} onClick={() => handleGetSuitableEmpByTag()}>Lấy danh sách nhân sự phù hợp theo tag</a> )
+                                    </label>
+                                    {<SelectBox
+                                        id={`${proposalType}--suitable-employee-${currentIndex}-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listEmpInfoFormated ? listEmpInfoFormated : []}
+                                        onChange={(value) => handleChangeSelectValue("suitableEmployees", value)}
+                                        options={{ placeholder: "Chọn nhân sự phù hợp cho công việc" }}
+                                        value={currentTask?.suitableEmployees}
+                                        multiple={true}
+                                    />}
+                                </div>
+                                <div className="form-group">
                                     <label>Số người thực hiện<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name={`numberOfEmployees-${currentIndex}`} onChange={(value) => handleChangeForm("numberOfEmployees", value)} value={currentTask?.numberOfEmployees} placeholder="Số người thực hiện" autoComplete="off" />
                                 </div>
@@ -486,6 +618,7 @@ function Proposals(props) {
                                     <th>Mô tả công việc</th>
                                     {/* <th>Nhân sự trực tiếp</th>
                                     <th>Nhân sự dự phòng</th> */}
+                                    <th>Nhân sự phù hợp</th>
                                     <th>Số người thực hiện</th>
                                     <th style={{ width: '90px', textAlign: 'center' }}>
                                         {translate('table.action')}
@@ -517,9 +650,10 @@ function Proposals(props) {
                                                 <td>{item?.code}</td>
                                                 <td>{item?.taskName}</td>
                                                 <td>{item?.preceedingTasks?.join(", ")}</td>
-                                                <td>{convertTagIdToTagName(alltag, item?.tag)}</td>
+                                                <td>{item?.tag?.map(x => convertTagIdToTagName(alltag, x))?.join(", ")}</td>
                                                 <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
                                                 <td>{item?.taskDescription}</td>
+                                                <td>{item?.suitableEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
                                                 <td>{item?.numberOfEmployees}</td>
                                                 {/* <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
                                                 <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td> */}
@@ -538,7 +672,7 @@ function Proposals(props) {
                     {proposals.tasks?.length <= 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                 </fieldset>
             </div>}
-            {currentStep === 1 && <div>
+            {currentStep === 1 && <div className='box-body'>
                 <div style={{ display: 'flex', justifyContent: "space-between" }}>
                     <div className="box-tools" style={{ marginBottom: '5px' }}>
                         <div className="btn-group">
@@ -564,31 +698,24 @@ function Proposals(props) {
                             }}
                             handleAcceptProposal={handleAcceptProposal}
                         />
-                        <a style={{ margin: '0 0 5px 5px', textDecoration: "underline", fontWeight: "600", cursor: "pointer" }} onClick={() => { handelProposeModal(id) }}>
-                            Tối ưu đề xuất nhân sự<i className='fa fa-arrow-circle-right'></i>
-                        </a>
+                        <span>
+                            <a style={{ margin: '0 0 5px 5px', textDecoration: "underline", fontWeight: "600", cursor: "pointer" }} onClick={() => calcPropose()} >
+                                Tối ưu đề xuất nhân sự &nbsp;
+                            </a>
+                            <i style={{ cursor: "pointer" }} title="Xem cơ ché đề xuất" onClick={() => { handelProposeModal(id) }} className='fa fa-question-circle-o'></i>
+                        </span>
+                        
                     </div> : null
                     }
                 </div>
                 <br />
-
-                {/* <DataTableSetting
-                    columnName={translate('table.action')}
-                    columnArr={[
-                        "Mã công việc",
-                        "Tên công việc",
-                        "Công việc tiền nhiệm",
-                        "Thẻ công việc",
-                        "Thời gian thực hiện",
-                        "Mô tả công việc",
-                        "Nhân sự trực tiếp",
-                        "Nhân sự dự phòng",
-                        // "Số người thực hiện",
-                    ]}
-                    tableId={`task-proposal-table-result`}
-                    tableContainerId="task-proposal-table-result-container"
-                    tableWidth="1300px"
-                /> */}
+                {isLoading === true && <div style={{ display: 'flex', justifyContent: 'center' }}>Đang tính toán đề xuất...</div>}
+                {isLoading === false && proposedData.isComplete === 1 && 
+                    <div style={{ display: 'flex', justifyContent: 'center', color: 'green' }}>Đã tính toán xong - Thông tin đề xuất phân công nhân sự hiển thị ở bảng bên dưới!</div>
+                }
+                {isLoading === false && proposedData.isComplete === 0 && 
+                    <div style={{ display: 'flex', justifyContent: 'center', color: 'red' }}>Hãy kiểm tra lại thông tin nhân sự phù hợp và số lượng nhân sự để phân công nhân sự tối ưu hơn!</div>
+                }
                 {
                     !isTable ? <ViewTaskInGantt
                         taskList={proposals?.tasks}
@@ -601,10 +728,11 @@ function Proposals(props) {
                                 <th>Công việc tiền nhiệm</th>
                                 <th>Thẻ công việc</th>
                                 <th>Thời gian thực hiện</th>
-                                <th>Mô tả công việc</th>
-                                {proposals?.tasks[0]?.directEmployees?.length > 0 && <th>Nhân sự trực tiếp</th>}
-                                {proposals?.tasks[0]?.backupEmployees?.length > 0 && <th>Nhân sự dự phòng</th>}
-                                {proposals?.tasks[0]?.directEmployees?.length <= 0 && <th>Số người thực hiện</th>}
+                                {/* <th>Mô tả công việc</th> */}
+                                <th>Nhân sự phù hợp</th>
+                                <th>Số người thực hiện</th>
+                                <th>Nhân sự trực tiếp</th>
+                                <th>Nhân sự dự phòng</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -615,12 +743,37 @@ function Proposals(props) {
                                             <td>{item?.code}</td>
                                             <td>{item?.taskName}</td>
                                             <td>{item?.preceedingTasks?.join(", ")}</td>
-                                            <td>{convertTagIdToTagName(alltag, item?.tag)}</td>
+                                            <td>{item?.tag?.map(x => convertTagIdToTagName(alltag, x))?.join(", ")}</td>
                                             <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
-                                            <td>{item?.taskDescription}</td>
-                                            {item?.directEmployees?.length > 0 && <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>}
-                                            {item?.backupEmployees?.length > 0 && <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>}
-                                            {item?.directEmployees?.length <= 0 && <td>{item?.numberOfEmployees}</td>}
+                                            {/* <td>{item?.taskDescription}</td> */}
+                                            <td>{item?.suitableEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                            <td>{item?.numberOfEmployees}</td>
+                                            {/* <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                            <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td> */}
+                                            <td>
+                                                <SelectBox
+                                                    id={`-proposal-direct-employee-${listIndex}-${id}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={getListSuitableEmpSelectBox(item?.suitableEmployees) ?? []}
+                                                    onChange={(value) => handleChangeEmployee("directEmployees", value, listIndex)}
+                                                    options={{ placeholder: "Chọn nhân sự trực tiếp" }}
+                                                    value={item?.directEmployees}
+                                                    multiple={true}
+                                                />
+                                            </td>
+                                            <td>
+                                                <SelectBox
+                                                    id={`-proposal-backup-employee-${listIndex}-${id}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={getListSuitableEmpSelectBox(item?.suitableEmployees) ?? []}
+                                                    onChange={(value) => handleChangeEmployee("backupEmployees", value, listIndex)}
+                                                    options={{ placeholder: "Chọn nhân sự dự phòng" }}
+                                                    value={item?.backupEmployees}
+                                                    multiple={true}
+                                                />
+                                            </td>
                                         </tr>
                                     )
                                 })

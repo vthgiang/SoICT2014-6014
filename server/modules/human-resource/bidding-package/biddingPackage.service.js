@@ -754,7 +754,8 @@ exports.getEmployeeInfoWithTask = async (
     biddingPackage, 
     oldEmployees = [], 
     allTag = [],
-    currentTag = "",
+    currentTag = [],
+    suitableEmployees = [],
 ) => {
     let start = startDate ?? Date.now();
     let end = moment(start).add(Number(estimateTime), unitOfTime).toDate();
@@ -838,15 +839,26 @@ exports.getEmployeeInfoWithTask = async (
     if (allTag?.length && allTag.length > 0) {
         for (let i in taskInEstimateTime) {
             let item = taskInEstimateTime[i];
-            let checkTag = allTag.find(x => String(x._id) === String(currentTag));
-            if (checkTag) {
-                let listSuitability = checkTag.employeeWithSuitability;
+            let checkTag = allTag.filter(x => currentTag.find(ct => String(x._id) === String(ct)) );
+
+            let numOfTag = checkTag.length;
+            let suitablePointObj = {};
+
+            for(let t of checkTag ) {
+                let listSuitability = t.employeeWithSuitability;
                 for (let s of listSuitability) {
-                    if(String(item.empId) === String(s.employee)) {
-                        item.suitabilityWithTag = s.suitability
+                    suitablePointObj[s.employee] = suitablePointObj[s.employee]?.suitability ? Number(suitablePointObj[s.employee]?.suitability) + Number(s.suitability) : Number(s.suitability);
+                }
+            }
+
+            for(let obj in suitablePointObj) {
+                for(let se of suitableEmployees) {
+                    if (String(se) === String(obj) && String(se) === String(item.empId)) {
+                        item.suitabilityWithTag = suitablePointObj[obj]?.suitability/numOfTag
                     }
                 }
             }
+
         }
     }
 
@@ -940,24 +952,33 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
             oldEmployees, 
             allTag, 
             t.tag,
+            t.suitableEmployees,
         );
         endOfTask = moment(startOfTask).add(Number(t.estimateTime), unitOfTime).toDate();
         oldEmployees = empWithTask;
 
         // tìm danh sách emp tương ứng với tag
         // let tagOfTask = tags.find(x => x.name === t.tag)
-        let listEmpByTag = [];
-        if (allTag?.length > 0) listEmpByTag = allTag.find(x => String(t.tag) === String(x._id))?.employees ?? [];
 
-        if (!listEmpByTag?.length) listEmpByTag = [...empWithTask];
 
-        let directEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
-        let backupEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
+        // let listEmpByTag = [];
+        // if (allTag?.length > 0) listEmpByTag = allTag.find(x => String(t.tag) === String(x._id))?.employees ?? [];
+
+        // if (!listEmpByTag?.length) listEmpByTag = [...empWithTask];
+
+        let listSuitableEmp = t.suitableEmployees ?? [];
+        // if (!listSuitableEmp?.length) listSuitableEmp = empWithTask.map(x => String(x.empId));
+        console.log(listSuitableEmp);
+
+
+        let directEmpAvailable = empWithTask.filter(x => listSuitableEmp.indexOf(String(x.empId)) !== -1).map(x => x.empId);
+        let backupEmpAvailable = empWithTask.filter(x => listSuitableEmp.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let proposalEmpArr = [directEmpAvailable, backupEmpAvailable];
+        console.log(directEmpAvailable);
 
-        // let numBackupEmpRequired = t.numberOfEmployees;
+        // let numBackupEmpRequired = t.numberOfEmployees; // t.numberOfEmployees <= listSuitableEmp?.length
         let numDirectpEmpRequired = t.numberOfEmployees;
-        let numBackupEmpRequired = listEmpByTag?.length - numDirectpEmpRequired;
+        let numBackupEmpRequired = (listSuitableEmp?.length - numDirectpEmpRequired) <= numDirectpEmpRequired + 2 ? (listSuitableEmp?.length - numDirectpEmpRequired) : numDirectpEmpRequired;
         let numOfEmpRequireArr = [numDirectpEmpRequired, numBackupEmpRequired];
 
         // let data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
@@ -965,7 +986,9 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
             isComplete: 0,
         }
 
-        while(numBackupEmpRequired > 0) {
+        let flag = 1;
+        while(flag === 1) {
+            flag = 1;
             numOfEmpRequireArr = [numDirectpEmpRequired, numBackupEmpRequired];
             data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
             
@@ -991,18 +1014,25 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
                 proposalTask.push(newTask);
 
                 isComplete = 1;
-                break;
+                flag = 0
             } else {
                 isComplete = 0;
             }
 
             numBackupEmpRequired = numBackupEmpRequired - 1;
+            if(numBackupEmpRequired <= 0) {
+                flag = 0
+            }
         }
+        console.log(1718, data);
         if (isComplete === 0) {
             console.log(data);
+            if (numDirectpEmpRequired === listSuitableEmp.length) {
+
+            }
             const newTaskErr = {
                 ...t,
-                directEmployees: [],
+                directEmployees: numDirectpEmpRequired >= listSuitableEmp.length ? listSuitableEmp : [],
                 backupEmployees: [],
             };
             prevTask = newTaskErr;
