@@ -438,6 +438,7 @@ function FormCreateTaskByProcess(props) {
     }
 
     let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+    console.log(taskItem);
     return (
         <React.Fragment>
             {/**Form chứa thông tin của mẫu công việc đang sửa */}

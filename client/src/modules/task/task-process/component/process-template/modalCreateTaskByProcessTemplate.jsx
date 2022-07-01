@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState } from "react";
 import { connect } from 'react-redux';
 import { getStorage } from '../../../../../config';
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, DatePicker, ErrorLabel, SelectBox } from "../../../../../common-components";
+import { DialogModal, DatePicker, ErrorLabel, SelectBox, TimePicker } from "../../../../../common-components";
 import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
@@ -28,8 +28,8 @@ ElementFactory.prototype._getDefaultSize = function (semantic) {
         return { width: 160, height: 130 };
     }
     if (is(semantic, 'bpmn:SubProcess')) {
-		return { width: 260, height: 180 };
-	}
+        return { width: 260, height: 180 };
+    }
     if (is(semantic, 'bpmn:Gateway')) {
         return { width: 50, height: 50 };
     }
@@ -64,7 +64,7 @@ function ModalCreateTaskByProcessTemplate(props) {
         userId: getStorage("userId"),
         currentRole: getStorage('currentRole'),
         showInfo: false,
-        showInfoProcess:false,
+        showInfoProcess: false,
         infoTemplate: {},
         info: data.tasks,
         xmlDiagram: data.xmlDiagram,
@@ -74,9 +74,11 @@ function ModalCreateTaskByProcessTemplate(props) {
         endDate: "",
         manager: [],
         viewer: [],
-        id:"",
+        id: "",
         indexRenderer: 0,
+        officeHours:[]
     })
+    const [officeHourCurrent, setOfficeHourCurrent] = useState({name:"", startTime:"",endTime:""})
     const [modeler, setModeler] = useState(new BpmnModeler({
         additionalModules: [
             customModule,
@@ -188,12 +190,12 @@ function ModalCreateTaskByProcessTemplate(props) {
         }
     }, [props.idProcess])
     if (state.save === true) {
-		modeler.importXML(props.data.xmlDiagram);
-		setState({
-			...state,
-			save: false,
-		});
-	}
+        modeler.importXML(props.data.xmlDiagram);
+        setState({
+            ...state,
+            save: false,
+        });
+    }
     // Các hàm xử lý sự kiện của form 
     const handleChangeContent = async (content) => {
         await setState(state => {
@@ -421,29 +423,29 @@ function ModalCreateTaskByProcessTemplate(props) {
         })
     }
     const handleChangeViewerBpmn = async (value) => {
-    	const modeling = modeler.get('modeling');
-    	let element1 = modeler.get('elementRegistry').get(state.id);
-    	let viewer = []
-    	value.forEach(x => {
-    		viewer.push(x.name)
-    	})
-    	modeling.updateProperties(element1, {
-    		viewerName: viewer
-    	});
+        const modeling = modeler.get('modeling');
+        let element1 = modeler.get('elementRegistry').get(state.id);
+        let viewer = []
+        value.forEach(x => {
+            viewer.push(x.name)
+        })
+        modeling.updateProperties(element1, {
+            viewerName: viewer
+        });
 
     }
 
     // hàm cập nhật người phê duyệt công việc
     const handleChangeManagerBpmn = async (value) => {
-    	const modeling = modeler.get('modeling');
-    	let element1 = modeler.get('elementRegistry').get(state.id);
-    	let manager = []
-    	value.forEach(x => {
-    		manager.push(x.name)
-    	})
-    	modeling.updateProperties(element1, {
-    		managereName: manager
-    	});
+        const modeling = modeler.get('modeling');
+        let element1 = modeler.get('elementRegistry').get(state.id);
+        let manager = []
+        value.forEach(x => {
+            manager.push(x.name)
+        })
+        modeling.updateProperties(element1, {
+            managereName: manager
+        });
     }
 
     // hàm cập nhật độ ưu tiên
@@ -476,7 +478,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                 return {
                     ...state,
                     showInfo: true,
-                    showInfoProcess:false,
+                    showInfoProcess: false,
                     type: element.type,
                     name: nameStr[1],
                     taskName: element.businessObject.name,
@@ -494,7 +496,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                 return {
                     ...state,
                     showInfo: false,
-                    showInfoProcess:true,
+                    showInfoProcess: true,
                     type: element.type,
                     name: nameStr[1],
                     taskName: element.businessObject.name,
@@ -503,7 +505,7 @@ function ModalCreateTaskByProcessTemplate(props) {
             }
             else {
 
-                return { ...state, showInfo: false,showInfoProcess:false, type: element.type, name: '', id: element.businessObject.id, }
+                return { ...state, showInfo: false, showInfoProcess: false, type: element.type, name: '', id: element.businessObject.id, }
             }
 
         })
@@ -664,15 +666,15 @@ function ModalCreateTaskByProcessTemplate(props) {
             code: state.id
         }
         const infos = state.info
-        infos[`${state.id}`] = info ;
+        infos[`${state.id}`] = info;
         state.info[`${state.id}`] = info
         setState({
-                ...state,
-                info: infos
-            })
+            ...state,
+            info: infos
+        })
     }
 
-    const handleDataProcessTempalte = async (name,value) => {
+    const handleDataProcessTempalte = async (name, value) => {
         // console.log(value);
         let infoTemplates = state.infoTemplate
         infoTemplates[`${state.id}`].process[name] = value
@@ -683,7 +685,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                 infoTemplate: infoTemplates
             }
         });
-        
+
     }
     // hàm validate form tạo quy trình công việc
     const isTaskFormValidated = () => {
@@ -693,9 +695,26 @@ function ModalCreateTaskByProcessTemplate(props) {
             && errorOnViewer === undefined && errorOnManager === undefined && manager.length !== 0 && viewer.length !== 0
             && startDate.trim() !== "" && endDate.trim() !== "";
     }
+    const totalTImeOnec = (startTime,endTime)=>{
+        let start = startTime.split(" ");
+        start = start[0].split(":").concat(start[1]);
+        if (start[2] === "PM") {
+            start[0] = parseInt(start[0])+12
+        }
+        // start = start[0].split(":").push(start[1])
+        let end  = endTime.split(" ");
+        end = end[0].split(":").concat(end[1]);
+        if (end[2] === "PM") {
+            end[0] = parseInt(end[0])+12
+        }
+        let result = end[0]-start[0] + Math.round( (parseInt(end[1]) - parseInt(start[1]))/60 * 100) / 100
+        return result
+
+    }
+    
     // Hàm lưu thông tin 
     const save = async () => {
-        let { info, infoTemplate, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
+        let { info, infoTemplate, startDate, endDate, userId, processName,officeHours, processDescription, xmlDiagram, viewer, manager } = state;
 
         let xmlStr;
         modeler.saveXML({ format: true }, function (err, xml) {
@@ -708,7 +727,11 @@ function ModalCreateTaskByProcessTemplate(props) {
                 xmlDiagram: xmlStr,
             }
         });
-
+        let ttHours = 0
+        for (let i in officeHours) {
+            ttHours = ttHours + totalTImeOnec(officeHours[i].startTime,officeHours[i].endTime)
+        }
+        
         for (let i in info) {
             info[i].startDate = info[i].startDate ? info[i].startDate : startDate;
             info[i].endDate = info[i].endDate ? info[i].endDate : endDate;
@@ -730,9 +753,10 @@ function ModalCreateTaskByProcessTemplate(props) {
             processList: infoTemplate,
             startDate: startDate,
             endDate: endDate,
-
+            officeHours:officeHours,
+            convertDayToHour: ttHours
         }
-        
+
         let template;
         console.log(data);
         props.createTaskByProcess(data, state.idProcess, template = true);
@@ -742,22 +766,45 @@ function ModalCreateTaskByProcessTemplate(props) {
             showInfo: false,
             info: props.data.tasks,
             xmlDiagram: props.data.xmlDiagram,
-            showInfoProcess:false,
+            showInfoProcess: false,
             infoTemplate: {},
             selected: 'info',
-            save : true,
+            save: true,
             zlevel: 1,
             startDate: "",
             endDate: "",
             manager: [],
             viewer: [],
-            id:"",
+            id: "",
             indexRenderer: 0,
+            officeHours:[]
         })
     }
-
+    const onChangeOfficeHoursCurrent = (e) =>{
+        setOfficeHourCurrent({
+            ...officeHourCurrent,
+            name:e.target.value
+        })
+    }
+    const handleDeleteOfficeHours = (index) => {
+        const listOfficeHours = [...state.officeHours];
+        listOfficeHours.splice(index,1)
+        setState({
+            ...state,
+            officeHours:listOfficeHours
+        })
+    }
+    const handleAddOfficeHours = async (index) => {
+        const listOfficeHours = [...state.officeHours];
+        listOfficeHours.push(officeHourCurrent)
+        await setState({
+            ...state,
+            officeHours:listOfficeHours
+        })
+        await setOfficeHourCurrent({name:"", startTime:"",endTime:""})
+    }
     const { translate, role, user } = props;
-    const { id, idProcess, info, taskName, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
+    const { id, idProcess, info, taskName, officeHours, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
         processDescription, processName, selected, viewer, manager, errorOnProcessName, errorOnProcessDescription, indexRenderer, showInfoProcess, infoTemplate } = state;
     const { listOrganizationalUnit } = props
 
@@ -888,6 +935,74 @@ function ModalCreateTaskByProcessTemplate(props) {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="form-group">
+                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                        <label>Thông tin giờ làm việc hành chính<span className="text-red">*</span></label>
+                                    </div>
+                                    <table id="project-table" className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tên ca</th>
+                                                <th>Thời gian bắt đầu</th>
+                                                <th>Thời gian kết thúc</th>
+                                                <th>{translate('task_template.action')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {officeHours && officeHours.length >0 &&
+                                                officeHours.map((item, index) => (
+                                                    <tr key={index}>
+                                                        <td>{item.name}</td>
+                                                        <td>
+                                                            {item.startTime}
+                                                        </td>
+                                                        <td>
+                                                            {item.endTime}
+                                                        </td>
+                                                        <td>
+                                                            <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteOfficeHours(index)}><i className="material-icons">delete</i></a>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                                        }
+                                            <tr key={`add-time-input`}>
+                                                <td>
+                                                    <div className={`form-group`}>
+                                                    <input type="text"
+                                                        value={officeHourCurrent.name}
+                                                        className="form-control" placeholder="Tên ca"
+                                                        onChange={onChangeOfficeHoursCurrent}
+                                                    />
+                                                </div>
+                                                </td>
+                                                <td style={{ maxWidth: 250 }}>
+                                                    <div className={`form-group`}>
+                                                    <TimePicker 
+                                                        id={`create-timeP-start-time`}
+                                                        value={officeHourCurrent.startTime}
+                                                        onChange={(e) => setOfficeHourCurrent({...officeHourCurrent,startTime:e})}
+                                                        disabled={false}
+                                                    />
+                                                    </div>
+                                                </td>
+                                                <td style={{ maxWidth: 250 }}>
+                                                    <div className={`form-group`}>
+                                                    <TimePicker 
+                                                        id={`create-timeP-end-time`}
+                                                        value={officeHourCurrent.endTime}
+                                                        onChange={(e) => setOfficeHourCurrent({...officeHourCurrent,endTime:e})}
+                                                        disabled={false}
+                                                    />
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a className="save text-green" title={translate('general.save')} onClick={handleAddOfficeHours} ><i className="material-icons">add_circle</i></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
                             </div>
                         </div>
 
@@ -896,7 +1011,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                             <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process-create-task">
                                 <div className="row">
                                     {/* Quy trình công việc */}
-                                    <div className={`contain-border ${showInfo || showInfoProcess? 'col-md-8' : 'col-md-12'}`}>
+                                    <div className={`contain-border ${showInfo || showInfoProcess ? 'col-md-8' : 'col-md-12'}`}>
                                         {/* Nút tùy chọn export, import diagram,... */}
                                         <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                             <button onClick={exportDiagram}>Export XML</button>
@@ -951,7 +1066,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                                                     handleChangeResponsible={handleChangeResponsible}
                                                     handleChangeAccountable={handleChangeAccountable}
                                                     onChangeTemplateData={handleChangeInfo}
-                                                     // cập nhật hiển thị diagram
+                                                // cập nhật hiển thị diagram
                                                 />
                                             </div>
                                         }
@@ -970,7 +1085,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                                                     handleProcessTemplateDescProcessChild={handleProcessTemplateDescProcessChild} // cập nhật mô tả vào diagram
                                                     handleChangeManagerProcessChild={handleChangeManagerProcessChild} // cập nhật hiển thi diagram
                                                     handleChangeViewerProcessChild={handleChangeViewerProcessChild} // cập nhật hiển thị diagram
-                                                    // setBpmnProcess={setBpmnProcess}
+                                                // setBpmnProcess={setBpmnProcess}
                                                 />
                                             </div>
                                         }

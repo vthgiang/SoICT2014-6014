@@ -13,6 +13,8 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../process-template/processDiagram.css';
 import { ViewProcessChild } from "./viewProcessChild";
+import { ReportProcess } from "./report/reportProcess";
+import { ReportHumanOfProcess } from "./report/reportHumanOfProcess";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -35,16 +37,17 @@ function ViewProcess(props) {
     const [state, setState] = useState({
         userId: getStorage("userId"),
         currentRole: getStorage('currentRole'),
-        showProcessChild:false,
+        showProcessChild: false,
         showInfo: false,
-        processChilds:data.processChilds,
+        processChilds: data.processChilds,
         info: data.tasks,
         xmlDiagram: data.xmlDiagram,
         selected: 'info',
         zlevel: 1,
         startDate: "",
         endDate: "",
-        status: ""
+        status: "",
+        selectedView: "info",
     })
 
     const [modeler, setModeler] = useState(
@@ -84,14 +87,13 @@ function ViewProcess(props) {
         for (let i in processChilds) {
             ListProcessChilds[`${processChilds[i].codeInProcess}`] = processChilds[i];
         }
-        console.log(props.data);
         setState({
             ...state,
             idProcess: props.idProcess,
             showInfo: false,
-            showProcessChild:false,
+            showProcessChild: false,
             info: info,
-            processChilds:ListProcessChilds,
+            processChilds: ListProcessChilds,
             processDescription: props.data.processDescription ? props.data.processDescription : '',
             processName: props.data.processName ? props.data.processName : '',
             status: props.data.status ? props.data.status : '',
@@ -188,7 +190,7 @@ function ViewProcess(props) {
                     name: nameStr[1],
                     taskName: element.businessObject.name,
                     id: `${element.businessObject.id}`,
-                    showProcessChild:false,
+                    showProcessChild: false,
                 }
             } else if (element.type === 'bpmn:SubProcess') {
                 if (!state.processChilds[`${element.businessObject.id}`] || (state.processChilds[`${element.businessObject.id}`] && !state.processChilds[`${element.businessObject.id}`].organizationalUnit)) {
@@ -209,7 +211,7 @@ function ViewProcess(props) {
             }
 
             else {
-                return { ...state, showInfo: false,showProcessChild:false, type: element.type, name: '', id: element.businessObject.id, }
+                return { ...state, showInfo: false, showProcessChild: false, type: element.type, name: '', id: element.businessObject.id, }
             }
 
         })
@@ -354,7 +356,7 @@ function ViewProcess(props) {
     }
 
 
-    const formatDate=(date)=> {
+    const formatDate = (date) => {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -376,11 +378,17 @@ function ViewProcess(props) {
         else if (data === "delayed") return translate('task.task_management.delayed');
         else if (data === "canceled") return translate('task.task_management.canceled');
     }
-
+    const handleChangeContent = async (content) => {
+        await setState(state => {
+            return {
+                ...state,
+                selectedView: content
+            }
+        })
+    }
     const { translate, role, user } = props;
     const { id, info, startDate, endDate, status,
-        processDescription, processName,showProcessChild,processChilds ,showInfo} = state;
-        console.log(processChilds);
+        processDescription, processName, showProcessChild, processChilds, showInfo, selectedView } = state;
     const { isTabPane } = props
     // if (id){
     //     console.log(info[`${id}`]);
@@ -394,80 +402,111 @@ function ViewProcess(props) {
                 }
                 {id !== undefined && showProcessChild &&
                     <ViewProcessChild id={id}
-                    processChild={(processChilds && processChilds[`${id}`]) && processChilds[`${id}`]} />
+                        processChild={(processChilds && processChilds[`${id}`]) && processChilds[`${id}`]} />
                 }
-                <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
-                    {/* Quy trình công việc */}
-                    <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
-                        {/* Diagram */}
-                        <div id={generateId}></div>
+                <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a href="#info-view" onClick={() => handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
+                         {props.checkManager &&
+                            <React.Fragment>
+                            <li><a className="viewReport" href="#report-view" onClick={() => handleChangeContent("report")} data-toggle="tab">Báo cáo</a></li>
+                            <li><a className="viewReportHuman" href="#report-human-view" onClick={() => handleChangeContent("reportHuman")} data-toggle="tab">Báo cáo thành viên</a></li>
+                        </React.Fragment>
+                        }
+                            
+                    </ul>
+                </div>
+                <div className="tab-content">
+                    <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
+                        <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
+                            {/* Quy trình công việc */}
+                            <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
+                                {/* Diagram */}
+                                <div id={generateId}></div>
 
-                        {/* Zoom button */}
-                        <div className="row">
-                            <div className="io-zoom-controls">
-                                <ul className="io-zoom-reset io-control io-control-list">
-                                    <li>
-                                        <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
-                                            <i className="fa fa-crosshairs"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
-                                            <i className="fa fa-plus"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
-                                            <i className="fa fa-minus"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={`${isTabPane ? "" : "col-md-4"}`}>
-                        <div className='description-box without-border'>
-                            {/* tên quy trình */}
-                            <div>
-                                <strong>{translate("task.task_process.process_name")}:</strong>
-                                <span>{processName}</span>
-                            </div>
-
-                            {/* mô tả quy trình */}
-                            <div>
-                                <strong>{translate("task.task_process.process_description")}:</strong>
-                                <span>{processDescription}</span>
-                            </div>
-
-                            {/* mô tả quy trình */}
-                            <div>
-                                <strong>{translate("task.task_process.process_status")}:</strong>
-                                <span>{formatStatus(status)}</span>
+                                {/* Zoom button */}
+                                <div className="row">
+                                    <div className="io-zoom-controls">
+                                        <ul className="io-zoom-reset io-control io-control-list">
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
+                                                    <i className="fa fa-crosshairs"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
+                                                    <i className="fa fa-plus"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
+                                                    <i className="fa fa-minus"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* thời gian thực hiện quy trình */}
-                            <div>
-                                <strong>{translate("task.task_process.time_of_process")}:</strong>
-                                <span>{formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {formatDate(endDate)}</span>
-                            </div>
+                            <div className={`${isTabPane ? "" : "col-md-4"}`}>
+                                <div className='description-box without-border'>
+                                    {/* tên quy trình */}
+                                    <div>
+                                        <strong>{translate("task.task_process.process_name")}:</strong>
+                                        <span>{processName}</span>
+                                    </div>
 
-                            <div>
-                                <strong>{translate("task.task_process.notice")}:</strong>
-                            </div>
+                                    {/* mô tả quy trình */}
+                                    <div>
+                                        <strong>{translate("task.task_process.process_description")}:</strong>
+                                        <span>{processDescription}</span>
+                                    </div>
 
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.wait_for_approval")}
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <div style={{ backgroundColor: "#84ffb8", height: "30px", width: "40px", border: "2px solid #14984c", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.inprocess")}
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <div style={{ backgroundColor: "#f9f9f9", height: "30px", width: "40px", border: "2px solid #c4c4c7", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.finished")}
+                                    {/* mô tả quy trình */}
+                                    <div>
+                                        <strong>{translate("task.task_process.process_status")}:</strong>
+                                        <span>{formatStatus(status)}</span>
+                                    </div>
+
+                                    {/* thời gian thực hiện quy trình */}
+                                    <div>
+                                        <strong>{translate("task.task_process.time_of_process")}:</strong>
+                                        <span>{formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {formatDate(endDate)}</span>
+                                    </div>
+
+                                    <div>
+                                        <strong>{translate("task.task_process.notice")}:</strong>
+                                    </div>
+
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.wait_for_approval")}
+                                    </div>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <div style={{ backgroundColor: "#84ffb8", height: "30px", width: "40px", border: "2px solid #14984c", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.inprocess")}
+                                    </div>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <div style={{ backgroundColor: "#f9f9f9", height: "30px", width: "40px", border: "2px solid #c4c4c7", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.finished")}
+                                    </div>
+                                    <div>
+                                        <strong>Báo cáo tổng quan:</strong>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                    <React.Fragment>
+                        <div className="tab-content">
+                            <div className={selectedView === "report" ? "active tab-pane" : "tab-pane"} id="info-report">
+                                <ReportProcess officeHours={props.data.officeHours} convertDayToHour={props.data.convertDayToHour} listTask ={props.data.tasks} processTemplate = {props.data.processTemplate}/>
+                            </div>
+                        </div>
+                        <div className="tab-content">
+                            <div className={selectedView === "reportHuman" ? "active tab-pane" : "tab-pane"} id="info-report-human">
+                                <ReportHumanOfProcess officeHours={props.data.officeHours} convertDayToHour={props.data.convertDayToHour} listTask ={props.data.tasks}/>
+                            </div>
+                        </div>
+                    </React.Fragment>
             </div>
         </React.Fragment>
     )

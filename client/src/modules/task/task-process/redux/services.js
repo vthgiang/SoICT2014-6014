@@ -40,7 +40,7 @@ function getAllXmlDiagram(pageNumber, noResultsPerPage, name) {
 /**
  * Lấy tất cả task-process
  */
-function getAllTaskProcess(pageNumber, noResultsPerPage, name) {
+function getAllTaskProcess(pageNumber, noResultsPerPage, name,startDate,endDate,processTemplate) {
     let userId = getStorage("userId");
     let currentRole = getStorage("currentRole");
     return sendRequest({
@@ -52,6 +52,9 @@ function getAllTaskProcess(pageNumber, noResultsPerPage, name) {
             pageNumber: pageNumber,
             noResultsPerPage: noResultsPerPage,
             name: name,
+            startDate:startDate,
+            endDate:endDate,
+            processTemplate:processTemplate,
             type: "task"
         },
     }, false, true, 'task.task_process');
