@@ -30,18 +30,18 @@ function getSuppliesDashboard(data) {
 function getSuppliesOrganizationDashboard(data) {
     return (dispatch) => {
         dispatch({
-            type: SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_REQUEST
+            type: SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_REQUEST
         });
         SuppliesDashboardService.getSuppliesOrganizationDashboard(data)
             .then((res) => {
                 dispatch({
-                    type: SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_SUCCESS,
+                    type: SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_SUCCESS,
                     payload: res.data.content,
                 });
             })
             .catch((err) => {
                 dispatch({
-                    type: SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_FAILURE,
+                    type: SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_FAILURE,
                     error: err,
                 });
             });

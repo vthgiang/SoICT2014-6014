@@ -36,7 +36,10 @@ const initState = {
 export function suppliesDashboardReducer(state = initState, action) {
     switch (action.type) {
         case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_REQUEST:
-        case SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+            };
         case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_SUCCESS:
             if (action.payload !== undefined) {
                 return {
@@ -49,18 +52,34 @@ export function suppliesDashboardReducer(state = initState, action) {
             } else {
                 return { ...state }
             }
+        case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_FAILURE:
+            return {
+                error: action.error,
+                ...state,
+                isLoading: false,
+            };
+        case SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+            };
         case SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_SUCCESS:
+            console.log('state 1: ', state)
             if (action.payload !== undefined) {
                 return {
                     ...state,
-                    suppliesPriceForOrganization: action.payload
+                    suppliesPriceForOrganization: action.payload,
+                    isLoading: false
                 };
             } else {
                 return { ...state }
-            }
-        case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_FAILURE:
+        }
         case SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_FAILURE:
-
+            return {
+                error: action.error,
+                ...state,
+                isLoading: false,
+            };
         default:
             return state
     }

@@ -22,7 +22,6 @@ function SuppliesDashboard(props) {
     let {listSupplies, totalList} = props.suppliesReducer;
     let childOrganizationalUnit = department?.list?.map(x => ({id: x._id, name: x.name}));
 
-    console.log("DEBUG: suppliesPriceForOrganization", suppliesPriceForOrganization)
     let d = new Date(),
         month = d.getMonth() + 1,
         year = d.getFullYear();
@@ -183,6 +182,8 @@ function SuppliesDashboard(props) {
             })
         } else {
             // CAL API: with organizationId, supplyIds, time
+            props.getSuppliesOrganizationDashboard({supplyIds, organizationId, time});
+            console.log("DEBUG: suppliesPriceForOrganization", suppliesPriceForOrganization)
 
         }
     }
@@ -311,7 +312,7 @@ function SuppliesDashboard(props) {
                         <label style={{ width: "auto" }}>Vật tư</label>
                         <SelectMulti id="multiSelectSupplies"
                                      items={listSupplies.map(item => { return { value: item.id, text: item.suppliesName } })}
-                                     options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                     options={{ nonSelectedText: 'Chọn vật tư', allSelectedText: 'Chọn tất cả vật tư' }}
                                      onChange={handleSelectSupplies}
                         >
                         </SelectMulti>
