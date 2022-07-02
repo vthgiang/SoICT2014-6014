@@ -262,7 +262,7 @@ exports.getDashboardSupplies = async (portal, query) => {
         .populate('allocationHistories')
         .populate('purchaseInvoices')
         .exec();
-
+    console.log("supplies: ", supplies);
     let suppliesPurchaseRequest = await SuppliesPurchaseRequest(connect(DB_CONNECTION, portal))
         .find({})
         .populate('company')
@@ -443,6 +443,7 @@ exports.getDashboardSupplies = async (portal, query) => {
 
 exports.getDashboardSuppliesForOrganization = async (portal, query) => {
     let {supplyIds, organizationId, time} = query;
+    supplyIds = supplyIds.split(",");
     time = JSON.parse(time);
     let startTime = new Date(time.startTime);
     let endTime = new Date(time.endTime);
@@ -450,12 +451,12 @@ exports.getDashboardSuppliesForOrganization = async (portal, query) => {
     endTime = new Date(endTime.getFullYear(), endTime.getMonth());
 
     let supplies = await Supplies(connect(DB_CONNECTION, portal))
-        .find({
-            _id: {$in: supplyIds.map(item => mongoose.Types.ObjectId(item))} })
+        .find({_id: {$in: supplyIds.map(item => mongoose.Types.ObjectId(item))}})
         .populate('allocationHistories')
         .populate('purchaseInvoices')
         .exec();
 
+    console.log(supplyIds.map(item => mongoose.Types.ObjectId(item)));
     let suppliesPriceForOrganization = [];
     for (let i = 0; i < supplies.length; i++) {
         let supply = supplies[i];
