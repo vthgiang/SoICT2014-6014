@@ -18,10 +18,11 @@ const formatTime = (value) => {
 
 function SuppliesDashboard(props) {
     const {translate, department} = props;
-    let {pieChart, barChart, numberData} = props.suppliesDashboardReducer;
+    let {pieChart, barChart, numberData, suppliesPriceForOrganization} = props.suppliesDashboardReducer;
     let {listSupplies, totalList} = props.suppliesReducer;
     let childOrganizationalUnit = department?.list?.map(x => ({id: x._id, name: x.name}));
 
+    console.log("DEBUG: suppliesPriceForOrganization", suppliesPriceForOrganization)
     let d = new Date(),
         month = d.getMonth() + 1,
         year = d.getFullYear();
@@ -75,11 +76,18 @@ function SuppliesDashboard(props) {
        endTime: new Date(formatTime([endMonth, year].join('-')))
    });
 
-   console.log("DEBUG: searchOrganization", searchOrganization.current)
     useEffect(() => {
         props.getSuppliesDashboard({endTime: state.defaultStartMonth, startTime: state.defaultEndMonth});
         props.searchSupplies({getAll: 'true'});
         props.getDepartment();
+        props.getSuppliesOrganizationDashboard({
+            time: {
+                startTime: searchOrganization.current.startTime,
+                endTime: searchOrganization.current.endTime
+            },
+            supplyIds: searchOrganization.current.supplyIds,
+            organizationId: searchOrganization.current.organizationId
+        });
     }, []);
 
 
@@ -176,10 +184,6 @@ function SuppliesDashboard(props) {
         } else {
             // CAL API: with organizationId, supplyIds, time
 
-            console.log("time: ", {
-                startTime: purchaseDateAfter,
-                endTime: purchaseDateBefore
-            });
         }
     }
     return (
@@ -359,7 +363,8 @@ function mapState(state) {
 const mapDispatchToProps = {
     searchSupplies: SuppliesActions.searchSupplies,
     getSuppliesDashboard: SuppliesDashboardActions.getSuppliesDashboard,
-    getDepartment: DepartmentActions.get
+    getDepartment: DepartmentActions.get,
+    getSuppliesOrganizationDashboard: SuppliesDashboardActions.getSuppliesOrganizationDashboard
 }
 
 const dashboardSuppliesConnect = connect(mapState, mapDispatchToProps)(withTranslate(SuppliesDashboard));

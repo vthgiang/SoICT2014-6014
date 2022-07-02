@@ -30,11 +30,13 @@ const initState = {
     barChart: {
         organizationUnitsPriceSupply: []
     },
+    suppliesPriceForOrganization: []
 }
 
 export function suppliesDashboardReducer(state = initState, action) {
     switch (action.type) {
         case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_REQUEST:
+        case SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_REQUEST:
         case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_SUCCESS:
             if (action.payload !== undefined) {
                 return {
@@ -47,7 +49,17 @@ export function suppliesDashboardReducer(state = initState, action) {
             } else {
                 return { ...state }
             }
+        case SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_SUCCESS:
+            if (action.payload !== undefined) {
+                return {
+                    ...state,
+                    suppliesPriceForOrganization: action.payload
+                };
+            } else {
+                return { ...state }
+            }
         case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_FAILURE:
+        case SuppliesDashboardConstants.GET_SUPPLIES_ORGANIZATION_DASHBOARD_FAILURE:
 
         default:
             return state
