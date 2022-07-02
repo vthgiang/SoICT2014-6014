@@ -1,18 +1,26 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {connect} from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import isEqual from 'lodash/isEqual';
 import {SuppliesActions} from '../../supplies/redux/actions';
 import {SuppliesDashboardActions} from '../redux/actions';
 import Swal from 'sweetalert2';
-import {DatePicker} from '../../../../../common-components';
+import {DatePicker, SelectBox, SelectMulti} from '../../../../../common-components';
 import {getTableConfiguration} from '../../../../../helpers/tableConfiguration';
 import BoughtPieChart from "./pie-chart/BoughtPieChart";
 import ExistPieChart from "./pie-chart/ExistPieChart";
 import OrganizationUnitSupplyChart from "./bar-chart/OrganizationUnitSupplyChart";
 import {DepartmentActions} from "../../../../super-admin/organizational-unit/redux/actions";
 
+const formatTime = (value) => {
+    return value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)))
+}
+
 function SuppliesDashboard(props) {
+    const {translate, department} = props;
+    let {pieChart, barChart, numberData} = props.suppliesDashboardReducer;
+    let {listSupplies, totalList} = props.suppliesReducer;
+    let childOrganizationalUnit = department?.list?.map(x => ({id: x._id, name: x.name}));
 
     let d = new Date(),
         month = d.getMonth() + 1,
@@ -58,8 +66,16 @@ function SuppliesDashboard(props) {
         page: 1,
         limit: dashboardSupplies,
         listSupplies: [],
-    })
+    });
 
+   const searchOrganization = useRef({
+       supplyIds: listSupplies.map(item => { return item.id }),
+       organizationId: childOrganizationalUnit[0]?.id,
+       startTime: new Date(formatTime([startMonth, startYear].join('-'))),
+       endTime: new Date(formatTime([endMonth, year].join('-')))
+   });
+
+   console.log("DEBUG: searchOrganization", searchOrganization.current)
     useEffect(() => {
         props.getSuppliesDashboard({endTime: state.defaultStartMonth, startTime: state.defaultEndMonth});
         props.searchSupplies({getAll: 'true'});
@@ -75,6 +91,24 @@ function SuppliesDashboard(props) {
     const handleChangeDateBefore = async (value) => {
         let month = value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         INFO_SEARCH.purchaseDateBefore = month;
+    }
+
+    const handleChangeDateOrganizationAfter = (value) => {
+        let month = value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        searchOrganization.current = {
+            ...searchOrganization.current,
+            startTime: new Date(month)
+        }
+        console.log('DEBUG: organ date 1:', searchOrganization.current)
+    }
+
+    const handleChangeDateOrganizationBefore = (value) => {
+        let month = value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        searchOrganization.current = {
+            ...searchOrganization.current,
+            endTime: new Date(month)
+        }
+        console.log('DEBUG: organ date 2:', searchOrganization.current)
     }
 
     const handleSearchData = async () => {
@@ -98,22 +132,56 @@ function SuppliesDashboard(props) {
         }
     }
 
-    const {translate, department} = props;
     let {purchaseDateAfter, purchaseDateBefore} = INFO_SEARCH;
-    let {pieChart, barChart, numberData} = props.suppliesDashboardReducer;
-    let {listSupplies, totalList} = props.suppliesReducer;
-    let childOrganizationalUnit = department?.list?.map(x => ({id: x._id, name: x.name}));
     console.log('DEBUG: pieChart: ', pieChart);
     console.log('DEBUG: bar-chart: ', barChart);
     console.log('DEBUG: numberData: ', numberData);
     console.log('DEBUG: listSupplies: ', listSupplies);
-    console.log('DEBUG: department: ', department);
+    console.log('DEBUG: childOrganizationalUnit: ', childOrganizationalUnit);
 
     let format = year == "true" ? "year" : "month-year";
     let startValue = year == "true" ? purchaseDateAfter.slice(0, 4) : purchaseDateAfter.slice(5, 7) + ' - ' + purchaseDateAfter.slice(0, 4);
     let endValue = year == "true" ? purchaseDateBefore.slice(0, 4) : purchaseDateBefore.slice(5, 7) + ' - ' + purchaseDateBefore.slice(0, 4);
 
 
+    const handleSelectSupplies = (value) => {
+        searchOrganization.current = {
+            ...searchOrganization.current,
+            supplyIds: value.toString()
+        }
+    }
+
+    const handleSelectOrganization = (value) => {
+        console.log('DEBUG: organization ', value.toString());
+        searchOrganization.current = {
+            ...searchOrganization.current,
+            organizationId: value.toString()
+        }
+    }
+
+    const handleSearchOrganData = async () => {
+        const {organizationId, supplyIds, startTime, endTime} = searchOrganization.current;
+        const time = {
+            startTime,
+            endTime
+        }
+        if (startTime.getTime() > endTime.getTime()) {
+            const {translate} = props;
+            await Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
+            })
+        } else {
+            // CAL API: with organizationId, supplyIds, time
+
+            console.log("time: ", {
+                startTime: purchaseDateAfter,
+                endTime: purchaseDateBefore
+            });
+        }
+    }
     return (
         <React.Fragment>
             <div className='qlcv'>
@@ -233,6 +301,51 @@ function SuppliesDashboard(props) {
                         }
                     </div>
                 </div>
+
+                <div className="form-inline" style={{marginTop: 10}}>
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>Vật tư</label>
+                        <SelectMulti id="multiSelectSupplies"
+                                     items={listSupplies.map(item => { return { value: item.id, text: item.suppliesName } })}
+                                     options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                     onChange={handleSelectSupplies}
+                        >
+                        </SelectMulti>
+                    </div>
+                    <div className="form-group">
+                        <label  style={{ width: "auto" }}>Đơn vị</label>
+                        <SelectBox
+                            id={`select-approver`}
+                            className="form-control select2"
+                            style={{ width: "100%"}}
+                            items={childOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                            onChange={handleSelectOrganization}
+                            multiple={false}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label style={{width: 'auto', marginLeft: 12, marginRight: 10}}>{translate('task.task_management.from')}</label>
+                        <DatePicker
+                            id={`organ_after${year}`}
+                            dateFormat={format}
+                            value={startValue}
+                            onChange={handleChangeDateOrganizationAfter}
+                            disabled={false}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label style={{width: 'auto', marginLeft: 12, marginRight: 10}}>{translate('task.task_management.to')}</label>
+                        <DatePicker
+                            id={`organ_before${year}`}
+                            dateFormat={format}
+                            value={endValue}
+                            onChange={handleChangeDateOrganizationBefore}
+                            disabled={false}
+                        />
+                    </div>
+                    <button className="btn btn-success" style={{marginLeft: 12, marginRight: 10}}
+                            onClick={handleSearchOrganData}>{translate('task.task_management.search')}</button>
+                    </div>
             </div>
         </React.Fragment>
     );
