@@ -10,6 +10,7 @@ import {getTableConfiguration} from '../../../../../helpers/tableConfiguration';
 import BoughtPieChart from "./pie-chart/BoughtPieChart";
 import ExistPieChart from "./pie-chart/ExistPieChart";
 import OrganizationUnitSupplyChart from "./bar-chart/OrganizationUnitSupplyChart";
+import {DepartmentActions} from "../../../../super-admin/organizational-unit/redux/actions";
 
 function SuppliesDashboard(props) {
 
@@ -61,29 +62,10 @@ function SuppliesDashboard(props) {
 
     useEffect(() => {
         props.getSuppliesDashboard({endTime: state.defaultStartMonth, startTime: state.defaultEndMonth});
+        props.searchSupplies({getAll: 'true'});
+        props.getDepartment();
     }, []);
 
-    const handleChangeSupplies = (value) => {
-        setState({
-            ...state,
-            listSupplies: value,
-        })
-        console.log("type", JSON.stringify(value));
-    }
-
-    const handleSelectSuppliesOfDisplay = async (value) => {
-        INFO_SEARCH.displayBy = value
-    }
-
-    const handlePaginationSupplies = (page) => {
-        const {limit} = state;
-        let pageConvert = (page - 1) * (limit);
-
-        setState({
-            ...state,
-            page: parseInt(pageConvert),
-        })
-    }
 
     const handleChangeDateAfter = async (value) => {
         let month = value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
@@ -108,56 +90,24 @@ function SuppliesDashboard(props) {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            props.getSuppliesDashboard({endTime: purchaseDateBefore, startTime: purchaseDateAfter})
+            props.getSuppliesDashboard({endTime: purchaseDateBefore, startTime: purchaseDateAfter});
+            console.log("time: ", {
+                startTime: purchaseDateAfter,
+                endTime: purchaseDateBefore
+            });
         }
     }
 
-    const setCountInvoice = (value) => {
-        let {countInvoice} = state;
-
-        if (!isEqual(countInvoice, value)) {
-            setState(state => {
-                return {
-                    ...state,
-                    countInvoice: value,
-                }
-            })
-        }
-    }
-
-    const setCountAllocation = (value) => {
-        let {countAllocation} = state;
-
-        if (!isEqual(countAllocation, value)) {
-            setState(state => {
-                return {
-                    ...state,
-                    countAllocation: value,
-                }
-            })
-        }
-    }
-
-    const setValueInvoice = (value) => {
-        let {valueInvoice} = state;
-
-        if (!isEqual(valueInvoice, value)) {
-            setState(state => {
-                return {
-                    ...state,
-                    valueInvoice: value,
-                }
-            })
-        }
-    }
-
-    const {translate} = props;
+    const {translate, department} = props;
     let {purchaseDateAfter, purchaseDateBefore} = INFO_SEARCH;
     let {pieChart, barChart, numberData} = props.suppliesDashboardReducer;
-
+    let {listSupplies, totalList} = props.suppliesReducer;
+    let childOrganizationalUnit = department?.list?.map(x => ({id: x._id, name: x.name}));
     console.log('DEBUG: pieChart: ', pieChart);
     console.log('DEBUG: bar-chart: ', barChart);
     console.log('DEBUG: numberData: ', numberData);
+    console.log('DEBUG: listSupplies: ', listSupplies);
+    console.log('DEBUG: department: ', department);
 
     let format = year == "true" ? "year" : "month-year";
     let startValue = year == "true" ? purchaseDateAfter.slice(0, 4) : purchaseDateAfter.slice(5, 7) + ' - ' + purchaseDateAfter.slice(0, 4);
@@ -289,13 +239,14 @@ function SuppliesDashboard(props) {
 }
 
 function mapState(state) {
-    const {suppliesReducer, suppliesDashboardReducer} = state;
-    return {suppliesReducer, suppliesDashboardReducer};
+    const {suppliesReducer, suppliesDashboardReducer, department} = state;
+    return {suppliesReducer, suppliesDashboardReducer, department};
 }
 
 const mapDispatchToProps = {
     searchSupplies: SuppliesActions.searchSupplies,
     getSuppliesDashboard: SuppliesDashboardActions.getSuppliesDashboard,
+    getDepartment: DepartmentActions.get
 }
 
 const dashboardSuppliesConnect = connect(mapState, mapDispatchToProps)(withTranslate(SuppliesDashboard));
