@@ -137,8 +137,8 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
               select: "name email avatar",
             },
           ],
-        },{ path: 'processTemplate' },
-            { path: 'processTemplate', populate: { path: 'processTemplates.process' } }],
+        }, { path: 'processTemplate' },
+        { path: 'processTemplate', populate: { path: 'processTemplates.process' } }],
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
@@ -280,7 +280,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       info: true,
     };
   }
-  
+
   task.evaluations.reverse();
   task.logs.reverse()
   task = task.toObject();
@@ -1729,8 +1729,8 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
     ]);
 
   console.log("---------taskComment", taskComment);
-  const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => { return {_id: o._id, email: o.email} });
-  const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => { return {_id: o._id, email: o.email} });
+  const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => { return { _id: o._id, email: o.email } });
+  const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => { return { _id: o._id, email: o.email } });
 
   const userReceive = [...resEmployees, ...accEmployees].map(o => o._id).filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
   const emailReceive = [...resEmployees, ...accEmployees].map(o => o.email).filter(obj => JSON.stringify(obj) !== JSON.stringify(user.email))
@@ -3183,7 +3183,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     }
   }
   let statusActualStartDate = false;
-  if (taskItem.status==="wait_for_approval" && status[0]==="inprocess") statusActualStartDate=true;
+  if (taskItem.status === "wait_for_approval" && status[0] === "inprocess") statusActualStartDate = true;
   // cập nhật thông tin cơ bản
   await Task(connect(DB_CONNECTION, portal)).updateOne(
     { _id: taskId },
@@ -3209,7 +3209,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees: informedEmployees,
 
         inactiveEmployees: inactiveEmployees,
-      }: {
+      } : {
         name: name,
         description: description,
         progress: progress,
@@ -3748,7 +3748,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
               select: "name email avatar",
             },
           ]
-        },{ path: 'processTemplate' },
+        }, { path: 'processTemplate' },
         { path: 'processTemplate', populate: { path: 'processTemplates.process' } }]
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
@@ -5952,8 +5952,8 @@ exports.confirmTask = async (portal, taskId, userId) => {
 exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   const { userId, taskStatus, description, type, role } = data;
   let task = await this.getTaskById(portal, taskId, userId).populate([
-    { path: 'process' },
-]);
+    { path: 'process' , populate:[{path:"tasks"},{path:"processChilds"}]},
+  ]);
   const requestStatusNumber = type === 'request' ? 1
     : type === 'cancel_request' ? 2
       : type === 'approval' ? 3
@@ -6030,26 +6030,46 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   //         "status": 'inprocess'
   //     }
   // }
-  if (type === 'approval' && task.codeInProcess){
-      let folTask = task.followingTasks;
-      for (let i in folTask) {
-          let type = folTask[i].task?folTask[i].task.split("_"):["1"];
-          if (type[0] === "Event") {
-            const dataNotification = {
-                organizationalUnits: [],
-                title: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc`,
-                level: "emergency",
-                content: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc , <a href="${process.env.WEBSITE}process?processId=${newTaskProcess1._id}" target="blank>Xem ngay</a></p>`,
-                sender: `${task.process.creator}`,
-                users: task.process.manager,
-                associatedDataObject: {
-                    dataType: 6,
-                    description: `<p><strong>Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc.</p>`
-                }
-            };
-            NotificationServices.createNotification(portal, portal, dataNotification)
+  if (type === 'approval' && task.codeInProcess) {
+    let folTask = task.followingTasks;
+    if (!folTask) {
+      let listProcessChild = task.process?.processChilds
+      let listTaskProcess = task.process?.tasks
+      let status = true
+      if (listTaskProcess) {
+        listTaskProcess.forEach(value => {
+          if (!value.followingTasks) {
+            if (value.status !== "finished") {
+              status = false
+            }
           }
+        })
       }
+      if (listProcessChild) {
+        listProcessChild.forEach(value => {
+          if (!value.followingTasks) {
+            if (value.status !== "finished") {
+              status = false
+            }
+          }
+        })
+      }
+      if (status) {
+        const dataNotification = {
+          organizationalUnits: [],
+          title: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc`,
+          level: "emergency",
+          content: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc , <a href="${process.env.WEBSITE}process?processId=${newTaskProcess1._id}" target="blank>Xem ngay</a></p>`,
+          sender: `${task.process.creator}`,
+          users: task.process.manager,
+          associatedDataObject: {
+            dataType: 6,
+            description: `<p><strong>Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc.</p>`
+          }
+        };
+        NotificationServices.createNotification(portal, portal, dataNotification)
+      }
+    }
   }
   await Task(connect(DB_CONNECTION, portal))
     .findByIdAndUpdate(taskId, {

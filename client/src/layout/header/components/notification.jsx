@@ -125,7 +125,6 @@ function Notification(props) {
     notifyProductionUnRead = data.notifyProduction;
     notifyDefault = data.notifyDefault;
     notifyProcessUnRead = data.notifyProcess?data.notifyProcess:[]
-    console.log(notifyUnRead);
     return (
         <React.Fragment>
             {
