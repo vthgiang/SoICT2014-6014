@@ -146,6 +146,7 @@ exports.links = [
             { path: '/privilege/roles/:idRole/privileges', method: 'GET' },
 
             { path: '/delegation/delegations', method: 'GET' },
+            { path: '/delegation/delegations/tasks', method: 'GET' },
             { path: '/delegation/delegations', method: 'POST' },
             { path: '/delegation/delegations/paginate', method: 'POST' },
             { path: '/delegation/delegations/:id', method: 'GET' },
@@ -153,6 +154,7 @@ exports.links = [
             { path: '/delegation/delegations/:id', method: 'DELETE' },
             { path: '/delegation/delegations', method: 'PATCH' },
             { path: '/delegation/delegations-receive', method: 'GET' },
+            { path: '/delegation/delegations-receive/tasks', method: 'GET' },
             { path: '/delegation/delegations-confirm', method: 'PATCH' },
             { path: '/delegation/delegations-reject', method: 'PATCH' },
 
@@ -358,6 +360,9 @@ exports.links = [
             { path: '/task/analyse/user/:userId', method: 'GET' },
             { path: '/task/time-sheet', method: 'GET' },
             { path: '/task/time-sheet/all', method: 'GET' },
+            { path: '/task/tasks/:taskId/attributes', method: 'PATCH' },
+            { path: '/task/tasks/:taskId/delegation', method: 'PATCH' },
+
 
             // Perform-task
             { path: '/performtask/tasks/:taskId', method: 'GET' },

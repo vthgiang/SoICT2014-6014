@@ -4,6 +4,7 @@ const DelegationController = require('./delegation.controller');
 const { auth } = require(`../../middleware`);
 
 router.get('/delegations', auth, DelegationController.getDelegations);
+router.get('/delegations/tasks', auth, DelegationController.getDelegations);
 router.get('/delegations/:id', auth, DelegationController.getDelegationById);
 router.post('/delegations', auth, DelegationController.createDelegation);
 router.patch('/delegations/:id', auth, DelegationController.editDelegation);
@@ -12,6 +13,7 @@ router.patch('/delegations', auth, DelegationController.revokeDelegation);
 router.patch('/delegations-confirm', auth, DelegationController.confirmDelegation);
 router.patch('/delegations-reject', auth, DelegationController.rejectDelegation);
 router.get('/delegations-receive', auth, DelegationController.getDelegationsReceive);
+router.get('/delegations-receive/tasks', auth, DelegationController.getDelegationsReceiveTask);
 
 module.exports = router;
 

@@ -4,89 +4,181 @@ import { connect } from 'react-redux';
 import { ButtonModal, DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker, SelectMulti } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
-import { DelegationActions } from '../redux/actions';
+import { DelegationActions } from '../../../delegation/delegation-list/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import { DelegationFormValidator } from './delegationFormValidator';
-import './selectLink.css'
+import { DelegationFormValidator } from '../../../delegation/delegation-list/components/delegationFormValidator';
+import '../../../delegation/delegation-list/components/selectLink.css'
 import dayjs from "dayjs";
 import { generateCode } from "../../../../helpers/generateCode";
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
 import { PolicyActions } from '../../../super-admin/policy-delegation/redux/actions';
+import { performTaskAction } from '../../task-perform/redux/actions';
+import { taskManagementActions } from '../redux/actions';
 
 
-function DelegationEditForm(props) {
+function TaskDelegationForm(props) {
 
     const [state, setState] = useState({
-        validLinks: [],
-        unitMembers: [],
-        selectDelegateRole: true,
+        delegationName: "",
+        description: "",
         delegationNameError: {
             message: undefined,
             status: true
         },
-        errorOnDelegateLinks: undefined,
+        delegateTaskRoles: "",
+        delegatee: "",
         delegateDuration: {
             startDate: "",
             endDate: "",
             startTime: "",
-            endTime: "",
-            errorOnStartDate: undefined,
-            errorOnEndDate: undefined,
+            endTime: "11:30 PM",
         },
+        showChooseRevoke: false,
+        delegationStart: "",
+        delegationEnd: "",
+        unitMembers: [],
+        selectDelegateTaskRoles: false,
+        delegatePolicy: ""
 
     })
+    const { taskId, delegateTaskName, delegationName, description, delegationNameError, delegateTaskRoles, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errordelegateTaskRoles, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateTaskRoles, errorOnDelegateLinks, unitMembers, delegatePolicy, errorDelegatePolicy, roles } = state;
+
+    const { translate, performtasks, auth, user, policyDelegation } = props;
+
+
+    const ROLE = {
+        RESPONSIBLE: { name: translate('task.task_management.responsible'), value: "responsible" },
+        ACCOUNTABLE: { name: translate('task.task_management.accountable'), value: "accountable" },
+        CONSULTED: { name: translate('task.task_management.consulted'), value: "consulted" },
+        CREATOR: { name: translate('task.task_management.creator'), value: "creator" },
+        INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
+    };
+
+    // useEffect(() => {
+    //     if (props.taskId) {
+    //         props.getTaskById(props.taskId); // props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
+    //     }
+    // }, [props.taskId])
 
     useEffect(() => {
-        if (props.delegationID !== state.delegationID) {
+
+        if (performtasks?.task) {
+            let task = performtasks.task; /// chú ý: cần check thêm trường hợp quy trình có lấy dữ liệu ở performTasks hay ko
+
+            if (task?.organizationalUnit) props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
+
+            let roles = [];
+            if (task) {
+                let userId = getStorage("userId");
+                let tmp = task.responsibleEmployees.find(item => item._id === userId);
+                if (tmp) {
+                    roles.push(ROLE.RESPONSIBLE);
+                }
+
+                tmp = task.accountableEmployees && task.accountableEmployees.find(item => item._id === userId);
+                if (tmp) {
+                    roles.push(ROLE.ACCOUNTABLE);
+                }
+
+                tmp = task.consultedEmployees && task.consultedEmployees.find(item => item._id === userId);
+                if (tmp) {
+                    roles.push(ROLE.CONSULTED);
+                }
+
+                tmp = task.informedEmployees && task.informedEmployees.find(item => item._id === userId);
+                if (tmp) {
+                    roles.push(ROLE.INFORMED);
+                }
+
+                // if (task.creator._id)
+                //     if (userId === task.creator._id) roles.push(ROLE.CREATOR);
+                // if (!task.creator._id)
+                //     if (userId === task.creator) roles.push(ROLE.CREATOR);
+            }
             setState({
                 ...state,
-                delegationID: props.delegationID,
-                delegationName: props.delegationName,
-                description: props.description,
-                delegator: props.delegator._id,
-                delegatee: props.delegatee._id,
-                delegatePrivileges: props.delegatePrivileges,
-                delegateType: props.delegateType,
-                delegateRole: props.delegateRole._id,
-                delegateTask: props.delegateTask,
-                status: props.status,
-                allPrivileges: props.allPrivileges,
-                delegateDuration: {
-                    startDate: formatDate(props.startDate),
-                    endDate: props.endDate ? formatDate(props.endDate) : "",
-                    startTime: formatTime(props.startDate),
-                    endTime: props.endDate ? formatTime(props.endDate) : "11:59 PM",
-                    errorOnStartDate: undefined,
-                    errorOnEndDate: undefined,
-                },
-                revokedDate: props.revokedDate,
-                revokeReason: props.revokeReason,
-                showChooseLinks: props.showChooseLinks,
-                showChooseRevoke: props.showChooseRevoke,
-                delegatePolicy: props.delegatePolicy._id,
-                delegateLinks: !props.allPrivileges ? props.delegatePrivileges.map(pri => pri.resourceId._id) : null,
-                validLinks: link.list.filter(link => link.roles.filter(role => role.policies.length > 0).length == 0 && link.roles.map(role => role.roleId._id).some(r => role.list.filter(role => role._id == props.delegateRole._id.toString())[0].parents.map(p => p._id).concat(props.delegateRole._id.toString()).includes(r))).sort((a, b) => a.category > b.category ? 1 : -1),
-                logs: props.logs
+                taskId: props.taskId,
+                roles: roles,
+                delegateTaskName: props.taskName,
+                // delegationName: props.delegationName,
+                // description: props.description,
+                // delegator: props.delegator,
+                // delegatee: props.delegatee,
+                // delegateType: props.delegateType,
+                // delegateTaskRoles: props.delegateTaskRoles,
+                // delegateTask: props.delegateTask,
+                // status: props.status,
+                // delegateDuration: {
+                //     startDate: formatDate(props.startDate),
+                //     endDate: props.endDate ? formatDate(props.endDate) : "",
+                //     startTime: formatTime(props.startDate),
+                //     endTime: props.endDate ? formatTime(props.endDate) : "11:59 PM",
+                //     errorOnStartDate: undefined,
+                //     errorOnEndDate: undefined,
+                // },
+                // revokedDate: props.revokedDate,
+                // revokeReason: props.revokeReason,
+                // showChooseRevoke: props.showChooseRevoke,
+                // delegatePolicy: props.delegatePolicy,
+                // logs: props.logs,
+                // forReceive: props.forReceive,
+                // replyStatus: props.replyStatus,
+                // declineReason: props.declineReason,
             });
-            window.$('#delegateLinksEdit').prop("checked", props.showChooseLinks);
-            window.$('#delegateRevokeEdit').prop("checked", props.showChooseRevoke);
-            // validateDelegateRole(props.delegateRole._id, true)
         }
-    }, [props.delegationID])
+
+        // window.$('#delegateLinksEdit').prop("checked", props.showChooseLinks);
+        // window.$('#delegateRevokeEdit').prop("checked", props.showChooseRevoke);
+        // validateDelegateTaskRoles(props.delegateTaskRoles._id, true)
+
+    }, [JSON.stringify(performtasks?.task)])
 
 
-    const { delegationID, delegationName, description, delegationNameError, delegateRole, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateRole, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateRole, errorOnDelegateLinks, unitMembers, delegatePolicy, errorDelegatePolicy } = state;
+    useEffect(() => {
+        if (delegationName == "") {
+            window.$(`#modal-task-delegation-form-${props.id}`).on('shown.bs.modal', regenerateTimeAndCode);
+            return () => {
+                window.$(`#modal-task-delegation-form-${props.id}`).unbind('shown.bs.modal', regenerateTimeAndCode);
+            }
+        }
+    }, [])
 
-    const { translate, delegation, auth, user, policyDelegation, role, link } = props;
 
+    const roundToNearestHour = (date) => {
+        date.setMinutes(date.getMinutes() + 30);
+        date.getMinutes() >= 30 ? date.setMinutes(30, 0, 0) : date.setMinutes(0, 0, 0);
+
+
+        return date;
+    }
+
+
+    const regenerateTimeAndCode = () => {
+
+        let currentTime = formatTime(roundToNearestHour(new Date()))
+        let code = generateCode("UQCV");
+        let result = ValidationHelper.validateName(translate, code, 6, 255);
+
+        setState(state => {
+            return {
+                ...state,
+                delegateDuration: {
+                    ...state.delegateDuration,
+                    startTime: currentTime,
+                },
+                delegationName: code,
+                delegationNameError: result
+            }
+        });
+    }
 
     /**
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
-        if (!delegationNameError.status || !validateDelegateRole(state.delegateRole, false) || !validateDelegatee(state.delegatee, false)
-            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || !validateDelegatePolicy(state.delegatePolicy, false) || (showChooseLinks && delegateLinks == null)) {
+        if (!delegationNameError.status || !validateDelegatee(state.delegatee, false)
+            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || !validateDelegatePolicy(state.delegatePolicy, false)) {
             console.log("hello")
             return false;
         }
@@ -106,35 +198,48 @@ function DelegationEditForm(props) {
         const data = {
             delegationName: delegationName,
             description: description,
-            delegateRole: delegateRole,
+            delegateTaskRoles: delegateTaskRoles,
             delegator: auth.user._id,
             delegatee: delegatee,
-            showChooseLinks: showChooseLinks,
             delegationStart: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
             delegationEnd: delegationEnd != "" ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
-            delegateLinks: showChooseLinks ? delegateLinks.concat(validLinks.filter(link => link.url == "/home" || link.url == "/notifications").map(l => l._id)) : null,
-            allPrivileges: (!showChooseLinks) ? true : validLinks.length - 2 == delegateLinks.length,
-            delegatePolicy: delegatePolicy
+            delegatePolicy: delegatePolicy,
+            delegateTask: taskId
         }
         if (isFormValidated() && delegationName) {
-            return props.editDelegation(delegationID, data);
+            return props.addTaskDelegation(taskId, data);
         }
     }
 
-    const chooseLinks = (event) => {
-        setState({
-            ...state,
-            showChooseLinks: event.target.checked,
-            allPrivileges: !event.target.checked,
-            errorOnDelegateLinks: undefined,
-        });
-    }
 
     const chooseRevoke = (event) => {
         setState({
             ...state,
             showChooseRevoke: event.target.checked,
         });
+    }
+
+    const handleDelegateTaskRoles = (value) => {
+        validateDelegateTaskRoles(value, true);
+    }
+
+    const validateDelegateTaskRoles = (value, willUpdateState) => {
+        let msg = undefined;
+
+        const { translate } = props;
+        if (!value) {
+            msg = translate('manage_delegation.no_blank_delegate_role');
+        }
+        if (willUpdateState) {
+
+            setState({
+                ...state,
+                delegateTaskRoles: value,
+                errordelegateTaskRoles: msg,
+                selectDelegateTaskRoles: true
+            })
+        }
+        return msg === undefined;
     }
 
 
@@ -167,9 +272,9 @@ function DelegationEditForm(props) {
     }
 
     // DS toàn bộ user theo cơ cấu tổ chức
-    // useEffect(() => {
-    //     props.getAllUserInAllUnitsOfCompany();
-    // }, [])
+    useEffect(() => {
+        props.getAllUserInAllUnitsOfCompany();
+    }, [])
 
     // DS toàn bộ user thuộc department và children department
 
@@ -177,25 +282,15 @@ function DelegationEditForm(props) {
     if (user && user.usersInUnitsOfCompany) {
         console.log("user")
         usersInUnitsOfCompany = user.usersInUnitsOfCompany;
-        if (delegateRole != "") {
-            let selectedRoleUnit = user.organizationalUnitsOfUser.find(item =>
-                item.managers.find(manager => manager === delegateRole) === delegateRole
-                || item.deputyManagers.find(deputyManager => deputyManager === delegateRole) === delegateRole
-                || item.employees.find(employee => employee === delegateRole) === delegateRole);
+        // if (delegateTaskRoles != "") {
+        //     let selectedRoleUnit = user.organizationalUnitsOfUser.find(item =>
+        //         item.managers.find(manager => manager === delegateTaskRoles) === delegateTaskRoles
+        //         || item.deputyManagers.find(deputyManager => deputyManager === delegateTaskRoles) === delegateTaskRoles
+        //         || item.employees.find(employee => employee === delegateTaskRoles) === delegateTaskRoles);
 
 
-            usersInUnitsOfCompany = usersInUnitsOfCompany.filter(unit => unit.id == selectedRoleUnit._id || unit.parent == selectedRoleUnit._id)
-            // console.log(delegateRole)
-            // console.log(role.list.filter(role => role._id === delegateRole))
-            // if (delegateRole) {
-            //     let selectedRoleAndParents = role.list.filter(role => role._id == delegateRole.toString())[0].parents.map(p => p._id).concat(delegateRole)
-            //     let linksOfDelegateRole = link.list.filter(link => link.roles.filter(role => role.policies.length > 0).length == 0 && link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r)))
-            //     setState({
-            //         validLinks: linksOfDelegateRole.sort((a, b) => a.category > b.category ? 1 : -1)
-            //     })
-            // }
-
-        }
+        //     usersInUnitsOfCompany = usersInUnitsOfCompany.filter(unit => unit.id == selectedRoleUnit._id || unit.parent == selectedRoleUnit._id)
+        // }
 
     }
 
@@ -205,9 +300,7 @@ function DelegationEditForm(props) {
     console.log(allUnitsMember)
 
 
-    const handleDelegateRole = (value) => {
-        validateDelegateRole(value[0], true);
-    }
+
 
     const handleDelegatee = (value) => {
         validateDelegatee(value[0], true);
@@ -228,38 +321,6 @@ function DelegationEditForm(props) {
                 ...state,
                 delegatePolicy: value,
                 errorDelegatePolicy: msg,
-            })
-        }
-        return msg === undefined;
-    }
-
-    const validateDelegateRole = (value, willUpdateState) => {
-        let msg = undefined;
-
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_delegation.no_blank_delegate_role');
-        }
-        if (willUpdateState) {
-            // Array id delegate role và parents
-            let selectedRoleAndParents = role.list.filter(role => role._id == value)[0].parents.map(p => p._id).concat(value)
-
-            // console.log(role.list.filter(role => role._id == value[0]))
-            // console.log(selectedRoleAndParents)
-            // console.log(link.list.filter(link => link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r))))
-
-            // Lọc link ko có policies
-            let linksOfDelegateRole = link.list.filter(link => link.roles.filter(role => role.policies.length > 0).length == 0 && link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r)))
-
-            console.log(linksOfDelegateRole)
-            setState({
-                ...state,
-                delegateRole: value,
-                errorDelegateRole: msg,
-                validLinks: linksOfDelegateRole.sort((a, b) => a.category > b.category ? 1 : -1),
-                delegatee: "",
-                // unitMembers: unitMems,
-                selectDelegateRole: true
             })
         }
         return msg === undefined;
@@ -466,16 +527,25 @@ function DelegationEditForm(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-edit-delegation-hooks-${state.delegateType}`} isLoading={delegation.isLoading}
-                formID="form-edit-delegation-hooks"
-                title={translate('manage_delegation.edit_role_delegation_title')}
+                modalID={`modal-task-delegation-form-${props.id}`}
+                formID={`form-task-delegation-form-${props.id}`}
+                title={translate('manage_delegation.task_delegation_title_add')}
                 msg_success={translate('manage_delegation.add_success')}
                 msg_failure={translate('manage_delegation.add_fail')}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={50}
+                size={65}
             >
-                <form id="form-edit-delegation-hooks" onSubmit={() => save(translate('manage_delegation.add_success'))}>
+                <form id={`form-task-delegation-form-${props.id}`} onSubmit={() => save(translate('manage_delegation.add_success'))}>
+                    <div className="row form-group">
+                        {/* Tên công việc ủy quyền*/}
+                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group`}>
+                            <label>{translate('manage_delegation.delegateTaskName')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" value={delegateTaskName} disabled></input>
+                        </div>
+
+                    </div>
+
 
                     <div className="row form-group">
                         {/* Tên ủy quyền*/}
@@ -493,30 +563,30 @@ function DelegationEditForm(props) {
 
                     <div className="row form-group">
                         {/* Chọn vai trò*/}
-                        <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${errorDelegateRole === undefined ? "" : "has-error"}`}>
-                            <label>{translate('manage_delegation.delegate_role')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id="select-delegate-role-edit"
+                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errordelegateTaskRoles === undefined ? "" : "has-error"}`}>
+                            <label>{translate('manage_delegation.delegate_task_role')}<span className="text-red">*</span></label>
+                            {roles && <SelectBox
+                                id="select-task-role-edit"
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
-                                    auth.user.roles.filter(role => {
-                                        return role.roleId && role.roleId.name !== 'Super Admin' && role.roleId.type.name !== 'Root' && (!role.delegation || role.delegation.length == 0)
-                                    }).map(role => { return { value: role && role.roleId ? role.roleId._id : null, text: role && role.roleId ? role.roleId.name : "" } })
+                                    roles.map(role => { return { value: role.value, text: role.name } })
                                 }
-                                onChange={handleDelegateRole}
-                                multiple={false}
-                                value={
-                                    delegateRole
-                                }
-                                options={{ placeholder: translate('manage_delegation.choose_delegate_role') }}
+                                multiple={true}
+                                options={{ placeholder: translate('manage_delegation.choose_task_role') }}
+                                onChange={handleDelegateTaskRoles}
 
-                            />
-                            <ErrorLabel content={errorDelegateRole} />
+                            />}
+                            <ErrorLabel content={errordelegateTaskRoles} />
                         </div>
+                    </div>
+
+
+                    <div className="row form-group">
+
 
                         {/* Chọn người nhận */}
-                        <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${errorDelegatee === undefined ? "" : "has-error"}`}>
+                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegatee === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_delegation.delegate_receiver')}<span className="text-red">*</span></label>
                             {allUnitsMember &&
                                 <SelectBox
@@ -539,45 +609,20 @@ function DelegationEditForm(props) {
                         </div>
 
                     </div>
-                    {selectDelegateRole &&
-                        <div className="row form-group">
+
+                    {selectDelegateTaskRoles &&
+                        <div className="row">
                             <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 ${errorOnDelegateLinks === undefined ? "" : "has-error"}`}>
-                                <div className="row">
-                                    <div className={`col-lg-6 col-md-6 col-ms-6 col-xs-6`}>
-                                        <form style={{ marginBottom: '5px' }}>
-                                            <input type="checkbox" id="delegateLinksEdit" name="delegateLinks" onChange={chooseLinks} />
-                                            <label htmlFor="delegateLinksEdit">&nbsp;{translate('manage_delegation.choose_links')}</label>
-                                        </form>
-                                    </div>
-                                    <div className={`col-lg-6 col-md-6 col-ms-6 col-xs-6`}>
-                                        <form style={{ marginBottom: '5px' }}>
-                                            <input type="checkbox" id="delegateRevokeEdit" name="delegateRevoke" onChange={chooseRevoke} />
-                                            <label htmlFor="delegateRevokeEdit">&nbsp;{translate('manage_delegation.choose_revoke')}</label>
-                                        </form>
-                                    </div>
-                                </div>
 
-
-                                {showChooseLinks &&
-
-                                    <SelectMulti id={`multiSelectDelegateLinksEdit`} multiple="multiple"
-                                        options={{ nonSelectedText: translate('manage_delegation.choose_delegate_links'), allSelectedText: translate('manage_delegation.select_all_links'), enableFilter: true }}
-                                        onChange={handleDelegateLinksChange}
-                                        value={delegateLinks ? delegateLinks : []}
-                                        items={
-                                            validLinks.filter(link => link.url != "/home" && link.url != "/notifications").map(link => { return { value: link ? link._id : null, text: link ? `${link.category} - ${link.url} - ${link.description}` : "" } })
-                                        }
-                                    >
-                                    </SelectMulti>
-
-                                }
-                                <ErrorLabel content={errorOnDelegateLinks} />
+                                <form style={{ marginBottom: '5px' }}>
+                                    <input type="checkbox" id="delegateRevoke" name="delegateRevoke" onChange={chooseRevoke} />
+                                    <label htmlFor="delegateRevoke">&nbsp;{translate('manage_delegation.choose_revoke')}</label>
+                                </form>
 
                             </div>
                         </div>
 
                     }
-
                     <div className="row form-group">
                         <div style={{ marginBottom: "0px" }} className={`${showChooseRevoke ? "col-lg-6 col-md-6" : "col-lg-12 col-md-12"} col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnStartDate === undefined ? "" : "has-error"}`}>
                             <label className="control-label">{translate('manage_delegation.start_date')}<span className="text-red">*</span></label>
@@ -646,19 +691,17 @@ function DelegationEditForm(props) {
 }
 
 function mapState(state) {
-    const { auth, user, policyDelegation, link, role, delegation } = state;
-    return { auth, user, policyDelegation, delegation, link, role }
+    const { auth, user, policyDelegation, performtasks } = state;
+    return { auth, user, policyDelegation, performtasks }
 }
 
 const actions = {
-    createDelegation: DelegationActions.createDelegation,
-    editDelegation: DelegationActions.editDelegation,
-    getDelegations: DelegationActions.getDelegations,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getPolicies: PolicyActions.getPolicies,
-
+    getTaskById: performTaskAction.getTaskById,
+    addTaskDelegation: taskManagementActions.addTaskDelegation,
 }
 
-const connectedDelegationEditForm = connect(mapState, actions)(withTranslate(DelegationEditForm));
-export { connectedDelegationEditForm as DelegationEditForm };
+const connectedTaskDelegationForm = connect(mapState, actions)(withTranslate(TaskDelegationForm));
+export { connectedTaskDelegationForm as TaskDelegationForm };

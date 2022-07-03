@@ -32,6 +32,8 @@ export const taskManagementService = {
     importTasks,
 
     getOrganizationTaskDashboardChart,
+    saveTaskAttributes,
+    addTaskDelegation
 };
 
 
@@ -516,4 +518,33 @@ function getOrganizationTaskDashboardChart(data) {
         method: 'GET',
         params: data
     }, false, true, 'task.task_management');
+}
+
+/**
+ * Lưu thuộc tính công việc
+ * @param {*} taskId id công việc
+ * @param {*} attribute thuộc tính
+ * 
+ **/
+function saveTaskAttributes(taskId, attribute) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/attributes`,
+        method: 'PATCH',
+        data: attribute
+    }, true, true, 'task.task_management');
+}
+
+
+/**
+ * Lưu ủy quyền công việc
+ * @param {*} taskId id công việc
+ * @param {*} data thông tin ủy quyền
+ * 
+ **/
+function addTaskDelegation(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/delegation`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'task.task_management');
 }

@@ -6,7 +6,7 @@ import { RevokeNotification, DeleteNotification, PaginateBar, SmartTable, ToolTi
 
 import { DelegationCreateForm } from "./delegationCreateForm";
 import { DelegationEditForm } from "./delegationEditForm";
-import { DelegationDetailInfo } from "./delegationDetailInfo";
+import { DelegationDetailInfoTask } from "./delegationDetailInfoTask";
 import { DelegationImportForm } from "./delegationImortForm";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { LinkActions } from '../../../super-admin/link/redux/actions';
@@ -19,26 +19,26 @@ import dayjs from "dayjs";
 import { colorfyDelegationStatus } from './functionHelper';
 
 
-function DelegationTable(props) {
+function DelegationTableTask(props) {
     const { delegation, translate, user } = props;
 
-    const getTableId = "table-manage-delegation1-hooks-Role";
+    const getTableId = "table-manage-delegation1-hooks-Task";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     // Khởi tạo state
     const [state, setState] = useState({
         delegationName: "",
-        page: 1,
-        perPage: getLimit,
+        pageTask: 1,
+        perPageTask: getLimit,
         tableId: getTableId,
     })
     const [selectedData, setSelectedData] = useState()
 
-    const { delegationName, page, perPage, currentRow, curentRowDetail, tableId } = state;
+    const { delegationName, pageTask, perPageTask, currentRow, curentRowDetail, tableId } = state;
 
     useEffect(() => {
-        props.getDelegations({ delegationName, page, perPage, delegateType: 'Role' });
+        props.getDelegationsTask({ delegationName, pageTask, perPageTask, delegateType: 'Task' });
         props.getUser();
         props.getRoles();
         props.getLinks({ type: "active" });
@@ -66,15 +66,15 @@ function DelegationTable(props) {
      * Hàm xử lý khi click nút tìm kiếm
      */
     const handleSubmitSearch = () => {
-        props.getDelegations({
+        props.getDelegationsTask({
             delegationName,
-            perPage,
-            page: 1,
-            delegateType: 'Role'
+            perPageTask,
+            pageTask: 1,
+            delegateType: 'Task'
         });
         setState({
             ...state,
-            page: 1
+            pageTask: 1
         });
     }
 
@@ -86,14 +86,14 @@ function DelegationTable(props) {
     const setPage = (pageNumber) => {
         setState({
             ...state,
-            page: parseInt(pageNumber)
+            pageTask: parseInt(pageNumber)
         });
 
-        props.getDelegations({
+        props.getDelegationsTask({
             delegationName,
-            perPage,
-            page: parseInt(pageNumber),
-            delegateType: 'Role'
+            perPageTask,
+            pageTask: parseInt(pageNumber),
+            delegateType: 'Task'
         });
     }
 
@@ -105,14 +105,14 @@ function DelegationTable(props) {
     const setLimit = (number) => {
         setState({
             ...state,
-            perPage: parseInt(number),
-            page: 1
+            perPageTask: parseInt(number),
+            pageTask: 1
         });
-        props.getDelegations({
+        props.getDelegationsTask({
             delegationName,
-            perPage: parseInt(number),
-            page: 1,
-            delegateType: 'Role'
+            perPageTask: parseInt(number),
+            pageTask: 1,
+            delegateType: 'Task'
         });
     }
 
@@ -125,11 +125,11 @@ function DelegationTable(props) {
         props.deleteDelegations({
             delegationIds: [id]
         });
-        props.getDelegations({
+        props.getDelegationsTask({
             delegationName,
-            perPage,
-            delegateType: 'Role',
-            page: delegation && delegation.lists && delegation.lists.length === 1 ? page - 1 : page
+            perPageTask,
+            delegateType: 'Task',
+            pageTask: delegation && delegation.listsTask && delegation.listsTask.length === 1 ? pageTask - 1 : pageTask
         });
     }
 
@@ -138,11 +138,11 @@ function DelegationTable(props) {
             delegationIds: [id],
             reason: window.$(`#revokeReason-${id}`).val()
         });
-        props.getDelegations({
+        props.getDelegationsTask({
             delegationName,
-            perPage,
-            delegateType: 'Role',
-            page: delegation && delegation.lists && delegation.lists.length === 1 ? page - 1 : page
+            perPageTask,
+            delegateType: 'Task',
+            pageTask: delegation && delegation.listsTask && delegation.listsTask.length === 1 ? pageTask - 1 : pageTask
         });
     }
 
@@ -165,7 +165,7 @@ function DelegationTable(props) {
             ...state,
             currentRow: delegation
         });
-        window.$(`#modal-edit-delegation-hooks-Role`).modal('show');
+        window.$('#modal-edit-delegation-hooks-Task').modal('show');
     }
 
     /**
@@ -177,16 +177,16 @@ function DelegationTable(props) {
             ...state,
             curentRowDetail: delegation,
         });
-        window.$(`#modal-detail-info-delegation-hooks-Role`).modal('show')
+        window.$(`#modal-detail-info-delegation-hooks-Task`).modal('show')
     }
 
     let lists = [];
     if (delegation) {
-        lists = delegation.lists
+        lists = delegation.listsTask
         console.log(delegation)
     }
 
-    const totalPage = delegation && Math.ceil(delegation.totalList / perPage);
+    const totalPage = delegation && Math.ceil(delegation.totalListTask / perPageTask);
     // convert ISODate to String hh:mm AM/PM
     const formatTime = (date) => {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
@@ -219,7 +219,7 @@ function DelegationTable(props) {
             />
 
             }
-            <DelegationDetailInfo
+            <DelegationDetailInfoTask
                 delegationID={curentRowDetail && curentRowDetail._id}
                 delegationName={curentRowDetail && curentRowDetail.delegationName}
                 description={curentRowDetail && curentRowDetail.description}
@@ -239,17 +239,16 @@ function DelegationTable(props) {
                 declineReason={curentRowDetail && curentRowDetail.declineReason}
                 delegatePolicy={curentRowDetail && curentRowDetail.delegatePolicy}
                 logs={curentRowDetail && curentRowDetail.logs}
-
             />
 
             {user && user.organizationalUnitsOfUser && <DelegationCreateForm
-                page={page}
-                perPage={perPage}
+                pageTask={pageTask}
+                perPageTask={perPageTask}
             />
             }
             <DelegationImportForm
-                page={page}
-                perPage={perPage}
+                pageTask={pageTask}
+                perPageTask={perPageTask}
             />
 
             <div className="box-body qlcv">
@@ -257,14 +256,14 @@ function DelegationTable(props) {
                     {/* Button thêm mới */}
                     <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
                         <button type="button" className="btn btn-success pull-right" title={translate('manage_delegation.add_title')}
-                            onClick={() => window.$('#modal-create-delegation-hooks-Role').modal('show')}>
+                            onClick={() => window.$('#modal-create-delegation-hooks-Task').modal('show')}>
                             {translate('manage_delegation.add')}
                         </button>                        {/* <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                             <li><a style={{ cursor: 'pointer' }}
-                                onClick={() => window.$('#modal-create-delegation-hooks-Role').modal('show')}
+                                onClick={() => window.$('#modal-create-delegation-hooks').modal('show')}
                                 title={translate('manage_delegation.add_one_delegation')}>
                                 {translate('manage_delegation.add_role_delegation')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-delegation-hooks-Role').modal('show')} title={translate('manage_delegation.add_multi_delegation')}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-delegation-hooks').modal('show')} title={translate('manage_delegation.add_multi_delegation')}>
                                 {translate('human_resource.salary.add_import')}</a></li>
                         </ul> */}
                     </div>
@@ -287,7 +286,7 @@ function DelegationTable(props) {
                         index: translate('manage_delegation.index'),
                         delegationName: translate('manage_delegation.delegationName'),
                         // delegateType: translate('manage_delegation.delegateType'),
-                        delegateObject: translate('manage_delegation.delegateObject'),
+                        delegateObject: translate('manage_delegation.delegateObjectTask'),
                         delegatee: translate('manage_delegation.delegatee'),
                         delegateStartDate: translate('manage_delegation.delegateStartDate'),
                         delegateEndDate: translate('manage_delegation.delegateEndDate'),
@@ -298,7 +297,7 @@ function DelegationTable(props) {
                         index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_delegation.index')}</th>,
                         delegationName: <th>{translate('manage_delegation.delegationName')}</th>,
                         // delegateType: <th>{translate('manage_delegation.delegateType')}</th>,
-                        delegateObject: <th>{translate('manage_delegation.delegateObject')}</th>,
+                        delegateObject: <th>{translate('manage_delegation.delegateObjectTask')}</th>,
                         delegatee: <th>{translate('manage_delegation.delegatee')}</th>,
                         delegateStartDate: <th>{translate('manage_delegation.delegateStartDate')}</th>,
                         delegateEndDate: <th>{translate('manage_delegation.delegateEndDate')}</th>,
@@ -312,7 +311,7 @@ function DelegationTable(props) {
                             index: <td>{index + 1}</td>,
                             delegationName: <td>{item?.delegationName}</td>,
                             // delegateType: <td>{translate('manage_delegation.delegateType' + item?.delegateType)}</td>,
-                            delegateObject: <td>{item.delegateRole ? item.delegateRole.name : ""}</td>,
+                            delegateObject: <td>{item.delegateTask ? item.delegateTask.name : ""}</td>,
                             delegatee: <td>{item?.delegatee.name}</td>,
                             delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
                             delegateEndDate: <td>{item.revokedDate && (item.endDate && (new Date(item.revokedDate)).getTime() < (new Date(item.endDate)).getTime()) || (item.revokedDate && !item.endDate) ? formatTime(item.revokedDate) : (item.endDate ? formatTime(item.endDate) : translate("manage_delegation.end_date_tbd"))}</td>,
@@ -357,9 +356,9 @@ function DelegationTable(props) {
                 }
                 <PaginateBar
                     pageTotal={totalPage ? totalPage : 0}
-                    currentPage={page}
+                    currentPage={pageTask}
                     display={lists && lists.length !== 0 && lists.length}
-                    total={delegation && delegation.totalList}
+                    total={delegation && delegation.totalListTask}
                     func={setPage}
                 />
             </div>
@@ -373,7 +372,7 @@ function mapState(state) {
 }
 
 const actions = {
-    getDelegations: DelegationActions.getDelegations,
+    getDelegationsTask: DelegationActions.getDelegationsTask,
     deleteDelegations: DelegationActions.deleteDelegations,
     revokeDelegation: DelegationActions.revokeDelegation,
     getUser: UserActions.get,
@@ -382,5 +381,5 @@ const actions = {
     getDepartment: UserActions.getDepartmentOfUser,
 }
 
-const connectedDelegationTable = connect(mapState, actions)(withTranslate(DelegationTable));
-export { connectedDelegationTable as DelegationTable };
+const connectedDelegationTableTask = connect(mapState, actions)(withTranslate(DelegationTableTask));
+export { connectedDelegationTableTask as DelegationTableTask };

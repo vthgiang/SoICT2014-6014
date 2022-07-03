@@ -12,15 +12,19 @@ var findIndex = (array, id) => {
 
 const initialState = {
     lists: [],
+    listsTask: [],
     isLoading: false,
     error: null,
     totalList: 0,
+    totalListTask: 0,
+
 }
 
 export function delegation(state = initialState, action) {
     let index = -1;
     switch (action.type) {
         case delegationConstants.GET_ALL_DELEGATIONS_REQUEST:
+        case delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST:
         case delegationConstants.DELETE_DELEGATION_REQUEST:
         case delegationConstants.REVOKE_DELEGATION_REQUEST:
         case delegationConstants.CREATE_DELEGATION_REQUEST:
@@ -30,6 +34,7 @@ export function delegation(state = initialState, action) {
                 isLoading: true
             }
         case delegationConstants.GET_ALL_DELEGATIONS_FAILURE:
+        case delegationConstants.GET_ALL_DELEGATIONS_TASK_FAILURE:
         case delegationConstants.DELETE_DELEGATION_FAILURE:
         case delegationConstants.REVOKE_DELEGATION_FAILURE:
         case delegationConstants.CREATE_DELEGATION_FAILURE:
@@ -44,6 +49,13 @@ export function delegation(state = initialState, action) {
                 ...state,
                 lists: action.payload.data,
                 totalList: action.payload.totalList,
+                isLoading: false
+            }
+        case delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS:
+            return {
+                ...state,
+                listsTask: action.payload.data,
+                totalListTask: action.payload.totalList,
                 isLoading: false
             }
         case delegationConstants.DELETE_DELEGATION_SUCCESS:

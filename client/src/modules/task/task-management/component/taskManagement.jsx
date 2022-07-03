@@ -15,6 +15,8 @@ import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
 import { ProjectActions } from "../../../project/projects/redux/actions";
 import { TaskAddModal } from './taskAddModal';
+import { AddAttributeForm } from './addAttributeForm';
+import { TaskDelegation } from './taskDelegation';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
@@ -74,7 +76,7 @@ function TaskManagement(props) {
     const { tasks, user, translate, project } = props;
     const { currentTaskId, currentPage, currentTab,
         parentTask, status, tableId, selectedData, creatorTime,
-        projectSearch, tags, data
+        projectSearch, tags, data, currentTaskIdAttribute, currentTaskIdDelegation
     } = state;
 
     function initState() {
@@ -110,12 +112,24 @@ function TaskManagement(props) {
                 task: ""
             },
             monthTimeSheetLog: '',
-            tags: []
+            tags: [],
+            i: 0
         };
     }
     useEffect(() => {
         window.$(`#modelPerformTask${currentTaskId}`).modal('show')
     }, [currentTaskId])
+
+    useEffect(() => {
+        window.$(`#${currentTaskIdAttribute}-attribute-form`).modal('show')
+    }, [currentTaskIdAttribute])
+
+    useEffect(() => {
+        if (currentTaskIdDelegation) {
+            props.getTaskById(currentTaskIdDelegation); // props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
+        }
+        window.$(`#modal-task-delegation-${currentTaskIdDelegation}`).modal('show')
+    }, [currentTaskIdDelegation])
 
     useEffect(() => {
         const { perPage, currentPage } = state;
@@ -682,10 +696,10 @@ function TaskManagement(props) {
                         status: checkTaskRequestToClose(currentTasks[n]),
                         progress: convertProgressData(currentTasks[n].progress, currentTasks[n].startDate, currentTasks[n].endDate),
                         totalLoggedTime: getTotalTimeSheetLogs(currentTasks[n].timesheetLogs),
-                        parent: currentTasks[n].parent ? currentTasks[n].parent._id : null
+                        parent: currentTasks[n].parent ? currentTasks[n].parent._id : null,
+                        attributes: currentTasks[n].attributes ? currentTasks[n].attributes : []
                     }
                     let archived = null;
-
                     if (currentTasks[n].status === "finished" || currentTasks[n].status === "delayed" || currentTasks[n].status === "canceled") {
                         if (currentTasks[n].isArchived === true) {
                             archived = "restore";
@@ -698,13 +712,13 @@ function TaskManagement(props) {
                         if (currentTasks[n].creator._id === userId) {
                             del = "delete";
                         }
-                        data[n] = { ...data[n], action: ["edit", ["add", archived, del]] }
+                        data[n] = { ...data[n], action: ["edit", ["add", archived, del, ["addAttribute", "delegate"]]] }
                     }
                     if (currentTasks[n].responsibleEmployees && currentTasks[n].responsibleEmployees.find(e => e._id === userId) || currentTasks[n].consultedEmployees && currentTasks[n].consultedEmployees.indexOf(userId) !== -1) {
-                        data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived]] }
+                        data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived, ["delegate"]]] }
                     }
                     if (currentTasks[n].accountableEmployees && currentTasks[n].accountableEmployees.filter(o => o._id === userId).length > 0) {
-                        data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived, "delete"]] }
+                        data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived, "delete", ["addAttribute", "delegate"]]] }
                     }
                 }
 
@@ -800,6 +814,41 @@ function TaskManagement(props) {
             if (component.name === name) result = true;
         });
         return result;
+    }
+
+    const handleChangeAddRowAttribute = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
+
+    const handleAddAttribute = (id, attributes) => {
+        setState({
+            ...state,
+            currentTaskIdAttribute: id,
+            attributes: attributes.map((a) => a = { ...a, addOrder: a._id }),
+        })
+        window.$(`#${id}-attribute-form`).modal('show')
+    }
+
+    const handleDelegate = (id) => {
+        const { tasks } = props;
+        const taskLength = tasks?.tasks?.length;
+        let taskName;
+        for (let i = 0; i < taskLength; i++) {
+            if (tasks.tasks[i]._id === id) {
+                taskName = tasks.tasks[i].name;
+                break;
+            }
+        }
+        setState({
+            ...state,
+            currentTaskIdDelegation: id,
+            taskNameDelegation: taskName
+        })
+        window.$(`#modal-task-delegation-${id}`).modal('show')
     }
 
     const { currentTasks } = state;
@@ -1067,6 +1116,25 @@ function TaskManagement(props) {
                         />
                     }
 
+                    {
+                        currentTaskIdAttribute && state.attributes &&
+                        <AddAttributeForm
+                            handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                            i={state.i}
+                            id={state.currentTaskIdAttribute}
+                            attributeOwner={'taskAttributes'}
+                            translation={'manage_policy.task'}
+                            taskID={state.currentTaskIdAttribute}
+                            taskAttributes={state.attributes}
+                        />
+                    }
+
+                    {user && user.organizationalUnitsOfUser && currentTaskIdDelegation &&
+                        <TaskDelegation
+                            id={currentTaskIdDelegation}
+                            taskId={currentTaskIdDelegation}
+                            taskName={state.taskNameDelegation}
+                        />}
                     {/* Dạng bảng */}
                     <div id="tree-table-container" style={{ marginTop: '20px' }}>
                         {
@@ -1088,12 +1156,16 @@ function TaskManagement(props) {
                                         restore: translate('task.task_management.action_restore'),
                                         add: translate('task.task_management.action_add'),
                                         startTimer: translate('task.task_management.action_start_timer'),
+                                        addAttribute: translate('task.task_management.action_add_attribute'),
+                                        delegate: translate('task.task_management.action_delegate'),
                                     }}
                                     funcEdit={handleShowModal}
                                     funcAdd={handleAddTask}
                                     funcStartTimer={startTimer}
                                     funcStore={handleStore}
                                     funcDelete={handleDelete}
+                                    funcAddAttribute={handleAddAttribute}
+                                    funcDelegate={handleDelegate}
                                 />
                         }
 
@@ -1150,6 +1222,8 @@ const actionCreators = {
     deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
+    getTaskById: performTaskAction.getTaskById,
+
 };
 export default connect(mapState, actionCreators)(withTranslate(TaskManagement));
 

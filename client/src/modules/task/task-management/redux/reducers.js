@@ -1,5 +1,15 @@
 import { taskManagementConstants } from "./constants";
 
+var findIndex = (array, id) => {
+    var result = -1;
+    array.forEach((value, index) => {
+        if (value._id === id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
 export function tasks(state = {
     isLoading: false,
     allTimeSheetLogs: [],
@@ -9,6 +19,7 @@ export function tasks(state = {
     tasks: [],
     pages: 0,
 }, action) {
+    var index = -1;
     switch (action.type) {
         case taskManagementConstants.GETALL_TASK_REQUEST:
             return {
@@ -765,6 +776,51 @@ export function tasks(state = {
                 error: action.error,
                 isLoading: false
             }
+        case taskManagementConstants.SAVE_TASK_ATTRIBUTES_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.SAVE_TASK_ATTRIBUTES_SUCCESS:
+            index = findIndex(state.tasks, action.payload._id);
+
+            if (index !== -1) {
+                state.tasks[index] = action.payload;
+            };
+
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case taskManagementConstants.SAVE_TASK_ATTRIBUTES_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
+        case taskManagementConstants.ADD_TASK_DELEGATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.ADD_TASK_DELEGATION_SUCCESS:
+            index = findIndex(state.tasks, action.payload._id);
+
+            if (index !== -1) {
+                state.tasks[index] = action.payload;
+                state.task = action.payload;
+            };
+
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case taskManagementConstants.ADD_TASK_DELEGATION_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
 
         default:
             return state

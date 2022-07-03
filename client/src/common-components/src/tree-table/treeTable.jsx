@@ -253,7 +253,8 @@ function TreeTable(props) {
                 "parent": node.parent,
                 "action": node.action,
                 "level": node.level,
-                "row": row
+                "row": row,
+                "attributes": node.attributes
             }
         }
         return data;
@@ -264,7 +265,7 @@ function TreeTable(props) {
      * @param {*} data : Array tên các action của từng dòng
      * @param {*} id : Id dữ liệu tương ứng từng dòng, dùng để gọi server lấy dữ liệu
      */
-    const showActionColumn = (data, id) => {
+    const showActionColumn = (data, id, attributes = []) => {
         switch (data) {
             case "edit":
                 return <a style={{ cursor: 'pointer' }} onClick={() => props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
@@ -281,6 +282,14 @@ function TreeTable(props) {
             case "add":
                 return <a style={{ cursor: 'pointer' }} onClick={() => props.funcAdd(id)} className="add_circle" data-toggle="modal" title={titleAction.add}>
                     <i className="material-icons">add_circle</i>
+                </a>
+            case "addAttribute":
+                return <a style={{ cursor: 'pointer' }} onClick={() => props.funcAddAttribute(id, attributes)} className="text-blue" data-toggle="modal" title={titleAction.addAttribute}>
+                    <i className="material-icons">article</i>
+                </a>
+            case "delegate":
+                return <a style={{ cursor: 'pointer', color: '#28a77d' }} onClick={() => props.funcDelegate(id)} data-toggle="modal" title={titleAction.delegate}>
+                    <i className="material-icons">group</i>
                 </a>
             case "store":
                 return <a style={{ cursor: 'pointer' }} onClick={() => props.funcStore(id)} className="all_inbox" title={titleAction.store}>
@@ -443,11 +452,21 @@ function TreeTable(props) {
                                                 <React.Fragment key={index}>
                                                     <button type="button" data-toggle="collapse" data-target={`#actionTask${rows._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
                                                     <div id={`actionTask${rows._id}`} className="collapse">
-                                                        {x.map((y, index) => (
+                                                        {x.map((y, index) => !Array.isArray(y) ? (
                                                             <React.Fragment key={index}>
                                                                 {showActionColumn(y, rows._id)}
                                                             </React.Fragment>
-                                                        ))}
+                                                        ) :
+                                                            <div id={`actionTask2${rows._id}`}>
+                                                                {
+                                                                    y.map((z, index) => (
+                                                                        <React.Fragment key={index}>
+                                                                            {showActionColumn(z, rows._id, rows.attributes)}
+                                                                        </React.Fragment>
+                                                                    ))
+                                                                }
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </React.Fragment> :
                                                 <React.Fragment key={index}>

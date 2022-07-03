@@ -30,7 +30,7 @@ exports.createDelegation = async (req, res) => {
 // Lấy ra đầy đủ thông tin tất cả các dịch vụ
 exports.getDelegations = async (req, res) => {
     try {
-        data = await DelegationService.getDelegations(req.portal, req.query);
+        let data = await DelegationService.getDelegations(req.portal, req.query);
 
         await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
 
@@ -51,9 +51,34 @@ exports.getDelegations = async (req, res) => {
     }
 }
 
+
+
 exports.getDelegationsReceive = async (req, res) => {
     try {
-        data = await DelegationService.getDelegationsReceive(req.portal, req.query);
+        let data = await DelegationService.getDelegationsReceive(req.portal, req.query);
+
+        await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_all_delegations_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_all_delegations_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.getDelegationsReceiveTask = async (req, res) => {
+    try {
+        let data = await DelegationService.getDelegationsReceiveTask(req.portal, req.query);
 
         await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
 

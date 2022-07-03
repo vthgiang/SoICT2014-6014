@@ -30,6 +30,10 @@
     width: 50%;
 }
 
+.modal-size-65 {
+    width: 65%;
+}
+
 .modal-size-75 {
     width: 75%;
 }
@@ -51,6 +55,11 @@
 
 @media only screen and (max-width: 768px) {
     .modal-size-50 {
+        width: 100%;
+        margin-top: 0px;
+    }
+
+    .modal-size-65 {
         width: 100%;
         margin-top: 0px;
     }

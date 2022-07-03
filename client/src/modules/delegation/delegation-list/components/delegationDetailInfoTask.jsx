@@ -6,7 +6,7 @@ import { LogActivityTab } from "./logActivityTab";
 
 import { DialogModal } from '../../../../common-components';
 
-const DelegationDetailInfo = (props) => {
+const DelegationDetailInfoTask = (props) => {
     const [state, setState] = useState({
     })
 
@@ -46,9 +46,9 @@ const DelegationDetailInfo = (props) => {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-detail-info-delegation-hooks-Role`} isLoading={delegation.isLoading}
+                modalID={`modal-detail-info-delegation-hooks-Task`} isLoading={delegation.isLoading}
                 title={translate('manage_delegation.detail_info_delegation')}
-                formID={`form-detail-delegation-hooks-Role`}
+                formID={`form-detail-delegation-hooks-Task`}
                 size={50}
                 hasSaveButton={false}
                 hasNote={false}
@@ -56,14 +56,14 @@ const DelegationDetailInfo = (props) => {
                 <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                     {/* Nav-tabs */}
                     <ul className="nav nav-tabs">
-                        <li className="active"><a title={translate('manage_delegation.general_information')} data-toggle="tab" href={`#detail_general_information`}>{translate('manage_delegation.general_information')}</a></li>
-                        <li><a title={translate('manage_delegation.log_activity')} data-toggle="tab" href={`#detail_log_activity`}>{translate('manage_delegation.log_activity')}</a></li>
+                        <li className="active"><a title={translate('manage_delegation.general_information')} data-toggle="tab" href={`#detail_general_information_task`}>{translate('manage_delegation.general_information')}</a></li>
+                        <li><a title={translate('manage_delegation.log_activity')} data-toggle="tab" href={`#detail_log_activity_task`}>{translate('manage_delegation.log_activity')}</a></li>
                     </ul>
 
                     <div className="tab-content">
                         {/* Thông tin chung */}
                         <GeneralTab
-                            id={`detail_general_information`}
+                            id={`detail_general_information_task`}
                             delegationID={delegationID}
                             delegationName={state.delegationName}
                             description={state.description}
@@ -89,7 +89,7 @@ const DelegationDetailInfo = (props) => {
 
                         {/* Thông tin thuộc tính subject */}
                         <LogActivityTab
-                            id={`detail_log_activity`}
+                            id={`detail_log_activity_task`}
                             delegationID={delegationID}
                             delegationName={state.delegationName}
                             description={state.description}
@@ -131,5 +131,5 @@ function mapStateToProps(state) {
     return { delegation };
 }
 
-const connectedDelegationDetailInfo = React.memo(connect(mapStateToProps, null)(withTranslate(DelegationDetailInfo)));
-export { connectedDelegationDetailInfo as DelegationDetailInfo }
+const connectedDelegationDetailInfoTask = React.memo(connect(mapStateToProps, null)(withTranslate(DelegationDetailInfoTask)));
+export { connectedDelegationDetailInfoTask as DelegationDetailInfoTask }

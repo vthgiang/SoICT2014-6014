@@ -141,7 +141,6 @@ exports.logout = async (portal, id, requestToken) => {
 
     let delegations = await Delegation(connect(DB_CONNECTION, portal)).find({ delegatee: id });
     delegations.forEach(async delegation => {
-        console.log("hello")
         await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
     })
 

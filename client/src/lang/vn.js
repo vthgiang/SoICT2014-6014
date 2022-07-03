@@ -1708,7 +1708,22 @@ export default {
                 resources_add_attribute: "Các resource thêm thuộc tính",
                 attribute_select: "Chọn thuộc tính",
                 attribute_not_selected: "Chưa chọn thuộc tính",
-            }
+            },
+            task: {
+                add_attribute: "Quản lý thuộc tính",
+                add_task_attribute: "Thêm thuộc tính công việc",
+                attributes: "Các thuộc tính của công việc",
+                attribute_name: "Tên thuộc tính",
+                attribute_value: "Giá trị",
+                attribute_description: "Mô tả",
+                attribute_name_example: "VD: Project A",
+                attribute_value_example: "VD: PM",
+                attribute_description_example: "VD: Project Manager dự án A",
+                add_attribute_title: "Quản lý thuộc tính công việc",
+                tasks_add_attribute: "Các công việc thêm thuộc tính",
+                attribute_select: "Chọn thuộc tính",
+                attribute_not_selected: "Chưa chọn thuộc tính",
+            },
         },
         manage_delegation_policy: {
             policyName: "Tên chính sách",
@@ -1854,7 +1869,8 @@ export default {
         manage_delegation: {
             delegationName: "Mã ủy quyền",
             delegateType: "Loại ủy quyền",
-            delegateObject: "Vai trò/Công việc",
+            delegateObject: "Vai trò",
+            delegateObjectTask: "Công việc",
             delegatee: "Người nhận",
             delegator: "Người ủy quyền",
             delegateStartDate: "Ngày có hiệu lực",
@@ -1950,7 +1966,13 @@ export default {
                 activate: "Kích hoạt ủy quyền ",
                 system: "Hệ thống",
                 automatic: "Tự động"
-            }
+            },
+            task_delegation_title: "Ủy quyền công việc",
+            delegate_task_role: "Vai trò công việc",
+            choose_task_role: "Chọn vai trò",
+            delegateTaskName: "Tên công việc ủy quyền",
+            task_delegation_title_add: "Thêm ủy quyền công việc",
+
         },
         // Modules cấu hình các chức năng
         module_configuration: {
@@ -3755,6 +3777,14 @@ export default {
                 task_status_error: "Trạng thái của công việc không cho phép lưu kho",
                 confirm_delete:
                     "Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!",
+                edit_task_attributes_success: "Cập nhật thuộc tính công việc thành công",
+                edit_task_attributes_faile: "Cập nhật thuộc tính công việc thất bại",
+                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau",
+                add_task_delegation_success: "Thêm mới ủy quyền cho công việc thành công",
+                add_task_delegation_faile: "Thêm mới ủy quyền cho công việc thất bại",
+                delegator_invalid_policy: "Người ủy quyền không thỏa mãn chính sách ủy quyền đã chọn",
+                delegatee_invalid_policy: "Người nhận ủy quyền không thỏa mãn chính sách ủy quyền đã chọn",
+                task_invalid_policy: "Công việc không thỏa mãn chính sách ủy quyền đã chọn",
 
                 responsible: "Người thực hiện",
                 accountable: "Người phê duyệt",
@@ -3865,6 +3895,8 @@ export default {
                 action_restore: "Lấy ra khỏi kho",
                 action_add: "Thêm công việc con",
                 action_start_timer: "Bắt đầu bấm giờ",
+                action_add_attribute: "Quản lý thuộc tính",
+                action_delegate: "Ủy quyền công việc",
 
                 from: "Từ ",
                 to: "Đến",

@@ -140,7 +140,15 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
-      { path: "logs.creator", select: "_id name avatar email " }
+      { path: "logs.creator", select: "_id name avatar email " },
+      {
+        path: "delegations", populate: [
+          { path: 'delegatee', select: '_id name' },
+          { path: 'delegatePolicy', select: '_id policyName' },
+          { path: 'delegator', select: '_id name' }
+        ]
+
+      }
     ]);
 
   const subTasks = await Task(connect(DB_CONNECTION, portal)).find({
@@ -278,7 +286,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       info: true,
     };
   }
-  
+
   task.evaluations.reverse();
   task.logs.reverse()
   task = task.toObject();

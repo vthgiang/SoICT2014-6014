@@ -20,5 +20,7 @@ router.get('/organization-task-dashboard-chart-data', auth, TaskManagementContro
 
 
 router.get('/time-sheet', auth, TaskManagementController.getUserTimeSheet);
+router.patch('/tasks/:taskId/attributes', auth, TaskManagementController.saveTaskAttributes);
+router.patch('/tasks/:taskId/delegation', auth, TaskManagementController.addTaskDelegation);
 
 module.exports = router;

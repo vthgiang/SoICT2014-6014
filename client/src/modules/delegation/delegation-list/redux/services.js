@@ -8,7 +8,8 @@ export const delegationServices = {
     deleteDelegations,
     createDelegation,
     editDelegation,
-    revokeDelegation
+    revokeDelegation,
+    getDelegationsTask
 }
 
 function getDelegations(queryData) {
@@ -21,7 +22,30 @@ function getDelegations(queryData) {
                 userId: userId,
                 delegationName: queryData?.delegationName ? queryData.delegationName : "",
                 page: queryData?.page ? queryData.page : null,
-                perPage: queryData?.perPage ? queryData.perPage : null
+                perPage: queryData?.perPage ? queryData.perPage : null,
+                delegateType: queryData?.delegateType ? queryData.delegateType : null,
+
+            }
+        },
+        false,
+        true,
+        "manage_delegation"
+    );
+}
+
+function getDelegationsTask(queryData) {
+    let userId = getStorage("userId")
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations/tasks`,
+            method: "GET",
+            params: {
+                userId: userId,
+                delegationName: queryData?.delegationName ? queryData.delegationName : "",
+                page: queryData?.pageTask ? queryData.pageTask : null,
+                perPage: queryData?.perPageTask ? queryData.perPageTask : null,
+                delegateType: queryData?.delegateType ? queryData.delegateType : null,
+
             }
         },
         false,

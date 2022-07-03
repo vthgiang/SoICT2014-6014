@@ -178,7 +178,7 @@ exports.authFunc = (checkPage = true) => {
 
                                 // Nếu tồn tại ủy quyền đang hoạt động có endDate < now, re login
 
-                                const delegation = await Delegation(connect(DB_CONNECTION, req.portal)).findOne({ _id: userrole.delegation, status: 'activated' })
+                                const delegation = await Delegation(connect(DB_CONNECTION, req.portal)).findOne({ _id: userrole.delegation, status: 'activated', delegateType: "Role" })
                                 if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
                                     throw ["page_access_denied"]
                                 }
@@ -216,7 +216,7 @@ exports.authFunc = (checkPage = true) => {
                             }
 
                             // Nếu tồn tại ủy quyền chờ xác nhận có startDate < now, re login
-                            const delegationPending = await Delegation(connect(DB_CONNECTION, req.portal)).find({ delegatee: req.user._id, status: 'pending' })
+                            const delegationPending = await Delegation(connect(DB_CONNECTION, req.portal)).find({ delegatee: req.user._id, status: 'pending', delegateType: "Role" })
                             delegationPending.every(delegation => {
                                 if (delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
                                     throw ["page_access_denied"]

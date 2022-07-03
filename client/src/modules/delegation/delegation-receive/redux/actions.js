@@ -4,10 +4,12 @@ import { delegationServices } from './services';
 export const DelegationActions = {
     getDelegations,
     confirmDelegation,
-    rejectDelegation
+    rejectDelegation,
+    getDelegationsTask
 }
 
 function getDelegations(queryData) {
+    console.log('alo1')
     return (dispatch) => {
         dispatch({
             type: delegationConstants.GET_ALL_DELEGATIONS_REQUEST
@@ -16,6 +18,7 @@ function getDelegations(queryData) {
         delegationServices
             .getDelegations(queryData)
             .then((res) => {
+                console.log(res.data.content)
                 dispatch({
                     type: delegationConstants.GET_ALL_DELEGATIONS_SUCCESS,
                     payload: res.data.content
@@ -24,6 +27,33 @@ function getDelegations(queryData) {
             .catch((error) => {
                 dispatch({
                     type: delegationConstants.GET_ALL_DELEGATIONS_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getDelegationsTask(queryData) {
+    console.log('alo2')
+
+    return (dispatch) => {
+        dispatch({
+            type: delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST
+        });
+
+        delegationServices
+            .getDelegationsTask(queryData)
+            .then((res) => {
+                console.log(res.data.content)
+
+                dispatch({
+                    type: delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: delegationConstants.GET_ALL_DELEGATIONS_TASK_FAILURE,
                     error
                 });
             });

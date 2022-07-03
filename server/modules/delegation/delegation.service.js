@@ -228,11 +228,13 @@ exports.assignDelegation = async (newDelegation, portal) => {
 }
 
 exports.updateMissedDelegation = async (portal) => {
-    const allDelegations = await Delegation(connect(DB_CONNECTION, portal)).find({ status: { $in: ['pending', 'activated'] } });
+
+    const allDelegations = await Delegation(connect(DB_CONNECTION, portal)).find({ status: { $in: ['pending', 'activated'] }, delegateType: "Role" });
     // Kích hoạt ủy quyền nếu startDate < now và chưa đến thời hạn thu hồi hoặc thu hồi nếu endDate < now  
     allDelegations.forEach(async delegation => {
 
         if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
+
             await this.revokeDelegation(portal, [delegation._id], "Automatic revocation");
             await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
                 logs: [
@@ -420,7 +422,7 @@ exports.checkDelegationAttribute = async (delegatorId, delegateRoleId, delegateL
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
 exports.getDelegations = async (portal, data) => {
     console.log(schedule)
-    let keySearch = { delegator: data.userId };
+    let keySearch = { delegator: data.userId, delegateType: data.delegateType };
     if (data?.delegationName?.length > 0) {
         keySearch = {
             ...keySearch,
@@ -460,8 +462,9 @@ exports.getDelegations = async (portal, data) => {
     }
 }
 
+
 exports.getDelegationsReceive = async (portal, data) => {
-    let keySearch = { delegatee: data.userId };
+    let keySearch = { delegatee: data.userId, delegateType: 'Role' };
     if (data?.delegationName?.length > 0) {
         keySearch = {
             ...keySearch,
@@ -480,7 +483,6 @@ exports.getDelegationsReceive = async (portal, data) => {
     let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate([
             { path: 'delegateRole', select: '_id name' },
-            { path: 'delegateTask' },
             { path: 'delegatee', select: '_id name' },
             { path: 'delegatePolicy', select: '_id policyName' },
             { path: 'delegator', select: '_id name' },
@@ -495,9 +497,44 @@ exports.getDelegationsReceive = async (portal, data) => {
         .skip((page - 1) * perPage)
         .limit(perPage);
 
+    console.log(delegations)
     return {
         data: delegations,
         totalList
+    }
+}
+
+exports.getDelegationsReceiveTask = async (portal, data) => {
+    let keySearch = { delegatee: data.userId, delegateType: 'Task' };
+    if (data?.delegationName?.length > 0) {
+        keySearch = {
+            ...keySearch,
+            delegationName: {
+                $regex: data.delegationName,
+                $options: "i"
+            }
+        }
+    }
+
+    let page, perPage;
+    page = data?.page ? Number(data.page) : 1;
+    perPage = data?.perPage ? Number(data.perPage) : 20;
+
+    let totalList = await Delegation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate([
+            { path: 'delegateTask' },
+            { path: 'delegatee', select: '_id name' },
+            { path: 'delegatePolicy', select: '_id policyName' },
+            { path: 'delegator', select: '_id name' },
+
+        ])
+        .skip((page - 1) * perPage)
+        .limit(perPage);
+
+    return {
+        dataTask: delegations,
+        totalListTask: totalList
     }
 }
 
@@ -585,8 +622,10 @@ exports.revokeDelegation = async (portal, delegationIds, reason) => {
     // let delegations = await Delegation(connect(DB_CONNECTION, portal))
     //     .deleteMany({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
     delegationIds.forEach(async delegationId => {
+
         await UserRole(connect(DB_CONNECTION, portal)).deleteMany({ delegation: delegationId });
     })
+
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
     let result = delegation[0];
     if (result.delegatePrivileges != null) {
@@ -717,4 +756,127 @@ exports.saveLog = async (portal, delegation, userId, content, category, time) =>
     ]);
 
     return newDelegation;
+}
+
+
+exports.createTaskDelegation = async (portal, data, logs = []) => {
+    let newDelegation;
+    const filterValidDelegationArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            for (let i = 0; i < array.length; i++) {
+                const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: array[i].delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+                if (checkDelegationCreated && !array[i].notCheck) {
+                    throw ['delegation_name_exist'];
+                }
+                if (array[i]) resArray = [...resArray, array[i]];
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    const delArray = await filterValidDelegationArray(data);
+    console.log(data)
+    console.log(delArray)
+    if (delArray && delArray.length !== 0) {
+        for (let i = 0; i < delArray.length; i++) {
+
+            let checkDelegationExist = await Delegation(connect(DB_CONNECTION, portal)).find({
+                delegator: delArray[i].delegator,
+                delegatee: delArray[i].delegatee,
+                delegateType: "Task",
+                delegateTask: delArray[i].delegateTask,
+                status: {
+                    $in: [
+                        "activated", // Đang hoạt động
+                        "pending", // Chờ xác nhận
+                    ]
+                }
+            })
+
+            if (checkDelegationExist.length > 0 && !delArray[i].notCheck) {
+                throw ["delegation_task_exist"];
+            }
+
+            // TODO
+            // let checkUserAlreadyInTask = await Task(connect(DB_CONNECTION, portal)).find({
+            //     _id: delArray[i].delegateTask,
+            //     userId: delArray[i].delegatee,
+            //     roleId: delArray[i].delegateRole,
+
+            // })
+
+            // if (checkUserHaveRole.length > 0 && !delArray[i].notCheck) {
+            //     throw ["user_role_exist"]
+            // }
+
+            if (!isToday(new Date(delArray[i].delegationStart)) && compareDate(new Date(delArray[i].delegationStart), new Date()) < 0) {
+                throw ["start_date_past"]
+            }
+
+            if (delArray[i].delegationEnd != null && compareDate(new Date(delArray[i].delegationEnd), new Date()) < 0) {
+                throw ["end_date_past"]
+            }
+
+            console.log(checkDelegationExist)
+            // console.log(new Date(delArray[i].delegationStart))
+            if (delArray[i].notCheck || (checkDelegationExist.length == 0
+                // && checkUserHaveRole.length == 0
+            )) {
+                console.log('hello')
+                if (await this.checkDelegationPolicy(delArray[i].delegatePolicy, delArray[i].delegator, delArray[i].delegateTask, null, delArray[i].delegatee, portal)) {
+                    newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
+                        delegationName: delArray[i].delegationName,
+                        description: delArray[i].description,
+                        delegator: delArray[i].delegator,
+                        delegatee: delArray[i].delegatee,
+                        delegateType: "Task",
+                        delegateTask: delArray[i].delegateTask,
+                        delegateTaskRoles: delArray[i].delegateTaskRoles,
+                        startDate: delArray[i].delegationStart,
+                        endDate: delArray[i].delegationEnd,
+                        status: isToday(new Date(delArray[i].delegationStart)) ? "activated" : "pending",
+                        delegatePolicy: delArray[i].delegatePolicy,
+                        logs: logs
+                    });
+                }
+
+            }
+
+
+
+            // TODO
+            // else {
+            //     await this.autoActivateDelegation(newDelegation, portal);
+            // }
+
+            // if (newDelegation.endDate != null) {
+            //     await this.autoRevokeDelegation(newDelegation, portal);
+            // }
+
+
+        }
+    }
+
+    let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: newDelegation._id }).populate([
+        // { path: 'delegateRole', select: '_id name' },
+        // { path: 'delegateTask' },
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegatePolicy', select: '_id policyName' },
+        { path: 'delegator', select: '_id name' }
+        // {
+        //     path: 'delegatePrivileges', select: '_id resourceId resourceType',
+        //     populate: {
+        //         path: 'resourceId',
+        //         select: '_id url category description'
+        //     }
+        // }
+    ]);
+
+
+    return delegation;
 }

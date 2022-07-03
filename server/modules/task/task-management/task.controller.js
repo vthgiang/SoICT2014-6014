@@ -1020,7 +1020,7 @@ exports.getUserTimeSheet = async (req, res) => {
         if (requireActions) {
             timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year, requireActions);
         } else {
-            timesheetlogs = await TaskManagementService.getAllUserTimeSheetLog(portal, month, year,  rowLimit, page, timeLimit, unitArray, sortType);
+            timesheetlogs = await TaskManagementService.getAllUserTimeSheetLog(portal, month, year, rowLimit, page, timeLimit, unitArray, sortType);
         }
 
         await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
@@ -1161,5 +1161,47 @@ exports.getOrganizationTaskDashboardChartData = async (req, res) => {
             messages: Array.isArray(error) ? error : ['get_task_dashboard_data_fail'],
             content: error
         })
+    }
+}
+
+exports.saveTaskAttributes = async (req, res) => {
+    try {
+        let data = await TaskManagementService.saveTaskAttributes(req.portal, req.params.taskId, req.body);
+
+        Logger.info(req.user.email, 'edit_task_attributes_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_attributes_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'edit_task_attributes_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_task_attributes_faile'],
+            content: error
+        });
+    }
+}
+
+exports.addTaskDelegation = async (req, res) => {
+    try {
+        let data = await TaskManagementService.addTaskDelegation(req.portal, req.params.taskId, req.body);
+
+        Logger.info(req.user.email, 'add_task_delegation_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['add_task_delegation_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'add_task_delegation_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['add_task_delegation_faile'],
+            content: error
+        });
     }
 }

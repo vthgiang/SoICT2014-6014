@@ -1611,7 +1611,22 @@ export default {
                 resources_add_attribute: "Attributes of resources",
                 attribute_select: "Select attribute",
                 attribute_not_selected: "Attribute not selected",
-            }
+            },
+            task: {
+                add_attribute: "Manage task attributes",
+                add_task_attribute: "Add task attribute",
+                attributes: "Task attributes",
+                attribute_name: "Attribute name",
+                attribute_value: "Attribute value",
+                attribute_description: "Attribute description",
+                attribute_name_example: "VD: Project A",
+                attribute_value_example: "VD: PM",
+                attribute_description_example: "VD: Manager of project A",
+                add_attribute_title: "Manage task attributes",
+                tasks_add_attribute: "Attributes of tasks",
+                attribute_select: "Select attribute",
+                attribute_not_selected: "Attribute not selected",
+            },
         },
         manage_delegation_policy: {
             policyName: "Policy Name",
@@ -1759,7 +1774,8 @@ export default {
         manage_delegation: {
             delegationName: "Delegation code",
             delegateType: "Delegation Type",
-            delegateObject: "Role/Task",
+            delegateObject: "Role",
+            delegateObjectTask: "Task",
             delegatee: "Delegatee",
             delegator: "Delegator",
             delegateStartDate: "Date activated",
@@ -1855,7 +1871,12 @@ export default {
                 activate: "Activate delegation ",
                 system: "System",
                 automatic: "Automatic"
-            }
+            },
+            task_delegation_title: "Task delegation",
+            delegate_task_role: "Task roles",
+            choose_task_role: "Choose roles",
+            delegateTaskName: "Task name",
+            task_delegation_title_add: "Add a task delegation",
         },
 
         // Modules cấu hình các chức năng
@@ -3540,6 +3561,14 @@ export default {
                 task_status_error: "Status of task doesn't allow archive",
                 confirm_delete:
                     "This task cannot be deleted because it is in progress!",
+                edit_task_attributes_success: "Update task attributes successfully!",
+                edit_task_attributes_faile: "Update task attributes failed!",
+                attribute_selected_duplicate: "Selected attributes are duplicated",
+                add_task_delegation_success: "Add a new task delegation successfully!",
+                add_task_delegation_faile: "Add a new task delegation failed!",
+                delegator_invalid_policy: "Delegator does not satisfy chosen delegation policy",
+                delegatee_invalid_policy: "Delegatee does not satisfy chosen delegation policy",
+                task_invalid_policy: "Task does not satisfy chosen delegation policy",
 
                 responsible: "Responsible",
                 accountable: "Acountable",
@@ -3665,6 +3694,8 @@ export default {
                 action_restore: "Restore task",
                 action_add: "Add new subtask",
                 action_start_timer: "Start timer",
+                action_add_attribute: "Manage task attributes",
+                action_delegate: "Delegate task",
 
                 err_organizational_unit: "Organizational Unit deleted",
                 err_name_task: "Name deleted",

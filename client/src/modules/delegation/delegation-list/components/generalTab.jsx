@@ -109,8 +109,8 @@ function GeneralTab(props) {
                         <span> {declineReason}</span>
                     </div>
                 </div>}
-            {delegatePrivileges &&
-                <div class="row">
+            {delegatePrivileges && delegatePrivileges.length > 0 &&
+                < div class="row">
                     <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
                         <label>{translate('manage_delegation.delegation_allowed_links')}:</label>
                         <table className="table table-hover table-bordered detail-policy-attribute-table not-sort">
@@ -149,7 +149,7 @@ function GeneralTab(props) {
                 </div>
             }
 
-        </div>
+        </div >
     );
 };
 

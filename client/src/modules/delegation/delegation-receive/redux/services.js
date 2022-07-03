@@ -6,7 +6,8 @@ import {
 export const delegationServices = {
     getDelegations,
     rejectDelegation,
-    confirmDelegation
+    confirmDelegation,
+    getDelegationsTask
 }
 
 function getDelegations(queryData) {
@@ -19,7 +20,9 @@ function getDelegations(queryData) {
                 userId: userId,
                 delegationName: queryData?.delegationName ? queryData.delegationName : "",
                 page: queryData?.page ? queryData.page : null,
-                perPage: queryData?.perPage ? queryData.perPage : null
+                perPage: queryData?.perPage ? queryData.perPage : null,
+                delegateType: queryData?.delegateType ? queryData.delegateType : "",
+
             }
         },
         false,
@@ -28,7 +31,26 @@ function getDelegations(queryData) {
     );
 }
 
+function getDelegationsTask(queryData) {
+    let userId = getStorage("userId")
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations-receive/tasks`,
+            method: "GET",
+            params: {
+                userId: userId,
+                delegationName: queryData?.delegationName ? queryData.delegationName : "",
+                page: queryData?.pageTask ? queryData.pageTask : null,
+                perPage: queryData?.perPageTask ? queryData.perPageTask : null,
+                delegateType: queryData?.delegateType ? queryData.delegateType : null,
 
+            }
+        },
+        false,
+        true,
+        "manage_delegation"
+    );
+}
 
 function rejectDelegation(data) {
     return sendRequest(

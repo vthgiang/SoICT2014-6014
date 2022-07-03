@@ -29,7 +29,10 @@ export const taskManagementActions = {
 
     importTasks,
 
-    getOrganizationTaskDashboardChart
+    getOrganizationTaskDashboardChart,
+
+    saveTaskAttributes,
+    addTaskDelegation
 };
 
 
@@ -642,5 +645,49 @@ function getOrganizationTaskDashboardChart(data) {
                     error
                 });
             })
+    }
+}
+
+/**
+ * Lưu thông tin thuộc tính công việc
+ * @taskId id công việc
+ * @data dữ liệu chỉnh sửa
+ */
+function saveTaskAttributes(taskId, data) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.SAVE_TASK_ATTRIBUTES_REQUEST, taskId });
+        taskManagementService.saveTaskAttributes(taskId, data)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.SAVE_TASK_ATTRIBUTES_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.SAVE_TASK_ATTRIBUTES_FAILURE, error });
+            })
+    };
+}
+
+
+function addTaskDelegation(taskId, data) {
+    return (dispatch) => {
+        dispatch({
+            type: taskManagementConstants.ADD_TASK_DELEGATION_REQUEST
+        });
+        taskManagementService
+            .addTaskDelegation(taskId, data)
+            .then((res) => {
+                dispatch({
+                    type: taskManagementConstants.ADD_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: taskManagementConstants.ADD_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
     }
 }

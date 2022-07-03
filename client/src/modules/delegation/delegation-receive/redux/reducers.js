@@ -11,16 +11,19 @@ var findIndex = (array, id) => {
 }
 
 const initialState = {
-    lists: [],
+    listsRole: [],
+    listsTask: [],
     isLoading: false,
     error: null,
     totalList: 0,
+    totalListTask: 0,
 }
 
 export function delegationReceive(state = initialState, action) {
     let index = -1;
     switch (action.type) {
         case delegationConstants.GET_ALL_DELEGATIONS_REQUEST:
+        case delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST:
         case delegationConstants.REJECT_DELEGATION_REQUEST:
         case delegationConstants.CONFIRM_DELEGATION_REQUEST:
             return {
@@ -28,6 +31,7 @@ export function delegationReceive(state = initialState, action) {
                 isLoading: true
             }
         case delegationConstants.GET_ALL_DELEGATIONS_FAILURE:
+        case delegationConstants.GET_ALL_DELEGATIONS_TASK_FAILURE:
         case delegationConstants.REJECT_DELEGATION_FAILURE:
         case delegationConstants.CONFIRM_DELEGATION_FAILURE: return {
             ...state,
@@ -35,28 +39,36 @@ export function delegationReceive(state = initialState, action) {
             error: action.error
         }
         case delegationConstants.GET_ALL_DELEGATIONS_SUCCESS:
+            console.log(action.payload.data)
             return {
                 ...state,
-                lists: action.payload.data,
+                listsRole: action.payload.data,
                 totalList: action.payload.totalList,
                 isLoading: false
             }
         case delegationConstants.REJECT_DELEGATION_SUCCESS:
-            index = findIndex(state.lists, action.payload._id);
+            index = findIndex(state.listsRole, action.payload._id);
             if (index !== -1) {
-                state.lists[index] = action.payload
+                state.listsRole[index] = action.payload
             }
             return {
                 ...state,
                 isLoading: false
             }
         case delegationConstants.CONFIRM_DELEGATION_SUCCESS:
-            index = findIndex(state.lists, action.payload._id);
+            index = findIndex(state.listsRole, action.payload._id);
             if (index !== -1) {
-                state.lists[index] = action.payload
+                state.listsRole[index] = action.payload
             }
             return {
                 ...state,
+                isLoading: false
+            }
+        case delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS:
+            return {
+                ...state,
+                listsTask: action.payload.dataTask,
+                totalListTask: action.payload.totalListTask,
                 isLoading: false
             }
         default:
