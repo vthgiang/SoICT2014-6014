@@ -5,17 +5,17 @@ import c3 from 'c3';
 import 'c3/c3.css'
 
 
-function OrganizationUnitSupplyChart(props) {
+function SupplyOrganizationUnitChart(props) {
 
     const [state, setState] = useState([]);
-    const { translate,organizationUnitsPriceSupply } = props;
+    const { translate,supplyOrganizationUnitPrice } = props;
     useEffect(() => {
         let amountSupplies = [];
         let valueSupplies = [];
 
-        for(let i = 0; i < organizationUnitsPriceSupply.length; i++) {
-            amountSupplies.push([organizationUnitsPriceSupply[i].name, organizationUnitsPriceSupply[i].quantity]);
-            valueSupplies.push([organizationUnitsPriceSupply[i].name, organizationUnitsPriceSupply[i].price]);
+        for(let i = 0; i < supplyOrganizationUnitPrice.length; i++) {
+            amountSupplies.push([supplyOrganizationUnitPrice[i].name, supplyOrganizationUnitPrice[i].quantity]);
+            valueSupplies.push([supplyOrganizationUnitPrice[i].name, supplyOrganizationUnitPrice[i].price]);
         }
 
         let lineBarChart = [
@@ -35,7 +35,7 @@ function OrganizationUnitSupplyChart(props) {
             lineBarChart[indices.value].push(value);
         }
         barLineChart(lineBarChart);
-    }, [organizationUnitsPriceSupply]);
+    }, [supplyOrganizationUnitPrice]);
 
     const barLineChart = (data) => {
         let { translate } = props;
@@ -46,18 +46,8 @@ function OrganizationUnitSupplyChart(props) {
             [value]: 'bar',
         }
         const groups = [[value]];
-        // thay đổi bằng giá trị name trong phần organizationUnitsPriceSupply
-        const category = [
-            'Ban giám đốc',
-            'Bộ phận kinh doanh',
-            'Phòng Chăm sóc khách hàng',
-            'Phòng nhân sự',
-            'Nhà máy sản xuất thuốc bột',
-            'Nhà máy sản xuất thuốc nước',
-            'Nhà máy sản xuất thực phẩm chức năng',
-            'Phòng vận chuyển miền bắc',
-            'Phòng kế hoạch',
-        ]
+        // thay đổi bằng giá trị name trong phần supplyOrganizationUnitPrice
+        const category = supplyOrganizationUnitPrice?.map(item => item.name)
 
         const customAxes = {
             [amount]: 'y2',
@@ -65,7 +55,7 @@ function OrganizationUnitSupplyChart(props) {
         }
 
         c3.generate({
-            bindto: document.getElementById('organizationUnitSupplyChart'),
+            bindto: document.getElementById('supplyOrganizationUnitChart'),
 
             data: {
                 columns: data,
@@ -115,7 +105,7 @@ function OrganizationUnitSupplyChart(props) {
     return (
         <div className="box box-solid">
             <div className="box-body qlcv">
-                <div id="organizationUnitSupplyChart"></div>
+                <div id="supplyOrganizationUnitChart"/>
             </div>
         </div>
     )
@@ -123,4 +113,4 @@ function OrganizationUnitSupplyChart(props) {
 
 }
 
-export default connect(null, null)(withTranslate(OrganizationUnitSupplyChart));
+export default connect(null, null)(withTranslate(SupplyOrganizationUnitChart));

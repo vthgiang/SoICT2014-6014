@@ -11,6 +11,7 @@ import BoughtPieChart from "./pie-chart/BoughtPieChart";
 import ExistPieChart from "./pie-chart/ExistPieChart";
 import OrganizationUnitSupplyChart from "./bar-chart/OrganizationUnitSupplyChart";
 import {DepartmentActions} from "../../../../super-admin/organizational-unit/redux/actions";
+import SupplyOrganizationUnitChart from "./bar-chart/SuppliesOrganizationUnitChart";
 
 const formatTime = (value) => {
     return value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)))
@@ -351,6 +352,16 @@ function SuppliesDashboard(props) {
                     <button className="btn btn-success" style={{marginLeft: 12, marginRight: 10}}
                             onClick={handleSearchOrganData}>{translate('task.task_management.search')}</button>
                     </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        {
+                            (suppliesPriceForOrganization.length > 0) &&
+                            <SupplyOrganizationUnitChart
+                                supplyOrganizationUnitPrice={suppliesPriceForOrganization}
+                            />
+                        }
+                    </div>
+                </div>
             </div>
         </React.Fragment>
     );
