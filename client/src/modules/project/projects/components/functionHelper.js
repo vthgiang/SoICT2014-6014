@@ -621,7 +621,7 @@ export const getRecursiveRelevantTasks = (tasksList, currentTask) => {
 }
 
 // Hàm hỗ trợ hiển thị màu cho độ ưu tiên công việc
-export const convertPriorityData = (translate, priority) => {
+export const convertPriorityData = (priority, translate) => {
     let priorityColor = "";
     switch (priority) {
         case 5:
@@ -647,6 +647,7 @@ export const convertPriorityData = (translate, priority) => {
 }
 
 export const formatPriority = (translate, data) => {
+    console.log(data);
     if (data === 1) return translate('task.task_management.low');
     if (data === 2) return translate('task.task_management.average');
     if (data === 3) return translate('task.task_management.standard');
@@ -721,6 +722,9 @@ export const renderCompare2Item = (valueToBeCompared, valueToColor, funcCompareT
 }
 
 // Hàm hỗ trợ tìm mọi đường đi giữa điểm bắt đầu và kết thúc
+// list là 1 map với các phần tử có key là đỉnh của đồ thị
+// và value gồm 1 hoặc nhiều thuộc tính, trong đó thuộc tính
+// successor là mảng gồm những đỉnh mà đỉnh đó có thể đi tới
 function* findPath(list, start, end, visited=new Set() ) {
     if (start === end) return yield [...visited, end];
     visited.add(start);
