@@ -238,7 +238,7 @@ const TabChangeRequestProject = (props) => {
                     requestStatus: 3,
                 });
                 setTimeout(() => {
-                    props.getTasksByProject(currentProjectId || projectDetail._id);
+                    props.getTasksByProject({ projectId: currentProjectId || projectDetail._id });
                 }, 20);
                 console.log('\n------- da bam phe duyet---------')
             }
@@ -264,7 +264,7 @@ const TabChangeRequestProject = (props) => {
                     requestStatus: 2,
                 });
                 setTimeout(() => {
-                    props.getTasksByProject(currentProjectId || projectDetail._id);
+                    props.getTasksByProject({ projectId: currentProjectId || projectDetail._id });
                 }, 20);
             }
         })

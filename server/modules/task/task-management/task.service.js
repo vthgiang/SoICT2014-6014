@@ -3140,19 +3140,7 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
  */
 
 exports.getTasksByProject = async (portal, data) => {
-    let { perPage, page, status, priority, name, preceedingTasks, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees } = data;
-    
-    // Số trang và dòng trên mỗi trang
-    if (perPage) {
-        perPage = Number(perPage);
-    } else {
-        perPage = 5;
-    }
-    if (page) {
-        page = Number(page);
-    } else {
-        page = 1;
-    }
+    let { perPage, page, status, priority, name, preceedingTasks, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, getAll } = data;
 
     let tasks;
     let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
@@ -3203,7 +3191,7 @@ exports.getTasksByProject = async (portal, data) => {
     if (preceedingTasks) {
         const predecessor = await Task(connect(DB_CONNECTION, portal)).find({
             name: {
-                $regex: name,
+                $regex: preceedingTasks,
                 $options: "i",
             }
         })
@@ -3212,7 +3200,7 @@ exports.getTasksByProject = async (portal, data) => {
 
         keySearch = {
             ...keySearch,
-            preceedingTasks: {
+            "preceedingTasks.task": {
                 $in: getIdPredecessor
             }
         }
@@ -3359,7 +3347,20 @@ exports.getTasksByProject = async (portal, data) => {
         ]
     }
 
-    tasks = await Task(connect(DB_CONNECTION, portal))
+    if (getAll) {
+        tasks = await Task(connect(DB_CONNECTION, portal)).find(optionQuery)
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" })
+        .populate({ path: "creator", select: "_id name" })
+        .populate({ path: "preceedingTasks", select: "_id name" })
+        .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+        .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
+    }
+
+    else {
+        tasks = await Task(connect(DB_CONNECTION, portal))
         .find( optionQuery ).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
         .populate({ path: "responsibleEmployees", select: "_id name" })
         .populate({ path: "accountableEmployees", select: "_id name" })
@@ -3369,6 +3370,8 @@ exports.getTasksByProject = async (portal, data) => {
         .populate({ path: "preceedingTasks", select: "_id name" })
         .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
         .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
+    }
+
     return {
         docs: tasks,
         totalDocs: totalList,

@@ -139,7 +139,7 @@ function ListProject(props) {
             ...state,
             projectDetail: project.data.paginate.find(p => p?._id === id)
         });
-        props.getTasksByProject(id);
+        props.getAllTasksByProject(id);
         setTimeout(() => {
             window.$(`#modal-detail-project-${id}`).modal('show');
         }, 10);
@@ -220,11 +220,11 @@ function ListProject(props) {
             <ProjectDetailForm
                 projectDetailId={projectDetail && projectDetail._id}
                 projectDetail={projectDetail}
-                currentProjectTasks={tasks && tasks.tasksbyproject}
+                currentProjectTasks={tasks && tasks.tasksByProject}
             />
 
             <ProjectEditForm
-                currentProjectTasks={tasks && tasks.tasksbyproject}
+                currentProjectTasks={tasks && tasks.tasksByProject}
                 projectEditId={currentRow && currentRow._id}
                 projectEdit={currentRow}
                 handleAfterCreateProject={handleAfterCreateProject}
@@ -400,7 +400,7 @@ const actions = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     createProjectDispatch: ProjectActions.createProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
 }
 
 const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProject));

@@ -33,19 +33,18 @@ const ProjectDetailPage = (props) => {
         props.getAllDepartment();
         props.getDepartment();
         props.getAllUserInAllUnitsOfCompany();
-        props.getTasksByProject(currentProjectId);
+        props.getAllTasksByProject(currentProjectId);
         props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
     }, [])
 
-    const currentProjectTasks = tasks?.tasksbyproject;
+    const currentProjectTasks = tasks?.tasksByProject;
     
     // Hàm lấy lại thông tin sau khi dự án sau khi tạo dự án mới
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
-        await props.getTasksByProject(currentProjectId);
-        await props.getTasksByProject(currentProjectId, 1, 6);
+        await props.getAllTasksByProject(currentProjectId);
         projectDetail = getCurrentProjectDetails(project);
-        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
+        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, getAll: true });
     }
 
     return (
@@ -102,7 +101,7 @@ const mapDispatchToProps = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
 }

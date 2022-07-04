@@ -42,8 +42,7 @@ const TabProjectTasksList = (props) => {
             window.$('#modal-add-task-schedule').modal('hide');
         }, 10);
         setTimeout(() => {
-            props.getTasksByProject(currentProjectId);
-            props.getTasksByProject(currentProjectId, 1, 6);
+            props.getTasksByProject({ projectId: currentProjectId });
         }, 1000);
     }
 
@@ -72,8 +71,7 @@ const TabProjectTasksList = (props) => {
                         {/* Button refresh danh sách tasks */}
                         <button style={{ paddingTop: 5, width: 35, height: 35, justifyContent: 'center', alignItems: 'center', marginTop: 15, marginRight: 10 }}
                             onClick={() => {
-                                props.getTasksByProject(currentProjectId);
-                                props.getTasksByProject(currentProjectId, 1, 6);
+                                props.getTasksByProject({projectId: currentProjectId});
                             }}
                         >
                             <span className="material-icons">refresh</span>

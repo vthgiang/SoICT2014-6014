@@ -638,30 +638,35 @@ export function tasks(state = {
                 ...state,
                 isLoading: true
             };
+
         case taskManagementConstants.GETTASK_BYPROJECT_SUCCESS:
             return {
                 ...state,
-                tasks: action.payload,
-                tasksbyproject: action.payload,
+                tasks: action.payload.docs,
+                tasksByProject: action.payload.docs,
+                totalDocs: action.payload.totalDocs,
                 isLoading: false
             };
+
         case taskManagementConstants.GETTASK_BYPROJECT_FAILURE:
             return {
                 ...state,
                 error: action.error,
                 isLoading: false
-            }
+            };
 
         case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_REQUEST:
             return {
                 ...state,
                 isProjectPaginateLoading: true
             };
+
+
         case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_SUCCESS:
             return {
                 ...state,
                 tasks: action.payload.docs,
-                tasksbyprojectpaginate: action.payload.docs,
+                tasksByProjectPaginate: action.payload.docs,
                 totalDocs: action.payload.totalDocs,
                 isProjectPaginateLoading: false
             }

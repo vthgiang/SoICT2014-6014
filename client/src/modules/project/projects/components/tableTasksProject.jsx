@@ -126,8 +126,8 @@ const TableTasksProject = (props) => {
     // }
 
     const processPreceedingTasks = (preceedingTasks) => {
-        if (!currentProjectTasks || preceedingTasks.length === 0) return '';
-        const resultArr = preceedingTasks.map(preceedingTaskItem => {
+        if (!currentProjectTasks || preceedingTasks?.length === 0) return '';
+        const resultArr = preceedingTasks?.map(preceedingTaskItem => {
             return currentProjectTasks.find(item => item._id === preceedingTaskItem.task)?.name;
         })
         return <ToolTip dataTooltip={resultArr} />;
@@ -553,6 +553,6 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TableTasksProject));
 // export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(
 //     memo(TableTasksProject, (prev, next) => {
-//         return prev.tasks.tasksbyproject === next.tasks.tasksbyproject
+//         return prev.tasks.tasksByProject === next.tasks.tasksByProject
 //     })
 // ));

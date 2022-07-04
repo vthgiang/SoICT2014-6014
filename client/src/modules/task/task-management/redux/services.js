@@ -493,6 +493,24 @@ function addNewProjectTask(newTask) {
     }, true, true, 'task.task_management');
 }
 
+/**
+ * lấy dữ liệu các công việc
+ * @param {*} data dữ liệu về công việc cần tìm
+ * @param {*} status trạng thái thực hiện
+ * @param {*} name tên công việc
+ * @param {*} priority độ ưu tiên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate ngày kết thúc
+ * @param {*} responsibleEmployees nhân viên thực hiện
+ * @param {*} accountableEmployees nhận viên phê duyệt
+ * @param {*} creatorEmployees người tạo công việc
+ * @param {*} preceedingTasks công việc tiền nhiệm
+ * @param {*} projectId dự án
+ * @param {*} page số trang
+ * @param {*} perPage số bản ghi trên trang
+ * @param {*} getAll có lấy tất cả các công việc thuộc dự án hay không
+ */
+
 function getTasksByProject(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
