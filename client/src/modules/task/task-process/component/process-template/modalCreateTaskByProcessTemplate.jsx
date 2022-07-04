@@ -464,8 +464,8 @@ function ModalCreateTaskByProcessTemplate(props) {
         //console.log(element, state)
         let nameStr = element.type.split(':');
         setState(state => {
-            console.log(465, state)
-            if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
+            if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway"  ||
+            element.type === "bpmn:SequenceFlow" || element.type === "bpmn:ServiceTask") {
                 if (!state.info[`${element.businessObject.id}`] ||
                     (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                     state.info[`${element.businessObject.id}`] = {
@@ -474,7 +474,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                     };
                     // state.id = `${element.businessObject.id}`
                 }
-                console.log(474, state);
+                // console.log(474, state);
 
                 return {
                     ...state,
@@ -713,8 +713,8 @@ function ModalCreateTaskByProcessTemplate(props) {
         return result
 
     }
-    
-    // Hàm lưu thông tin 
+
+    // Hàm lưu thông tin
     const save = async () => {
         let { info, infoTemplate, startDate, endDate, userId, processName,officeHours, processDescription, xmlDiagram, viewer, manager } = state;
 
