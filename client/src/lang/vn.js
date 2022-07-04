@@ -6466,6 +6466,8 @@ export default {
                 estimatedCostMaximum: "Tối đa",
                 add_err_optimistic_time: "Thời gian thoả hiệp không được lớn hơn thời gian ước lượng",
                 preceedingTask: "Công việc tiền nhiệm",
+                search_by_name_code: "Tìm kiếm theo tên hoặc mã công việc",
+                code: "Mã công việc",
             },
 
             unit: {

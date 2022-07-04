@@ -5609,7 +5609,6 @@ export default {
                 estimate: "Estimating",
                 add_err_time_cost: "Time & Cost must be numeric and greater or equal than 0",
                 end_date: "Estimated end date",
-
                 // unit time and cost
                 timeAndCost: "Time & Cost for Project scheduling",
                 estimatedTime: "Estimated time",
@@ -5621,6 +5620,8 @@ export default {
                 estimatedCostMaximum: "Maximum",
                 add_err_optimistic_time: "Optimistic time can't be greater than estimated time",
                 preceedingTask: "Preceeding task",
+                search_by_name_code: "Search by name or code of task",
+                code: "Task code",
             },
 
             unit: {

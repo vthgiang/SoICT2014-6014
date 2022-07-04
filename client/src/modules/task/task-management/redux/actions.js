@@ -566,29 +566,13 @@ function addProjectTask(task) {
 /**
  * get task by user and projectId
  */
-function getTasksByProject(projectId, page = undefined, perPage = undefined) {
-    if (!page && !perPage) {
-        return dispatch => {
-            dispatch({
-                type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST,
-            });
-            taskManagementService.getTasksByProject(projectId)
-                .then(res => {
-                    dispatch({
-                        type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
-                        payload: res.data.content
-                    });
-                })
-                .catch(error => {
-                    dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_FAILURE, error });
-                });
-        };
-    }
+function getTasksByProject(data) {
+    
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_REQUEST,
         });
-        taskManagementService.getTasksByProject(projectId, page, perPage)
+        taskManagementService.getTasksByProject(data)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_SUCCESS,

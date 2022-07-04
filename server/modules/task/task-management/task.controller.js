@@ -1042,9 +1042,7 @@ exports.getUserTimeSheet = async (req, res) => {
 
 getTasksByProject = async (req, res) => {
     try {
-        let portal = req.portal;
-        let { projectId, page, perPage } = req.query;
-        let tasksResult = await TaskManagementService.getTasksByProject(portal, projectId, page, perPage);
+        let tasksResult = await TaskManagementService.getTasksByProject(req.portal, req.query);
 
         await Logger.info(req.user.email, 'get_tasks_by_project_success', req.portal)
         res.status(200).json({

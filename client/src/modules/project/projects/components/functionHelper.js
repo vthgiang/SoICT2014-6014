@@ -620,6 +620,41 @@ export const getRecursiveRelevantTasks = (tasksList, currentTask) => {
     return allTasksNodeRelationArr;
 }
 
+// Hàm hỗ trợ hiển thị màu cho độ ưu tiên công việc
+export const convertPriorityData = (translate, priority) => {
+    let priorityColor = "";
+    switch (priority) {
+        case 5:
+            priorityColor = "#ff0707";
+            break;
+        case 4:
+            priorityColor = "#ff5707";
+            break;
+        case 3:
+            priorityColor = "#28A745";
+            break;
+        case 2:
+            priorityColor = "#ffa707";
+            break;
+        default:
+            priorityColor = "#808080"
+    }
+    return (
+        <div >
+            <span style={{ color: priorityColor }}> {formatPriority(translate, priority)}</span>
+        </div>
+    )
+}
+
+export const formatPriority = (translate, data) => {
+    if (data === 1) return translate('task.task_management.low');
+    if (data === 2) return translate('task.task_management.average');
+    if (data === 3) return translate('task.task_management.standard');
+    if (data === 4) return translate('task.task_management.high');
+    if (data === 5) return translate('task.task_management.urgent');
+}
+
+// Hàm hỗ trợ hiển thị trạng thái công việc
 export const formatTaskStatus = (translate, status) => {
     switch (status) {
         case "inprocess":
