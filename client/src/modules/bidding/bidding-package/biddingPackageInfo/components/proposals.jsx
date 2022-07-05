@@ -4,6 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { saveAs } from "file-saver";
 import { Packer } from "docx";
 import { proposalDocxCreate } from './proposalDocxCreator';
+import { convertTagIdToTagName } from '../../biddingPackageManagement/components/employeeHelper';
+import { TagActions } from '../../../tags/redux/actions';
 
 function Proposals(props) {
     const arrUnitTimeList = [
@@ -24,13 +26,21 @@ function Proposals(props) {
         setState({ ...state, id: props.id, })
     }, [props.id])
 
-
     useEffect(() => {
         setProposals(props.biddingPackage.proposals)
     }, [props.biddingPackage?._id])
+    
+    useEffect(() => {
+        props.getListTag({});
+    }, [])
 
-    const { translate } = props;
+    const { translate, tag } = props;
     const { id } = state;
+
+    let alltag = [];
+    if (tag && tag.listTag) {
+        alltag = tag?.listTag
+    }
 
     const generateProposalDocx = (proposals) => {
         const doc = proposalDocxCreate(proposals);
@@ -44,12 +54,6 @@ function Proposals(props) {
 
     return (
         <div id={id} className="tab-pane">
-            {/* <div className="form-group pull-right" style={{ padding: '6px 12px', margin: '5px', width: '100%' }}>
-                <ExportExcel id="download_template_search_package" type='link' exportData={convertDataExport()} buttonName='Download hồ sơ nhân sự chủ chốt' />
-                <a className="btn btn-success" style={{ paddingLeft: '15px', marginLeft: '15px' }} onClick={() => props.downLoadDocument(props._id)} title="Tải xuống file minh chứng">
-                    Tải xuống file minh chứng
-                </a>
-            </div> */}
             <div style={{ display: 'flex', justifyContent: "flex-end" }}>
                 <div className="btn btn-success" onClick={() => generateProposalDocx(proposals)}>Tải file Đề xuất</div>
             </div>
@@ -83,7 +87,7 @@ function Proposals(props) {
                                     <div className="box-body collapse" data-toggle="collapse" id={`task-proposal-${index}`} style={{ lineHeight: 2 }}>
                                         <div><strong>Tên công việc: </strong><span>{item.taskName}</span></div>
                                         <div><strong>Mô tả công việc: </strong><span>{item.taskDescription}</span></div>
-                                        <div><strong>Thẻ công việc: </strong><span>{item.tag}</span></div>
+                                        <div><strong>Tags: </strong><span>{item?.tag?.map(x => convertTagIdToTagName(alltag, x))?.join(", ")}</span></div>
                                         <div><strong>Thời gian thực hiện: </strong><span>{item.estimateTime} ({arrUnitTimeList.find(x => x.value === item.unitOfTime)?.text})</span></div>
                                         <div><strong>Nhân viên trực tiếp: </strong><span>{item.directEmployees.map(x => x.fullName).join(", ")}</span></div>
                                         <div><strong>Nhân viên dự phòng: </strong><span>{item.backupEmployees.map(x => x.fullName).join(", ")}</span></div>
@@ -100,9 +104,13 @@ function Proposals(props) {
 };
 
 const mapState = (state) => {
-    const { auth, employeesManager } = state;
-    return { auth, employeesManager };
+    const { auth, employeesManager, tag } = state;
+    return { auth, employeesManager, tag };
 }
 
-const connectComponent = connect(mapState, null)(withTranslate(Proposals));
+const mapAction = {
+    getListTag: TagActions.getListTag,
+}
+
+const connectComponent = connect(mapState, mapAction)(withTranslate(Proposals));
 export { connectComponent as Proposals };

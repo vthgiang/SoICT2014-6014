@@ -613,7 +613,7 @@ function Proposals(props) {
                                     <th>Mã công việc</th>
                                     <th>Tên công việc</th>
                                     <th>Công việc tiền nhiệm</th>
-                                    <th>Thẻ công việc</th>
+                                    <th>Tags</th>
                                     <th>Thời gian thực hiện</th>
                                     <th>Mô tả công việc</th>
                                     {/* <th>Nhân sự trực tiếp</th>
@@ -726,7 +726,7 @@ function Proposals(props) {
                                 <th>Mã công việc</th>
                                 <th>Tên công việc</th>
                                 <th>Công việc tiền nhiệm</th>
-                                <th>Thẻ công việc</th>
+                                <th>Tags</th>
                                 <th>Thời gian thực hiện</th>
                                 {/* <th>Mô tả công việc</th> */}
                                 <th>Nhân sự phù hợp</th>
