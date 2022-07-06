@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
 
-// Model quản lý dữ liệu của một mẫu công việc
+// Model quản lý dữ liệu của một mẫu Kpi
 const OrganizationalUnitKpiTemplateSchema = new Schema(
     {
         organizationalUnit: {
@@ -20,7 +20,7 @@ const OrganizationalUnitKpiTemplateSchema = new Schema(
             type: Number,
             default: 1,
         },
-        kpiActions: [
+        kpis: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "OrganizationalUnitKpi",

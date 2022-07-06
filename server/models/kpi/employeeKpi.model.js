@@ -19,13 +19,28 @@ const EmployeeKpiSchema = new Schema({
         type: String,
         required: true
     },
+    // Chỉ tiêu Kpi
     target: {
         type: Number,
         default: null
     },
+    // Đơn vị đo chỉ tiêu
     unit: {
         type: String
     },
+    // Công thức tính chỉ tiêu KPI
+    formula: {
+        type: String,
+    },
+    // Tham số trong công thức tính chỉ tiêu
+    keys: [{
+        key: {
+            type: String
+        },
+        name: {
+            type: String
+        },
+    }],
     // null: Chưa phê duyệt, 0: Yêu cầu làm lại,1: Đã kích hoạt, 2: Đã kết thúc
     status: {
         type: Number,
