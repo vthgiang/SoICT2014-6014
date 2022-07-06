@@ -94,7 +94,7 @@ function EmployeeCreateKpiAutoModal(props) {
         let data = {
             employees: employeeIds,
             approver: localStorage.getItem("userId"),
-            month: '2022-06',
+            month: '2022-07',
             organizationalUnit: organizationalUnitId
         };
 

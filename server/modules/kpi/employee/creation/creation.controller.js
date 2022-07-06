@@ -141,7 +141,7 @@ exports.createEmployeeKpiSet = async (req, res) => {
 
 }
 
-/** Khởi tạo KPI cá nhân */
+/** Khởi tạo KPI cá nhân tự động */
 exports.createEmployeeKpiSetAuto = async (req, res) => {
     try {
         for (let item of req.body.employees) {
@@ -188,26 +188,55 @@ exports.createEmployeeKpiSetAuto = async (req, res) => {
 
 }
 
-/** test */
-exports.test = async (req, res) => {
+/** Cân bằng các mục tiêu của KPI cá nhân tự động */
+exports.balancEmployeeKpisAuto = async (req, res) => {
     try {
-        let result = await EmployeeKpiSetService.test(req.portal, req.query);
+        console.log(req.body);
+        const { kpiSet, balanceCoef } = req.body;
 
+        for (let i = 0; i < kpiSet.length; i++) {
+            let employeeKpiSet = await EmployeeKpiSetService.balancEmployeeKpisAuto(req.portal, kpiSet[i], balanceCoef[i]);
+            console.log('res in controller', employeeKpiSet)
+        }
+        // let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.approver, req.params.id);
 
+        // THêm logs
+
+        // let log = getDataEmployeeKpiSetLog({
+        //     type: "balance_kpi_set",
+        //     creator: req.user._id,
+        //     organizationalUnit: employeeKpiSet?.organizationalUnit,
+        //     employee: employeeKpiSet?.creator,
+        //     month: employeeKpiSet?.date,
+        //     newData: employeeKpiSet
+        // })
+        // await overviewService.createEmployeeKpiSetLogs(req.portal, {
+        //     ...log,
+        //     employeeKpiSetId: employeeKpiSet?._id
+        // })
+
+        // THêm newsfeed
+
+        // await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+        //     ...log,
+        //     organizationalUnit: employeeKpiSet?.organizationalUnit,
+        //     employeeKpiSet: employeeKpiSet
+        // });
+
+        // await Logger.info(req.user.email, ` balance employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
-            messages: ['initialize_employee_kpi_set_success'],
-            content: result
-        })
+            messages: ['balance_employee_kpi_set_success'],
+            content: employeeKpiSet
+        });
     } catch (error) {
-        // await Logger.error(req.user.email, ` create employee kpi set `, req.portal)
+        // await Logger.error(req.user.email, ` balance employee kpi set `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['initialize_employee_kpi_set_failure'],
+            messages: ['balance_employee_kpi_set_failure'],
             content: error
         });
     }
-
 }
 
 /** Tạo 1 mục tiêu KPI mới */

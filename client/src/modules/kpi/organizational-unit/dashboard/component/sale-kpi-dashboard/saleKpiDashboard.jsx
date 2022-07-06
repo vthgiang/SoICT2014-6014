@@ -57,7 +57,6 @@ const SaleKpiDashboard = (props) => {
     const handleAdjustKpiEmployee = () => {
         console.log(employeeKpiSet)
         const currentDate = new Date().getDate();
-        let needEffort = 0;
         const employeeEffort = employeeKpiSet.map(kpi => {
             let effort = 0;
             let effortIndex = 0;
@@ -93,8 +92,14 @@ const SaleKpiDashboard = (props) => {
         const employeeEffortCoef = {};
 
         employeeEffort.map(x => {
-            employeeEffortCoef[x.id] = (x.effort + total / employeeEffort.length) / x.effortIndex
+            let coef = (x.effort + total / employeeEffort.length) / x.effortIndex;
+            if (coef <= 0) {
+                coef = 0.1;
+            }
+            employeeEffortCoef[x.id] = coef;
         })
+
+
 
         const adjustEmployeeKpiSet = employeeKpiSet.map(item => {
             let coef = employeeEffortCoef[item.creator.id];
@@ -105,8 +110,8 @@ const SaleKpiDashboard = (props) => {
             })
             return item;
         })
-        console.log(adjustEmployeeKpiSet)
-        setEmployeeKpiSet(adjustEmployeeKpiSet)
+        console.log(employeeEffortCoef)
+        // setEmployeeKpiSet(adjustEmployeeKpiSet)
     }
 
     useEffect(() => {
@@ -246,7 +251,7 @@ const SaleKpiDashboard = (props) => {
     useEffect(() => {
         if (dashboardEvaluationEmployeeKpiSet?.employeeKpiSets) {
             // loc cac kpi cua nhan vien trong thang 
-            const employeeKpiSet = dashboardEvaluationEmployeeKpiSet.employeeKpiSets.filter(x => x.date.slice(0, 7) === "2022-06");
+            const employeeKpiSet = dashboardEvaluationEmployeeKpiSet.employeeKpiSets.filter(x => x.date.slice(0, 7) === "2022-07");
             console.log(11, employeeKpiSet)
             if (tasks?.evaluatedTask) {
                 console.log(474777, tasks.evaluatedTask)
@@ -375,7 +380,7 @@ const SaleKpiDashboard = (props) => {
                 dataKpis?.map((item) => {
                     return (
                         <div className="col-sm-6">
-                            <TargetKpiCard data={item} month={getMonthArr("2022-06")} />
+                            <TargetKpiCard data={item} month={getMonthArr("2022-07")} />
                         </div>
                     )
                 })
@@ -398,18 +403,23 @@ const SaleKpiDashboard = (props) => {
                     })
                 }
             </div>
-            <br />
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <div className="box-title">Đóng góp nhân viên</div>
-                        </div>
-                        <EmployeeResultChart />
+            {
+                employeeKpiSet?.length && <div>
+                    <br />
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div className="box-title">Đóng góp nhân viên</div>
+                                </div>
+                                <EmployeeResultChart employeeKpi={employeeKpiSet} unitKpi={createKpiUnit?.currentKPI} />
 
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+
             {/* <div className='row'>
                 <div className="col-sm-2">
                     <div className="card"

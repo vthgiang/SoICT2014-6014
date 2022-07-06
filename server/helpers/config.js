@@ -718,6 +718,17 @@ const LINKS = [{
     components: getComponentsInLink('/kpi-units/sales-dashboard')
 },
 {
+    url: '/template-kpi-unit',
+    description: 'Mẫu KPI đơn vị',
+    category: LINK_CATEGORY.KPI.name,
+    roles: [
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/template-kpi-unit')
+},
+{
     url: '/kpi-units/manager',
     description: 'Quản lý KPI đơn vị',
     category: LINK_CATEGORY.KPI.name,

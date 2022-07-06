@@ -1,77 +1,102 @@
-import React, { useEffect } from 'react';
+import {
+    Chart as ChartJS, Filler, Legend, LineElement, PointElement, RadialLinearScale, Tooltip
+} from 'chart.js';
+import React, { useEffect, useState } from 'react';
+import { Radar } from 'react-chartjs-2';
 import { connect } from 'react-redux';
-
-import c3 from 'c3';
-import 'c3/c3.css';
-import { useState } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 
-function EmployeeResultChart(props) {
-    const { data } = props;
-    const [dataChart, setDataChart] = useState(['Doanh thu']);
-    const [labels, setLabels] = useState();
+ChartJS.register(
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    Filler,
+    Tooltip,
+    Legend
+);
+
+// random màu cho chart
+const generateColor = () => {
+    let x = Math.random() * 255;
+    let y = Math.random() * 255;
+    let z = Math.random() * 255;
+    return {
+        bgColor: `rgba(${x}, ${y}, ${z}, 0.2)`,
+        color: `rgba(${x}, ${y}, ${z}, 1)`
+    }
+}
+
+const EmployeeResultChart = (props) => {
+    const { employeeKpi, unitKpi } = props;
+    const [data, setData] = useState();
 
     useEffect(() => {
+        let chartLabels = [];
+        let chartData = [];
 
-        barChart();
-    }, [])
-
-    const removePreviousChart = () => {
-        const chart = document.getElementById("employeeResultChart");
-
-        if (chart) {
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
+        if (unitKpi?.kpis) {
+            for (let item of unitKpi.kpis) {
+                if (typeof (item.target) === 'number') {
+                    chartLabels.push(item.name)
+                }
             }
         }
-    }
 
-    const barChart = () => {
-        removePreviousChart();
-        c3.generate({
-            bindto: document.getElementById("employeeResultChart"),
+        if (employeeKpi) {
+            for (let kpi of employeeKpi) {
+                let data = [];
+                if (kpi?.kpis) {
 
-            data: {
-                columns: [['Đóng góp', 90, 85, 70, 80, 92]],
-                type: 'bar'
-            },
+                    for (let item of kpi.kpis) {
+                        if (typeof (item.target) === 'number') {
+                            if (chartLabels.includes(item.name)) {
+                                let progress = Math.round(item.current / item.target * 100);
+                                progress = progress > 100 ? 100 : progress;
 
-            legend: {
-                show: true
-            },
+                                data.push(progress)
+                            }
+                            else {
+                                data.push(0)
+                            }
+                        }
+                    }
+                }
+                let color = generateColor();
+                chartData.push({
+                    label: kpi.creator.name,
+                    data: data,
+                    backgroundColor: color.bgColor,
+                    borderColor: color.color,
+                    borderWidth: 1,
+                })
+            }
+        }
 
-            padding: {
-                top: 20,
-                bottom: 20,
-                right: 20,
-            },
-
-            axis: {
-                x: {
-                    type: 'category',
-                    categories: ['Nguyễn Văn A', 'Hoàng Thị B', 'Lê Đức C', 'Bùi Văn D', 'Thị Văn E'],
-                },
-                rotate: true
-            },
+        setData({
+            labels: chartLabels,
+            datasets: chartData
         });
-    }
+
+    }, [employeeKpi, unitKpi]);
+
     return (
         <React.Fragment>
-            <div className="box-body qlcv">
-                <section id="employeeResultChart"></section>
+            <div>
+                {
+                    data && <Radar data={data}
+                        height={"500px"}
+                        width={"500px"}
+                        options={{ maintainAspectRatio: false }}
+                    />
+                }
             </div>
         </React.Fragment>
-    )
+    );
 }
 
+const mapState = (state) => { }
 
-const mapState = (state) => {
-    const { user, tasks, dashboardEvaluationEmployeeKpiSet } = state;
-    return { user, tasks, dashboardEvaluationEmployeeKpiSet };
-}
-
-const actions = {
-};
+const actions = {};
 
 const connectedEmployeeResultChart = connect(mapState, actions)(withTranslate(EmployeeResultChart));
 export { connectedEmployeeResultChart as EmployeeResultChart };

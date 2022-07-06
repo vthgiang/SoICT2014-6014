@@ -16,8 +16,11 @@ router.get('/employee-kpi-sets', auth, EmployeeKpiSetController.getEmployeeKpiSe
 // Khởi tạo KPI cá nhân
 router.post('/employee-kpi-sets', auth, EmployeeKpiSetController.createEmployeeKpiSet);
 
-// Khởi tạo KPI cá nhân tu dong
+// Khởi tạo KPI cá nhân tự động
 router.post('/employee-kpi-sets-auto', auth, EmployeeKpiSetController.createEmployeeKpiSetAuto);
+
+// Cân bằng các mục tiêu của KPI cá nhân tự động
+router.patch('/employee-kpis-auto', EmployeeKpiSetController.balancEmployeeKpisAuto);
 
 // Chỉnh sửa thông tin chung của KPI cá nhân
 router.post('/employee-kpi-sets/:id/edit', auth, EmployeeKpiSetController.editEmployeeKpiSet);

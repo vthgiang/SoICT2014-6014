@@ -797,6 +797,10 @@ exports.links = [
         url: '/kpi-units/dashboard',
         apis: ['@all']
     }, {
+        url: '/template-kpi-unit',
+        apis: ['@all']
+    }, {
+    }, {
         url: '/kpi-units/sales-dashboard',
         apis: ['@all']
     }, {

@@ -470,6 +470,37 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
     }
 }
 
+exports.balancEmployeeKpisAuto = async (portal, kpiSet, balanceCoef) => {
+    if (!portal) {
+        portal = 'vnist';
+    }
+    let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .findById(kpiSet)
+        .select('kpis');
+
+    if (employeeKpiSet?.kpis) {
+        for (let kpiId of employeeKpiSet.kpis) {
+            let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiId);
+            if (kpi && typeof (kpi?.target) === 'number') {
+                let kpiBalance = await EmployeeKpi(connect(DB_CONNECTION, portal))
+                    .findByIdAndUpdate(kpi._id, { $set: { "target": Math.round(kpi.target * balanceCoef) } });
+            }
+        }
+    }
+    employeeKpiSet = employeeKpiSet && await employeeKpiSet
+        .populate("organizationalUnit ")
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
+        .execPopulate();
+
+    return employeeKpiSet;
+}
+
 /* Xóa mục tiêu của KPI cá nhân */
 exports.deleteEmployeeKpi = async (portal, id, employeeKpiSetId) => {
 

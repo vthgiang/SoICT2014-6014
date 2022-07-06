@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import Item from "./item";
-import GroupItem from "./groupItem";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { withTranslate } from "react-redux-multilingual";
-import { ApiImage } from "../../../common-components";
+import { Link } from "react-router-dom";
+import GroupItem from "./groupItem";
+import Item from "./item";
 
 class SideBar extends Component {
     constructor(props) {
@@ -288,6 +287,12 @@ class SideBar extends Component {
                                             path: "/kpi-units/create",
                                         },
                                         {
+                                            name: "menu.kpi_unit_create",
+                                            icon: "fa fa-circle-o",
+                                            path: "/template-kpi-unit",
+                                            // path: "/kpi-units/create",
+                                        },
+                                        {
                                             name: "menu.kpi_unit_manager",
                                             icon: "fa fa-circle-o",
                                             path: "/kpi-units/manager",
@@ -378,7 +383,7 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
-                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all"},
+                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all" },
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
