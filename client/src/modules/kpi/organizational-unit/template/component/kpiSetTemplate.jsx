@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DataTableSetting } from "../../../../common-components";
+import { DataTableSetting } from "../../../../../common-components";
 import { ModalAddKpiTemplate } from "./addKpiTemplateModal";
 
 const TemplateKpi = () => {

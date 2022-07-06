@@ -54,7 +54,7 @@ const CourseOfUser = lazy(() => import("../modules/training/course/user/componen
 const OrganizationalUnitKpiCreateForAdmin = lazy(() => import("../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin"))
 const OrganizationalUnitKpiCreate = lazy(() => import("../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate"))
 const OrganizationalUnitKpiDashboard = lazy(() => import("../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard"))
-const OrganizationalUnitKpiTemplate = lazy(() => import("../modules/kpi/organizational-unit/template/kpiSetTemplate"))
+const OrganizationalUnitKpiTemplate = lazy(() => import("../modules/kpi/organizational-unit/template/component/kpiSetTemplate"))
 const SaleOrganizationUnitKpiDashboard = lazy(() => import("../modules/kpi/organizational-unit/dashboard/component/sale-kpi-dashboard/saleKpiDashboard"))
 const KPIUnitManager = lazy(() => import("../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview"))
 const KPIUnitEvaluate = lazy(() => import("../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation"))

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { QuillEditor } from '../../../../common-components';
-import { getStorage } from '../../../../config';
+import { QuillEditor } from '../../../../../common-components';
+import { getStorage } from '../../../../../config';
 // import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { KpisForm } from './kpisTemplate';
 
