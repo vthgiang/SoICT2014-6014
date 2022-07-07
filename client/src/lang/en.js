@@ -179,6 +179,7 @@ export default {
             kpi_personal_dashboard: "DashBoard personal KPI",
             kpi_personal_manager: "Manager personal KPI",
             kpi_member_detail: "Details of personal KPI",
+            kpi_unit_template: "KPI template",
 
             notifications: "Notifications",
 

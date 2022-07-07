@@ -16,10 +16,6 @@ const OrganizationalUnitKpiTemplateSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         },
-        numberOfDaysTaken: {
-            type: Number,
-            default: 1,
-        },
         kpis: [
             {
                 type: Schema.Types.ObjectId,

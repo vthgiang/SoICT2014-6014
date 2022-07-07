@@ -194,6 +194,7 @@ export default {
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
             kpi_member_detail: "Chi tiết KPI cá nhân",
+            kpi_unit_template: "Mẫu KPI",
 
             notifications: "Thông báo",
 

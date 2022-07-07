@@ -1,10 +1,65 @@
-import React from "react";
+import parse from 'html-react-parser';
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DataTableSetting } from "../../../../../common-components";
+import { DataTableSetting, PaginateBar, SelectMulti } from "../../../../../common-components";
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { kpiTemplateActions } from "../redux/actions";
 import { ModalAddKpiTemplate } from "./addKpiTemplateModal";
 
-const TemplateKpi = () => {
+const tableId = "table-kpi-template";
+const defaultConfig = { limit: 10 }
+const limitDefault = getTableConfiguration(tableId, defaultConfig).limit;
+
+function TemplateKpi(props) {
+    const { kpitemplates, user } = props;
+    const [unit, setUnit] = useState();
+    const [keyword, setKeyword] = useState();
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(limitDefault);
+
+
+    const changePage = (number) => {
+        if (page !== number) {
+            setPage(number);
+            props.getKpiTemplates(unit, keyword, number, limit);
+        }
+    }
+    const changeLimit = (number) => {
+        if (number !== limit) {
+            setLimit(number);
+            setPage(1);
+            props.getKpiTemplates(unit, keyword, 1, number);
+        }
+    }
+
+    const handleChangeUnit = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+        setUnit(value)
+    }
+
+    const handleChangeKeyword = (e) => {
+        const value = e.target.value;
+
+        setKeyword(value)
+    }
+
+    const handleSearchData = () => {
+        props.getKpiTemplates(unit, keyword, page, limit);
+    }
+
+    useEffect(() => {
+        props.getKpiTemplates(unit, keyword, page, limit);
+        props.getDepartment();
+    }, [])
+
+    const { items } = kpitemplates;
+    const { organizationalUnitsOfUser: unitArr } = user;
+
+
     return (
         <React.Fragment>
             <div className="box">
@@ -19,23 +74,26 @@ const TemplateKpi = () => {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Tên mẫu</label>
-                            <input className="form-control" type="text" placeholder="Tìm theo tên" onChange={() => { }} />
+                            <input className="form-control" type="text" placeholder="Tìm theo tên" onChange={(e) => handleChangeKeyword(e)} />
                         </div>
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Đơn vị quản lý</label>
-                            {/* {units &&
+                            {unitArr &&
                                 <SelectMulti id="multiSelectUnit"
-                                    defaultValue={units.map(item => { return item._id })}
-                                    items={units.map(item => { return { value: item._id, text: item.name } })}
+                                    value={unit}
+                                    onChange={handleChangeUnit}
+                                    items={unitArr.map(item => { return { value: item._id, text: item.name } })}
                                     options={{
-                                        nonSelectedText: translate('kpi_template.select_all_units'),
-                                        allSelectedText: translate(`kpi.kpi_management.select_all_department`),
+                                        nonSelectedText: "Chọn tất cả đơn vị",
+                                        allSelectedText: "Chọn tất cả đơn vị",
                                     }}>
                                 </SelectMulti>
-                            } */}
+                            }
+                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu KPI" onClick={handleSearchData}>Tìm kiếm</button>
+
                         </div>
                     </div>
 
@@ -48,13 +106,14 @@ const TemplateKpi = () => {
                             'Số lần sử dụng',
                             'Người tạo mẫu',
                         ]}
-                    // setLimit={this.setLimit}
+                        setLimit={changeLimit}
                     />
 
                     {/**Table chứa các mẫu công việc trong 1 trang */}
                     <table className="table table-bordered table-striped table-hover" id={'kpi-set-template'}>
                         <thead>
                             <tr>
+                                <th title='STT'>STT</th>
                                 <th title='Tên mẫu KPI'>Tên mẫu KPI</th>
                                 <th title="Đơn vị">Đơn vị</th>
                                 <th title="Mô tả">Mô tả</th>
@@ -63,39 +122,35 @@ const TemplateKpi = () => {
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
                             </tr>
                         </thead>
-                        {/* <tbody className="kpi-table">
+                        <tbody className="kpi-table">
                             {
-                                (typeof listKpiTemplates !== 'undefined' && listKpiTemplates.length !== 0) ?
-                                    listKpiTemplates.map(item => item &&
+                                (typeof (items?.kpiTemplates) !== 'undefined' && items?.kpiTemplates.length !== 0) ?
+                                    items.kpiTemplates.map((item, index) => item &&
                                         <tr key={item?._id}>
+                                            <td title={index}>{index + 1}</td>
                                             <td title={item?.name}>{item?.name}</td>
+                                            <td title={item?.organizationalUnit?.name}>{item?.organizationalUnit?.name ? item.organizationalUnit.name : ""}</td>
                                             <td title={item?.description}>{parse(item?.description ? item.description : "")}</td>
                                             <td title={item?.numberOfUse}>{item?.numberOfUse}</td>
-                                            <td title={item?.creator?.name}>{item?.creator?.name ? item.creator.name : translate('kpi.kpi_template.error_kpi_template_creator_null')}</td>
-                                            <td title={item?.organizationalUnit?.name}>{item?.organizationalUnit?.name ? item.organizationalUnit.name : translate('kpi_template.error_kpi_template_organizational_unit_null')}</td>
+                                            <td title={item?.creator?.name}>{item?.creator?.name ? item.creator.name : ""}</td>
                                             <td>
-                                                <a href="#abc" onClick={() => this.handleView(item?._id)} title={translate('kpi.kpi_template.view_detail_of_this_kpi_template')}>
+                                                <a href="#abc" onClick={() => this.handleView(item?._id)} title={"Xem"}>
                                                     <i className="material-icons" >view_list</i>
                                                 </a>
-
-                                                {this.checkPermisson(item?.organizationalUnit?.managers, item?.creator?._id) &&
-                                                    <React.Fragment>
-                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('kpi_template.edit_this_kpi_template')}>
-                                                            <i className="material-icons">edit</i>
-                                                        </a>
-                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleDelete(item?._id, item?.numberOfUse)} className="delete" title={translate('kpi_template.delete_this_kpi_template')}>
-                                                            <i className="material-icons"></i>
-                                                        </a>
-                                                    </React.Fragment>
-                                                }
+                                                <a href="cursor:{'pointer'}" onClick={() => { }} className="edit" title={"Sửa"}>
+                                                    <i className="material-icons">edit</i>
+                                                </a>
+                                                <a href="cursor:{'pointer'}" onClick={() => { }} className="delete" title={"Xóa"}>
+                                                    <i className="material-icons"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                     ) : null
                             }
-                        </tbody> */}
+                        </tbody>
                     </table>
-                    {/* {(listKpiTemplates && listKpiTemplates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
-                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
+                    {(items?.kpiTemplates && items?.kpiTemplates.length === 0) && <div className="table-info-panel">{"Không có dữ liệu"}</div>}
+                    <PaginateBar pageTotal={items?.totalPage || 1} currentPage={page} func={changePage} />
                 </div>
             </div>
         </React.Fragment>
@@ -103,12 +158,13 @@ const TemplateKpi = () => {
 }
 
 function mapState(state) {
-    const { } = state;
-    return {};
+    const { kpitemplates, user } = state;
+    return { kpitemplates, user };
 }
 
-const action = {
+const actions = {
+    getKpiTemplates: kpiTemplateActions.getKpiTemplates,
+    getDepartment: UserActions.getDepartmentOfUser,
 };
 
-const connectedTemplateKpi = connect(mapState, action)(withTranslate(TemplateKpi));
-export default connectedTemplateKpi;
+export default connect(mapState, actions)(withTranslate(TemplateKpi));

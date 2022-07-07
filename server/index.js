@@ -64,6 +64,7 @@ router.use("/kpi/evaluation/employee-evaluation", require("./modules/kpi/evaluat
 router.use("/kpi/organizational-unit/creation", require("./modules/kpi/organizational-unit/creation/creation.route"));
 router.use("/kpi/organizational-unit/dashboard", require("./modules/kpi/organizational-unit/dashboard/dashboard.route"));
 router.use("/kpi/organizational-unit/management", require("./modules/kpi/organizational-unit/management/management.route"));
+router.use("/kpi/template", require("./modules/kpi/template/template.route"));
 
 
 router.use("/notifications", require("./modules/notification/notification.route"));
@@ -108,7 +109,7 @@ router.use("/course", require("./modules/trainning/course/course.route"));
 router.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
 router.use("/asset", require("./modules/asset/asset-management/asset.route"));
 //asset lot
-router.use("/assetlot",require("./modules/asset/asset-lot-management/asset-lot.route"));
+router.use("/assetlot", require("./modules/asset/asset-lot-management/asset-lot.route"));
 
 router.use(
     "/purchase-request",

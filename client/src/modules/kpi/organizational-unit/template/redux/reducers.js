@@ -3,20 +3,20 @@ import { kpiTemplateConstants } from "../redux/constants";
 export function kpitemplates(state = {}, action) {
     switch (action.type) {
 
-        case kpiTemplateConstants.GETALL_TEMPLATE_REQUEST:
+        case kpiTemplateConstants.GET_TEMPLATE_KPI_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
 
-        case kpiTemplateConstants.GETALL_TEMPLATE_SUCCESS:
+        case kpiTemplateConstants.GET_TEMPLATE_KPI_SUCCESS:
             return {
                 ...state,
-                items: action.payload.content.templates,
+                items: action.payload,
                 isLoading: false
             };
 
-        case kpiTemplateConstants.GETALL_TEMPLATE_FAILURE:
+        case kpiTemplateConstants.GET_TEMPLATE_KPI_FAILURE:
             return {
                 ...state,
                 isLoading: false

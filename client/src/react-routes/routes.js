@@ -1193,7 +1193,7 @@ class Routes extends Component {
                                 { link: "/", name: "home", icon: "fa fa-home" },
                                 {
                                     link: "/template-kpi-unit",
-                                    name: "template_kpi_unit",
+                                    name: "kpi_unit_template",
                                     icon: "",
                                 },
                             ]}
@@ -1201,7 +1201,7 @@ class Routes extends Component {
                             exact={true}
                             link={"/template-kpi-unit"}
                             path={"/template-kpi-unit"}
-                            pageName={"template_kpi_unit"}
+                            pageName={"kpi_unit_template"}
                             layout={Layout}
                             component={OrganizationalUnitKpiTemplate}
                         />

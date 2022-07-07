@@ -2,7 +2,7 @@ import { kpiTemplateConstants } from "./constants";
 //import { alertActions } from "./AlertActions";
 import { kpiTemplateService } from "./services";
 export const kpiTemplateActions = {
-    getAll,
+    getKpiTemplates,
     getAllKpiTemplateByRole,
     getAllKpiTemplateByUser,
     getKpiTemplateById,
@@ -13,16 +13,19 @@ export const kpiTemplateActions = {
 };
 
 /** Get all kpitemplate */
-function getAll() {
+function getKpiTemplates(unit, keyword, number, limit) {
     return dispatch => {
-        dispatch({ type: kpiTemplateConstants.GETALL_TEMPLATE_REQUEST });
+        dispatch({ type: kpiTemplateConstants.GET_TEMPLATE_KPI_REQUEST });
 
-        kpiTemplateService.getAll()
-            .then(res => dispatch({
-                type: kpiTemplateConstants.GETALL_TEMPLATE_SUCCESS, payload: res.data.content
-            }))
+        kpiTemplateService.getKpiTemplates(unit, keyword, number, limit)
+            .then(res => {
+                console.log(22, res.data.content)
+                dispatch({
+                    type: kpiTemplateConstants.GET_TEMPLATE_KPI_SUCCESS, payload: res.data.content
+                })
+            })
             .catch(err => dispatch({
-                type: kpiTemplateConstants.GETALL_TEMPLATE_FAILURE
+                type: kpiTemplateConstants.GET_TEMPLATE_KPI_FAILURE
             }))
     };
 }

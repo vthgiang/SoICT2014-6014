@@ -1,4 +1,4 @@
-const KpiTemplateService = require('./kpiTemplate.service');
+const KpiTemplateService = require('./template.service');
 const Logger = require(`../../../logs`);
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý mẫu kpi
@@ -22,6 +22,30 @@ exports.getAllKpiTemplates = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_all_kpi_templates_failure'],
+            content: error
+        });
+    }
+}
+
+/**
+ * Lấy danh sách mẫu KPI theo tham số
+ *  */
+exports.getPaginatedKpiTemplates = async (req, res) => {
+    try {
+        let data = await KpiTemplateService.getPaginatedKpiTemplates(req.portal, req.query);
+
+        // Logger.info(req.user.email, 'get_all_kpi_templates', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_kpi_templates_success'],
+            content: data
+        });
+    } catch (error) {
+
+        // Logger.error(req.user.email, 'get_all_kpi_templates', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_kpi_templates_failure'],
             content: error
         });
     }
@@ -60,17 +84,20 @@ exports.getKpiTemplate = async (req, res) => {
  * @param {*} res 
  */
 exports.createKpiTemplate = async (req, res) => {
+    console.log(63)
     try {
-        let data = await KpiTemplateService.createKpiTemplate(req.portal, req.body, req.user._id);
-
-        await Logger.info(req.user.email, 'create_kpi_template', req.portal);
+        console.log(65)
+        // let data = await KpiTemplateService.createKpiTemplate(req.portal, req.body, req.user._id);
+        let data = await KpiTemplateService.createKpiTemplate(req.body);
+        console.log(67)
+        // await Logger.info(req.user.email, 'create_kpi_template', req.portal);
         res.status(200).json({
             success: true,
             messages: ['create_kpi_template_success'],
             content: data
         });
     } catch (error) {
-        await Logger.error(req.user.email, 'create_kpi_template', req.portal);
+        // await Logger.error(req.user.email, 'create_kpi_template', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['create_kpi_template_failure'],
@@ -126,31 +153,6 @@ exports.editKpiTemplate = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['edit_kpi_template_failure'],
-            content: error
-        });
-    }
-}
-/**
- * Import file Exel
- * @param {*} req 
- * @param {*} res 
- */
-exports.importKpiTemplate = async (req, res) => {
-    try {
-        let data = await KpiTemplateService.importKpiTemplate(req.portal, req.body, req.user._id);
-
-        await Logger.info(req.user.email, 'import_kpi_template', req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ["import_kpi_template_success"],
-            content: data
-        });
-    } catch (error) {
-
-        await Logger.error(req.user.email, 'import_kpi_template', req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ["import_kpi_template_failure"],
             content: error
         });
     }

@@ -1,11 +1,10 @@
-import {
-    getStorage
-} from '../../../../config';
-import { sendRequest } from '../../../../helpers/requestHelper';
+
+import { getStorage } from '../../../../../config';
+import { sendRequest } from '../../../../../helpers/requestHelper';
 
 
 export const kpiTemplateService = {
-    getAll,
+    getKpiTemplates,
     getById,
     getAllKpiTemplateByRole,
     getAllKpiTemplateByUser,
@@ -15,18 +14,21 @@ export const kpiTemplateService = {
     importKpiTemplate,
 };
 
-/** get all kpi template */
-function getAll() {
+/** get kpi template */
+function getKpiTemplates(unit, keyword, number, limit) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/kpi-templates`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/template`,
         method: 'GET',
+        params: {
+            unit, keyword, number, limit
+        },
     }, false, true, 'kpi.kpi_template');
 }
 
 /** get a kpi template by id */
 function getById(id) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/kpi-templates/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/template/${id}`,
         method: 'GET',
     }, false, true, 'kpi.kpi_template');
 }
@@ -34,7 +36,7 @@ function getById(id) {
 /** get all kpi template by Role */
 function getAllKpiTemplateByRole(id) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/kpi-templates`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/template`,
         params: {
             roleId: id
         },
@@ -49,7 +51,7 @@ function getAllKpiTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name) 
     var id = getStorage("userId");
 
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/kpi-templates`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/template`,
         method: 'GET',
         params: {
             userId: id,
@@ -67,7 +69,7 @@ function addNewKpiTemplate(newKpiTemplate) {
     newKpiTemplate = { ...newKpiTemplate, creator: id };
 
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/kpi-templates`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/template`,
         method: 'POST',
         data: newKpiTemplate
     }, true, true, 'kpi.kpi_template');
@@ -76,7 +78,7 @@ function addNewKpiTemplate(newKpiTemplate) {
 
 function editKpiTemplate(id, newKpiTemplate) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/kpi-templates/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/template/${id}`,
         method: 'PATCH',
         data: newKpiTemplate
     }, true, true, 'kpi.kpi_template');
@@ -86,7 +88,7 @@ function editKpiTemplate(id, newKpiTemplate) {
 /** delete a kpi template */
 function deleteKpiTemplateById(id) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/kpi-templates/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/template/${id}`,
         method: 'DELETE',
     }, true, true, 'kpi.kpi_template');
 }
@@ -94,7 +96,7 @@ function deleteKpiTemplateById(id) {
 /** import a kpi Kpi Template  */
 function importKpiTemplate(data) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/kpi-templates/import`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/template/import`,
         method: 'POST',
         data: data,
     }, true, true, 'kpi.kpi_template');
