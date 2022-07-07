@@ -362,6 +362,11 @@ exports.links = [
             { path: '/task/time-sheet/all', method: 'GET' },
             { path: '/task/tasks/:taskId/attributes', method: 'PATCH' },
             { path: '/task/tasks/:taskId/delegation', method: 'PATCH' },
+            { path: '/task/tasks/:taskId/delegation/delete', method: 'PATCH' },
+            { path: '/task/tasks/:taskId/delegation/revoke', method: 'PATCH' },
+            { path: '/task/tasks/:taskId/delegation/reject', method: 'PATCH' },
+            { path: '/task/tasks/:taskId/delegation/confirm', method: 'PATCH' },
+
 
 
             // Perform-task

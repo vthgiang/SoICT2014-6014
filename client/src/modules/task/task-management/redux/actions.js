@@ -32,7 +32,11 @@ export const taskManagementActions = {
     getOrganizationTaskDashboardChart,
 
     saveTaskAttributes,
-    addTaskDelegation
+    addTaskDelegation,
+    deleteTaskDelegation,
+    revokeTaskDelegation,
+    confirmTaskDelegation,
+    rejectTaskDelegation
 };
 
 
@@ -686,6 +690,104 @@ function addTaskDelegation(taskId, data) {
             .catch((error) => {
                 dispatch({
                     type: taskManagementConstants.ADD_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function deleteTaskDelegation(taskId, data) {
+    return (dispatch) => {
+        dispatch({
+            type: taskManagementConstants.DELETE_TASK_DELEGATION_REQUEST
+        });
+
+        taskManagementService
+            .deleteTaskDelegation(taskId, data)
+            .then((res) => {
+                dispatch({
+                    type: taskManagementConstants.DELETE_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationId: data.delegationId,
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: taskManagementConstants.DELETE_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function revokeTaskDelegation(taskId, data) {
+    return (dispatch) => {
+        dispatch({
+            type: taskManagementConstants.REVOKE_TASK_DELEGATION_REQUEST
+        });
+
+        taskManagementService
+            .revokeTaskDelegation(taskId, data)
+            .then((res) => {
+                dispatch({
+                    type: taskManagementConstants.REVOKE_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationId: data.delegationId,
+                    reason: data.reason
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: taskManagementConstants.REVOKE_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function confirmTaskDelegation(taskId, data) {
+    return (dispatch) => {
+        dispatch({
+            type: taskManagementConstants.CONFIRM_TASK_DELEGATION_REQUEST
+        });
+
+        taskManagementService
+            .confirmTaskDelegation(taskId, data)
+            .then((res) => {
+                dispatch({
+                    type: taskManagementConstants.CONFIRM_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationId: data.delegationId
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: taskManagementConstants.CONFIRM_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function rejectTaskDelegation(taskId, data) {
+    return (dispatch) => {
+        dispatch({
+            type: taskManagementConstants.REJECT_TASK_DELEGATION_REQUEST
+        });
+
+        taskManagementService
+            .rejectTaskDelegation(taskId, data)
+            .then((res) => {
+                dispatch({
+                    type: taskManagementConstants.REJECT_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationId: data.delegationId,
+                    reason: data.reason
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: taskManagementConstants.REJECT_TASK_DELEGATION_FAILURE,
                     error
                 });
             });

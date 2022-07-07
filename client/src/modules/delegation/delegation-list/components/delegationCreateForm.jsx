@@ -64,9 +64,9 @@ function DelegationCreateForm(props) {
     }
 
     useEffect(() => {
-        window.$(`#modal-create-delegation-hooks`).on('shown.bs.modal', regenerateTimeAndCode);
+        window.$(`#modal-create-delegation-hooks-Role`).on('shown.bs.modal', regenerateTimeAndCode);
         return () => {
-            window.$(`#modal-create-delegation-hooks`).unbind('shown.bs.modal', regenerateTimeAndCode);
+            window.$(`#modal-create-delegation-hooks-Role`).unbind('shown.bs.modal', regenerateTimeAndCode);
         }
 
     }, [])
@@ -460,8 +460,8 @@ function DelegationCreateForm(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-create-delegation-hooks" isLoading={delegation.isLoading}
-                formID="form-create-delegation-hooks"
+                modalID="modal-create-delegation-hooks-Role" isLoading={delegation.isLoading}
+                formID="form-create-delegation-hooks-Role"
                 title={translate('manage_delegation.add_role_delegation_title')}
                 msg_success={translate('manage_delegation.add_success')}
                 msg_failure={translate('manage_delegation.add_fail')}
@@ -469,7 +469,7 @@ function DelegationCreateForm(props) {
                 disableSubmit={!isFormValidated()}
                 size={50}
             >
-                <form id="form-create-delegation-hooks" onSubmit={() => save(translate('manage_delegation.add_success'))}>
+                <form id="form-create-delegation-hooks-Role" onSubmit={() => save(translate('manage_delegation.add_success'))}>
 
                     <div className="row form-group">
                         {/* Tên ủy quyền*/}

@@ -27,6 +27,7 @@ const DelegationDetailInfoTask = (props) => {
                 delegateType: props.delegateType,
                 delegateRole: props.delegateRole,
                 delegateTask: props.delegateTask,
+                delegateTaskRoles: props.delegateTaskRoles,
                 status: props.status,
                 allPrivileges: props.allPrivileges,
                 startDate: props.startDate,
@@ -49,7 +50,7 @@ const DelegationDetailInfoTask = (props) => {
                 modalID={`modal-detail-info-delegation-hooks-Task`} isLoading={delegation.isLoading}
                 title={translate('manage_delegation.detail_info_delegation')}
                 formID={`form-detail-delegation-hooks-Task`}
-                size={50}
+                size={props.size ? props.size : 50}
                 hasSaveButton={false}
                 hasNote={false}
             >
@@ -73,6 +74,7 @@ const DelegationDetailInfoTask = (props) => {
                             delegateType={state.delegateType}
                             delegateRole={state.delegateRole}
                             delegateTask={state.delegateTask}
+                            delegateTaskRoles={state.delegateTaskRoles}
                             status={state.status}
                             allPrivileges={state.allPrivileges}
                             startDate={state.startDate}

@@ -29,7 +29,7 @@ exports.createPolicy = async (req, res) => {
 // Lấy ra đầy đủ thông tin tất cả các dịch vụ
 exports.getPolicies = async (req, res) => {
     try {
-        data = await PolicyService.getPolicies(req.portal, req.query);
+        let data = await PolicyService.getPolicies(req.portal, req.query);
 
         await Log.info(req.user.email, "GET_ALL_POLICIES", req.portal);
 
@@ -163,7 +163,7 @@ exports.createPolicyDelegation = async (req, res) => {
 // Lấy ra đầy đủ thông tin tất cả các dịch vụ
 exports.getPoliciesDelegation = async (req, res) => {
     try {
-        data = await PolicyService.getPoliciesDelegation(req.portal, req.query);
+        let data = await PolicyService.getPoliciesDelegation(req.portal, req.query);
 
         await Log.info(req.user.email, "GET_ALL_POLICIES", req.portal);
 
@@ -267,8 +267,7 @@ exports.deletePoliciesDelegation = async (req, res) => {
 // Lấy ra tên của tất cả các Ví dụ
 exports.getOnlyPolicyName = async (req, res) => {
     try {
-        let data;
-        data = await PolicyService.getOnlyPolicyName(req.portal, req.query);
+        let data = await PolicyService.getOnlyPolicyName(req.portal, req.query);
 
         await Log.info(req.user.email, "GET_ONLY_NAME_ALL_POLICIES", req.portal);
         res.status(200).json({

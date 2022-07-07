@@ -33,7 +33,11 @@ export const taskManagementService = {
 
     getOrganizationTaskDashboardChart,
     saveTaskAttributes,
-    addTaskDelegation
+    addTaskDelegation,
+    revokeTaskDelegation,
+    deleteTaskDelegation,
+    confirmTaskDelegation,
+    rejectTaskDelegation
 };
 
 
@@ -547,4 +551,63 @@ function addTaskDelegation(taskId, data) {
         method: 'PATCH',
         data: data
     }, true, true, 'task.task_management');
+}
+
+/**
+ * Xóa ủy quyền công việc
+ * @param {*} taskId id công việc
+ * @param {*} data thông tin ủy quyền
+ * 
+ **/
+function deleteTaskDelegation(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/delegation/delete`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'task.task_management');
+}
+
+/**
+ * Thu hồi ủy quyền công việc
+ * @param {*} taskId id công việc
+ * @param {*} data thông tin ủy quyền
+ * 
+ **/
+function revokeTaskDelegation(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/delegation/revoke`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'task.task_management');
+}
+
+function rejectTaskDelegation(taskId, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/delegation/reject`,
+            method: "PATCH",
+            data: {
+                delegationId: data?.delegationId,
+                reason: data?.reason
+            }
+        },
+        true,
+        true,
+        "task.task_management"
+    )
+}
+
+function confirmTaskDelegation(taskId, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/delegation/confirm`,
+            method: "PATCH",
+            data: {
+                delegationId: data?.delegationId,
+            }
+        },
+        true,
+        true,
+        "task.task_management"
+    )
 }

@@ -49,7 +49,7 @@ class DialogModal extends Component {
 
     render() {
         const { translate } = this.props;
-        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, hasCloseButton = true, size, styleCustom, maxWidth, hasNote = true, receiveEventClose, marginTop, bodyStyle = {}, title, isLoading, modalID, saveText = undefined, note } = this.props;
+        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, hasCloseButton = true, size, styleCustom, maxWidth, hasNote = true, receiveEventClose, marginTop, bodyStyle = {}, title, isLoading, modalID, saveText = undefined, note, noTabIndex } = this.props;
 
         const { isClose } = this.state;
 
@@ -57,7 +57,7 @@ class DialogModal extends Component {
 
         return (
             <React.Fragment>
-                <div id={modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div id={modalID} className="modal fade" tabIndex={!noTabIndex ? -1 : ""} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className={`modal-dialog modal-size-${size}`} style={maxWidth ? marginTop ? { marginTop: marginTop + "px", maxWidth: maxWidth + "px" } : { maxWidth: maxWidth + "px", marginTop: "unset" } : marginTop ? { marginTop: marginTop + "px", maxWidth: "unset" } : { marginTop: "unset", maxWidth: "unset" }}>
                         <div className="modal-content">
                             <div className="modal-header" style={styleCustom}>

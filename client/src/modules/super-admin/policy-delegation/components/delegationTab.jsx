@@ -15,7 +15,9 @@ function DelegationTab(props) {
         delegatorRule: "",
         delegateeRule: "",
         delegatedObjectRule: "",
-        resourceRule: ""
+        resourceRule: "",
+        delegateType: 'Role',
+        policyID: ""
     })
 
     useEffect(() => {
@@ -31,7 +33,7 @@ function DelegationTab(props) {
                 delegateeRule: props.delegateeRule,
                 delegatedObjectRule: props.delegatedObjectRule,
                 resourceRule: props.resourceRule,
-
+                delegateType: props.delegateType
             })
         }
     }, [props.policyID])
@@ -50,8 +52,13 @@ function DelegationTab(props) {
         props.handleChangeAddRowAttribute(name, value)
     }
 
+    const handleDelegateTypeChange = (e) => {
+        const { value } = e.target;
+        handleChange('delegateType', value);
+    }
+
     const { translate, attribute } = props;
-    const { delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
+    const { delegateType, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
 
     return (
 
@@ -91,7 +98,7 @@ function DelegationTab(props) {
                 id={`${props.id}-delegatedObject`}
                 attributeOwner={'delegatedObjectAttributes'}
                 ruleOwner={'delegatedObjectRule'}
-                translation={'manage_delegation_policy.delegatedObject'}
+                translation={state.delegateType == 'Role' ? 'manage_delegation_policy.delegatedObject' : 'manage_delegation_policy.delegatedObjectTask'}
                 policyID={state.policyID}
                 attributes={state.delegatedObjectAttributes}
                 rule={state.delegatedObjectRule}
@@ -109,6 +116,23 @@ function DelegationTab(props) {
                 attributes={state.resourceAttributes}
                 rule={state.resourceRule}
             />
+
+            <div className="form-group row">
+                <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+                    <label style={{ paddingLeft: '9px' }} className={`col-lg-3 col-md-3 col-ms-4 col-xs-4`}>{translate('manage_delegation_policy.delegateType')}:</label>
+                    <div style={{ display: 'inline-block' }} className={`col-lg-9 col-md-9 col-ms-8 col-xs-8`}>
+                        <div className="radio-inline ">
+                            <label style={{ fontWeight: 'normal' }}>
+                                <input type="radio" name={`delegateType${state?.policyID}`} value="Role" onChange={handleDelegateTypeChange} checked={state.delegateType == 'Role' ? true : false} />&nbsp;&nbsp;{translate('manage_delegation_policy.delegateTypeRole')}</label>
+                        </div>
+                        <div className="radio-inline " style={{ marginLeft: '38px' }}>
+                            <label style={{ fontWeight: 'normal' }}>
+                                <input type="radio" name={`delegateType${state?.policyID}`} value="Task" onChange={handleDelegateTypeChange} checked={state.delegateType === 'Task' ? true : false} />&nbsp;&nbsp;{translate('manage_delegation_policy.delegateTypeTask')}</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 
             <table className="table table-bordered policy-attribute-table not-sort">
                 <thead>
@@ -206,7 +230,7 @@ function DelegationTab(props) {
 
                     <tr>
                         <td rowSpan={(!delegatedObjectAttributes || delegatedObjectAttributes.length == 0) ? 1 : delegatedObjectAttributes.length}>
-                            {translate('manage_delegation_policy.delegatedObject_table')}
+                            {delegateType == 'Role' ? translate('manage_delegation_policy.delegatedObject_table') : translate('manage_delegation_policy.delegatedObject_tableTask')}
                         </td>
                         {
                             (!delegatedObjectAttributes || delegatedObjectAttributes.length == 0) ?
@@ -223,9 +247,9 @@ function DelegationTab(props) {
                         <td rowSpan={(!delegatedObjectAttributes || delegatedObjectAttributes.length == 0) ? 1 : delegatedObjectAttributes.length}>
                             {
                                 (!delegatedObjectAttributes || delegatedObjectAttributes.length == 0) ?
-                                    <a href="#add-attributes" className="text-green" onClick={() => window.$(`#modal-add-attribute-${props.id}-delegatedObject`).modal('show')} title={translate('manage_delegation_policy.add_delegatedObject_attribute')}><i className="material-icons">add_box</i></a>
+                                    <a href="#add-attributes" className="text-green" onClick={() => window.$(`#modal-add-attribute-${props.id}-delegatedObject`).modal('show')} title={delegateType == 'Role' ? translate('manage_delegation_policy.add_delegatedObject_attribute') : translate('manage_delegation_policy.add_delegatedObject_attributeTask')}><i className="material-icons">add_box</i></a>
                                     :
-                                    <a onClick={() => window.$(`#modal-add-attribute-${props.id}-delegatedObject`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation_policy.edit_delegatedObject_attribute')}>
+                                    <a onClick={() => window.$(`#modal-add-attribute-${props.id}-delegatedObject`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={delegateType == 'Role' ? translate('manage_delegation_policy.edit_delegatedObject_attribute') : translate('manage_delegation_policy.edit_delegatedObject_attributeTask')}>
                                         <i className="material-icons">edit</i>
                                     </a>}
                         </td>
@@ -245,33 +269,35 @@ function DelegationTab(props) {
                             })
                     }
 
-                    <tr>
-                        <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length}>
-                            {translate('manage_delegation_policy.resource_table')}
-                        </td>
-                        {
-                            (!resourceAttributes || resourceAttributes.length == 0) ?
-                                <td colSpan={3}>
-                                    <center> {translate('table.no_data')}</center>
-                                </td> :
-                                <React.Fragment>
-                                    <td rowSpan={resourceAttributes.length}>{resourceRule}</td>
-                                    <td>{attribute.lists.map(a => a._id == resourceAttributes[0].attributeId ? a.attributeName : "")}</td>
-                                    <td>{resourceAttributes[0].value}</td>
-                                </React.Fragment>
-
-                        }
-                        <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length}>
+                    {delegateType == 'Role' ?
+                        <tr>
+                            <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length}>
+                                {translate('manage_delegation_policy.resource_table')}
+                            </td>
                             {
                                 (!resourceAttributes || resourceAttributes.length == 0) ?
-                                    <a href="#add-attributes" className="text-green" onClick={() => window.$(`#modal-add-attribute-${props.id}-resource`).modal('show')} title={translate('manage_delegation_policy.add_resource_attribute')}><i className="material-icons">add_box</i></a>
-                                    :
-                                    <a onClick={() => window.$(`#modal-add-attribute-${props.id}-resource`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation_policy.edit_resource_attribute')}>
-                                        <i className="material-icons">edit</i>
-                                    </a>}
-                        </td>
-                    </tr>
-                    {
+                                    <td colSpan={3}>
+                                        <center> {translate('table.no_data')}</center>
+                                    </td> :
+                                    <React.Fragment>
+                                        <td rowSpan={resourceAttributes.length}>{resourceRule}</td>
+                                        <td>{attribute.lists.map(a => a._id == resourceAttributes[0].attributeId ? a.attributeName : "")}</td>
+                                        <td>{resourceAttributes[0].value}</td>
+                                    </React.Fragment>
+
+                            }
+                            <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length}>
+                                {
+                                    (!resourceAttributes || resourceAttributes.length == 0) ?
+                                        <a href="#add-attributes" className="text-green" onClick={() => window.$(`#modal-add-attribute-${props.id}-resource`).modal('show')} title={translate('manage_delegation_policy.add_resource_attribute')}><i className="material-icons">add_box</i></a>
+                                        :
+                                        <a onClick={() => window.$(`#modal-add-attribute-${props.id}-resource`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation_policy.edit_resource_attribute')}>
+                                            <i className="material-icons">edit</i>
+                                        </a>}
+                            </td>
+                        </tr> : null
+                    }
+                    {delegateType == 'Role' ?
                         (!resourceAttributes || resourceAttributes.length <= 1) ? null :
                             resourceAttributes.slice(1).map((attr, index) => {
                                 return <tr key={index}>
@@ -284,6 +310,7 @@ function DelegationTab(props) {
                                     </td>
                                 </tr>
                             })
+                        : null
                     }
                 </tbody>
             </table>

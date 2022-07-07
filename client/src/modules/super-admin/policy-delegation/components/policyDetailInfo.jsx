@@ -30,11 +30,12 @@ const PolicyDetailInfo = (props) => {
                 delegateeRule: props.delegateeRule,
                 delegatedObjectRule: props.delegatedObjectRule,
                 resourceRule: props.resourceRule,
+                delegateType: props.delegateType
             })
         }
     }, [props.policyID, props.curentRowDetail])
 
-    const { policyName, description, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
+    const { delegateType, policyName, description, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
 
     return (
         <React.Fragment>
@@ -56,6 +57,11 @@ const PolicyDetailInfo = (props) => {
                 <div className={`form-group`}>
                     <label>{translate('manage_delegation_policy.description')}:</label>
                     <span> {description}</span>
+                </div>
+
+                <div className={`form-group`}>
+                    <label>{translate('manage_delegation_policy.delegateType')}:</label>
+                    <span> {translate('manage_delegation_policy.delegateType' + delegateType)}</span>
                 </div>
 
                 <div className={`form-group`}>
@@ -137,7 +143,7 @@ const PolicyDetailInfo = (props) => {
 
                             <tr>
                                 <td rowSpan={(!delegatedObjectAttributes || delegatedObjectAttributes.length == 0) ? 1 : delegatedObjectAttributes.length + 1}>
-                                    {translate('manage_delegation_policy.delegatedObject_table')}
+                                    {delegateType == 'Role' ? translate('manage_delegation_policy.delegatedObject_table') : translate('manage_delegation_policy.delegatedObject_tableTask')}
                                 </td>
                                 {
                                     (!delegatedObjectAttributes || delegatedObjectAttributes.length == 0) ?
@@ -167,24 +173,26 @@ const PolicyDetailInfo = (props) => {
                                     })
                             }
 
-                            <tr>
-                                <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length + 1}>
-                                    {translate('manage_delegation_policy.resource_table')}
-                                </td>
-                                {
-                                    (!resourceAttributes || resourceAttributes.length == 0) ?
-                                        <td colSpan={3}>
-                                            <center> {translate('table.no_data')}</center>
-                                        </td> :
-                                        <React.Fragment>
-                                            <td rowSpan={resourceAttributes.length + 1}>{resourceRule}</td>
+                            {delegateType == 'Role' ?
 
-                                        </React.Fragment>
+                                <tr>
+                                    <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length + 1}>
+                                        {translate('manage_delegation_policy.resource_table')}
+                                    </td>
+                                    {
+                                        (!resourceAttributes || resourceAttributes.length == 0) ?
+                                            <td colSpan={3}>
+                                                <center> {translate('table.no_data')}</center>
+                                            </td> :
+                                            <React.Fragment>
+                                                <td rowSpan={resourceAttributes.length + 1}>{resourceRule}</td>
 
-                                }
+                                            </React.Fragment>
 
-                            </tr>
-                            {
+                                    }
+
+                                </tr> : null}
+                            {delegateType == 'Role' ?
                                 (!resourceAttributes || resourceAttributes.length <= 0) ? null :
                                     resourceAttributes.map((attr, index) => {
                                         return <tr key={index}>
@@ -196,7 +204,7 @@ const PolicyDetailInfo = (props) => {
                                                 {attr.value}
                                             </td>
                                         </tr>
-                                    })
+                                    }) : null
                             }
                         </tbody>
                     </table>

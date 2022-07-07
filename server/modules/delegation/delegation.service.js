@@ -148,16 +148,22 @@ exports.createDelegation = async (portal, data, logs = []) => {
 
 exports.getNewlyCreateDelegation = async (id, data, portal) => {
     let oldDelegation = await this.getDelegationById(portal, id);
-    console.log(oldDelegation.logs)
     const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: data.delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
     let updatedDelegation = -1;
     if (oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !== data.delegationName.trim().toLowerCase().replace(/ /g, "")) {
         if (checkDelegationCreated) {
             throw ['delegation_name_exist'];
         }
+    } else {
+        if (oldDelegation.delegator.toString() == data.delegator.toString() &&
+            oldDelegation.delegatee.toString() == data.delegatee.toString() &&
+            oldDelegation.delegateRole.toString() == data.delegateRole.toString()
+        ) {
+            data.notCheck = true;
+        }
+
     }
 
-    data.notCheck = true;
     updatedDelegation = await this.createDelegation(portal, [data], oldDelegation.logs);
 
     return updatedDelegation;
@@ -307,117 +313,117 @@ exports.checkDelegationPolicy = async (policyId, delegatorId, delegatedObjectId,
 }
 
 
-exports.checkDelegationAttribute = async (delegatorId, delegateRoleId, delegateLinksIds, delegateeId, portal) => {
-    let result = true;
-    let delegator = await User(connect(DB_CONNECTION, portal)).findById({ _id: delegatorId })
-    let delegatorAttributes = delegator.attributes
-    let delegatee = await User(connect(DB_CONNECTION, portal)).findById({ _id: delegateeId })
-    let delegateeAttributes = delegatee.attributes
-    let delegateRole = await Role(connect(DB_CONNECTION, portal)).findById({ _id: delegateRoleId })
-    let delegateRoleAttributes = delegateRole.attributes
+// exports.checkDelegationAttribute = async (delegatorId, delegateRoleId, delegateLinksIds, delegateeId, portal) => {
+//     let result = true;
+//     let delegator = await User(connect(DB_CONNECTION, portal)).findById({ _id: delegatorId })
+//     let delegatorAttributes = delegator.attributes
+//     let delegatee = await User(connect(DB_CONNECTION, portal)).findById({ _id: delegateeId })
+//     let delegateeAttributes = delegatee.attributes
+//     let delegateRole = await Role(connect(DB_CONNECTION, portal)).findById({ _id: delegateRoleId })
+//     let delegateRoleAttributes = delegateRole.attributes
 
-    let canDelegateRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_delegate_role" })
-    let canBeDelegated = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_be_delegated" })
-    let canReceiveRoleDelegation = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_receive_role_delegation" })
+//     let canDelegateRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_delegate_role" })
+//     let canBeDelegated = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_be_delegated" })
+//     let canReceiveRoleDelegation = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_receive_role_delegation" })
 
-    const indexOfAttributeInArray = (attributeId, attributes) => {
-        return attributes.findIndex(a => a.attributeId.equals(attributeId))
-    }
+//     const indexOfAttributeInArray = (attributeId, attributes) => {
+//         return attributes.findIndex(a => a.attributeId.equals(attributeId))
+//     }
 
-    let indexOfCanDelegateRole = indexOfAttributeInArray(canDelegateRole._id, delegatorAttributes != null ? delegatorAttributes : [])
-    let indexOfCanBeDelegated = indexOfAttributeInArray(canBeDelegated._id, delegateRoleAttributes != null ? delegateRoleAttributes : [])
-    let indexOfCanReceiveRoleDelegation = indexOfAttributeInArray(canReceiveRoleDelegation._id, delegateeAttributes != null ? delegateeAttributes : [])
+//     let indexOfCanDelegateRole = indexOfAttributeInArray(canDelegateRole._id, delegatorAttributes != null ? delegatorAttributes : [])
+//     let indexOfCanBeDelegated = indexOfAttributeInArray(canBeDelegated._id, delegateRoleAttributes != null ? delegateRoleAttributes : [])
+//     let indexOfCanReceiveRoleDelegation = indexOfAttributeInArray(canReceiveRoleDelegation._id, delegateeAttributes != null ? delegateeAttributes : [])
 
-    // console.log("delegator", delegator)
-    // console.log("delegatorAttributes", delegatorAttributes)
-    // console.log("delegatee", delegatee)
-    // console.log("delegateeAttributes", delegateeAttributes)
-    // console.log("delegateRole", delegateRole)
-    // console.log("delegateRoleAttributes", delegateRoleAttributes)
+//     // console.log("delegator", delegator)
+//     // console.log("delegatorAttributes", delegatorAttributes)
+//     // console.log("delegatee", delegatee)
+//     // console.log("delegateeAttributes", delegateeAttributes)
+//     // console.log("delegateRole", delegateRole)
+//     // console.log("delegateRoleAttributes", delegateRoleAttributes)
 
-    // console.log("canDelegateRole", canDelegateRole)
-    // console.log("canBeDelegated", canBeDelegated)
-    // console.log("canReceiveRoleDelegation", canReceiveRoleDelegation)
+//     // console.log("canDelegateRole", canDelegateRole)
+//     // console.log("canBeDelegated", canBeDelegated)
+//     // console.log("canReceiveRoleDelegation", canReceiveRoleDelegation)
 
-    // console.log("indexOfCanDelegateRole", indexOfCanDelegateRole)
-    // console.log("indexOfCanBeDelegated", indexOfCanBeDelegated)
-    // console.log("indexOfCanReceiveRoleDelegation", indexOfCanReceiveRoleDelegation)
-
-
-    if (indexOfCanDelegateRole == -1 || delegatorAttributes[indexOfCanDelegateRole].value.toLowerCase() != "true") {
-        throw ["delegator_cant_delegate_role"]
-    }
-    else if (indexOfCanBeDelegated == -1 || delegateRoleAttributes[indexOfCanBeDelegated].value.toLowerCase() != "true") {
-        throw ["role_cant_be_delegate"]
-    }
-    else if (indexOfCanReceiveRoleDelegation == -1 || delegateeAttributes[indexOfCanReceiveRoleDelegation].value.toLowerCase() != "true") {
-        throw ["delegatee_cant_receive_role_delegation"]
-    }
-    else {
-        let canDelegateChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_delegate_role_" + delegateRole.name })
-        // let canBeDelegatedByUser = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_be_delegated_by_" + delegator.email })
-        let canReceiveChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_receive_role_" + delegateRole.name })
-
-        let indexOfCanDelegateChosenRole = indexOfAttributeInArray(canDelegateChosenRole._id, delegatorAttributes != null ? delegatorAttributes : [])
-        // let indexOfCanBeDelegatedByUser = indexOfAttributeInArray(canBeDelegatedByUser._id, delegateRoleAttributes != null ? delegateRoleAttributes : [])
-        let indexOfCanReceiveChosenRole = indexOfAttributeInArray(canReceiveChosenRole._id, delegateeAttributes != null ? delegateeAttributes : [])
-
-        // console.log("canDelegateChosenRole", canDelegateChosenRole)
-        // console.log("canReceiveChosenRole", canReceiveChosenRole)
-
-        // console.log("indexOfCanDelegateChosenRole", indexOfCanDelegateChosenRole)
-        // console.log("indexOfCanReceiveChosenRole", indexOfCanReceiveChosenRole)
+//     // console.log("indexOfCanDelegateRole", indexOfCanDelegateRole)
+//     // console.log("indexOfCanBeDelegated", indexOfCanBeDelegated)
+//     // console.log("indexOfCanReceiveRoleDelegation", indexOfCanReceiveRoleDelegation)
 
 
-        // check delegator can delegate specific role
-        if (indexOfCanDelegateChosenRole == -1 || delegatorAttributes[indexOfCanDelegateChosenRole].value.toLowerCase() != "true") {
-            throw ["delegator_cant_delegate_chosen_role"]
-        }
-        // check specific role can be delegated by delegator
-        // else if (indexOfCanBeDelegatedByUser == -1 || delegateRoleAttributes[indexOfCanBeDelegatedByUser].value.toLowerCase() != "true") {
-        //     throw ["role_cant_be_delegated_by_delegator"]
-        // }
-        // check delegatee can receive specific role
-        else if (indexOfCanReceiveChosenRole == -1 || delegateeAttributes[indexOfCanReceiveChosenRole].value.toLowerCase() != "true") {
-            throw ["delegatee_cant_receive_chosen_role"]
-        }
-        // if delegateLinks not null
-        // check each link can be delegated for specific role 
-        else {
-            if (delegateLinksIds != null) {
-                let count = 0;
+//     if (indexOfCanDelegateRole == -1 || delegatorAttributes[indexOfCanDelegateRole].value.toLowerCase() != "true") {
+//         throw ["delegator_cant_delegate_role"]
+//     }
+//     else if (indexOfCanBeDelegated == -1 || delegateRoleAttributes[indexOfCanBeDelegated].value.toLowerCase() != "true") {
+//         throw ["role_cant_be_delegate"]
+//     }
+//     else if (indexOfCanReceiveRoleDelegation == -1 || delegateeAttributes[indexOfCanReceiveRoleDelegation].value.toLowerCase() != "true") {
+//         throw ["delegatee_cant_receive_role_delegation"]
+//     }
+//     else {
+//         let canDelegateChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_delegate_role_" + delegateRole.name })
+//         // let canBeDelegatedByUser = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_be_delegated_by_" + delegator.email })
+//         let canReceiveChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_receive_role_" + delegateRole.name })
 
-                let delegateLinks = await Link(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegateLinksIds } })
-                let delegatableLinkForChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "delegatable_link_for_" + delegateRole.name })
-                // console.log("delegateLinks", delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications"))
-                // console.log("delegatableLinkForChosenRole", delegatableLinkForChosenRole)
+//         let indexOfCanDelegateChosenRole = indexOfAttributeInArray(canDelegateChosenRole._id, delegatorAttributes != null ? delegatorAttributes : [])
+//         // let indexOfCanBeDelegatedByUser = indexOfAttributeInArray(canBeDelegatedByUser._id, delegateRoleAttributes != null ? delegateRoleAttributes : [])
+//         let indexOfCanReceiveChosenRole = indexOfAttributeInArray(canReceiveChosenRole._id, delegateeAttributes != null ? delegateeAttributes : [])
 
-                delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications").every(async link => {
-                    let delegateLinkAttributes = link.attributes
-                    let indexOfDelegatableLinkForChosenRole = indexOfAttributeInArray(delegatableLinkForChosenRole._id, delegateLinkAttributes != null ? delegateLinkAttributes : [])
-                    // console.log("delegateLinkAttributes", delegateLinkAttributes)
-                    // console.log("indexOfDelegatableLinkForChosenRole", indexOfDelegatableLinkForChosenRole)
-                    if (indexOfDelegatableLinkForChosenRole == -1 || delegateLinkAttributes[indexOfDelegatableLinkForChosenRole].value.toLowerCase() != "true") {
-                        count++;
-                        return false;
-                    }
-                    return true;
-                });
+//         // console.log("canDelegateChosenRole", canDelegateChosenRole)
+//         // console.log("canReceiveChosenRole", canReceiveChosenRole)
 
-                if (count > 0) {
-                    throw ["link_cant_be_delegated_for_chosen_role"]
-                }
-
-            }
-
-        }
-
-    }
+//         // console.log("indexOfCanDelegateChosenRole", indexOfCanDelegateChosenRole)
+//         // console.log("indexOfCanReceiveChosenRole", indexOfCanReceiveChosenRole)
 
 
-    return result
+//         // check delegator can delegate specific role
+//         if (indexOfCanDelegateChosenRole == -1 || delegatorAttributes[indexOfCanDelegateChosenRole].value.toLowerCase() != "true") {
+//             throw ["delegator_cant_delegate_chosen_role"]
+//         }
+//         // check specific role can be delegated by delegator
+//         // else if (indexOfCanBeDelegatedByUser == -1 || delegateRoleAttributes[indexOfCanBeDelegatedByUser].value.toLowerCase() != "true") {
+//         //     throw ["role_cant_be_delegated_by_delegator"]
+//         // }
+//         // check delegatee can receive specific role
+//         else if (indexOfCanReceiveChosenRole == -1 || delegateeAttributes[indexOfCanReceiveChosenRole].value.toLowerCase() != "true") {
+//             throw ["delegatee_cant_receive_chosen_role"]
+//         }
+//         // if delegateLinks not null
+//         // check each link can be delegated for specific role 
+//         else {
+//             if (delegateLinksIds != null) {
+//                 let count = 0;
 
-}
+//                 let delegateLinks = await Link(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegateLinksIds } })
+//                 let delegatableLinkForChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "delegatable_link_for_" + delegateRole.name })
+//                 // console.log("delegateLinks", delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications"))
+//                 // console.log("delegatableLinkForChosenRole", delegatableLinkForChosenRole)
+
+//                 delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications").every(async link => {
+//                     let delegateLinkAttributes = link.attributes
+//                     let indexOfDelegatableLinkForChosenRole = indexOfAttributeInArray(delegatableLinkForChosenRole._id, delegateLinkAttributes != null ? delegateLinkAttributes : [])
+//                     // console.log("delegateLinkAttributes", delegateLinkAttributes)
+//                     // console.log("indexOfDelegatableLinkForChosenRole", indexOfDelegatableLinkForChosenRole)
+//                     if (indexOfDelegatableLinkForChosenRole == -1 || delegateLinkAttributes[indexOfDelegatableLinkForChosenRole].value.toLowerCase() != "true") {
+//                         count++;
+//                         return false;
+//                     }
+//                     return true;
+//                 });
+
+//                 if (count > 0) {
+//                     throw ["link_cant_be_delegated_for_chosen_role"]
+//                 }
+
+//             }
+
+//         }
+
+//     }
+
+
+//     return result
+
+// }
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
 exports.getDelegations = async (portal, data) => {
@@ -780,14 +786,12 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
     }
 
     const delArray = await filterValidDelegationArray(data);
-    console.log(data)
-    console.log(delArray)
     if (delArray && delArray.length !== 0) {
         for (let i = 0; i < delArray.length; i++) {
 
             let checkDelegationExist = await Delegation(connect(DB_CONNECTION, portal)).find({
                 delegator: delArray[i].delegator,
-                delegatee: delArray[i].delegatee,
+                // delegatee: delArray[i].delegatee,
                 delegateType: "Task",
                 delegateTask: delArray[i].delegateTask,
                 status: {
@@ -797,22 +801,88 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
                     ]
                 }
             })
+            // console.log('checkDelegationExist', checkDelegationExist)
 
-            if (checkDelegationExist.length > 0 && !delArray[i].notCheck) {
-                throw ["delegation_task_exist"];
+
+            let count1 = 0;
+            let delegationToDelegatee = checkDelegationExist.filter(e => e.delegatee.toString() == delArray[i].delegatee.toString());
+            console.log('delegationToDelegatee', delegationToDelegatee.map(e => e.delegateTaskRoles).flat())
+            if (delegationToDelegatee.length > 0 && delegationToDelegatee.map(e => e.delegateTaskRoles).flat().some(e => { return delArray[i].delegateTaskRoles.includes(e) }) && !delArray[i].notCheck) {
+                count1++;
+                throw ["delegation_task_exist"]; // Đã tồn tại ủy quyền công việc với vai trò cho người nhận ủy quyền
             }
 
-            // TODO
-            // let checkUserAlreadyInTask = await Task(connect(DB_CONNECTION, portal)).find({
-            //     _id: delArray[i].delegateTask,
-            //     userId: delArray[i].delegatee,
-            //     roleId: delArray[i].delegateRole,
+            let delegateTaskRolesExist = checkDelegationExist.map(e => e.delegateTaskRoles).flat();
+            // console.log('delegateTaskRolesExist', delegateTaskRolesExist)
 
-            // })
+            if (delegateTaskRolesExist.length > 0 && delegateTaskRolesExist.some(e => { return delArray[i].delegateTaskRoles.includes(e) }) && !delArray[i].notCheck) {
+                count1++;
+                throw ['delegation_task_role_exist'];  // Đã tồn tại ủy quyền công việc với vai trò dã chọn
+            }
 
-            // if (checkUserHaveRole.length > 0 && !delArray[i].notCheck) {
-            //     throw ["user_role_exist"]
-            // }
+            let checkDelegateTask = await Task(connect(DB_CONNECTION, portal)).findOne({
+                _id: delArray[i].delegateTask
+                // $or: [
+                //     { 'responsibleEmployees': delArray[i].delegatee },
+                //     { 'accountableEmployees': delArray[i].delegatee },
+                //     { 'consultedEmployees': delArray[i].delegatee },
+                //     { 'informedEmployees': delArray[i].delegatee }
+                // ]
+            }).populate({
+                path: "delegations", populate: [
+                    { path: 'delegatee', select: '_id name' },
+                    { path: 'delegator', select: '_id name' },
+                ]
+            })
+
+            if (checkDelegateTask.delegations.map(d => d.delegatee._id).includes(delArray[i].delegator)) {
+                throw ['delegator_is_delegatee']; // Người nhận ủy quyền không thể ủy quyền cho một người khác
+            }
+
+            // console.log('checkDelegateTask', checkDelegateTask.responsibleEmployees)
+
+            let count2 = 0;
+            let errorRole = '';
+
+            delArray[i].delegateTaskRoles.every(r => {
+                if (r == 'responsible') {
+                    if (checkDelegateTask.responsibleEmployees.includes(delArray[i].delegatee.toString())) {
+                        count2++;
+                        errorRole = r;
+                        return false;
+                    }
+                }
+                if (r == 'accountable') {
+                    if (checkDelegateTask.accountableEmployees.includes(delArray[i].delegatee.toString())) {
+                        count2++;
+                        errorRole = r;
+                        return false;
+                    }
+                }
+                if (r == 'consulted') {
+                    if (checkDelegateTask.consultedEmployees.includes(delArray[i].delegatee.toString())) {
+                        count2++;
+                        errorRole = r;
+                        return false;
+                    }
+                }
+                if (r == 'informed') {
+                    if (checkDelegationExist.map(d => d.delegatorHasInformed).includes(false)) {
+                        throw ["informed_get_by_delegation"] // Vai trò quan sát có qua ủy quyền không thể ủy
+                    }
+                    if (checkDelegateTask.informedEmployees.includes(delArray[i].delegatee.toString())) {
+                        count2++;
+                        errorRole = r;
+                        return false;
+                    }
+                }
+                return true;
+            })
+
+            if (count2 > 0) {
+                throw ["delegatee_already_in_task_" + errorRole] // Người nhận đã đảm nhận vai trò errorRole trong công việc
+            }
+
 
             if (!isToday(new Date(delArray[i].delegationStart)) && compareDate(new Date(delArray[i].delegationStart), new Date()) < 0) {
                 throw ["start_date_past"]
@@ -822,11 +892,8 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
                 throw ["end_date_past"]
             }
 
-            console.log(checkDelegationExist)
             // console.log(new Date(delArray[i].delegationStart))
-            if (delArray[i].notCheck || (checkDelegationExist.length == 0
-                // && checkUserHaveRole.length == 0
-            )) {
+            if (delArray[i].notCheck || (count1 == 0 && count2 == 0)) {
                 console.log('hello')
                 if (await this.checkDelegationPolicy(delArray[i].delegatePolicy, delArray[i].delegator, delArray[i].delegateTask, null, delArray[i].delegatee, portal)) {
                     newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
@@ -849,9 +916,14 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
 
 
 
-            // TODO
+            // For demo
+            await this.assignTaskDelegation(newDelegation, portal)
+            // 
+            // if (isToday(new Date(delArray[i].delegationStart))) {
+            //     await this.assignTaskDelegation(newDelegation, portal)
+            // }
             // else {
-            //     await this.autoActivateDelegation(newDelegation, portal);
+            //     await this.autoActivateTaskDelegation(newDelegation, portal);
             // }
 
             // if (newDelegation.endDate != null) {
@@ -863,20 +935,237 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
     }
 
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: newDelegation._id }).populate([
-        // { path: 'delegateRole', select: '_id name' },
-        // { path: 'delegateTask' },
+        { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' }
-        // {
-        //     path: 'delegatePrivileges', select: '_id resourceId resourceType',
-        //     populate: {
-        //         path: 'resourceId',
-        //         select: '_id url category description'
-        //     }
-        // }
+
     ]);
 
 
     return delegation;
 }
+
+exports.autoActivateTaskDelegation = async (delegation, portal) => {
+    const date = new Date(delegation.startDate);
+    const a = this;
+    const job = schedule.scheduleJob("Activate_" + delegation._id, date, async function () {
+        await a.assignTaskDelegation(delegation, portal)
+        delegation.logs.push(
+            {
+                createdAt: new Date(),
+                user: null,
+                content: delegation.delegationName,
+                time: new Date(delegation.startDate),
+                category: "activate"
+            })
+        await delegation.save();
+    });
+
+
+    return job;
+}
+
+exports.assignTaskDelegation = async (newDelegation, portal) => {
+    let delegateTaskRoles = newDelegation.delegateTaskRoles
+    let delegateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: newDelegation.delegateTask }).populate({
+        path: "delegations", select: "_id status delegatorHasInformed"
+    })
+    let delegatee = newDelegation.delegatee
+    let delegator = newDelegation.delegator
+
+    // Thêm delegatee vào RACI tương ứng được ủy và remove delegator khỏi RACI đó trừ người quan sát
+    delegateTaskRoles.forEach(async r => {
+        if (r == 'responsible') {
+            await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+                responsibleEmployees: [
+                    ...delegateTask.responsibleEmployees.filter(e => e.toString() !== delegator.toString()),
+                    delegatee
+                ]
+            })
+        }
+        if (r == 'accountable') {
+            await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+                accountableEmployees: [
+                    ...delegateTask.accountableEmployees.filter(e => e.toString() !== delegator.toString()),
+                    delegatee
+                ]
+            })
+        }
+        if (r == 'consulted') {
+            await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+                consultedEmployees: [
+                    ...delegateTask.consultedEmployees.filter(e => e.toString() !== delegator.toString()),
+                    delegatee
+                ]
+            })
+        }
+        if (r == 'informed') {
+            await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+                informedEmployees: [
+                    ...delegateTask.informedEmployees,
+                    delegatee
+                ]
+            })
+        }
+    })
+
+
+    // Chuyển delegator thành Người quan sát
+    if (!delegateTask.informedEmployees.includes(delegator)) {
+        await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+            informedEmployees: [
+                ...delegateTask.informedEmployees,
+                delegator
+            ]
+        })
+        // Flag xem delegator có inform role từ đầu hay không, chuyển trạng thái sang activate
+        await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: newDelegation._id }, {
+            delegatorHasInformed: false,
+            status: 'activated'
+        })
+    } else {
+        await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: newDelegation._id }, {
+            delegatorHasInformed: true,
+            status: 'activated'
+        })
+
+    }
+}
+
+exports.autoRevokeTaskDelegation = async (delegation, portal) => {
+    const date = new Date(delegation.endDate);
+    const a = this;
+    const job = schedule.scheduleJob("Revoke_" + delegation._id, date, async function () {
+        await a.revokeTaskDelegation(portal, [delegation._id], "Automatic revocation")
+        await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
+            logs: [
+                ...delegation.logs,
+                {
+                    createdAt: new Date(),
+                    user: null,
+                    content: delegation.delegationName,
+                    time: new Date(delegation.endDate),
+                    category: "revoke"
+                }
+            ]
+        })
+    });
+
+    return job;
+}
+
+exports.revokeTaskDelegation = async (portal, delegationIds, reason) => {
+
+    let delegation = await Delegation(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
+    let result = delegation[0];
+
+    let delegateTaskRoles = result.delegateTaskRoles
+    let delegateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: result.delegateTask }).populate({
+        path: "delegations", select: "_id status delegatorHasInformed"
+    })
+    let delegatee = result.delegatee
+    let delegator = result.delegator
+
+    // Add lại delegator vào RACI tương ứng được ủy và remove delegatee khỏi RACI đó trừ người quan sát
+    if (result.status == 'activated') {
+        delegateTaskRoles.forEach(async r => {
+            if (r == 'responsible') {
+                await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+                    responsibleEmployees: [
+                        ...delegateTask.responsibleEmployees.filter(e => e.toString() !== delegatee.toString()),
+                        delegator
+                    ]
+                })
+            }
+            if (r == 'accountable') {
+                await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+                    accountableEmployees: [
+                        ...delegateTask.accountableEmployees.filter(e => e.toString() !== delegatee.toString()),
+                        delegator
+                    ]
+                })
+            }
+            if (r == 'consulted') {
+                await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+                    consultedEmployees: [
+                        ...delegateTask.consultedEmployees.filter(e => e.toString() !== delegatee.toString()),
+                        delegator
+                    ]
+                })
+            }
+            if (r == 'informed') {
+                await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+                    informedEmployees: [
+                        ...delegateTask.informedEmployees.filter(e => e.toString() !== delegatee.toString())
+                    ]
+                })
+            }
+        })
+    }
+
+
+    // Kiểm tra xem task còn delegation nào active ko, ko còn thì revoke ng quan sát nếu ng quan sát không có từ đầu
+    // Nếu delegator không có vai trò quan sát từ đầu thì remove khỏi ng quan sát
+    if (delegateTask.delegations.map(d => d.delegatorHasInformed).includes(false) && delegateTask.delegations.filter(d => d._id.toString() !== result._id.toString() && d.status == 'activated').length == 0) {
+        await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: delegateTask._id }, {
+            informedEmployees: [
+                ...delegateTask.informedEmployees.filter(e => e.toString() !== delegator.toString()),
+            ]
+        })
+
+    }
+
+    result.status = "revoked";
+    result.revokeReason = !reason ? null : reason;
+    result.revokedDate = new Date();
+    // if (result.endDate && compareDate(result.endDate, new Date()) > 0) {
+    //     if (schedule.scheduledJobs['Revoke_' + result._id]) {
+    //         schedule.scheduledJobs['Revoke_' + result._id].cancel()
+    //     }
+    // }
+    // if (schedule.scheduledJobs['Activate_' + result._id]) {
+    //     schedule.scheduledJobs['Activate_' + result._id].cancel()
+    // }
+
+    await result.save();
+
+    let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationIds[0] }).populate([
+        { path: 'delegateTask' },
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegatePolicy', select: '_id policyName' },
+        { path: 'delegator', select: '_id name' },
+    ]);
+
+    return newDelegation;
+}
+
+exports.deleteTaskDelegation = async (portal, delegationIds) => {
+    // if (schedule.scheduledJobs['Revoke_' + delegationIds[0]]) {
+    //     schedule.scheduledJobs['Revoke_' + delegationIds[0]].cancel()
+    // }
+
+    // if (schedule.scheduledJobs['Activate_' + delegationIds[0]]) {
+    //     schedule.scheduledJobs['Activate_' + delegationIds[0]].cancel()
+    // }
+    let delegation = await Delegation(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
+    let result = delegation[0];
+
+    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: result.delegateTask })
+
+    await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: task._id }, {
+        delegations: task.delegations.filter(d => d.toString() !== result._id.toString())
+    })
+    if (!result.delegatorHasInformed) {
+        await Delegation(connect(DB_CONNECTION, portal)).updateMany({ delegateTask: result.delegateTask, delegator: result.delegator }, {
+            delegatorHasInformed: false,
+        })
+    }
+
+    let delegationDelete = await Delegation(connect(DB_CONNECTION, portal))
+        .deleteOne({ _id: result._id });
+
+
+    return delegationDelete;
+}
+

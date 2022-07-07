@@ -18,7 +18,7 @@ function PolicyEditForm(props) {
     })
 
     const { translate, policyDelegation } = props;
-    const { policyID, policyName, description, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
+    const { delegateType, policyID, policyName, description, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
 
     // setState từ props mới
     useEffect(() => {
@@ -36,6 +36,7 @@ function PolicyEditForm(props) {
                 delegateeRule: props.delegateeRule,
                 delegatedObjectRule: props.delegatedObjectRule,
                 resourceRule: props.resourceRule,
+                delegateType: props.delegateType
             })
         }
     }, [props.policyID])
@@ -136,6 +137,7 @@ function PolicyEditForm(props) {
         const data = {
             policyName: policyName,
             description: description,
+            delegateType: delegateType,
             delegator: {
                 delegatorAttributes: delegatorAttributes,
                 delegatorRule: delegatorAttributes.length > 0 ? delegatorRule : "",
@@ -203,6 +205,7 @@ function PolicyEditForm(props) {
                             resourceRule={resourceRule}
                             delegatedObjectAttributes={delegatedObjectAttributes}
                             delegatedObjectRule={delegatedObjectRule}
+                            delegateType={delegateType}
                         />
 
                         {/* Thông tin thuộc tính resource */}

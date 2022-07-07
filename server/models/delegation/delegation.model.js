@@ -33,6 +33,9 @@ const DelegationSchema = new Schema({
         type: String,
         enum: ['responsible', 'accountable', 'consulted', 'informed']
     }],
+    delegatorHasInformed: {
+        type: Boolean,
+    },
     delegateRole: {
         // 6. Role ủy quyền
         type: Schema.Types.ObjectId,

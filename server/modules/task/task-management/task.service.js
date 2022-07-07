@@ -4842,7 +4842,8 @@ exports.addTaskDelegation = async (portal, taskId, data) => {
             path: "delegations", populate: [
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
-                { path: 'delegator', select: '_id name' }
+                { path: 'delegator', select: '_id name' },
+                { path: 'delegateTask', select: '_id name' }
             ]
 
         }
@@ -4851,3 +4852,116 @@ exports.addTaskDelegation = async (portal, taskId, data) => {
 
     return updateTask;
 };
+
+
+exports.deleteTaskDelegation = async (portal, taskId, data) => {
+
+    await DelegationService.deleteTaskDelegation(portal, [data.delegationId])
+
+    let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
+        { path: "organizationalUnit parent" },
+        { path: 'creator', select: "_id name email avatar" },
+        { path: 'responsibleEmployees', select: "_id name email avatar" },
+        { path: 'accountableEmployees', select: "_id name email avatar" },
+        { path: 'consultedEmployees', select: "_id name email avatar" },
+        { path: 'informedEmployees', select: "_id name email avatar" },
+        { path: "timesheetLogs.creator", select: "name" },
+        {
+            path: "delegations", populate: [
+                { path: 'delegatee', select: '_id name' },
+                { path: 'delegatePolicy', select: '_id policyName' },
+                { path: 'delegator', select: '_id name' },
+                { path: 'delegateTask', select: '_id name' }
+            ]
+
+        }
+    ]);
+
+
+    return updateTask;
+};
+
+exports.revokeTaskDelegation = async (portal, taskId, data) => {
+
+    await DelegationService.revokeTaskDelegation(portal, [data.delegationId], data.reason)
+
+
+    let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
+        { path: "organizationalUnit parent" },
+        { path: 'creator', select: "_id name email avatar" },
+        { path: 'responsibleEmployees', select: "_id name email avatar" },
+        { path: 'accountableEmployees', select: "_id name email avatar" },
+        { path: 'consultedEmployees', select: "_id name email avatar" },
+        { path: 'informedEmployees', select: "_id name email avatar" },
+        { path: "timesheetLogs.creator", select: "name" },
+        {
+            path: "delegations", populate: [
+                { path: 'delegatee', select: '_id name' },
+                { path: 'delegatePolicy', select: '_id policyName' },
+                { path: 'delegator', select: '_id name' },
+                { path: 'delegateTask', select: '_id name' }
+            ]
+
+        }
+    ]);
+
+
+    return updateTask;
+};
+
+exports.rejectTaskDelegation = async (portal, taskId, data) => {
+
+    await DelegationService.rejectDelegation(portal, data.delegationId, data.reason)
+
+
+    let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
+        { path: "organizationalUnit parent" },
+        { path: 'creator', select: "_id name email avatar" },
+        { path: 'responsibleEmployees', select: "_id name email avatar" },
+        { path: 'accountableEmployees', select: "_id name email avatar" },
+        { path: 'consultedEmployees', select: "_id name email avatar" },
+        { path: 'informedEmployees', select: "_id name email avatar" },
+        { path: "timesheetLogs.creator", select: "name" },
+        {
+            path: "delegations", populate: [
+                { path: 'delegatee', select: '_id name' },
+                { path: 'delegatePolicy', select: '_id policyName' },
+                { path: 'delegator', select: '_id name' },
+                { path: 'delegateTask', select: '_id name' }
+            ]
+
+        }
+    ]);
+
+
+    return updateTask;
+};
+
+exports.confirmTaskDelegation = async (portal, taskId, data) => {
+
+    await DelegationService.confirmDelegation(portal, data.delegationId)
+
+
+    let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
+        { path: "organizationalUnit parent" },
+        { path: 'creator', select: "_id name email avatar" },
+        { path: 'responsibleEmployees', select: "_id name email avatar" },
+        { path: 'accountableEmployees', select: "_id name email avatar" },
+        { path: 'consultedEmployees', select: "_id name email avatar" },
+        { path: 'informedEmployees', select: "_id name email avatar" },
+        { path: "timesheetLogs.creator", select: "name" },
+        {
+            path: "delegations", populate: [
+                { path: 'delegatee', select: '_id name' },
+                { path: 'delegatePolicy', select: '_id policyName' },
+                { path: 'delegator', select: '_id name' },
+                { path: 'delegateTask', select: '_id name' }
+            ]
+
+        }
+    ]);
+
+
+    return updateTask;
+};
+

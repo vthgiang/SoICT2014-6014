@@ -24,6 +24,7 @@ function GeneralTab(props) {
                 delegateType: props.delegateType,
                 delegateRole: props.delegateRole,
                 delegateTask: props.delegateTask,
+                delegateTaskRoles: props.delegateTaskRoles,
                 status: props.status,
                 allPrivileges: props.allPrivileges,
                 startDate: props.startDate,
@@ -47,7 +48,7 @@ function GeneralTab(props) {
 
 
     const { translate } = props;
-    const { delegationName, description, delegator, delegatee, delegatePrivileges, delegateType, delegateRole, delegateTask, status, allPrivileges, startDate, endDate, revokedDate, revokeReason, forReceive, replyStatus, declineReason, delegatePolicy } = state;
+    const { delegationName, description, delegator, delegateTaskRoles, delegatee, delegatePrivileges, delegateType, delegateRole, delegateTask, status, allPrivileges, startDate, endDate, revokedDate, revokeReason, forReceive, replyStatus, declineReason, delegatePolicy } = state;
 
     return (
         <div id={props.id} className="tab-pane active">
@@ -64,10 +65,27 @@ function GeneralTab(props) {
                     <span> {description}</span>
                 </div>
             </div>
+
+            {delegateTask ?
+                <div class="row">
+                    <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+                        <label>{translate('manage_delegation.delegateObjectTask')}:</label>
+                        <span> {delegateTask.name}</span>
+                    </div>
+                </div> : null
+            }
             <div class="row">
                 <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
-                    <label>{translate('manage_delegation.delegate_role')}:</label>
-                    <span> {delegateRole?.name}</span>
+                    {delegateRole ?
+                        <React.Fragment>
+                            <label>{translate('manage_delegation.delegate_role')}:</label>
+                            <span> {delegateRole?.name}</span>
+                        </React.Fragment> :
+                        <React.Fragment>
+                            <label>{translate('manage_delegation.delegateObject')}:</label>
+                            <span> {delegateTaskRoles ? delegateTaskRoles.map(r => translate('task.task_management.' + r)).join(", ") : ""}</span>
+                        </React.Fragment>
+                    }
                 </div>
 
                 <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
@@ -102,14 +120,17 @@ function GeneralTab(props) {
                     </div>
                 }
             </div>
-            {declineReason &&
+            {
+                declineReason &&
                 <div class="row">
                     <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
                         <label>{translate('manage_delegation.reject_reason')}:</label>
                         <span> {declineReason}</span>
                     </div>
-                </div>}
-            {delegatePrivileges && delegatePrivileges.length > 0 &&
+                </div>
+            }
+            {
+                delegatePrivileges && delegatePrivileges.length > 0 &&
                 < div class="row">
                     <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
                         <label>{translate('manage_delegation.delegation_allowed_links')}:</label>

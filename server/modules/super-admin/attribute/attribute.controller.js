@@ -27,7 +27,7 @@ exports.createAttribute = async (req, res) => {
 // Lấy ra đầy đủ thông tin tất cả các dịch vụ
 exports.getAttributes = async (req, res) => {
     try {
-        data = await AttributeService.getAttributes(req.portal, req.query);
+        let data = await AttributeService.getAttributes(req.portal, req.query);
 
         await Log.info(req.user.email, "GET_ALL_ATTRIBUTES", req.portal);
 
@@ -129,8 +129,7 @@ exports.deleteAttributes = async (req, res) => {
 // Lấy ra tên của tất cả các Ví dụ
 exports.getOnlyAttributeName = async (req, res) => {
     try {
-        let data;
-        data = await AttributeService.getOnlyAttributeName(req.portal, req.query);
+        let data = await AttributeService.getOnlyAttributeName(req.portal, req.query);
 
         await Log.info(req.user.email, "GET_ONLY_NAME_ALL_ATTRIBUTES", req.portal);
         res.status(200).json({

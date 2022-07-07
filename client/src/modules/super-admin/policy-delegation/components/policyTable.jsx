@@ -174,6 +174,7 @@ function PolicyTable(props) {
                 policyID={currentRow && currentRow._id}
                 policyName={currentRow && currentRow.policyName}
                 description={currentRow && currentRow.description}
+                delegateType={currentRow && currentRow.delegateType}
                 delegatorAttributes={currentRow && currentRow.delegator.delegatorAttributes}
                 delegateeAttributes={currentRow && currentRow.delegatee.delegateeAttributes}
                 delegatedObjectAttributes={currentRow && currentRow.delegatedObject.delegatedObjectAttributes}
@@ -199,6 +200,8 @@ function PolicyTable(props) {
                 delegateeRule={curentRowDetail && curentRowDetail.delegatee.delegateeRule}
                 resourceRule={curentRowDetail && curentRowDetail.resource.resourceRule}
                 curentRowDetail={curentRowDetail}
+                delegateType={curentRowDetail && curentRowDetail.delegateType}
+
             />
 
             <PolicyCreateForm

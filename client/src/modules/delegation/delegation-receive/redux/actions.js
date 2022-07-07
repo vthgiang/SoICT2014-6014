@@ -9,7 +9,6 @@ export const DelegationActions = {
 }
 
 function getDelegations(queryData) {
-    console.log('alo1')
     return (dispatch) => {
         dispatch({
             type: delegationConstants.GET_ALL_DELEGATIONS_REQUEST
@@ -34,7 +33,6 @@ function getDelegations(queryData) {
 }
 
 function getDelegationsTask(queryData) {
-    console.log('alo2')
 
     return (dispatch) => {
         dispatch({

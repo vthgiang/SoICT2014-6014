@@ -273,10 +273,10 @@ function DelegationTable(props) {
                     {/* Tìm kiếm */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_delegation.delegationName')}</label>
-                        <input type="text" className="form-control" name="delegationName" onChange={handleChangeDelegationName} placeholder={translate('manage_delegation.delegationName')} autoComplete="off" />
+                        <input type="text" className="form-control" name="delegationNameRole" onChange={handleChangeDelegationName} placeholder={translate('manage_delegation.delegationName')} autoComplete="off" />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_delegation.search')} onClick={() => handleSubmitSearch()}>{translate('manage_delegation.search')}</button>
+                        <button id="btn-search-role-delegation" type="button" className="btn btn-success" title={translate('manage_delegation.search')} onClick={() => handleSubmitSearch()}>{translate('manage_delegation.search')}</button>
                     </div>
                 </div>
 

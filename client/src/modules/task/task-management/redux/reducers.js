@@ -821,6 +821,98 @@ export function tasks(state = {
                 isLoading: false,
                 error: action.error
             };
+        case taskManagementConstants.DELETE_TASK_DELEGATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.DELETE_TASK_DELEGATION_SUCCESS:
+            index = findIndex(state.tasks, action.payload._id);
+
+            if (index !== -1) {
+                state.tasks[index] = action.payload;
+                state.task = action.payload;
+            };
+
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case taskManagementConstants.DELETE_TASK_DELEGATION_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
+        case taskManagementConstants.REVOKE_TASK_DELEGATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.REVOKE_TASK_DELEGATION_SUCCESS:
+            index = findIndex(state.tasks, action.payload._id);
+
+            if (index !== -1) {
+                state.tasks[index] = action.payload;
+                state.task = action.payload;
+            };
+
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case taskManagementConstants.REVOKE_TASK_DELEGATION_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
+        case taskManagementConstants.REJECT_TASK_DELEGATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.REJECT_TASK_DELEGATION_SUCCESS:
+            index = findIndex(state.tasks, action.payload._id);
+
+            if (index !== -1) {
+                state.tasks[index] = action.payload;
+                state.task = action.payload;
+            };
+
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case taskManagementConstants.REJECT_TASK_DELEGATION_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
+        case taskManagementConstants.CONFIRM_TASK_DELEGATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.CONFIRM_TASK_DELEGATION_SUCCESS:
+            index = findIndex(state.tasks, action.payload._id);
+
+            if (index !== -1) {
+                state.tasks[index] = action.payload;
+                state.task = action.payload;
+            };
+
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case taskManagementConstants.CONFIRM_TASK_DELEGATION_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
 
         default:
             return state

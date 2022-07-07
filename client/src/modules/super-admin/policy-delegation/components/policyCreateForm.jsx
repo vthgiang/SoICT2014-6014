@@ -23,11 +23,12 @@ function PolicyCreateForm(props) {
         delegatorRule: "",
         delegateeRule: "",
         delegatedObjectRule: "",
-        resourceRule: ""
+        resourceRule: "",
+        delegateType: "Role"
     })
 
     const { translate, policyDelegation, page, perPage } = props;
-    const { policyName, description, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
+    const { delegateType, policyName, description, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
 
     const handleChange = (name, value) => {
         setState({
@@ -124,6 +125,7 @@ function PolicyCreateForm(props) {
         const data = {
             policyName: policyName,
             description: description,
+            delegateType: delegateType,
             delegator: {
                 delegatorAttributes: delegatorAttributes,
                 delegatorRule: delegatorAttributes.length > 0 ? delegatorRule : "",
@@ -182,6 +184,7 @@ function PolicyCreateForm(props) {
                             handleChange={handleChange}
                             i={props.i}
                             handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                            delegateType={delegateType}
                         />
 
                         {/* Thông tin thuộc tính resource */}

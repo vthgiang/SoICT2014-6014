@@ -38,6 +38,10 @@
     width: 75%;
 }
 
+.modal-size-80 {
+    width: 80%;
+}
+
 .modal-size-100 {
     width: 100%;
     margin-top: 0px;
@@ -65,6 +69,11 @@
     }
 
     .modal-size-75 {
+        width: 100%;
+        margin-top: 0px;
+    }
+
+    .modal-size-80 {
         width: 100%;
         margin-top: 0px;
     }

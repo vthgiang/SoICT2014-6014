@@ -170,6 +170,7 @@ exports.createPolicyDelegation = async (portal, data) => {
                 policyName: polArray[i].policyName.trim(),
                 description: polArray[i].description.trim(),
                 category: "Delegation",
+                delegateType: polArray[i].delegateType,
                 delegator: {
                     delegatorAttributes: delegatorDataAttr,
                     delegatorRule: polArray[i].delegator.delegatorRule
@@ -415,6 +416,7 @@ exports.editPolicyDelegation = async (portal, id, data) => {
         $set: {
             policyName: data.policyName.trim(),
             description: data.description.trim(),
+            delegateType: data.delegateType,
             delegator: {
                 delegatorAttributes: delegatorDataAttr,
                 delegatorRule: data.delegator.delegatorRule

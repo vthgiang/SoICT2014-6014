@@ -175,6 +175,7 @@ function DelegationReceiveTableTask(props) {
                 delegateType={curentRowDetail && curentRowDetail.delegateType}
                 delegateRole={curentRowDetail && curentRowDetail.delegateRole}
                 delegateTask={curentRowDetail && curentRowDetail.delegateTask}
+                delegateTaskRoles={curentRowDetail && curentRowDetail.delegateTaskRoles}
                 status={curentRowDetail && curentRowDetail.status}
                 allPrivileges={curentRowDetail && curentRowDetail.allPrivileges}
                 startDate={curentRowDetail && curentRowDetail.startDate}
@@ -197,7 +198,7 @@ function DelegationReceiveTableTask(props) {
                     {/* Tìm kiếm */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_delegation.delegationName')}</label>
-                        <input type="text" className="form-control" name="delegationName" onChange={handleChangeDelegationName} placeholder={translate('manage_delegation.delegationName')} autoComplete="off" />
+                        <input type="text" className="form-control" name="delegationNameTask" onChange={handleChangeDelegationName} placeholder={translate('manage_delegation.delegationName')} autoComplete="off" />
                     </div>
                     <div className="form-group">
                         <button type="button" className="btn btn-success" title={translate('manage_delegation.search')} onClick={() => handleSubmitSearch()}>{translate('manage_delegation.search')}</button>
@@ -211,7 +212,8 @@ function DelegationReceiveTableTask(props) {
                         index: translate('manage_delegation.index'),
                         delegationName: translate('manage_delegation.delegationName'),
                         delegateType: translate('manage_delegation.delegateType'),
-                        delegateObject: translate('manage_delegation.delegateObjectTask'),
+                        delegateObjectTask: translate('manage_delegation.delegateObjectTask'),
+                        delegateTaskRoles: translate('manage_delegation.delegateObject'),
                         delegator: translate('manage_delegation.delegator'),
                         delegateStartDate: translate('manage_delegation.delegateStartDate'),
                         delegateEndDate: translate('manage_delegation.delegateEndDate'),
@@ -222,7 +224,8 @@ function DelegationReceiveTableTask(props) {
                         index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_delegation.index')}</th>,
                         delegationName: <th>{translate('manage_delegation.delegationName')}</th>,
                         // delegateType: <th>{translate('manage_delegation.delegateType')}</th>,
-                        delegateObject: <th>{translate('manage_delegation.delegateObjectTask')}</th>,
+                        delegateObjectTask: <th>{translate('manage_delegation.delegateObjectTask')}</th>,
+                        delegateTaskRoles: <th>{translate('manage_delegation.delegateObject')}</th>,
                         delegator: <th>{translate('manage_delegation.delegator')}</th>,
                         delegateStartDate: <th>{translate('manage_delegation.delegateStartDate')}</th>,
                         delegateEndDate: <th>{translate('manage_delegation.delegateEndDate')}</th>,
@@ -236,7 +239,8 @@ function DelegationReceiveTableTask(props) {
                             index: <td>{index + 1}</td>,
                             delegationName: <td>{item?.delegationName}</td>,
                             // delegateType: <td>{translate('manage_delegation.delegateType' + item?.delegateType)}</td>,
-                            delegateObject: <td>{(item.delegateTask ? item.delegateTask.name : "")}</td>,
+                            delegateObjectTask: <td>{(item.delegateTask ? item.delegateTask.name : "")}</td>,
+                            delegateTaskRoles: <td>{item.delegateTaskRoles ? item.delegateTaskRoles.map(r => translate('task.task_management.' + r)).join(", ") : ""}</td>,
                             delegator: <td>{item?.delegator.name}</td>,
                             delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
                             delegateEndDate: <td>{item.revokedDate && (item.endDate && (new Date(item.revokedDate)).getTime() < (new Date(item.endDate)).getTime()) || (item.revokedDate && !item.endDate) ? formatTime(item.revokedDate) : (item.endDate ? formatTime(item.endDate) : translate("manage_delegation.end_date_tbd"))}</td>,

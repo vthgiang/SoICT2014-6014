@@ -1205,3 +1205,88 @@ exports.addTaskDelegation = async (req, res) => {
         });
     }
 }
+
+exports.deleteTaskDelegation = async (req, res) => {
+    try {
+        let data = await TaskManagementService.deleteTaskDelegation(req.portal, req.params.taskId, req.body);
+
+        Logger.info(req.user.email, 'delete_task_delegation_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_task_delegation_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'delete_task_delegation_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_task_delegation_faile'],
+            content: error
+        });
+    }
+}
+
+exports.revokeTaskDelegation = async (req, res) => {
+    try {
+        console.log(req.params.taskId)
+        let data = await TaskManagementService.revokeTaskDelegation(req.portal, req.params.taskId, req.body);
+
+        Logger.info(req.user.email, 'revoke_task_delegation_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['revoke_task_delegation_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'revoke_task_delegation_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['revoke_task_delegation_faile'],
+            content: error
+        });
+    }
+}
+
+exports.rejectTaskDelegation = async (req, res) => {
+    try {
+        let data = await TaskManagementService.rejectTaskDelegation(req.portal, req.params.taskId, req.body);
+
+        Logger.info(req.user.email, 'reject_task_delegation_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['reject_task_delegation_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'reject_task_delegation_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['reject_task_delegation_faile'],
+            content: error
+        });
+    }
+}
+
+exports.confirmTaskDelegation = async (req, res) => {
+    try {
+        let data = await TaskManagementService.confirmTaskDelegation(req.portal, req.params.taskId, req.body);
+
+        Logger.info(req.user.email, 'confirm_task_delegation_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['confirm_task_delegation_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'confirm_task_delegation_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['confirm_task_delegation_faile'],
+            content: error
+        });
+    }
+}

@@ -12,6 +12,10 @@ const PolicySchema = new Schema({
         type: String,
         enum: ['Authorization', 'Delegation'],
     },
+    delegateType: {
+        type: String,
+        enum: ['Role', 'Task'],
+    },
     description: { // Mô tả Ví dụ
         type: String
     },

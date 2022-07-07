@@ -47,6 +47,12 @@ exports.login = async (fingerprint, data) => {
     // Kích hoạt ủy quyền nếu startDate < now và chưa đến thời hạn thu hồi hoặc thu hồi nếu endDate < now  
     await DelegationService.updateMissedDelegation(data.portal);
 
+    // Lưu log login vào các ủy quyền có delegatee = userId
+    let delegations = await Delegation(connect(DB_CONNECTION, data.portal)).find({ delegatee: user._id });
+    delegations.forEach(async delegation => {
+        await DelegationService.saveLog(data.portal, delegation, delegation.delegatee, null, "login", new Date())
+    })
+
 
     if (!user) throw ["email_password_invalid"];
     const validPass = await bcrypt.compare(data.password, user.password);
@@ -514,7 +520,7 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
         })
         // Lọc ra các link được phép truy cập theo tùy chọn trang trong cấu hình ủy quyền
         links = delegationAllowedLinks.length > 0 ? links.filter(link => delegationAllowedLinks.includes(link)) : links;
-        await DelegationService.saveLog(portal, delegateeDelegation, delegateeDelegation.delegatee, role.name, "login", new Date())
+        await DelegationService.saveLog(portal, delegateeDelegation, delegateeDelegation.delegatee, role.name, "switch_delegate_role", new Date())
 
     }
 

@@ -145,7 +145,8 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
         path: "delegations", populate: [
           { path: 'delegatee', select: '_id name' },
           { path: 'delegatePolicy', select: '_id policyName' },
-          { path: 'delegator', select: '_id name' }
+          { path: 'delegator', select: '_id name' },
+          { path: 'delegateTask', select: '_id name' }
         ]
 
       }
