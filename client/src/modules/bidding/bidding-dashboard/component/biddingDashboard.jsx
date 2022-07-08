@@ -12,6 +12,7 @@ import { BiddingInProcessStatistic } from './biddingInProcessStatistic'
 import { BiddingPriceAndProjectBudgetDashboard } from './biddingPriceAndProjectBudgetDashboard'
 import { QuantityStatistic } from './quantityStatistic'
 import { ContractBidProjectRelation } from './statisticContractBidAndProjectRelation'
+import { StatisticTaskRelatedBiddingPackage } from './statisticTaskRelatedToBiddingPackage'
 
 const BiddingDashboard = (props) => {
     const { biddingPackagesManager, biddingContract, project } = props;
@@ -32,11 +33,25 @@ const BiddingDashboard = (props) => {
     return (
         <div>
             <QuantityStatistic />
-            {numOfBP >= 10 && <span style={{ fontWeight: 600, color: "red", lineHeight: 2 }}>* Hiện đang có 10 gói thầu đang thực hiện, hãy tạm dừng tìm kiếm gói thầu mới để đảm bảo tiến độ *<br /></span>}
+            <div className='box'>
+                <ul class="todo-list">
+                    <li>
+                        <span class="handle"><i class="fa fa-ellipsis-v"></i><i class="fa fa-ellipsis-v"></i></span>
+                        <span class="text">
+                            {/* {numOfBP >= 10 && <span style={{ fontWeight: 600, color: "red", lineHeight: 2 }}>* Hiện đang có 10 gói thầu đang thực hiện, hãy tạm dừng tìm kiếm gói thầu mới để đảm bảo tiến độ *<br /></span>} */}
+                            <span style={{ fontWeight: 600, color: "green", lineHeight: 2 }}>
+                                Hãy khởi tạo quy trình đấu thầu - thực hiện gói thầu theo mẫu tại <a style={{ fontWeight: 600 }} href="/task-process-template" target="_blank">đây</a>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
             <ContractBidProjectRelation />
             <BiddingPriceAndProjectBudgetDashboard />
             <BidAndProjectStatistic />
             <BiddingInProcessStatistic />
+            <StatisticTaskRelatedBiddingPackage />
         </div>
     )
 }
