@@ -35,7 +35,7 @@ const ModalDetailReport = (props) => {
                 modalID={`modal-show-detail-report-${projectDetailId || projectDetail?._id}`} isLoading={false}
                 formID={`form-show-detail-report-${projectDetailId || projectDetail?._id}`}
                 title={`${translate('project.report.title')} "${projectDetail?.name}"`}
-                hasSave={false}
+                hasSaveButton={false}
                 size={75}
                 resetOnClose={true}
             >
