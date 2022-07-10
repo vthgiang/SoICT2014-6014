@@ -121,7 +121,7 @@ class RevenueAndSalesBarChart extends Component {
     };
 
     render() {
-        //   this.barChart()
+        //   this.bar-chart()
         return (
             <div className="box">
                 <div className="box-header with-border">

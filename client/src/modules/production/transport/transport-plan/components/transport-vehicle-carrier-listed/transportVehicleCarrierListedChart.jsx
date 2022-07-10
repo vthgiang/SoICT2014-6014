@@ -37,10 +37,10 @@ function TransportVehicleCarrierListedChart(props) {
             ["Nhân viên"],
         ]
         // for (const [key, value] of countVehicles){
-        //     barChart[0].push(value);
+        //     bar-chart[0].push(value);
         // }
         // for (const [key, value] of countCarriers){
-        //     barChart[1].push(value);
+        //     bar-chart[1].push(value);
         // }
         if (countVehicles && countVehicles.length !==0 ){
             countVehicles.map(item => {

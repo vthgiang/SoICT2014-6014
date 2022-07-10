@@ -18,7 +18,7 @@ const PurchaseInvoiceSchema = new Schema({
         require: true
     },
     quantity: { //so luong mua
-        type: String,
+        type: Number,
         require: true
     },
     price: { //don gia

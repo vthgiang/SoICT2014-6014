@@ -26,7 +26,7 @@ class AmountPieChart extends Component {
             } 
         }
         
-        console.log("number",chartAsset)
+        console.log("numberOfAsset: ", numberOfAsset)
         return numberOfAsset;
     }
 
