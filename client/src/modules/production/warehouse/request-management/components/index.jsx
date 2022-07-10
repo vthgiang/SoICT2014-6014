@@ -74,6 +74,13 @@ function RequestManagement(props) {
         })
     }
 
+    const handleChangeSourceRequest = (value) => {
+        setState({
+            ...state,
+            sourceRequest: value
+        })
+    }
+
     const handleSubmitSearch = () => {
         setState({
             ...state,
@@ -85,7 +92,10 @@ function RequestManagement(props) {
             createdAt: state.createdAt,
             desiredTime: state.desiredTime,
             code: state.code,
-            status: state.status
+            status: state.status,
+            requestFrom: 'stock',
+            type: state.type,
+            sourceRequest: state.sourceRequest
         }
         props.getAllRequestByCondition(data);
     }
@@ -218,6 +228,7 @@ function RequestManagement(props) {
                                 handleStatusChange={handleStatusChange}
                                 handleSubmitSearch={handleSubmitSearch}
                                 stockRequestType={type}
+                                handleChangeSourceRequest={handleChangeSourceRequest}
                             />
                         </LazyLoadComponent>
                     }
@@ -237,6 +248,7 @@ function RequestManagement(props) {
                                 handleStatusChange={handleStatusChange}
                                 handleSubmitSearch={handleSubmitSearch}
                                 stockRequestType={type}
+                                handleChangeSourceRequest={handleChangeSourceRequest}
                             />
                         </LazyLoadComponent>
                     }

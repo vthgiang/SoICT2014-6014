@@ -6,6 +6,7 @@ const TaskManagementService = require('../../../task/task-management/task.servic
 const { getStock } = require(`../../warehouse/stock/stock.service`);
 const NotificationServices = require(`../../../notification/notification.service`)
 const InventoryServices = require(`../inventory/inventory.service`);
+const { getCustomers } = require("../../../crm/customer/customer.service");
 
 exports.getBillsByType = async (query, userId, portal) => {
     var { page, limit, group, managementLocation } = query;
@@ -257,7 +258,6 @@ exports.getDetailBill = async (id, portal) => {
 
 exports.getBillsByStatus = async (query, portal) => {
     const { group, status, fromStock, type } = query;
-    console.log(query);
     return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock })
         .populate([
             { path: 'creator', select: "_id name email avatar" },
@@ -637,7 +637,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             data.goods.forEach(item => {
                 if (item.lots && item.lots.length > 0) {
                     item.lots.forEach(async x => {
-                        let dataLots = formatDataLots(x, bill.fromStock, bill.bill, "Nhập kho", item.good._id, item.good.type, 1);
+                        let dataLots = formatDataLots(x, bill.fromStock, bill.bill, bill.group, item.good._id, item.good.type, 1);
                         let lot = await InventoryServices.createOrUpdateLots(dataLots, portal);
                         //Lưu hàng vào kho
                         let dataBinLocations = formatDataBinLocations(x, bill.fromStock);
@@ -646,7 +646,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                 }
                 if (item.unpassed_quality_control_lots && item.unpassed_quality_control_lots.length > 0) {
                     item.unpassed_quality_control_lots.forEach(async x => {
-                        let dataUnpassedLots = formatDataLots(x, bill.fromStock, bill.bill, "Nhập kho", item.good._id, item.good.type, 0);
+                        let dataUnpassedLots = formatDataLots(x, bill.fromStock, bill.bill, bill.group, item.good._id, item.good.type, 0);
                         let lot = await InventoryServices.createOrUpdateLots(dataUnpassedLots, portal);
                         //Lưu hàng vào kho
                         let dataBinLocations = formatDataBinLocations(x, bill.fromStock);
@@ -697,8 +697,9 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                             let lotLog = {};
                             lotLog.bill = bill._id;
                             lotLog.quantity = quantity;
+                            lotLog.inventory = lot.quantity;
                             lotLog.description = data.goods[i].description ? data.goods[i].description : '';
-                            lotLog.type = bill.type;
+                            lotLog.type = bill.group;
                             lotLog.createdAt = bill.updatedAt;
                             lotLog.stock = data.fromStock;
                             lot.lotLogs = [...lot.lotLogs, lotLog];
@@ -716,7 +717,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             data.goods.forEach(item => {
                 if (item.unpassed_quality_control_lots && item.unpassed_quality_control_lots.length > 0) {
                     item.unpassed_quality_control_lots.forEach(async x => {
-                        let dataUnpassedLots = formatDataLots(x, bill.fromStock, bill.bill, "Nhập kho hàng hóa trả không đạt kiểm định", item.good._id, item.good.type, 0);
+                        let dataUnpassedLots = formatDataLots(x, bill.fromStock, bill.bill, "1", item.good._id, item.good.type, 0);
                         let lot = await InventoryServices.createOrUpdateLots(dataUnpassedLots, portal);
                         //Lưu hàng vào kho
                         let dataBinLocations = formatDataBinLocations(x, bill.fromStock);
@@ -749,8 +750,9 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                                 let lotLog = {};
                                 lotLog.bill = bill._id;
                                 lotLog.quantity = passedReturnQuantity;
+                                lotLog.inventory = lot.quantity;
                                 lotLog.description = data.goods[i].description ? data.goods[i].description : '';
-                                lotLog.type = bill.type;
+                                lotLog.type = bill.group;
                                 lotLog.createdAt = bill.updatedAt;
                                 lotLog.stock = data.fromStock;
                                 lot.lotLogs = [...lot.lotLogs, lotLog];
@@ -1219,24 +1221,190 @@ exports.createManyProductBills = async (data, portal) => {
     return { bills }
 }
 
-exports.getNumberBills = async (query, portal) => {
-    let options = {};
-    if (query.stock) {
-        options.fromStock = query.stock
+function compare(a, b) {
+    if (parseInt(a.quantity) < parseInt(b.quantity)) {
+        return -1;
+    }
+    if (parseInt(a.quantity) > parseInt(b.quantity)) {
+        return 1;
+    }
+    return 0;
+}
+
+async function getDataIssueReceiptChart(options, portal) {
+    let dataIssueReceipt = [];
+    let dataIssueReceiptChart = await Bill(connect(DB_CONNECTION, portal)).find(options).populate([
+        { path: 'goods.good' },
+    ]);
+    if (dataIssueReceiptChart && dataIssueReceiptChart.length > 0) {
+        dataIssueReceiptChart.forEach(bill => {
+            if (bill.goods) {
+                bill.goods.forEach(good => {
+                    let index = dataIssueReceipt.findIndex(x => x.good._id.toString() === good.good._id.toString());
+                    if (index != -1) {
+                        dataIssueReceipt[index].quantity += good.quantity;
+                    } else {
+                        dataIssueReceipt.push({
+                            good: good.good,
+                            quantity: good.quantity
+                        })
+                    }
+                })
+            }
+        })
     }
 
-    if (query.createdAt) {
-        let date = query.createdAt.split("-");
-        let start = new Date(date[1], date[0] - 1, 1);
-        let end = new Date(date[1], date[0], 1);
+    return dataIssueReceipt.sort(compare);
+}
 
-        options = {
-            ...options,
-            createdAt: {
-                $gt: start,
-                $lte: end
+async function getDataBillsReceiptedFromSupplierByTime(options, portal, arrayCustomer) {
+    let dataBillsReceiptedFromSupplierByTime = [];
+    let dataBillsReceiptedFromSupplier = await Bill(connect(DB_CONNECTION, portal)).find(options).populate([
+        { path: 'supplier' },
+    ]);
+    if (dataBillsReceiptedFromSupplier && dataBillsReceiptedFromSupplier.length > 0) {
+        dataBillsReceiptedFromSupplier.forEach(bill => {
+            if (arrayCustomer && arrayCustomer.length > 0) {
+                arrayCustomer.forEach(customer => {
+                    if (bill.supplier._id.toString() === customer.toString()) {
+                        let index = dataBillsReceiptedFromSupplierByTime.findIndex(x => x.supplier._id.toString() === customer.toString());
+                        if (index != -1) {
+                            dataBillsReceiptedFromSupplierByTime[index].quantity++;
+                            dataBillsReceiptedFromSupplierByTime[index].bill.push(bill);
+                        } else {
+                            dataBillsReceiptedFromSupplierByTime.push({
+                                supplier: bill.supplier,
+                                quantity: 1,
+                                bill: [bill]
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    }
+    
+    return dataBillsReceiptedFromSupplierByTime;
+}
+
+async function getDataBillsIssuedForCustomerByTime(options, portal, arrayCustomer) {
+    let billArray = [];
+    let dataBillsIssuedForCustomerByTime = [];
+    let dataBillsIssuedForCustomer = await Bill(connect(DB_CONNECTION, portal)).find(options).populate([
+        { path: 'customer' },
+    ]);
+    if (dataBillsIssuedForCustomer && dataBillsIssuedForCustomer.length > 0) {
+        dataBillsIssuedForCustomer.forEach(bill => {
+            if (arrayCustomer && arrayCustomer.length > 0) {
+                arrayCustomer.forEach(customer => {
+                    if (bill.customer._id.toString() === customer.toString()) {
+                        let index = dataBillsIssuedForCustomerByTime.findIndex(x => x.customer._id.toString() === customer.toString());
+                        if (index != -1) {
+                            dataBillsIssuedForCustomerByTime[index].quantity++;
+                            dataBillsReceiptedFromSupplierByTime[index].bill.push(bill);
+                        } else {
+                            dataBillsIssuedForCustomerByTime.push({
+                                customer: bill.customer,
+                                quantity: 1,
+                                bill: [bill]
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    }
+    return dataBillsIssuedForCustomerByTime;
+}
+
+exports.getNumberBills = async (user, query, portal) => {
+    let { managementLocation, stock, startMonth, endMonth, customer, supplier, type, number, chart } = query;
+    let options = {};
+    let arrayStock = [];
+    let arrayCustomer = [];
+    let dataTopIssueReceipt = [];
+    let dataTopAtLeastIssueReceipt = [];
+    let dataBillsIssuedForCustomerByTime = [];
+    let dataBillsReceiptedFromSupplierByTime = [];
+
+    if (!managementLocation) throw new Error("roles not avaiable");
+
+    //lấy id các khách hàng của role hiện tại
+    const allCustomers = await getCustomers(portal, user.company, { customerOwner: [user._id] }, user._id, managementLocation);
+    if (allCustomers && allCustomers.customers.length > 0) {
+        for (let i = 0; i < allCustomers.customers.length; i++) {
+            arrayCustomer = [...arrayCustomer, allCustomers.customers[i]._id];
+        }
+    }
+
+    //lấy id các kho của role hiện tại
+    if (!stock || stock.length === 0) {
+        const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $elemMatch: { role: managementLocation } } })
+        if (stocks && stocks.length > 0) {
+            for (let i = 0; i < stocks.length; i++) {
+                arrayStock = [...arrayStock, stocks[i]._id];
             }
         }
+    }
+
+    let month1 = startMonth.split("-");
+    let month2 = endMonth.split("-");
+    let start = new Date(month1[0], month1[1] - 1, 1);
+    let end = new Date(month2[0], month2[1], 1);
+
+    options = {
+        ...options,
+        createdAt: {
+            $gt: start,
+            $lte: end
+        }
+    }
+
+    options = {
+        ...options,
+        fromStock: query.stock ? query.stock : arrayStock,
+    }
+    options.status = "2";
+
+    // Dữ liệu cho biểu đồ Tốp những mặt hàng nhập, xuất nhiều nhất và biểu đồ tốp những mặt hàng nhập, xuất ít nhất
+    let dataIssueReceipt = [];
+    if (chart === undefined) {
+        options.group = "1";
+        dataIssueReceipt = await getDataIssueReceiptChart(options, portal);
+        if (dataIssueReceipt && dataIssueReceipt.length > 0) {
+            dataTopAtLeastIssueReceipt = dataIssueReceipt.slice(0, 5);
+            dataTopIssueReceipt = dataIssueReceipt.slice(dataIssueReceipt.length - 5, dataIssueReceipt.length);
+        }
+    } else if (chart === 'topIssueReceipt') {
+        if (type === '1')
+            options.group = "1";
+        else if (type === '2')
+            options.group = "2";
+        dataIssueReceipt = await getDataIssueReceiptChart(options, portal);
+        if (dataIssueReceipt && dataIssueReceipt.length > 0) {
+            dataTopAtLeastIssueReceipt = dataIssueReceipt.slice(0, 5);
+        }
+    } else if (chart === 'topAtLeastIssueReceipt') {
+        if (type === '1')
+            options.group = "1";
+        else if (type === '2')
+            options.group = "2";
+        dataIssueReceipt = await getDataIssueReceiptChart(options, portal);
+        if (dataIssueReceipt && dataIssueReceipt.length > 0) {
+            dataTopIssueReceipt = dataIssueReceipt.slice(dataIssueReceipt.length - 5, dataIssueReceipt.length);
+        }
+    }
+
+    // Dữ liệu cho phiếu nhập theo từng nhóm nhà cung cấp
+    if (chart === undefined || chart === 'receiptedFromSupplier') {
+        options.group = "1";
+        dataBillsReceiptedFromSupplierByTime = await getDataBillsReceiptedFromSupplierByTime(options, portal, arrayCustomer);
+    }
+
+    // Dữ liệu cho phiếu xuất theo từng nhóm khách hàng
+    if (chart === undefined || chart === 'issuedForCustomer') {
+        options.group = "2";
+        dataBillsIssuedForCustomerByTime = await getDataBillsIssuedForCustomerByTime(options, portal, arrayCustomer);
     }
 
     const totalBills = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
@@ -1247,5 +1415,14 @@ exports.getNumberBills = async (query, portal) => {
     options.group = '3';
     const totalGoodReturns = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
 
-    return { totalBills, totalGoodReturns, totalGoodReceipts, totalGoodIssues };
+    return {
+        totalBills,
+        totalGoodReturns,
+        totalGoodReceipts,
+        totalGoodIssues,
+        dataTopIssueReceipt,
+        dataTopAtLeastIssueReceipt,
+        dataBillsIssuedForCustomerByTime,
+        dataBillsReceiptedFromSupplierByTime
+    };
 }
