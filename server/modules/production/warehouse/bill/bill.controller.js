@@ -197,7 +197,7 @@ exports.createManyProductBills = async (req, res) => {
 exports.getNumberBills = async (req, res) => {
     try {
         console.log(req.query);
-        const totalBills = await BillService.getNumberBills(req.query, req.portal);
+        const totalBills = await BillService.getNumberBills(req.user, req.query, req.portal);
 
         await Logger.info(req.user.email, 'GET_BILL_SUCCESS', req.portal);
 

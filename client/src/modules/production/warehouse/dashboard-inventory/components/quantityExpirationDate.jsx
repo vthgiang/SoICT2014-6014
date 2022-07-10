@@ -16,27 +16,13 @@ function QuantityExpirationDate(props) {
         currentRole: localStorage.getItem("currentRole"),
         category: [],
         dataChart: [],
-        name: []
+        name: [],
+        searchType: '0',
     })
 
-    let { translate, lots } = props;
-    const { inventoryDashboard } = lots;
-    const { type, category, startDate, endDate } = state;
-    const refBarChart = React.createRef();
-
-    if (inventoryDashboard.length > 0 && state.dataChart.length == 0) {
-        let name = [];
-        let inventory = ['Tồn kho'];
-        for (let i = 0; i < inventoryDashboard.length; i++) {
-            name = [...name, inventoryDashboard[i].name];
-            inventory = [...inventory, inventoryDashboard[i].inventory];
-        }
-        setState({
-            ...state, 
-            name,
-            dataChart: [inventory]
-        })
-    }
+    useEffect(() => {
+        props.getAllLots({ managementLocation: state.currentRole });
+    }, [])
 
     useEffect(() => {
         barChart(state.name, state.dataChart);
@@ -44,11 +30,11 @@ function QuantityExpirationDate(props) {
 
     // Khởi tạo BarChart bằng C3
     const barChart = (name, dataChart) => {
-        let chart = c3.generate({
+        c3.generate({
             bindto: refBarChart.current,
             data: {
                 // x: 'x',
-                columns:dataChart,
+                columns: dataChart,
                 type: 'bar',
                 labels: true,
             },
@@ -66,22 +52,68 @@ function QuantityExpirationDate(props) {
         });
     }
 
+    const handleSearchTypeChange = (value) => {
+        setState({
+            ...state,
+            searchType: value[0]
+        })
+    }
+
+    const getDataForChart = () => {
+        const { lots } = props;
+        const { listLots } = lots;
+    }
+
+    let { translate, lots } = props;
+    const { inventoryDashboard } = lots;
+    const { searchType } = state;
+    const refBarChart = React.createRef();
+
+    if (inventoryDashboard.length > 0 && state.dataChart.length == 0) {
+        let name = [];
+        let inventory = ['Tồn kho'];
+        for (let i = 0; i < inventoryDashboard.length; i++) {
+            name = [...name, inventoryDashboard[i].name];
+            inventory = [...inventory, inventoryDashboard[i].inventory];
+        }
+        setState({
+            ...state,
+            name,
+            dataChart: [inventory]
+        })
+    }
+    const dataType = [
+        {
+            value: '0',
+            text: "Lô hàng sắp hết hạn"
+        },
+        {
+            value: '1',
+            text: "Lô hàng đã hết hạn"
+        }
+    ]
+    let dataForChart = getDataForChart();
+    console.log(props.lots);
     return (
         <React.Fragment>
             <div className="box">
                 <div className="box-header with-border">
                     <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">
-                        Số lượng mặt hàng tồn kho sắp hết hạn sử dụng
-                    </h3>
-                    <div className="form-group" style={{ width: '100%', display: 'flex', margin: '10px' }}>
-                        <label style={{ marginRight: '10px' }} className="form-control-static">{translate('manage_warehouse.bill_management.to_date')}</label>
-                        <DatePicker
-                            id="purchase-month"
-                            dateFormat="month-year"
-                            value=""
-                        // onChange={handlePurchaseMonthChange}
-                        />
+                    <h3 className="box-title">{"Lô hàng tồn kho sắp hết hạn sử dụng"}</h3>
+                    <div className="box-body qlcv" >
+                        <div className="form-inline" >
+                            <div className="form-group" >
+                                <label className="form-control-static">{"Chọn loại"}</label>
+                                <SelectBox
+                                    id={`select-type-dashboard`}
+                                    className="form-control select2"
+                                    value={searchType}
+                                    items={dataType}
+                                    onChange={handleSearchTypeChange}
+                                    multiple={false}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div ref={refBarChart}></div>
                 </div>
@@ -93,5 +125,6 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getInventoriesDashboard: LotActions.getInventoriesDashboard,
+    getAllLots: LotActions.getAllLots,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityExpirationDate));

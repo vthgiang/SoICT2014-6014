@@ -3,12 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
-
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { SelectMulti, DatePicker, SelectBox } from '../../../../../common-components';
+import { SelectBox } from '../../../../../common-components';
 import { LotActions } from '../../inventory-management/redux/actions';
 
-function QuantityExpiratedDate(props) {
+function DetailQuantityOfGood(props) {
     const [state, setState] = useState({
         pieChart: true,
         type: 'product',
@@ -52,7 +51,7 @@ function QuantityExpiratedDate(props) {
     const refPieChart = React.createRef();
 
     const pieChart = (name, dataChart) => {
-        let chart = c3.generate({
+        c3.generate({
             bindto: refPieChart.current,
 
             data: {
@@ -111,14 +110,17 @@ function QuantityExpiratedDate(props) {
             <div className="box">
                 <div className="box-header with-border">
                     <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">
-                        Xem chi tiết số lượng theo từng sản phẩm
-                    </h3>
-                    <div className="form-group" style={{ width: '100%', margin: '10px' }}>
-                        <SelectBox id="multiSelectqO"
-                            items={inventoryDashboard.map((x, index) => { return { value: x._id, text: x.name } })}
-                            onChange={handleSelectProduct}
-                        />
+                    <h3 className="box-title">{"Xem chi tiết số lượng theo từng sản phẩm"}</h3>
+                    <div className="box-body qlcv" >
+                        <div className="form-inline" >
+                            <div className="form-group" >
+                                <label className="form-control-static">{"Chọn hàng hóa"}</label>
+                                <SelectBox id="multiSelectqO"
+                                    items={inventoryDashboard.map((x, index) => { return { value: x._id, text: x.name } })}
+                                    onChange={handleSelectProduct}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div ref={refPieChart}></div>
                 </div>
@@ -132,4 +134,4 @@ const mapStateToProps = state => state;
 const mapDispatchToProps = {
     getInventoriesDashboard: LotActions.getInventoriesDashboard,
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityExpiratedDate));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(DetailQuantityOfGood));

@@ -84,6 +84,9 @@ const LotSchema = new Schema({
         quantity: {
             type: Number
         },
+        inventory: {
+            type: Number
+        },
 
         description: {
             type: String

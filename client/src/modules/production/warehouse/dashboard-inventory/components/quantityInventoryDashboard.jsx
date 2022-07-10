@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
-
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox, TreeSelect } from '../../../../../common-components';
 import { LotActions } from '../../inventory-management/redux/actions';
@@ -24,29 +23,31 @@ function QuantityInventoryDashboard(props) {
     const { listStocks } = stocks;
     const { categoryToTree } = categories;
     const { type, category } = state;
-
+    console.log(inventoryDashboard);
     const refBarChart = React.createRef()
-    if (inventoryDashboard.length > 0 && state.dataChart.length == 0) {
-        let name = [];
-        let inventory = ['Số lượng tồn kho'];
-        let goodReceipt = ['Số lượng sắp nhập'];
-        let goodIssue = ['Số lượng sắp xuất'];
-        for (let i = 0; i < inventoryDashboard.length; i++) {
-            name = [...name, inventoryDashboard[i].name];
-            inventory = [...inventory, inventoryDashboard[i].inventory];
-            goodReceipt = [...goodReceipt, inventoryDashboard[i].goodReceipt];
-            goodIssue = [...goodIssue, inventoryDashboard[i].goodIssue];
+    useEffect(() => {
+        if (inventoryDashboard.length > 0) {
+            let name = [];
+            let inventory = ['Số lượng tồn kho'];
+            let goodReceipt = ['Số lượng sắp nhập'];
+            let goodIssue = ['Số lượng sắp xuất'];
+            for (let i = 0; i < inventoryDashboard.length; i++) {
+                name = [...name, inventoryDashboard[i].name];
+                inventory = [...inventory, inventoryDashboard[i].inventory];
+                goodReceipt = [...goodReceipt, inventoryDashboard[i].goodReceipt];
+                goodIssue = [...goodIssue, inventoryDashboard[i].goodIssue];
+            }
+            setState({
+                ...state,
+                name,
+                dataChart: [inventory, goodReceipt, goodIssue]
+            })
         }
-        setState({
-            ...state,
-            name,
-            dataChart: [inventory, goodReceipt, goodIssue]
-        })
-    }
+    }, [inventoryDashboard])
 
     useEffect(() => {
         barChart(state.name, state.dataChart);
-    }, [state.name, state.dataChart])
+    }, [state.dataChart])
 
     useEffect(() => {
         const { type } = state;
@@ -105,7 +106,7 @@ function QuantityInventoryDashboard(props) {
 
     // Khởi tạo BarChart bằng C3
     const barChart = (name, dataChart) => {
-        let chart = c3.generate({
+        c3.generate({
             bindto: refBarChart.current,
             data: {
                 columns: dataChart,
@@ -149,13 +150,11 @@ function QuantityInventoryDashboard(props) {
             <div className="box">
                 <div className="box-header with-border">
                     <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">
-                        Số lượng tồn kho của các mặt hàng
-                        </h3>
+                    <h3 className="box-title">{"Số lượng tồn kho của các mặt hàng"}</h3>
                     <div className="box-body qlcv" >
                         <div className="form-inline">
                             <div className="form-group">
-                                <label>Kho</label>
+                                <label>{"Kho"}</label>
                                 <SelectMulti
                                     id={`select-multi-stock-dashboard-inventory`}
                                     multiple="multiple"
@@ -167,7 +166,7 @@ function QuantityInventoryDashboard(props) {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Loại hàng hóa</label>
+                                <label>{"Loại hàng hóa"}</label>
                                 <SelectMulti
                                     id={`select-multi-type-dashboard-inventory`}
                                     multiple="multiple"
@@ -177,14 +176,14 @@ function QuantityInventoryDashboard(props) {
                                     items={[
                                         { value: 'product', text: 'Sản phẩm' },
                                         { value: 'material', text: 'Nguyên vật liệu' },
+                                        { value: 'equipment', text: 'Công cụ, dụng cụ' },
+                                        { value: 'waste', text: 'Phế phẩm' },
                                     ]}
                                     onChange={handleTypeChange}
                                 />
                             </div>
-                        </div>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label>Danh mục</label>
+                            <div className="form-group good-category-select-tree">
+                                <label>{"Danh mục"}</label>
                                 <TreeSelect
                                     data={dataCategory}
                                     value={category}
