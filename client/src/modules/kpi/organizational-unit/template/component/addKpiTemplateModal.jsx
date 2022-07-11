@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { kpiTemplateActions } from '../redux/actions';
 
 import { AddKpiTemplate } from './addKpiTemplate';
 import { KpiTemplateFormValidator } from './kpiTemplateFormValidator';
@@ -10,24 +11,15 @@ import { KpiTemplateFormValidator } from './kpiTemplateFormValidator';
 function ModalAddKpiTemplate(props) {
 
     const [state, setState] = useState({
-        newTemplate: {
+        templateData: {
             organizationalUnit: '',
-            collaboratedWithOrganizationalUnits: [],
             name: '',
-            readByEmployees: [],
-            responsibleEmployees: [],
-            accountableEmployees: [],
-            consultedEmployees: [],
-            informedEmployees: [],
-            description: '',
             creator: '',
-            formula: '',
-            priority: 3,
-            kpiActions: [],
-            kpiInformations: []
+            kpis: []
         },
         currentRole: localStorage.getItem('currentRole'),
     })
+
 
     // useEffect(() => {
     //     props.getDepartment();
@@ -39,9 +31,10 @@ function ModalAddKpiTemplate(props) {
 
     /**Submit new template in data */
     const handleSubmit = async (event) => {
-        let { newTemplate } = state;
-        console.log(newTemplate);
-        props.addNewTemplate(newTemplate);
+        let { templateData } = state;
+        console.log(templateData);
+        props.addNewTemplate(templateData);
+        // props.getKpiTemplates(null, null, 1, props.limit);
         // window.$("#addKpiTemplate").modal("hide");
     }
 
@@ -51,11 +44,11 @@ function ModalAddKpiTemplate(props) {
      */
     const isKpiTemplateFormValidated = () => {
         // let result =
-        //     validateKpiTemplateUnit(state.newTemplate.organizationalUnit, false) &&
-        //     validateKpiTemplateRead(state.newTemplate.readByEmployees, false) &&
-        //     validateKpiTemplateName(state.newTemplate.name, false) &&
-        //     validateKpiTemplateDescription(state.newTemplate.description, false) &&
-        //     validateKpiTemplateFormula(state.newTemplate.formula, false);
+        //     validateKpiTemplateUnit(state.templateData.organizationalUnit, false) &&
+        //     validateKpiTemplateRead(state.templateData.readByEmployees, false) &&
+        //     validateKpiTemplateName(state.templateData.name, false) &&
+        //     validateKpiTemplateDescription(state.templateData.description, false) &&
+        //     validateKpiTemplateFormula(state.templateData.formula, false);
         // return result;
     }
 
@@ -64,8 +57,8 @@ function ModalAddKpiTemplate(props) {
         let { message } = ValidationHelper.validateName(props.translate, value);
 
         if (willUpdateState) {
-            state.newTemplate.name = value;
-            state.newTemplate.errorOnName = message;
+            state.templateData.name = value;
+            state.templateData.errorOnName = message;
             setState(state => {
                 return {
                     ...state,
@@ -79,8 +72,8 @@ function ModalAddKpiTemplate(props) {
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            state.newTemplate.description = value;
-            state.newTemplate.errorOnDescription = message;
+            state.templateData.description = value;
+            state.templateData.errorOnDescription = message;
             setState(state => {
                 return {
                     ...state,
@@ -94,8 +87,8 @@ function ModalAddKpiTemplate(props) {
         let msg = KpiTemplateFormValidator.validateKpiTemplateFormula(value);
 
         if (willUpdateState) {
-            state.newTemplate.formula = value;
-            state.newTemplate.errorOnFormula = msg;
+            state.templateData.formula = value;
+            state.templateData.errorOnFormula = msg;
             setState(state => {
                 return {
                     ...state,
@@ -112,8 +105,8 @@ function ModalAddKpiTemplate(props) {
             setState(state => {
                 return {
                     ...state,
-                    newTemplate: { // update lại unit, và reset các selection phía sau
-                        ...state.newTemplate,
+                    templateData: { // update lại unit, và reset các selection phía sau
+                        ...state.templateData,
                         organizationalUnit: value,
                         errorOnUnit: message,
                         readByEmployees: [],
@@ -132,8 +125,8 @@ function ModalAddKpiTemplate(props) {
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
 
         if (willUpdateState) {
-            state.newTemplate.readByEmployees = value;
-            state.newTemplate.errorOnRead = message;
+            state.templateData.readByEmployees = value;
+            state.templateData.errorOnRead = message;
             setState(state => {
                 return {
                     ...state,
@@ -144,8 +137,9 @@ function ModalAddKpiTemplate(props) {
     }
 
     const onChangeTemplateData = (value) => {
+        console.log(138, value)
         setState({
-            newTemplate: value
+            templateData: value
         });
     }
 
@@ -177,10 +171,11 @@ function ModalAddKpiTemplate(props) {
 
 
 function mapState(state) {
-
 }
 
 const actionCreators = {
+    addNewTemplate: kpiTemplateActions.addKpiTemplate,
+    getKpiTemplates: kpiTemplateActions.getKpiTemplates,
 };
 const connectedModalAddKpiTemplate = connect(mapState, actionCreators)(withTranslate(ModalAddKpiTemplate));
 export { connectedModalAddKpiTemplate as ModalAddKpiTemplate };

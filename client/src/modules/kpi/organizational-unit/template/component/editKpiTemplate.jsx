@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -7,61 +7,68 @@ import { getStorage } from '../../../../../config';
 // import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { KpisForm } from './kpisTemplate';
 
-function AddKpiTemplate(props) {
+function EditKpiTemplate(props) {
     const { user } = props;
+    const { kpiTemplate } = props;
 
     let userId = getStorage("userId")
 
     const [state, setState] = useState({
         templateData: {
-            organizationalUnit: '',
-            name: '',
-            description: '',
+            organizationalUnit: kpiTemplate?.organizationalUnit,
+            name: kpiTemplate?.organizationalUnit,
+            description: kpiTemplate?.description,
             creator: userId,
-            kpis: [],
+            kpis: kpiTemplate?.kpis,
         },
         showMore: props.isProcess ? false : true,
         currentRole: localStorage.getItem('currentRole'),
     })
+
+    useEffect(() => {
+        setState({
+            ...state,
+            templateData: {
+                organizationalUnit: kpiTemplate?.organizationalUnit,
+                name: kpiTemplate?.name,
+                description: kpiTemplate?.description,
+                creator: userId,
+                kpis: kpiTemplate?.kpis,
+            }
+        })
+    }, [kpiTemplate])
+
     const { templateData } = state;
 
     const handleChangeName = (e) => {
         const value = e.target.value;
-        setState({
-            ...state,
-            templateData: {
-                ...state.templateData,
-                name: value
-            }
-        })
+
+        state.templateData.name = value;
+        setState(
+            { ...state }
+        );
+
         props.onChangeTemplateData(state.templateData);
     }
 
     const handleChangeUnit = (value) => {
-        console.log('adu')
         if (value.length === 0) {
             value = null
         }
-        setState({
-            ...state,
-            templateData: {
-                ...state.templateData,
-                organizationalUnit: value
-            }
-        })
+
+        state.templateData.organizationalUnit = value;
+        setState(
+            { ...state }
+        );
+
         props.onChangeTemplateData(state.templateData);
     }
+
     const handleChangeDescription = (value, imgs) => {
-        console.log(54, value)
-        setState(state => {
-            return {
-                ...state,
-                templateData: {
-                    ...state.templateData,
-                    description: value,
-                }
-            };
-        });
+        state.templateData.description = value;
+        setState(
+            { ...state }
+        );
 
         props.onChangeTemplateData(state.templateData);
     }
@@ -69,7 +76,9 @@ function AddKpiTemplate(props) {
     const handleKpisChange = (data) => {
         let { templateData } = state;
         templateData.kpis = data;
+
         props.onChangeTemplateData(templateData);
+
         setState({
             ...state,
             templateData
@@ -77,7 +86,7 @@ function AddKpiTemplate(props) {
     }
 
     const { organizationalUnitsOfUser: unitArr } = user;
-
+    // console.log(80, templateData)
     return (
         <React.Fragment>
 
@@ -104,7 +113,7 @@ function AddKpiTemplate(props) {
                             <label className="control-label">Đơn vị quản lý</label>
                             {unitArr &&
                                 <SelectBox
-                                    id={`${props.savedKpiId}selectUnitInAddTemplateModal`}
+                                    id={`${props.savedKpiId}selectUnitInEditTemplateModal`}
                                     className="form-control select2"
                                     style={{ width: '100%' }}
                                     value={templateData?.organizationalUnit}
@@ -126,7 +135,7 @@ function AddKpiTemplate(props) {
                         <div className={`form-group`}>
                             <label className="control-label">Mô tả</label>
                             <QuillEditor
-                                id={`kpi-template-add-modal-quill`}
+                                id={`kpi-template-edit-modal-quill`}
                                 table={false}
                                 embeds={false}
                                 getTextData={handleChangeDescription}
@@ -157,5 +166,5 @@ function mapState(state) {
 
 const actionCreators = {
 };
-const connectedAddKpiTemplate = connect(mapState, actionCreators)(withTranslate(AddKpiTemplate));
-export { connectedAddKpiTemplate as AddKpiTemplate };
+const connectedEditKpiTemplate = connect(mapState, actionCreators)(withTranslate(EditKpiTemplate));
+export { connectedEditKpiTemplate as EditKpiTemplate };

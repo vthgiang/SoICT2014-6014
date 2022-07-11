@@ -102,7 +102,7 @@ function deleteKpiTemplateById(id) {
         dispatch({ type: kpiTemplateConstants.DELETE_TEMPLATE_REQUEST });
 
         kpiTemplateService.deleteKpiTemplateById(id).then(
-            res => dispatch({ type: kpiTemplateConstants.DELETE_TEMPLATE_SUCCESS, payload: res.data }),
+            res => { console.log(105, res.data); dispatch({ type: kpiTemplateConstants.DELETE_TEMPLATE_SUCCESS, payload: res.data }) },
             error => dispatch({ type: kpiTemplateConstants.DELETE_TEMPLATE_FAILURE })
         );
     };

@@ -1,5 +1,5 @@
 const Models = require(`../../../../models`);
-const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, OrganizationalUnit, EmployeeKpiSet, EmployeeKpi } = Models;
+const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, OrganizationalUnit, EmployeeKpiSet, EmployeeKpi, OrganizationalUnitKpiTemplate } = Models;
 const { connect } = require(`../../../../helpers/dbHelper`);
 const EmployeeKpiService = require(`../../employee/management/management.service`);
 const UserService = require('../../../super-admin/user/user.service')
@@ -163,6 +163,115 @@ exports.copyKPI = async (portal, kpiId, data) => {
         return {
             kpiunit: organizationalUnitKpiSet,
             copyKpi: organizationalUnitOldKPISet
+        };
+    }
+}
+/**
+ * Copy template Kpi
+ * @param {*} kpiTemplateId id của template KPI của tháng cũ
+ * @query {*} datenew tháng mới được chọn để tạo
+ * @query {*} idunit Id của đơn vị 
+ */
+exports.copyUseTemplateKpi = async (portal, kpiTemplateId, data) => {
+    let organizationalUnitTemplateKPISet, checkOrganizationalUnitKpiSet, parentUnitKpiSet;
+    let monthSearch, nextMonthSearch;
+
+    monthSearch = new Date(data?.datenew);
+    nextMonthSearch = new Date(data?.datenew);
+    nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
+
+    // Kiểm tra tồn tại KPI
+    checkOrganizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({
+            organizationalUnit: data.idunit,
+            date: { $gte: monthSearch, $lt: nextMonthSearch }
+        })
+
+    if (checkOrganizationalUnitKpiSet) {
+        throw { messages: "organizatinal_unit_kpi_set_exist" }
+    } else {
+        console.log(data, kpiTemplateId)
+        let organizationalUnitKpiSet, organizationalUnitNewKpi;
+
+        // Tạo kpi tháng mới
+        organizationalUnitNewKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .create({
+                organizationalUnit: data.idunit,
+                creator: data.creator,
+                date: new Date(data?.datenew),
+                kpis: []
+            })
+        // Thêm độ quan trọng đơn vị 
+        let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
+            parent: mongoose.Types.ObjectId(data.idunit)
+        })
+        let organizationalUnitImportances = [];
+
+        if (units && units.length > 0) {
+            organizationalUnitImportances = units.map(item => {
+                return {
+                    organizationalUnit: item?._id,
+                    importance: 100
+                }
+            })
+        }
+
+        // Thêm độ quan trọng nhân viên
+        let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
+            ids: [data.idunit]
+        });
+        let employeeImportances = [];
+
+        if (users && users.length !== 0) {
+            employeeImportances = users?.employees?.map(item => {
+                return {
+                    employee: item?.userId?._id,
+                    importance: 100
+                }
+            })
+        }
+
+        // Cập nhật độ qtrg đơn vị và nhân viên
+        await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findByIdAndUpdate(
+                organizationalUnitNewKpi?._id,
+                {
+                    'employeeImportances': employeeImportances,
+                    'organizationalUnitImportances': organizationalUnitImportances
+                },
+                { new: true }
+            );
+
+        // Lấy dữ liệu kpi được sao chép
+        organizationalUnitTemplateKPISet = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal))
+            .findById(kpiTemplateId)
+            .populate("organizationalUnit")
+            .populate({ path: "creator", select: "_id name email avatar" })
+            .populate({ path: "kpis", populate: { path: 'parent' } });
+
+        // Thêm các mục tiêu kpi
+        organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findByIdAndUpdate(
+                organizationalUnitNewKpi?._id, { $set: { kpis: data?.listKpiUnit } }, { new: true }
+            );
+        console.log(257, organizationalUnitKpiSet)
+
+
+        organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findById(organizationalUnitNewKpi?._id)
+            .populate([
+                { path: "organizationalUnit" },
+                { path: "creator", select: "_id name email avatar" },
+                { path: "kpis", populate: { path: 'parent' } },
+                { path: 'comments.creator', select: 'name email avatar ' },
+                { path: 'comments.comments.creator', select: 'name email avatar' },
+                { path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } },
+                { path: 'organizationalUnitImportances', populate: { path: 'organizationalUnit' } }
+            ])
+
+        return {
+            kpiunit: organizationalUnitKpiSet,
+            copyKpi: organizationalUnitTemplateKPISet
         };
     }
 }

@@ -1,4 +1,4 @@
-const { OrganizationalUnitKpiTemplate, Privilege, Role, UserRole, OrganizationalUnit, User } = require(`../../../models`);
+const { OrganizationalUnitKpiTemplate, Privilege, Role, UserRole, OrganizationalUnitKpi, User } = require(`../../../models`);
 const { connect } = require(`../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
 
@@ -81,9 +81,9 @@ exports.getAllKpiTemplates = async (portal, query) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedKpiTemplates = async (portal, query) => {
-    console.log(84, query)
     portal = 'vnist';
-    let { limit, number, keyword, organizationalUnit } = query;
+    let { limit, number, keyword, unit } = query;
+    console.log(84, query)
 
     let kpiTemplates;
     let perPage = Number(limit);
@@ -92,11 +92,11 @@ exports.getPaginatedKpiTemplates = async (portal, query) => {
     let keySearch = {};
 
     // Tìm kiếm theo đơn vị
-    if (organizationalUnit) {
+    if (unit) {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
-                $in: organizationalUnit,
+                $in: unit,
             }
         };
     }
@@ -121,10 +121,10 @@ exports.getPaginatedKpiTemplates = async (portal, query) => {
         }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit" })
-        .populate({ path: "creator", select: "_id name email avatar" }
-        )
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "kpis" })
 
-    console.log(122, kpiTemplates)
+    // console.log(122, kpiTemplates)
 
     var totalCount = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -156,61 +156,76 @@ exports.getKpiTemplate = async (portal, id) => {
  * Tạo mới mẫu kpi
  * @body dữ liệu tạo mới mẫu kpi
  */
-exports.createKpiTemplate = async (body) => {
+exports.createKpiTemplate = async (data) => {
+    console.log(160, data)
+    const { name, organizationalUnit, description, creator, kpis } = data;
 
-    portal = 'vnist';
-    userId = '62c560164729e4114590dd1d';
+    let portal = 'vnist';
+    // let userId = '62c560164729e4114590dd1d';
 
-    console.log(100, body)
     //kiểm tra tên mẫu kpi đã tồn tại hay chưa ?
-    let checkKpiTemplate = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
+    let checkKpiTemplate = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).findOne({ name: name });
     if (checkKpiTemplate) throw ['kpi_template_name_exist'];
-    console.log(105)
-    // for (let i in body.kpiActions) {
-    //     if (body.kpiActions[i].description) {
-    //         let str = body.kpiActions[i].description;
-    //         let vt = str.indexOf("&nbsp;");
-    //         let st;
-    //         while (vt >= 0) {
-    //             if (vt == 0) {
-    //                 st = str.slice(vt + 6);
-    //             } else {
-    //                 st = str.slice(0, vt - 1) + str.slice(vt + 6);
-    //             }
-    //             str = st;
-    //             vt = str.indexOf("&nbsp;");
-    //         }
-    //         vt = str.indexOf("<");
-    //         while (vt >= 0) {
-    //             let vt2 = str.indexOf(">");
-    //             if (vt == 0) {
-    //                 st = str.slice(vt2 + 1);
-    //             } else {
-    //                 st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
-    //             }
-    //             str = st;
-    //             vt = str.indexOf("<");
-    //         }
-    //         body.kpiActions[i].description = str;
-    //     }
-    // }
+    console.log(105, name, organizationalUnit)
 
 
     //Tạo dữ liệu mẫu kpi
-    var kpitemplate = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).create({
-        organizationalUnit: body.organizationalUnit,
-        name: body.name,
-        creator: userId, //id của người tạo
-        description: body.description,
-        // kpiActions: body.kpis.map(item => {
-        //     return item.id;
-        // }),
+    var kpiSettemplate = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).create({
+        organizationalUnit: organizationalUnit,
+        name: name,
+        creator: creator,
+        description: description
     });
 
-    kpitemplate = await kpitemplate.populate([
+
+    // Them muc tieu kpi
+    let kpiTemplate = [];
+    console.log(184, kpis)
+    for (let item of kpis) {
+        let keyArr = [];
+        for (let key in item.keys) {
+            keyArr.push({
+                key: key,
+                name: item.keys[key]
+            })
+
+        }
+        console.log(196, keyArr)
+        kpiTemplate.push({
+            name: item.name,
+            weight: item.weight,
+            criteria: item.criteria,
+            target: item.target,
+            unit: item.unit,
+            formula: item.formula,
+            keys: keyArr,
+        })
+    }
+
+    if (kpiTemplate) {
+        let kpis = await Promise.all(kpiTemplate.map(async (item) => {
+            console.log(207, item)
+            let kpi = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).create(item)
+            return kpi._id;
+        }));
+        console.log(210, kpis)
+        console.log(211, kpiSettemplate._id)
+
+        kpiSettemplate = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal))
+            .findByIdAndUpdate(
+                kpiSettemplate._id, { $push: { kpis: { $each: kpis } } }, { new: true }
+            )
+    }
+
+
+    kpiSettemplate = await kpiSettemplate.populate([
         { path: "organizationalUnit", select: "name managers" },
-        { path: "creator", select: "name email" }]).execPopulate();
-    return kpitemplate;
+        { path: "creator", select: "name email" },
+        { path: "kpis" }
+    ])
+        .execPopulate();
+    console.log(221, kpiSettemplate)
+    return kpiSettemplate;
 }
 
 /**
@@ -228,23 +243,55 @@ exports.deleteKpiTemplate = async (portal, id) => {
  * @id id mẫu kpi cập nhật
  */
 exports.editKpiTemplate = async (portal, data, id) => {
+    const kpiIds = [];
+    for (let item of data.kpis) {
+
+        // muc tieu them moi
+        if (!item._id) {
+            console.log(251, 'create')
+            let data = {
+                name: item.name,
+                weight: item.weight,
+                criteria: item.criteria,
+                target: item.target,
+                unit: item.unit,
+            }
+            console.log(259, data)
+            let kpi = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).create(data);
+
+            console.log(261, kpi._id)
+            // kpiIds.push(kpi._id)
+            kpiIds.push(kpi._id)
+        } else {
+            // muc tieu chinh sua
+            console.log(266)
+            let kpi = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).findByIdAndUpdate(item._id,
+                {
+                    $set: {
+                        name: item.name,
+                        weight: item.weight,
+                        criteria: item.criteria,
+                        target: item.target,
+                        unit: item.unit
+                    }
+                },
+                { new: true },
+            )
+            console.log(279)
+            kpiIds.push(kpi._id)
+        }
+    }
+
+    console.log(278, kpiIds)
+    console.log('data', data, id)
+
     var kpiTemplate = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id,
         {
             $set: {
                 name: data.name,
                 description: data.description,
                 organizationalUnit: data.organizationalUnit,
-                // kpiActions: data.kpiActions,
-                // kpiInformations: data.kpiInformations.map((item, key) => {
-                //     return {
-                //         code: "p" + parseInt(key + 1),
-                //         name: item.name,
-                //         description: item.description,
-                //         filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
-                //         type: item.type,
-                //         extra: item.extra,
-                //     }
-                // })
+                kpis: kpiIds
             }
         },
         { new: true },

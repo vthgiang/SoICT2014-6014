@@ -12,7 +12,9 @@ export function kpitemplates(state = {}, action) {
         case kpiTemplateConstants.GET_TEMPLATE_KPI_SUCCESS:
             return {
                 ...state,
-                items: action.payload,
+                items: action.payload.kpiTemplates,
+                totalCount: action.payload.totalCount,
+                totalPage: action.payload.totalPage,
                 isLoading: false
             };
 
@@ -137,9 +139,10 @@ export function kpitemplates(state = {}, action) {
             };
 
         case kpiTemplateConstants.DELETE_TEMPLATE_SUCCESS:
+            const res = state.items.kpiTemplates.filter(template => template._id !== action.payload.content.id)
             return {
                 ...state,
-                items: state.items.filter(template => template._id !== action.payload.id),
+                items: res,
                 isLoading: false
             };
 

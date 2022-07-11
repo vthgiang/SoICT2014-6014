@@ -2,11 +2,15 @@ import parse from 'html-react-parser';
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+import Swal from 'sweetalert2';
 import { DataTableSetting, PaginateBar, SelectMulti } from "../../../../../common-components";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { kpiTemplateActions } from "../redux/actions";
 import { ModalAddKpiTemplate } from "./addKpiTemplateModal";
+import { ModalEditKpiTemplate } from './editKpiTemplateModal';
+import { UseKpiTemplateModal } from './useKpiTemplateModal';
+import { ModalViewKpiTemplate } from './viewKpiTemplateModal';
 
 const tableId = "table-kpi-template";
 const defaultConfig = { limit: 10 }
@@ -18,6 +22,11 @@ function TemplateKpi(props) {
     const [keyword, setKeyword] = useState();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(limitDefault);
+    const [state, setState] = useState({
+        currentEditRow: null,
+        currentEditRowId: null,
+        currentViewRow: null
+    });
 
 
     const changePage = (number) => {
@@ -43,7 +52,6 @@ function TemplateKpi(props) {
 
     const handleChangeKeyword = (e) => {
         const value = e.target.value;
-
         setKeyword(value)
     }
 
@@ -51,20 +59,97 @@ function TemplateKpi(props) {
         props.getKpiTemplates(unit, keyword, page, limit);
     }
 
+    const handleDelete = (id, numberOfUse) => {
+        if (numberOfUse === 0) {
+            Swal.fire({
+                title: 'Bạn có chắc muốn xóa mẫu KPI này',
+                type: 'success',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            }).then((res) => {
+                if (res.value) {
+                    props.deleteDeleteTemplateById(id);
+
+                    props.getKpiTemplates(unit, keyword, 1, limit);
+                }
+            });
+        } else {
+            Swal.fire({
+                title: "Không thể xóa mẫu KPI này do đang được sử dụng",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        }
+    }
+
+    /**Mở modal chỉnh sửa 1 mẫu kpi */
+    const handleEdit = (kpiTemplate) => {
+        console.log(88, kpiTemplate)
+        setState({
+            ...state,
+            currentEditRow: kpiTemplate,
+            currentEditRowId: kpiTemplate._id,
+        });
+        window.$('#modal-edit-kpi-template').modal('show');
+    }
+
+    /**Mở modal chỉnh sửa 1 mẫu kpi */
+    const handleUse = (kpiTemplate) => {
+        setState({
+            ...state,
+            currentViewRow: kpiTemplate,
+        });
+        window.$('#modal-use-kpi-template').modal('show');
+    }
+
+    const handleView = (kpiTemplate) => {
+        setState({
+            ...state,
+            currentViewRow: kpiTemplate
+        });
+        window.$('#modal-view-kpi-template').modal('show');
+    }
+
     useEffect(() => {
         props.getKpiTemplates(unit, keyword, page, limit);
         props.getDepartment();
     }, [])
 
-    const { items } = kpitemplates;
-    const { organizationalUnitsOfUser: unitArr } = user;
+    const { items, totalPage } = kpitemplates;
+    console.log(102, items);
 
+    const { organizationalUnitsOfUser: unitArr } = user;
+    const { currentEditRow, currentEditRowId, currentViewRow } = state;
 
     return (
         <React.Fragment>
             <div className="box">
                 <div className="box-body qlcv" id="table-kpi-template">
-                    <ModalAddKpiTemplate />
+                    {
+                        currentViewRow &&
+                        <UseKpiTemplateModal
+                            unit={unitArr}
+                            kpiTemplate={currentViewRow}
+                        />
+                    }
+                    {
+                        currentViewRow &&
+                        <ModalViewKpiTemplate
+                            kpiTemplate={currentViewRow}
+                        />
+                    }
+                    {
+                        currentEditRow &&
+                        <ModalEditKpiTemplate
+                            kpiTemplate={currentEditRow}
+                            kpiTemplateId={currentEditRowId}
+                        />
+                    }
+                    <ModalAddKpiTemplate limit={limit} />
                     <div className="form-inline">
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <a className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-add-kpi-template" data-backdrop="static" data-keyboard="false" title='Thêm'>Thêm mới</a>
@@ -124,8 +209,8 @@ function TemplateKpi(props) {
                         </thead>
                         <tbody className="kpi-table">
                             {
-                                (typeof (items?.kpiTemplates) !== 'undefined' && items?.kpiTemplates.length !== 0) ?
-                                    items.kpiTemplates.map((item, index) => item &&
+                                (typeof (items) !== 'undefined' && items?.length !== 0) ?
+                                    items.map((item, index) => item &&
                                         <tr key={item?._id}>
                                             <td title={index}>{index + 1}</td>
                                             <td title={item?.name}>{item?.name}</td>
@@ -134,13 +219,16 @@ function TemplateKpi(props) {
                                             <td title={item?.numberOfUse}>{item?.numberOfUse}</td>
                                             <td title={item?.creator?.name}>{item?.creator?.name ? item.creator.name : ""}</td>
                                             <td>
-                                                <a href="#abc" onClick={() => this.handleView(item?._id)} title={"Xem"}>
+                                                <a onClick={() => handleView(item)} title={"Xem"}>
                                                     <i className="material-icons" >view_list</i>
                                                 </a>
-                                                <a href="cursor:{'pointer'}" onClick={() => { }} className="edit" title={"Sửa"}>
+                                                <a onClick={() => handleEdit(item)} className="edit" title={"Sửa"}>
                                                     <i className="material-icons">edit</i>
                                                 </a>
-                                                <a href="cursor:{'pointer'}" onClick={() => { }} className="delete" title={"Xóa"}>
+                                                <a onClick={() => handleUse(item)} className="" title={"Sử dụng"}>
+                                                    <i className="fa fa-play-circle text-success" style={{ fontSize: 19 }}></i>
+                                                </a>
+                                                <a onClick={() => handleDelete(item?._id, item?.numberOfUse)} className="delete" title={"Xóa"}>
                                                     <i className="material-icons"></i>
                                                 </a>
                                             </td>
@@ -149,8 +237,8 @@ function TemplateKpi(props) {
                             }
                         </tbody>
                     </table>
-                    {(items?.kpiTemplates && items?.kpiTemplates.length === 0) && <div className="table-info-panel">{"Không có dữ liệu"}</div>}
-                    <PaginateBar pageTotal={items?.totalPage || 1} currentPage={page} func={changePage} />
+                    {(items && items?.length === 0) && <div className="table-info-panel">{"Không có dữ liệu"}</div>}
+                    <PaginateBar pageTotal={totalPage || 1} currentPage={page} func={changePage} />
                 </div>
             </div>
         </React.Fragment>
@@ -164,6 +252,7 @@ function mapState(state) {
 
 const actions = {
     getKpiTemplates: kpiTemplateActions.getKpiTemplates,
+    deleteDeleteTemplateById: kpiTemplateActions.deleteKpiTemplateById,
     getDepartment: UserActions.getDepartmentOfUser,
 };
 
