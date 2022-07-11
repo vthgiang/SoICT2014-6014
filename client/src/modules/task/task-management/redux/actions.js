@@ -595,7 +595,7 @@ function getTasksByProject(data) {
         dispatch({
             type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST,
         });
-        taskManagementService.getTasksByProject({ projectId: projectId, getAll: true })
+        taskManagementService.getTasksByProject({ projectId: projectId, calledId: 'get_all' })
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,

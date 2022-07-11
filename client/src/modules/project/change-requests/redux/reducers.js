@@ -37,7 +37,8 @@ export function changeRequest(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                changeRequests: action.payload,
+                changeRequests: action.docs,
+                totalDocs: action.payload.totalDocs,
             }
 
         case ChangeRequestConstants.GET_PAGINATE_LIST_PROJECT_CHANGE_REQUESTS_SUCCESS:

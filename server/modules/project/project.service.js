@@ -495,31 +495,144 @@ exports.getSalaryMembers = async (portal, data) => {
  * @param {*} query
  */
 exports.getListProjectChangeRequests = async (portal, query) => {
-    let { page, perPage, projectId } = query;
-    console.log('page, perPage, projectId', page, perPage, projectId)
+    let { name, status, affectedTask, creator, creationTime, calledId, page, perPage, projectId } = query;
+    
     let projectChangeRequestsList;
-    let totalList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).countDocuments({
-        taskProject: projectId,
-    });
-    if (query.calledId === "paginate") {
-        let currentPage = Number(page), currentPerPage = Number(perPage);
-        console.log('currentPage, currentPerPage', currentPage, currentPerPage)
-
-        projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+    let keySearch = {};
+    
+    // Tìm kiếm yêu cầu theo dự án
+    if (projectId) {
+        keySearch = {
+            ...keySearch,
             taskProject: projectId,
-        }).sort({createdAt: -1}).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
-        .populate({ path: "creator", select: "_id name email" });
-
-        return {
-            docs: projectChangeRequestsList,
-            totalDocs: totalList,
         }
     }
-    projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
-        taskProject: projectId,
-    }).sort({createdAt: -1}).populate({ path: "creator", select: "_id name email" });
-    console.log('Lấy danh sách CR', projectChangeRequestsList.length)
-    return projectChangeRequestsList;
+
+    // Tìm kiếm yêu cầu theo trạng thái
+    if (status) {
+        keySearch = {
+            ...keySearch,
+            requestStatus: {
+                $in: status,
+            }
+        };
+    }
+
+    // Tìm kiếm yêu cầu theo tên
+    if (name) {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    // Tìm kiếm công việc theo tên công việc bị ảnh hưởng
+    if (affectedTask) {
+        const affected =  await Task(connect(DB_CONNECTION, portal)).find({
+            name: {
+                $regex: affectedTask,
+                $options: "i",
+            }
+        })
+
+        const getIdAffected = affected && affected.length > 0 ? affected.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            "affectedTasksList.task": {
+                $in: getIdAffected
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thiết lập
+    if (creator) {
+        const author = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: creator,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: creator,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdCreator = author && author.length > 0 ? creator.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            creator: {
+                $in: getIdCreator
+            }
+        }
+    }
+
+    // Tìm kiếm yêu cầu theo ngày tạo tuần hiện tại
+    if (creationTime === "currentWeek") {
+        let curr = new Date()
+        let week = []
+
+        for (let i = 1; i <= 7; i++) {
+            let first = curr.getDate() - curr.getDay() + i
+            let day = new Date(curr.setDate(first)).toISOString().slice(0, 10)
+            week.push(day)
+        }
+
+        const firstDayOfWeek = week[0];
+        const lastDayOfWeek = week[week.length - 1];
+
+        keySearch = {
+            ...keySearch,
+            createdAt: {
+                $gte: new Date(firstDayOfWeek), $lte: new Date(lastDayOfWeek)
+            }
+        }
+    }
+
+    // Tìm kiếm yêu cầu theo ngày tạo tháng hiện tại
+    if (creationTime === 'currentMonth') {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const month = new Date(currentYear + '-' + (currentMonth + 1));
+        const nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+        keySearch = {
+            ...keySearch,
+            createdAt: {
+                $gt: new Date(month), $lte: new Date(nextMonth)
+            }
+        }
+    }
+
+    let totalList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
+
+    // Nếu calledId là 'get_all' thì bỏ qua page và perPage
+    if ( calledId === 'get_all' ) {
+        projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find(keySearch).sort({ createdAt: -1 })
+        .populate({ path: "creator", select: "_id name email" });
+    }
+
+    else {
+        projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal))
+        .find(keySearch).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+        .populate({ path: "creator", select: "_id name email" });
+    }
+
+    return {
+        docs: projectChangeRequestsList,
+        totalDocs: projectChangeRequestsList.length,
+    }
 }
 
 /** 

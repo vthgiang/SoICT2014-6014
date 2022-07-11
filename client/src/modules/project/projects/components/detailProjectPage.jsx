@@ -34,7 +34,7 @@ const ProjectDetailPage = (props) => {
         props.getDepartment();
         props.getAllUserInAllUnitsOfCompany();
         props.getAllTasksByProject(currentProjectId);
-        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'get_all' });
     }, [])
 
     const currentProjectTasks = tasks?.tasksByProject;
@@ -44,15 +44,15 @@ const ProjectDetailPage = (props) => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
         await props.getAllTasksByProject(currentProjectId);
         projectDetail = getCurrentProjectDetails(project);
-        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, getAll: true });
+        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId : 'get_all' });
     }
 
     return (
         <div className="box">
             <ul className="nav nav-tabs">
-                <li className="active"><a href="#project-details-info" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thông tin dự án</a></li>
-                <li><a href="#project-tasks-list" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Danh sách công việc dự án</a></li>
-                <li><a href="#project-details-change-request" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Yêu cầu thay đổi phát sinh dự án</a></li>
+                <li className="active"><a href="#project-details-info" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.detail_title')}</a></li>
+                <li><a href="#project-tasks-list" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.list_tasks')}</a></li>
+                <li><a href="#project-details-change-request" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.change_request')}</a></li>
             </ul>
             <div className="tab-content">
                 {/** Thông tin dự án */}

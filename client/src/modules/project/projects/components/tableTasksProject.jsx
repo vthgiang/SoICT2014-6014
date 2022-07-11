@@ -395,11 +395,12 @@ const TableTasksProject = (props) => {
                     <div style={{ height: "40px", display: 'flex', justifyContent: 'space-between' }}>
                         {/* Lọc */}
                         <div>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-project-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-project-filter').slideToggle() }}><i className="fa fa-filter"></i>{translate('general.filter')}</button>
                         </div>
 
                     </div>
 
+                    {/* Lọc công việc theo các tiêu chí */}
                     <div id="tasks-project-filter" className="form-inline" style={{ display: 'none' }}>
 
                         {/* Tên công việc */}
@@ -495,7 +496,7 @@ const TableTasksProject = (props) => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-row" >
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={() => handleUpdateData()}>{translate('project.search')}</button>
                         </div>

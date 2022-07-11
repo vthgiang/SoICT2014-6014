@@ -505,10 +505,10 @@ function addNewProjectTask(newTask) {
  * @param {*} accountableEmployees nhận viên phê duyệt
  * @param {*} creatorEmployees người tạo công việc
  * @param {*} preceedingTasks công việc tiền nhiệm
- * @param {*} projectId dự án
+ * @param {*} projectId id của dự án
  * @param {*} page số trang
  * @param {*} perPage số bản ghi trên trang
- * @param {*} getAll có lấy tất cả các công việc thuộc dự án hay không
+ * @param {*} callId có lấy tất cả các công việc thuộc dự án hay không
  */
 
 function getTasksByProject(data) {
@@ -516,7 +516,7 @@ function getTasksByProject(data) {
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: { ...data, type: 'project'}
-    }, false, true, 'task.task_management');
+    }, false, true, 'project');
 }
 
 function importTasks(data) {

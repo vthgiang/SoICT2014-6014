@@ -3140,10 +3140,9 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
  */
 
 exports.getTasksByProject = async (portal, data) => {
-    let { perPage, page, status, priority, name, preceedingTasks, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, getAll } = data;
+    let { perPage, page, status, priority, name, preceedingTasks, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, calledId } = data;
 
     let tasks;
-    let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
 
     let keySearch = {};
     let keySeachDateTime = {};
@@ -3205,6 +3204,7 @@ exports.getTasksByProject = async (portal, data) => {
             }
         }
     }
+
     // Tìm kiếm theo người thực hiện
     if (responsibleEmployees) {
         const responsible = await User(connect(DB_CONNECTION, portal)).find({
@@ -3301,6 +3301,7 @@ exports.getTasksByProject = async (portal, data) => {
             ]
         }
     }
+
     else if (startDate) {
         startDate = new Date(startDate);
 
@@ -3320,6 +3321,7 @@ exports.getTasksByProject = async (portal, data) => {
             ]
         }
     }
+
     else if (endDate) {
         endDate = new Date(endDate);
 
@@ -3347,8 +3349,11 @@ exports.getTasksByProject = async (portal, data) => {
         ]
     }
 
-    if (getAll) {
-        tasks = await Task(connect(DB_CONNECTION, portal)).find(optionQuery)
+    let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
+
+    // Nếu calledId là 'get_all' thì bỏ qua page và perPage
+    if ( calledId === 'get_all' ) {
+        tasks = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ createdAt: -1 })
         .populate({ path: "responsibleEmployees", select: "_id name" })
         .populate({ path: "accountableEmployees", select: "_id name" })
         .populate({ path: "consultedEmployees", select: "_id name" })

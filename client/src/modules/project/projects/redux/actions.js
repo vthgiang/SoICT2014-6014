@@ -16,7 +16,7 @@ function getProjectsDispatch(data = undefined) {
             type: ProjectConstants.GET_PROJECTS_REQUEST,
             calledId: data.calledId ? data.calledId : "",
         });
-        ProjectServices.getProjectsAPI(data)
+        ProjectServices.getProjects(data)
             .then((res) => {
                 dispatch({
                     type: ProjectConstants.GET_PROJECTS_SUCCESS,
@@ -36,7 +36,7 @@ function createProjectDispatch(data) {
             type: ProjectConstants.CREATE_PROJECTS_REQUEST,
             calledId: data.calledId ? data.calledId : "",
         });
-        ProjectServices.createProjectAPI(data)
+        ProjectServices.createProject(data)
             .then((res) => {
                 dispatch({
                     type: ProjectConstants.CREATE_PROJECTS_SUCCESS,
@@ -53,7 +53,7 @@ function createProjectDispatch(data) {
 function editProjectDispatch(id, data) {
     return (dispatch) => {
         dispatch({ type: ProjectConstants.EDIT_PROJECTS_REQUEST });
-        ProjectServices.editProjectAPI(id, data)
+        ProjectServices.editProject(id, data)
             .then((res) => {
                 console.log('res.data.content', res.data.content)
                 dispatch({
@@ -72,7 +72,7 @@ function editProjectDispatch(id, data) {
 function deleteProjectDispatch(id) {
     return (dispatch) => {
         dispatch({ type: ProjectConstants.DELETE_PROJECTS_REQUEST });
-        ProjectServices.deleteProjectAPI(id)
+        ProjectServices.deleteProject(id)
             .then((res) => {
                 dispatch({
                     type: ProjectConstants.DELETE_PROJECTS_SUCCESS,

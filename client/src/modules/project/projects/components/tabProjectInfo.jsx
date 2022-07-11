@@ -15,7 +15,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 const TabProjectInfo = (props) => {
     const { translate, projectDetail, project, currentProjectTasks, changeRequest, currentProjectId, handleAfterCreateProject } = props;
     const currentChangeRequestsList = changeRequest && changeRequest.changeRequests;
-    const currentChangeRequestsListNeedApprove = currentChangeRequestsList.filter(item => item.requestStatus === 1);
+    const currentChangeRequestsListNeedApprove = currentChangeRequestsList?.filter(item => item.requestStatus === 1);
 
     const handleOpenEditProject = () => {
         setTimeout(() => {
@@ -49,7 +49,7 @@ const TabProjectInfo = (props) => {
                             style={{ marginRight: 8, width: 35, height: 35, justifyContent: 'center', alignItems: 'center' }}
                             onClick={() => {
                                 props.getTasksByProject({ projectId: currentProjectId });
-                                props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
+                                props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'get_all' });
                             }}
                         >
                             <span style={{ marginTop: 5 }} className="material-icons">refresh</span>

@@ -12,29 +12,37 @@ import ModalChangeRequestInfo from './modalChangeRequestInfo';
 import { getStorage } from '../../../../config';
 import { ChangeRequestActions } from '../../change-requests/redux/actions';
 import ModalCreateChangeRequest from '../../change-requests/components/modalCreateChangeRequest';
-import { DataTableSetting, PaginateBar } from '../../../../common-components';
+import { DataTableSetting, PaginateBar, SelectMulti, SelectBox } from '../../../../common-components';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const TabChangeRequestProject = (props) => {
     const tableId = 'project-change-requests-table';
     // Khởi tạo state
     const [state, setState] = useState({
-        changeRequestName: "",
+        name: null,
+        creator: null,
+        creationTime: null,
+        affectedTask: null,
+        status: null,
         page: 1,
         perPage: 5,
     })
+
     const { translate, project, currentProjectTasks, user, changeRequest } = props;
     const currentChangeRequestsList = changeRequest && changeRequest.changeRequests;
     const projectDetail = getCurrentProjectDetails(project);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const [currentRow, setCurrentRow] = useState();
     const [currentChangeRequestId, setCurrentChangeRequestId] = useState('');
-    const { changeRequestName, page, perPage } = state;
-
+    const { name, creator, creationTime, affectedTask, status, page, perPage } = state;
     let lists = [];
+    let totalPage = 0;
+
     if (changeRequest) {
         lists = changeRequest.changeRequestsPaginate
     }
-    const totalPage = changeRequest && Math.ceil(changeRequest.totalDocs / perPage);
+
+    totalPage = changeRequest && Math.ceil(changeRequest.totalDocs / perPage);
 
     const setPage = (pageNumber) => {
         setState({
@@ -53,23 +61,67 @@ const TabChangeRequestProject = (props) => {
         props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page: 1, perPage: parseInt(number) });
     }
 
+    const handleChangeName = (e) => {
+        let name = e.target.value;
+        if (name === '') {
+            name = null;
+        }
+
+        setState({
+            ...state,
+            name
+        });
+    }
+
+    const handleChangeCreator = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            creator: value,
+        })
+    }
+
+    const handleSelectStatus = (value) => {
+        setState({
+            ...state,
+            status: value
+        });
+    }
+
+    const handleSelectCreationTime = (value) => {
+        setState({
+            ...state,
+            creationTime: value[0],
+        })
+    }
+
+    const handleChangeAffectedTask = (e) => {
+        let task = e.target.value;
+        if (task === '') {
+            task = null;
+        }
+
+        setState({
+            ...state,
+            affectedTask: task,
+        });
+    }
+
     const renderStatus = (statusValue) => {
         switch (statusValue) {
-            case 0: return 'Chưa yêu cầu';
-            case 1: return 'Đang yêu cầu';
-            case 2: return 'Bị từ chối';
-            case 3: return 'Đã đồng ý';
-            default: return 'Chưa yêu cầu';
+            case 0: return translate('project.request.not_request');
+            case 1: return translate('project.request.wait_for_approval');
+            case 2: return translate('project.request.refused');
+            case 3: return translate('project.request.approved');
+            default: return translate('project.request.not_request');
         }
     }
 
-
-    const updateListRequests = (currentChangeRequestsList, currentProjectTasks) => {
+    // Cập nhật lại các yêu cầu thay đổi
+    const updateListRequests = (currentChangeRequestsList = [], currentProjectTasks) => {
         // Nếu projectTasks không có gì thì không xử lý tiếp nữa
         if (!currentProjectTasks || currentProjectTasks.length === 0) return;
         // Cap nhat lai cac changeRequest
-        console.log('currentChangeRequestId', currentChangeRequestId)
-        console.log('currentProjectTasks', currentProjectTasks)
         const requestsPendingListFromDB = currentChangeRequestsList
             .filter((CRItem => CRItem.requestStatus === 1))
             .map((CRItem => {
@@ -118,6 +170,7 @@ const TabChangeRequestProject = (props) => {
                 })
                 console.log('newChangeRequestsList', newChangeRequestsList)
             }
+
             else if (requestsPendingItem.type === 'edit_task' && requestsPendingItem.requestStatus === 1) {
                 const currentProjectTasksFormatPreceedingTasks = currentProjectTasks.map((taskItem) => {
                     return {
@@ -206,6 +259,7 @@ const TabChangeRequestProject = (props) => {
                 })
                 console.log('newChangeRequestsList', newChangeRequestsList)
             }
+
             else {
                 newChangeRequestsList.push({
                     ...requestsPendingItem,
@@ -213,6 +267,7 @@ const TabChangeRequestProject = (props) => {
                 console.log('newChangeRequestsList', newChangeRequestsList)
             }
         }
+
         if (newChangeRequestsList.length > 0) {
             props.updateStatusProjectChangeRequestDispatch({
                 newChangeRequestsList,
@@ -240,7 +295,6 @@ const TabChangeRequestProject = (props) => {
                 setTimeout(() => {
                     props.getTasksByProject({ projectId: currentProjectId || projectDetail._id });
                 }, 20);
-                console.log('\n------- da bam phe duyet---------')
             }
         }).catch(err => {
             console.error('Change request', err)
@@ -345,19 +399,33 @@ const TabChangeRequestProject = (props) => {
         }, 10);
     }
 
+    const handleUpdateData = () => {
+        let data = {
+            name: name,
+            creator: creator,
+            creationTime: creationTime,
+            affectedTask: affectedTask,
+            status: status,
+            page: page,
+            perPage: perPage,
+            calledId: 'paginate',
+            projectId: currentProjectId
+        }
+        props.getListProjectChangeRequestsDispatch(data);
+
+        setState({
+            ...state,
+            page: 1,
+        })
+    }
+
     useEffect(() => {
         updateListRequests(currentChangeRequestsList, currentProjectTasks)
-    }, [currentProjectTasks])
+    }, [JSON.stringify(currentProjectTasks)])
 
     useEffect(() => {
         props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page, perPage });
-        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
-    }, [])
-
-    
-    useEffect(() => {
-        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page, perPage });
-    }, [changeRequest.changeRequests])
+    }, [JSON.stringify(currentProjectTasks), JSON.stringify(changeRequest.changeRequests)])
 
     return (
         <React.Fragment>
@@ -372,28 +440,101 @@ const TabChangeRequestProject = (props) => {
                     <ModalCreateChangeRequest
                         currentProjectTasks={currentProjectTasks}
                     />
-                    <div className="row">
+                    <div style={{ height: "40px", display: 'flex', justifyContent: 'space-between' }}>
+
+                        {/* Lọc */}
+                        <div>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#change-request-filter').slideToggle() }}><i className="fa fa-filter"></i>{translate('general.filter')}</button>
+                        </div>
+
+                        {/* Button thêm mới */}
                         <div className="pull-right">
                             <button
                                 type="button"
                                 className="btn btn-success pull-right"
-                                title="Tạo yêu cầu thay đổi"
+                                title={translate('project.request.create_request')}
                                 onClick={createNormalChangeRequest}
                                 style={{ marginRight: 10 }}
-                            >Tạo yêu cầu thay đổi</button>
+                            >{translate('project.request.create_request')}</button>
                         </div>
                     </div>
 
+                    {/* Lọc danh sách các yêu cầu thay đổi */}
+                    <div id="change-request-filter" className="form-inline" style={{ display: 'none' }}>
+
+                        {/* Tên yêu cầu */}
+                        <div className="form-group">
+                            <label>{translate('task.task_management.name')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => handleChangeName(e)} />
+                        </div>
+
+                        {/* Trạng thái yêu cầu */}
+                        <div className="form-group">
+                            <label>{translate('task.task_management.status')}</label>
+                            <SelectMulti id="multiSelectRequestStatus" defaultValue={[
+                                translate('project.request.approved'),
+                                translate('project.request.refused'),
+                                translate('project.request.wait_for_approval'),
+                                translate('project.request.not_request')
+                            ]}
+                                items={[
+                                    { value: "3", text: translate('project.request.approved') },
+                                    { value: "2", text: translate('project.request.refused') },
+                                    { value: "1", text: translate('project.request.wait_for_approval') },
+                                    { value: "0", text: translate('project.request.not_request') },
+                                ]}
+                                onChange={handleSelectStatus}
+                                options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
+                            </SelectMulti>
+                        </div>
+
+                        {/* Người thiết lập */}
+                        <div className="form-group">
+                            <label>{translate('task.task_management.creator')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => handleChangeCreator(e)} />
+                        </div>
+
+                        {/* Thời điểm tạo yêu cầu */}
+                        <div className="form-group">
+                            <label>{translate('project.request.create_time')}</label>
+                            <SelectBox id="multiSelectCreatorTime" className="form-control select2" style={{ width: "100%" }}
+                                items={[
+                                    { value: '', text: '--- Chọn ---' },
+                                    { value: "currentMonth", text: translate('task.task_management.current_month') },
+                                    { value: "currentWeek", text: translate('task.task_management.current_week') },
+                                ]}
+                                value={creationTime}
+                                onChange={handleSelectCreationTime}
+                                options={{ minimumResultsForSearch: 100 }}
+                            >
+                            </SelectBox>
+                        </div>
+
+                        {/* Công việc bị ảnh hưởng */}
+                        <div className="form-group">
+                            <label>{translate('project.request.affect_task')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => handleChangeAffectedTask(e)} />
+                        </div>
+
+                        {/* Button tìm kiếm */}
+                        <div className="form-group">
+                            <label></label>
+                            <button type="button" className="btn btn-success" onClick={() => handleUpdateData()}>{translate('project.search')}</button>
+                        </div>
+
+                    </div>
+
+                    {/* Danh sách các yêu cầu thay đổi */}
                     <div>
                         <DataTableSetting
                             tableId={tableId}
                             columnArr={[
-                                'Tên yêu cầu',
-                                'Người tạo yêu cầu',
-                                'Thời gian tạo yêu cầu',
-                                'Mô tả yêu cầu',
-                                'Những công việc bị ảnh hưởng',
-                                'Trạng thái yêu cầu',
+                                translate('project.request.name'),
+                                translate('project.request.creator'),
+                                translate('project.request.create_time'),
+                                translate('project.request.description'),
+                                translate('project.request.affect_task'),
+                                translate('project.request.status'),
                             ]}
                             setLimit={setLimit}
                         />
@@ -402,12 +543,12 @@ const TabChangeRequestProject = (props) => {
                     <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Tên yêu cầu</th>
-                                <th>Người tạo yêu cầu</th>
-                                <th>Thời gian tạo yêu cầu</th>
-                                <th>Mô tả yêu cầu</th>
-                                <th>Những công việc bị ảnh hưởng</th>
-                                <th>Trạng thái yêu cầu</th>
+                                <th>{translate('project.request.name')}</th>
+                                <th>{translate('project.request.creator')}</th>
+                                <th>{translate('project.request.create_time')}</th>
+                                <th>{translate('project.request.description')}</th>
+                                <th>{translate('project.request.affect_task')}</th>
+                                <th>{translate('project.request.status')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 </th>
                             </tr>
@@ -444,8 +585,8 @@ const TabChangeRequestProject = (props) => {
                         </tbody>
                     </table>
 
-                     {/* PaginateBar */}
-                     {changeRequest && changeRequest.isLoading ?
+                    {/* PaginateBar */}
+                    {changeRequest && changeRequest.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }

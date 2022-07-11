@@ -78,6 +78,7 @@ export default {
             detail: "Chi tiết",
             select_all: "Chọn tất cả",
             add_import: "Thêm dữ liệu từ file",
+            filter: "Lọc",
         },
 
         dashboard_unit: {
@@ -6399,6 +6400,7 @@ export default {
             description: "Mô tả dự án",
             add_title: "Thêm mới dự án",
             detail_title: "Thông tin chi tiết dự án",
+            change_request: 'Yêu cầu thay đổi phát sinh dự án',
             edit_title: "Chỉnh sửa dự án",
             add_btn_from_excel: "Thêm từ file excel",
             add_btn_new: "Thêm dự án mới",
@@ -6431,6 +6433,8 @@ export default {
             show_task_project_fail: 'Hiển thị thông tin dự án thất bại',
             create_task_project_success: 'Tạo dự án mới thành công',
             create_task_project_fail: 'Không thể tạo mới dự án',
+            create_tasks_list_excel_cpm_success:'Tạo công việc từ file thành công',
+            create_tasks_list_excel_cpm_fail:'Tạo công việc từ file thất bại',
             edit_task_project_success: 'Chỉnh sửa thông tin dự án thành công',
             edit_task_project_fail: 'Không thể chỉnh sửa thông tin dự án',
             delete_task_project_success: 'Xoá dự án thành công',
@@ -6449,7 +6453,9 @@ export default {
             update_status_project_change_request_fail: 'Cập nhật trạng thái của yêu cầu thất bại',
             update_list_project_change_requests_success: 'Cập nhật danh sách yêu cầu thành công',
             update_list_project_change_requests_fail: 'Cập nhật danh sách yêu cầu thất bại',
+            total: 'Tổng',
 
+            // Quản lý công việc trong dự án
             task_management: {
                 add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
                 end_date: "Ngày dự kiến kết thúc",
@@ -6470,10 +6476,13 @@ export default {
                 code: "Mã công việc",
             },
 
+            // Đơn vị thời gian
             unit: {
                 days: 'Ngày',
                 hours: 'Giờ',
             },
+
+            // Lập lịch
             schedule: {
                 taskCode: 'Mã công việc',
                 taskName: 'Tên công việc',
@@ -6492,6 +6501,23 @@ export default {
                 calculateRecommend: 'Tính toán đề xuất thoả hiệp dự án',
                 percentFinishTask: 'Xác suất hoàn thành dự án trong',
             },
+
+            // Yêu cầu thay đổi
+            request: {
+                name: 'Tên yêu cầu',
+                creator: 'Người tạo yêu cầu',
+                create_time: 'Thời điểm tạo yêu cầu',
+                description: 'Mô tả',
+                affect_task: 'Công việc bị ảnh hưởng',
+                status: 'Trạng thái',
+                create_request: 'Tạo yêu cầu thay đổi',
+                refused: 'Bị từ chối',
+                approved: 'Đã chấp thuận',
+                wait_for_approval: 'Chờ phê duyệt',
+                not_request: 'Chưa yêu cầu',
+            },
+
+            // Đánh giá
             eval: {
                 undefined: 'Nếu performanceIndex không tính được (mẫu số actualCost = 0 HOẶC performanceIndex = Infinity): Điểm = Chưa tính được',
                 level1: 'Nếu realDuration = 0 HOẶC performanceIndex < 0.5: Điểm = 0',
@@ -6501,6 +6527,8 @@ export default {
                 level5: 'Nếu 1.25 <= performanceIndex < 1.5: Điểm = 90',
                 level6: 'Nếu 1.5 <= performanceIndex: Điểm = 100',
             },
+
+            // Báo cáo
             report: {
                 title: 'Báo cáo chi tiết dự án'
             }
