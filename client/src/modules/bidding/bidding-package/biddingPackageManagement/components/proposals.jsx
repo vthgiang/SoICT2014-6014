@@ -71,7 +71,7 @@ function Proposals(props) {
                 active: true,
             },
             {
-                label: "Tối ưu đề xuất",
+                label: "Phân công nhân sự",
                 active: false,
             },
         ]
@@ -700,7 +700,7 @@ function Proposals(props) {
                         />
                         <span>
                             <a style={{ margin: '0 0 5px 5px', textDecoration: "underline", fontWeight: "600", cursor: "pointer" }} onClick={() => calcPropose()} >
-                                Tối ưu đề xuất nhân sự &nbsp;
+                                Tự động phân công nhân sự &nbsp;
                             </a>
                             <i style={{ cursor: "pointer" }} title="Xem cơ ché đề xuất" onClick={() => { handelProposeModal(id) }} className='fa fa-question-circle-o'></i>
                         </span>
