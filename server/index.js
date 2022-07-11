@@ -49,16 +49,16 @@ router.use("/timesheet", require("./modules/human-resource/timesheets/timesheets
 
 router.use("/get-employee-dashboard-data", require("./modules/human-resource/get-employee-dashboard-chart/get-data.route"));
 
-router.use("/bidding-contracts", require("./modules/human-resource/bidding-contract/biddingContract.route"));
+router.use("/bidding-contracts", require("./modules/bidding/bidding-contract/biddingContract.route"));
 router.use("/majors", require("./modules/human-resource/major/major.route"));
-router.use("/tags", require("./modules/human-resource/tag/tag.route"));
+router.use("/tags", require("./modules/bidding/tag/tag.route"));
 router.use(
     "/career-positions",
     require("./modules/human-resource/career-position/careerPosition.route")
 );
 router.use(
     "/bidding-package",
-    require("./modules/human-resource/bidding-package/biddingPackage.route")
+    require("./modules/bidding/bidding-package/biddingPackage.route")
 );
 router.use(
     "/certificates",

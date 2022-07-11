@@ -1,8 +1,8 @@
 const { BiddingPackage, Employee, User, Task, BiddingContract, Tag } = require("../../../models");
 const fs = require("fs");
 const { connect } = require(`../../../helpers/dbHelper`);
-const { getEmployeeInforByListId } = require("../profile/profile.service");
 const moment = require("moment");
+const { getEmployeeInforByListId } = require("../../human-resource/profile/profile.service");
 
 /**
  * Lấy danh sách thông tin nghỉ phép

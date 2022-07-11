@@ -18,15 +18,15 @@ module.exports = {
     Timesheet: require('./human-resource/timesheet.model'),
     Field: require('./human-resource/field.model'),
 
-    Tag: require('./human-resource/tag.model'),
+    Tag: require('./bidding/tag.model'),
     Major: require('./human-resource/major.model'),
     Certificate: require('./human-resource/certificate.model'),
     CareerPosition: require('./human-resource/careerPosition.model'),
     CareerField: require('./human-resource/careerField.model'),
     CareerAction: require('./human-resource/careerAction.model'),
-    BiddingPackage: require('./human-resource/biddingPackage.model'),
+    BiddingPackage: require('./bidding/biddingPackage.model'),
 
-    BiddingContract: require('./human-resource/biddingContract.model'),
+    BiddingContract: require('./bidding/biddingContract.model'),
 
 
     EmployeeKpi: require('./kpi/employeeKpi.model'),

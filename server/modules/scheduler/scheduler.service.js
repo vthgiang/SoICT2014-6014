@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const EmployeeController = require(`../human-resource/profile/profile.controller`);
 const TaskManagementService = require('../task/task-management/task.service');
-const biddingPackageController = require(`../human-resource/bidding-package/biddingPackage.controller`);
+const biddingPackageController = require(`../bidding/bidding-package/biddingPackage.controller`);
 
 exports.createNotificationForEmployeesHaveBrithdayCurrent = new CronJob('0 0 8 * * *', async function () {
     await EmployeeController.createNotificationForEmployeesHaveBrithdayCurrent();

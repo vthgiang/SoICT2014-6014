@@ -1,13 +1,7 @@
 const TagService = require("./tag.service");
-const UserService = require(`${SERVER_MODULES_DIR}/super-admin/user/user.service`);
-const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
-const EmployeeService = require("../profile/profile.service");
-
-const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
 
 const Log = require(`${SERVER_LOGS_DIR}`);
 
-/** Lấy danh sách các chuyên ngành */
 exports.searchTag = async (req, res) => {
     try {
         let data = {};
