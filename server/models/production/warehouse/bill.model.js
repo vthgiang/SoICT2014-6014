@@ -24,13 +24,20 @@ const BillSchema = new Schema({
         replies: this
     },
 
-    // LSX 
     code: {
         type: String,
         required: true
     },
 
-    // LSX 2, 4
+    customer: {
+        type: Schema.Types.ObjectId,
+        ref: 'Customer'
+    },
+
+    supplier: {
+        type: Schema.Types.ObjectId,
+        ref: 'Customer'
+    },
 
     // 1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3: Nhập công cụ, dụng cụ, 4: Nhập phế phẩm 
     // 5: Xuất nguyên vật liệu, 6: Xuất sản phẩm, 7: Xuất công cụ, dụng cụ, 8: Xuất phế phẩm
@@ -106,38 +113,6 @@ const BillSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "ProductRequestManagement"
     },
-
-    // LSX
-    approvers: [{
-        approver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
-
-        approvedTime: {
-            type: Date
-        }
-    }],
-
-    // LSX
-    qualityControlStaffs: [{ // Danh sách người kiểm định chất lượng 
-        staff: { // Người kiểm định
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        },
-
-        status: { // Trạng thái kiểm định 1. Chưa kiểm định xong, 2. Đã kiểm định xong
-            type: Number
-        },
-
-        content: { // Nội dung kiểm định
-            type: String
-        },
-
-        time: { // Thời gian kiểm định
-            type: Date
-        }
-    }],
 
     receiver: {
         name: {

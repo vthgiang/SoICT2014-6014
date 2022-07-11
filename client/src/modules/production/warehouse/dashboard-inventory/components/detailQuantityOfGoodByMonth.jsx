@@ -1,17 +1,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import c3 from 'c3';
 import 'c3/c3.css';
-import dayjs from 'dayjs'
+import './style.css';
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs'
+import { LotActions } from '../../inventory-management/redux/actions';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox, TreeSelect } from '../../../../../common-components';
-import { LotActions } from '../../inventory-management/redux/actions';
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
+import { StockActions } from '../../stock-management/redux/actions';
+import GoodWillIssue from './goodWillIssue';
+import GoodWillReceipt from './goodWillReceipt';
+import QuantityNorm from './quantityNorm';
 import { CategoryActions } from '../../../common-production/category-management/redux/actions';
 
-function GoodIssueReceiptByTime(props) {
+function DetailQuantityOfGoodByMonth(props) {
     let today = new Date(),
         month = today.getMonth() + 1,
         year = today.getFullYear();
@@ -27,7 +31,7 @@ function GoodIssueReceiptByTime(props) {
         endMonth: [year, endMonth].join('-'),
     };
     const [state, setState] = useState({
-        barAndLineChart: false,
+        barChart: true,
         currentRole: localStorage.getItem("currentRole"),
         category: [],
         startMonth: INFO_SEARCH.startMonth,
@@ -42,24 +46,12 @@ function GoodIssueReceiptByTime(props) {
         isSubmit: false,
     })
 
-    const refBarAndLineChart = React.createRef();
-
     useEffect(() => {
         props.getGoodsByType({ type: "material" });
+        props.getAllStocks({ managementLocation: state.currentRole });
         props.getCategoryToTree();
         props.getInventoryByGoodAndStock({ managementLocation: state.currentRole, startMonth: state.startMonth, endMonth: state.endMonth });
     }, [])
-
-    useEffect(() => {
-        barAndChart();
-    }, [props.lots.goodStockInventory])
-
-    const handleChangeViewChart = (value) => {
-        setState({
-            ...state,
-            barAndLineChart: value
-        })
-    }
 
     /** Select month start in box */
     const handleSelectMonthStart = (value) => {
@@ -174,35 +166,6 @@ function GoodIssueReceiptByTime(props) {
         })
     }
 
-    const handleSearchData = async () => {
-        let startMonth = new Date(state.startMonth);
-        let endMonth = new Date(state.endMonth);
-        if (startMonth.getTime() > endMonth.getTime()) {
-            const { translate } = props;
-            Swal.fire({
-                title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
-            })
-        } else {
-            await setState({
-                ...state,
-                infosearch: {
-                    ...state.infosearch,
-                    managementLocation: state.currentRole,
-                    stock: state.stock,
-                    goodId: state.goodId ? state.goodId : getAllGoods()[0].value,
-                    startMonth: state.startMonth,
-                    endMonth: state.endMonth,
-                },
-                isSubmit: true,
-            })
-
-        }
-        await props.getInventoryByGoodAndStock(state.infosearch);
-    };
-
     const setDataIntoArrayByMonth = (arrMonth, data, dataType) => {
         let totalData = [];
         let row = [...arrMonth];
@@ -254,65 +217,63 @@ function GoodIssueReceiptByTime(props) {
         }
         let title = ["x", ...arrMonth];
         let totalLots = ["Số lượng hàng tồn"];
-        let totalBillsReceipted = ["Số lượng hàng đã nhập"];
-        let totalBillsIssued = ["Số lượng hàng đã xuất"];
+        let totalBillsWillReceipt = ["Số lượng hàng sẽ nhập"];
+        let totalBillsWillIssue = ["Số lượng hàng sẽ xuất"];
         let listLots = goodStockInventory ? goodStockInventory.lots : [];
-        let listBillsReceipted = goodStockInventory ? goodStockInventory.billsReceipted : [];
-        let listBillsIssued = goodStockInventory ? goodStockInventory.billsIssued : [];
+        let listBillsWillReceipt = goodStockInventory ? goodStockInventory.billsWillReceipt : [];
+        let listBillsWillIssue = goodStockInventory ? goodStockInventory.billsWillIssue : [];
         totalLots = totalLots.concat(setDataIntoArrayByMonth(arrMonth, listLots, 'lot'));
-        totalBillsReceipted = totalBillsReceipted.concat(setDataIntoArrayByMonth(arrMonth, listBillsReceipted, 'billReceipt'));
-        totalBillsIssued = totalBillsIssued.concat(setDataIntoArrayByMonth(arrMonth, listBillsIssued, 'billIssue'));
-        return {
-            title: title,
-            totalLots: totalLots,
-            totalBillsIssued: totalBillsIssued,
-            totalBillsReceipted: totalBillsReceipted,
-        }
-
+        totalBillsWillReceipt = totalBillsWillReceipt.concat(setDataIntoArrayByMonth(arrMonth, listBillsWillReceipt, 'billReceipt'));
+        totalBillsWillIssue = totalBillsWillIssue.concat(setDataIntoArrayByMonth(arrMonth, listBillsWillIssue, 'billIssue'));
+        return [
+            {
+                title: title,
+                totalLots: totalLots,
+                totalBillsWillIssue: totalBillsWillIssue,
+                totalBillsWillReceipt: totalBillsWillReceipt,
+            }
+        ]
     }
 
-
-    // Khởi tạo BarChart bằng C3
-    const barAndChart = () => {
-        const { barAndLineChart } = state;
-        const dataForChart = getDataForChart();
-        if (dataForChart) {
-            c3.generate({
-                bindto: refBarAndLineChart.current,
-                data: {
-                    x: 'x',
-                    columns: [
-                        dataForChart.title,
-                        dataForChart.totalLots,
-                        dataForChart.totalBillsIssued,
-                        dataForChart.totalBillsReceipted,
-                    ],
-                    type: barAndLineChart ? 'bar' : '',
+    const handleSearchData = async () => {
+        let startMonth = new Date(state.startMonth);
+        let endMonth = new Date(state.endMonth);
+        if (startMonth.getTime() > endMonth.getTime()) {
+            const { translate } = props;
+            Swal.fire({
+                title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
+            })
+        } else {
+            await setState({
+                ...state,
+                infosearch: {
+                    ...state.infosearch,
+                    managementLocation: state.currentRole,
+                    stock: state.stock,
+                    goodId: state.goodId ? state.goodId : getAllGoods()[0].value,
+                    startMonth: state.startMonth,
+                    endMonth: state.endMonth,
                 },
-                axis: {
-                    x: {
-                        type: 'category',
-                        tick: {
-                            rotate: 75,
-                            multiline: false
-                        },
-                        height: 70
-                    }
-                }
-            });
+                isSubmit: true,
+            })
+
         }
-    }
+        await props.getInventoryByGoodAndStock(state.infosearch);
+    };
+
+    const { defaultEndMonth, defaultStartMonth, goodType, goodId, category, actionSearch } = state;
 
     const { translate, lots, stocks } = props;
     const { listStocks } = stocks;
-    const { defaultEndMonth, defaultStartMonth, goodType, goodId, category, barAndLineChart } = state;
 
     const dataCategory = getAllCategory();
-
-    barAndChart();
+    const dataForChart = getDataForChart();
     return (
         <React.Fragment>
-            <div className="box">
+            <div className="box" style={{ paddingBottom: "20px" }}>
                 <div className="box-body qlcv">
                     <div className="form-inline" >
                         <div className="form-group">
@@ -392,21 +353,18 @@ function GoodIssueReceiptByTime(props) {
                     </div>
                 </div>
                 <div className="box-header with-border">
-                    <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">{"Số lượng xuất, nhập, tồn theo từng mặt hàng"}</h3>
-                    <div className="dashboard_box_body">
-                        <p className="pull-left" style={{ marginBottom: 0 }}><b>{"ĐV tính: Hộp"}</b></p>
-                        <div className="box-tools pull-right">
-                            <div className="btn-group pull-rigth">
-                                <button type="button" className={`btn btn-xs ${barAndLineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Line chart</button>
-                                <button type="button" className={`btn btn-xs ${barAndLineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Bar chart</button>
-                            </div>
-                        </div>
-                        <div ref={refBarAndLineChart}></div>
+                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                        <QuantityNorm dataForChart={dataForChart[0].totalLots} title={dataForChart[0].title} />
+                    </div>
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <GoodWillIssue dataForChart={dataForChart[0].totalBillsWillIssue} title={dataForChart[0].title} />
+                    </div>
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <GoodWillReceipt dataForChart={dataForChart[0].totalBillsWillReceipt} title={dataForChart[0].title} />
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </React.Fragment >
     )
 }
 
@@ -415,8 +373,8 @@ const mapStateToProps = state => state;
 const mapDispatchToProps = {
     getInventoriesDashboard: LotActions.getInventoriesDashboard,
     getGoodsByType: GoodActions.getGoodsByType,
+    getAllStocks: StockActions.getAllStocks,
     getCategoryToTree: CategoryActions.getCategoryToTree,
     getInventoryByGoodAndStock: LotActions.getInventoryByGoodAndStock,
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodIssueReceiptByTime));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(DetailQuantityOfGoodByMonth));

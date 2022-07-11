@@ -10,5 +10,6 @@ router.delete('/supplies',auth, SuppliesController.deleteSupplies);
 router.get('/supplies/:id',auth, SuppliesController.getSuppliesById);
 
 router.get('/dashboard-supplies', auth, SuppliesController.getDashboardSupplies);
+router.get('/dashboard-supplies-organization', auth, SuppliesController.getDashboardSuppliesForOrganization);
 
 module.exports = router;

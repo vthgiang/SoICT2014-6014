@@ -88,7 +88,8 @@ function RequestManagement(props) {
             createdAt: state.createdAt,
             desiredTime: state.desiredTime,
             code: state.code,
-            status: state.status
+            status: state.status,
+            requestFrom: 'order',
         }
         props.getAllRequestByCondition(data);
     }

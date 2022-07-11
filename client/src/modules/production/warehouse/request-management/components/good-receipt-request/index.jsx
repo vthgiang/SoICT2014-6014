@@ -89,6 +89,7 @@ function GoodReceiptRequestManagementTable(props) {
     }
     const { totalPages, page } = requestManagements;
     const { code, createdAt, desiredTime } = state;
+
     return (
         <React.Fragment>
             {<DetailForm requestDetail={state.requestDetail} />}
@@ -137,19 +138,19 @@ function GoodReceiptRequestManagementTable(props) {
                 </div>
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('production.request_management.status')}</label>
+                        <label>{"Chọn nguồn đề nghị"}</label>
                         <SelectMulti
-                            id={`select-status-purchasing-request`}
+                            id={`select-source-request`}
                             className="form-control select2"
                             multiple="multiple"
-                            options={{ nonSelectedText: translate('production.request_management.select_status'), allSelectedText: translate('production.request_management.select_all') }}
+                            options={{ nonSelectedText: "Chọn nguồn đề nghị", allSelectedText: translate('production.request_management.select_all') }}
                             style={{ width: "100%" }}
                             items={[
-                                { value: 1, text: translate('production.request_management.receipt_request_from_order.1.content') },
-                                { value: 2, text: translate('production.request_management.receipt_request_from_order.2.content') },
-                                { value: 5, text: translate('production.request_management.receipt_request_from_order.5.content') },
+                                { value: '1', text: "Từ bộ phận sản xuất" },
+                                { value: '2', text: 'Từ bộ phận đơn hàng' },
+                                { value: '3', text: "Từ bộ phận kho" },
                             ]}
-                            onChange={props.handleStatusChange}
+                            onChange={props.handleChangeSourceRequest}
                         />
                     </div>
                     <div className="form-group">

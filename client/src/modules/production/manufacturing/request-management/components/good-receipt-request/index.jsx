@@ -128,7 +128,6 @@ function ReceiptRequestManagementTable(props) {
                             <th>{translate('production.request_management.index')}</th>
                             <th>{translate('production.request_management.code')}</th>
                             <th>{translate('production.request_management.creator')}</th>
-                            {/* <th>{translate('production.request_management.approver')}</th> */}
                             <th>{translate('production.request_management.createdAt')}</th>
                             <th>{translate('production.request_management.desiredTime')}</th>
                             <th>{translate('production.request_management.status')}</th>
@@ -140,7 +139,6 @@ function ReceiptRequestManagementTable(props) {
                                         translate('production.request_management.index'),
                                         translate('production.request_management.code'),
                                         translate('production.request_management.creator'),
-                                        // translate('production.request_management.approver'),
                                         translate('production.request_management.createdAt'),
                                         translate('production.request_management.desiredTime'),
                                         translate('production.request_management.status'),

@@ -1,10 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-
 import c3 from 'c3';
 import 'c3/c3.css';
-
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox, TreeSelect } from '../../../../../common-components';
 import { CategoryActions } from '../../../common-production/category-management/redux/actions';
@@ -21,31 +19,34 @@ function GoodIssueReceiptByGood(props) {
         name: []
     })
 
-    let { translate, lots } = props;
+    let { translate, lots, stocks } = props;
     const { inventoryDashboard } = lots;
     const { type, category, startDate, endDate } = state;
+    const { listStocks } = stocks;
 
-    if (inventoryDashboard.length > 0 && state.dataChart.length == 0) {
-        let name = [];
-        let inventory = ['Tồn kho'];
-        let goodReceipted = ['Nhập kho'];
-        let goodIssued = ['Xuất kho'];
-        for (let i = 0; i < inventoryDashboard.length; i++) {
-            name = [...name, inventoryDashboard[i].name];
-            inventory = [...inventory, inventoryDashboard[i].inventory];
-            goodReceipted = [...goodReceipted, inventoryDashboard[i].goodReceipted];
-            goodIssued = [...goodIssued, inventoryDashboard[i].goodIssued];
+    useEffect(() => {
+        if (inventoryDashboard.length > 0) {
+            let name = [];
+            let inventory = ['Tồn kho'];
+            let goodReceipted = ['Nhập kho'];
+            let goodIssued = ['Xuất kho'];
+            for (let i = 0; i < inventoryDashboard.length; i++) {
+                name = [...name, inventoryDashboard[i].name];
+                inventory = [...inventory, inventoryDashboard[i].inventory];
+                goodReceipted = [...goodReceipted, inventoryDashboard[i].goodReceipted];
+                goodIssued = [...goodIssued, inventoryDashboard[i].goodIssued];
+            }
+            setState({
+                ...state,
+                name,
+                dataChart: [inventory, goodReceipted, goodIssued]
+            })
         }
-        setState({
-            ...state, 
-            name,
-            dataChart: [inventory, goodReceipted, goodIssued]
-        })
-    }
+    }, [inventoryDashboard])
 
     useEffect(() => {
         barAndChart(state.name, state.dataChart);
-    }, [state.name, state.dataChart])
+    }, [state.dataChart])
 
 
     const refBarChart = React.createRef();
@@ -55,13 +56,6 @@ function GoodIssueReceiptByGood(props) {
         props.getInventoriesDashboard({ type, managementLocation: state.currentRole });
         props.getCategoryToTree();
     }, [])
-
-    const handleChangeViewChart = (value) => {
-        setState({
-            ...state,
-            barChart: value
-        })
-    }
 
     const handleCategoryChange = (value) => {
         setState({
@@ -77,35 +71,21 @@ function GoodIssueReceiptByGood(props) {
         })
     }
 
-    const handleChangeStartDate = (value) => {
-        if (value === '') {
-            value = null;
-        }
-
+    const handleStockChange = (value) => {
         setState({
             ...state,
-            startDate: value
-        });
-    }
-
-    const handleChangeEndDate = (value) => {
-        if (value === '') {
-            value = null;
-        }
-
-        setState({
-            ...state,
-            endDate: value
-        });
+            stock: value
+        })
     }
 
     const handleSubmitSearch = () => {
         let data = {
+            stock: state.stock,
             category: state.category,
             type: state.type,
             managementLocation: state.currentRole,
-            startDate: state.startDate,
-            endDate: state.endDate,
+            // startDate: state.startDate,
+            // endDate: state.endDate,
         }
         props.getInventoriesDashboard(data);
     }
@@ -130,7 +110,7 @@ function GoodIssueReceiptByGood(props) {
     // Khởi tạo BarChart bằng C3
     const barAndChart = (name, dataChart) => {
         const { barChart } = state;
-        let chart = c3.generate({
+        c3.generate({
             bindto: refBarChart.current,
             data: {
                 // x: 'x',
@@ -153,19 +133,28 @@ function GoodIssueReceiptByGood(props) {
 
     const dataCategory = getAllCategory();
 
-    // barAndChart(state.name, state);
     return (
         <React.Fragment>
             <div className="box">
                 <div className="box-header with-border">
                     <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">
-                        Số lượng xuất, nhập, tồn trong tất cả các kho
-                        </h3>
+                    <h3 className="box-title">{"Số lượng xuất, nhập, tồn trong tất cả các kho"}</h3>
                     <div className="box-body qlcv" >
                         <div className="form-inline">
                             <div className="form-group">
-                                <label>Loại hàng hóa</label>
+                                <label>{"Kho"}</label>
+                                <SelectMulti
+                                    id={`select-multi-stock-dashboard-inventory`}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Tổng các kho", allSelectedText: "Tổng các kho" }}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={listStocks.map((x, index) => { return { value: x._id, text: x.name } })}
+                                    onChange={handleStockChange}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>{"Loại hàng hóa"}</label>
                                 <SelectMulti
                                     id={`select-multi-type-dashboard-bill`}
                                     multiple="multiple"
@@ -175,12 +164,14 @@ function GoodIssueReceiptByGood(props) {
                                     items={[
                                         { value: 'product', text: 'Sản phẩm' },
                                         { value: 'material', text: 'Nguyên vật liệu' },
+                                        { value: 'equipment', text: 'Công cụ, dụng cụ' },
+                                        { value: 'waste', text: 'Phế phẩm' },
                                     ]}
                                     onChange={handleTypeChange}
                                 />
                             </div>
-                            <div className="form-group">
-                                <label>Danh mục</label>
+                            <div className="form-group good-category-select-tree">
+                                <label>{"Danh mục"}</label>
                                 <TreeSelect
                                     data={dataCategory}
                                     value={category}
@@ -188,32 +179,11 @@ function GoodIssueReceiptByGood(props) {
                                     mode="hierarchical"
                                 />
                             </div>
-                        </div>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label className="form-control-static">Từ ngày</label>
-                                <DatePicker
-                                    id="purchase-month-bill-dashboard-start"
-                                    dateFormat="month-year"
-                                    value={startDate}
-                                    onChange={handleChangeStartDate}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-control-static">Đến ngày</label>
-                                <DatePicker
-                                    id="purchase-month-bill-dashboard-end"
-                                    dateFormat="month-year"
-                                    value={endDate}
-                                    onChange={handleChangeEndDate}
-                                />
-                            </div>
                             <div className="form-group">
                                 <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={() => handleSubmitSearch()}>{translate('manage_warehouse.bill_management.search')}</button>
                             </div>
                         </div>
                     </div>
-
                     <div ref={refBarChart}></div>
                 </div>
             </div>
