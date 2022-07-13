@@ -77,6 +77,7 @@ export default {
             detail: "Detail",
             select_all: "Select all",
             add_import: "Add data from file",
+            filter: "Filter",
         },
 
         dashboard_unit: {
@@ -5671,6 +5672,7 @@ export default {
             description: "Description",
             add_title: "Add new project",
             detail_title: "Project details",
+            change_request: 'Request to change project',
             edit_title: "Project edit",
             add_btn_from_excel: "Choose from excel file",
             add_btn_new: "Add new project",
@@ -5693,6 +5695,10 @@ export default {
             add_err_empty_end_date: "End date should not be empty",
             col_start_time: "Start time",
             col_expected_end_time: "Expected end time",
+            calculate: "Caculate",
+            time_to_reduce: "Time to reduce",
+            desire_end_time: "The time at which you want the project to end",
+            err_early_end_date: "The selected date cannot be earlier than the earliest end date",
 
             // Thông báo trả về từ server
             get_task_project_success: 'Get project success',
@@ -5701,6 +5707,8 @@ export default {
             show_task_project_fail: 'Show project fail',
             create_task_project_success: 'Create project success',
             create_task_project_fail: 'Create project fail',
+            create_tasks_list_excel_cpm_success:'Create tasks from file successfully',
+            create_tasks_list_excel_cpm_fail:'Fail to create tasks from file',
             edit_task_project_success: 'Edit project success',
             edit_task_project_fail: 'Edit project fail',
             delete_task_project_success: 'Delete project success',
@@ -5719,12 +5727,13 @@ export default {
             update_status_project_change_request_fail: 'Update status of change request fail',
             update_list_project_change_requests_success: 'Update list of change requests success',
             update_list_project_change_requests_fail: 'Update list of change requests fail',
+            total: 'Total',
 
+            // Quản lý công việc trong dự án
             task_management: {
                 estimate: "Estimating",
                 add_err_time_cost: "Time & Cost must be numeric and greater or equal than 0",
                 end_date: "Estimated end date",
-
                 // unit time and cost
                 timeAndCost: "Time & Cost for Project scheduling",
                 estimatedTime: "Estimated time",
@@ -5736,13 +5745,17 @@ export default {
                 estimatedCostMaximum: "Maximum",
                 add_err_optimistic_time: "Optimistic time can't be greater than estimated time",
                 preceedingTask: "Preceeding task",
+                search_by_name_code: "Search by name or code of task",
+                code: "Task code",
             },
 
+            // Đơn vị thời gian
             unit: {
                 days: 'Ngày',
                 hours: 'Giờ',
             },
 
+            // Lập lịch
             schedule: {
                 taskCode: 'Task code',
                 taskName: 'Task name',
@@ -5761,6 +5774,23 @@ export default {
                 calculateRecommend: 'Calculate recommendation',
                 percentFinishTask: 'Percentage of finishing project in',
             },
+
+            // Yêu cầu thay đổi
+            request: {
+                name: 'Request name',
+                creator: 'Request creator',
+                create_time: 'Time of request creation',
+                description: 'Description of the request',
+                affect_task: 'Affected tasks',
+                status: 'Status',
+                create_request: 'Create a change request',
+                refused: 'Refused',
+                approved: 'Approved',
+                wait_for_approval: 'Waiting for approval',
+                not_request: 'Not request',
+            },
+
+            // Đánh giá
             eval: {
                 undefined: 'Nếu costPerformanceIndex không tính được (mẫu số actualCost = 0 HOẶC costPerformanceIndex = Infinity): Điểm = Chưa tính được',
                 level1: 'Nếu realDuration = 0 HOẶC costPerformanceIndex < 0.5: Điểm = 0',
@@ -5771,6 +5801,7 @@ export default {
                 level6: 'Nếu 1.5 <= costPerformanceIndex: Điểm = 100',
             },
 
+            // Báo cáo
             report: {
                 title: 'Detailed project report'
             }

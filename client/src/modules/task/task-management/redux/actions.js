@@ -26,6 +26,7 @@ export const taskManagementActions = {
 
     addProjectTask,
     getTasksByProject,
+    getAllTasksByProject,
 
     importTasks,
 
@@ -564,31 +565,15 @@ function addProjectTask(task) {
 }
 
 /**
- * get task by user and projectId
+ * get task by query
  */
-function getTasksByProject(projectId, page = undefined, perPage = undefined) {
-    if (!page && !perPage) {
-        return dispatch => {
-            dispatch({
-                type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST,
-            });
-            taskManagementService.getTasksByProject(projectId)
-                .then(res => {
-                    dispatch({
-                        type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
-                        payload: res.data.content
-                    });
-                })
-                .catch(error => {
-                    dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_FAILURE, error });
-                });
-        };
-    }
+function getTasksByProject(data) {
+    
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_REQUEST,
         });
-        taskManagementService.getTasksByProject(projectId, page, perPage)
+        taskManagementService.getTasksByProject(data)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_SUCCESS,
@@ -597,6 +582,28 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_FAILURE, error });
+            });
+    };
+}
+
+/**
+ * get task by projectId
+ */
+ function getAllTasksByProject(projectId) {
+    
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST,
+        });
+        taskManagementService.getTasksByProject({ projectId: projectId, calledId: 'get_all' })
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_FAILURE, error });
             });
     };
 }

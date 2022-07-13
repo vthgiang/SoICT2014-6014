@@ -3201,27 +3201,227 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
     return listEmployee;
 }
 
-exports.getTasksByProject = async (portal, projectId, page, perPage) => {
+
+/**
+ * Lấy công việc theo dự án
+ * @param {*} data 
+ */
+
+exports.getTasksByProject = async (portal, data) => {
+    let { perPage, page, status, priority, name, preceedingTasks, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, calledId } = data;
+
     let tasks;
-    let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
-    if (page && perPage) {
-        tasks = await Task(connect(DB_CONNECTION, portal))
-            .find({ taskProject: projectId }).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
-            .populate({ path: "responsibleEmployees", select: "_id name" })
-            .populate({ path: "accountableEmployees", select: "_id name" })
-            .populate({ path: "consultedEmployees", select: "_id name" })
-            .populate({ path: "informedEmployees", select: "_id name" })
-            .populate({ path: "creator", select: "_id name" })
-            .populate({ path: "preceedingTasks", select: "_id name" })
-            .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
-            .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
-        return {
-            docs: tasks,
-            totalDocs: totalList,
+
+    let keySearch = {};
+    let keySeachDateTime = {};
+
+    // Tìm kiếm công việc theo dự án
+    if (projectId) {
+        keySearch = {
+            ...keySearch,
+            taskProject: projectId,
         }
     }
-    tasks = await Task(connect(DB_CONNECTION, portal))
-        .find({ taskProject: projectId })
+
+    // Tìm kiếm công việc theo trạng thái
+    if (status) {
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status,
+            }
+        };
+    }
+
+    // Tìm kiếm công việc theo độ ưu tiên
+    if (priority) {
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority,
+            }
+        };
+    }
+
+    // Tìm kiếm công việc theo tên
+    if (name) {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    // Tìm kiếm công việc theo tên công việc tiền nhiệm
+    if (preceedingTasks) {
+        const predecessor = await Task(connect(DB_CONNECTION, portal)).find({
+            name: {
+                $regex: preceedingTasks,
+                $options: "i",
+            }
+        })
+
+        const getIdPredecessor = predecessor && predecessor.length > 0 ? predecessor.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            "preceedingTasks.task": {
+                $in: getIdPredecessor
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thực hiện
+    if (responsibleEmployees) {
+        const responsible = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            responsibleEmployees: {
+                $in: getIdResponsible
+            }
+        }
+    }
+
+    // Tìm kiếm theo người phê duyệt
+    if (accountableEmployees) {
+        const accountable = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
+        keySearch = {
+            ...keySearch,
+            accountableEmployees: {
+                $in: getIdAccountable
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thiết lập
+    if (creatorEmployees) {
+        const creator = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            creator: {
+                $in: getIdCreator
+            }
+        }
+    }
+
+    // Tìm kiếm theo ngày bắt đầu, kết thúc
+    if (startDate && endDate) {
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        keySeachDateTime = {
+            ...keySeachDateTime,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    }
+
+    else if (startDate) {
+        startDate = new Date(startDate);
+
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    else if (endDate) {
+        endDate = new Date(endDate);
+
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    let optionQuery = {
+        $and: [
+            keySearch,
+            keySeachDateTime,
+        ]
+    }
+
+    let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
+
+    // Nếu calledId là 'get_all' thì bỏ qua page và perPage
+    if ( calledId === 'get_all' ) {
+        tasks = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ createdAt: -1 })
         .populate({ path: "responsibleEmployees", select: "_id name" })
         .populate({ path: "accountableEmployees", select: "_id name" })
         .populate({ path: "consultedEmployees", select: "_id name" })
@@ -3230,7 +3430,26 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
         .populate({ path: "preceedingTasks", select: "_id name" })
         .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
         .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
-    return tasks;
+    }
+
+    else {
+        tasks = await Task(connect(DB_CONNECTION, portal))
+        .find( optionQuery ).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" })
+        .populate({ path: "creator", select: "_id name" })
+        .populate({ path: "preceedingTasks", select: "_id name" })
+        .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+        .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
+    }
+
+    return {
+        docs: tasks,
+        totalDocs: totalList,
+    }
+    
 }
 
 

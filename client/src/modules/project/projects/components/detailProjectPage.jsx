@@ -33,27 +33,26 @@ const ProjectDetailPage = (props) => {
         props.getAllDepartment();
         props.getDepartment();
         props.getAllUserInAllUnitsOfCompany();
-        props.getTasksByProject(currentProjectId);
-        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
+        props.getAllTasksByProject(currentProjectId);
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'get_all' });
     }, [])
 
-    const currentProjectTasks = tasks?.tasksbyproject;
+    const currentProjectTasks = tasks?.tasksByProject;
     
     // Hàm lấy lại thông tin sau khi dự án sau khi tạo dự án mới
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
-        await props.getTasksByProject(currentProjectId);
-        await props.getTasksByProject(currentProjectId, 1, 6);
+        await props.getAllTasksByProject(currentProjectId);
         projectDetail = getCurrentProjectDetails(project);
-        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
+        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId : 'get_all' });
     }
 
     return (
         <div className="box">
             <ul className="nav nav-tabs">
-                <li className="active"><a href="#project-details-info" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thông tin dự án</a></li>
-                <li><a href="#project-tasks-list" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Danh sách công việc dự án</a></li>
-                <li><a href="#project-details-change-request" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Yêu cầu thay đổi phát sinh dự án</a></li>
+                <li className="active"><a href="#project-details-info" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.detail_title')}</a></li>
+                <li><a href="#project-tasks-list" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.list_tasks')}</a></li>
+                <li><a href="#project-details-change-request" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.change_request')}</a></li>
             </ul>
             <div className="tab-content">
                 {/** Thông tin dự án */}
@@ -102,7 +101,7 @@ const mapDispatchToProps = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
 }

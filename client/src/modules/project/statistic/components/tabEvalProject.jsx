@@ -10,7 +10,6 @@ import { AutomaticTaskPointCalculator } from '../../../task/task-perform/compone
 import c3 from 'c3';
 import 'c3/c3.css';
 import ModalEVMData from './modalEVMData';
-import { formatTaskStatus, renderStatusColor } from '../../projects/components/functionHelper';
 
 const TabEvalProject = (props) => {
     const { currentTasks, translate, listTasksEval, project, currentMonth, projectDetailId, projectDetail, handleChangeMonth } = props;

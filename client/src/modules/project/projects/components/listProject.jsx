@@ -10,11 +10,14 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
 import { checkIfAbleToCRUDProject, renderLongList, renderProjectTypeText } from "./functionHelper";
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import _cloneDeep from 'lodash/cloneDeep';
 import Swal from 'sweetalert2';
 
 function ListProject(props) {
     const tableId = 'project-table';
+    const defaultConfig = { limit: 5, hiddenColumns: [] }
+    const limit = getTableConfiguration(tableId, defaultConfig).limit;
     // Khởi tạo state
     const [state, setState] = useState({
         projectName: "",
@@ -23,17 +26,18 @@ function ListProject(props) {
         creatorEmployee: null,
         responsibleEmployees: null,
         projectManager: null,
-        perPage: 5,
+        perPage: limit || defaultConfig.limit ,
         currentRow: null,
         projectDetail: null,
         data: [],
     })
+
     const { project, translate, user, tasks } = props;
     const userId = getStorage("userId");
     const { projectName, projectType, page, creatorEmployee, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state;
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId, projectName });
+        props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId });
         props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
@@ -53,6 +57,7 @@ function ListProject(props) {
                     member: currentProjects[n]?.responsibleEmployees ? <ToolTip dataTooltip={currentProjects[n]?.responsibleEmployees.map(o => o.name)} /> : null,
                     action: ["view"]
                 }
+
                 if(checkIfAbleToCRUDProject({ project, user, currentProjectId: currentProjects[n]._id })) {
                     data[n] = { ...data[n], action: ["view", "edit", "delete"] }
                 }
@@ -68,7 +73,18 @@ function ListProject(props) {
 
     // Sau khi add project mới hoặc edit project thì call lại tất cả list project
     const handleAfterCreateProject = () => {
-        props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId, projectName });
+        let data = {
+            calledId: 'paginate',
+            projectName: projectName,
+            projectType: projectType,
+            page: page,
+            perPage: perPage,
+            creatorEmployee: creatorEmployee,
+            responsibleEmployees: responsibleEmployees,
+            projectManager: projectManager,
+            userId: userId
+        }
+        props.getProjectsDispatch(data);
     }
 
     // Thay đổi tên dự án
@@ -116,21 +132,46 @@ function ListProject(props) {
     }
 
     const setPage = (pageNumber) => {
+
+        let data = {
+            calledId: 'paginate',
+            projectName: projectName,
+            projectType: projectType,
+            page: pageNumber,
+            perPage: perPage,
+            creatorEmployee: creatorEmployee,
+            responsibleEmployees: responsibleEmployees,
+            projectManager: projectManager,
+            userId: userId
+        }
+
         setState({
             ...state,
             page: parseInt(pageNumber)
         });
 
-        props.getProjectsDispatch({ calledId: "paginate", page: parseInt(pageNumber), perPage, userId, projectName });
+        props.getProjectsDispatch(data);
     }
 
     const setLimit = (number) => {
+        let data = {
+            calledId: 'paginate',
+            projectName: projectName,
+            projectType: projectType,
+            page: 1,
+            perPage: number,
+            creatorEmployee: creatorEmployee,
+            responsibleEmployees: responsibleEmployees,
+            projectManager: projectManager,
+            userId: userId
+        }
+
         setState({
             ...state,
             perPage: parseInt(number),
             page: 1
         });
-        props.getProjectsDispatch({ calledId: "paginate", page: 1, perPage: parseInt(number), userId, projectName });
+        props.getProjectsDispatch(data);
     }
 
     // Hiển thị thông tin dự án
@@ -139,7 +180,7 @@ function ListProject(props) {
             ...state,
             projectDetail: project.data.paginate.find(p => p?._id === id)
         });
-        props.getTasksByProject(id);
+        props.getAllTasksByProject(id);
         setTimeout(() => {
             window.$(`#modal-detail-project-${id}`).modal('show');
         }, 10);
@@ -158,6 +199,18 @@ function ListProject(props) {
 
     // Xoá dự án
     const handleDelete = (id) => {
+        let data = {
+            calledId: 'paginate',
+            projectName: projectName,
+            projectType: projectType,
+            page: project && project.lists && project.lists.length === 1 ? page - 1 : page,
+            perPage: perPage,
+            creatorEmployee: creatorEmployee,
+            responsibleEmployees: responsibleEmployees,
+            projectManager: projectManager,
+            userId: userId
+        }
+
         let currentProject = project.data.paginate.find(p => p?._id === id)
         Swal.fire({
             title: `Bạn có chắc chắn muốn xóa dự án "${currentProject.name}"?`,
@@ -170,11 +223,7 @@ function ListProject(props) {
         }).then((result) => {
             if (result.value) {
                 props.deleteProjectDispatch(id);
-                props.getProjectsDispatch({
-                    projectName,
-                    perPage,
-                    page: project && project.lists && project.lists.length === 1 ? page - 1 : page
-                });
+                props.getProjectsDispatch(data);
             }
         }) 
     }
@@ -220,11 +269,11 @@ function ListProject(props) {
             <ProjectDetailForm
                 projectDetailId={projectDetail && projectDetail._id}
                 projectDetail={projectDetail}
-                currentProjectTasks={tasks && tasks.tasksbyproject}
+                currentProjectTasks={tasks && tasks.tasksByProject}
             />
 
             <ProjectEditForm
-                currentProjectTasks={tasks && tasks.tasksbyproject}
+                currentProjectTasks={tasks && tasks.tasksByProject}
                 projectEditId={currentRow && currentRow._id}
                 projectEdit={currentRow}
                 handleAfterCreateProject={handleAfterCreateProject}
@@ -238,7 +287,7 @@ function ListProject(props) {
                     <div style={{ height: "40px", display: 'flex', justifyContent: 'space-between' }}>
                         {/* Lọc */}
                         <div>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#projects-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#projects-filter').slideToggle() }}><i className="fa fa-filter"></i> {translate('general.filter')} </button>
                         </div>
 
                         {/* Button thêm mới */}
@@ -306,7 +355,7 @@ function ListProject(props) {
                         <TreeTable
                             behaviour="show-children"
                             tableSetting={true}
-                            tableId='list-project-table'
+                            tableId={tableId}
                             viewWhenClickName={true}
                             column={column}
                             data={data}
@@ -400,7 +449,7 @@ const actions = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     createProjectDispatch: ProjectActions.createProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
 }
 
 const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProject));

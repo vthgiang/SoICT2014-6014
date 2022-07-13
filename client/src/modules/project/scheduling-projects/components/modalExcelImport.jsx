@@ -148,14 +148,36 @@ const ModalExcelImport = (props) => {
         });
     }
 
+    // Kiểm tra tính hợp lệ của file import
     const handleCheckDataSuitable = (data) => {
+        // Kiểm tra mã công việc có trùng nhau hay không
+        let codeArr = data.map(dataItem => {
+            return dataItem.code;
+        })
+        let codeMap = {};
+        for (let i =0; i< codeArr.length; i++){
+            if (codeMap[codeArr[i]]) {
+                let duplicateArr = data.flatMap((dataItem,index) => dataItem.code === codeArr[i]? dataItem.name : []);
+                setCurrentMessageError(`Các công việc sau đang có mã trùng nhau: ${duplicateArr.join(', ')}`);
+                return;
+            }
+            codeMap[codeArr[i]] = true;
+        }
+
+
+
+        // Kiểm tra các điều kiện của từng công việc
         for (let dataItem of data) {
+
+            // Kiểm tra sự trùng lặp của mảng các công việc tiền nhiệm
             for (let preItem of dataItem.preceedingTasks) {
                 if (dataItem.preceedingTasks.filter((dataItemPreceedingItem => preItem === dataItemPreceedingItem)).length > 1) {
                     setCurrentMessageError(`Danh sách công việc tiền nhiệm đang có sự trùng nhau: ${dataItem.preceedingTasks.join(', ')}`);
                     return;
                 }
             }
+
+            // Kiểm tra sự trùng lặp của mảng các thành viên
             for (let resItem of dataItem.emailResponsibleEmployees) {
                 if (dataItem.emailResponsibleEmployees.filter((dataItemEmailResItem => resItem === dataItemEmailResItem)).length > 1) {
                     setCurrentMessageError(`Danh sách email responsbile đang có sự trùng nhau: ${dataItem.emailResponsibleEmployees.join(', ')}`);
@@ -168,15 +190,20 @@ const ModalExcelImport = (props) => {
                     return;
                 }
             }
+
+            // Kiểm tra tính hợp lệ của thời gian thoả hiệp và ước lượng
             if (dataItem.estimateOptimisticTime >= dataItem.estimateNormalTime) {
                 setCurrentMessageError(`Thời gian thoả hiệp của ${dataItem.name} phải nhỏ hơn thời gian ước lượng`);
                 return;
             }
+
+            // Kiểm tra tính hợp lệ của trọng số các thành viên
             if ( dataItem.totalResWeight <= 0 || dataItem.totalResWeight >= 100){
                 setCurrentMessageError(`Trọng số thực hiện hoặc phê duyệt của ${dataItem.name} không hợp lệ`);
                 return;
             }
         }
+
         setCurrentMessageError(``);
     }
 
