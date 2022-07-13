@@ -102,9 +102,14 @@ function CreateGoodIssueRequestForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 1
             });
             setState({
                 ...state,
@@ -230,7 +235,7 @@ function CreateGoodIssueRequestForm(props) {
                 desiredTime: formatToTimeZoneDate(state.desiredTime),
                 description: state.description,
                 goods: goods,
-                approverInFactory: state.approvers,
+                approvers: state.approvers,
                 stock: state.stock,
                 requestType: 1,
                 type: 3,

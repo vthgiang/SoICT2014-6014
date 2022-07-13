@@ -49,11 +49,21 @@ router.use("/timesheet", require("./modules/human-resource/timesheets/timesheets
 
 router.use("/get-employee-dashboard-data", require("./modules/human-resource/get-employee-dashboard-chart/get-data.route"));
 
-// router.use("/majors", require("./modules/human-resource/major/major.route"));
-// router.use(
-//     "/career-positions",
-//     require("./modules/human-resource/career-position/careerPosition.route")
-// );
+router.use("/bidding-contracts", require("./modules/bidding/bidding-contract/biddingContract.route"));
+router.use("/majors", require("./modules/human-resource/major/major.route"));
+router.use("/tags", require("./modules/bidding/tag/tag.route"));
+router.use(
+    "/career-positions",
+    require("./modules/human-resource/career-position/careerPosition.route")
+);
+router.use(
+    "/bidding-package",
+    require("./modules/bidding/bidding-package/biddingPackage.route")
+);
+router.use(
+    "/certificates",
+    require("./modules/human-resource/certificate/certificate.route")
+);
 
 // Router KPI
 router.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));
@@ -108,7 +118,7 @@ router.use("/course", require("./modules/trainning/course/course.route"));
 router.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
 router.use("/asset", require("./modules/asset/asset-management/asset.route"));
 //asset lot
-router.use("/assetlot",require("./modules/asset/asset-lot-management/asset-lot.route"));
+router.use("/assetlot", require("./modules/asset/asset-lot-management/asset-lot.route"));
 
 router.use(
     "/purchase-request",
@@ -133,7 +143,7 @@ router.use("/taskreports", require("./modules/report/task-report/taskReport.rout
 router.use("/stocks", require("./modules/production/warehouse/stock/stock.route"));
 router.use("/categories", require("./modules/production/common-production/category/category.route"));
 router.use("/goods", require("./modules/production/common-production/good/good.route"));
-router.use("/request-management", require("./modules/production/common-production/request-management/requestManagement.route"));
+router.use("/product-request-management", require("./modules/production/common-production/product-request-management/productRequestManagement.route"));
 router.use("/bin-locations", require("./modules/production/warehouse/bin-location/binLocation.route"));
 router.use("/lot", require("./modules/production/warehouse/inventory/inventory.route"));
 router.use("/bills", require("./modules/production/warehouse/bill/bill.route"));
@@ -174,8 +184,11 @@ app.use("/sla", require("./modules/production/order/sla/sla.route"));
 app.use("/tax", require("./modules/production/order/tax/tax.route"));
 app.use("/payment", require("./modules/production/order/payment/payment.route"));
 app.use("/business-department", require("./modules/production/order/business-department/businessDepartment.route"));
-app.use("/projects", require("./modules/project/project.route"));
 app.use("/news-feed", require("./modules/news-feed/newsFeed.route"));
+
+// project
+app.use("/projects", require("./modules/project/project.route"));
+app.use("/project-templates", require("./modules/project-template/projectTemplate.route"));
 
 app.use("/transport-requirement", require("./modules/production/transport/transportRequirements/transportRequirements.route"));
 app.use("/transport-plan", require("./modules/production/transport/transportPlan/transportPlan.route"));

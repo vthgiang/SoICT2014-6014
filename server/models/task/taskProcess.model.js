@@ -24,6 +24,9 @@ const TaskProcessSchema = new Schema({
         type: Date,
         required: true
     },
+    actualEndDate: {
+        type: Date,
+    },
     status: {
         type: String,
         default: "inprocess",
@@ -88,6 +91,25 @@ const TaskProcessSchema = new Schema({
             },
         },
     ],
+    officeHours :[
+        {
+            name:{
+                type:String,
+            },
+            startTime:{
+                type:String,
+            },
+            endTime:{
+                type:String,
+            }
+        }
+    ],
+    convertDayToHour:{
+        type: String,
+    }
+},
+{
+    timestamps: true,
 });
 
 module.exports = (db) => {

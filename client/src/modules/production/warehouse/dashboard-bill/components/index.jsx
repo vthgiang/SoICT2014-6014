@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import DashBoardBills from './billDashboard';
+import "./style.css";
 
 function BillDashBoard(props) {
     return (

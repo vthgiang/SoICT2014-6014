@@ -1,17 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { formatDate, formatFullDate } from '../../../../../../helpers/formatDate';
-import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../../common-components';
-import { translate } from 'react-redux-multilingual/lib/utils';
+import { formatDate} from '../../../../../../helpers/formatDate';
+import { DialogModal} from '../../../../../../common-components';
+import { taskManagementActions } from '../../../../../task/task-management/redux/actions';
+import { Gantt } from '../../../../../../common-components';
 
 import QuantityLotDetailForm from './quantityLotDetail';
 import BillLogs from './billLogs';
+import dayjs from 'dayjs'
+
+let INFO_SEARCH = { // bộ lọc tìm kiếm
+    unitsSelected: null,
+    startMonth: dayjs().subtract(3, 'month').format("YYYY-MM"),
+    endMonth: dayjs().format("YYYY-MM"),
+}
+
+const CRITERIA = { NOT_COEFFICIENT: 0, COEFFICIENT: 1 };
+const TYPEPOINT = { AUTOMATIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
+
+// giá trị tìm kiếm mặc định mỗi khi search
+const DEFAULT_SEARCH = {
+    "general-task-chart": {},
+    "gantt-chart": {
+        status: ['inprocess'],
+    },
+    "employee-distribution-chart": {
+        status: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"],
+    },
+    "in-process-unit-chart": {},
+    "task-results-domain-chart": {
+        typePoint: TYPEPOINT.AUTOMATIC_POINT
+    },
+    "task-status-chart": {},
+    "average-results-chart": {
+        typePoint: TYPEPOINT.AUTOMATIC_POINT,
+        criteria: CRITERIA.NOT_COEFFICIENT
+    },
+    "load-task-organization-chart": {},
+    "all-time-sheet-log-by-unit": {}
+}
+
+const DEFAULT_INFOSEARCH = {
+    taskStatus: ["inprocess"]
+}
 
 function BillDetailForm(props) {
-    const [state, setState] = useState({
 
+    const [state, setState] = useState({
+        unitsSelected: [],
+        startMonth: INFO_SEARCH.startMonth,
+        endMonth: INFO_SEARCH.endMonth,
+        infoSearch: Object.assign({}, DEFAULT_INFOSEARCH),
+        dataCalendar: {},
+        currentZoom: props.translate('system_admin.system_setting.backup.date'),
     })
+
+    useEffect(() => {
+        let data = {
+            ...DEFAULT_SEARCH,
+            "common-params": {
+                organizationalUnitId: ["62a8092c5387be19102a8eaf"],
+                startMonth: state.startMonth,
+                endMonth: state.endMonth,
+            },
+        }
+        // service mới, lưu vào state redux : props.tasks.taskDashboardCharts:[ general-task-chart, ]
+        props.getOrganizationTaskDashboardChart(data);
+    }, [])
+
+    /*Lịch*/
+    const handleZoomChange = (zoom) => {
+        setState({
+            ...state,
+            currentZoom: zoom
+        });
+    }
 
     const handleShowDetailQuantity = async (lot) => {
         await setState({
@@ -27,9 +91,90 @@ function BillDetailForm(props) {
         window.$('#modal-detail-logs-version-bill').modal('show');
     }
 
+    const getDataChart = () => {
+        const { tasks, bills } = props;
+        const { taskDashboardCharts } = tasks
+        const { billDetail } = bills;
+        let billCode = billDetail.code;
+        let dataTaskChart1 = [];
+        let dataTaskChart2 = [];
+        let dataAllTaskChart = [];
+        if (taskDashboardCharts && taskDashboardCharts['gantt-chart']
+            && taskDashboardCharts['gantt-chart'].dataChart
+            && taskDashboardCharts['gantt-chart'].dataChart.dataAllTask
+            && taskDashboardCharts['gantt-chart'].dataChart.dataAllTask.length > 0) {
+            taskDashboardCharts['gantt-chart'].dataChart.dataAllTask.forEach(item => {
+                if (item.text && item.text.includes(billCode)) {
+                    dataTaskChart1.push(item);
+                }
+            })
+        }
+        if (taskDashboardCharts && taskDashboardCharts['gantt-chart']
+            && taskDashboardCharts['gantt-chart'].dataChart
+            && taskDashboardCharts['gantt-chart'].dataChart.dataAllTask
+            && taskDashboardCharts['gantt-chart'].dataChart.dataAllTask.length > 0) {
+            taskDashboardCharts['gantt-chart'].dataChart.dataAllTask.forEach(item => {
+                if (dataTaskChart1 && dataTaskChart1.length > 0) {
+                    dataTaskChart1.forEach(item1 => {
+                        if (item1.parent === item.id) {
+                            dataTaskChart2.push(item);
+                        }
+                    })
+                }
+            })
+        }
+        if (dataTaskChart2 && dataTaskChart2.length > 0 && dataTaskChart1 && dataTaskChart1.length > 0) {
+            dataTaskChart1.forEach((item, index) => {
+                dataAllTaskChart.push(dataTaskChart2[index]);
+                dataAllTaskChart.push(item);
+            })
+        }
+        return dataAllTaskChart;
+    }
+
+    useEffect(() => {
+        let dataAllTaskChart = getDataChart();
+        const { bills } = props;
+        const { billDetail } = bills;
+        if (billDetail._id !== state.billId) {
+            if (dataAllTaskChart && dataAllTaskChart.length > 0) {
+                let countInTime = 0;
+                let countDelayed = 0;
+                let countNotAchived = 0;
+                for (let i = 1; i < dataAllTaskChart.length; i = i + 2) {
+                    if (dataAllTaskChart[i].process === 1) {
+                        countInTime = countInTime + 1;
+                    }
+                    if (dataAllTaskChart[i].process === 0) {
+                        countDelayed = countDelayed + 1;
+                    }
+                    if (dataAllTaskChart[i].process === 2) {
+                        countNotAchived = countNotAchived + 1;
+                    }
+                }
+                setState({
+                    ...state,
+                    dataCalendar: {
+                        ...state.dataCalendar,
+                        countAllTask: {
+                            delay: countDelayed,
+                            intime: countInTime,
+                            notAchived: countNotAchived,
+                        },
+                        dataAllTask: {
+                            ...state.dataCalendar.dataAllTask,
+                            data: dataAllTaskChart
+                        },
+                        lineAllTask: dataAllTaskChart.length / 2
+                    },
+                })
+            }
+        }
+    }, [props.bills.billDetail._id])
+
     const { translate, bills } = props;
     const { billDetail } = bills;
-    const { quantityDetail } = state;
+    const { quantityDetail, dataCalendar, currentZoom, infoSearch } = state;
     return (
         <React.Fragment>
             <DialogModal
@@ -55,10 +200,10 @@ function BillDetailForm(props) {
                                     <strong>{translate('manage_warehouse.bill_management.code')}:&emsp;</strong>
                                     {billDetail.code}
                                 </div>
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.type')}:&emsp;</strong>
-                                    {translate(`manage_warehouse.bill_management.billType.${billDetail.type}`)}
-                                </div>
+                                    {translate(`manage_warehouse.bill_management.goodReceiptBillType.${billDetail.type}`)}
+                                </div> */}
                                 <div className="form-group">
                                     <strong>{translate(`manage_warehouse.bill_management.status`)}:&emsp;</strong>
                                     {billDetail ? <a style={{ color: translate(`manage_warehouse.bill_management.bill_color.${billDetail.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${billDetail.status}`)}</a> : []}
@@ -109,102 +254,7 @@ function BillDetailForm(props) {
                                 </div>
                             </div>
                         </div>
-                        {
-                            billDetail.approvers && billDetail.approvers.length && <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.approved')}</legend>
-                                    {
-                                        billDetail.approvers.map((x, index) => {
-                                            return (
-                                                <div className="form-group" key={index}>
-                                                    <p>{x.approver.name}{" - "}{x.approver.email}
-                                                        {
-                                                            x.approvedTime &&
-                                                            <React.Fragment>
-                                                                &emsp; &emsp; &emsp;
-                                                                {translate('manage_warehouse.bill_management.approved_time')}
-                                                                : &emsp;
-                                                                {formatFullDate(x.approvedTime)}
-                                                            </React.Fragment>
-                                                        }
-                                                    </p>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </fieldset>
-                            </div>
-                        }
-                        {billDetail && billDetail.qualityControlStaffs && billDetail.qualityControlStaffs.length ?
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.qualityControlStaffs')}</legend>
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th>{translate('manage_warehouse.bill_management.index')}</th>
-                                                <th>{translate('manage_warehouse.bill_management.qc_name')}</th>
-                                                <th>{translate('manage_warehouse.bill_management.qc_email')}</th>
-                                                <th>{translate('manage_warehouse.bill_management.qc_status_bill')}</th>
-                                                <th>{translate('manage_warehouse.bill_management.quality_control_content')}</th>
-                                                <th>{translate('manage_warehouse.bill_management.time')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                billDetail.qualityControlStaffs.map((x, index) => (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{x.staff.name}</td>
-                                                        <td>{x.staff.email}</td>
-                                                        {x.status ? <td style={{ color: translate(`manage_warehouse.bill_management.qc_status.${x.status}.color`) }}>
-                                                            {translate(`manage_warehouse.bill_management.qc_status.${x.status}.content`)}
-                                                        </td> : <td></td>}
-                                                        <td>{x.content}</td>
-                                                        <td>{x.time && formatFullDate(x.time)}</td>
-                                                    </tr>
-                                                ))
-                                            }
 
-                                        </tbody>
-                                    </table>
-                                </fieldset>
-                            </div>
-                            :
-                            ""
-                        }
-                        {
-                            billDetail.accountables && billDetail.accountables.length && <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.accountables')}</legend>
-                                    {
-                                        billDetail.accountables.map((x, index) => {
-                                            return (
-                                                <div className="form-group" key={index}>
-                                                    <p>{x.name}{" - "}{x.email}</p>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </fieldset>
-                            </div>
-                        }
-                        {
-                            billDetail.responsibles && billDetail.responsibles.length && <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.users')}</legend>
-                                    {
-                                        billDetail.responsibles.map((x, index) => {
-                                            return (
-                                                <div className="form-group" key={index}>
-                                                    <p>{x.name}{" - "}{x.email}</p>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </fieldset>
-                            </div>
-                        }
                         {billDetail.group !== '4' &&
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
@@ -226,6 +276,67 @@ function BillDetailForm(props) {
                                         {billDetail.receiver ? billDetail.receiver.address : ''}
                                     </div>
                                 </fieldset>
+                            </div>
+                        }
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{"Danh sách công việc"}</legend>
+                                <table className="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
+                                            <th title={"Tên công việc"}>{"Tên công việc"}</th>
+                                            <th title={"Người tham gia"}>{"Người tham gia"}</th>
+                                            <th title={"Thời gian bắt đầu"}>{"Thời gian bắt đầu"}</th>
+                                            <th title={"Thời gian kết thúc"}>{"Thời gian kết thúc"}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id={`good-edit-manage-by-archive`}>
+                                        {(typeof billDetail.stockWorkAssignment !== 'undefined' && billDetail.stockWorkAssignment.length > 0) &&
+                                            billDetail.stockWorkAssignment.map((x, index) =>
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{x.nameField}</td>
+                                                    <td>{x.workAssignmentStaffs && x.workAssignmentStaffs.length > 0 && x.workAssignmentStaffs.map((y, index2) =>
+                                                        <div key={index2}>{y.name}</div>
+                                                    )}</td>
+                                                    <td>{x.startDate + x.startTime}</td>
+                                                    <td>{x.endDate + x.endTime}</td>
+                                                </tr>
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                        {dataCalendar && dataCalendar.dataAllTask && dataCalendar.dataAllTask.data &&
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div className="gantt qlcv" >
+                                    <Gantt
+                                        ganttId="gantt-chart"
+                                        ganttData={dataCalendar?.dataAllTask}
+                                        zoom={currentZoom}
+                                        status={infoSearch.taskStatus}
+                                        count={dataCalendar?.countAllTask}
+                                        line={dataCalendar?.lineAllTask}
+                                        unit={true}
+                                        onZoomChange={handleZoomChange}
+                                    />
+                                    <div className="form-inline" style={{ textAlign: 'center' }}>
+                                        <div className="form-group">
+                                            <div id="in-time"></div>
+                                            <label id="label-for-calendar">{translate('task.task_management.in_time')}{dataCalendar?.countAllTask?.intime}</label>
+                                        </div>
+                                        <div className="form-group">
+                                            <div id="delay"></div>
+                                            <label id="label-for-calendar">{translate('task.task_management.delayed_time')}{dataCalendar?.countAllTask?.delay}</label>
+                                        </div>
+                                        <div className="form-group">
+                                            <div id="not-achieved"></div>
+                                            <label id="label-for-calendar">{translate('task.task_management.not_achieved')}{dataCalendar?.countAllTask?.notAchived}</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         }
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -263,9 +374,9 @@ function BillDetailForm(props) {
                                                     {billDetail.group === '3' && <td>{x.returnQuantity} <a href="#" onClick={() => handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
                                                     {billDetail.group === '4' && <td>{x.realQuantity}</td>}
                                                     {billDetail.group === '4' && <td>{x.damagedQuantity}</td>}
-                                                    <td>{x.lots.map((lot, index) =>
+                                                    <td>{x.lots && x.lots.length > 0 && x.lots.map((lot, index) =>
                                                         <div key={index}>
-                                                            {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
+                                                            {lot.code && <p>{lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                         </div>)}
                                                     </td>
                                                     <td>{x.description}</td>
@@ -288,4 +399,7 @@ function BillDetailForm(props) {
 
 const mapStateToProps = state => state;
 
-export default connect(mapStateToProps, null)(withTranslate(BillDetailForm));
+const mapDispatchToProps = {
+    getOrganizationTaskDashboardChart: taskManagementActions.getOrganizationTaskDashboardChart
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillDetailForm));

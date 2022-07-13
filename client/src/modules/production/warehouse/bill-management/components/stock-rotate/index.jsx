@@ -9,7 +9,7 @@ import StockRotateCreateForm from './stockRotateCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 import Swal from "sweetalert2";
-import { UserGuideCreateBillRotate } from '../config.js';
+import { UserGuideCreateBillRotate } from '../genaral/config.js';
 function RotateManagement(props) {
     const tableId = "rotate-management-table";
     const defaultConfig = { limit: 5 }

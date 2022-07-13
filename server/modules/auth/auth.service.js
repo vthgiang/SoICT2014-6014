@@ -462,7 +462,6 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId) => {
     const links = await privilege
         .filter((pri) => pri.resourceId.deleteSoft === false)
         .map((pri) => pri.resourceId);
-
     return links;
 };
 

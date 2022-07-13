@@ -194,7 +194,7 @@ function EmployeeTimeSheetLogTable(props)
                             className="form-control select"
                             items={[
                                 { value: 0, text: "Không sắp xếp"},
-                                { value: 1, text: "tăng dần" },
+                                { value: 1, text: "Tăng dần" },
                                 { value: 2, text: "Giảm dần" }
                             ]}
                             multiple={false}
@@ -272,13 +272,13 @@ function EmployeeTimeSheetLogTable(props)
                                             '<tbody>'
                                 for (let unit of tsl.unitDuration) {
                                     str += '<tr>' +
-                                                '<td><a>' + getUnitNameById(unit.name) + '</a></td>' +
-                                                '<td>' + convertTime(unit.value) + '</td>' +
+                                                '<td>' + getUnitNameById(unit.name) + '</td>' +
+                                                '<td><a>' + convertTime(unit.value) + '</a></td>' +
                                             '</tr>'
                                 }
                                 str+= '<tr>' +
-                                            '<td style="text-align: right"><a class="save_result">Tổng</a></td>' +
-                                            '<td>' + convertTime(tsl.totalDuration[1] + tsl.totalDuration[2] + tsl.totalDuration[3]) +'</td>' +
+                                            '<td><a class="save_result">Tổng</a></td>' +
+                                            '<td><a>' + convertTime(tsl.totalDuration[1] + tsl.totalDuration[2] + tsl.totalDuration[3]) +'</a></td>' +
                                         '</tr>'
                                 str+= '</tbody></table>'
                                 return (

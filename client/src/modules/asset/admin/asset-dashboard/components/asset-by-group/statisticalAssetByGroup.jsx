@@ -19,9 +19,11 @@ function StatisticalAssetByGroup(props) {
         ]
 
         const indices = { amount: 0, value: 1, lost_value: 2 };
+        console.log('DEBUG amountOfAsset: ', props.amountOfAsset);
         for (const [key, value] of props.amountOfAsset) {
             lineBarChart[indices.amount].push(value);
         }
+        console.log('DEBUG amountOfAsset: ', props.valueOfAsset);
         for (const [key, value] of props.valueOfAsset) {
             lineBarChart[indices.value].push(value);
         }
@@ -32,6 +34,7 @@ function StatisticalAssetByGroup(props) {
     }, [props.amountOfAsset, props.valueOfAsset, props.depreciationOfAsset]);
 
     const barLineChart = (data) => {
+        console.log("data: ", data);
         let { translate } = props;
         let amount = translate('asset.dashboard.amount');
         let value = translate('asset.dashboard.value');

@@ -3,6 +3,7 @@ const Models = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { freshObject } = require(`../../../helpers/functionHelper`);
 const { isArray } = require("lodash");
+const {ObjectId} = require("mongodb");
 
 const { Supplies, AllocationHistory , User, } = Models;
 
@@ -99,6 +100,14 @@ exports.createAllocations = async (portal, data) => {
                 ? data[i].allocationToUser
                 : null
         });
+        if (createAllocation) {
+            const supply = await Supplies(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    { _id: ObjectId(data[i].supplies)},
+                    { $push: {allocationHistories: createAllocation._id}}
+                );
+            console.log('supply in create allocationHistory ', supply);
+        }
     }
     let allocations;
     if(createAllocation){
@@ -137,6 +146,11 @@ exports.updateAllocation = async (portal, id, data) => {
             { path: "allocationToUser", select: "_id name email" },
             { path: "allocationToOrganizationalUnit", select: "_id name" },
         ]);
+    const supply = await Supplies(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(
+            { _id: ObjectId(data.supplies)},
+            { $addToSet: {allocationHistories: allocation._id}}
+        );
     return allocation;
 };
 
@@ -148,7 +162,24 @@ exports.updateAllocation = async (portal, id, data) => {
 exports.deleteAllocations = async (portal, ids) => {
     let allocations = await AllocationHistory(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: ids.map(item => mongoose.Types.ObjectId(item)) } });
-
+    let supplies = await Supplies(connect(DB_CONNECTION, portal))
+        .find({}).exec();
+    for(let i = 0; i < supplies.length; i++) {
+        console.log("supply before update: ", supplies[i]);
+        await Supplies(connect(DB_CONNECTION, portal))
+            .updateOne(
+                {
+                    _id: mongoose.Types.ObjectId(supplies[i]._id)
+                },
+                {
+                    $pull: {
+                        allocationHistories: {
+                            _id: { $in: ids.map(item => mongoose.Types.ObjectId(item))}
+                        }
+                    }
+                });
+        console.log("supply after update: ", supplies[i]);
+    }
     return allocations;
 };
 

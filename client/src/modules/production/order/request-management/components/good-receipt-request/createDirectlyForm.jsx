@@ -3,11 +3,23 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
-import { formatToTimeZoneDate, formatDate } from '../../../../../../helpers/formatDate';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 function CreateDirectlyForm(props) {
+
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
 
     const [state, setState] = useState({
         code: generateCode("PDN"),
@@ -25,7 +37,7 @@ function CreateDirectlyForm(props) {
         }
         setState({
             ...state,
-            desiredTime: formatToTimeZoneDate(value)
+            desiredTime: value
         })
     }
 
@@ -72,9 +84,14 @@ function CreateDirectlyForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 3
             });
             setState({
                 ...state,
@@ -122,6 +139,45 @@ function CreateDirectlyForm(props) {
         return stockArr;
     };
 
+    // phần nhà cung cấp 
+
+    const getSuplierOptions = () => {
+        let mapOptions = [];
+        const { list } = props.crm.customers;
+        if (list) {
+            mapOptions = [{
+                value: "title", //Title không được chọn
+                text: "---Chọn nhà cung cấp---",
+            }];
+            list.map((item) => {
+                mapOptions.push({
+                    value: item._id,
+                    text: item.name,
+                });
+            });
+        }
+        return mapOptions;
+    };
+
+    const handleSupplierChange = async (value) => {
+        validateSupplier(value[0], true);
+    };
+
+    const validateSupplier = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value || value === "" || value === "title") {
+            msg = "Giá trị không được bỏ trống!";
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                supplier: value,
+                supplierError: msg,
+            });
+        }
+        return msg;
+    };
+
     // Phần lưu dữ liệu
 
     const isFormValidated = () => {
@@ -143,14 +199,15 @@ function CreateDirectlyForm(props) {
             })
             const data = {
                 code: state.code,
-                desiredTime: formatToTimeZoneDate(state.desiredTime),
+                desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
                 stock: state.stock,
                 requestType: 2,
                 type: 1,
                 status: 1,
-                approverReceiptRequestInOrder: state.approvers,
+                approvers: state.approvers,
+                supplier: state.supplier,
             }
             console.log(data);
             props.createRequest(data);
@@ -165,9 +222,10 @@ function CreateDirectlyForm(props) {
     }
 
     const { translate, bigModal } = props;
-    const { code, desiredTime, errorIntendReceiveTime, description, errorStock, stock, errorApprover, approver, listGoods } = state;
+    const { code, desiredTime, errorIntendReceiveTime, description, errorStock, stock, errorApprover, approver, supplier, supplierError } = state;
     const dataStock = getStock();
     const dataApprover = getApprover();
+    const dataSupplier = getSuplierOptions();
 
     return (
         <React.Fragment>
@@ -205,6 +263,19 @@ function CreateDirectlyForm(props) {
                                     multiple={false}
                                 />
                                 <ErrorLabel content={errorStock} />
+                            </div>
+                            <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
+                                <label>{"Nhà cung cấp"}<span className="text-red"> * </span></label>
+                                <SelectBox
+                                    id={`select-create-purchase-order-directly-supplier`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={supplier}
+                                    items={dataSupplier}
+                                    onChange={handleSupplierChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={supplierError} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">

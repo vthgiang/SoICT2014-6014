@@ -260,17 +260,17 @@ exports.getPaginatedTasks = async (portal, task) => {
     let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
         startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees,
         accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags, getAll } = task;
-        let taskList, page;
-        if (perPage) {
-            perPage = Number(perPage);
-        } else {
-            perPage = 5;
-        }
-        if (number) {
-            page = Number(number);
-        } else {
-            page = 0;
-        }
+    let taskList, page;
+    if (perPage) {
+        perPage = Number(perPage);
+    } else {
+        perPage = 5;
+    }
+    if (number) {
+        page = Number(number);
+    } else {
+        page = 0;
+    }
 
     let roleArr = [];
     if (Array.isArray(role) && role.length > 0) {
@@ -588,7 +588,7 @@ exports.getPaginatedTasks = async (portal, task) => {
                 { path: 'informedEmployees', select: "_id name email avatar" },
                 { path: "timesheetLogs.creator", select: "name" },
             ]);
-        }
+    }
 
     let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
     let totalPages = Math.ceil(totalCount / perPage);
@@ -1985,7 +1985,6 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
         `<h3>Nội dung công việc</h3>` +
-        // `<p>Tên công việc : <strong>${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
@@ -2008,7 +2007,73 @@ exports.sendEmailForCreateTask = async (portal, task) => {
             }).join('')}
                     </ul>` : ""}`
         ;
-    var html = `<p>Bạn có công việc mới: ` + body;
+    let html = `<html>
+          <head>
+              <style>
+                  .wrapper {
+                      width: 100%;
+                      min-width: 580px;
+                      background-color: #FAFAFA;
+                      padding: 10px 0;
+                  }
+                  .userName {
+                    font-weight: 700;
+                    color: #385898;
+                    cursor: pointer;
+                  }
+          
+                  .info {
+                      list-style-type: none;
+                  }
+          
+                  @media screen and (max-width: 900px) {
+                      .form {
+                          border: solid 1px #dddddd;
+                          padding: 50px 30px;
+                          border-radius: 3px;
+                          margin: 0px 5%;
+                          background-color: #FFFFFF;
+                      }
+                  }
+          
+                  .form {
+                      border: solid 1px #dddddd;
+                      padding: 50px 30px;
+                      border-radius: 3px;
+                      margin: 0px 25%;
+                      background-color: #FFFFFF;
+                  }
+          
+                  .title {
+                      text-align: center;
+                  }
+          
+                  .footer {
+                      margin: 0px 25%;
+                      text-align: center;
+          
+                  }
+              </style>
+          </head>
+          
+          <body>
+              <div class="wrapper">
+                  <div class="title">
+                      <h1>${process.env.WEB_NAME}</h1>
+                  </div>
+                  <div class="form">
+                    <p>Bạn có công việc mới:  ${body};
+                  </div>
+                  <div class="footer">
+                      <p>Copyright by
+                          <i>Công ty Cổ phần Công nghệ
+                              <br />
+                              An toàn thông tin và Truyền thông Việt Nam</i>
+                      </p>
+                  </div>
+              </div>
+          </body>
+        </html>`;
     collaboratedHtml = `<p>Đơn vị bạn được phối hợp thực hiện công việc mới: ` + body;
 
 
@@ -2163,7 +2228,6 @@ exports.createProjectTask = async (portal, task) => {
     //     var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
     //     if (parent) level = parent.level + 1;
     // }
-
     var startDate, endDate;
     if (Date.parse(task.startDate)) startDate = new Date(task.startDate);
     else {
@@ -2892,17 +2956,17 @@ exports.getTaskAnalyseOfUser = async (portal, userId, type, date) => {
 exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) => {
     let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại
     let endOfMonth = new Date(year, month); // cần chỉnh lại
-    
+
     // Nếu cần lấy chi tiết từng hoạt động trong công việc
     if (requireActions == 'true') {
         let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
             {
                 $match: {
                     "taskActions.timesheetLogs.creator": mongoose.Types.ObjectId(userId),
-                    "taskActions.timesheetLogs.startedAt": {$exists: true},
-                    "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
-                    "taskActions.timesheetLogs.startedAt": {$lte: endOfMonth},
-                    "taskActions.timesheetLogs.stoppedAt": {$exists: true},
+                    "taskActions.timesheetLogs.startedAt": { $exists: true },
+                    "taskActions.timesheetLogs.startedAt": { $gte: beginOfMonth },
+                    "taskActions.timesheetLogs.startedAt": { $lte: endOfMonth },
+                    "taskActions.timesheetLogs.stoppedAt": { $exists: true },
                 }
             },
             {
@@ -2921,39 +2985,43 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
             {
                 $match: {
                     "taskActions.timesheetLogs.creator": mongoose.Types.ObjectId(userId),
-                    "taskActions.timesheetLogs.startedAt": {$exists: true},
-                    "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
-                    "taskActions.timesheetLogs.startedAt": {$lte: endOfMonth},
-                    "taskActions.timesheetLogs.stoppedAt": {$exists: true},
+                    "taskActions.timesheetLogs.startedAt": { $exists: true },
+                    "taskActions.timesheetLogs.startedAt": { $gte: beginOfMonth },
+                    "taskActions.timesheetLogs.startedAt": { $lte: endOfMonth },
+                    "taskActions.timesheetLogs.stoppedAt": { $exists: true },
                 }
             },
-            {$unwind: "$taskActions"},
-            {$replaceRoot: {
-                newRoot: { 
-                    $mergeObjects: 
-                    [
-                        { _id: "$_id", name: "$name", actionDescription: "$taskActions.description", actionId: "$taskActions._id"},
-                        "$taskActions"
-                    ]
+            { $unwind: "$taskActions" },
+            {
+                $replaceRoot: {
+                    newRoot: {
+                        $mergeObjects:
+                            [
+                                { _id: "$_id", name: "$name", actionDescription: "$taskActions.description", actionId: "$taskActions._id" },
+                                "$taskActions"
+                            ]
+                    }
                 }
-            }},
-            {$unwind: "$timesheetLogs"},
-            {$replaceRoot: {
-                newRoot: { 
-                    $mergeObjects: 
-                    [
-                        { _id: "$_id", name: "$name", actionDescription: "$actionDescription", actionId: "$actionId"},
-                        "$timesheetLogs"
-                    ]
+            },
+            { $unwind: "$timesheetLogs" },
+            {
+                $replaceRoot: {
+                    newRoot: {
+                        $mergeObjects:
+                            [
+                                { _id: "$_id", name: "$name", actionDescription: "$actionDescription", actionId: "$actionId" },
+                                "$timesheetLogs"
+                            ]
+                    }
                 }
-            }},
+            },
             {
                 $match: {
                     "creator": mongoose.Types.ObjectId(userId),
-                    "startedAt": {$exists: true},
-                    "startedAt": {$gte: beginOfMonth},
-                    "startedAt": {$lte: endOfMonth},
-                    "stoppedAt": {$exists: true},
+                    "startedAt": { $exists: true },
+                    "startedAt": { $gte: beginOfMonth },
+                    "startedAt": { $lte: endOfMonth },
+                    "stoppedAt": { $exists: true },
                 },
             },
         ]);
@@ -2976,14 +3044,14 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
     let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 
-    let listEmployee = await UserService.getAllEmployeeOfUnitByIds(portal, {ids: unitArray});
+    let listEmployee = await UserService.getAllEmployeeOfUnitByIds(portal, { ids: unitArray });
     let listTask = await Task(connect(DB_CONNECTION, portal)).aggregate([
         {
             $match: {
-                "startDate": {$exists: true},
-                "startDate": {$lte: endOfMonth},
-                "endDate": {$exists: true},
-                "endDate": {$gte: beginOfMonth}
+                "startDate": { $exists: true },
+                "startDate": { $lte: endOfMonth },
+                "endDate": { $exists: true },
+                "endDate": { $gte: beginOfMonth }
             },
         },
         {
@@ -2999,7 +3067,7 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
         }
     ]);
 
-    
+
 
     let countResponsibleTasks = [],
         countAccountableTasks = [],
@@ -3007,7 +3075,7 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
         countInformedTasks = [],
         totalTasks = [],
         exist = [],
-        totalDuration = [[],[],[],[]],
+        totalDuration = [[], [], [], []],
         unitDuration = new Map();
 
     for (let employee of listEmployee.employees) {
@@ -3025,46 +3093,46 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
     for (let task of listTask) {
         exist = [];
         for (let a of task.responsibleEmployees) {
-            if (  !countResponsibleTasks.includes(a.toString()) ) continue;
+            if (!countResponsibleTasks.includes(a.toString())) continue;
             countResponsibleTasks[a.toString()] += 1;
             if (!exist[a.toString()]) {
-                totalTasks[a.toString()]+= 1;
+                totalTasks[a.toString()] += 1;
             }
             exist[a.toString()] = true;
         }
 
         for (let a of task.accountableEmployees) {
-            if (  !countAccountableTasks.includes(a.toString())  ) continue;
-            countAccountableTasks[a.toString()]+= 1;
+            if (!countAccountableTasks.includes(a.toString())) continue;
+            countAccountableTasks[a.toString()] += 1;
             if (!exist[a.toString()]) {
-                totalTasks[a.toString()]+= 1
+                totalTasks[a.toString()] += 1
             }
             exist[a.toString()] = true;
         }
 
         for (let a of task.consultedEmployees) {
-            if (  !countConsultedTasks.includes(a.toString())   ) continue;
+            if (!countConsultedTasks.includes(a.toString())) continue;
             countConsultedTasks[a.toString()] += 1;
             if (!exist[a.toString()]) {
-                totalTasks[a.toString()]+= 1
+                totalTasks[a.toString()] += 1
             }
             exist[a.toString()] = true;
         }
-        
+
         for (let a of task.informedEmployees) {
-            if (  !countInformedTasks.includes(a.toString())   ) continue;
-            countInformedTasks[a.toString()]+= 1;
+            if (!countInformedTasks.includes(a.toString())) continue;
+            countInformedTasks[a.toString()] += 1;
             if (!exist[a.toString()]) {
-                totalTasks[a.toString()]+= 1
+                totalTasks[a.toString()] += 1
             }
             exist[a.toString()] = true;
         }
 
         for (let a of task.timesheetLogs) {
-            if (a.acceptLog == true && beginOfMonth <= a.stoppedAt && a.stoppedAt <= endOfMonth ) {
-                if (  !unitDuration.has(a.creator.toString())  ) continue;
+            if (a.acceptLog == true && beginOfMonth <= a.stoppedAt && a.stoppedAt <= endOfMonth) {
+                if (!unitDuration.has(a.creator.toString())) continue;
                 totalDuration[a.autoStopped][a.creator.toString()] += a.duration;
-                if (  unitDuration.get(a.creator.toString()).has(task.organizationalUnit)  ) {
+                if (unitDuration.get(a.creator.toString()).has(task.organizationalUnit)) {
                     unitDuration.get(a.creator.toString())[task.organizationalUnit] += a.duration;
                 } else {
                     unitDuration.get(a.creator.toString()).set(task.organizationalUnit, a.duration);
@@ -3098,8 +3166,8 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
         employee.totalDuration[2] = totalDuration[2][employee._id.toString()];
         employee.totalDuration[3] = totalDuration[3][employee._id.toString()];
         employee.totalDuration[0] = employee.totalDuration[1] + employee.totalDuration[2] + employee.totalDuration[3];
-        employee.unitDuration = Array.from(unitDuration.get(employee._id.toString()), 
-                                            ([name, value]) => ({name, value}) );
+        employee.unitDuration = Array.from(unitDuration.get(employee._id.toString()),
+            ([name, value]) => ({ name, value }));
     }
 
     listEmployee.docs = listEmployee.docs.filter((employee) => {
@@ -3110,7 +3178,7 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
     if (sortType != 0) {
         listEmployee.docs.sort((a, b) => {
             if (sortType == 1) {
-                if (a.totalDuration[0] > b.totalDuration[0]) 
+                if (a.totalDuration[0] > b.totalDuration[0])
                     return 1;
                 return -1;
             } else {
@@ -3129,7 +3197,7 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
         page: Number(page),
     }
 
-    listEmployee.docs = listEmployee.docs.slice( (page - 1) * rowLimit, page * rowLimit);
+    listEmployee.docs = listEmployee.docs.slice((page - 1) * rowLimit, page * rowLimit);
     return listEmployee;
 }
 
@@ -3870,8 +3938,8 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
     Object.keys(query).forEach((key) => {
         query[key] = JSON.parse(query[key])
     });
-    
-    const data = query["query"] ? query["query"] : query ;
+
+    const data = query["query"] ? query["query"] : query;
     console.log("data", data);
     const chartArr = Object.keys(data);
     let result = {};

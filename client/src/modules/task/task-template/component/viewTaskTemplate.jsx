@@ -39,12 +39,12 @@ const ViewTaskTemplate = (props) => {
     if (isProcess) {
         if (listUser) {
             listUser.forEach(x => {
-                if (taskTemplate?.accountableEmployees.some(y => y === x._id)) {
+                if (taskTemplate?.accountableEmployees.some(y => y._id === x._id)) {
                     listUserAccountable.push({ value: x._id, name: x.name })
                 }
             })
             listUser.forEach(x => {
-                if (taskTemplate?.responsibleEmployees.some(y => y === x._id)) {
+                if (taskTemplate?.responsibleEmployees.some(y => y._id === x._id)) {
                     listUserResponsible.push({ value: x._id, name: x.name })
                 }
             })

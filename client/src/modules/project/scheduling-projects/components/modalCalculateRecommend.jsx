@@ -1,5 +1,5 @@
 import jsPERT from 'js-pert'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import Swal from 'sweetalert2'
@@ -17,7 +17,6 @@ dayjs.extend(isSameOrBefore);
 
 const ModalCalculateRecommend = (props) => {
     const { processedData, translate, project, oldCPMEndDate } = props;
-    const projectDetail = getCurrentProjectDetails(project);
     const [timeToReduce, setTimeToReduce] = useState(0);
     const [maxReducedTime, setMaxReducedTime] = useState(0);
     const [normalTime, setNormalTime] = useState(0);
@@ -26,6 +25,15 @@ const ModalCalculateRecommend = (props) => {
         errorOnProjectEndTime: undefined,
         endTime: '',
     });
+    const TYPE = {
+        DEFAULT: "DEFAULT", // tạo mới project thông thường
+        CREATE_BY_CONTRACT: "CREATE_BY_CONTRACT", // tạo mới project theo hợp đồng
+        CREATE_BY_TEMPLATE: "CREATE_BY_TEMPLATE", // tạo mới project theo mẫu
+    }
+
+    const [projectData, setProjectData] = useState(props.projectData);
+    // const projectDetail = getCurrentProjectDetails(project);
+    const projectDetail = projectData ?? getCurrentProjectDetails(project);
 
     const [content, setContent] = useState({
         earliestEndDate: '',
@@ -83,6 +91,9 @@ const ModalCalculateRecommend = (props) => {
             })
         }
     }
+    useEffect(() => {
+        setProjectData(props.projectData)
+    }, [JSON.stringify(props.projectData)])
 
     const findLatestDate = (data) => {
         if (data.length === 0) return null;

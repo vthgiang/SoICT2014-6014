@@ -237,12 +237,79 @@ exports.createTaskAction = async (req, res) => {
             }
         };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible);
+        let emailContent = `<html>
+                <head>
+                    <style>
+                        .wrapper {
+                            width: 100%;
+                            min-width: 580px;
+                            background-color: #FAFAFA;
+                            padding: 10px 0;
+                        }
+                
+                        .info {
+                            list-style-type: none;
+                        }
+                
+                        @media screen and (max-width: 900px) {
+                            .form {
+                                border: solid 1px #dddddd;
+                                padding: 50px 30px;
+                                border-radius: 3px;
+                                margin: 0px 5%;
+                                background-color: #FFFFFF;
+                            }
+                        }
+                
+                        .form {
+                            border: solid 1px #dddddd;
+                            padding: 50px 30px;
+                            border-radius: 3px;
+                            margin: 0px 25%;
+                            background-color: #FFFFFF;
+                        }
+                
+                        .title {
+                            text-align: center;
+                        }
+                
+                        .footer {
+                            margin: 0px 25%;
+                            text-align: center;
+                
+                        }
+                    </style>
+                </head>
+                
+                <body>
+                    <div class="wrapper">
+                        <div class="title">
+                            <h1>${process.env.WEB_NAME}</h1>
+                        </div>
+                        <div class="form">
+                            <p>
+                                <strong>${userCreator.name}</strong>
+                                đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này
+                                <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a>
+                            </p>
+                            <br>
+                            ${req.body.description}
+                        </div>
+                        <div class="footer">
+                            <p>Copyright by
+                                <i>Công ty Cổ phần Công nghệ
+                                    <br />
+                                    An toàn thông tin và Truyền thông Việt Nam</i>
+                            </p>
+                        </div>
+                    </div>
+                </body>
+        </html>`;
         sendEmail(
             task.email, 
             tasks.name, 
             '', 
-            `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p><br>`
-            + req.body.description,
+            emailContent,
             `${tasks.id}@gmail.com`, 
             null
         );

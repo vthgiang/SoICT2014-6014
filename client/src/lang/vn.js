@@ -98,6 +98,7 @@ export default {
             manage_configuration: "Cấu hình hệ thống",
             manage_system: "Sao lưu phục hồi",
             manage_company: "Doanh nghiệp",
+            manage_system_admin_page: "Quản lý trang quản trị hệ thống",
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
             manage_component: "Quản lý phân quyền trên các trang",
@@ -160,6 +161,16 @@ export default {
             training_plan_employee: "Thông tin đào tạo",
             list_major: "Danh sách chuyên ngành",
             list_career_position: "Danh sách vị trí công việc",
+            list_certificate: "Bằng cấp - chứng chỉ",
+
+            // đấu thầu
+            manage_bidding: "Quản lý đấu thầu",
+            bidding_project_template_list: "Mẫu dự án",
+            manage_tag: "Quản lý danh mục tag",
+            list_bidding_contract: "Hợp đồng đấu thầu",
+            bidding_dashboard: "Thống kê thực hiện gói thầu",
+            list_bidding_package: "Danh sách gói thầu",
+            detail_bidding_package: "Chi tiết gói thầu",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
 
             employee_unit: "Nhân sự đơn vị",
@@ -309,7 +320,9 @@ export default {
             // Quản lý dự án
             manage_project: "Quản lý dự án",
             projects_list: 'Danh sách dự án',
+            project_template_list: "Mẫu dự án",
             project_details: 'Chi tiết dự án',
+            project_template_details: 'Chi tiết mẫu dự án',
             tasks_list: 'Danh sách công việc',
             phases_list: 'Danh sách giai đoạn',
             issues_list: 'Danh sách vấn đề',
@@ -772,6 +785,18 @@ export default {
                 //Thông điệp trả về từ server
                 get_system_page_apis_success: 'Lấy system page API thành công',
                 get_system_page_api_failure: 'Lấy system page API thất bại',
+
+                add_title: 'Thêm mới URL',
+                add_success: "Thêm mới URL thành công!",
+                add_fail: "Thêm URL thất bại!",
+                URL: "Đường dẫn",
+                page_description: "Mô tả trang",
+                add: "Thêm trang mới",
+                search: "Tìm kiếm",
+                index: "STT",
+                description: "Mô tả",
+                detail_info_page: "Thông tin chi tiết trang",
+                delete: "Xóa URL",
             },
 
             privilege_system_api: {
@@ -1844,8 +1869,42 @@ export default {
                 },
             },
 
+            certificate: {
+                get_certificate_success: "Lấy danh sách chứng chỉ thành công",
+                get_certificate_failure: "Lấy danh sách chứng chỉ thất bại",
+                create_certificate_success: "Tạo chứng chỉ thành công",
+                create_certificate_failure: "Tạo chứng chỉ thất bại",
+                edit_certificate_success: "Cập nhật chứng chỉ thành công",
+                edit_certificate_failure: "Cập nhật chứng chỉ thất bại",
+                delete_certificate_success: "Xóa chứng chỉ thành công",
+                delete_certificate_failure: "Xóa chứng chỉ thất bại",
+            },
+
+            career_position: {
+                get_career_position_success: "Lấy danh sách vị trí công việc thành công",
+                get_career_position_failure: "Lấy danh sách vị trí công việc thất bại",
+                create_career_position_success: "Tạo vị trí công việc thành công",
+                create_career_position_failure: "Tạo vị trí công việc thất bại",
+                update_career_position_success: "Cập nhật vị trí công việc thành công",
+                update_career_position_failure: "Cập nhật vị trí công việc thất bại",
+                delete_career_position_success: "Xóa vị trí công việc thành công",
+                delete_career_position_failure: "Xóa vị trí công việc thất bại",
+            },
+
             // Quản lý thông tin nhân viên
             profile: {
+                // Quản lý gói thầu
+                bidding_package: {
+                    get_bidding_package_success: "Lấy danh sách gói thầu thành công",
+                    get_bidding_package_failure: "Lấy danh sách gói thầu thất bại",
+                    create_bidding_package_success: "Tạo gói thầu thành công",
+                    create_bidding_package_failure: "Tạo gói thầu thất bại",
+                    update_bidding_package_success: "Cập nhật gói thầu thành công",
+                    update_bidding_package_failure: "Cập nhật gói thầu thất bại",
+                    delete_bidding_package_success: "Xóa gói thầu thành công",
+                    delete_bidding_package_failure: "Xóa gói thầu thất bại",
+                },
+
                 // Nhóm dùng chung cho chức năng quản lý tông tin nhân viên
                 tab_name: {
                     menu_basic_infor: "Thông tin cơ bản",
@@ -1980,6 +2039,11 @@ export default {
                 phd: "Tiến sỹ",
                 unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
+                project_experience: "Dự án từng tham gia",
+                project_end_date: "Ngày kết thúc dự án",
+                project_participation_status: "Trạng thài tham gia dự án",
+                project_employee_position: "Vị trí công việc",
+                project_professional_or_managerment: "Kinh nghiệm chuyên môn và quản lý có liên quan",
                 Working_process: "Quá trình công tác",
                 job_description: "Công việc đã làm",
                 reference_information: "Thông tin tham chiếu",
@@ -2221,6 +2285,7 @@ export default {
                     update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
+
                     get_list_employee_success:
                         "Lấy danh sách nhân viên thành công",
                     get_list_employee_faile: "Lấy danh sách nhân viên thất bại",
@@ -2272,7 +2337,26 @@ export default {
                     temporary_residence_required:
                         "Nơi ở hiện tại không được để trống",
                 },
+
+                bidding_package_management: {
+                    type: {
+                        1: "Tư vẫn",
+                        2: "Phi tư vấn",
+                        3: "Hàng hóa",
+                        4: "Xây dựng",
+                        5: "Hỗn hợp"
+                    },
+                    status: {
+                        1: "Hoạt động",
+                        0: "Đã đóng thầu",
+                        2: "Chờ kết quả dự thầu",
+                        3: "Đang thực hiện",
+                        4: "Hoàn thành"
+                    },
+                }
             },
+
+
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {
@@ -4059,8 +4143,8 @@ export default {
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_failure: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
-                select_task_process_template:"Chọn quy trình mẫu",
-                process_template_name:"Tên mẫu quy trình",
+                select_task_process_template: "Chọn quy trình mẫu",
+                process_template_name: "Tên mẫu quy trình",
             },
             task_dashboard: {
                 general_unit_task: "Tổng quan công việc",
@@ -4986,7 +5070,7 @@ export default {
                 equipment: "Công cụ dụng cụ",
                 asset: "Tài sản",
                 category_tree: "Danh mục cây",
-                category_table:"Danh mục bảng",
+                category_table: "Danh mục bảng",
                 bin_location: "Nơi lưu trữ",
                 archive: "Danh mục lưu trữ",
                 1: {
@@ -5059,21 +5143,29 @@ export default {
             bill_management: {
                 text: "Chưa đánh lô cho hàng hóa",
 
-                billType: {
-                    1: "Nhập nguyên vật liệu",
-                    2: "Nhập thành phẩm",
-                    3: "Nhập công cụ, dụng cụ",
-                    4: "Nhập phế phẩm",
-                    5: "Xuất nguyên vật liệu",
-                    6: "Xuất thành phẩm",
-                    7: "Xuất công cụ, dụng cụ",
-                    8: "Xuất phế phẩm",
-                    9: "Kiểm kê định kỳ",
-                    10: "Kiểm kê thường xuyên",
-                    11: "Trả hàng hóa tự sản xuất không đạt kiểm định",
-                    12: "Trả hàng hóa nhập từ nhà cung cấp không đạt kiểm định",
-                    13: "Trả hàng hóa đã xuất kho",
-                    14: "Luân chuyển",
+                goodReceiptBillType: {
+                    1: "Nhập hàng từ nhà máy sản xuất",
+                    2: "Nhập hàng từ nhà cung cấp",
+                    3: "Nhập hàng hóa luân chuyển kho",
+                },
+                goodRIssueBillType: {
+                    1: "Xuất hàng đạt kiểm định đến nhà máy",
+                    2: "Xuất hàng đạt kiểm định đến khách hàng",
+                    3: "Xuất hàng không đạt kiểm định đến nhà máy",
+                    4: "Xuất hàng không đạt kiểm định đến khách hàng",
+                    5: "Xuất hàng luân chuyển kho",
+                },
+                goodReturnBillType: {
+                    1: "Trả hàng từ nhà máy sản xuất",
+                    2: "Trả hàng từ nhà cung cấp",
+                },
+                goodTakeBillType: {
+                    1: "Kiểm kê thường xuyên",
+                    2: "Kiểm kê định kỳ",
+                    3: "kiểm kê dựa trên yêu cầu nhập kho",
+                    4: "kiểm kê dựa trên yêu cầu xuất kho",
+                    5: "kiểm kê dựa trên yêu cầu trả hàng",
+                    6: "kiểm kê dựa trên yêu cầu luân chuyển"
                 },
                 1: {
                     status: "Chờ phê duyệt",
@@ -5092,21 +5184,18 @@ export default {
                     color: "red",
                 },
                 bill_color: {
-                    1: "green",
-                    2: "green",
-                    3: "violet",
+                    1: "orange",
+                    2: "blue",
+                    3: "red",
                     4: "green",
                     5: "blue",
                     6: "violet",
                     7: "red",
                 },
                 bill_status: {
-                    1: "Chờ phê duyệt",
-                    2: "Đã phê duyệt",
-                    3: "Đang thực hiện",
-                    4: "Đã kiểm định chất lượng xong",
-                    5: "Đã hoàn thành",
-                    7: "Đã hủy",
+                    1: "Đang thực hiện công việc",
+                    2: "Đã hoàn thành",
+                    3: "Đã hủy",
                 },
                 bill_receipt_status: {
                     1: "Chờ phê duyệt",
@@ -6173,7 +6262,7 @@ export default {
                 add_lot: "Tạo lô sản xuất",
                 base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                conversion_rate: "Trọng số chuyển đổi",
+                conversion_rate: "Trọng số chuyển đổi sang đơn vị tính cơ bản",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
                 quantity_base_unit: "Số lượng cần sản xuất",
                 product_lot_code: "Mã lô thành phẩm",
@@ -6300,6 +6389,24 @@ export default {
                     9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
                     10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
                 },
+                purchasing_request_in_order: {
+                    2: { content: "Chờ phê duyệt", color: "orange" },
+                    3: { content: "Đã phê duyệt", color: "violet" },
+                    4: { content: "Đã tạo đơn mua hàng", color: "blue" },
+                    5: { content: "Hàng hóa đã được mua về, đang chờ phê duyệt gửi yêu cầu nhập kho", color: "orange" },
+                    6: { content: "Đã gửi yêu cầu nhập kho", color: "blue" },
+                    7: { content: "Đã phê duyệt yêu cầu nhập kho", color: "green" },
+                    8: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
+                    10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
+                },
+                purchasing_request_in_stock: {
+                    6: { content: "Chờ phê duyệt", color: "blue" },
+                    7: { content: "Đã phê duyệt", color: "green" },
+                    8: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
+                    10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
+                },
                 receipt_request_from_order: {
                     1: { content: "Chờ phê duyệt", color: "orange" },
                     2: { content: "Đã phê duyệt, yêu cầu đã được gửi đến kho", color: "green" },
@@ -6320,6 +6427,21 @@ export default {
                     3: { content: "Đã gửi phê duyệt yêu cầu xuất kho", color: "green" },
                     4: { content: "Đã hoàn thành xuất kho", color: "blue" },
                     5: { content: "Đã hủy", color: "red" },
+                },
+                request_create_in_stock: {
+                    1: { content: "Chờ phê duyệt", color: "orange" },
+                    2: { content: "Đã phê duyệt", color: "green" },
+                    3: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    4: { content: "Đã hủy", color: "red" },
+                },
+                stock_rotate_request: {
+                    1: { content: "Chờ phê duyệt", color: "orange" },
+                    2: { content: "Đã phê duyệt", color: "green" },
+                    3: { content: "Đang tiến hành xuất kho", color: "blue" },
+                    4: { content: "Đã hoàn thành xuất kho, chờ nhập kho", color: "blue" },
+                    5: { content: "Đang tiến hành nhập kho", color: "blue" },
+                    6: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    7: { content: "Đã hủy", color: "red" },
                 },
                 search: "Tìm kiếm",
                 select_status: "Chọn trạng thái",
@@ -6376,7 +6498,8 @@ export default {
                 choose_manufacturing_works: "---Chọn nhà máy---",
                 validate_manufacturing_works: "Bạn cần chọn nhà máy",
                 base_infomation: "Thông tin cơ bản",
-                approved_true: 'Phê duyệt yêu cầu'
+                approved_true: 'Phê duyệt yêu cầu',
+                source_request: 'Nguồn đề nghị',
             },
         },
 

@@ -9,6 +9,10 @@ const ProjectSchema = new Schema(
         //     type: String,
         //     default: generateUniqueCode('PJ', 'v1')
         // },
+        projectTemplate: {
+            type: Schema.Types.ObjectId,
+            ref: "ProjectTemplate"
+        },
         name: {
             type: String
         },

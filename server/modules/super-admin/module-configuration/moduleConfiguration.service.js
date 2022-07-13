@@ -7,6 +7,18 @@ const {
 } = require(`../../../helpers/dbHelper`);
 
 /**
+ * Lấy tất cả cấu hình 
+ * @param {*} portal : Tên ngắn của công ty
+ */
+exports.getAllConfiguration = async (portal) => {
+    let config = await ModuleConfiguration(connect(DB_CONNECTION, portal)).findOne();
+    return {
+        humanResourceConfig: config.humanResource,
+        biddingConfig: config.bidding,
+    };
+}
+
+/**
  * Lấy cấu hình chức năng quản lý nhân sự
  * @param {*} portal : Tên ngắn của công ty
  */
@@ -30,6 +42,21 @@ exports.createHumanResourceConfiguration = async (portal) => {
                 shift3Time: 4,
             },
         },
+        bidding: {
+            company: "Công ty công nghệ an toàn thông tin và truyền thông Vnist",
+            address: "Tầng 10, số 266 Đội Cấn, quận Ba Đình, Hà Nội",
+            email: "vnist@gmail.com",
+            phone: "0987654345",
+            taxCode: "564651658496456",
+            representative: {
+                name: "Nguyễn Văn An",
+                role: "Giám đốc"
+            },
+            bank: {
+                name: "SHB - chi nhánh Ba Đình",
+                accountNumber: "98676745678"
+            }
+        },
     });
 }
 
@@ -40,8 +67,16 @@ exports.createHumanResourceConfiguration = async (portal) => {
  */
 exports.editHumanResourceConfiguration = async (portal, data) => {
     let config = await ModuleConfiguration(connect(DB_CONNECTION, portal)).findOne();
-    config.humanResource = data.humanResource
+    if (data.humanResource) {
+        config.humanResource = data.humanResource
+    }
+    if (data.bidding) {
+        config.bidding = data.bidding
+    }
     await config.save();
 
-    return config.humanResource;
+    return {
+        humanResourceConfig: config.humanResource,
+        biddingConfig: config.bidding,
+    };
 };

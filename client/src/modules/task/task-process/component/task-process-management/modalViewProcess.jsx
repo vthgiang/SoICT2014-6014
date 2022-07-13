@@ -9,7 +9,7 @@ import { performTaskAction } from "../../../task-perform/redux/actions";
 function ModalViewProcess(props) {
     const { translate, role, user } = props;
     const { data, listOrganizationalUnit, idProcess, xmlDiagram, processName, processDescription, infoTask, creator } = props;
-
+    
     return (
         <React.Fragment>
             <DialogModal
@@ -29,6 +29,7 @@ function ModalViewProcess(props) {
                     processDescription={processDescription}
                     infoTask={infoTask}
                     creator={creator}
+                    checkManager ={props.checkManager}
                 />
             </DialogModal>
         </React.Fragment>

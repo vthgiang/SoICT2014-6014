@@ -5,6 +5,7 @@ import {
 const initState = {
     isLoading: false,
     humanResourceConfig: '',
+    biddingConfig: '',
     error: "",
 }
 
@@ -16,19 +17,21 @@ export function modelConfiguration(state = initState, action) {
                 ...state,
                 isLoading: true
             };
-            
+
         case ConfigurationConstants.GET_CONFIGURATION_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                    humanResourceConfig: action.payload,
+                humanResourceConfig: action.payload.humanResourceConfig,
+                biddingConfig: action.payload.biddingConfig,
             };
 
         case ConfigurationConstants.EDIT_CONFIGURATION_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                    humanResourceConfig: action.payload,
+                humanResourceConfig: action.payload.humanResourceConfig,
+                biddingConfig: action.payload.biddingConfig,
             };
 
         case ConfigurationConstants.GET_CONFIGURATION_FAILE:

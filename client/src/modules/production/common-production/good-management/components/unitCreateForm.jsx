@@ -8,7 +8,12 @@ function UnitCreateForm(props) {
     const EMPTY_UNIT = {
         name: '',
         conversionRate: '',
-        description: ''
+        description: '',
+        width: '',
+        height: '',
+        depth: '',
+        weight: '',
+        volume: '',
     };
 
     const [state, setState] = useState({
@@ -77,7 +82,7 @@ function UnitCreateForm(props) {
     //         }
 
     //         props.onDataChange(state.listUnit);
-    //         // props.onDataChange(state.listUnit, state.packingRule);
+    //         props.onDataChange(state.listUnit, state.packingRule);
 
     //     }
 
@@ -123,15 +128,15 @@ function UnitCreateForm(props) {
     //             }
     //         }
     //     }
-    //     let sortListUnitArray = sortListUnitArray(subListUnitArray);
-    //     let resultValidate = validateListUnitArray(sortListUnitArray);
+    //     let sortListUnitArr = sortListUnitArray(subListUnitArray);
+    //     let resultValidate = validateListUnitArray(sortListUnitArr);
     //     // Nếu chuỗi tạo thành được 1 packingRule
     //     if (resultValidate) {
-    //         let maxIndexOfArray = sortListUnitArray.length - 1;
-    //         packingRule += sortListUnitArray[maxIndexOfArray].text;
+    //         let maxIndexOfArray = sortListUnitArr.length - 1;
+    //         packingRule += sortListUnitArr[maxIndexOfArray].text;
     //         if (maxIndexOfArray > 0) {
     //             for (let i = maxIndexOfArray - 1; i >= 0; i--) {
-    //                 packingRule += " x " + (sortListUnitArray[i + 1].conversionRate / sortListUnitArray[i].conversionRate) + sortListUnitArray[i].text
+    //                 packingRule += " x " + (sortListUnitArr[i + 1].conversionRate / sortListUnitArr[i].conversionRate) + sortListUnitArr[i].text
     //             }
 
     //         }
@@ -144,7 +149,7 @@ function UnitCreateForm(props) {
             ...state,
             baseUnit: props.baseUnit,
             id: props.id,
-            packingRule: props.packingRule,
+            // packingRule: props.packingRule,
             listUnit: props.initialData
         })
     }
@@ -197,6 +202,14 @@ function UnitCreateForm(props) {
         setState({
             ...state
         })
+    }
+
+    const handleDimensionChange = (data, type) => {
+        state.unit[type] = data;
+        setState({
+            ...state,
+            [type]: data,
+        });
     }
 
     const isUnitsValidated = () => {
@@ -288,36 +301,99 @@ function UnitCreateForm(props) {
     };
 
     const { translate, id } = props;
-    let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate, errorOnBaseUnit, listUnitSelected, packingRule } = state;
+    let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate, errorOnBaseUnit, listUnitSelected } = state;
     return (
 
         <fieldset className="scheduler-border">
-            <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}
+            <legend className="scheduler-border">{"Quy tắc đóng gói"}
                 <a onClick={() => showListExplainUnit()}>
                     <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                 </a>
             </legend>
-
-            <div className={`form-group ${!errorOnUnitName ? "" : "has-error"}`}>
-                <label className="control-label">{translate('manage_warehouse.good_management.unit_name')}</label>
-                <div>
-                    <input type="text" className="form-control" placeholder={translate('manage_warehouse.good_management.unit_name')} value={unit.name} onChange={handleUnitNameChange} />
+            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <div className={`form-group ${!errorOnUnitName ? "" : "has-error"}`}>
+                    <label className="control-label">{translate('manage_warehouse.good_management.unit_name')}</label>
+                    <div>
+                        <input type="text" className="form-control" placeholder={translate('manage_warehouse.good_management.unit_name')} value={unit.name} onChange={handleUnitNameChange} />
+                    </div>
+                    <ErrorLabel content={errorOnUnitName} />
                 </div>
-                <ErrorLabel content={errorOnUnitName} />
             </div>
-
-            <div className={`form-group ${!errorOnConversionRate ? "" : "has-error"}`}>
-                <label className="control-label">{translate('manage_warehouse.good_management.conversion_rate')}</label>
-                <div>
-                    <input type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.conversion_rate')} value={unit.conversionRate} onChange={handleConversionRateChange} />
+            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <div className={`form-group ${!errorOnConversionRate ? "" : "has-error"}`}>
+                    <label className="control-label">{translate('manage_warehouse.good_management.conversion_rate')}</label>
+                    <div>
+                        <input type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.conversion_rate')} value={unit.conversionRate} onChange={handleConversionRateChange} />
+                    </div>
+                    <ErrorLabel content={errorOnConversionRate} />
                 </div>
-                <ErrorLabel content={errorOnConversionRate} />
             </div>
-
-            <div className="form-group">
-                <label className="control-label">{translate('manage_warehouse.good_management.description')}</label>
-                <div>
-                    <textarea type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.description')} value={unit.description} onChange={handleDescriptionChange} />
+            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <div className={`form-group`}>
+                    <label>{"Khối lượng (kg)"}</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        value={unit.weight}
+                        onChange={(e) => handleDimensionChange(e.target.value, "weight")}
+                        placeholder="Ví dụ: 1kg"
+                    />
+                </div>
+            </div>
+            <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                <div className={`form-group`}>
+                    <label>{"Chiều dài (m)"}</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        value={unit.height}
+                        onChange={(e) => handleDimensionChange(e.target.value, "height")}
+                        placeholder="Ví dụ: 0.5m"
+                    />
+                </div>
+            </div>
+            <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                <div className={`form-group`}>
+                    <label>{"Chiều rộng (m)"}</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        value={unit.width}
+                        onChange={(e) => handleDimensionChange(e.target.value, "width")}
+                        placeholder="Ví dụ: 0.1 m"
+                    />
+                </div>
+            </div>
+            <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                <div className={`form-group`}>
+                    <label>{"Chiều cao (m)"}</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        value={unit.depth}
+                        onChange={(e) => handleDimensionChange(e.target.value, "depth")}
+                        placeholder="Ví dụ: 1m"
+                    />
+                </div>
+            </div>
+            <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                <div className={`form-group`}>
+                    <label>{"Thể tích"}</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        value={unit.volume}
+                        onChange={(e) => handleDimensionChange(e.target.value, "volume")}
+                        placeholder="Ví dụ: 1m3"
+                    />
+                </div>
+            </div>
+            <div className="col-xs-12">
+                <div className="form-group">
+                    <label className="control-label">{translate('manage_warehouse.good_management.description')}</label>
+                    <div>
+                        <textarea type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.description')} value={unit.description} onChange={handleDescriptionChange} />
+                    </div>
                 </div>
             </div>
 
@@ -335,8 +411,13 @@ function UnitCreateForm(props) {
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th title={translate('manage_warehouse.good_management.name')}>{translate('manage_warehouse.good_management.name')}</th>
+                        <th title={"Tên đơn vị"}>{'Tên đơn vị'}</th>
                         <th title={translate('manage_warehouse.good_management.conversion_rate')}>{translate('manage_warehouse.good_management.conversion_rate')}</th>
+                        <th title={"Chiều dài"}>{'Chiều dài'}</th>
+                        <th title={"Chiều rộng"}>{'Chiều rộng'}</th>
+                        <th title={"Chiều cao"}>{'Chiều cao'}</th>
+                        <th title={"Thể tích"}>{'Thể tích'}</th>
+                        <th title={"Khối lượng"}>{'Khối lượng'}</th>
                         <th title={translate('manage_warehouse.good_management.description')}>{translate('manage_warehouse.good_management.description')}</th>
                         <th>{translate('task_template.action')}</th>
                     </tr>
@@ -348,6 +429,11 @@ function UnitCreateForm(props) {
                                 <tr key={index}>
                                     <td>{item.name}</td>
                                     <td>{item.conversionRate}</td>
+                                    <td>{item.height ? item.height : ''}</td>
+                                    <td>{item.width ? item.width : ''}</td>
+                                    <td>{item.depth ? item.depth : ''}</td>
+                                    <td>{item.volume ? item.volume : ''}</td>
+                                    <td>{item.weight ? item.weight : ''}</td>
                                     <td>{item.description}</td>
                                     <td>
                                         <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditUnit(item, index)}><i className="material-icons"></i></a>
@@ -359,26 +445,26 @@ function UnitCreateForm(props) {
                 </tbody>
             </table>
             {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
-                        <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="text-red"> * </span></label>
-                        <SelectMulti
-                            id={`multi-select-base-unit-${id}`}
-                            items={getListUnitArray()}
-                            options={{ nonSelectedText: translate('manage_warehouse.good_management.non_choose_base_unit'), allSelectedText: translate('manage_warehouse.good_management.choose_base_unit_all') }}
-                            onChange={handleSelectMultiBaseUnit}
-                        >
-                        </SelectMulti>
+                <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
+                    <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="text-red"> * </span></label>
+                    <SelectMulti
+                        id={`multi-select-base-unit-${id}`}
+                        items={getListUnitArray()}
+                        options={{ nonSelectedText: translate('manage_warehouse.good_management.non_choose_base_unit'), allSelectedText: translate('manage_warehouse.good_management.choose_base_unit_all') }}
+                        onChange={handleSelectMultiBaseUnit}
+                    >
+                    </SelectMulti>
 
-                    </div>
                 </div>
-                <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
-                        <ErrorLabel content={errorOnBaseUnit} />
-                        {
-                            packingRule || !errorOnBaseUnit && listUnitSelected.length > 0 && packingRule
-                        }
-                    </div>
-                </div> */}
+            </div>
+            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
+                    <ErrorLabel content={errorOnBaseUnit} />
+                    {
+                        packingRule || !errorOnBaseUnit && listUnitSelected.length > 0 && packingRule
+                    }
+                </div>
+            </div> */}
 
         </fieldset >
     )

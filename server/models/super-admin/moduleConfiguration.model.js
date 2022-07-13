@@ -29,6 +29,46 @@ const ModuleConfigurationSchema = new Schema({
             type: String,
         }
     },
+    // Cấu hình cho module quản lý đấu thầu
+    bidding: {
+        // công ty
+        company: {
+            type: String,
+        },
+        // địa chỉ 
+        address: {
+            type: String,
+        },
+        // địa chỉ email 
+        email: {
+            type: String,
+        },
+        // số đth
+        phone: {
+            type: String,
+        },
+        // mã số thuế
+        taxCode: {
+            type: String,
+        },
+        // người đại diện
+        representative: {
+            name: { // tên
+                type: String,
+            },
+            role: { // chức vụ
+                type: String,
+            },
+        },
+        bank: { // Tài khoản ngân hàng
+            name: { // tên ngân hàng
+                type: String,
+            },
+            accountNumber: { // số tài khoản 
+                type: String,
+            },
+        },
+    },
 }, {
     timestamps: true
 });

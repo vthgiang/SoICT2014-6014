@@ -64,11 +64,9 @@ const TableTasksProject = (props) => {
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
-    useEffect(() => {
-        if (currentTaskId) {
-            window.$(`#modelPerformTask${currentTaskId}`).modal('show')
-        }
-    }, [currentTaskId])
+    // useEffect(() => {
+    //     window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+    // }, [currentTaskId])
 
     useEffect(() => {
         let data = [];
@@ -277,11 +275,17 @@ const TableTasksProject = (props) => {
 
     // Xem thông tin công việc
     const handleShowDetailInfo = (id) => {
-        setState({
-            ...state,
-            currentTaskId: id
+        setState(state => {
+            return {
+                ...state,
+                currentTaskId: id
+            }
         })
-        window.$(`#modelPerformTask${id}`).modal('show')
+
+        setTimeout(() => {
+            // window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+            window.$(`#modelPerformTask${id}`).modal('show')
+        }, 500);
     }
 
     const handleUpdateData = () => {

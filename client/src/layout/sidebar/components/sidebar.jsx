@@ -145,6 +145,14 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            <Item
+                                item={{
+                                    name: "menu.manage_system_admin_page",
+                                    icon: "fa fa-gears",
+                                    path: "/system/manage-system-admin-page"
+                                }}
+                            />
+
                             {/* Phân quyền IAM-RBAC */}
                             <GroupItem
                                 groupItem={{
@@ -357,6 +365,22 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            {/* Quản lý đấu thầu */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_bidding",
+                                    icon: "fa fa-folder-open",
+                                    list: [
+                                        { name: "menu.bidding_dashboard", icon: "fa fa-tachometer", path: "/bidding-dashboard" },
+                                        { name: "menu.list_bidding_package", icon: "fa fa-archive", path: "/bidding-list-package" },
+                                        { name: "menu.list_search_for_package", icon: "fa fa-search", path: "/bidding-search-for-package" },
+                                        { name: "menu.list_bidding_contract", icon: "fa fa-file-text-o", path: "/bidding-list-contract" },
+                                        { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/bidding-project-template" },
+                                        { name: "menu.manage_tag", icon: "fa fa-tags", path: "/tags-management" },
+                                    ],
+                                }}
+                            />
+
 
                             {/* Quản lý dự án */}
                             <GroupItem
@@ -367,6 +391,7 @@ class SideBar extends Component {
                                         { name: "menu.projects_list", icon: "fa fa-dashboard", path: "/project/projects-list" },
                                         { name: "menu.project_report", icon: "fa fa-sitemap", path: "/project/project-report" },
                                         { name: "menu.project_evaluation", icon: "fa fa-user-plus", path: "/project/project-evaluation" },
+                                        // { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/project/projects-template-list" },
                                     ],
                                 }}
                             />
@@ -378,7 +403,7 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
-                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all"},
+                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all" },
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
@@ -389,9 +414,11 @@ class SideBar extends Component {
                                         { name: "menu.manage_work_plan", icon: "fa fa-calendar", path: "/hr-manage-work-plan" },
                                         { name: "menu.manage_field", icon: "fa fa-list-ul", path: "/hr-manage-field" },
                                         // nhân sự gói thầu
-                                        // { name: "menu.list_search_for_package", icon: "fa fa-calendar", path: "/hr-search-for-package" },
-                                        // { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
-                                        // { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
+                                        { name: "menu.list_search_for_package", icon: "fa fa-search", path: "/hr-search-for-package" },
+                                        // { name: "menu.list_bidding_package", icon: "fa fa-archive", path: "/hr-list-bidding-package" },
+                                        { name: "menu.list_certificate", icon: "fa fa-certificate", path: "/hr-list-certificate" },
+                                        { name: "menu.list_major", icon: "fa fa-briefcase", path: "/hr-list-major" },
+                                        { name: "menu.list_career_position", icon: "fa fa-handshake-o", path: "/hr-list-career-position" },
                                     ],
                                 }}
                             />
@@ -688,7 +715,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.request_management",
                                             icon: "fa fa-file-text-o",
-                                            path: "/request-management/order",
+                                            path: "/product-request-management/order",
                                         },
                                     ],
                                 }}
@@ -743,7 +770,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.request_management",
                                             icon: "fa fa-reorder",
-                                            path: "/request-management/stock",
+                                            path: "/product-request-management/stock",
                                         },
                                     ],
                                 }}
@@ -822,7 +849,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.request_management",
                                             icon: "fa fa-file-text-o",
-                                            path: "/request-management/manufacturing",
+                                            path: "/product-request-management/manufacturing",
                                         },
                                     ],
                                 }}

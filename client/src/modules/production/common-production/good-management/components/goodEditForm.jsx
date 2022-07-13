@@ -54,6 +54,11 @@ function GoodEditForm(props) {
                 salesPriceVariance: props.salesPriceVariance ? props.salesPriceVariance : "",
                 numberExpirationDate: props.numberExpirationDate ? props.numberExpirationDate : "",
                 excludingGoods: excludingGoods,
+                width : props.width ? props.width : "",
+                height : props.height ? props.height : "",
+                depth : props.depth ? props.depth : "",
+                weight : props.weight ? props.weight : "",
+                volume : props.volume ? props.volume : "",
                 errorOnName: undefined,
                 errorOnCode: undefined,
                 errorOnBaseUnit: undefined,
@@ -306,6 +311,13 @@ function GoodEditForm(props) {
         });
     }
 
+    const handleDimensionChange = (data, type) => {
+        setState({
+            ...state,
+            [type]: data,
+        });
+    }
+
 
     const handleNumberExpirationDateChange = (e) => {
         const { value } = e.target;
@@ -377,6 +389,11 @@ function GoodEditForm(props) {
         errorOnNumberExpirationDate,
         isSeflProduced,
         excludingGoods,
+        width,
+        height,
+        depth,
+        weight,
+        volume,
     } = state;
     const dataSelectBox = getAllCategory();
 
@@ -396,7 +413,7 @@ function GoodEditForm(props) {
                 msg_failure={translate("manage_warehouse.good_management.add_faile")}
                 disableSubmit={!isFormValidated()}
                 func={save}
-                size={50}
+                size={75}
             >
                 <form id={`form-edit-good`}>
                     <div className="row">
@@ -460,21 +477,6 @@ function GoodEditForm(props) {
                                 <input type="number" className="form-control" value={numberExpirationDate ? numberExpirationDate : ''} onChange={handleNumberExpirationDateChange} />
                                 <ErrorLabel content={errorOnNumberExpirationDate} />
                             </div>
-                            <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.good_management.excluding_good')}</label>
-                                <a onClick={() => showExplainExcludingGoods()}>
-                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
-                                </a>
-                                <SelectBox
-                                    id={`select-excluding-goods-edit`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={excludingGoods}
-                                    items={dataGoods}
-                                    onChange={handleExcludingGoodsChange}
-                                    multiple={true}
-                                />
-                            </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!pricePerBaseUnitError ? "" : "has-error"}`}>
@@ -507,6 +509,83 @@ function GoodEditForm(props) {
                                     placeholder="Ví dụ: 50000"
                                 />
                                 <ErrorLabel content={salesPriceVarianceError} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                            <div className={`form-group`}>
+                                <label>{"Chiều dài (m)"}</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={height}
+                                    onChange={(e) => handleDimensionChange(e.target.value, "height")}
+                                    placeholder="Ví dụ: 0.5m"
+                                />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                            <div className={`form-group`}>
+                                <label>{"Chiều rộng (m)"}</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={width}
+                                    onChange={(e) => handleDimensionChange(e.target.value, "width")}
+                                    placeholder="Ví dụ: 0.1m"
+                                />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                            <div className={`form-group`}>
+                                <label>{"Chiều cao (m)"}</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={depth}
+                                    onChange={(e) => handleDimensionChange(e.target.value, "depth")}
+                                    placeholder="Ví dụ: 1m"
+                                />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                            <div className={`form-group`}>
+                                <label>{"Thể tích (m3)"}</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={volume}
+                                    onChange={(e) => handleDimensionChange(e.target.value, "volume")}
+                                    placeholder="Ví dụ: 1m3"
+                                />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className={`form-group`}>
+                                <label>{translate('manage_warehouse.good_management.excluding_good')}</label>
+                                <a onClick={() => showExplainExcludingGoods()}>
+                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                </a>
+                                <SelectBox
+                                    id={`select-excluding-goods-edit`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={excludingGoods}
+                                    items={dataGoods}
+                                    onChange={handleExcludingGoodsChange}
+                                    multiple={true}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <label>{"Khối lượng (kg)"}</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={weight}
+                                    onChange={(e) => handleDimensionChange(e.target.value, "weight")}
+                                    placeholder="Ví dụ: 1kg"
+                                />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

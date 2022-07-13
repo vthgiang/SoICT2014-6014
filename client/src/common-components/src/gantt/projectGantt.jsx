@@ -120,7 +120,7 @@ function ProjectGantt(props) {
             gantt.templates.tooltip_text = function (start, end, task) {
                 return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.taskName}
                         <br/>
-                        <b>Thời điểm bắt đầu dự kiến:</b> ${moment(task.start_date).format("DD-MM-YYYY hh:mm A")} 
+                        <b>Thời điểm bắt đầu dự kiến:</b> ${moment(task.planned_start).format("DD-MM-YYYY hh:mm A")} 
                         <br/>
                         <b>Thời điểm kết thúc dự kiến:</b> ${moment(task.planned_end).format("DD-MM-YYYY hh:mm A")}
                         <br/>

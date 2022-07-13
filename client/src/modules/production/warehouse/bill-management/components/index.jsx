@@ -15,6 +15,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { CrmCustomerActions } from '../../../../crm/customer/redux/actions';
 import { millActions } from '../../../manufacturing/manufacturing-mill/redux/actions';
+import { worksActions } from '../../../manufacturing/manufacturing-works/redux/actions';
 
 function BillManagement(props) {
 
@@ -29,11 +30,13 @@ function BillManagement(props) {
         const { limit, page, currentRole, group } = state;
         props.getBillsByType({ page, limit, managementLocation: currentRole });
         props.getAllBillsByGroup({ group, managementLocation: currentRole });
-        props.getAllStocks({ managementLocation: currentRole });
+        props.getAllStocks();
         props.getUser();
         props.getAllGoods();
         props.getCustomers();
         props.getAllManufacturingMills();
+        props.getAllManufacturingWorks();
+        
     }, [])
 
     const handleShowDetailInfo = async (id) => {
@@ -371,25 +374,8 @@ function BillManagement(props) {
 
     const handleCancelBill = (bill) => {
         const data = {
-            status: '7',
+            status: '3',
             oldStatus: bill.status,
-            // group: bill.group,
-            // fromStock: bill.fromStock,
-            // code: bill.code,
-            // type: bill.type,
-            // group: bill.group,
-            // users: bill.users,
-            // approvers: bill.approvers,
-            // qualityControlStaffs: bill.listQualityControlStaffs,
-            // responsibles: bill.responsibles,
-            // accountables: bill.accountables,
-            // customer: bill.customer,
-            // phone: bill.phone,
-            // email: bill.email,
-            // address: bill.address,
-            // description: bill.description,
-            // goods: bill.goods,
-            // oldGoods: bill.goods
         }
         props.editBill(bill._id, data);
     }
@@ -474,7 +460,7 @@ function BillManagement(props) {
                 <li><a href="#bill-good-issues" data-toggle="tab" onClick={() => handleGoodIssue()}>{translate('manage_warehouse.bill_management.good_issue')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '2').length})</a></li>
                 <li><a href="#bill-good-returns" data-toggle="tab" onClick={() => handleGoodReturn()}>{translate('manage_warehouse.bill_management.good_return')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '3').length})</a></li>
                 <li><a href="#bill-stock-takes" data-toggle="tab" onClick={() => handleStockTake()}>{translate('manage_warehouse.bill_management.stock_take')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '4').length})</a></li>
-                <li><a href="#bill-stock-rotates" data-toggle="tab" onClick={() => handleStockRotate()}>{translate('manage_warehouse.bill_management.stock_rotate')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '5').length})</a></li>
+                {/* <li><a href="#bill-stock-rotates" data-toggle="tab" onClick={() => handleStockRotate()}>{translate('manage_warehouse.bill_management.stock_rotate')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '5').length})</a></li> */}
             </ul>
             <div className="tab-content">
 
@@ -622,7 +608,7 @@ function BillManagement(props) {
                     />
                 }
 
-                {group === '5' &&
+                {/* {group === '5' &&
                     <RotateManagement
                         handleEdit={handleEdit}
                         formatDate={formatDate}
@@ -650,7 +636,7 @@ function BillManagement(props) {
                         handleSearchByStatus={handleSearchByStatus}
 
                     />
-                }
+                } */}
             </div>
         </div>
     );
@@ -668,7 +654,8 @@ const mapDispatchToProps = {
     getAllGoods: GoodActions.getAllGoods,
     getCustomers: CrmCustomerActions.getCustomers,
     editBill: BillActions.editBill,
-    getAllManufacturingMills: millActions.getAllManufacturingMills
+    getAllManufacturingMills: millActions.getAllManufacturingMills,
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillManagement));

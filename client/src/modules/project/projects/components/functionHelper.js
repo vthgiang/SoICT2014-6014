@@ -41,6 +41,10 @@ export const getListDepartments = (usersInUnitsOfCompany) => {
 }
 
 // Lấy tên của phòng ban/ đơn vị
+export const convertDepartmentIdToNameV2 = (usersInUnitsOfCompany, departmentId) => {
+    return usersInUnitsOfCompany.find(item => String(item.value) === String(departmentId))?.text;
+}
+
 export const convertDepartmentIdToDepartmentName = (usersInUnitsOfCompany, departmentId) => {
     if (!usersInUnitsOfCompany) return [];
     const result = usersInUnitsOfCompany.filter(item => item.id === departmentId)?.[0]?.department;
@@ -188,6 +192,44 @@ export const getProjectParticipants = (projectDetail, hasManagerAndCreator = fal
         return ({
             text: item.name,
             value: item._id
+        })
+    });
+    return projectParticipants;
+}
+
+// dùng khi tạo task project cho project by contract 
+export const getProjectParticipantsByArrId = (projectDetail, listUsers, hasManagerAndCreator = false) => {
+    let projectParticipants = [];
+    if (hasManagerAndCreator) {
+        const formattedManagerArr = projectDetail?.projectManager?.map(item => {
+            return ({
+                text: convertUserIdToUserName(listUsers, item),
+                value: item
+            })
+        })
+        let formattedEmployeeArr = [];
+        if (Array.isArray(projectDetail?.responsibleEmployees)) {
+            for (let item of projectDetail?.responsibleEmployees) {
+                if (!projectDetail?.projectManager.find(managerItem => managerItem === item)) {
+                    formattedEmployeeArr.push({
+                        text: convertUserIdToUserName(listUsers, item),
+                        value: item
+                    })
+                }
+            }
+        }
+
+        if (!projectParticipants || !formattedManagerArr || !formattedEmployeeArr) {
+            return []
+        }
+        projectParticipants = formattedManagerArr.concat(formattedEmployeeArr)
+
+        return projectParticipants;
+    }
+    projectParticipants = projectDetail?.responsibleEmployees?.map(item => {
+        return ({
+            text: convertUserIdToUserName(listUsers, item),
+            value: item
         })
     });
     return projectParticipants;

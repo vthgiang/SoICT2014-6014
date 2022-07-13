@@ -578,9 +578,9 @@ exports.links = [
             { path: '/bills/:id', method: 'PATCH' },
             { path: '/bills/get-detail-bill/:id', method: 'GET' },
 
-            { path: '/request-management/stock', method: 'GET' },
-            { path: '/request-management/manufacturing', method: 'GET' },
-            { path: '/request-management/order', method: 'GET' },
+            { path: '/product-request-management/stock', method: 'GET' },
+            { path: '/product-request-management/manufacturing', method: 'GET' },
+            { path: '/product-request-management/order', method: 'GET' },
 
             //order
             { path: "/orders", method: "GET" },
@@ -661,6 +661,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/system/apis-default-management',
+        apis: ['@all']
+    }, {
+        url: '/system/manage-system-admin-page', 
         apis: ['@all']
     }, {
         url: '/system/privilege-api-management',
@@ -787,6 +790,53 @@ exports.links = [
     //     url: '/hr-search-for-package',
     //     apis: ['@all']
     // },
+    
+    {
+        url: '/hr-list-major',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-bidding-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding/bidding-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-certificate',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-career-position',
+        apis: ['@all']
+    }, {
+        url: '/hr-search-for-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-management-package',
+        apis: ['@all']
+    },
+    {
+        url: '/bidding-dashboard',
+        apis: ['@all']
+    },
+    {
+        url: '/bidding-list-contract',
+        apis: ['@all']
+    }, {
+        url: '/bidding-search-for-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-management-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-list-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-project-template',
+        apis: ['@all']
+    }, {
+        url: '/tags-management',
+        apis: ['@all']
+    },
+
     {
         url: '/kpi-units/create-for-admin',
         apis: ['@all']
@@ -1069,13 +1119,13 @@ exports.links = [
         url: '/manage-manufacturing-lot',
         apis: ['@all']
     }, {
-        url: '/request-management/stock',
+        url: '/product-request-management/stock',
         apis: ['@all']
     }, {
-        url: '/request-management/manufacturing',
+        url: '/product-request-management/manufacturing',
         apis: ['@all']
     }, {
-        url: '/request-management/order',
+        url: '/product-request-management/order',
         apis: ['@all']
     }, {
         url: '/hr-manage-field',
@@ -1092,6 +1142,14 @@ exports.links = [
     },
     {
         url: '/project/project-details',
+        apis: ['@all']
+    },
+    {
+        url: '/project/projects-template-list',
+        apis: ['@all']
+    },
+    {
+        url: '/project/project-template-details',
         apis: ['@all']
     },
     {
@@ -1165,6 +1223,10 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/employees-infomation',
+        apis: ['@all']
+    },
+    {
+        url: '/majors',
         apis: ['@all']
     }
 ];

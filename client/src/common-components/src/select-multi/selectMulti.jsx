@@ -107,8 +107,8 @@ class SelectMulti extends Component {
                     </select>) : (<select className="form-control" style={{display: "none"}} ref="selectmulti" id={id}
                                  multiple="multiple" value={value} onChange={() => {}}>
                            <option value='' disabled={true}>Empty</option>
-                            })}
-                        </select>)}
+                        </select>)
+                }
                 </div>
             </React.Fragment>
         );

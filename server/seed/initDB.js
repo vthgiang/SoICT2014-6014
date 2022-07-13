@@ -145,6 +145,11 @@ const initDB = async () => {
             url: '/system/roles-default-management',
             description: 'Thông tin về các role default trong csdl',
             deleteSoft: false
+        },
+        {
+            url: '/system/manage-system-admin-page',
+            description: 'Quản lý trang quản trị hệ thống',
+            deleteSoft: false
         }
     ]);
     console.log("@Created LINKS.");
@@ -182,6 +187,11 @@ const initDB = async () => {
         }
         , {
             resourceId: links[7]._id,
+            resourceType: 'Link',
+            roleId: roleSystemAdmin._id
+        }
+        , {
+            resourceId: links[8]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
         }

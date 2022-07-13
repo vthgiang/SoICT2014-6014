@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Models = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { freshObject } = require(`../../../helpers/functionHelper`);
+const {ObjectId} = require("mongodb");
 
 const { Supplies, PurchaseInvoice } = Models;
 
@@ -92,7 +93,12 @@ exports.createPurchaseInvoices = async (portal, data) => {
                 price: data[i].price,
                 supplier: data[i].supplier,
             });
-
+            const supply = await Supplies(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    { _id: ObjectId(data[i].supplies)},
+                    { $push: {purchaseInvoices: createInvoice._id}}
+                );
+            console.log('supply in create purchaseInvoice ', supply);
         }
         let purchaseInvoices;
         if (createInvoice) {
@@ -141,6 +147,12 @@ exports.updatePurchaseInvoice = async (portal, id, data) => {
 
     await oldInvoice.save();
 
+    const supply = await Supplies(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(
+            { _id: ObjectId(data.supplies)},
+            { $addToSet: {purchaseInvoices: oldInvoice._id}}
+        );
+
     let purchaseInvoice = await PurchaseInvoice(connect(DB_CONNECTION, portal))
         .findById({ _id: oldInvoice._id })
         .populate({ path: 'supplies' });
@@ -155,7 +167,24 @@ exports.updatePurchaseInvoice = async (portal, id, data) => {
 exports.deletePurchaseInvoices = async (portal, ids) => {
     let invoices = await PurchaseInvoice(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: ids.map(item => mongoose.Types.ObjectId(item)) } });
-
+    let supplies = await Supplies(connect(DB_CONNECTION, portal))
+        .find({}).exec();
+    for(let i = 0; i < supplies.length; i++) {
+        console.log("supply before update: ", supplies[i]);
+        await Supplies(connect(DB_CONNECTION, portal))
+            .updateOne(
+                {
+                    _id: mongoose.Types.ObjectId(supplies[i]._id)
+                },
+                {
+                    $pull: {
+                        purchaseInvoices: {
+                            _id: { $in: ids.map(item => mongoose.Types.ObjectId(item))}
+                        }
+                    }
+                });
+        console.log("supply after update: ", supplies[i]);
+    }
     return invoices;
 };
 

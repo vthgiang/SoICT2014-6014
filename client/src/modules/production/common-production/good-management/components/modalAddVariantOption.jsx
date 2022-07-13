@@ -181,7 +181,7 @@ function ModalAddVariantOption(props) {
                                             <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} />
                                             {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
                                         </div>
-                                        <a onClick={() => delete_function(index)}><p className='text-red'>- Xóa tùy chọn</p></a>
+                                        <a onClick={() => delete_function(index)}><p className='text-red'>Xóa thuộc tính</p></a>
                                     </td>
 
                                     <td>
@@ -193,7 +193,7 @@ function ModalAddVariantOption(props) {
                                             </div>
 
                                         }) : <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}> </div>}
-                                        <a style={{textAlign : 'left'}} onClick={() => handleAddVariantOptionValue(index)}><p className='text-green'>+ Thêm giá trị mới</p></a>
+                                        <a style={{textAlign : 'left'}} onClick={() => handleAddVariantOptionValue(index)}><p className='text-green'>Thêm giá trị mới</p></a>
                                     </td>
                                 </tr>
                             })}

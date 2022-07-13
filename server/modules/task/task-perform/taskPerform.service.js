@@ -3,6 +3,7 @@ const fs = require("fs");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 const sumBy = require('lodash/sumBy');
+const { sendEmail } = require(`../../../helpers/emailHelper`);
 
 const { Task, User, UserRole, Role, OrganizationalUnit, OrganizationalUnitKpi, EmployeeKpi } = require(`../../../models`);
 
@@ -78,7 +79,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       { path: "hoursSpentOnTask.contributions.employee", select: "name" },
       {
         path: "process",
-        populate: {
+        populate: [{
           path: "tasks",
           populate: [
             { path: "parent", select: "name" },
@@ -136,7 +137,8 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
               select: "name email avatar",
             },
           ],
-        },
+        }, { path: 'processTemplate' },
+        { path: 'processTemplate', populate: { path: 'processTemplates.process' } }],
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
@@ -278,7 +280,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       info: true,
     };
   }
-  
+
   task.evaluations.reverse();
   task.logs.reverse()
   task = task.toObject();
@@ -1590,6 +1592,10 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
     description: body.description,
     files: files,
   };
+
+  console.log("-------params", params);
+  console.log("-------comment", body);
+  console.log("-------user", user);
   const taskComment = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
     params.taskId,
     {
@@ -1722,14 +1728,19 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
     ]);
 
-  const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => o._id);
-  const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => o._id);
+  console.log("---------taskComment", taskComment);
+  const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => { return { _id: o._id, email: o.email } });
+  const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => { return { _id: o._id, email: o.email } });
 
-  const userReceive = [...resEmployees, ...accEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
+  const userReceive = [...resEmployees, ...accEmployees].map(o => o._id).filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
+  const emailReceive = [...resEmployees, ...accEmployees].map(o => o.email).filter(obj => JSON.stringify(obj) !== JSON.stringify(user.email))
   const associatedData = {
     dataType: "realtime_tasks",
     value: taskComment
   }
+  console.log("---------user", user);
+  console.log("---------userReceive", userReceive);
+  console.log("---------emailRecive", emailReceive);
 
   const data = {
     organizationalUnits: taskComment.organizationalUnit && taskComment.organizationalUnit._id,
@@ -1744,9 +1755,89 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
       description: `<p><strong>${taskComment.name}:</strong> ${user.name} đã thêm một bình luận mới trong mục trao đổi.</p>`
     }
   };
+  let emailContent = `<html>
+          <head>
+              <style>
+                  .wrapper {
+                      width: 100%;
+                      min-width: 580px;
+                      background-color: #FAFAFA;
+                      padding: 10px 0;
+                  }
+                  .userName {
+                    font-weight: 700;
+                    color: #385898;
+                    cursor: pointer;
+                  }
+          
+                  .info {
+                      list-style-type: none;
+                  }
+          
+                  @media screen and (max-width: 900px) {
+                      .form {
+                          border: solid 1px #dddddd;
+                          padding: 50px 30px;
+                          border-radius: 3px;
+                          margin: 0px 5%;
+                          background-color: #FFFFFF;
+                      }
+                  }
+          
+                  .form {
+                      border: solid 1px #dddddd;
+                      padding: 50px 30px;
+                      border-radius: 3px;
+                      margin: 0px 25%;
+                      background-color: #FFFFFF;
+                  }
+          
+                  .title {
+                      text-align: center;
+                  }
+          
+                  .footer {
+                      margin: 0px 25%;
+                      text-align: center;
+          
+                  }
+              </style>
+          </head>
+          
+          <body>
+              <div class="wrapper">
+                  <div class="title">
+                      <h1>${process.env.WEB_NAME}</h1>
+                  </div>
+                  <div class="form">
+                      <p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${taskComment.name}</a></p>
+                      <br>
+                      <a class="userName">${user.name}</a>
+                      ${body.description}
+                  </div>
+                  <div class="footer">
+                      <p>Copyright by
+                          <i>Công ty Cổ phần Công nghệ
+                              <br />
+                              An toàn thông tin và Truyền thông Việt Nam</i>
+                      </p>
+                  </div>
+              </div>
+          </body>
+        </html>`;
 
-  if (userReceive && userReceive.length > 0)
-    NotificationServices.createNotification(portal, user.company._id, data)
+  //console.log("-----------------emailContent", emailContent, emailReceive, taskComment.name);
+  if (userReceive && userReceive.length > 0) {
+    NotificationServices.createNotification(portal, user.company._id, data);
+  }
+  if (emailReceive && emailReceive.length > 0) {
+    sendEmail(
+      emailReceive,
+      taskComment.name,
+      '',
+      emailContent,
+    )
+  }
 
   return taskComment.taskComments;
 };
@@ -3091,12 +3182,34 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       })
     }
   }
-
+  let statusActualStartDate = false;
+  if (taskItem.status === "wait_for_approval" && status[0] === "inprocess") statusActualStartDate = true;
   // cập nhật thông tin cơ bản
   await Task(connect(DB_CONNECTION, portal)).updateOne(
     { _id: taskId },
     {
-      $set: status ? {
+      $set: status ? statusActualStartDate ? {
+        name: name,
+        description: description,
+        progress: progress,
+        priority: parseInt(priority[0]),
+        status: status[0],
+        formula: formula,
+        parent: parent,
+        taskProject: taskProject ?? undefined,
+        tags: tags,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        actualStartDate: new Date(),
+        collaboratedWithOrganizationalUnits: newCollab,
+
+        responsibleEmployees: responsibleEmployees,
+        consultedEmployees: consultedEmployees,
+        accountableEmployees: accountableEmployees,
+        informedEmployees: informedEmployees,
+
+        inactiveEmployees: inactiveEmployees,
+      } : {
         name: name,
         description: description,
         progress: progress,
@@ -3577,7 +3690,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       { path: "hoursSpentOnTask.contributions.employee", select: "name" },
       {
         path: "process",
-        populate: {
+        populate: [{
           path: "tasks",
           populate: [
             { path: "parent", select: "name" },
@@ -3634,8 +3747,9 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
               path: "commentsInProcess.comments.creator",
               select: "name email avatar",
             },
-          ],
-        },
+          ]
+        }, { path: 'processTemplate' },
+        { path: 'processTemplate', populate: { path: 'processTemplates.process' } }]
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
@@ -5066,6 +5180,8 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     ]);
   newTask.evaluations.reverse();
 
+  console.log("--------newTask", newTask.evaluations[0].results);
+
   return newTask;
 };
 
@@ -5835,7 +5951,9 @@ exports.confirmTask = async (portal, taskId, userId) => {
 /** Yêu cầu kết thúc công việc */
 exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   const { userId, taskStatus, description, type, role } = data;
-  let task = await this.getTaskById(portal, taskId, userId);
+  let task = await this.getTaskById(portal, taskId, userId).populate([
+    { path: 'process' , populate:[{path:"tasks"},{path:"processChilds"}]},
+  ]);
   const requestStatusNumber = type === 'request' ? 1
     : type === 'cancel_request' ? 2
       : type === 'approval' ? 3
@@ -5912,7 +6030,47 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   //         "status": 'inprocess'
   //     }
   // }
-
+  if (type === 'approval' && task.codeInProcess) {
+    let folTask = task.followingTasks;
+    if (!folTask) {
+      let listProcessChild = task.process?.processChilds
+      let listTaskProcess = task.process?.tasks
+      let status = true
+      if (listTaskProcess) {
+        listTaskProcess.forEach(value => {
+          if (!value.followingTasks) {
+            if (value.status !== "finished") {
+              status = false
+            }
+          }
+        })
+      }
+      if (listProcessChild) {
+        listProcessChild.forEach(value => {
+          if (!value.followingTasks) {
+            if (value.status !== "finished") {
+              status = false
+            }
+          }
+        })
+      }
+      if (status) {
+        const dataNotification = {
+          organizationalUnits: [],
+          title: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc`,
+          level: "emergency",
+          content: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc , <a href="${process.env.WEBSITE}process?processId=${newTaskProcess1._id}" target="blank>Xem ngay</a></p>`,
+          sender: `${task.process.creator}`,
+          users: task.process.manager,
+          associatedDataObject: {
+            dataType: 6,
+            description: `<p><strong>Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc.</p>`
+          }
+        };
+        NotificationServices.createNotification(portal, portal, dataNotification)
+      }
+    }
+  }
   await Task(connect(DB_CONNECTION, portal))
     .findByIdAndUpdate(taskId, {
       ...keyUpdate,

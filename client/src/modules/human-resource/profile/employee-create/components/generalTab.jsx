@@ -287,7 +287,7 @@ function GeneralTab(props) {
     const handleStartingDateChange = (value) => {
         const { translate } = props;
         let { errorOnLeavingDate, leavingDate } = state;
-
+        console.log(value)
         let errorOnStartingDate = undefined;
         let startDate;
         if (value) {

@@ -6,6 +6,8 @@ import DetailForm from './detailForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import PurchaseOrderCreateFormFromPurchasingRequest from "../../../purchase-order/components/purchaseOrderCreateFormFromPurchasingRequest";
 import { generateCode } from "../../../../../../helpers/generateCode";
+import "../../../../manufacturing/request-management/components/request.css";
+import { dataListStatus } from "../../../../manufacturing/request-management/components/common-components/config"
 
 function PurchasingRequestManagementTable(props) {
 
@@ -40,6 +42,8 @@ function PurchasingRequestManagementTable(props) {
     }
     const { totalPages, page } = requestManagements;
     const { code, createdAt, desiredTime, codeCreate, requestFrom } = state;
+    const listStatus = dataListStatus.listStatusPurchase();
+
     return (
         <React.Fragment>
             {<DetailForm currentRequest={state.currentRequest} />}
@@ -110,8 +114,7 @@ function PurchasingRequestManagementTable(props) {
                             <th>{translate('production.request_management.code')}</th>
                             <th>{translate('production.request_management.creator')}</th>
                             <th>{translate('production.request_management.request_sent_from')}</th>
-                            <th>{translate('production.request_management.approver_in_factory')}</th>
-                            {/* <th>{translate('production.request_management.approver_in_order')}</th> */}
+                            {/* <th>{translate('production.request_management.approver_in_factory')}</th> */}
                             <th>{translate('production.request_management.createdAt')}</th>
                             <th>{translate('production.request_management.desiredTime')}</th>
                             <th>{translate('production.request_management.status')}</th>
@@ -124,8 +127,7 @@ function PurchasingRequestManagementTable(props) {
                                         translate('production.request_management.code'),
                                         translate('production.request_management.creator'),
                                         translate('production.request_management.request_sent_from'),
-                                        translate('production.request_management.approver_in_factory'),
-                                        // translate('production.request_management.approver_in_order'),
+                                        // translate('production.request_management.approver_in_factory'),
                                         translate('production.request_management.createdAt'),
                                         translate('production.request_management.desiredTime'),
                                         translate('production.request_management.status'),
@@ -146,16 +148,40 @@ function PurchasingRequestManagementTable(props) {
                                     <td>{request.code}</td>
                                     <td>{request.creator && request.creator.name}</td>
                                     <td>{request.manufacturingWork && request.manufacturingWork.name}</td>
-                                    <td>{request.approverInFactory && request.approverInFactory.length !== 0 && request.approverInFactory[0].approver.name}</td>
-                                    {/* <td>{request.approverInOrder && request.approverInOrder.map((approver, index) => (
-                                        <span key={index}>{approver.approver.name}<br /></span>
-                                    ))}</td> */}
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{ color: translate(`production.request_management.purchasing_request.${request.status}.color`) }}>{translate(`production.request_management.purchasing_request.${request.status}.content`)}</td>
+                                    <td>
+                                        <div>
+                                            <div className="timeline-index">
+                                                <div className="timeline-progress" style={{ width: (parseInt(request.status) - 1) / (listStatus.length - 1) * 100 + "%" }}></div>
+                                                <div className="timeline-items">
+                                                    {listStatus.map((status, index) => (
+                                                        <div className={`tooltip-abc${status.value > request.status ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${status.value > request.status ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${status.value > request.status ? "" : "-completed"}`}><p style={{ color: "white" }}>{status.value > request.status ? status.wait : status.completed}</p></span>
+                                                        </div>
+                                                    ))
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
+                                        {/*Phê duyệt yêu cầu*/}
+                                        {
+                                            props.checkRoleApprover(request) &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.approved_true')}
+                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
+                                                name="check_circle_outline"
+                                                className="text-green"
+                                                func={() => props.handleFinishedApproval(request)}
+                                            />
+                                        }
                                         {request.status == 3 && (
                                             <a
                                                 onClick={() => handleCreatePurchaseOrder(request)}
@@ -166,17 +192,6 @@ function PurchasingRequestManagementTable(props) {
                                                 <i className="material-icons">add</i>
                                             </a>
                                         )}
-                                        {
-                                            props.checkRoleApproverReceiptRequestToStock(request) && request.status == 5 &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('production.request_management.approved_true')}
-                                                content={translate('production.request_management.approved_true') + " " + request.code}
-                                                name="check_circle"
-                                                className="text-green"
-                                                func={() => props.handleFinishedApprovalReceiptRequestToStock(request)}
-                                            />
-                                        }
                                     </td>
                                 </tr>
                             ))

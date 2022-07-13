@@ -32,5 +32,5 @@ export * from './annualLeaveAddModal';
 export * from './courseAddModal';
 export * from './courseEditModal';
 
-export * from './workingProcessAddModal';
-export * from './workingProcessEditModal';
+export * from './careerPositionAddModal';
+export * from './careerPositionEditModal';

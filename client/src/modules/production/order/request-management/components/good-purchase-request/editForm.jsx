@@ -71,9 +71,14 @@ function EditForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 3
             });
             setState({
                 ...state,
@@ -147,7 +152,7 @@ function EditForm(props) {
                 requestType: 1,
                 type: 1,
                 status: 5,
-                approverReceiptRequestInOrder: state.approvers,
+                approvers: state.approvers,
             }
             await props.editRequest(state.requestId, data);
             await props.updatePurchaseOrder(state.purchaseOrderId, {status: 3});

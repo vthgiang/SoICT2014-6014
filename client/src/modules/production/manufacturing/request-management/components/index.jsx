@@ -5,7 +5,7 @@ import IssueRequest from './good-issue-request/index';
 import ReceiptRequest from './good-receipt-request/index';
 import PurchaseRequest from './good-purchase-request/index';
 import { RequestActions } from '../../../common-production/request-management/redux/actions';
-import { GoodActions } from '../../../common-production/good-management/redux/actions';
+// import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
@@ -26,11 +26,11 @@ function RequestManagement(props) {
         desiredTime: '',
         code: '',
         status: null,
+        requestFrom: 'manufacturing',
     });
 
     useEffect(() => {
-        props.getAllRequestByCondition(state);
-        props.getAllGoodsByType({ type: 'material' });
+        props.getAllRequestByCondition({type: state.type, requestType: state.requestType, requestFrom: state.requestFrom});
         props.getUser();
         props.getAllStocks();
         props.getAllManufacturingWorks();
@@ -83,25 +83,32 @@ function RequestManagement(props) {
             createdAt: state.createdAt,
             desiredTime: state.desiredTime,
             code: state.code,
-            status: state.status
+            status: state.status,
+            requestType: 'manufacturing',
         }
         props.getAllRequestByCondition(data);
     }
 
     const checkRoleApprover = (request) => {
-        const { approverInFactory } = request;
-        const userId = localStorage.getItem("userId");
-        let approverIds = approverInFactory.map(x => x.approver._id);
-        if (approverIds.includes(userId) && approverInFactory[approverIds.indexOf(userId)].approvedTime === null) {
-            return true;
-        }
-        return false
+        const { approvers } = request;
+        let count = 0;
+        approvers.forEach(approver => {
+            if (approver.approveType == 1) {
+                const userId = localStorage.getItem("userId");
+                let approverIds = approver.information.map(x => x.approver._id);
+                if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
+                    count++;
+                }
+            }
+        })
+        return count > 0;
     }
 
     const handleFinishedApproval = (request) => {
         const userId = localStorage.getItem("userId");
         const data = {
-            approverIdInFactory: userId
+            approvedUser: userId,
+            approveType: 1
         }
         props.editRequest(request._id, data);
     }
@@ -241,7 +248,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getAllRequestByCondition: RequestActions.getAllRequestByCondition,
-    getAllGoodsByType: GoodActions.getAllGoodsByType,
+    // getAllGoodsByType: GoodActions.getAllGoodsByType,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     editRequest: RequestActions.editRequest,
     getUser: UserActions.get,

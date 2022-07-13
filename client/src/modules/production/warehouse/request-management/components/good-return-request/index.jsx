@@ -3,9 +3,12 @@ import { connect } from 'react-redux';
 import { formatDate } from '../../../../../../helpers/formatDate';
 import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../../common-components";
 import DetailForm from '../common-components/detailForm';
-import EditForm from '../common-components/editForm';
-import CreateForm from '../common-components/createForm';
+import EditForm from './editForm';
+import CreateForm from './createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import ApproveForm from '../common-components/approveForm';
+import GoodReturnCreateFormModal from '../../../bill-management/components/good-returns/goodReturnCreateFormModal';
+import { dataListStatus } from "../common-components/config"
 
 function GoodReturnRequestManagementTable(props) {
 
@@ -41,11 +44,33 @@ function GoodReturnRequestManagementTable(props) {
         window.$('#modal-edit-request').modal('show');
     }
 
-    const cancelPurchasingRequest = (request) => {
-        const data = {
-            status: 3
+    const handleShowApprove = async (request) => {
+        await setState({
+            ...state,
+            requestApprove: request,
+        });
+        window.$("#modal-approve-form").modal("show");
+    };
+
+    const handleCreateReturnBill = async (request) => {
+        await setState({
+            ...state,
+            request: request,
+        });
+        window.$("#modal-create-new-return-bill").modal("show");
+    }
+
+    const getSourceRequest = (requestType, type) => {
+        if (requestType == 3 && type == 3)
+            return "Yêu cầu tạo từ trong kho";
+    }
+
+    const getListStatus = (request) => {
+        let listStatus = [];
+        if (request.requestType == 3 && request.type == 3) {
+            listStatus = dataListStatus.listStatusReturn();
         }
-        props.editRequest(request._id, data);
+        return listStatus;
     }
 
     const { translate, requestManagements } = props;
@@ -59,6 +84,17 @@ function GoodReturnRequestManagementTable(props) {
     return (
         <React.Fragment>
             {<DetailForm requestDetail={state.requestDetail} />}
+            <ApproveForm
+                requestId={state.requestApprove ? state.requestApprove._id : ''}
+                requestApprove={state.requestApprove}
+                fromStock={true}
+                createGoodTakesType={4}
+            />
+            <GoodReturnCreateFormModal
+                createType={3} // 3: create from request in request screen
+                requestId={state.request ? state.request._id : ''}
+                request={state.request}
+            />
             {
                 state.currentRow && state.listGoods &&
                 <EditForm
@@ -70,12 +106,12 @@ function GoodReturnRequestManagementTable(props) {
                     stock={state.currentRow.stock._id}
                     status={state.currentRow.status}
                     worksValue={state.currentRow.manufacturingWork._id}
-                    approver={state.currentRow.approverInFactory[0].approver._id}
+                    approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 4) : []}
                     stockRequestType={props.stockRequestType}
                 />
             }
             <div className="box-body qlcv">
-                <CreateForm stockRequestType={props.stockRequestType}/>
+                <CreateForm stockRequestType={props.stockRequestType} />
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('production.request_management.code')}</label>
@@ -131,8 +167,8 @@ function GoodReturnRequestManagementTable(props) {
                             <th>{translate('production.request_management.index')}</th>
                             <th>{translate('production.request_management.code')}</th>
                             <th>{translate('production.request_management.creator')}</th>
-                            <th>{translate('production.request_management.approver')}</th>
                             <th>{translate('production.request_management.createdAt')}</th>
+                            <th>{translate('production.request_management.source_request')}</th>
                             <th>{translate('production.request_management.desiredTime')}</th>
                             <th>{translate('production.request_management.status')}</th>
                             <th>{translate('production.request_management.description')}</th>
@@ -143,8 +179,8 @@ function GoodReturnRequestManagementTable(props) {
                                         translate('production.request_management.index'),
                                         translate('production.request_management.code'),
                                         translate('production.request_management.creator'),
-                                        translate('production.request_management.approver'),
                                         translate('production.request_management.createdAt'),
+                                        translate('production.request_management.source_request'),
                                         translate('production.request_management.desiredTime'),
                                         translate('production.request_management.status'),
                                         translate('production.request_management.description')
@@ -163,10 +199,26 @@ function GoodReturnRequestManagementTable(props) {
                                     <td>{index + 1}</td>
                                     <td>{request.code}</td>
                                     <td>{request.creator && request.creator.name}</td>
-                                    <td>{request.approverInWarehouse && request.approverInWarehouse[0].approver.name}</td>
                                     <td>{formatDate(request.createdAt)}</td>
+                                    <td>{getSourceRequest(request.requestType, request.type)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{ color: request.status <= 5 ? translate(`production.request_management.receipt_request_from_order.${request.status}.color`) : translate(`production.request_management.purchasing_request.${request.status}.color`) }}>{request.status <= 5 ?  translate(`production.request_management.receipt_request_from_order.${request.status}.content`) : translate(`production.request_management.purchasing_request.${request.status}.content`)}</td>
+                                    <td>
+                                        <div>
+                                            <div className="timeline-index">
+                                                <div className="timeline-progress" style={{ width: (parseInt(request.status) - 1) / (getListStatus(request).length - 1) * 100 + "%" }}></div>
+                                                <div className="timeline-items">
+                                                    {getListStatus(request).map((status, index) => (
+                                                        <div className={`tooltip-abc${status.value > request.status ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${status.value > request.status ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${status.value > request.status ? "" : "-completed"}`}><p style={{ color: "white" }}>{status.value > request.status ? status.wait : status.completed}</p></span>
+                                                        </div>
+                                                    ))
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
@@ -175,16 +227,28 @@ function GoodReturnRequestManagementTable(props) {
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('production.request_management.request_edit')} onClick={() => handleEditRequest(request)}><i className="material-icons">edit</i></a>
                                         }
                                         {/*Phê duyệt yêu cầu*/}
+                                        {/*Phê duyệt yêu cầu*/}
                                         {
-                                            props.checkRoleApprover(request) && request.status == 1 &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('production.request_management.approved_true')}
-                                                content={translate('production.request_management.approved_true') + " " + request.code}
-                                                name="check_circle_outline"
-                                                className="text-green"
-                                                func={() => props.handleFinishedApproval(request)}
-                                            />
+                                            props.checkRoleApprover(request) &&
+                                            <a
+                                                onClick={() => handleShowApprove(request)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Phê duyệt đơn"
+                                            >
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
+                                        }
+                                        {
+                                            // props.checkRoleApprover(request) && request.status == 2 &&
+                                            <a
+                                                onClick={() => handleCreateReturnBill(request)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Tạo phiếu trả hàng"
+                                            >
+                                                <i className="material-icons">add</i>
+                                            </a>
                                         }
                                         {
                                             request.status == 1 &&

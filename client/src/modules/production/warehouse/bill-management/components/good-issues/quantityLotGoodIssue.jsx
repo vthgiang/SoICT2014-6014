@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
+import { LotActions } from "../../../inventory-management/redux/actions";
 
 function QuantityLotGoodIssue(props) {
     const EMPTY_LOT = {
@@ -28,14 +29,7 @@ function QuantityLotGoodIssue(props) {
         })
     }
 
-    const handleAddLotInfo = async () => {
-        setState({
-            ...state,
-            quantity: 2
-        })
-    }
-
-    const getLotsByGood = () => {
+    const getLots = () => {
         const { lots, translate } = props;
         let lotArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_lot') }]
         if (lots.listLotsByGood && lots.listLotsByGood.length > 0) {
@@ -61,7 +55,7 @@ function QuantityLotGoodIssue(props) {
     }
 
     const validateLot = async (value, willUpdateState = true) => {
-        const dataLots = await getLotsByGood();
+        const dataLots = await getLots();
         let msg = undefined;
         const { translate } = props;
         if (!value) {
@@ -85,7 +79,7 @@ function QuantityLotGoodIssue(props) {
     }
 
     const validateQuantity = (value, willUpdateState = true) => {
-        const { lotQuantity, lot } = state;
+        const { lotQuantity, lot, lots } = state;
         let msg = undefined;
         const { translate } = props;
 
@@ -95,6 +89,16 @@ function QuantityLotGoodIssue(props) {
 
         if (Number(value) > Number(lotQuantity)) {
             msg = ` ${translate('manage_warehouse.bill_management.validate_norm')} (${lotQuantity}) `
+        }
+
+        if (lots && lots.length > 0) {
+            let totalQuantity = 0;
+            lots.map(item => {
+                totalQuantity += Number(item.quantity);
+            })
+            if (Number(value) + Number(totalQuantity) > Number(props.good.quantity)) {
+                msg = `Bạn đã nhập quá số lượng cần xuất`
+            }
         }
 
         if (willUpdateState) {
@@ -108,7 +112,7 @@ function QuantityLotGoodIssue(props) {
     }
 
     const isFormValidated = () => {
-        if (state.lots.length > 0) {
+        if (state.lots && state.lots.length > 0) {
             return true;
         }
         return false
@@ -123,7 +127,20 @@ function QuantityLotGoodIssue(props) {
 
     const handleAddLot = async (e) => {
         e.preventDefault();
-        let lots = [...(state.lots), state.lot];
+        let lots = [...(state.lots)];
+        let counter = 0;
+        if (state.lots && state.lots.length > 0) {
+            state.lots.forEach(item => {
+                if (item.lot._id === state.lot.lot._id) {
+                    item.quantity = Number(item.quantity) + Number(state.lot.quantity);
+                    counter++;
+                }
+            })
+            lots = state.lots;
+        } 
+        if (counter === 0) {
+            lots = [...(state.lots), state.lot];
+        }
         await setState({
             ...state,
             lots: lots,
@@ -196,7 +213,7 @@ function QuantityLotGoodIssue(props) {
 
     const { translate, group, good } = props;
     const { errorLot, lot, errorQuantity, lots } = state;
-    const dataLots = getLotsByGood();
+    const dataLots = getLots();
 
     return (
         <React.Fragment>
@@ -210,69 +227,67 @@ function QuantityLotGoodIssue(props) {
                 func={save}
                 size="75"
             >
-                <form id={`form-add-quantity-issue`}>
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
 
-                        <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
-                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id={`select-lot-issue-create-by-${group}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={lot.lot ? lot.lot._id : '1'}
-                                items={dataLots}
-                                onChange={handleLotChange}
-                                multiple={false}
-                            />
-                            <ErrorLabel content={errorLot} />
+                    <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
+                        <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="text-red">*</span></label>
+                        <SelectBox
+                            id={`select-lot-issue-create-by-${group}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={lot.lot ? lot.lot._id : '1'}
+                            items={dataLots}
+                            onChange={handleLotChange}
+                            multiple={false}
+                        />
+                        <ErrorLabel content={errorLot} />
+                    </div>
+
+                    <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
+                        <label className="control-label">{translate('manage_warehouse.bill_management.number')}</label>
+                        <div>
+                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} onChange={handleQuantityChange} />
                         </div>
+                        <ErrorLabel content={errorQuantity} />
+                    </div>
 
-                        <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
-                            <label className="control-label">{translate('manage_warehouse.bill_management.number')}</label>
-                            <div>
-                                <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} onChange={handleQuantityChange} />
-                            </div>
-                            <ErrorLabel content={errorQuantity} />
-                        </div>
+                    <div className="pull-right" style={{ marginBottom: "10px" }}>
+                        {state.editInfo ?
+                            <React.Fragment>
+                                <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                <button className="btn btn-success" disabled={!isLotsValidated()} onClick={handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                            </React.Fragment> :
+                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isLotsValidated()} onClick={handleAddLot}>{translate('task_template.add')}</button>
+                        }
+                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearLot}>{translate('task_template.delete')}</button>
+                    </div>
 
-                        <div className="pull-right" style={{ marginBottom: "10px" }}>
-                            {state.editInfo ?
-                                <React.Fragment>
-                                    <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                    <button className="btn btn-success" disabled={!isLotsValidated()} onClick={handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                                </React.Fragment> :
-                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isLotsValidated()} onClick={handleAddLot}>{translate('task_template.add')}</button>
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th title={translate('manage_warehouse.bill_management.lot_number')}>{translate('manage_warehouse.bill_management.lot_number')}</th>
+                                <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                <th>{translate('task_template.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody id={`quantity-bill-lot-create-${group}`}>
+                            {
+                                (typeof lots !== 'undefined' && lots.length > 0) ?
+                                    lots.map((x, index) =>
+                                        <tr key={index}>
+                                            <td>{x.lot.code}</td>
+                                            <td>{x.quantity}</td>
+                                            <td>
+                                                <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditLot(x, index)}><i className="material-icons"></i></a>
+                                                <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteLot(index)}><i className="material-icons"></i></a>
+                                            </td>
+                                        </tr>
+                                    ) : <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr>
                             }
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearLot}>{translate('task_template.delete')}</button>
-                        </div>
-
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th title={translate('manage_warehouse.bill_management.lot_number')}>{translate('manage_warehouse.bill_management.lot_number')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                    <th>{translate('task_template.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody id={`quantity-bill-lot-create-${group}`}>
-                                {
-                                    (typeof lots !== 'undefined' && lots.length > 0) ?
-                                        lots.map((x, index) =>
-                                            <tr key={index}>
-                                                <td>{x.lot.code}</td>
-                                                <td>{x.quantity}</td>
-                                                <td>
-                                                    <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditLot(x, index)}><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteLot(index)}><i className="material-icons"></i></a>
-                                                </td>
-                                            </tr>
-                                        ) : <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr>
-                                }
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </form>
+                        </tbody>
+                    </table>
+                </fieldset>
             </DialogModal>
         </React.Fragment>
     );
@@ -281,7 +296,7 @@ function QuantityLotGoodIssue(props) {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-
+    getLotsByGood: LotActions.getLotsByGood,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityLotGoodIssue));

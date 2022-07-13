@@ -6,6 +6,8 @@ import DetailForm from '../common-components/detailForm';
 import EditGoodPurchaseRequestForm from './editForm';
 import CreateGoodPurchaseRequestForm from './createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import "../request.css";
+import { dataListStatus } from "../common-components/config"
 
 function PurchasingRequestManagementTable(props) {
 
@@ -48,6 +50,7 @@ function PurchasingRequestManagementTable(props) {
     }
     const { totalPages, page } = requestManagements;
     const { code, createdAt, desiredTime } = state;
+    const listStatus = dataListStatus.listStatusPurchase();
 
     return (
         <React.Fragment>
@@ -63,7 +66,8 @@ function PurchasingRequestManagementTable(props) {
                     stock={state.currentRow.stock._id}
                     status={state.currentRow.status}
                     worksValue={state.currentRow.manufacturingWork._id}
-                    approver={state.currentRow.approverInFactory[0].approver._id}
+                    approverInManufacturing={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 1) : []}
+                    approverInReceiverRequestUnit={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 2) : []}
                     organizationalUnitValue={state.currentRow.orderUnit._id}
                 />
             }
@@ -130,7 +134,6 @@ function PurchasingRequestManagementTable(props) {
                             <th>{translate('production.request_management.index')}</th>
                             <th>{translate('production.request_management.code')}</th>
                             <th>{translate('production.request_management.creator')}</th>
-                            <th>{translate('production.request_management.approver')}</th>
                             <th>{translate('production.request_management.createdAt')}</th>
                             <th>{translate('production.request_management.desiredTime')}</th>
                             <th>{translate('production.request_management.status')}</th>
@@ -142,7 +145,6 @@ function PurchasingRequestManagementTable(props) {
                                         translate('production.request_management.index'),
                                         translate('production.request_management.code'),
                                         translate('production.request_management.creator'),
-                                        translate('production.request_management.approver'),
                                         translate('production.request_management.createdAt'),
                                         translate('production.request_management.desiredTime'),
                                         translate('production.request_management.status'),
@@ -162,10 +164,26 @@ function PurchasingRequestManagementTable(props) {
                                     <td>{index + 1}</td>
                                     <td>{request.code}</td>
                                     <td>{request.creator && request.creator.name}</td>
-                                    <td>{request.approverInFactory && request.approverInFactory[0].approver.name}</td>
+                                    {/* <td>{request.approverInFactory && request.approverInFactory[0].approver.name}</td> */}
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{ color: translate(`production.request_management.purchasing_request.${request.status}.color`) }}>{translate(`production.request_management.purchasing_request.${request.status}.content`)}</td>
+                                    <td>
+                                        <div>
+                                            <div className="timeline-index">
+                                                <div className="timeline-progress" style={{ width: (parseInt(request.status) - 1) / (listStatus.length - 1) * 100 + "%" }}></div>
+                                                <div className="timeline-items">
+                                                    {listStatus.map((status, index) => (
+                                                        <div className={`tooltip-abc${status.value > request.status ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${status.value > request.status ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${status.value > request.status ? "" : "-completed"}`}><p style={{ color: "white" }}>{status.value > request.status ? status.wait : status.completed}</p></span>
+                                                        </div>
+                                                    ))
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>

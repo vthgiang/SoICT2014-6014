@@ -7,3 +7,6 @@
 .c3-ygrid-line.grid500 text {
     fill: #000000;
 }
+.good-category-select-tree #rdts1_trigger {
+    border-radius: 3px !important;
+}
