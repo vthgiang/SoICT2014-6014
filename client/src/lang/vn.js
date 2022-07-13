@@ -6425,6 +6425,8 @@ export default {
             col_expected_end_time: "Thời điểm kết thúc dự kiến",
             calculate: "Tính toán",
             time_to_reduce: "Thời gian thực hiện dự án cần giảm",
+            desire_end_time: "Thời điểm mà bạn muốn dự án kết thúc",
+            err_early_end_date: "Ngày được chọn không được sớm hơn ngày kết thúc sớm nhất",
 
             // Thông điệp trả về từ server 
             get_task_project_success: 'Lấy thông tin dự án thành công',

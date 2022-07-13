@@ -79,7 +79,7 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
     const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
     let duration = 0
     if (timeMode === 'hours') {
-        duration = Math.ceil((moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8);
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
         // return theo don vi giờ - hours
         return duration;
     }
@@ -88,7 +88,7 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
         // return theo don vi milliseconds
         return duration * MILISECS_TO_DAYS;
     }
-    duration = Math.ceil(moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
+    duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
     // return theo don vi ngày - days
     return duration;
 }
@@ -240,6 +240,7 @@ export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
         const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
         const integerPart = Number(estimateNormalTimeArr[0]);
         const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+        console.log(estimateNormalTimeArr)
         let tempEndDate = '';
         // Cộng phần nguyên
         for (let i = 0; i < integerPart; i++) {
@@ -412,12 +413,11 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
     console.log('tasksList', tasksList)
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
-    // Làm tròn thời gian
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
         return {
             ...taskItem,
-            estimateNormalTime: Math.ceil(Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
-            estimateOptimisticTime: Math.ceil(Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
+            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
             preceedingTasks: taskItem.preceedingTasks,
             code: taskItem._id,
         }
@@ -495,12 +495,11 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
 export const getNewTasksListAfterCR = (projectDetail, tasksList, currentTask) => {
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
-    // Ta cần làm tròn kết quả
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
         return {
             ...taskItem,
-            estimateNormalTime: Math.ceil(Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
-            estimateOptimisticTime: Math.ceil(Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
+            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
             preceedingTasks: taskItem.preceedingTasks.map((preItem) => preItem.task),
             code: taskItem._id,
         }
@@ -849,8 +848,8 @@ export const calculateRecommendation = async (taskData, aimTime) => {
                     ans.push({
                         taskCode: key,
                         taskName: value.name,
-                        timeToDecrease: solution.result.vars[key],
-                        costToIncrease: solution.result.vars[key] * value.cost,
+                        timeToDecrease: Math.ceil(solution.result.vars[key] * 100) / 100,
+                        costToIncrease: Math.ceil(solution.result.vars[key] * 100) / 100 * value.cost,
                     })
                 }
             }

@@ -1,61 +1,94 @@
 import jsPERT from 'js-pert'
-import moment from 'moment'
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import Swal from 'sweetalert2'
-import { DialogModal, ErrorLabel } from '../../../../common-components'
+import { DialogModal, ErrorLabel, TimePicker, DatePicker } from '../../../../common-components'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers'
-import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from "../../projects/redux/actions";
-import { getCurrentProjectDetails, processDataTasksStartEnd, calculateRecommendation } from '../../projects/components/functionHelper';
+import { getCurrentProjectDetails, processDataTasksStartEnd, calculateRecommendation, getDurationWithoutSatSun } from '../../projects/components/functionHelper';
 import ValidationHelper from '../../../../helpers//validationHelper';
 import _cloneDeep from 'lodash/cloneDeep';
+import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
+dayjs.extend(isSameOrBefore);
 
 const ModalCalculateRecommend = (props) => {
     const { processedData, translate, project, oldCPMEndDate } = props;
     const projectDetail = getCurrentProjectDetails(project);
+    const [timeToReduce, setTimeToReduce] = useState(0);
+    const [maxReducedTime, setMaxReducedTime] = useState(0);
+    const [normalTime, setNormalTime] = useState(0);
     const [state, setState] = useState({
-        errorOnTimeReduced: undefined,
+        endDate: '',
+        errorOnProjectEndTime: undefined,
+        endTime: '',
     });
 
     const [content, setContent] = useState({
+        earliestEndDate: '',
         status: false,
         message: [],
         currentCPMEndDate: '',
         currentProcessedData: [],
     })
-    const [timeToReduce, setTimeToReduce] = useState(0);
-    const [maxReducedTime, setMaxReducedTime] = useState(0);
-    const [normalTime, setNormalTime] = useState(0);
 
-    //Xử lí khi thay đổi số ngày cần giảm
-    const handleChangeTimeToReduce = (event) => {
-        validateTimeReduced(event.target.value, true);
+    const convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
     }
 
-    const validateTimeReduced = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateNumberInput(translate, value, 0, maxReducedTime);
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnTimeReduced: message,
-                }
-            })
-            setTimeToReduce(value);
+    const handleEndTimeChange = (value) => {
+        let endDate = convertDateTime(state.endDate, value);
+        let err;
+
+        if (value.trim() === "") {
+            err = translate('task.task_management.add_err_empty_end_date');
         }
-        console.log(message, value, maxReducedTime);
-        return message === undefined;
+        else if (dayjs(endDate).isSameOrBefore(dayjs(content.earliestEndDate))) {
+            err = translate('project.err_early_end_date');
+        }
+
+        setState({
+            ...state,
+            endTime: value,
+            errorOnProjectEndTime: err,
+        })
+    }
+
+    const handleEndDateChange = (value) => {
+        validateProjectEndDate(value, true);
+    }
+
+    const validateProjectEndDate = (value, willUpdateState = true) => {
+        let endDate = convertDateTime(value, state.endTime)
+
+        if (willUpdateState) {
+            let err;
+
+            if (value.trim() === "") {
+                err = translate('task.task_management.add_err_empty_end_date');
+            }
+            else if (dayjs(endDate).isSameOrBefore(dayjs(content.earliestEndDate))) {
+                err = translate('project.err_early_end_date');
+            }
+
+            setState({
+                ...state,
+                endDate: value,
+                errorOnProjectEndTime: err,
+            })
+        }
     }
 
     const findLatestDate = (data) => {
         if (data.length === 0) return null;
         let currentMax = data[0].endDate;
         for (let dataItem of data) {
-            if (moment(dataItem.endDate).isAfter(moment(currentMax))) {
+            if (dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
                 currentMax = dataItem.endDate;
             }
         }
@@ -140,6 +173,7 @@ const ModalCalculateRecommend = (props) => {
     // }
 
 
+
     // Tính số ngày tối đa có thể giảm và số ngày thực hiện thông thường của dự án
     const findMaxReducedTime = (tasksData) => {
         let data = [...tasksData];
@@ -181,28 +215,36 @@ const ModalCalculateRecommend = (props) => {
         }
     }
 
-    // Kiểm tra ngày kết thúc dự án sớm nhất có thể trước ngày kết thúc dự kiến không
+    // Kiểm tra ngày kết thúc dự án sớm nhất tính theo CPM có thể trước ngày kết thúc dự kiến không
     const checkEarliestEndDate = (taskData) => {
         let fastestCase = taskData.map(task => {
             return {
                 ...task,
-                estimateNormalTime: task.estimateOptimisticTime
+                estimateNormalTime: task.estimateOptimisticTime,
+                endDate: '',
+                startDate: '',
             }
         })
         let fastestProcessedData = processDataTasksStartEnd(projectDetail, fastestCase);
-        let isReduceSuccessful = moment(findLatestDate(fastestProcessedData)).isSameOrBefore(moment(projectDetail?.endDate));
+        let earliestEndDate = findLatestDate(fastestProcessedData);
+        console.log('early',earliestEndDate);
+        let isReduceSuccessful = dayjs(earliestEndDate).isSameOrBefore(dayjs(projectDetail?.endDate));
         setContent({
-            status: isReduceSuccessful
+            status: isReduceSuccessful,
+            earliestEndDate
         });
     }
 
     const calculateRecommend = async () => {
         let message = [];
         let answer = [];
+        let desiredEndDate = convertDateTime(state.endDate,state.endTime);
         // Sao chép dữ liệu ra mảng mới để tránh ảnh hưởng tới dữ liệu gốc
         let currentProcessedData = _cloneDeep(processedData);
-        if (timeToReduce > 0) {
-            answer = await calculateRecommendation(currentProcessedData, normalTime - timeToReduce);
+        let lowerTime = Math.ceil(getDurationWithoutSatSun(desiredEndDate, oldCPMEndDate, projectDetail?.unitTime));
+        setTimeToReduce(lowerTime);
+        if (lowerTime > 0) {
+            answer = await calculateRecommendation(currentProcessedData, normalTime - Math.min(lowerTime,maxReducedTime));
             console.log(answer);
         }
 
@@ -285,7 +327,7 @@ const ModalCalculateRecommend = (props) => {
     }
 
     useEffect(() => {
-        let currentProcessedData = [...processedData];
+        let currentProcessedData = _cloneDeep(processedData);
         checkEarliestEndDate(currentProcessedData);
         let { maxReducedTime, normalTime } = findMaxReducedTime(currentProcessedData);
         setMaxReducedTime(maxReducedTime);
@@ -311,17 +353,16 @@ const ModalCalculateRecommend = (props) => {
                         )
                     })}
                 </ul>
-                {timeToReduce > 0 && timeToReduce <= maxReducedTime && content.message?.length >0 &&
+                {timeToReduce > 0 && timeToReduce <= maxReducedTime && !state.errorOnProjectEndTime && content.message?.length > 0 &&
                     <div style={{ marginLeft: 10 }}>
-                        <h5>Ngày kết thúc dự án dự kiến: <strong>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</strong></h5>
                         <h5>Ngày kết thúc dự án tính theo CPM cũ:{' '}
                             <strong style={{ color: 'red' }}>
-                                {moment(oldCPMEndDate).format('HH:mm DD/MM/YYYY')}
+                                {dayjs(oldCPMEndDate).format('HH:mm DD/MM/YYYY')}
                             </strong>
                         </h5>
                         <h5>Ngày kết thúc dự án tính theo CPM mới:{' '}
                             <strong style={{ color: 'green' }}>
-                                {moment(content.currentCPMEndDate).format('HH:mm DD/MM/YYYY')}
+                                {dayjs(content.currentCPMEndDate).format('HH:mm DD/MM/YYYY')}
                             </strong>
                         </h5>
                     </div>
@@ -329,12 +370,12 @@ const ModalCalculateRecommend = (props) => {
 
                 {!content.status &&
                     <div>
-                        <div>Chú ý : Không có phương án nào để giảm thời gian dự án xuống trước hoặc cùng ngày kết thúc dự kiến!</div>
+                        <div>Chú ý : Không có phương án nào để giảm thời điểm kết thúc dự án xuống trước hoặc giống với thời điểm kết thúc dự kiến!</div>
                         <div>Đề xuất: </div>
                         <ul>
                             <li>Thay đổi thời gian dự kiến kết thúc của dự án</li>
                             <li>Thay đổi dữ liệu thời gian ở file excel</li>
-                            <li>Chấp nhận kết quả và không sửa đổi gì</li>
+                            <li>Chấp nhận kết quả tính toán và không sửa đổi gì</li>
                         </ul>
                     </div>
                 }
@@ -356,24 +397,33 @@ const ModalCalculateRecommend = (props) => {
             >
                 <div className="description-box without-border">
 
-                    {/* Thời gian thực hiện tối đa có thể giảm */}
+                    {/* Ngày sớm nhất mà dự án có thể kết thúc tính theo CPM */}
 
                     <div>
-                        <h5><strong>Thời gian thực hiện dự án có thể giảm tối đa: {`${maxReducedTime} ${projectDetail?.unitTime} `}</strong></h5>
+                        <h5><strong>Ngày kết thúc dự án sớm nhất tính theo CPM: {`${dayjs(content?.earliestEndDate).format('HH:mm DD/MM/YYYY')} `}</strong></h5>
                     </div>
 
-                    {/* Thời gian thực hiện cần giảm */}
-                    <div className={`form-group ${!state.errorOnTimeReduced ? "" : "has-error"} `}>
-                        <label>{translate('project.time_to_reduce')}<span className="text-red">*</span></label>
-                        <input
-                            className="form-control"
-                            type="number"
-                            name="timeToReduce"
-                            placeholder={translate('project.time_to_reduce')}
-                            onChange={handleChangeTimeToReduce}
-                            value={timeToReduce}
+                    {/* Ngày dự kiến kết thúc dự án */}
+
+                    <div>
+                        <h5><strong>Ngày kết thúc dự án dự kiến: {` ${dayjs(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')} `} </strong></h5>
+                    </div>
+
+                    {/* Thời điểm kết thúc mong muốn */}
+                    <div className={`form-group ${!state.errorOnProjectEndTime ? "" : "has-error"} `}>
+                        <label className="control-label">{translate('project.desire_end_time')}<span className="text-red">*</span></label>
+                        <DatePicker
+                            id={`caculate-cpm-date`}
+                            value={state.endDate}
+                            onChange={handleEndDateChange}
                         />
-                        <ErrorLabel content={state.errorOnTimeReduced} />
+                        < TimePicker
+                            id={`caculate-cpm-time`}
+                            refs={`caculate-cpm-time`}
+                            value={state.endTime}
+                            onChange={handleEndTimeChange}
+                        />
+                        <ErrorLabel content={state.errorOnProjectEndTime} />
                     </div>
 
                     {/* Tính toán */}

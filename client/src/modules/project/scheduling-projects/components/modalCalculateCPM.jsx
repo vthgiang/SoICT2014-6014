@@ -210,9 +210,6 @@ const ModalCalculateCPM = (props) => {
                             {`Lưu danh sách công việc dự án`}
                         </button>
                     </div>
-                    {/* Button Tính toán mức thoả hiệp dự án */}
-                    {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate))
-                        &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                             <ModalCalculateRecommend
                                 handleApplyChange={handleApplyChange}
@@ -225,7 +222,7 @@ const ModalCalculateCPM = (props) => {
                                 type="button" className="btn btn-warning dropdown-toggle" data-toggle="dropdown">
                                 {`Đề xuất tối ưu dự án`}
                             </button>
-                        </div>}
+                        </div>
                 </div>
 
                 <ul className="nav nav-tabs">

@@ -5580,6 +5580,8 @@ export default {
             col_expected_end_time: "Expected end time",
             calculate: "Caculate",
             time_to_reduce: "Time to reduce",
+            desire_end_time: "The time at which you want the project to end",
+            err_early_end_date: "The selected date cannot be earlier than the earliest end date",
 
             // Thông báo trả về từ server
             get_task_project_success: 'Get project success',
