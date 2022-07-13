@@ -16,7 +16,6 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 dayjs.extend(isSameOrBefore);
 
 const ModalCalculateRecommend = (props) => {
-    const { processedData, translate, project, oldCPMEndDate } = props;
     const [timeToReduce, setTimeToReduce] = useState(0);
     const [maxReducedTime, setMaxReducedTime] = useState(0);
     const [normalTime, setNormalTime] = useState(0);
@@ -31,6 +30,7 @@ const ModalCalculateRecommend = (props) => {
         CREATE_BY_TEMPLATE: "CREATE_BY_TEMPLATE", // tạo mới project theo mẫu
     }
 
+    const { processedData, tasksData, translate, project, oldCPMEndDate } = props;
     const [projectData, setProjectData] = useState(props.projectData);
     // const projectDetail = getCurrentProjectDetails(project);
     const projectDetail = projectData ?? getCurrentProjectDetails(project);
@@ -91,6 +91,7 @@ const ModalCalculateRecommend = (props) => {
             })
         }
     }
+
     useEffect(() => {
         setProjectData(props.projectData)
     }, [JSON.stringify(props.projectData)])
@@ -443,6 +444,7 @@ const ModalCalculateRecommend = (props) => {
                             {translate('project.calculate')}
                         </button>
                     </div>
+
                     {renderContent()}
                 </div>
             </DialogModal>

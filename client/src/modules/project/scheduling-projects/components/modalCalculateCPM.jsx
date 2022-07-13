@@ -225,6 +225,8 @@ const ModalCalculateCPM = (props) => {
                             {`Lưu danh sách công việc dự án`}
                         </button>
                     </div>
+                    {/* Button Tính toán mức thoả hiệp dự án */}
+                    
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                             <ModalCalculateRecommend
                                 handleApplyChange={handleApplyChange}
