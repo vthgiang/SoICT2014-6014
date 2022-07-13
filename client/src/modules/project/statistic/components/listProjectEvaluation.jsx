@@ -6,12 +6,15 @@ import { ProjectActions } from "../../projects/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
 import ModalProjectEvaluation from "./modalProjectEvaluation";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
 import { renderLongList, renderProjectTypeText } from "../../projects/components/functionHelper";
 import _cloneDeep from 'lodash/cloneDeep';
 
 function ListProjectEvaluation(props) {
     const tableId = "project-statistical-table";
+    const defaultConfig = { limit: 5, hiddenColumns: [] }
+    const limit = getTableConfiguration(tableId, defaultConfig).limit;
     // Khởi tạo state
     const [state, setState] = useState({
         projectName: "",
@@ -20,7 +23,7 @@ function ListProjectEvaluation(props) {
         creatorEmployee: null,
         responsibleEmployees: null,
         projectManager: null,
-        perPage: 5,
+        perPage: limit,
         currentRow: null,
         projectDetail: null,
         data: [],
@@ -30,7 +33,7 @@ function ListProjectEvaluation(props) {
     const { projectName, projectType, page, creatorEmployee, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state;
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId, projectName });
+        props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId });
         props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
@@ -75,21 +78,45 @@ function ListProjectEvaluation(props) {
     }
 
     const setPage = (pageNumber) => {
+        let data = {
+            calledId: 'paginate',
+            projectName: projectName,
+            projectType: projectType,
+            page: parseInt(pageNumber),
+            perPage: perPage,
+            creatorEmployee: creatorEmployee,
+            responsibleEmployees: responsibleEmployees,
+            projectManager: projectManager,
+            userId: userId
+        }
+
         setState({
             ...state,
             page: parseInt(pageNumber)
         });
 
-        props.getProjectsDispatch({ calledId: "paginate", page: parseInt(pageNumber), perPage, userId, projectName });
+        props.getProjectsDispatch(data);
     }
 
     const setLimit = (number) => {
+        let data = {
+            calledId: 'paginate',
+            projectName: projectName,
+            projectType: projectType,
+            page: 1,
+            perPage: parseInt(number),
+            creatorEmployee: creatorEmployee,
+            responsibleEmployees: responsibleEmployees,
+            projectManager: projectManager,
+            userId: userId
+        }
+
         setState({
             ...state,
             perPage: parseInt(number),
             page: 1
         });
-        props.getProjectsDispatch({ calledId: "paginate", page: 1, perPage: parseInt(number), userId, projectName });
+        props.getProjectsDispatch(data);
     }
 
     const handleShowDetailInfo = (id) => {
@@ -229,7 +256,7 @@ function ListProjectEvaluation(props) {
                             behaviour="show-children"
                             tableSetting={true}
                             onSetNumberOfRowsPerPage={setLimit}
-                            tableId='list-project-evaluation-table'
+                            tableId={tableId}
                             column={column}
                             viewWhenClickName={true}
                             data={data}

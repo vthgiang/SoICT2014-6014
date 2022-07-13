@@ -12,11 +12,14 @@ import ModalChangeRequestInfo from './modalChangeRequestInfo';
 import { getStorage } from '../../../../config';
 import { ChangeRequestActions } from '../../change-requests/redux/actions';
 import ModalCreateChangeRequest from '../../change-requests/components/modalCreateChangeRequest';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import { DataTableSetting, PaginateBar, SelectMulti, SelectBox } from '../../../../common-components';
 import _cloneDeep from 'lodash/cloneDeep';
 
 const TabChangeRequestProject = (props) => {
     const tableId = 'project-change-requests-table';
+    const defaultConfig = { limit: 5, hiddenColumns: [] }
+    const limit = getTableConfiguration(tableId, defaultConfig).limit;
     // Khởi tạo state
     const [state, setState] = useState({
         name: null,
@@ -25,7 +28,7 @@ const TabChangeRequestProject = (props) => {
         affectedTask: null,
         status: null,
         page: 1,
-        perPage: 5,
+        perPage: limit || defaultConfig.limit,
     })
 
     const { translate, project, currentProjectTasks, user, changeRequest } = props;
@@ -45,20 +48,44 @@ const TabChangeRequestProject = (props) => {
     totalPage = changeRequest && Math.ceil(changeRequest.totalDocs / perPage);
 
     const setPage = (pageNumber) => {
+        let data = {
+            name: name,
+            creator: creator,
+            creationTime: creationTime,
+            affectedTask: affectedTask,
+            status: status,
+            page: pageNumber,
+            perPage: perPage,
+            calledId: 'paginate',
+            projectId: currentProjectId
+        }
+
         setState({
             ...state,
             page: parseInt(pageNumber)
         });
-        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page: parseInt(pageNumber), perPage });
+        props.getListProjectChangeRequestsDispatch(data);
     }
 
     const setLimit = (number) => {
+        let data = {
+            name: name,
+            creator: creator,
+            creationTime: creationTime,
+            affectedTask: affectedTask,
+            status: status,
+            page: page,
+            perPage: number,
+            calledId: 'paginate',
+            projectId: currentProjectId
+        }
+
         setState({
             ...state,
             perPage: parseInt(number),
             page: 1
         });
-        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page: 1, perPage: parseInt(number) });
+        props.getListProjectChangeRequestsDispatch(data);
     }
 
     const handleChangeName = (e) => {
@@ -293,7 +320,7 @@ const TabChangeRequestProject = (props) => {
                     requestStatus: 3,
                 });
                 setTimeout(() => {
-                    props.getTasksByProject({ projectId: currentProjectId || projectDetail._id });
+                    props.getAllTasksByProject( currentProjectId || projectDetail._id );
                 }, 20);
             }
         }).catch(err => {
@@ -318,7 +345,7 @@ const TabChangeRequestProject = (props) => {
                     requestStatus: 2,
                 });
                 setTimeout(() => {
-                    props.getTasksByProject({ projectId: currentProjectId || projectDetail._id });
+                    props.getAllTasksByProject( currentProjectId || projectDetail._id );
                 }, 20);
             }
         })
@@ -613,7 +640,7 @@ const mapDispatchToProps = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     updateStatusProjectChangeRequestDispatch: ChangeRequestActions.updateStatusProjectChangeRequestDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TabChangeRequestProject));

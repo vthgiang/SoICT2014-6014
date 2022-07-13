@@ -48,7 +48,7 @@ const TabProjectInfo = (props) => {
                             title="Tải lại thông tin"
                             style={{ marginRight: 8, width: 35, height: 35, justifyContent: 'center', alignItems: 'center' }}
                             onClick={() => {
-                                props.getTasksByProject({ projectId: currentProjectId });
+                                props.getAllTasksByProject(currentProjectId);
                                 props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'get_all' });
                             }}
                         >
@@ -139,7 +139,7 @@ const mapDispatchToProps = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
 }

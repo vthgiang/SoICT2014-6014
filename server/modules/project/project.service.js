@@ -154,6 +154,7 @@ exports.get = async (portal, query) => {
     let project;
 
     let totalList = await Project(connect(DB_CONNECTION, portal)).countDocuments(options);
+    // Nếu calledId là 'paginate' thì thực hiện phân trang
     if (query.calledId === "paginate") {
         let currentPage, currentPerPage;
         currentPage = page ? Number(page) : 1;
@@ -170,6 +171,7 @@ exports.get = async (portal, query) => {
             totalDocs: totalList,
         }
     }
+
     else {
         project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({createdAt: -1})
             .populate({ path: "responsibleEmployees", select: "_id name email" })
@@ -631,7 +633,7 @@ exports.getListProjectChangeRequests = async (portal, query) => {
 
     return {
         docs: projectChangeRequestsList,
-        totalDocs: projectChangeRequestsList.length,
+        totalDocs: totalList,
     }
 }
 

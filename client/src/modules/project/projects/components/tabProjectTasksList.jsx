@@ -42,7 +42,7 @@ const TabProjectTasksList = (props) => {
             window.$('#modal-add-task-schedule').modal('hide');
         }, 10);
         setTimeout(() => {
-            props.getTasksByProject({ projectId: currentProjectId });
+            props.getAllTasksByProject(currentProjectId);
         }, 1000);
     }
 
@@ -71,7 +71,7 @@ const TabProjectTasksList = (props) => {
                         {/* Button refresh danh sách tasks */}
                         <button style={{ paddingTop: 5, width: 35, height: 35, justifyContent: 'center', alignItems: 'center', marginTop: 15, marginRight: 10 }}
                             onClick={() => {
-                                props.getTasksByProject({projectId: currentProjectId});
+                                props.getAllTasksByProject(currentProjectId);
                             }}
                         >
                             <span className="material-icons">refresh</span>
@@ -137,7 +137,7 @@ const mapDispatchToProps = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
 }

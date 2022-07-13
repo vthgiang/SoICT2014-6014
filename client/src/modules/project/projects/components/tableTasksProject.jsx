@@ -12,12 +12,15 @@ import { formatTaskStatus, getCurrentProjectDetails, renderProgressBar, renderSt
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import Swal from 'sweetalert2';
 import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import moment from 'moment';
 import { getTotalTimeSheetLogs } from '../../../task/task-management/component/functionHelpers';
 import _cloneDeep from 'lodash/cloneDeep';
 
 const TableTasksProject = (props) => {
     const tableId = "tasks-project-table";
+    const defaultConfig = { limit: 5, hiddenColumns: ['2','5','6','10'] };
+    const limit = getTableConfiguration(tableId, defaultConfig).limit;
     const [state, setState] = useState({
         status: [],
         name: null,
@@ -32,7 +35,7 @@ const TableTasksProject = (props) => {
         currentTaskId: '',
     })
     const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(6);
+    const [perPage, setPerPage] = useState(limit || defaultConfig.limit);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
     const { translate, currentProjectTasks, user, project, performtasks, tasks } = props;
@@ -508,7 +511,7 @@ const TableTasksProject = (props) => {
                         <TreeTable
                             behaviour="show-children"
                             tableSetting={true}
-                            tableId='list-task-project-table'
+                            tableId={tableId}
                             viewWhenClickName={true}
                             column={column}
                             data={data}
