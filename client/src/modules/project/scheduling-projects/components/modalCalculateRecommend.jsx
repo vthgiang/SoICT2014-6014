@@ -1,4 +1,8 @@
 import jsPERT from 'js-pert'
+<<<<<<< HEAD
+=======
+import moment from 'moment'
+>>>>>>> master
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
@@ -16,6 +20,7 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 dayjs.extend(isSameOrBefore);
 
 const ModalCalculateRecommend = (props) => {
+<<<<<<< HEAD
     const { processedData, translate, project, oldCPMEndDate } = props;
     const [timeToReduce, setTimeToReduce] = useState(0);
     const [maxReducedTime, setMaxReducedTime] = useState(0);
@@ -25,15 +30,25 @@ const ModalCalculateRecommend = (props) => {
         errorOnProjectEndTime: undefined,
         endTime: '',
     });
+=======
+>>>>>>> master
     const TYPE = {
         DEFAULT: "DEFAULT", // tạo mới project thông thường
         CREATE_BY_CONTRACT: "CREATE_BY_CONTRACT", // tạo mới project theo hợp đồng
         CREATE_BY_TEMPLATE: "CREATE_BY_TEMPLATE", // tạo mới project theo mẫu
     }
+<<<<<<< HEAD
 
     const [projectData, setProjectData] = useState(props.projectData);
     // const projectDetail = getCurrentProjectDetails(project);
     const projectDetail = projectData ?? getCurrentProjectDetails(project);
+=======
+    const { processedData, tasksData, translate, project, oldCPMEndDate } = props;
+    const [projectData, setProjectData] = useState(props.projectData);
+    // const projectDetail = getCurrentProjectDetails(project);
+    const projectDetail = projectData ?? getCurrentProjectDetails(project);
+    const [isFirstTimeHere, setIsFirstTimeHere] = useState(true);
+>>>>>>> master
 
     const [content, setContent] = useState({
         earliestEndDate: '',
@@ -43,6 +58,7 @@ const ModalCalculateRecommend = (props) => {
         currentProcessedData: [],
     })
 
+<<<<<<< HEAD
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
@@ -91,6 +107,8 @@ const ModalCalculateRecommend = (props) => {
             })
         }
     }
+=======
+>>>>>>> master
     useEffect(() => {
         setProjectData(props.projectData)
     }, [JSON.stringify(props.projectData)])
@@ -407,6 +425,7 @@ const ModalCalculateRecommend = (props) => {
                 resetOnClose={true}
             >
                 <div className="description-box without-border">
+<<<<<<< HEAD
 
                     {/* Ngày sớm nhất mà dự án có thể kết thúc tính theo CPM */}
 
@@ -443,6 +462,11 @@ const ModalCalculateRecommend = (props) => {
                             {translate('project.calculate')}
                         </button>
                     </div>
+=======
+                    <button className="btn btn-success" type='button' onClick={calculateRecommend}>
+                        Tính toán
+                    </button>
+>>>>>>> master
                     {renderContent()}
                 </div>
             </DialogModal>

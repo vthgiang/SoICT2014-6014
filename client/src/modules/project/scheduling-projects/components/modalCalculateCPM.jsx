@@ -225,6 +225,11 @@ const ModalCalculateCPM = (props) => {
                             {`Lưu danh sách công việc dự án`}
                         </button>
                     </div>
+<<<<<<< HEAD
+=======
+                    {/* Button Tính toán mức thoả hiệp dự án */}
+                    {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate)) &&
+>>>>>>> master
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                             <ModalCalculateRecommend
                                 handleApplyChange={handleApplyChange}
