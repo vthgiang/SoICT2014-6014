@@ -239,7 +239,6 @@ const ModalCalculateRecommend = (props) => {
         })
         let fastestProcessedData = processDataTasksStartEnd(projectDetail, fastestCase);
         let earliestEndDate = findLatestDate(fastestProcessedData);
-        console.log('early',earliestEndDate);
         let isReduceSuccessful = dayjs(earliestEndDate).isSameOrBefore(dayjs(projectDetail?.endDate));
         setContent({
             status: isReduceSuccessful,
@@ -257,7 +256,6 @@ const ModalCalculateRecommend = (props) => {
         setTimeToReduce(lowerTime);
         if (lowerTime > 0) {
             answer = await calculateRecommendation(currentProcessedData, normalTime - Math.min(lowerTime,maxReducedTime));
-            console.log(answer);
         }
 
 
@@ -311,7 +309,6 @@ const ModalCalculateRecommend = (props) => {
         })
 
         const newProcessedData = processDataTasksStartEnd(projectDetail, currentProcessedData);
-        console.log('newProcessedData', newProcessedData)
         currentProcessedData = newProcessedData;
 
         setContent({

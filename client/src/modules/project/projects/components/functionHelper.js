@@ -282,7 +282,6 @@ export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
         const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
         const integerPart = Number(estimateNormalTimeArr[0]);
         const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
-        console.log(estimateNormalTimeArr)
         let tempEndDate = '';
         // Cộng phần nguyên
         for (let i = 0; i < integerPart; i++) {
@@ -395,7 +394,7 @@ export const processDataTasksStartEnd = (projectDetail, currentTasksData, curren
     // console.log('tempTasksData', tempTasksData)
     // Lặp mảng tasks
     for (let taskItem of tempTasksData) {
-        console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
+        // console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
         if (taskItem.estimateNormalTime > 20) {
             console.error('Estimate normal time đang quá lớn: ', taskItem.estimateNormalTime);
         }
@@ -430,7 +429,7 @@ export const processDataTasksStartEnd = (projectDetail, currentTasksData, curren
             }
         }
     }
-    console.log('tempTasksData 33333333', tempTasksData);
+    // console.log('tempTasksData 33333333', tempTasksData);
     return tempTasksData;
 }
 
@@ -451,8 +450,8 @@ export const renderItemLabelContent = (label, content, containerWidth = 6, label
 }
 
 export const processAffectedTasksChangeRequest = (projectDetail, tasksList, currentTask) => {
-    console.log('currentTask', currentTask)
-    console.log('tasksList', tasksList)
+    // console.log('currentTask', currentTask)
+    // console.log('tasksList', tasksList)
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
@@ -480,11 +479,11 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
             endDate: '',
         }
     });
-    console.log('tempTasksList', tempTasksList)
-    console.log('currentTask?.task', currentTask?.task, 'currentTask?._id', currentTask?._id)
+    // console.log('tempTasksList', tempTasksList)
+    // console.log('currentTask?.task', currentTask?.task, 'currentTask?._id', currentTask?._id)
 
     const newTasksList = processDataTasksStartEnd(projectDetail, tempTasksList);
-    console.log('newTasksList -----', newTasksList)
+    // console.log('newTasksList -----', newTasksList)
     let affectedTasks = [];
     for (let i = 0; i < newTasksList.length; i++) {
         if (!initTasksList[i]) {
@@ -505,14 +504,14 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
             && isArraysEqual(newTasksList[i].responsibleEmployees, initTasksList[i].responsibleEmployees)
             && isArraysEqual(newTasksList[i].accountableEmployees, initTasksList[i].accountableEmployees)
         )) {
-            console.log(newTasksList[i].name, initTasksList[i].name)
-            console.log(newTasksList[i].estimateNormalTime, initTasksList[i].estimateNormalTime, newTasksList[i].estimateNormalTime === initTasksList[i].estimateNormalTime);
-            console.log(newTasksList[i].estimateOptimisticTime, initTasksList[i].estimateOptimisticTime, newTasksList[i].estimateOptimisticTime === initTasksList[i].estimateOptimisticTime);
-            console.log(newTasksList[i].estimateNormalCost, initTasksList[i].estimateNormalCost, newTasksList[i].estimateNormalCost === initTasksList[i].estimateNormalCost);
-            console.log(newTasksList[i].estimateMaxCost, initTasksList[i].estimateMaxCost, newTasksList[i].estimateMaxCost === initTasksList[i].estimateMaxCost);
-            console.log(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks, isArraysEqual(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks));
-            console.log(newTasksList[i].startDate, initTasksList[i].startDate, moment(newTasksList[i].startDate).isSame(moment(initTasksList[i].startDate)));
-            console.log(newTasksList[i].endDate, initTasksList[i].endDate, moment(newTasksList[i].endDate).isSame(moment(initTasksList[i].endDate)));
+            // console.log(newTasksList[i].name, initTasksList[i].name)
+            // console.log(newTasksList[i].estimateNormalTime, initTasksList[i].estimateNormalTime, newTasksList[i].estimateNormalTime === initTasksList[i].estimateNormalTime);
+            // console.log(newTasksList[i].estimateOptimisticTime, initTasksList[i].estimateOptimisticTime, newTasksList[i].estimateOptimisticTime === initTasksList[i].estimateOptimisticTime);
+            // console.log(newTasksList[i].estimateNormalCost, initTasksList[i].estimateNormalCost, newTasksList[i].estimateNormalCost === initTasksList[i].estimateNormalCost);
+            // console.log(newTasksList[i].estimateMaxCost, initTasksList[i].estimateMaxCost, newTasksList[i].estimateMaxCost === initTasksList[i].estimateMaxCost);
+            // console.log(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks, isArraysEqual(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks));
+            // console.log(newTasksList[i].startDate, initTasksList[i].startDate, moment(newTasksList[i].startDate).isSame(moment(initTasksList[i].startDate)));
+            // console.log(newTasksList[i].endDate, initTasksList[i].endDate, moment(newTasksList[i].endDate).isSame(moment(initTasksList[i].endDate)));
             affectedTasks.push({
                 task: newTasksList[i]?._id || newTasksList[i]?.task,
                 taskProject: newTasksList[i].taskProject,
@@ -527,7 +526,7 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
         // console.log('----------------------------------------');
     }
 
-    console.log('affectedTasks', affectedTasks);
+    // console.log('affectedTasks', affectedTasks);
     return {
         affectedTasks,
         newTasksList,
@@ -688,7 +687,6 @@ export const convertPriorityData = (priority, translate) => {
 }
 
 export const formatPriority = (translate, data) => {
-    console.log(data);
     if (data === 1) return translate('task.task_management.low');
     if (data === 2) return translate('task.task_management.average');
     if (data === 3) return translate('task.task_management.standard');
@@ -815,7 +813,7 @@ export const calculateRecommendation = async (taskData, aimTime) => {
 
     const options = {
         tmlim: 10,
-        msglev: glpk.GLP_MSG_ALL,
+        msglev: glpk.GLP_MSG_OFF,
         presol: true,
     };
 
@@ -867,8 +865,6 @@ export const calculateRecommendation = async (taskData, aimTime) => {
         }
     })
 
-
-    console.log('cons',varWithCoef,constraint);
     const solution = await glpk.solve({
         name: 'LP',
         objective: {
