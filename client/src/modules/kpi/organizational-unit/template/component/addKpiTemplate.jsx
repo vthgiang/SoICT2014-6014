@@ -9,7 +9,6 @@ import { KpisForm } from './kpisTemplate';
 
 function AddKpiTemplate(props) {
     const { user } = props;
-
     let userId = getStorage("userId")
 
     const [state, setState] = useState({
@@ -17,6 +16,7 @@ function AddKpiTemplate(props) {
             organizationalUnit: '',
             name: '',
             description: '',
+            descriptionDefault: '',
             creator: userId,
             kpis: [],
         },
@@ -24,6 +24,7 @@ function AddKpiTemplate(props) {
         currentRole: localStorage.getItem('currentRole'),
     })
     const { templateData } = state;
+    const { descriptionDefault } = templateData;
 
     const handleChangeName = (e) => {
         const value = e.target.value;
@@ -131,7 +132,7 @@ function AddKpiTemplate(props) {
                                 embeds={false}
                                 getTextData={handleChangeDescription}
                                 maxHeight={80}
-                                quillValueDefault={templateData.description}
+                                quillValueDefault={descriptionDefault}
                                 placeholder={"Mô tả"}
                             />
                         </div>

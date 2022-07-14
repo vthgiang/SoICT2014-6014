@@ -33,12 +33,12 @@ function getKpiTemplates(unit, keyword, number, limit) {
 /** Get all kpi template by role */
 function getAllKpiTemplateByRole(id) {
     return dispatch => {
-        dispatch({ type: kpiTemplateConstants.GETTEMPLATE_BYROLE_REQUEST, id });
+        dispatch({ type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYROLE_REQUEST, id });
 
         kpiTemplateService.getAllKpiTemplateByRole(id)
             .then(
-                res => dispatch({ type: kpiTemplateConstants.GETTEMPLATE_BYROLE_SUCCESS, payload: res.data }),
-                error => dispatch({ type: kpiTemplateConstants.GETTEMPLATE_BYROLE_FAILURE })
+                res => dispatch({ type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYROLE_SUCCESS, payload: res.data }),
+                error => dispatch({ type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYROLE_FAILURE })
             );
     };
 }
@@ -46,14 +46,14 @@ function getAllKpiTemplateByRole(id) {
 /** Get all kpi template by user */
 function getAllKpiTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name = "") {
     return dispatch => {
-        dispatch({ type: kpiTemplateConstants.GETTEMPLATE_BYUSER_REQUEST });
+        dispatch({ type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYUSER_REQUEST });
 
         kpiTemplateService.getAllKpiTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name)
             .then(res => dispatch({
-                type: kpiTemplateConstants.GETTEMPLATE_BYUSER_SUCCESS,
+                type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYUSER_SUCCESS,
                 payload: res.data.content
             }))
-            .catch(error => dispatch({ type: kpiTemplateConstants.GETTEMPLATE_BYUSER_FAILURE }))
+            .catch(error => dispatch({ type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYUSER_FAILURE }))
 
     };
 }
@@ -61,11 +61,11 @@ function getAllKpiTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name =
 /** Get kpi template by id */
 function getKpiTemplateById(id) {
     return dispatch => {
-        dispatch({ type: kpiTemplateConstants.GETTEMPLATE_BYID_REQUEST });
+        dispatch({ type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYID_REQUEST });
 
         kpiTemplateService.getById(id).then(
-            res => dispatch({ type: kpiTemplateConstants.GETTEMPLATE_BYID_SUCCESS, payload: res.data }),
-            error => dispatch({ type: kpiTemplateConstants.GETTEMPLATE_BYID_FAILURE })
+            res => dispatch({ type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYID_SUCCESS, payload: res.data }),
+            error => dispatch({ type: kpiTemplateConstants.GET_KPI_TEMPLATE_BYID_FAILURE })
         );
     };
 }
@@ -73,11 +73,11 @@ function getKpiTemplateById(id) {
 /** Add a new target of unit */
 function addKpiTemplate(kpiTemplate) {
     return dispatch => {
-        dispatch({ type: kpiTemplateConstants.ADDNEW_TEMPLATE_REQUEST });
+        dispatch({ type: kpiTemplateConstants.ADD_KPI_TEMPLATE_REQUEST });
 
         kpiTemplateService.addNewKpiTemplate(kpiTemplate).then(
-            res => dispatch({ type: kpiTemplateConstants.ADDNEW_TEMPLATE_SUCCESS, payload: res.data }),
-            error => dispatch({ type: kpiTemplateConstants.ADDNEW_TEMPLATE_FAILURE })
+            res => dispatch({ type: kpiTemplateConstants.ADD_KPI_TEMPLATE_SUCCESS, payload: res.data }),
+            error => dispatch({ type: kpiTemplateConstants.ADD_KPI_TEMPLATE_FAILURE })
         );
     };
 }
@@ -85,11 +85,11 @@ function addKpiTemplate(kpiTemplate) {
 /** Edit a kpi template */
 function editKpiTemplate(id, kpiTemplate) {
     return dispatch => {
-        dispatch({ type: kpiTemplateConstants.EDIT_TEMPLATE_REQUEST });
+        dispatch({ type: kpiTemplateConstants.EDIT_KPI_TEMPLATE_REQUEST });
 
         kpiTemplateService.editKpiTemplate(id, kpiTemplate).then(
-            res => dispatch({ type: kpiTemplateConstants.EDIT_TEMPLATE_SUCCESS, payload: res.data }),
-            error => dispatch({ type: kpiTemplateConstants.EDIT_TEMPLATE_FAILURE })
+            res => dispatch({ type: kpiTemplateConstants.EDIT_KPI_TEMPLATE_SUCCESS, payload: res.data }),
+            error => dispatch({ type: kpiTemplateConstants.EDIT_KPI_TEMPLATE_FAILURE })
         );
     };
 }
@@ -99,11 +99,11 @@ function editKpiTemplate(id, kpiTemplate) {
 /** prefixed function name with underscore because delete is a reserved word in javascript */
 function deleteKpiTemplateById(id) {
     return dispatch => {
-        dispatch({ type: kpiTemplateConstants.DELETE_TEMPLATE_REQUEST });
+        dispatch({ type: kpiTemplateConstants.DELETE_KPI_TEMPLATE_REQUEST });
 
         kpiTemplateService.deleteKpiTemplateById(id).then(
-            res => { console.log(105, res.data); dispatch({ type: kpiTemplateConstants.DELETE_TEMPLATE_SUCCESS, payload: res.data }) },
-            error => dispatch({ type: kpiTemplateConstants.DELETE_TEMPLATE_FAILURE })
+            res => { console.log(105, res.data); dispatch({ type: kpiTemplateConstants.DELETE_KPI_TEMPLATE_SUCCESS, payload: res.data }) },
+            error => dispatch({ type: kpiTemplateConstants.DELETE_KPI_TEMPLATE_FAILURE })
         );
     };
 }
@@ -112,11 +112,11 @@ function deleteKpiTemplateById(id) {
 function importKpiTemplate(data) {
     return dispatch => {
         dispatch({
-            type: kpiTemplateConstants.IMPORT_TEMPLATE_REQUEST
+            type: kpiTemplateConstants.IMPORT_KPI_TEMPLATE_REQUEST
         });
         kpiTemplateService.importKpiTemplate(data).then(
-            res => dispatch({ type: kpiTemplateConstants.IMPORT_TEMPLATE_SUCCESS, payload: res.data }),
-            error => dispatch({ type: kpiTemplateConstants.IMPORT_TEMPLATE_FAILURE })
+            res => dispatch({ type: kpiTemplateConstants.IMPORT_KPI_TEMPLATE_SUCCESS, payload: res.data }),
+            error => dispatch({ type: kpiTemplateConstants.IMPORT_KPI_TEMPLATE_FAILURE })
         );
     };
 }

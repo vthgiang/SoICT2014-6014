@@ -191,13 +191,15 @@ exports.createEmployeeKpiSetAuto = async (req, res) => {
 /** Cân bằng các mục tiêu của KPI cá nhân tự động */
 exports.balancEmployeeKpisAuto = async (req, res) => {
     try {
-        console.log(req.body);
-        const { kpiSet, balanceCoef } = req.body;
-
-        for (let i = 0; i < kpiSet.length; i++) {
-            let employeeKpiSet = await EmployeeKpiSetService.balancEmployeeKpisAuto(req.portal, kpiSet[i], balanceCoef[i]);
-            console.log('res in controller', employeeKpiSet)
+        console.log(194, req.body);
+        const data = req.body;
+        const employeeKpiSets = [];
+        for (let item in data) {
+            let employeeKpiSet = await EmployeeKpiSetService.balancEmployeeKpisAuto(req.portal, item, data[item]);
+            employeeKpiSets.push(employeeKpiSet)
         }
+        console.log('res in controller', employeeKpiSets)
+
         // let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.approver, req.params.id);
 
         // THêm logs
@@ -227,7 +229,7 @@ exports.balancEmployeeKpisAuto = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['balance_employee_kpi_set_success'],
-            content: employeeKpiSet
+            content: employeeKpiSets
         });
     } catch (error) {
         // await Logger.error(req.user.email, ` balance employee kpi set `, req.portal)

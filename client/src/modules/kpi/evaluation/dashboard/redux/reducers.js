@@ -1,6 +1,6 @@
 import { dashboardEmployeeKpiConstants } from "./constants";
 
-export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false }, action) {
+export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, reload: false }, action) {
   switch (action.type) {
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_REQUEST:
       return {
@@ -97,6 +97,41 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false }, 
         error: action.payload,
         isLoading: false
       };
+
+    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_REQUEST:
+      return {
+        ...state,
+        isLoading: false
+      };
+
+    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_SUCCESS:
+      const kpiSet = {};
+      const employeeKpiSets = state.employeeKpiSets;
+
+      for (let item of action.payload) {
+        kpiSet[item._id] = item.kpis;
+      }
+
+      for (let item of employeeKpiSets) {
+        if (kpiSet[item._id]) {
+          item.kpis = kpiSet[item._id]
+        }
+      }
+
+      return {
+        ...state,
+        employeeKpiSets: employeeKpiSets,
+        reload: !state.reload,
+        isLoading: false
+      };
+
+    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+        isLoading: false
+      };
+
 
     default:
       return state

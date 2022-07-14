@@ -5,7 +5,8 @@ export const DashboardEvaluationEmployeeKpiSetAction = {
     getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree,
-    getEmployeeKpiPerformance
+    getEmployeeKpiPerformance,
+    balanceEmployeeKpiSet,
 };
 
 /**
@@ -81,7 +82,7 @@ function getChildrenOfOrganizationalUnitsAsTree(role) {
 }
 
 /**
- * Lấy tất cả KPI cá nhân theo mảng id đơn vị
+ * Lay diem danh gia nhan vien
  * @param {*} ids 
  */
 function getEmployeeKpiPerformance(ids) {
@@ -98,6 +99,27 @@ function getEmployeeKpiPerformance(ids) {
             .catch(error => {
                 dispatch({
                     type: dashboardEmployeeKpiConstants.GET_EMPLOYEE_KPI_PERFORMANCE_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+
+// Can bang muc tieu của KPI cá nhân
+function balanceEmployeeKpiSet(data) {
+    return dispatch => {
+        dispatch({ type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_REQUEST });
+
+        dashboardEmployeeKpiService.balanceEmployeeKpiSet(data)
+            .then(res => {
+                dispatch({
+                    type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_FAILURE,
                     payload: error
                 })
             })

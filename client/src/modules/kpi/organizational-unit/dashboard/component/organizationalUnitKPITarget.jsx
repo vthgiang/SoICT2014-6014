@@ -107,6 +107,7 @@ const OrganizationalUnitKPITarget = (props) => {
             const employeeKpiSet = dashboardEvaluationEmployeeKpiSet.employeeKpiSets.filter(x => x.date.slice(0, 7) === currentMonth);
 
             if (tasks?.evaluatedTask) {
+                console.log('run use effect', dashboardEvaluationEmployeeKpiSet)
                 const { evaluatedTask } = tasks;
                 const evaluations = {};
                 for (let item of evaluatedTask) {
@@ -162,7 +163,7 @@ const OrganizationalUnitKPITarget = (props) => {
                 onChangeData(employeeKpi)
             }
         }
-    }, [dashboardEvaluationEmployeeKpiSet.employeeKpiSets, tasks.evaluatedTask])
+    }, [dashboardEvaluationEmployeeKpiSet.employeeKpiSets, dashboardEvaluationEmployeeKpiSet.reload, tasks.evaluatedTask])
 
     return (
         <React.Fragment>

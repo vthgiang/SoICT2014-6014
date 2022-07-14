@@ -5,6 +5,7 @@ export const dashboardEmployeeKpiService = {
     getAllEmployeeKpiSetOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree,
     getEmployeeKpiPerformance,
+    balanceEmployeeKpiSet
 };
 
 /**
@@ -52,7 +53,7 @@ function getChildrenOfOrganizationalUnitsAsTree(role) {
 }
 
 /**
- * Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * lay diem danh gia nhan vien
  * @param {*} role 
  */
 function getEmployeeKpiPerformance(ids) {
@@ -63,4 +64,14 @@ function getEmployeeKpiPerformance(ids) {
             ids
         }
     }, false, true, 'kpi.evaluation');
+}
+
+/** Can bang muc tieu kpi nhan vien */
+
+function balanceEmployeeKpiSet(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpis-balance`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server')
 }

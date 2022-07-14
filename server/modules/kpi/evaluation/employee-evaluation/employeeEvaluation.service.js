@@ -952,9 +952,8 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
     return updateKpiSet;
 }
 
-exports.getEmployeeKpiPerformance = async (portal, userId) => {
+exports.getEmployeeKpiPerformance = async (portal, userId, formula) => {
     // Chấm ĐIỂM PROFILE nhân viên. Điểm max = 120
-
     // Tiêu chí chấm điểm profile
     const statusPoint = {
         active: 10,
@@ -995,12 +994,10 @@ exports.getEmployeeKpiPerformance = async (portal, userId) => {
     if (!portal) portal = 'vnist';
     let user = await UserService.getUser(portal, userId);
     let inforEmployee = await EmployeeService.getEmployeeProfile(portal, user.email);
-    console.log(inforEmployee)
     const profile = inforEmployee.employees[0];
 
     // trường hợp không tìm thấy employee 
     if (!profile) {
-        console.log('ko thay')
         return {
             completeRatio: 80 * 80 * 80 / 10000,
             performance: {
@@ -1067,7 +1064,6 @@ exports.getEmployeeKpiPerformance = async (portal, userId) => {
             }
         })
         .populate("kpis");
-    console.log(1070, kpiRecently)
 
     if (kpiRecently?.length > 0) {
         kpiRecently.map(x => {
@@ -1102,7 +1098,10 @@ exports.getEmployeeKpiPerformance = async (portal, userId) => {
         progressPoint = 80;
     }
 
-    const completeRatio = Math.round(profilePoint * resultPoint * progressPoint / 10000);
+    formula = formula.replace(/employeePoint/g, `${profilePoint}`);
+    formula = formula.replace(/resultPoint/g, `${resultPoint}`);
+    formula = formula.replace(/progressPoint/g, `${progressPoint}`);
+    const completeRatio = Math.round(eval(formula));
 
     return {
         completeRatio: completeRatio,

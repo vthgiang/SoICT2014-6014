@@ -32,27 +32,15 @@ function EmployeeCreateKpiAutoModal(props) {
     const { translate, user, createKpiUnit, department } = props;
     const { organizationalUnit, organizationalUnitId, month, childrenOrganizationalUnit } = props;
 
-    // const childrenUnit = childrenOrganizationalUnit?.children || [];
-
-    // let options = childrenUnit.map(x => {
-    //     return {
-    //         value: x.id,
-    //         text: x.name
-    //     }
-    // })
-    // options.unshift({
-    //     value: childrenOrganizationalUnit?.id,
-    //     text: childrenOrganizationalUnit?.name,
-    // })
-
     const [employeeImportancesState, setEmployeeImportancesState] = useState(null);
     const [state, setState] = useState({
         date: null,
         idUnit: null,
         employees: {},
-        employeeIds: []
+        employeeIds: [],
+        formula: "(employeePoint * progressPoint * resultPoint) / 10000"
     });
-    const { employees, employeeIds, idUnit, date } = state;
+    const { employees, employeeIds, idUnit, date, formula } = state;
 
     const handleClickCheck = (id) => {
         let employee = employees;
@@ -70,23 +58,10 @@ function EmployeeCreateKpiAutoModal(props) {
         })
     }
 
-    const handleChangeUnit = (value) => {
-        if (value.length === 0) {
-            value = [];
-        } else {
-            setState({
-                ...state,
-                idUnit: value[0]
-            })
-        }
-    }
-
-    const handleChangeDate = (value) => {
-        if (!value) {
-        }
+    const handleChangeFormula = (e) => {
         setState({
             ...state,
-            date: convertMMYYtoYYMM(value)
+            formula: e.target.value
         })
     }
 
@@ -94,8 +69,9 @@ function EmployeeCreateKpiAutoModal(props) {
         let data = {
             employees: employeeIds,
             approver: localStorage.getItem("userId"),
-            month: '2022-07',
-            organizationalUnit: organizationalUnitId
+            month: month,
+            organizationalUnit: organizationalUnitId,
+            formula: formula
         };
 
         props.createEmployeeKpiSetAuto(data)
@@ -137,7 +113,7 @@ function EmployeeCreateKpiAutoModal(props) {
             });
         }
     }, [createKpiUnit])
-
+    console.log(140, employees)
     return (
         <React.Fragment>
             <DialogModal
@@ -154,66 +130,65 @@ function EmployeeCreateKpiAutoModal(props) {
                 <form id="form-employee-create-kpi-auto" onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
 
                     <div className="row" style={{ marginBottom: 10 }}>
-                        {/* <div className="col-sm-6">
-                            <div className={`form-group`} >
-                                <label style={{ width: "auto" }}>Đơn vị nguồn</label>
-                                <SelectBox
-                                    id={`selectOrganizationUnitInCreateKpiAuto`}
-                                    className="form-control select2"
-                                    style={{ width: 230 }}
-                                    items={options}
-                                    multiple={false}
-                                    onChange={handleChangeUnit}
-                                    value={idUnit}
-                                    options={{ placeholder: '' }}
-                                />
-                            </div>
-                        </div> */}
 
-                        {/* <div className="col-sm-6">
-                            <div className={`qlcv form-group`} >
-                                <label style={{ width: "auto", display: 'block' }}>Tháng</label>
-                                <DatePicker
-                                    id="selectMonthInCreateKpiAuto"
-                                    dateFormat="month-year"
-                                    value={date}
-                                    onChange={(e) => {
-                                        handleChangeDate(e)
-                                    }}
-                                    disabled={false}
+                        <div className="col-md-12">
+                            {/**Công thức tính của mẫu công việc */}
+                            <div className="" >
+                                <label className="control-label" htmlFor="inputFormula">Công thức tính tỉ lệ hoàn thành KPI</label>
+                                <br />
+                                <input
+                                    style={{ width: '100%', margin: '10px 0px' }}
+                                    type="text"
+                                    className="form-control"
+                                    id="inputFormula"
+                                    placeholder="(employeePoint * progressPoint * resultPoint) / 10000"
+                                    value={formula}
+                                    onChange={handleChangeFormula}
                                 />
+                                <div>
+                                    <span style={{ fontWeight: 800 }}> Ví dụ:  </span>
+                                    (employeePoint * progressPoint * resultPoint) / 10000
+                                </div>
+                                <div><span style={{ fontWeight: 800 }}>Tham số:</span></div>
+                                <div><span style={{ fontWeight: 600 }}>employeePoint</span> - Điểm đánh giá nhân viên</div>
+                                <div><span style={{ fontWeight: 600 }}>progressPoint</span> - Điểm quá trình</div>
+                                <div><span style={{ fontWeight: 600 }}>resultPoint</span> - Điểm kết quả</div>
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                     {
                         (idUnit && date && !createKpiUnit.currentKPI)
                             ? <div>Đơn vị chưa thiết lập KPI</div>
-                            : <table className="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
-                                        <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                                        <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th>
-                                        <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>Chọn</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        employees && Object.values(employees).map((item, index) =>
-                                            <tr key={organizationalUnitId + index}>
-                                                <td style={{ width: '40px' }}>{index + 1}</td>
-                                                <td>{item.name}</td>
-                                                <td >
-                                                    {item.importance}
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" checked={employees[item.id].check} onClick={() => { handleClickCheck(item.id) }} />
-                                                </td>
-                                            </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
+                            :
+                            <div>
+                                <label className="control-label" htmlFor="inputFormula" style={{ marginBottom: 10 }}>Danh sách nhân viên </label>
+                                <br />
+                                <table className="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
+                                            <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                                            {/* <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th> */}
+                                            <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>Chọn</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            employees && Object.values(employees).map((item, index) =>
+                                                <tr key={organizationalUnitId + index}>
+                                                    <td style={{ width: '20px' }}>{index + 1}</td>
+                                                    <td>{item.name}</td>
+                                                    <td>
+                                                        <input type="checkbox" checked={employees[item.id].check} onClick={() => { handleClickCheck(item.id) }} />
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+
                     }
 
                 </form>

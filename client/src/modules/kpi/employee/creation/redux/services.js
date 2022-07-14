@@ -101,6 +101,7 @@ function editEmployeeKpiSet(id, newTarget) {
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
+
 /** Chỉnh sửa trạng thái của KPI cá nhân */
 function updateEmployeeKpiSetStatus(id, status) {
     console.log("trang thai", id, status);
@@ -141,6 +142,8 @@ function editEmployeeKpi(id, newTarget) {
         data: newTarget
     }, true, true, 'kpi.evaluation')
 }
+
+
 
 /** Phê duyệt kpi cá nhân */
 function approveEmployeeKpiSet(id) {

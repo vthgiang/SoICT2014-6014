@@ -18,6 +18,7 @@ function EditKpiTemplate(props) {
             organizationalUnit: kpiTemplate?.organizationalUnit,
             name: kpiTemplate?.organizationalUnit,
             description: kpiTemplate?.description,
+            descriptionDefault: kpiTemplate?.description,
             creator: userId,
             kpis: kpiTemplate?.kpis,
         },
@@ -32,6 +33,7 @@ function EditKpiTemplate(props) {
                 organizationalUnit: kpiTemplate?.organizationalUnit,
                 name: kpiTemplate?.name,
                 description: kpiTemplate?.description,
+                descriptionDefault: kpiTemplate?.description,
                 creator: userId,
                 kpis: kpiTemplate?.kpis,
             }
@@ -140,7 +142,7 @@ function EditKpiTemplate(props) {
                                 embeds={false}
                                 getTextData={handleChangeDescription}
                                 maxHeight={80}
-                                quillValueDefault={templateData.description}
+                                quillValueDefault={templateData.descriptionDefault}
                                 placeholder={"Mô tả"}
                             />
                         </div>

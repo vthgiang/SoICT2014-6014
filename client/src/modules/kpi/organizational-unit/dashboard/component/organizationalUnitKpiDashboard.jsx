@@ -171,7 +171,7 @@ function OrganizationalUnitKpiDashboard(props) {
             }
 
             return {
-                id: kpi.creator.id,
+                id: kpi._id,
                 effort: effort,
                 effortIndex: effortIndex,
             }
@@ -202,7 +202,7 @@ function OrganizationalUnitKpiDashboard(props) {
             return item;
         })
         console.log(employeeEffortCoef)
-        // setEmployeeKpiSet(adjustEmployeeKpiSet)
+        props.balanceEmployeeKpiSet(employeeEffortCoef)
     }
 
     const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, translate } = props;
@@ -333,6 +333,7 @@ function OrganizationalUnitKpiDashboard(props) {
                                     </a>
                                     <EmployeeCreateKpiAutoModal
                                         organizationalUnitId={infoSearch?.organizationalUnitId}
+                                        month={month}
                                     />
                                 </span> :
                                     <button type="button" className="btn btn-primary" onClick={() => handleAdjustKpiEmployee()}>Cân bằng KPI nhân viên</button>
@@ -653,6 +654,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    balanceEmployeeKpiSet: DashboardEvaluationEmployeeKpiSetAction.balanceEmployeeKpiSet,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree
 };
 export default connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiDashboard));

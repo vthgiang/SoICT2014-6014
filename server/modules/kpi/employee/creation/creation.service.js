@@ -9,6 +9,7 @@ const NotificationServices = require(`../../../notification/notification.service
 const NewsFeedService = require('../../../news-feed/newsFeed.service')
 const EmployeeEvaluationService = require('../../../kpi/evaluation/employee-evaluation/employeeEvaluation.service');
 const { getPaginatedTasksThatUserHasResponsibleRole } = require('../../../task/task-management/task.service');
+const { listeners } = require('process');
 
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
@@ -271,8 +272,12 @@ exports.createEmployeeKpi = async (portal, data) => {
 
 /* Tao kpi tu dong cho cá nhân */
 exports.createEmployeeKpiSetAuto = async (portal, data) => {
-    const { organizationalUnit, month, employees, approver, employee } = data;
-    console.log(275, employees)
+    let { organizationalUnit, month, employees, approver, employee, formula } = data;
+    let m = month.split("-")[1];
+    if (m < 10) {
+        month = `${month.split("-")[0]}-0${m}`
+    }
+
     // Config month tìm kiếm
     let monthSearch, nextMonthSearch;
 
@@ -290,7 +295,6 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
     if (check.length > 0) {
         return null;
     }
-
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
@@ -339,9 +343,9 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
 
         for (let i = 0; i < employees.length; i++) {
 
-            let ratio = await EmployeeEvaluationService.getEmployeeKpiPerformance(portal, employees[i]);
+            let ratio = await EmployeeEvaluationService.getEmployeeKpiPerformance(portal, employees[i], formula);
             completeRatio[employees[i]] = {};
-            console.log(342, ratio)
+            // console.log(342, ratio)
             totalRatio += ratio.completeRatio;
             completeRatio[employees[i]].ratio = ratio.completeRatio;
 
@@ -361,10 +365,10 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                     importance = 100;
                 }
             }
-            console.log(360, completeRatio)
+            // console.log(360, completeRatio)
             completeRatio[key] = { ...completeRatio[key], importance }
         }
-        console.log(362, completeRatio)
+        // console.log(362, completeRatio)
         // Phan chia cac muc tieu kpi cho nhan vien
         //Lay danh sach muc tieu kpi don vi theo trong so giam dan
         let otherKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -394,14 +398,14 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 }
             ])
 
-        console.log(390, otherKpis)
+        // console.log(390, otherKpis)
         // Gan kpi cho nhan vien
         let kpiEmployee = []
         let numOfKpis = Math.round(completeRatio[employee].ratio * otherKpis.length);
         if (numOfKpis > otherKpis.length) {
             numOfKpis = otherKpis.length;
         }
-        console.log(397, completeRatio[employee].ratio, numOfKpis)
+        // console.log(397, completeRatio[employee].ratio, numOfKpis)
         // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
         if (otherKpis.length > 0 && completeRatio[employee].importance < 90) {
             let weightOver = 0;
@@ -472,12 +476,14 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
 }
 
 exports.balancEmployeeKpisAuto = async (portal, kpiSet, balanceCoef) => {
+    // console.log(475, kpiSet, balanceCoef)
     if (!portal) {
         portal = 'vnist';
     }
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(kpiSet)
         .select('kpis');
+    // console.log(482, employeeKpiSet)
 
     if (employeeKpiSet?.kpis) {
         for (let kpiId of employeeKpiSet.kpis) {
