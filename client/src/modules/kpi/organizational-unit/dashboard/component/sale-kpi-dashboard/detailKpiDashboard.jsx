@@ -34,7 +34,7 @@ const getMonthArr = (date) => {
     return monthArr.reverse();
 }
 
-const SaleKpiDashboard = (props) => {
+const DetailKpiDashboard = (props) => {
     const { tasks, createKpiUnit, dashboardEvaluationEmployeeKpiSet } = props;
     const [month, setMonth] = useState(() => {
         const d = new Date();
@@ -501,5 +501,5 @@ const actions = {
 
 }
 
-const connectedSaleKpiDashboard = connect(mapState, actions)(withTranslate(SaleKpiDashboard));
-export default connectedSaleKpiDashboard;
+const connectedDetailKpiDashboard = connect(mapState, actions)(withTranslate(DetailKpiDashboard));
+export default connectedDetailKpiDashboard;

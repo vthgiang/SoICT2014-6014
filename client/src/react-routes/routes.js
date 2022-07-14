@@ -55,7 +55,6 @@ const OrganizationalUnitKpiCreateForAdmin = lazy(() => import("../modules/kpi/or
 const OrganizationalUnitKpiCreate = lazy(() => import("../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate"))
 const OrganizationalUnitKpiDashboard = lazy(() => import("../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard"))
 const OrganizationalUnitKpiTemplate = lazy(() => import("../modules/kpi/organizational-unit/template/component/kpiSetTemplate"))
-const SaleOrganizationUnitKpiDashboard = lazy(() => import("../modules/kpi/organizational-unit/dashboard/component/sale-kpi-dashboard/saleKpiDashboard"))
 const KPIUnitManager = lazy(() => import("../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview"))
 const KPIUnitEvaluate = lazy(() => import("../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation"))
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi"))
@@ -1204,28 +1203,6 @@ class Routes extends Component {
                             pageName={"kpi_unit_template"}
                             layout={Layout}
                             component={OrganizationalUnitKpiTemplate}
-                        />
-
-                        <PrivateRoute
-                            isLoading={
-                                this.props.dashboardOrganizationalUnitKpi.isLoading
-                            }
-                            key={"kpi-unit-sales-dashboard"}
-                            arrPage={[
-                                { link: "/", name: "home", icon: "fa fa-home" },
-                                {
-                                    link: "/kpi-units/sales-dashboard",
-                                    name: "kpi_unit_sales_dashboard",
-                                    icon: "",
-                                },
-                            ]}
-                            auth={auth}
-                            exact={true}
-                            link={"/kpi-units/sales-dashboard"}
-                            path={"/kpi-units/sales-dashboard"}
-                            pageName={"kpi_unit_sales_dashboard"}
-                            layout={Layout}
-                            component={SaleOrganizationUnitKpiDashboard}
                         />
                         <PrivateRoute
                             isLoading={

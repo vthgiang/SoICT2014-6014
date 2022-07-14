@@ -3,71 +3,13 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import Swal from 'sweetalert2';
 
-const dataKpiUnit = [
-    {
-        name: 'Nguyễn Văn A',
-        kpis: [
-            {
-                type: 'Doanh thu',
-                target: 1000000,
-                unit: 'VND',
-                current: 800000
-            },
-            {
-                type: 'Hợp đồng',
-                target: 10,
-                unit: 'Hợp đồng',
-                current: 7
-            },
-            {
-                type: 'Giảm chi phí',
-                target: 200000,
-                unit: 'VND',
-                current: 60000
-            },
-        ]
-    },
-    {
-        name: 'Nguyễn B',
-        kpis: [
-            {
-                type: 'Nhân sự mới',
-                target: 100,
-                unit: 'Người',
-                current: 90
-            },
-            {
-                type: 'Hợp đồng',
-                target: 50,
-                unit: 'Hợp đồng',
-                current: 45
-            },
-        ]
-    },
-    {
-        name: 'Nguyễn C',
-        kpis: [
-            {
-                type: 'Quảng cáo',
-                target: 150,
-                unit: 'QC',
-                current: 90
-            },
-            {
-                type: 'Tỉ lệ chuyển đổi KH',
-                target: 30,
-                unit: '%',
-                current: 20
-            },
-            {
-                type: 'Đối tác mới',
-                target: 5,
-                unit: 'Đối tác',
-                current: 3
-            },
-        ]
-    },
-]
+const formatTarget = (value) => {
+    if (value > 1000000) {
+        return Math.round(value / 1000) * 1000;
+    }
+    else return value;
+}
+
 const PreviewKpiEmployee = (props) => {
     const { data } = props;
     const [delay, setDelay] = useState(false);
@@ -141,7 +83,7 @@ const PreviewKpiEmployee = (props) => {
                                                         <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{kpi.current === 1 ? 'Hoàn thành' : 'Chưa hoàn thành'}</span>
                                                     </span> : <span>
                                                         <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{kpi.current}</span>
-                                                        {`/${kpi.target} ${kpi.unit}`}
+                                                        {`/${formatTarget(kpi.target)} ${kpi.unit}`}
                                                     </span>
                                                 }
 

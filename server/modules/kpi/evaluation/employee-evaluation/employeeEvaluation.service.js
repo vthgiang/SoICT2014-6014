@@ -1002,7 +1002,7 @@ exports.getEmployeeKpiPerformance = async (portal, userId) => {
     if (!profile) {
         console.log('ko thay')
         return {
-            completeRatio: 0,
+            completeRatio: 80 * 80 * 80 / 10000,
             performance: {
                 employeeId: userId,
                 name: user.name,
@@ -1067,6 +1067,7 @@ exports.getEmployeeKpiPerformance = async (portal, userId) => {
             }
         })
         .populate("kpis");
+    console.log(1070, kpiRecently)
 
     if (kpiRecently?.length > 0) {
         kpiRecently.map(x => {
@@ -1104,7 +1105,7 @@ exports.getEmployeeKpiPerformance = async (portal, userId) => {
     const completeRatio = Math.round(profilePoint * resultPoint * progressPoint / 10000);
 
     return {
-        completeRatio,
+        completeRatio: completeRatio,
         performance: {
             employeeId: userId,
             name: user.name,

@@ -34,7 +34,7 @@ function ModalAddKpiTemplate(props) {
         let { templateData } = state;
         console.log(templateData);
         props.addNewTemplate(templateData);
-        // props.getKpiTemplates(null, null, 1, props.limit);
+        props.getKpiTemplates(null, null, 1, props.limit);
         // window.$("#addKpiTemplate").modal("hide");
     }
 

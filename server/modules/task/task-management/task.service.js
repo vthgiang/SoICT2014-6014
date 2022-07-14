@@ -2406,28 +2406,33 @@ exports.getTasksByUser = async (portal, data) => {
 exports.getAllTasksThatHasEvaluation = async (portal, data) => {
     let startDate = new Date(data.startDate);
     let endDate = new Date(data.endDate);
-
+    endDate.setMonth(endDate.getMonth() + 1);
     // Lấy danh sách các công việc gắn với KPI đơn vị
     let tasks = await Task(connect(DB_CONNECTION, portal))
         .find({
-            "evaluations": {
-                $elemMatch: {
-                    // "progress": 80
-                    $and: [
-                        { "evaluatingMonth": { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                        {
-                            "results": {
-                                $elemMatch: {
-                                    "organizationalUnit": mongoose.Types.ObjectId(data.unit)
-                                }
-                            }
+            $and: [
+                { "organizationalUnit": data.unit },
+                {
+                    "evaluations": {
+                        $elemMatch: {
+                            $and: [
+                                { "evaluatingMonth": { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                                // {
+                                //     "results": {
+                                //         $elemMatch: {
+                                //             "organizationalUnit": mongoose.Types.ObjectId(data.unit)
+                                //         }
+                                //     }
+                                // }
+                            ]
                         }
-                    ]
+                    }
                 }
-            }
-
+            ]
         })
-        .select("name evaluations responsibleEmployees");
+    // .select("name evaluations responsibleEmployees");
+    console.log("ashfjlo", tasks)
+
 
     return tasks;
 }

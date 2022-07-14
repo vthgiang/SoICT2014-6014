@@ -272,6 +272,7 @@ exports.createEmployeeKpi = async (portal, data) => {
 /* Tao kpi tu dong cho cá nhân */
 exports.createEmployeeKpiSetAuto = async (portal, data) => {
     const { organizationalUnit, month, employees, approver, employee } = data;
+    console.log(275, employees)
     // Config month tìm kiếm
     let monthSearch, nextMonthSearch;
 
