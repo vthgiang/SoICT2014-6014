@@ -42,7 +42,7 @@ function TaskDelegationForm(props) {
         delegatePolicy: ""
 
     })
-    const { taskId, delegateTaskName, delegationName, description, delegationNameError, delegateTaskRoles, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errordelegateTaskRoles, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateTaskRoles, errorOnDelegateLinks, unitMembers, delegatePolicy, errorDelegatePolicy, roles } = state;
+    const { taskId, delegateTaskName, delegationName, description, delegationNameError, delegateTaskRoles, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateTaskRoles, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateTaskRoles, errorOnDelegateLinks, unitMembers, delegatePolicy, errorDelegatePolicy, roles } = state;
 
     const { translate, performtasks, auth, user, policyDelegation, tasks } = props;
 
@@ -177,9 +177,9 @@ function TaskDelegationForm(props) {
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
-        if (!delegationNameError.status || !validateDelegatee(state.delegatee, false)
+        if (!delegationNameError.status || !validateDelegatee(state.delegatee, false) || !validateDelegateTaskRoles(state.delegateTaskRoles, false) || (showChooseRevoke && !ValidationHelper.validateEmpty(translate, delegateDuration.endDate).status)
             || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || !validateDelegatePolicy(state.delegatePolicy, false)) {
-            console.log("hello")
+
             return false;
         }
         return true;
@@ -227,7 +227,7 @@ function TaskDelegationForm(props) {
         let msg = undefined;
 
         const { translate } = props;
-        if (!value) {
+        if (!value || value.length == 0) {
             msg = translate('manage_delegation.no_blank_delegate_role');
         }
         if (willUpdateState) {
@@ -235,7 +235,7 @@ function TaskDelegationForm(props) {
             setState({
                 ...state,
                 delegateTaskRoles: value,
-                errordelegateTaskRoles: msg,
+                errorDelegateTaskRoles: msg,
                 selectDelegateTaskRoles: true
             })
         }
@@ -563,10 +563,10 @@ function TaskDelegationForm(props) {
 
                     <div className="row form-group">
                         {/* Chọn vai trò*/}
-                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errordelegateTaskRoles === undefined ? "" : "has-error"}`}>
+                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegateTaskRoles === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_delegation.delegate_task_role')}<span className="text-red">*</span></label>
                             {roles && <SelectBox
-                                id="select-task-role-edit"
+                                id="select-task-role-create"
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
@@ -577,7 +577,7 @@ function TaskDelegationForm(props) {
                                 onChange={handleDelegateTaskRoles}
 
                             />}
-                            <ErrorLabel content={errordelegateTaskRoles} />
+                            <ErrorLabel content={errorDelegateTaskRoles} />
                         </div>
                     </div>
 
@@ -590,7 +590,7 @@ function TaskDelegationForm(props) {
                             <label>{translate('manage_delegation.delegate_receiver')}<span className="text-red">*</span></label>
                             {allUnitsMember &&
                                 <SelectBox
-                                    id="select-delegate-receiver-edit"
+                                    id="select-delegate-receiver-create"
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
@@ -612,7 +612,7 @@ function TaskDelegationForm(props) {
 
                     {selectDelegateTaskRoles &&
                         <div className="row">
-                            <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 ${errorOnDelegateLinks === undefined ? "" : "has-error"}`}>
+                            <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
 
                                 <form style={{ marginBottom: '5px' }}>
                                     <input type="checkbox" id="delegateRevoke" name="delegateRevoke" onChange={chooseRevoke} />
@@ -627,14 +627,14 @@ function TaskDelegationForm(props) {
                         <div style={{ marginBottom: "0px" }} className={`${showChooseRevoke ? "col-lg-6 col-md-6" : "col-lg-12 col-md-12"} col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnStartDate === undefined ? "" : "has-error"}`}>
                             <label className="control-label">{translate('manage_delegation.start_date')}<span className="text-red">*</span></label>
                             <DatePicker
-                                id={`datepicker1edit`}
+                                id={`datepicker1create`}
                                 dateFormat="day-month-year"
                                 value={delegateDuration.startDate}
                                 onChange={handleChangeTaskStartDate}
                                 pastDate={false}
                             />
                             <TimePicker
-                                id={`time-picker-1edit`}
+                                id={`time-picker-1create`}
                                 refs={`time-picker-1`}
                                 value={delegateDuration.startTime}
                                 onChange={handleStartTimeChange}
@@ -646,13 +646,13 @@ function TaskDelegationForm(props) {
                             <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('manage_delegation.end_date')}</label>
                                 <DatePicker
-                                    id={`datepicker2edit`}
+                                    id={`datepicker2create`}
                                     value={delegateDuration.endDate}
                                     onChange={handleChangeTaskEndDate}
                                     pastDate={false}
                                 />
                                 < TimePicker
-                                    id={`time-picker-2edit`}
+                                    id={`time-picker-2create`}
                                     refs={`time-picker-2`}
                                     value={delegateDuration.endTime}
                                     onChange={handleEndTimeChange}
@@ -667,7 +667,7 @@ function TaskDelegationForm(props) {
                         <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegatePolicy === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_delegation.delegate_policy')}<span className="text-red">*</span></label>
                             <SelectBox
-                                id="select-delegate-policy-edit"
+                                id="select-delegate-policy-create"
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={

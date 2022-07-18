@@ -542,6 +542,10 @@ const TaskSchema = new Schema(
                 acceptLog: {
                     type: Boolean,
                     default: true
+                },
+                delegator: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
                 }
             },
         ],
@@ -731,6 +735,10 @@ const TaskSchema = new Schema(
                         }
                     },
                 ],
+                delegator: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
             },
         ],
         taskComments: [
@@ -818,6 +826,10 @@ const TaskSchema = new Schema(
                 },
                 description: {
                     type: String,
+                },
+                delegator: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
                 },
             },
         ],

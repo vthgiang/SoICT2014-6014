@@ -213,7 +213,7 @@ function DelegationTable(props) {
                 revokeReason={currentRow && currentRow.revokeReason}
                 delegatePolicy={currentRow && currentRow.delegatePolicy}
                 showChooseLinks={currentRow && currentRow.allPrivileges == true ? false : true}
-                showChooseRevoke={currentRow && currentRow.revokedDate != null ? true : false}
+                showChooseRevoke={currentRow && currentRow.endDate != null ? true : false}
                 logs={currentRow && currentRow.logs}
 
             />

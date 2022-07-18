@@ -913,6 +913,29 @@ export function tasks(state = {
                 isLoading: false,
                 error: action.error
             };
+        case taskManagementConstants.EDIT_TASK_DELEGATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.EDIT_TASK_DELEGATION_SUCCESS:
+            index = findIndex(state.tasks, action.payload._id);
+
+            if (index !== -1) {
+                state.tasks[index] = action.payload;
+                state.task = action.payload;
+            };
+
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case taskManagementConstants.EDIT_TASK_DELEGATION_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
 
         default:
             return state

@@ -85,9 +85,8 @@ function DelegationEditForm(props) {
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
-        if (!delegationNameError.status || !validateDelegateRole(state.delegateRole, false) || !validateDelegatee(state.delegatee, false)
+        if (!delegationNameError.status || !validateDelegateRole(state.delegateRole, false) || !validateDelegatee(state.delegatee, false) || (showChooseRevoke && !ValidationHelper.validateEmpty(translate, delegateDuration.endDate).status)
             || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || !validateDelegatePolicy(state.delegatePolicy, false) || (showChooseLinks && delegateLinks == null)) {
-            console.log("hello")
             return false;
         }
         return true;
@@ -242,14 +241,14 @@ function DelegationEditForm(props) {
         }
         if (willUpdateState) {
             // Array id delegate role và parents
-            let selectedRoleAndParents = role.list.filter(role => role._id == value)[0].parents.map(p => p._id).concat(value)
+            let selectedRoleAndParents = role.list.filter(role => role._id == value)[0]?.parents.map(p => p._id).concat(value)
 
-            // console.log(role.list.filter(role => role._id == value[0]))
+            // console.log(role.list.filter(role => role._id == value)[0].parents.map(p => p._id))
             // console.log(selectedRoleAndParents)
             // console.log(link.list.filter(link => link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r))))
 
             // Lọc link ko có policies
-            let linksOfDelegateRole = link.list.filter(link => link.roles.filter(role => role.policies.length > 0).length == 0 && link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r)))
+            let linksOfDelegateRole = link.list.filter(link => link.roles.filter(role => role.policies.length > 0).length == 0 && link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents?.includes(r)))
 
             console.log(linksOfDelegateRole)
             setState({
@@ -466,7 +465,7 @@ function DelegationEditForm(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-edit-delegation-hooks-${state.delegateType}`} isLoading={delegation.isLoading}
+                modalID={`modal-edit-delegation-hooks-Role`} isLoading={delegation.isLoading}
                 formID="form-edit-delegation-hooks"
                 title={translate('manage_delegation.edit_role_delegation_title')}
                 msg_success={translate('manage_delegation.add_success')}

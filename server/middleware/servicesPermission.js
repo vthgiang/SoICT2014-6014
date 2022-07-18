@@ -366,6 +366,7 @@ exports.links = [
             { path: '/task/tasks/:taskId/delegation/revoke', method: 'PATCH' },
             { path: '/task/tasks/:taskId/delegation/reject', method: 'PATCH' },
             { path: '/task/tasks/:taskId/delegation/confirm', method: 'PATCH' },
+            { path: '/task/tasks/:taskId/delegation/edit', method: 'PATCH' },
 
 
 

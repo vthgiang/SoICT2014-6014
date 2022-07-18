@@ -37,7 +37,8 @@ export const taskManagementService = {
     revokeTaskDelegation,
     deleteTaskDelegation,
     confirmTaskDelegation,
-    rejectTaskDelegation
+    rejectTaskDelegation,
+    editTaskDelegation
 };
 
 
@@ -548,6 +549,20 @@ function saveTaskAttributes(taskId, attribute) {
 function addTaskDelegation(taskId, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/delegation`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'task.task_management');
+}
+
+/**
+ * Chỉnh sửa ủy quyền công việc
+ * @param {*} taskId id công việc
+ * @param {*} data thông tin ủy quyền
+ * 
+ **/
+function editTaskDelegation(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/delegation/edit`,
         method: 'PATCH',
         data: data
     }, true, true, 'task.task_management');

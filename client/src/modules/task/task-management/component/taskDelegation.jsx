@@ -8,6 +8,7 @@ import '../../../delegation/delegation-list/components/selectLink.css'
 import { PolicyActions } from '../../../super-admin/policy-delegation/redux/actions';
 import { performTaskAction } from '../../task-perform/redux/actions';
 import { TaskDelegationForm } from './taskDelegationForm';
+import { TaskDelegationFormEdit } from './taskDelegationFormEdit';
 import { colorfyDelegationStatus } from '../../../delegation/delegation-list/components/functionHelper';
 import { DelegationDetailInfoTask } from "../../../delegation/delegation-list/components/delegationDetailInfoTask";
 import { taskManagementActions } from '../redux/actions';
@@ -22,7 +23,7 @@ function TaskDelegation(props) {
     const [state, setState] = useState({
 
     })
-    const { taskId, delegateTaskName, taskDelegations, curentRowDetail, curentRowDetailReceive, taskDelegationsReceive } = state;
+    const { taskId, delegateTaskName, taskDelegations, currentRow, curentRowDetail, curentRowDetailReceive, taskDelegationsReceive } = state;
 
     const { translate, performtasks, tasks } = props;
 
@@ -82,7 +83,7 @@ function TaskDelegation(props) {
             ...state,
             currentRow: delegation
         });
-        window.$(`#modal-edit-delegation-hooks-Role`).modal('show');
+        window.$(`#modal-task-delegation-form-edit`).modal('show');
     }
 
     const confirmDelegation = (id) => {
@@ -139,6 +140,24 @@ function TaskDelegation(props) {
                     delegatePolicy={curentRowDetail ? curentRowDetail.delegatePolicy : curentRowDetailReceive ? curentRowDetailReceive.delegatePolicy : null}
                     logs={curentRowDetail ? curentRowDetail.logs : curentRowDetailReceive ? curentRowDetailReceive.logs : null}
                     forReceive={curentRowDetailReceive ? true : false}
+                />
+
+                <TaskDelegationFormEdit
+                    id={props.id}
+                    taskId={taskId}
+                    taskName={delegateTaskName}
+                    delegationID={currentRow && currentRow._id}
+                    delegationName={currentRow && currentRow.delegationName}
+                    description={currentRow && currentRow.description}
+                    delegator={currentRow && currentRow.delegator}
+                    delegatee={currentRow && currentRow.delegatee}
+                    delegateType={currentRow && currentRow.delegateType}
+                    delegateTaskRoles={currentRow && currentRow.delegateTaskRoles}
+                    status={currentRow && currentRow.status}
+                    startDate={currentRow && currentRow.startDate}
+                    endDate={currentRow && currentRow.endDate}
+                    delegatePolicy={currentRow && currentRow.delegatePolicy}
+                    showChooseRevoke={currentRow && currentRow.endDate != null ? true : false}
                 />
 
 
@@ -207,10 +226,10 @@ function TaskDelegation(props) {
                                                     <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_delegation.detail_info_delegation')}
                                                         onClick={() => handleShowDetailInfo(item)}
                                                     ><i className="material-icons">visibility</i></a>
-                                                    {/* {item.status == "pending"
-                                    ? <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
-                                    : null
-                                } */}
+                                                    {item.status == "pending"
+                                                        ? <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
+                                                        : null
+                                                    }
                                                     {item.status == "revoked" ?
                                                         <DeleteNotification
                                                             content={translate('manage_delegation.delete')}

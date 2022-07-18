@@ -1206,6 +1206,27 @@ exports.addTaskDelegation = async (req, res) => {
     }
 }
 
+exports.editTaskDelegation = async (req, res) => {
+    try {
+        let data = await TaskManagementService.editTaskDelegation(req.portal, req.params.taskId, req.body);
+
+        Logger.info(req.user.email, 'edit_task_delegation_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_delegation_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'edit_task_delegation_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_task_delegation_faile'],
+            content: error
+        });
+    }
+}
+
 exports.deleteTaskDelegation = async (req, res) => {
     try {
         let data = await TaskManagementService.deleteTaskDelegation(req.portal, req.params.taskId, req.body);

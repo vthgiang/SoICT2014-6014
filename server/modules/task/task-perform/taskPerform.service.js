@@ -40,6 +40,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       },
       { path: "evaluations.results.kpis" },
       { path: "taskActions.creator", select: "name email avatar" },
+      { path: "taskActions.delegator", select: "name" },
       {
         path: "taskActions.comments.creator",
         select: "name email avatar",
@@ -75,6 +76,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
         ],
       },
       { path: "timesheetLogs.creator", select: "name avatar _id email" },
+      { path: "timesheetLogs.delegator", select: "_id name" },
       { path: "hoursSpentOnTask.contributions.employee", select: "name" },
       {
         path: "process",
@@ -141,12 +143,26 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
       { path: "logs.creator", select: "_id name avatar email " },
+      { path: "logs.delegator", select: "_id name " },
       {
         path: "delegations", populate: [
           { path: 'delegatee', select: '_id name' },
           { path: 'delegatePolicy', select: '_id policyName' },
           { path: 'delegator', select: '_id name' },
-          { path: 'delegateTask', select: '_id name' }
+          {
+            path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+            populate: [
+              { path: "taskActions.creator", select: "name email avatar" },
+              { path: "taskActions.delegator", select: "name" },
+              {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+              },
+              { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+              { path: "timesheetLogs.creator", select: "name avatar _id email" },
+              { path: "logs.creator", select: "_id name avatar email " }
+            ]
+          }
         ]
 
       }
@@ -321,7 +337,7 @@ _checkManagers = (v, id) => {
 exports.getTaskTimesheetLogs = async (portal, params) => {
   let timesheetLogs = await Task(connect(DB_CONNECTION, portal))
     .findById(params.taskId)
-    .populate({ path: "timesheetLogs.creator", select: "_id name email avatar" });
+    .populate([{ path: "timesheetLogs.creator", select: "_id name email avatar" }, { path: "timesheetLogs.delegator", select: "_id name" }]);
   return timesheetLogs.timesheetLogs;
 };
 
@@ -357,9 +373,25 @@ exports.getActiveTimesheetLog = async (portal, query) => {
  */
 exports.startTimesheetLog = async (portal, params, body, user) => {
   const now = new Date();
+  const taskDelegate = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }).populate(
+    {
+      path: "delegations", populate: [
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegator', select: '_id name' }
+      ]
+
+    }
+  )
+  let delegator = null;
+  if (taskDelegate.delegations) {
+    if (taskDelegate.delegations.map(d => d.delegatee._id.toString()).includes(body.creator.toString())) {
+      delegator = taskDelegate.delegations.filter(d => d.delegatee._id.toString() == body.creator.toString())[0].delegator._id
+    }
+  }
   let timerUpdate = {
     startedAt: now,
     creator: body.creator,
+    delegator: delegator
   };
 
   // Check xem người dùng có đang bấm giờ công việc khác hay không
@@ -627,9 +659,24 @@ const stopTimeSheetLogAllDevices = (taskId, user) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (portal, params, body, user) => {
+  const taskDelegate = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }).populate(
+    {
+      path: "delegations", populate: [
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegator', select: '_id name' }
+      ]
+
+    }
+  )
+  let delegator = null;
+  if (taskDelegate.delegations) {
+    if (taskDelegate.delegations.map(d => d.delegatee._id.toString()).includes(user._id.toString())) {
+      delegator = taskDelegate.delegations.filter(d => d.delegatee._id.toString() == user._id.toString())[0].delegator._id
+    }
+  }
   if (body.type && body.type === "cancel") {
     const cancelTimer = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-      { _id: params.taskId, "timesheetLogs._id": body.timesheetLog, "timesheetLogs.creator": body.employee },
+      { _id: params.taskId, "timesheetLogs._id": body.timesheetLog, "timesheetLogs.creator": body.employee, "timesheetLogs.delegator": delegator },
       {
         $pull: {
           timesheetLogs: { _id: body.timesheetLog },
@@ -693,6 +740,7 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
           ],
         },
         { path: "timesheetLogs.creator", select: "name avatar _id email" },
+        { path: "timesheetLogs.delegator", select: "name _id" },
         { path: "hoursSpentOnTask.contributions.employee", select: "name" },
         {
           path: "process",
@@ -786,6 +834,7 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
         description: body.addlogDescription,
         creator: user._id,
         acceptLog: checkDurationValid > 24 ? false : true,
+        delegator: delegator
       }
       timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,
@@ -936,6 +985,7 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
           ],
         },
         { path: "timesheetLogs.creator", select: "name avatar _id email" },
+        { path: "timesheetLogs.delegator", select: "name _id " },
         { path: "hoursSpentOnTask.contributions.employee", select: "name" },
         {
           path: "process",
@@ -1341,10 +1391,26 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
 
 exports.createTaskAction = async (portal, params, body, files) => {
 
+  const taskDelegate = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }).populate(
+    {
+      path: "delegations", populate: [
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegator', select: '_id name' }
+      ]
+
+    }
+  )
+  let delegator = null;
+  if (taskDelegate.delegations) {
+    if (taskDelegate.delegations.map(d => d.delegatee._id.toString()).includes(body.creator.toString())) {
+      delegator = taskDelegate.delegations.filter(d => d.delegatee._id.toString() == body.creator.toString())[0].delegator._id
+    }
+  }
   let actionInformation = {
     creator: body.creator,
     description: body.description,
     files: files,
+    delegator: delegator
   };
   const task = await Task(connect(DB_CONNECTION, portal))
     .findByIdAndUpdate(
@@ -1378,6 +1444,7 @@ exports.createTaskAction = async (portal, params, body, files) => {
       },
       { path: "evaluations.results.kpis" },
       { path: "taskActions.creator", select: "name email avatar" },
+      { path: "taskActions.delegator", select: "name" },
       {
         path: "taskActions.comments.creator",
         select: "name email avatar",
@@ -2484,13 +2551,31 @@ exports.uploadFile = async (portal, params, body, files) => {
  * Thêm nhật ký cho một công việc
  */
 exports.addTaskLog = async (portal, taskId, body) => {
+
   let { creator, title, description, createdAt } = body;
+
+  const taskDelegate = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate(
+    {
+      path: "delegations", populate: [
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegator', select: '_id name' }
+      ]
+
+    }
+  )
+  let delegator = null;
+  if (taskDelegate.delegations) {
+    if (taskDelegate.delegations.map(d => d.delegatee._id.toString()).includes(creator.toString())) {
+      delegator = taskDelegate.delegations.filter(d => d.delegatee._id.toString() == creator.toString())[0].delegator._id
+    }
+  }
 
   let log = {
     createdAt: createdAt,
     creator: creator,
     title: title,
     description: description,
+    delegator: delegator
   };
 
   await Task(connect(DB_CONNECTION, portal))
@@ -2499,7 +2584,7 @@ exports.addTaskLog = async (portal, taskId, body) => {
       { $push: { logs: log } },
       { new: true }
     )
-    .populate({ path: "logs.creator", select: "_id name email avatar" });
+    .populate([{ path: "logs.creator", select: "_id name email avatar" }, { path: "logs.delegator", select: "_id name" }]);
 
   let taskLog = await this.getTaskLog(portal, taskId);
 
@@ -2600,7 +2685,7 @@ exports.createDescriptionEvaluationTaskLogs = async (portal, userId, newTask, ol
 exports.getTaskLog = async (portal, taskId) => {
   let task = await Task(connect(DB_CONNECTION, portal))
     .findById(taskId)
-    .populate({ path: "logs.creator", select: "_id name email avatar" });
+    .populate([{ path: "logs.creator", select: "_id name email avatar" }, { path: "logs.delegator", select: "_id name" }]);
 
   return task.logs.reverse();
 };

@@ -36,7 +36,8 @@ export const taskManagementActions = {
     deleteTaskDelegation,
     revokeTaskDelegation,
     confirmTaskDelegation,
-    rejectTaskDelegation
+    rejectTaskDelegation,
+    editTaskDelegation
 };
 
 
@@ -690,6 +691,28 @@ function addTaskDelegation(taskId, data) {
             .catch((error) => {
                 dispatch({
                     type: taskManagementConstants.ADD_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function editTaskDelegation(taskId, data) {
+    return (dispatch) => {
+        dispatch({
+            type: taskManagementConstants.EDIT_TASK_DELEGATION_REQUEST
+        });
+        taskManagementService
+            .editTaskDelegation(taskId, data)
+            .then((res) => {
+                dispatch({
+                    type: taskManagementConstants.EDIT_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: taskManagementConstants.EDIT_TASK_DELEGATION_FAILURE,
                     error
                 });
             });

@@ -26,5 +26,6 @@ router.patch('/tasks/:taskId/delegation/revoke', auth, TaskManagementController.
 router.patch('/tasks/:taskId/delegation/delete', auth, TaskManagementController.deleteTaskDelegation);
 router.patch('/tasks/:taskId/delegation/reject', auth, TaskManagementController.rejectTaskDelegation);
 router.patch('/tasks/:taskId/delegation/confirm', auth, TaskManagementController.confirmTaskDelegation);
+router.patch('/tasks/:taskId/delegation/edit', auth, TaskManagementController.editTaskDelegation);
 
 module.exports = router;

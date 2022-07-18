@@ -2315,7 +2315,7 @@ exports.deleteTask = async (portal, taskId, userId) => {
                     tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
                 );
             }
-
+            await DelegationService.deleteTaskDelegationWhenTaskIsDeleted(portal, taskId[i])
             await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(taskId[i]); // xóa mẫu công việc theo id
             deleteSuccess = deleteSuccess + 1;
         }
@@ -4821,14 +4821,15 @@ exports.saveTaskAttributes = async (portal, taskId, data) => {
 
 exports.addTaskDelegation = async (portal, taskId, data) => {
 
-    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId })
-    let taskDelegation = await DelegationService.createTaskDelegation(portal, [data])
-    await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: taskId }, {
-        delegations: [
-            ...task.delegations,
-            taskDelegation._id
-        ]
-    })
+    // let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId })
+    // let taskDelegation =
+    await DelegationService.createTaskDelegation(portal, [data])
+    // await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: taskId }, {
+    //     delegations: [
+    //         ...task.delegations,
+    //         taskDelegation._id
+    //     ]
+    // })
 
     let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
         { path: "organizationalUnit parent" },
@@ -4843,7 +4844,19 @@ exports.addTaskDelegation = async (portal, taskId, data) => {
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
                 { path: 'delegator', select: '_id name' },
-                { path: 'delegateTask', select: '_id name' }
+                {
+                    path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                    populate: [
+                        { path: "taskActions.creator", select: "name email avatar" },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                        { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                        { path: "logs.creator", select: "_id name avatar email " }
+                    ]
+                }
             ]
 
         }
@@ -4853,6 +4866,50 @@ exports.addTaskDelegation = async (portal, taskId, data) => {
     return updateTask;
 };
 
+exports.editTaskDelegation = async (portal, taskId, data) => {
+
+    await DelegationService.editTaskDelegation(portal, data)
+    // await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: taskId }, {
+    //     delegations: [
+    //         ...task.delegations.filter(d => d.toString() == data.delegationId.toString()),
+    //         taskDelegation._id
+    //     ]
+    // })
+
+    let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
+        { path: "organizationalUnit parent" },
+        { path: 'creator', select: "_id name email avatar" },
+        { path: 'responsibleEmployees', select: "_id name email avatar" },
+        { path: 'accountableEmployees', select: "_id name email avatar" },
+        { path: 'consultedEmployees', select: "_id name email avatar" },
+        { path: 'informedEmployees', select: "_id name email avatar" },
+        { path: "timesheetLogs.creator", select: "name" },
+        {
+            path: "delegations", populate: [
+                { path: 'delegatee', select: '_id name' },
+                { path: 'delegatePolicy', select: '_id policyName' },
+                { path: 'delegator', select: '_id name' },
+                {
+                    path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                    populate: [
+                        { path: "taskActions.creator", select: "name email avatar" },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                        { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                        { path: "logs.creator", select: "_id name avatar email " }
+                    ]
+                }
+            ]
+
+        }
+    ]);
+
+
+    return updateTask;
+};
 
 exports.deleteTaskDelegation = async (portal, taskId, data) => {
 
@@ -4871,7 +4928,19 @@ exports.deleteTaskDelegation = async (portal, taskId, data) => {
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
                 { path: 'delegator', select: '_id name' },
-                { path: 'delegateTask', select: '_id name' }
+                {
+                    path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                    populate: [
+                        { path: "taskActions.creator", select: "name email avatar" },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                        { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                        { path: "logs.creator", select: "_id name avatar email " }
+                    ]
+                }
             ]
 
         }
@@ -4899,7 +4968,19 @@ exports.revokeTaskDelegation = async (portal, taskId, data) => {
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
                 { path: 'delegator', select: '_id name' },
-                { path: 'delegateTask', select: '_id name' }
+                {
+                    path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                    populate: [
+                        { path: "taskActions.creator", select: "name email avatar" },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                        { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                        { path: "logs.creator", select: "_id name avatar email " }
+                    ]
+                }
             ]
 
         }
@@ -4927,7 +5008,19 @@ exports.rejectTaskDelegation = async (portal, taskId, data) => {
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
                 { path: 'delegator', select: '_id name' },
-                { path: 'delegateTask', select: '_id name' }
+                {
+                    path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                    populate: [
+                        { path: "taskActions.creator", select: "name email avatar" },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                        { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                        { path: "logs.creator", select: "_id name avatar email " }
+                    ]
+                }
             ]
 
         }
@@ -4955,7 +5048,19 @@ exports.confirmTaskDelegation = async (portal, taskId, data) => {
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
                 { path: 'delegator', select: '_id name' },
-                { path: 'delegateTask', select: '_id name' }
+                {
+                    path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                    populate: [
+                        { path: "taskActions.creator", select: "name email avatar" },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                        { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                        { path: "logs.creator", select: "_id name avatar email " }
+                    ]
+                }
             ]
 
         }

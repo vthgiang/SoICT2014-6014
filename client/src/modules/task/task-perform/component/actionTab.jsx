@@ -323,7 +323,7 @@ function ActionTab(props) {
             })
         }
     }
-
+    console.log(performtasks)
     //Thêm mới hoạt động
     const submitAction = (taskId, index) => {
         let { newAction } = state;
@@ -1184,7 +1184,11 @@ function ActionTab(props) {
                                                             {/* Tên người tạo hoạt động */}
                                                             <div style={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
                                                                 {
-                                                                    item.creator && <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
+                                                                    item.creator && <a style={{ cursor: "pointer" }}>{item.creator?.name}
+                                                                        {item.delegator ? <span style={{ color: '#333' }}
+
+                                                                        >{" (" + translate('task.task_perform.delegated_from') + " " + item.delegator?.name + ")"}</span> : null}
+                                                                    </a>
                                                                 }
                                                                 {
                                                                     item.creator && <a className="pull-right" style={{ cursor: 'pointer' }} onClick={() => showDetailTimer(item.description, item.timesheetLogs)}>{handleShowTime(item.timesheetLogs)}</a>
@@ -2051,7 +2055,9 @@ function ActionTab(props) {
                                         {item.stoppedAt &&
                                             <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
                                                 <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{convertTime(item.duration)}</h3>
-                                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} {item.delegator ? <span style={{ color: '#333' }}
+
+                                                >{" (" + translate('task.task_perform.delegated_from') + " " + item.delegator?.name + ")"}</span> : null}</a>
                                                 <div>
                                                     <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("DD/MM/YYYY HH:mm:ss")}{" - "}
                                                     <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
@@ -2110,7 +2116,9 @@ function ActionTab(props) {
                                 {
                                     logs.map((item, index) =>
                                         <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
-                                            <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                            <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} {item.delegator ? <span style={{ color: '#333' }}
+
+                                            >{" (" + translate('task.task_perform.delegated_from') + " " + item.delegator?.name + ")"}</span> : null}</a>
                                             {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
                                             ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
                                             <div>

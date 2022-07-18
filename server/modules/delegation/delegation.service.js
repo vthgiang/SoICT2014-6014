@@ -14,7 +14,7 @@ const {
     connect
 } = require(`../../helpers/dbHelper`);
 const mongoose = require('mongoose');
-const { isToday, compareDate } = require('../../helpers/functionHelper');
+const { isToday, compareDate, arrayEquals } = require('../../helpers/functionHelper');
 const schedule = require('node-schedule');
 const taskTemplateModel = require('../../models/task/taskTemplate.model');
 const PolicyService = require('../super-admin/policy/policy.service');
@@ -28,7 +28,8 @@ exports.createDelegation = async (portal, data, logs = []) => {
 
             for (let i = 0; i < array.length; i++) {
                 const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: array[i].delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
-                if (checkDelegationCreated && !array[i].notCheck) {
+                if (checkDelegationCreated && !array[i].notCheck && !array[i].notCheckName) {
+                    console.log("gddgdg")
                     throw ['delegation_name_exist'];
                 }
                 if (array[i]) resArray = [...resArray, array[i]];
@@ -48,7 +49,7 @@ exports.createDelegation = async (portal, data, logs = []) => {
             // console.log('delegatePrivileges', delegatePrivileges)
             let checkDelegationExist = await Delegation(connect(DB_CONNECTION, portal)).find({
                 delegator: delArray[i].delegator,
-                delegatee: delArray[i].delegatee,
+                // delegatee: delArray[i].delegatee,
                 delegateType: "Role",
                 delegateRole: delArray[i].delegateRole,
                 status: {
@@ -155,13 +156,15 @@ exports.getNewlyCreateDelegation = async (id, data, portal) => {
             throw ['delegation_name_exist'];
         }
     } else {
-        if (oldDelegation.delegator.toString() == data.delegator.toString() &&
-            oldDelegation.delegatee.toString() == data.delegatee.toString() &&
-            oldDelegation.delegateRole.toString() == data.delegateRole.toString()
+        if (oldDelegation.delegator._id.toString() !== data.delegator.toString() ||
+            oldDelegation.delegatee._id.toString() !== data.delegatee.toString() ||
+            oldDelegation.delegateRole._id.toString() !== data.delegateRole.toString()
         ) {
+            data.notCheck = false;
+        } else {
             data.notCheck = true;
         }
-
+        data.notCheckName = true
     }
 
     updatedDelegation = await this.createDelegation(portal, [data], oldDelegation.logs);
@@ -235,13 +238,17 @@ exports.assignDelegation = async (newDelegation, portal) => {
 
 exports.updateMissedDelegation = async (portal) => {
 
-    const allDelegations = await Delegation(connect(DB_CONNECTION, portal)).find({ status: { $in: ['pending', 'activated'] }, delegateType: "Role" });
+    const allDelegations = await Delegation(connect(DB_CONNECTION, portal)).find({ status: { $in: ['pending', 'activated'] } });
     // Kích hoạt ủy quyền nếu startDate < now và chưa đến thời hạn thu hồi hoặc thu hồi nếu endDate < now  
     allDelegations.forEach(async delegation => {
 
         if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
+            if (delegation.delegateType == 'Role') {
+                await this.revokeDelegation(portal, [delegation._id], "Automatic revocation");
+            } else if (delegation.delegateType == 'Task') {
+                await this.revokeTaskDelegation(portal, [delegation._id], "Automatic revocation");
+            }
 
-            await this.revokeDelegation(portal, [delegation._id], "Automatic revocation");
             await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
                 logs: [
                     ...delegation.logs,
@@ -257,8 +264,13 @@ exports.updateMissedDelegation = async (portal) => {
         }
         else {
             if (delegation.status == 'pending' && delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
-                await this.assignDelegation(delegation, portal)
-                delegation.status = "activated"
+                if (delegation.delegateType == 'Role') {
+                    await this.assignDelegation(delegation, portal)
+                    delegation.status = "activated"
+                } else if (delegation.delegateType == 'Task') {
+                    await this.assignTaskDelegation(delegation, portal);
+                }
+
                 delegation.logs.push(
                     {
                         createdAt: new Date(),
@@ -773,7 +785,7 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
 
             for (let i = 0; i < array.length; i++) {
                 const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: array[i].delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
-                if (checkDelegationCreated && !array[i].notCheck) {
+                if (checkDelegationCreated && !array[i].notCheck && !array[i].notCheckName) {
                     throw ['delegation_name_exist'];
                 }
                 if (array[i]) resArray = [...resArray, array[i]];
@@ -894,7 +906,6 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
 
             // console.log(new Date(delArray[i].delegationStart))
             if (delArray[i].notCheck || (count1 == 0 && count2 == 0)) {
-                console.log('hello')
                 if (await this.checkDelegationPolicy(delArray[i].delegatePolicy, delArray[i].delegator, delArray[i].delegateTask, null, delArray[i].delegatee, portal)) {
                     newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
                         delegationName: delArray[i].delegationName,
@@ -917,19 +928,27 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
 
 
             // For demo
-            await this.assignTaskDelegation(newDelegation, portal)
-            // 
-            // if (isToday(new Date(delArray[i].delegationStart))) {
-            //     await this.assignTaskDelegation(newDelegation, portal)
-            // }
-            // else {
-            //     await this.autoActivateTaskDelegation(newDelegation, portal);
-            // }
+            // await this.assignTaskDelegation(newDelegation, portal)
 
-            // if (newDelegation.endDate != null) {
-            //     await this.autoRevokeDelegation(newDelegation, portal);
-            // }
+            // For auto activate revoke
+            if (isToday(new Date(delArray[i].delegationStart))) {
+                await this.assignTaskDelegation(newDelegation, portal)
+            }
+            else {
+                await this.autoActivateTaskDelegation(newDelegation, portal);
+            }
 
+            if (newDelegation.endDate != null) {
+                await this.autoRevokeTaskDelegation(newDelegation, portal);
+            }
+
+            let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: newDelegation.delegateTask })
+            await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: newDelegation.delegateTask }, {
+                delegations: [
+                    ...task.delegations,
+                    newDelegation._id
+                ]
+            })
 
         }
     }
@@ -944,6 +963,47 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
 
 
     return delegation;
+}
+
+exports.getNewlyCreateTaskDelegation = async (id, data, portal) => {
+    let oldDelegation = await this.getDelegationById(portal, id);
+    const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: data.delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+    let updatedDelegation = -1;
+    if (oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !== data.delegationName.trim().toLowerCase().replace(/ /g, "")) {
+        if (checkDelegationCreated) {
+            throw ['delegation_name_exist'];
+        }
+    } else {
+        if (oldDelegation.delegator._id.toString() !== data.delegator.toString() ||
+            oldDelegation.delegatee._id.toString() !== data.delegatee.toString() ||
+            oldDelegation.delegateTask._id.toString() !== data.delegateTask.toString()
+            // || !arrayEquals(oldDelegation.delegateTaskRoles, data.delegateTaskRoles)
+        ) {
+            data.notCheck = false;
+        } else {
+            data.notCheck = true;
+        }
+        data.notCheckName = true
+
+
+    }
+
+    updatedDelegation = await this.createTaskDelegation(portal, [data], oldDelegation.logs);
+
+    return updatedDelegation;
+}
+
+exports.editTaskDelegation = async (portal, data) => {
+    let id = data.delegationId;
+    let updatedDelegation = await this.getNewlyCreateTaskDelegation(id, data, portal);
+    if (updatedDelegation !== -1) {
+        this.cancelJobDelegation(id);
+        await this.revokeTaskDelegation(portal, [id]);
+        await this.deleteTaskDelegation(portal, [id]);
+        updatedDelegation = await this.saveLog(portal, updatedDelegation, updatedDelegation.delegator, updatedDelegation.delegationName, "edit", updatedDelegation.createdAt)
+
+    }
+    return updatedDelegation;
 }
 
 exports.autoActivateTaskDelegation = async (delegation, portal) => {
@@ -1119,14 +1179,14 @@ exports.revokeTaskDelegation = async (portal, delegationIds, reason) => {
     result.status = "revoked";
     result.revokeReason = !reason ? null : reason;
     result.revokedDate = new Date();
-    // if (result.endDate && compareDate(result.endDate, new Date()) > 0) {
-    //     if (schedule.scheduledJobs['Revoke_' + result._id]) {
-    //         schedule.scheduledJobs['Revoke_' + result._id].cancel()
-    //     }
-    // }
-    // if (schedule.scheduledJobs['Activate_' + result._id]) {
-    //     schedule.scheduledJobs['Activate_' + result._id].cancel()
-    // }
+    if (result.endDate && compareDate(result.endDate, new Date()) > 0) {
+        if (schedule.scheduledJobs['Revoke_' + result._id]) {
+            schedule.scheduledJobs['Revoke_' + result._id].cancel()
+        }
+    }
+    if (schedule.scheduledJobs['Activate_' + result._id]) {
+        schedule.scheduledJobs['Activate_' + result._id].cancel()
+    }
 
     await result.save();
 
@@ -1141,13 +1201,13 @@ exports.revokeTaskDelegation = async (portal, delegationIds, reason) => {
 }
 
 exports.deleteTaskDelegation = async (portal, delegationIds) => {
-    // if (schedule.scheduledJobs['Revoke_' + delegationIds[0]]) {
-    //     schedule.scheduledJobs['Revoke_' + delegationIds[0]].cancel()
-    // }
+    if (schedule.scheduledJobs['Revoke_' + delegationIds[0]]) {
+        schedule.scheduledJobs['Revoke_' + delegationIds[0]].cancel()
+    }
 
-    // if (schedule.scheduledJobs['Activate_' + delegationIds[0]]) {
-    //     schedule.scheduledJobs['Activate_' + delegationIds[0]].cancel()
-    // }
+    if (schedule.scheduledJobs['Activate_' + delegationIds[0]]) {
+        schedule.scheduledJobs['Activate_' + delegationIds[0]].cancel()
+    }
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
     let result = delegation[0];
 
@@ -1167,5 +1227,25 @@ exports.deleteTaskDelegation = async (portal, delegationIds) => {
 
 
     return delegationDelete;
+}
+
+exports.deleteTaskDelegationWhenTaskIsDeleted = async (portal, taskId) => {
+    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId })
+
+    if (task.delegations) {
+        task.delegations.forEach(delegationId => {
+            if (schedule.scheduledJobs['Revoke_' + delegationId]) {
+                schedule.scheduledJobs['Revoke_' + delegationId].cancel()
+            }
+
+            if (schedule.scheduledJobs['Activate_' + delegationId]) {
+                schedule.scheduledJobs['Activate_' + delegationId].cancel()
+            }
+        })
+
+        await Delegation(connect(DB_CONNECTION, portal)).deleteMany({ delegateTask: task._id })
+
+    }
+
 }
 
