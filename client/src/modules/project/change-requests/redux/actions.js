@@ -39,6 +39,7 @@ function getListProjectChangeRequestsDispatch(data) {
                 });
         };
     }
+    else if (data.calledId === 'get_all')
     return (dispatch) => {
         dispatch({ type: ChangeRequestConstants.GET_LIST_PROJECT_CHANGE_REQUESTS });
         ChangeRequestServices.getListProjectChangeRequestsAPI(data)

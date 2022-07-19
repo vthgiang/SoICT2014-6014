@@ -1450,7 +1450,7 @@ function ActionTab(props) {
                                                                                                 />
                                                                                                 :
                                                                                                 <div>
-                                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                    <a style={{ cursor: "pointer", marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                                     <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
                                                                                                         <u>{elem && checkTypeFile(elem.url) ?
                                                                                                             <i className="fa fa-eye"></i> : ""}</u>
@@ -1786,7 +1786,7 @@ function ActionTab(props) {
                                                                                                         />
                                                                                                         :
                                                                                                         <div>
-                                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                            <a style={{ cursor: "pointer", marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                                             <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
                                                                                                                 <u>{elem && checkTypeFile(elem.url) ?
                                                                                                                     <i className="fa fa-eye"></i> : ""}</u>
@@ -1931,7 +1931,7 @@ function ActionTab(props) {
                                                                                             requestDownloadFile={requestDownloadFile}
                                                                                         />
                                                                                         : <div>
-                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                            <a style={{ cursor: "pointer", marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                             <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
                                                                                                 <u>{elem && checkTypeFile(elem.url) ?
                                                                                                     <i className="fa fa-eye"></i> : ""}</u>

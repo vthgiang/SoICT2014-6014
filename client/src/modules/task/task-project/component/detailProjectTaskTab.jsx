@@ -163,7 +163,7 @@ class DetailProjectTaskTab extends Component {
         console.log('this.props.task', this.props.task)
         // this.props.getProjectsDispatch({ calledId: "" });
         this.props.showInfoRole(currentRole);
-        this.props.getTasksByProject(this.props.task?.taskProject);
+        this.props.getAllTasksByProject(this.props.task?.taskProject);
         this.props.getProjectsDispatch({ calledId: "user_all", userId: getStorage('userId') });
     }
 
@@ -741,7 +741,7 @@ class DetailProjectTaskTab extends Component {
         } = this.state;
 
         let task;
-        const currentProjectTasks = this.props.tasks && this.props.tasks.tasksbyproject;
+        const currentProjectTasks = this.props.tasks && this.props.tasks.tasksByProject;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
         // Các biến dùng trong phần Nhắc Nhở
         let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
@@ -1483,7 +1483,7 @@ const actionGetState = { //dispatchActionToProps
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     openTaskAgain: performTaskAction.openTaskAgain,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
 
     showInfoRole: RoleActions.show,
 }

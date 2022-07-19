@@ -2,9 +2,9 @@ import { isArraysEqual } from "@fullcalendar/common";
 import dayjs from "dayjs";
 import moment from "moment";
 import React from 'react';
+import GLPK from 'glpk.js/dist/index.js';
 import { getStorage } from "../../../../config";
 import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task/task-management/component/functionHelpers";
-
 export const MILISECS_TO_DAYS = 86400000;
 export const MILISECS_TO_HOURS = 3600000;
 
@@ -83,7 +83,7 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
     const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
     let duration = 0
     if (timeMode === 'hours') {
-        duration = Math.ceil((moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8);
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
         // return theo don vi giờ - hours
         return duration;
     }
@@ -92,7 +92,7 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
         // return theo don vi milliseconds
         return duration * MILISECS_TO_DAYS;
     }
-    duration = Math.ceil(moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
+    duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
     // return theo don vi ngày - days
     return duration;
 }
@@ -282,6 +282,7 @@ export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
         const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
         const integerPart = Number(estimateNormalTimeArr[0]);
         const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+        console.log(estimateNormalTimeArr)
         let tempEndDate = '';
         // Cộng phần nguyên
         for (let i = 0; i < integerPart; i++) {
@@ -454,12 +455,11 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
     console.log('tasksList', tasksList)
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
-    // Làm tròn thời gian
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
         return {
             ...taskItem,
-            estimateNormalTime: Math.ceil(Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
-            estimateOptimisticTime: Math.ceil(Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
+            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
             preceedingTasks: taskItem.preceedingTasks,
             code: taskItem._id,
         }
@@ -537,12 +537,11 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
 export const getNewTasksListAfterCR = (projectDetail, tasksList, currentTask) => {
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
-    // Ta cần làm tròn kết quả
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
         return {
             ...taskItem,
-            estimateNormalTime: Math.ceil(Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
-            estimateOptimisticTime: Math.ceil(Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
+            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
             preceedingTasks: taskItem.preceedingTasks.map((preItem) => preItem.task),
             code: taskItem._id,
         }
@@ -662,6 +661,42 @@ export const getRecursiveRelevantTasks = (tasksList, currentTask) => {
     return allTasksNodeRelationArr;
 }
 
+// Hàm hỗ trợ hiển thị màu cho độ ưu tiên công việc
+export const convertPriorityData = (priority, translate) => {
+    let priorityColor = "";
+    switch (priority) {
+        case 5:
+            priorityColor = "#ff0707";
+            break;
+        case 4:
+            priorityColor = "#ff5707";
+            break;
+        case 3:
+            priorityColor = "#28A745";
+            break;
+        case 2:
+            priorityColor = "#ffa707";
+            break;
+        default:
+            priorityColor = "#808080"
+    }
+    return (
+        <div >
+            <span style={{ color: priorityColor }}> {formatPriority(translate, priority)}</span>
+        </div>
+    )
+}
+
+export const formatPriority = (translate, data) => {
+    console.log(data);
+    if (data === 1) return translate('task.task_management.low');
+    if (data === 2) return translate('task.task_management.average');
+    if (data === 3) return translate('task.task_management.standard');
+    if (data === 4) return translate('task.task_management.high');
+    if (data === 5) return translate('task.task_management.urgent');
+}
+
+// Hàm hỗ trợ hiển thị trạng thái công việc
 export const formatTaskStatus = (translate, status) => {
     switch (status) {
         case "inprocess":
@@ -725,4 +760,143 @@ export const renderCompare2Item = (valueToBeCompared, valueToColor, funcCompareT
         return funcCompareToGood ? goodResultColor : badResultColor;
     }
     return valueToColor <= valueToBeCompared ? goodResultColor : badResultColor;
+}
+
+// Hàm hỗ trợ tìm mọi đường đi giữa điểm bắt đầu và kết thúc
+// list là 1 map với các phần tử có key là đỉnh của đồ thị
+// và value gồm 1 hoặc nhiều thuộc tính, trong đó thuộc tính
+// successor là mảng gồm những đỉnh mà đỉnh đó có thể đi tới
+function* findPath(list, start, end, visited=new Set() ) {
+    if (start === end) return yield [...visited, end];
+    visited.add(start);
+    // Ta không cần kiểm tra sự tồn tại của chu trình nếu file đầu vào đã chuẩn
+    for (let neighbor of list.get(start).successor) {
+        if (!visited.has(neighbor)) {
+            yield* findPath(list, neighbor, end, visited);
+        }
+    }
+    visited.delete(start);
+}
+
+// Hàm hỗ trợ tính giải pháp giảm thời gian thực hiện dự án
+export const calculateRecommendation = async (taskData, aimTime) => {
+    // Tạo 1 mảng để lưu kết quả
+    let ans = [];
+    const glpk = await GLPK();
+    // Tạo 1 map để lưu các cạnh và đỉnh phục vụ cho việc tìm các đường đi
+    // Khởi tạo với 2 đỉnh ảo là '__start' và '__end'
+    let list = new Map([['__start', { successor: new Set(), normalTime: 0, minTime: 0, cost: 0, name: 'start' }],['__end', { successor: new Set(), normalTime: 0, minTime: 0, cost: 0, name: 'end' }]]);
+    for (let task of taskData) {
+        let cost = 0;
+        if (task.estimateNormalTime > task.estimateOptimisticTime) {
+            cost = ( Number(task.estimateMaxCost.replace(/,/g, '')) - Number(task.estimateNormalCost.replace(/,/g, '')) ) / (task.estimateNormalTime - task.estimateOptimisticTime);
+        }
+        list.set(task.code, { successor: new Set(), normalTime: task.estimateNormalTime, minTime: task.estimateOptimisticTime, cost: cost, name: task.name });
+    }
+
+    for (let task of taskData) {
+        if (task.preceedingTasks.length === 0 || !task.preceedingTasks ) {
+            list.get('__start').successor.add(task.code);
+        }
+
+        else {
+            for (let item of task.preceedingTasks) {
+                list.get(item).successor.add(task.code);
+            }    
+        }
+    }
+
+    list.forEach((value,key) => {
+        if (value.successor.size === 0) list.get(key).successor.add('__end');
+    })
+
+    let listPath = findPath(list, '__start', '__end');
+    listPath = [...listPath];
+
+    const options = {
+        tmlim: 10,
+        msglev: glpk.GLP_MSG_ALL,
+        presol: true,
+    };
+
+    // Tạo danh sách các biến ứng với hệ số trong hàm mục tiêu
+    let varWithCoef = [];
+    list.forEach((value,key) => {
+        // Ta bỏ qua 2 đỉnh ảo là '__start' và '__end'
+        if (key !== '__start' && key !== '__end') {
+            varWithCoef.push({ name: key, coef: value.cost })
+        }
+    })
+
+    // Tạo danh sách các constraint
+    let constraint = [];
+    // Các constraint về giới hạn của biến
+    list.forEach((value,key) => {
+        // Ta bỏ qua 2 đỉnh ảo là '__start' và '__end'
+        if (key !== '__start' && key !== '__end') {
+            constraint.push({ 
+                name: 'var' + key, 
+                vars: [{ name: key, coef: 1 }],
+                bnds: { type: glpk.GLP_DB, ub: value.normalTime - value.minTime, lb: 0 }
+            })
+        }
+    })
+
+
+    // Các constraint về thời gian thực hiện trên từng đường đi
+    listPath.forEach((path, index) => {
+        let totalTime = 0;
+        let varWithPath = [];
+        for (let key of path) {
+            // Bỏ qua 2 đỉnh giả là '__start' và '__end'
+            if (key !== '__start' && key !== '__end' ) {
+                totalTime += list.get(key).normalTime
+            }
+        }
+
+        if (totalTime > aimTime) {
+            for (let item of path) {
+                if (item !== '__start' && item !== '__end' ) varWithPath.push({ name: item, coef: 1 })
+            }
+
+            constraint.push({ 
+                name: 'path' + index, 
+                vars: varWithPath,
+                bnds: { type: glpk.GLP_LO, ub: 0, lb: totalTime - aimTime }
+            })
+        }
+    })
+
+
+    console.log('cons',varWithCoef,constraint);
+    const solution = await glpk.solve({
+        name: 'LP',
+        objective: {
+            direction: glpk.GLP_MIN,
+            name: 'obj',
+            vars: varWithCoef
+        },
+        subjectTo: constraint
+    }, options);
+
+
+    // Lấy kết quả trong trường hợp tìm được nghiệm tối ưu
+    if (solution.result.status == glpk.GLP_OPT) {
+        // Chỉ lọc ra những công việc có thời gian bị giảm lớn hơn 0
+        list.forEach((value,key) => {
+            // Ta bỏ qua 2 đỉnh ảo là '__start' và '__end'
+            if (key !== '__start' && key !== '__end') {
+                if (solution.result.vars[key] > 0) {
+                    ans.push({
+                        taskCode: key,
+                        taskName: value.name,
+                        timeToDecrease: Math.ceil(solution.result.vars[key] * 100) / 100,
+                        costToIncrease: Math.ceil(solution.result.vars[key] * 100) / 100 * value.cost,
+                    })
+                }
+            }
+        })   
+    }
+    // Trả về kết quả cuối cùng
+    return ans;
 }

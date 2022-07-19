@@ -94,7 +94,7 @@ const TabEvalProjectMember = (props) => {
         <React.Fragment>
             <div className="box-body qlcv">
                 <h4><strong>Điểm số thành viên dự án trong tháng</strong></h4>
-                {/* Chọn tháng để lọc đánh giâ */}
+                {/* Chọn tháng để lọc đánh giá */}
                 <div className="form-group">
                     <label style={{ marginRight: 20 }}>Chọn tháng</label>
                     <DatePicker
