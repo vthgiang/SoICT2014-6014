@@ -252,7 +252,7 @@ const ModalCalculateRecommend = (props) => {
         let desiredEndDate = convertDateTime(state.endDate,state.endTime);
         // Sao chép dữ liệu ra mảng mới để tránh ảnh hưởng tới dữ liệu gốc
         let currentProcessedData = _cloneDeep(processedData);
-        let lowerTime = Math.ceil(getDurationWithoutSatSun(desiredEndDate, oldCPMEndDate, projectDetail?.unitTime));
+        let lowerTime = getDurationWithoutSatSun(desiredEndDate, oldCPMEndDate, projectDetail?.unitTime);
         setTimeToReduce(lowerTime);
         if (lowerTime > 0) {
             answer = await calculateRecommendation(currentProcessedData, normalTime - Math.min(lowerTime,maxReducedTime));
