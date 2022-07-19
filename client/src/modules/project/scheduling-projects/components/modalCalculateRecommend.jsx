@@ -440,7 +440,7 @@ const ModalCalculateRecommend = (props) => {
 
                     {/* Tính toán */}
                     <div>
-                        <button className="btn btn-success" onClick={calculateRecommend}>
+                        <button className="btn btn-success" type='button' onClick={calculateRecommend}>
                             {translate('project.calculate')}
                         </button>
                     </div>
