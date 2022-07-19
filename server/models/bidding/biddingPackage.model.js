@@ -114,20 +114,20 @@ const BiddingPackageSchema = new Schema(
                 ],
             },
             // Danh sách các tag cv và nhân sự phù hợp từng tag
-            tags: [{
-                // tên của tag
-                name: {
-                    type: String,
-                },
-                // mô tả tag
-                description: {
-                    type: String
-                },
-                employees: [{
-                    type: Schema.Types.ObjectId,
-                    ref: "Employee",
-                }]
-            }],
+            // tags: [{
+            //     // tên của tag
+            //     name: {
+            //         type: String,
+            //     },
+            //     // mô tả tag
+            //     description: {
+            //         type: String
+            //     },
+            //     employees: [{
+            //         type: Schema.Types.ObjectId,
+            //         ref: "Employee",
+            //     }]
+            // }],
             // Danh sách các công việc trong hồ sơ đề xuất
             tasks: [{
                 // mã công việc

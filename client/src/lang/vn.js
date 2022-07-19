@@ -166,7 +166,7 @@ export default {
             manage_bidding: "Quản lý đấu thầu",
             bidding_project_template_list: "Mẫu dự án",
             manage_tag: "Quản lý danh mục tag",
-            list_bidding_contract: "Hợp đồng đấu thầu",
+            list_bidding_contract: "Hợp đồng thầu",
             bidding_dashboard: "Thống kê thực hiện gói thầu",
             list_bidding_package: "Danh sách gói thầu",
             detail_bidding_package: "Chi tiết gói thầu",
