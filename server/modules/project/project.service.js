@@ -190,7 +190,7 @@ exports.show = async (portal, id) => {
  * Tạo dự án mới
  * @param {*} data 
  */
-exports.create = async (portal, data) => {
+exports.create = async (portal, data, company) => {
     console.log('data', data)
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
@@ -253,6 +253,7 @@ exports.create = async (portal, data) => {
         // ...newData,
         ...data,
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+        company: company,
     });
 
     project = await Project(connect(DB_CONNECTION, portal)).findById(project._id)

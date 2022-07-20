@@ -26,7 +26,7 @@ const ModalExcelImport = (props) => {
                         columns: [
                             { key: "code", value: "Mã công việc" },
                             { key: "name", value: "Tên công việc" },
-                            { key: 'predecessors', value: 'Công việc tiền nhiệm' },
+                            { key: 'predecessors', value: 'Mã công việc tiền nhiệm' },
                             { key: "estimateNormalTime", value: "Thời gian ước lượng" },
                             { key: 'estimateOptimisticTime', value: 'Thời gian ước lượng thoả hiệp' },
                             { key: 'emailResponsibleEmployees', value: 'Email thành viên thực hiện' },
@@ -165,14 +165,13 @@ const ModalExcelImport = (props) => {
         }
 
 
-
         // Kiểm tra các điều kiện của từng công việc
         for (let dataItem of data) {
 
             // Kiểm tra sự trùng lặp của mảng các công việc tiền nhiệm
             for (let preItem of dataItem.preceedingTasks) {
                 if (dataItem.preceedingTasks.filter((dataItemPreceedingItem => preItem === dataItemPreceedingItem)).length > 1) {
-                    setCurrentMessageError(`Danh sách công việc tiền nhiệm đang có sự trùng nhau: ${dataItem.preceedingTasks.join(', ')}`);
+                    setCurrentMessageError(`Danh sách công việc tiền nhiệm của công việc ${dataItem.name} đang có sự trùng nhau: ${dataItem.preceedingTasks.join(', ')}`);
                     return;
                 }
             }
@@ -200,6 +199,13 @@ const ModalExcelImport = (props) => {
             // Kiểm tra tính hợp lệ của trọng số các thành viên
             if ( dataItem.totalResWeight <= 0 || dataItem.totalResWeight >= 100){
                 setCurrentMessageError(`Trọng số thực hiện hoặc phê duyệt của ${dataItem.name} không hợp lệ`);
+                return;
+            }
+
+            // Kiểm tra tính hợp lệ của mã công việc tiền nhiệm 
+            let nonExistentCode = dataItem.preceedingTasks.filter(code => !codeArr.includes(code))
+            if (nonExistentCode.length > 0) {
+                setCurrentMessageError(`Mã công việc tiền nhiệm của công việc ${dataItem.name} không hợp lệ : Không tồn tại (các) công việc với mã công việc : ${nonExistentCode.join(', ')}`);
                 return;
             }
         }

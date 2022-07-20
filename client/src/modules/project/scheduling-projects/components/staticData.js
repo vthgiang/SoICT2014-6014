@@ -41,8 +41,8 @@ export const fakeArr = [
     {
         "code": "E",
         "estimateOptimisticTime": 1,
-        "estimateNormalTime": 2,
-        "estimatePessimisticTime": 9,
+        "estimateNormalTime": 4,
+        "estimatePessimisticTime": 7,
         "predecessors": [
             "B"
         ],
@@ -63,7 +63,7 @@ export const fakeArr = [
     {
         "code": "G",
         "estimateOptimisticTime": 2,
-        "estimateNormalTime": 2,
+        "estimateNormalTime": 5,
         "estimatePessimisticTime": 8,
         "predecessors": [
             "C"
@@ -74,7 +74,7 @@ export const fakeArr = [
     {
         "code": "H",
         "estimateOptimisticTime": 4,
-        "estimateNormalTime": 4,
+        "estimateNormalTime": 7,
         "estimatePessimisticTime": 10,
         "predecessors": [
             "E",
@@ -97,7 +97,7 @@ export const fakeArr = [
     {
         "code": "J",
         "estimateOptimisticTime": 2,
-        "estimateNormalTime": 2,
+        "estimateNormalTime": 5,
         "estimatePessimisticTime": 8,
         "predecessors": [
             "H",
@@ -142,8 +142,8 @@ export const fakeObj = {
     "E": {
         "id": "E",
         "optimisticTime": 1,
-        "mostLikelyTime": 2,
-        "pessimisticTime": 9,
+        "mostLikelyTime": 4,
+        "pessimisticTime": 7,
         "predecessors": [
             "B"
         ]
@@ -160,7 +160,7 @@ export const fakeObj = {
     "G": {
         "id": "G",
         "optimisticTime": 2,
-        "mostLikelyTime": 2,
+        "mostLikelyTime": 5,
         "pessimisticTime": 8,
         "predecessors": [
             "C"
@@ -169,7 +169,7 @@ export const fakeObj = {
     "H": {
         "id": "H",
         "optimisticTime": 4,
-        "mostLikelyTime": 4,
+        "mostLikelyTime": 7,
         "pessimisticTime": 10,
         "predecessors": [
             "E",
@@ -188,7 +188,7 @@ export const fakeObj = {
     "J": {
         "id": "J",
         "optimisticTime": 2,
-        "mostLikelyTime": 2,
+        "mostLikelyTime": 5,
         "pessimisticTime": 8,
         "predecessors": [
             "H",
@@ -229,9 +229,9 @@ export const configImportCPMData = {
         value: "Tên công việc"
     },
     predecessors: {
-        columnName: "Công việc tiền nhiệm",
-        description: "Công việc tiền nhiệm",
-        value: "Công việc tiền nhiệm"
+        columnName: "Mã công việc tiền nhiệm",
+        description: "Mã công việc tiền nhiệm",
+        value: "Mã công việc tiền nhiệm"
     },
     estimateNormalTime: {
         columnName: "Thời gian ước lượng",

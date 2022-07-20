@@ -785,13 +785,16 @@ export const calculateRecommendation = async (taskData, aimTime) => {
     const glpk = await GLPK();
     // Tạo 1 map để lưu các cạnh và đỉnh phục vụ cho việc tìm các đường đi
     // Khởi tạo với 2 đỉnh ảo là '__start' và '__end'
+    // Ở mỗi task, cần có thêm thông tin về thời gian tối đa và ngắn nhất để thực hiện công việc
+    // Ta chuyển sang dạng number
+
     let list = new Map([['__start', { successor: new Set(), normalTime: 0, minTime: 0, cost: 0, name: 'start' }],['__end', { successor: new Set(), normalTime: 0, minTime: 0, cost: 0, name: 'end' }]]);
     for (let task of taskData) {
         let cost = 0;
         if (task.estimateNormalTime > task.estimateOptimisticTime) {
             cost = ( Number(task.estimateMaxCost.replace(/,/g, '')) - Number(task.estimateNormalCost.replace(/,/g, '')) ) / (task.estimateNormalTime - task.estimateOptimisticTime);
         }
-        list.set(task.code, { successor: new Set(), normalTime: task.estimateNormalTime, minTime: task.estimateOptimisticTime, cost: cost, name: task.name });
+        list.set(task.code, { successor: new Set(), normalTime: Number(task.estimateNormalTime), minTime: Number(task.estimateOptimisticTime), cost: cost, name: task.name });
     }
 
     for (let task of taskData) {
@@ -888,13 +891,14 @@ export const calculateRecommendation = async (taskData, aimTime) => {
                     ans.push({
                         taskCode: key,
                         taskName: value.name,
-                        timeToDecrease: Math.ceil(solution.result.vars[key] * 100) / 100,
-                        costToIncrease: Math.ceil(solution.result.vars[key] * 100) / 100 * value.cost,
+                        timeToDecrease: Math.round(solution.result.vars[key] * 100) / 100,
+                        costToIncrease: Math.round(solution.result.vars[key] * 100) / 100 * value.cost,
                     })
                 }
             }
         })   
     }
+
     // Trả về kết quả cuối cùng
     return ans;
 }
