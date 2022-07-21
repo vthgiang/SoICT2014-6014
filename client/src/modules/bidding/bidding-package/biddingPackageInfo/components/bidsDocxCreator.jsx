@@ -54,9 +54,108 @@ export const bidsDocxCreate = (bid, biddingConfig) => {
                     levels: [
                         {
                             level: 0,
-                            format: LevelFormat.LOWER_LETTER,
-                            text: "%1)",
+                            format: LevelFormat.UPPER_ROMAN,
+                            text: "%1",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.18) },
+                                },
+                            },
+                        },
+                        {
+                            level: 1,
+                            format: LevelFormat.DECIMAL,
+                            text: "%2.",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(1), hanging: convertInchesToTwip(0.68) },
+                                },
+                            },
+                        },
+                        {
+                            level: 2,
+                            format: LevelFormat.DECIMAL,
+                            text: "%3.",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.18) },
+                                    // indent: { left: convertInchesToTwip(1.5), hanging: convertInchesToTwip(1.18) },
+                                },
+                            },
+                        },
+                        {
+                            level: 3,
+                            format: LevelFormat.UPPER_LETTER,
+                            text: "%4)",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2880, hanging: 2420 },
+                                },
+                            },
+                        },
+                    ],
+                },
+                {
+                    reference: "my-unique-bullet-points",
+                    levels: [
+                        {
+                            level: 0,
+                            format: LevelFormat.BULLET,
+                            text: "-", // u1F60
                             alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 1,
+                            format: LevelFormat.BULLET,
+                            text: "\u00A5",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(1), hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 2,
+                            format: LevelFormat.BULLET,
+                            text: "\u273F",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2160, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 3,
+                            format: LevelFormat.BULLET,
+                            text: "\u267A",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2880, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 4,
+                            format: LevelFormat.BULLET,
+                            text: "\u2603",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 3600, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
                         },
                     ],
                 },
@@ -90,11 +189,11 @@ export const bidsDocxCreate = (bid, biddingConfig) => {
                     createText(`Hiệu lực của E-HSDT: ___.`),
 
                     createText(`Chúng tôi cam kết: `),
-                    createBullet(`Chỉ tham gia trong một E-HSDT này với tư cách là nhà thầu chính hoặc đại diện liên danh trong trường hợp nhà thầu có liên danh.`),
-                    createBullet(`Không đang trong quá trình giải thể; không bị kết luận đang lâm vào tình trạng phá sản hoặc nợ không có khả năng chi trả theo quy định của pháp luật.`),
-                    createBullet(`Không vi phạm quy định về bảo đảm cạnh tranh trong đấu thầu.`),
-                    createBullet(`Không thực hiện các hành vi tham nhũng, hối lộ, thông thầu, cản trở và các hành vi vi phạm quy định khác của pháp luật đấu thầu khi tham dự gói thầu này.`),
-                    createBullet(`Những thông tin kê khai trong E-HSDT là trung thực. Nếu E-HSDT của chúng tôi được chấp nhận, chúng tôi sẽ thực hiện biện pháp bảo đảm thực hiện hợp đồng theo quy định tại Mục 37 E-CDNT của E-HSMT`),
+                    createBulletNumber(`Chỉ tham gia trong một E-HSDT này với tư cách là nhà thầu chính hoặc đại diện liên danh trong trường hợp nhà thầu có liên danh.`),
+                    createBulletNumber(`Không đang trong quá trình giải thể; không bị kết luận đang lâm vào tình trạng phá sản hoặc nợ không có khả năng chi trả theo quy định của pháp luật.`),
+                    createBulletNumber(`Không vi phạm quy định về bảo đảm cạnh tranh trong đấu thầu.`),
+                    createBulletNumber(`Không thực hiện các hành vi tham nhũng, hối lộ, thông thầu, cản trở và các hành vi vi phạm quy định khác của pháp luật đấu thầu khi tham dự gói thầu này.`),
+                    createBulletNumber(`Những thông tin kê khai trong E-HSDT là trung thực. Nếu E-HSDT của chúng tôi được chấp nhận, chúng tôi sẽ thực hiện biện pháp bảo đảm thực hiện hợp đồng theo quy định tại Mục 37 E-CDNT của E-HSMT`),
 
                     createText(`Ghi chú:`),
                     createText(`(1) Đơn dự thầu đã được ký bằng chữ ký số của đại diện hợp pháp của nhà thầu khi nhà thầu nộp thầu qua mạng.`),
@@ -160,11 +259,17 @@ const formatDateToString = (address = "Hà Nội", date, monthYear = false) => {
         return date
     }
 }
-const createBullet = (text) => {
+const createBulletNumber = (text) => {
     return new Paragraph({
-        text: text,
-        bullet: {
-            level: 0
+        children: [
+            new TextRun({
+                text: text,
+                // italics: true
+            })
+        ],
+        numbering: {
+            reference: "my-crazy-numbering",
+            level: 2,
         },
         style: "bid",
     });

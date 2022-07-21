@@ -54,9 +54,109 @@ export const contractDocxCreate = (contract) => {
                     levels: [
                         {
                             level: 0,
+                            format: LevelFormat.UPPER_ROMAN,
+                            text: "%1",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.18) },
+                                },
+                            },
+                        },
+                        {
+                            level: 1,
+                            format: LevelFormat.DECIMAL,
+                            text: "%2.",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    // indent: { left: convertInchesToTwip(1), hanging: convertInchesToTwip(0.68) },
+                                    indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.2) },
+                                },
+                            },
+                        },
+                        {
+                            level: 2,
                             format: LevelFormat.LOWER_LETTER,
-                            text: "%1)",
+                            text: "%3.",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.75), hanging: convertInchesToTwip(0.18) },
+                                    // indent: { left: convertInchesToTwip(1.5), hanging: convertInchesToTwip(1.18) },
+                                },
+                            },
+                        },
+                        {
+                            level: 3,
+                            format: LevelFormat.UPPER_LETTER,
+                            text: "%4)",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2880, hanging: 2420 },
+                                },
+                            },
+                        },
+                    ],
+                },
+                {
+                    reference: "my-unique-bullet-points",
+                    levels: [
+                        {
+                            level: 0,
+                            format: LevelFormat.BULLET,
+                            text: "-", // u1F60
                             alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 1,
+                            format: LevelFormat.BULLET,
+                            text: "\u00A5",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(1), hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 2,
+                            format: LevelFormat.BULLET,
+                            text: "\u273F",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2160, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 3,
+                            format: LevelFormat.BULLET,
+                            text: "\u267A",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2880, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 4,
+                            format: LevelFormat.BULLET,
+                            text: "\u2603",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 3600, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
                         },
                     ],
                 },
@@ -129,11 +229,11 @@ export const contractDocxCreate = (contract) => {
                         text: `Thuộc dự án: ${contract?.project?.name || "_____________________________"}`,
                         style: "contract",
                     }),
-                    createBullet(`Căn cứ Bộ Luật dân sự số 33/2005/QH11 ngày 14/6/2005 của Quốc hội`),
-                    createBullet(`Căn cứ Luật đấu thầu số 43/2013/QH13 ngày 26/11/2013 của Quốc hội`),
-                    createBullet(`Căn cứ Nghị định số 63/2014/NĐ-CP ngày 26/6/2014 của Chính phủ về quy định chi tiết thi hành một số điều của Luật Đấu thầu về lựa chọn nhà thầu`),
-                    createBullet(`Căn cứ Quyết định số _____ ngày ___ tháng ___ năm _____ của ____ về việc phê duyệt kết quả lựa chọn nhà thầu gói thầu ${contract?.biddingPackage.name} và thông báo kết quả lựa chọn nhà thầu số ___ ngày ___ tháng ___ năm _____ của bên mời thầu`),
-                    createBullet(`Căn cứ biên bản hoàn thiện hợp đồng đã được chủ đầu tư và nhà thầu trúng thầu ký ngày ___ tháng ___ năm ____`),
+                    createBulletHeader(`Căn cứ Bộ Luật dân sự số 33/2005/QH11 ngày 14/6/2005 của Quốc hội`),
+                    createBulletHeader(`Căn cứ Luật đấu thầu số 43/2013/QH13 ngày 26/11/2013 của Quốc hội`),
+                    createBulletHeader(`Căn cứ Nghị định số 63/2014/NĐ-CP ngày 26/6/2014 của Chính phủ về quy định chi tiết thi hành một số điều của Luật Đấu thầu về lựa chọn nhà thầu`),
+                    createBulletHeader(`Căn cứ Quyết định số _____ ngày ___ tháng ___ năm _____ của ____ về việc phê duyệt kết quả lựa chọn nhà thầu gói thầu ${contract?.biddingPackage.name} và thông báo kết quả lựa chọn nhà thầu số ___ ngày ___ tháng ___ năm _____ của bên mời thầu`),
+                    createBulletHeader(`Căn cứ biên bản hoàn thiện hợp đồng đã được chủ đầu tư và nhà thầu trúng thầu ký ngày ___ tháng ___ năm ____`),
 
                     new Paragraph({
                         text: `Chúng tôi, đại diện cho các bên ký hợp đồng, gồm có:`,
@@ -240,34 +340,36 @@ export const contractDocxCreate = (contract) => {
                         text: `Hồ sơ hợp đồng bao gồm các tài liệu sau đây:`,
                         style: "contract",
                     }),
-                    createBullet(`Văn bản hợp đồng;`),
-                    createBullet(`Phụ lục hợp đồng gồm điều khoản tham chiếu, dự toán kinh phí, danh sách nhân sự của nhà thầu, trách nhiệm báo cáo của nhà thầu;`),
-                    createBullet(`Biên bản hoàn thiện hợp đồng;`),
-                    createBullet(`Quyết định phê duyệt kết quả lựa chọn nhà thầu;`),
-                    createBullet(`Văn bản thỏa thuận của các bên về điều kiện của hợp đồng, bao gồm điều kiện chung, điều kiện cụ thể;`),
-                    createBullet(`Hồ sơ dự thầu và các tài liệu làm rõ hồ sơ dự thầu của nhà thầu được lựa chọn;`),
-                    createBullet(`Hồ sơ mời thầu và các tài liệu sửa đổi, bổ sung hồ sơ mời thầu;`),
-                    createBullet(`Các tài liệu có liên quan.`),
+                    createBulletNumber(`Văn bản hợp đồng;`),
+                    createBulletNumber(`Phụ lục hợp đồng gồm điều khoản tham chiếu, dự toán kinh phí, danh sách nhân sự của nhà thầu, trách nhiệm báo cáo của nhà thầu;`),
+                    createBulletNumber(`Biên bản hoàn thiện hợp đồng;`),
+                    createBulletNumber(`Quyết định phê duyệt kết quả lựa chọn nhà thầu;`),
+                    createBulletNumber(`Văn bản thỏa thuận của các bên về điều kiện của hợp đồng, bao gồm điều kiện chung, điều kiện cụ thể;`),
+                    createBulletNumber(`Hồ sơ dự thầu và các tài liệu làm rõ hồ sơ dự thầu của nhà thầu được lựa chọn;`),
+                    createBulletNumber(`Hồ sơ mời thầu và các tài liệu sửa đổi, bổ sung hồ sơ mời thầu;`),
+                    createBulletNumber(`Các tài liệu có liên quan.`),
 
                     createHeading(`Điều 3. Trách nhiệm của nhà thầu`, 3, "l"),
-                    createBullet(`Thực hiện các nghĩa vụ được nêu tại Điều 1 của hợp đồng này;`),
-                    createBullet(`Nộp báo cáo cho chủ đầu tư trong thời hạn và theo các hình thức được nêu trong Phụ lục B “Dự toán kinh phí, danh sách nhân sự của nhà thầu” để thực hiện dịch vụ;`),
-                    createBullet(`Đảm bảo huy động và bố trí nhân sự, dự toán kinh phí được liệt kê tại Phụ Lục C “Trách nhiệm báo cáo của nhà thầu”;`),
-                    createBullet(`Thực hiện đầy đủ các nghĩa vụ và trách nhiệm khác được nêu trong ĐKC và ĐKCT của hợp đồng.`),
+                    createBulletHeader(`Thực hiện các nghĩa vụ được nêu tại Điều 1 của hợp đồng này;`),
+                    createBulletHeader(`Nộp báo cáo cho chủ đầu tư trong thời hạn và theo các hình thức được nêu trong Phụ lục B “Dự toán kinh phí, danh sách nhân sự của nhà thầu” để thực hiện dịch vụ;`),
+                    createBulletHeader(`Đảm bảo huy động và bố trí nhân sự, dự toán kinh phí được liệt kê tại Phụ Lục C “Trách nhiệm báo cáo của nhà thầu”;`),
+                    createBulletHeader(`Thực hiện đầy đủ các nghĩa vụ và trách nhiệm khác được nêu trong ĐKC và ĐKCT của hợp đồng.`),
 
                     createHeading(`Điều 4. Trách nhiệm của chủ đầu tư`, 3, "l"),
-                    createBullet(`Chủ đầu tư cam kết thanh toán cho nhà thầu theo giá hợp đồng và phương thức nêu tại Điều 5 của hợp đồng này cũng như thực hiện đầy đủ nghĩa vụ và trách nhiệm khác được quy định tại ĐKC và ĐKCT của hợp đồng.`),
-                    createBullet(`Chủ đầu tư chỉ định ông/bà ${contract.representativeNameA} là cán bộ phụ trách của chủ đầu tư để điều phối các hoạt động thuộc phạm vi hợp đồng này.`),
-                    createBullet(`Đảm bảo huy động và bố trí nhân sự, dự toán kinh phí được liệt kê tại Phụ Lục C “Trách nhiệm báo cáo của nhà thầu”;`),
-                    createBullet(`Thực hiện đầy đủ các nghĩa vụ và trách nhiệm khác được nêu trong ĐKC và ĐKCT của hợp đồng.`),
+                    createBulletHeader(`Chủ đầu tư cam kết thanh toán cho nhà thầu theo giá hợp đồng và phương thức nêu tại Điều 5 của hợp đồng này cũng như thực hiện đầy đủ nghĩa vụ và trách nhiệm khác được quy định tại ĐKC và ĐKCT của hợp đồng.`),
+                    createBulletHeader(`Chủ đầu tư chỉ định ông/bà ${contract.representativeNameA} là cán bộ phụ trách của chủ đầu tư để điều phối các hoạt động thuộc phạm vi hợp đồng này.`),
+                    createBulletHeader(`Đảm bảo huy động và bố trí nhân sự, dự toán kinh phí được liệt kê tại Phụ Lục C “Trách nhiệm báo cáo của nhà thầu”;`),
+                    createBulletHeader(`Thực hiện đầy đủ các nghĩa vụ và trách nhiệm khác được nêu trong ĐKC và ĐKCT của hợp đồng.`),
 
                     createHeading(`Điều 5. Giá hợp đồng, thời hạn và phương thức thanh toán`, 3, "l"),
-                    createBullet(`Giá hợp đồng: ____${contract.budget} (${contract.currenceUnit})_______ [Ghi rõ giá trị bằng số, bằng chữ và đồng tiền ký hợp đồng. Trường hợp giá hợp đồng được ký bằng hai hoặc ba đồng tiền khác nhau thì ghi rõ giá trị bằng số và bằng chữ của từng đồng tiền đó, ví dụ: 3 triệu USD + 7 tỷ VND (ba triệu đôla Mỹ và bảy tỷ đồng Việt Nam)]. Số tiền này bao gồm toàn bộ các chi phí, lãi và bất kỳ khoản thuế nào mà nhà thầu phải trả, chi tiết như sau:`),
-                    createText(`- Thù lao cho chuyên gia:`),
-                    createText(`Chủ đầu tư thanh toán cho nhà thầu thù lao tính theo tháng người hoặc theo tuần, theo ngày, theo giờ (lựa chọn một trong ba nội dung và xóa nội dung còn lại) như đã thống nhất tại Phụ lục C`),
-                    createText(`+ Chi phí công tác (bao gồm chi phí đi lại, phụ cấp công tác và lưu trú), tiền văn phòng phẩm và phôtô, in ấn tài liệu, chi phí liên lạc. Chi phí này sẽ được hoàn trả và cần được chủ đầu tư xác nhận;`),
-                    createText(`+ Chi phí khác đã được chủ đầu tư phê duyệt.`),
-                    createBullet(`Thời hạn và phương thức thanh toán`),
+                    createBulletHeader(`Giá hợp đồng: ____${contract.budget} (${contract.currenceUnit})_______ [Ghi rõ giá trị bằng số, bằng chữ và đồng tiền ký hợp đồng. Trường hợp giá hợp đồng được ký bằng hai hoặc ba đồng tiền khác nhau thì ghi rõ giá trị bằng số và bằng chữ của từng đồng tiền đó, ví dụ: 3 triệu USD + 7 tỷ VND (ba triệu đôla Mỹ và bảy tỷ đồng Việt Nam)]. Số tiền này bao gồm toàn bộ các chi phí, lãi và bất kỳ khoản thuế nào mà nhà thầu phải trả, chi tiết như sau:`),
+                    createText(`  - Thù lao cho chuyên gia:`),
+                    createText(`  Chủ đầu tư thanh toán cho nhà thầu thù lao tính theo tháng người hoặc theo tuần, theo ngày, theo giờ (lựa chọn một trong ba nội dung và xóa nội dung còn lại) như đã thống nhất tại Phụ lục C`),
+                    createText(`  - Chi phí khác ngoài thù lao:`),
+                    createText(`  Chủ đầu tư thanh toán cho nhà thầu các chi phí khác với mức trần là [Ghi giá trị và đồng tiền thanh toán] cho các khoản chi thực tế hoặc khoán gọn dưới đây`),
+                    createText(`    + Chi phí công tác (bao gồm chi phí đi lại, phụ cấp công tác và lưu trú), tiền văn phòng phẩm và phôtô, in ấn tài liệu, chi phí liên lạc. Chi phí này sẽ được hoàn trả và cần được chủ đầu tư xác nhận;`),
+                    createText(`    + Chi phí khác đã được chủ đầu tư phê duyệt.`),
+                    createBulletHeader(`Thời hạn và phương thức thanh toán`),
                     createText(`Thanh toán theo thời hạn và phương thức thanh toán nêu tại Điều 6 ĐKCT.`),
 
                     createHeading(`Điều 6. Bảng chấm công`, 3, "l"),
@@ -280,8 +382,8 @@ export const contractDocxCreate = (contract) => {
                     createText(`[Nếu thời gian thực hiện hợp đồng phù hợp với Khoản 2 Mục 1 BDL, HSDT và kết quả hoàn thiện hợp đồng giữa hai bên].`),
 
                     createHeading(`Điều 9. Hiệu lực hợp đồng`, 3, "l"),
-                    createBullet(`Hợp đồng có hiệu lực kể từ ${contract.effectiveDate}.`),
-                    createBullet(`Hợp đồng hết hiệu lực sau khi hai bên tiến hành thanh lý hợp đồng theo luật định.`),
+                    createBulletHeader(`Hợp đồng có hiệu lực kể từ ${contract.effectiveDate}.`),
+                    createBulletHeader(`Hợp đồng hết hiệu lực sau khi hai bên tiến hành thanh lý hợp đồng theo luật định.`),
                     createText(`Hợp đồng được lập thành _____ bộ, chủ đầu tư giữ ______ bộ, nhà thầu giữ _____ bộ, các bộ hợp đồng có giá trị pháp lý như nhau.`),
 
                     createText(``),
@@ -323,11 +425,48 @@ const formatDateToString = (address = "Hà Nội", date, monthYear = false) => {
         return date
     }
 }
+
 const createBullet = (text) => {
     return new Paragraph({
-        text: text,
+        children: [
+            new TextRun({
+                text: text,
+                // italics: true
+            })
+        ],
         bullet: {
-            level: 0
+            level: 0,
+        },
+        style: "contract",
+    });
+}
+
+const createBulletHeader = (text) => {
+    return new Paragraph({
+        children: [
+            new TextRun({
+                text: text,
+                // italics: true
+            })
+        ],
+        numbering: {
+            reference: "my-unique-bullet-points",
+            level: 0,
+        },
+        style: "contract",
+    });
+}
+const createBulletNumber = (text) => {
+    return new Paragraph({
+        children: [
+            new TextRun({
+                text: text,
+                // italics: true
+            })
+        ],
+        numbering: {
+            reference: "my-crazy-numbering",
+            level: 1,
         },
         style: "contract",
     });

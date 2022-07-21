@@ -1,8 +1,9 @@
-import { AlignmentType, Document, HeadingLevel, WidthType, VerticalAlign, Table, TableCell, TableRow, LevelFormat, Paragraph, TabStopPosition, TabStopType, BorderStyle, TextRun, convertInchesToTwip } from "docx";
+import { AlignmentType, Document, HeadingLevel, WidthType, VerticalAlign, Table, TableCell, TableRow, LevelFormat, Paragraph, TabStopPosition, TabStopType, BorderStyle, TextRun, convertInchesToTwip, Header, Footer } from "docx";
 import { convertUserIdToUserName } from "../../../project/projects/components/functionHelper";
 
 export const decisionDocxCreate = (contract, listUsers) => {
     console.log(55555555555555, contract);
+
     let document = new Document({
         styles: {
             default: {
@@ -56,9 +57,108 @@ export const decisionDocxCreate = (contract, listUsers) => {
                     levels: [
                         {
                             level: 0,
+                            format: LevelFormat.UPPER_ROMAN,
+                            text: "%1",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.18) },
+                                },
+                            },
+                        },
+                        {
+                            level: 1,
+                            format: LevelFormat.DECIMAL,
+                            text: "%2.",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(1), hanging: convertInchesToTwip(0.68) },
+                                },
+                            },
+                        },
+                        {
+                            level: 2,
                             format: LevelFormat.LOWER_LETTER,
-                            text: "%1)",
+                            text: "%3.",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.75), hanging: convertInchesToTwip(0.18) },
+                                    // indent: { left: convertInchesToTwip(1.5), hanging: convertInchesToTwip(1.18) },
+                                },
+                            },
+                        },
+                        {
+                            level: 3,
+                            format: LevelFormat.UPPER_LETTER,
+                            text: "%4)",
+                            alignment: AlignmentType.START,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2880, hanging: 2420 },
+                                },
+                            },
+                        },
+                    ],
+                },
+                {
+                    reference: "my-unique-bullet-points",
+                    levels: [
+                        {
+                            level: 0,
+                            format: LevelFormat.BULLET,
+                            text: "-", // u1F60
                             alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 1,
+                            format: LevelFormat.BULLET,
+                            text: "\u00A5",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: convertInchesToTwip(1), hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 2,
+                            format: LevelFormat.BULLET,
+                            text: "\u273F",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2160, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 3,
+                            format: LevelFormat.BULLET,
+                            text: "\u267A",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 2880, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
+                        },
+                        {
+                            level: 4,
+                            format: LevelFormat.BULLET,
+                            text: "\u2603",
+                            alignment: AlignmentType.LEFT,
+                            style: {
+                                paragraph: {
+                                    indent: { left: 3600, hanging: convertInchesToTwip(0.25) },
+                                },
+                            },
                         },
                     ],
                 },
@@ -76,15 +176,26 @@ export const decisionDocxCreate = (contract, listUsers) => {
                         alignment: AlignmentType.CENTER,
                     }),
                     new Paragraph({
-                        text: `V/v: Giao nhiệm vụ triển khai thực hiện Hợp đồng số ${contract?.code}`,
+                        children: [
+                            new TextRun({
+                                text: `V/v: Giao nhiệm vụ triển khai thực hiện Hợp đồng số ${contract?.code}`,
+                                italics: true
+                            })
+                        ],
                         style: "decision",
                         alignment: AlignmentType.CENTER,
                     }),
                     new Paragraph({
-                        text: `Gói thầu: "${contract?.biddingPackage?.name}"`,
+                        children: [
+                            new TextRun({
+                                text: `Gói thầu: "${contract?.biddingPackage?.name}"`,
+                                italics: true
+                            })
+                        ],
                         style: "decision",
                         alignment: AlignmentType.CENTER,
                     }),
+                    createText(``),
                     new Paragraph({
                         children: [
                             new TextRun({
@@ -104,11 +215,11 @@ export const decisionDocxCreate = (contract, listUsers) => {
                     createText(``),
                     createText(``),
 
-                    createBullet(`Căn cứ vào Điều lệ tổ chức và hoạt động của ${contract.companyB};`),
-                    createBullet(`Căn cứ vào yêu cầu hoạt động kinh doanh; `),
-                    createBullet(`Căn cứ vào nội dung Hợp đồng số ${contract?.code}`),
-                    createBullet(`Căn cứ Quyết định số _____ ngày ___ tháng ___ năm _____ của ____ về việc phê duyệt kết quả lựa chọn nhà thầu gói thầu ${contract?.biddingPackage.name} và thông báo kết quả lựa chọn nhà thầu số ___ ngày ___ tháng ___ năm _____ của bên mời thầu`),
-                    createBullet(`Xét năng lực và phẩm chất cán bộ.`),
+                    createBulletHeader(`Căn cứ vào Điều lệ tổ chức và hoạt động của ${contract.companyB};`),
+                    createBulletHeader(`Căn cứ vào yêu cầu hoạt động kinh doanh; `),
+                    createBulletHeader(`Căn cứ vào nội dung Hợp đồng số ${contract?.code}`),
+                    createBulletHeader(`Căn cứ Quyết định số _____ ngày ___ tháng ___ năm _____ của ____ về việc phê duyệt kết quả lựa chọn nhà thầu gói thầu ${contract?.biddingPackage.name} và thông báo kết quả lựa chọn nhà thầu số ___ ngày ___ tháng ___ năm _____ của bên mời thầu`),
+                    createBulletHeader(`Xét năng lực và phẩm chất cán bộ.`),
                     createText(``),
                     createText(``),
 
@@ -121,11 +232,12 @@ export const decisionDocxCreate = (contract, listUsers) => {
 
                     createHeading("Điều 1.", 3, "l"),
                     createText(`Giao cho Ông/Bà ${contract?.decideToImplement.projectManager?.map(userItem => convertUserIdToUserName(listUsers, userItem)).join(', ')} phụ trách triển khai thực hiện hợp đồng "${contract?.name}" số ${contract?.code} ký ngày ${contract?.createdDate} giữa ${contract?.companyB} và ${contract?.companyA}.`),
-                    createText(`(1) Ông/Bà ${contract?.decideToImplement.projectManager?.map(userItem => convertUserIdToUserName(listUsers, userItem)).join(', ')} có trách nhiệm thực hiện đầy đủ các công việc sau: `),
-                    createBullet(`Lập kế hoạch và phân công công việc chi tiết cho từng thành viên trong nhóm để đảm bảo chất lượng và tiến độ dự án theo đúng hợp đồng ký kết; đề xuất và thực hiện phương án thuê chuyên gia, thiết bị chuyên dùng thực hiện hợp đồng, đảm bảo hiệu quả, đúng quy định pháp luật.`),
-                    createBullet(`Chủ trì theo dõi, cùng với các thành viên thực hiện và hoàn thành các nhiệm vụ theo đúng yêu cầu hợp đồng, phù hợp với kế hoạch, tiến độ hợp đồng ký kết với khách hàng.`),
-                    createBullet(`Giám sát chất lượng, kiểm tra đánh giá chất lượng sản phẩm trước khi bàn giao, chịu trách nhiệm về chất lượng sản phẩm bàn giao cho khách hàng.`),
-                    createText(`(2)	Báo cáo Giám đốc khi có các vấn đề phát sinh ảnh hưởng đến chất lượng, tiến độ của việc thực hiện hợp đồng. Đề xuất và thực hiện các điều chỉnh cần thiết phù hợp với thực tế triển khai. `),
+                    createText(`Ông/Bà ${contract?.decideToImplement.projectManager?.map(userItem => convertUserIdToUserName(listUsers, userItem)).join(', ')} có trách nhiệm thực hiện đầy đủ các công việc sau: `),
+                    createText(`(1) Chủ trì thực hiện các nhiệm vụ sau đây để đảm bảo thực hiện triển khai dự án đúng nội dung, phạm vi, tiến độ và chất lượng như hợp đồng ký kết với khách hàng: `),
+                    createBulletNumber(`Lập kế hoạch và phân công công việc chi tiết cho từng thành viên trong nhóm để đảm bảo chất lượng và tiến độ dự án theo đúng hợp đồng ký kết; đề xuất và thực hiện phương án thuê chuyên gia, thiết bị chuyên dùng thực hiện hợp đồng, đảm bảo hiệu quả, đúng quy định pháp luật.`),
+                    createBulletNumber(`Chủ trì theo dõi, cùng với các thành viên thực hiện và hoàn thành các nhiệm vụ theo đúng yêu cầu hợp đồng, phù hợp với kế hoạch, tiến độ hợp đồng ký kết với khách hàng.`),
+                    createBulletNumber(`Giám sát chất lượng, kiểm tra đánh giá chất lượng sản phẩm trước khi bàn giao, chịu trách nhiệm về chất lượng sản phẩm bàn giao cho khách hàng.`),
+                    createText(`(2) Báo cáo Giám đốc khi có các vấn đề phát sinh ảnh hưởng đến chất lượng, tiến độ của việc thực hiện hợp đồng. Đề xuất và thực hiện các điều chỉnh cần thiết phù hợp với thực tế triển khai. `),
 
                     createHeading(`Điều 2.`, 3, "l"),
                     createText(`Các thành viên tham gia thực hiện và chức danh tham gia dự án chi tiết tại Phụ lục đính kèm.`),
@@ -162,13 +274,6 @@ export const decisionDocxCreate = (contract, listUsers) => {
                         alignment: AlignmentType.CENTER,
                     }),
                     createText(``),
-                    // new Paragraph({
-                    //     children: [
-                    //         renderTableMember(contract, listUsers),
-                    //     ],
-                    //     style: "decision",
-                    //     alignment: AlignmentType.CENTER,
-                    // }),
                     renderTableMember(contract, listUsers),
                 ]
             }
@@ -400,6 +505,7 @@ const renderTableMember = (contract, listUsers) => {
                     width: { size: 45, type: WidthType.PERCENTAGE },
                 }),
             ],
+            tableHeader: true
         }),
     ];
 
@@ -463,7 +569,8 @@ const renderTableMember = (contract, listUsers) => {
     rows = [...rows, ...resArr];
 
     return new Table({
-        rows: rows
+        rows: rows,
+        alignment: AlignmentType.CENTER,
     })
 }
 
@@ -493,11 +600,46 @@ const formatDateToString = (address = "Hà Nội", date, monthYear = false) => {
         return date
     }
 }
-const createBullet = (text) => {
+const createBulletHeader = (text) => {
     return new Paragraph({
-        text: text,
-        bullet: {
-            level: 0
+        children: [
+            new TextRun({
+                text: text,
+                italics: true
+            })
+        ],
+        numbering: {
+            reference: "my-unique-bullet-points",
+            level: 0,
+        },
+        style: "decision",
+    });
+}
+const createBulletNumber = (text) => {
+    return new Paragraph({
+        children: [
+            new TextRun({
+                text: text,
+                // italics: true
+            })
+        ],
+        numbering: {
+            reference: "my-crazy-numbering",
+            level: 2,
+        },
+        style: "decision",
+    });
+}
+const createBulletSignature = (text) => {
+    return new Paragraph({
+        children: [
+            new TextRun({
+                text: text,
+            })
+        ],
+        numbering: {
+            reference: "my-unique-bullet-points",
+            level: 0,
         },
         style: "decision",
     });
@@ -527,8 +669,8 @@ const createSignature = (contract, listUsers) => {
                                     })
                                 ]
                             }),
-                            createBullet(`Như điều 3`),
-                            createBullet(`Lưu: Văn thư.`),
+                            createBulletSignature(`Như điều 3`),
+                            createBulletSignature(`Lưu: Văn thư.`),
                         ],
                         verticalAlign: VerticalAlign.CENTER,
                         width: { size: 45, type: WidthType.PERCENTAGE },
