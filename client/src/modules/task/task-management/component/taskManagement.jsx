@@ -707,14 +707,14 @@ function TaskManagement(props) {
                         else archived = "store";
                     }
 
-                    if (currentTasks[n].creator && currentTasks[n].creator._id === userId || currentTasks[n].informedEmployees.indexOf(userId) !== -1) {
+                    if (currentTasks[n].creator && currentTasks[n].creator._id === userId || currentTasks[n].informedEmployees.filter(o => o._id === userId).length > 0) {
                         let del = null;
                         if (currentTasks[n].creator._id === userId) {
                             del = "delete";
                         }
                         data[n] = { ...data[n], action: ["edit", ["add", archived, del, ["addAttribute", "delegate"]]] }
                     }
-                    if (currentTasks[n].responsibleEmployees && currentTasks[n].responsibleEmployees.find(e => e._id === userId) || currentTasks[n].consultedEmployees && currentTasks[n].consultedEmployees.indexOf(userId) !== -1) {
+                    if (currentTasks[n].responsibleEmployees && currentTasks[n].responsibleEmployees.find(e => e._id === userId) || currentTasks[n].consultedEmployees && currentTasks[n].consultedEmployees.filter(o => o._id === userId).length > 0) {
                         data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived, ["delegate"]]] }
                     }
                     if (currentTasks[n].accountableEmployees && currentTasks[n].accountableEmployees.filter(o => o._id === userId).length > 0) {

@@ -671,7 +671,7 @@ function TaskDelegationForm(props) {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
-                                    policyDelegation.lists.map(policy => { return { value: policy ? policy._id : null, text: policy ? policy.policyName : "" } })
+                                    policyDelegation.lists.filter(p => p.delegateType == 'Task').map(policy => { return { value: policy ? policy._id : null, text: policy ? policy.policyName : "" } })
                                 }
                                 value={
                                     delegatePolicy

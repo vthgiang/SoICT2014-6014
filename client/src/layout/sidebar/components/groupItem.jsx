@@ -69,7 +69,7 @@ class GroupItem extends Component {
                                                 </li>
                                             );
                                         else return null;
-                                    if (item.list)
+                                    if (item.list && this.checkGroupItem(item.list, links))
                                         return (
                                             <li key={key} className={item.list.some(c => c.path === window.location.pathname) ? "treeview active" : "treeview"}>
                                                 <a href="">
