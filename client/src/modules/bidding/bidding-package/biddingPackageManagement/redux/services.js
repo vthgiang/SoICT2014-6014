@@ -46,7 +46,7 @@ function getDetailEditBiddingPackage(id, data) {
         url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages/${id}/edit`,
         method: 'GET',
         params: data
-    }, false, true, 'human_resource.profile.bidding_package');
+    }, false, false, 'human_resource.profile.bidding_package');
 }
 
 /**

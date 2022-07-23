@@ -84,7 +84,8 @@ exports.searchBiddingPackage = async (portal, params, company) => {
             .sort({
                 createdAt: "desc",
             })
-            .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
+            .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" })
+            .populate({ path: "proposals.logs.createdBy", select: "-tokens -status -password -deleteSoft" });
 
         let result = [];
         for (let x of data) {
@@ -112,7 +113,8 @@ exports.searchBiddingPackage = async (portal, params, company) => {
             })
             .skip(params.page)
             .limit(params.limit)
-            .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
+            .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" })
+            .populate({ path: "proposals.logs.createdBy", select: "-tokens -status -password -deleteSoft" });
 
         let result = [];
         for (let x of listBiddingPackages) {
@@ -140,6 +142,7 @@ exports.getDetailBiddingPackage = async (portal, params) => {
     let listBiddingPackages = await BiddingPackage(
         connect(DB_CONNECTION, portal)
     ).findOne({ _id: params.id })
+        .populate({ path: "proposals.logs.createdBy", select: "-tokens -status -password -deleteSoft" })
         .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail professionalSkill experiences certificates" })
         .populate({ path: "proposals.tasks.directEmployees.certificates.certificate proposals.tasks.backupEmployees.certificates.certificate" });
 
@@ -181,6 +184,7 @@ exports.getDetailBiddingPackageToEdit = async (portal, params) => {
     let listBiddingPackages = await BiddingPackage(
         connect(DB_CONNECTION, portal)
     ).findOne({ _id: params.id })
+    .populate({ path: "proposals.logs.createdBy", select: "-tokens -status -password -deleteSoft" });
     // .populate({ path: "proposals.directEmployees proposals.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
 
     let checkHasContract = await BiddingContract(connect(DB_CONNECTION, portal)).findOne({ biddingPackage: params.id });
@@ -927,6 +931,7 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
         },
     });
 
+    let logs = biddingPackage?.proposals?.logs ?? []
     let proposalTask = [];
     let isComplete = 0;
     let startOfTask = Date.now();
@@ -1075,6 +1080,7 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
             unitOfTime,
             tags,
             tasks: proposalTask,
+            logs: logs,
         },
         isComplete
     }
