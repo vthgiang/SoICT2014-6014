@@ -1,5 +1,5 @@
 const Models = require(`../../../../models`);
-const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, OrganizationalUnit, EmployeeKpiSet, EmployeeKpi, OrganizationalUnitKpiTemplate } = Models;
+const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, OrganizationalUnit, EmployeeKpiSet, EmployeeKpi, OrganizationalUnitKpiSetTemplate } = Models;
 const { connect } = require(`../../../../helpers/dbHelper`);
 const EmployeeKpiService = require(`../../employee/management/management.service`);
 const UserService = require('../../../super-admin/user/user.service')
@@ -242,19 +242,52 @@ exports.copyUseTemplateKpi = async (portal, kpiTemplateId, data) => {
                 { new: true }
             );
 
+        console.log(245, kpiTemplateId)
+        // Thêm lịch sử sử dụng KPI mẫu
+        organizationalUnitTemplateKPISet = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal))
+            .findByIdAndUpdate(kpiTemplateId, { $push: { kpiSet: organizationalUnitNewKpi._id } })
+        console.log(249)
         // Lấy dữ liệu kpi được sao chép
-        organizationalUnitTemplateKPISet = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal))
+        organizationalUnitTemplateKPISet = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal))
             .findById(kpiTemplateId)
             .populate("organizationalUnit")
             .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } });
+        console.log(256)
 
         // Thêm các mục tiêu kpi
-        organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-            .findByIdAndUpdate(
-                organizationalUnitNewKpi?._id, { $set: { kpis: data?.listKpiUnit } }, { new: true }
-            );
-        console.log(257, organizationalUnitKpiSet)
+        let kpisFromTemplate = [];
+        console.log(184, organizationalUnitTemplateKPISet.kpis)
+        for (let item of organizationalUnitTemplateKPISet.kpis) {
+            kpisFromTemplate.push({
+                name: item.name,
+                weight: item.weight,
+                criteria: item.criteria,
+                target: item.target,
+                unit: item.unit
+            })
+        }
+        console.log(270, kpisFromTemplate)
+        if (kpisFromTemplate) {
+            let kpis = await Promise.all(kpisFromTemplate.map(async (item) => {
+                console.log(207, item)
+                let kpi = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).create(item)
+                return kpi._id;
+            }));
+            console.log(210, kpis)
+
+            organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    organizationalUnitNewKpi._id, { $push: { kpis: { $each: kpis } } }, { new: true }
+                )
+        }
+        // end them muc tieu kpi
+
+        // organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        //     .findByIdAndUpdate(
+        //         organizationalUnitNewKpi?._id, { $set: { kpis: data?.listKpiUnit } }, { new: true }
+        //     );
+        // console.log(257, organizationalUnitKpiSet)
 
 
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))

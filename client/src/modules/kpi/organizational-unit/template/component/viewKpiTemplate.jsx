@@ -6,7 +6,6 @@ import { kpiTemplateActions } from '../redux/actions';
 
 const ViewKpiTemplate = (props) => {
     const { kpiTemplate } = props;
-    console.log('asdf', kpiTemplate)
     return (
         <React.Fragment>
 

@@ -39,17 +39,13 @@ function UseKpiTemplateModal(props) {
     };
     const { translate, createKpiUnit } = props;
     const { kpiTemplate, unit } = props;
-    console.log(42, unit)
     const [state, setState] = useState({
         organizationalUnitId: null,
         month: new Date()
     });
     const { organizationalUnitId, month } = state;
 
-
-
     const handleSelectOrganizationalUnit = (value) => {
-        console.log(51, value)
         setState({
             ...state,
             organizationalUnitId: value[0]
@@ -73,7 +69,6 @@ function UseKpiTemplateModal(props) {
             datenew: formatDate2(month),
             listKpiUnit: arrayKpiUnit
         }
-        console.log(59, data)
 
         props.copyKPIUnit(kpiTemplate?._id, data);
 

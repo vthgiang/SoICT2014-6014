@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 import { kpiTemplateActions } from '../redux/actions';
 import { EditKpiTemplate } from './editKpiTemplate';
 
 function ModalEditKpiTemplate(props) {
-    console.log('kpi', props)
-
     const [state, setState] = useState({
         currentRole: localStorage.getItem('currentRole'),
         templateData: {
@@ -20,7 +19,6 @@ function ModalEditKpiTemplate(props) {
 
     useEffect(() => {
         if (props.kpiTemplateId !== state.kpiTemplateId) {
-            console.log('run efffect')
             setState(state => {
                 return {
                     ...state,
@@ -41,18 +39,26 @@ function ModalEditKpiTemplate(props) {
 
     const handleSubmit = () => {
         const { templateData } = state;
-        console.log(templateData);
         props.editKpiTemplate(props.kpiTemplateId, templateData);
     }
 
 
     const onChangeTemplateData = (value) => {
-        console.log(50, value);
-
         setState({
             ...state,
             templateData: value
         })
+    }
+
+    /**
+     * Validate
+     */
+    const isKpiTemplateFormValidated = () => {
+        let validateName = ValidationHelper.validateName(props.translate, state.templateData.name);
+        if (state.templateData.name && validateName.status && state.templateData.organizationalUnit.length !== 0) {
+            return true;
+        }
+        return false;
     }
 
     const { department, user, translate, kpitemplates } = props;
@@ -64,7 +70,7 @@ function ModalEditKpiTemplate(props) {
             formID="form-edit-kpi-template"
             title={"Chỉnh sửa mẫu KPI"}
             func={handleSubmit}
-            // disableSubmit={!isKpiTemplateFormValidated()}
+            disableSubmit={!isKpiTemplateFormValidated()}
             size={100}
         >
             <React.Fragment>

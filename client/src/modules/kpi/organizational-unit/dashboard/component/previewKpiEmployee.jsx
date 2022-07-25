@@ -4,10 +4,12 @@ import { withTranslate } from "react-redux-multilingual";
 import Swal from 'sweetalert2';
 
 const formatTarget = (value) => {
+    let number;
     if (value > 1000000) {
-        return Math.round(value / 1000) * 1000;
+        number = Math.round(value / 1000) * 1000;
+        return new Intl.NumberFormat().format(number);
     }
-    else return value;
+    else return new Intl.NumberFormat().format(value);
 }
 
 const PreviewKpiEmployee = (props) => {
@@ -82,7 +84,7 @@ const PreviewKpiEmployee = (props) => {
                                                     kpi.type !== 0 ? <span>
                                                         <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{kpi.current === 1 ? 'Hoàn thành' : 'Chưa hoàn thành'}</span>
                                                     </span> : <span>
-                                                        <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{kpi.current}</span>
+                                                        <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{formatTarget(kpi.current)}</span>
                                                         {`/${formatTarget(kpi.target)} ${kpi.unit}`}
                                                     </span>
                                                 }

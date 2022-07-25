@@ -17,7 +17,6 @@ const calculateExpression = (expression) => {
             }
         }
         let point = mexp.eval(expression, [token1]);
-        console.log('point', point);
 
         return point;
     } catch (err) {

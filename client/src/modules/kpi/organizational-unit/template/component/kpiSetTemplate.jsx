@@ -11,6 +11,7 @@ import { ModalAddKpiTemplate } from "./addKpiTemplateModal";
 import { ModalEditKpiTemplate } from './editKpiTemplateModal';
 import { UseKpiTemplateModal } from './useKpiTemplateModal';
 import { ModalViewKpiTemplate } from './viewKpiTemplateModal';
+import { ModalViewUsedLog } from './viewUsedLogModal';
 
 const tableId = "table-kpi-template";
 const defaultConfig = { limit: 10 }
@@ -87,8 +88,16 @@ function TemplateKpi(props) {
     }
 
     /**Mở modal chỉnh sửa 1 mẫu kpi */
+    const handleViewUsedLog = (kpiTemplate) => {
+        setState({
+            ...state,
+            currentRow: kpiTemplate,
+        });
+        window.$('#modal-view-used-log-kpi-template').modal('show');
+    }
+
+    /**Mở modal chỉnh sửa 1 mẫu kpi */
     const handleEdit = (kpiTemplate) => {
-        console.log(88, kpiTemplate)
         setState({
             ...state,
             currentEditRow: kpiTemplate,
@@ -120,15 +129,20 @@ function TemplateKpi(props) {
     }, [])
 
     const { items, totalPage } = kpitemplates;
-    console.log(102, items);
 
     const { organizationalUnitsOfUser: unitArr } = user;
-    const { currentEditRow, currentEditRowId, currentViewRow } = state;
+    const { currentEditRow, currentEditRowId, currentViewRow, currentRow } = state;
 
     return (
         <React.Fragment>
             <div className="box">
                 <div className="box-body qlcv" id="table-kpi-template">
+                    {
+                        currentRow &&
+                        <ModalViewUsedLog
+                            kpiTemplate={currentRow}
+                        />
+                    }
                     {
                         currentViewRow &&
                         <UseKpiTemplateModal
@@ -216,7 +230,9 @@ function TemplateKpi(props) {
                                             <td title={item?.name}>{item?.name}</td>
                                             <td title={item?.organizationalUnit?.name}>{item?.organizationalUnit?.name ? item.organizationalUnit.name : ""}</td>
                                             <td title={item?.description}>{parse(item?.description ? item.description : "")}</td>
-                                            <td title={item?.numberOfUse}>{item?.numberOfUse}</td>
+                                            <td title={item?.kpiSet}><a onClick={() => handleViewUsedLog(item)} title={"Chi tiết"}>
+                                                {item?.kpiSet.length}
+                                            </a></td>
                                             <td title={item?.creator?.name}>{item?.creator?.name ? item.creator.name : ""}</td>
                                             <td>
                                                 <a onClick={() => handleView(item)} title={"Xem"}>

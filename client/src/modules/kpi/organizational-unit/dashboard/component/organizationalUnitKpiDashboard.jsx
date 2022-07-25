@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { DatePicker, ExportExcel, LazyLoadComponent, SelectBox } from '../../../../../common-components';
 import { showListInSwal } from '../../../../../helpers/showListInSwal';
+import { EmployeeBalanceKpiModal } from '../../../evaluation/dashboard/component/employeeBalanceKpiModal';
 import { EmployeeCreateKpiAutoModal } from '../../../evaluation/dashboard/component/employeeCreateKpiAutoModal';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { ChildOfOrganizationalUnitKpi } from './childOfOrganizationalUnitKPI';
@@ -335,8 +336,18 @@ function OrganizationalUnitKpiDashboard(props) {
                                         organizationalUnitId={infoSearch?.organizationalUnitId}
                                         month={month}
                                     />
-                                </span> :
-                                    <button type="button" className="btn btn-primary" onClick={() => handleAdjustKpiEmployee()}>Cân bằng KPI nhân viên</button>
+                                </span> : <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
+                                    <a className='btn btn-primary text-dark' data-toggle="modal" data-target="#employee-balance-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                        Can bang KPI nhan vien
+                                    </a>
+                                    <EmployeeBalanceKpiModal
+                                        organizationalUnitId={infoSearch?.organizationalUnitId}
+                                        month={month}
+                                        employeeKpiSet={state.employeeKpiSet}
+                                    />
+                                </span>
+
+                                // <button type="button" className="btn btn-primary" onClick={() => handleAdjustKpiEmployee()}>Cân bằng KPI nhân viên</button>
                             }
                         </div>
                     </div>

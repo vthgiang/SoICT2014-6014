@@ -8,9 +8,9 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../../evaluation/
 import { createUnitKpiActions } from '../../../creation/redux/actions';
 
 import { exampleDataSale } from '../../example-data/exampleDataSale';
+import { PreviewKpiEmployee } from '../previewKpiEmployee';
+import { TargetKpiCard } from '../targetKpiCard';
 import { EmployeeResultChart } from './employeeResultChart';
-import { PreviewKpiEmployee } from './previewKpiEmployee';
-import { TargetKpiCard } from './targetKpiCard';
 
 const getCurrentDate = () => {
     const date = new Date();

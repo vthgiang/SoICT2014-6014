@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ReactSortable } from 'react-sortablejs';
+import { ErrorLabel } from '../../../../../common-components';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 function KpisForm(props) {
     const { initialData } = props;
@@ -21,11 +23,11 @@ function KpisForm(props) {
         editKpi: false,
         kpi: Object.assign({}, EMPTY_KPI),
         keylist: [],
-        kpis: []
+        kpis: [],
+        validate: {}
     })
 
     useEffect(() => {
-        console.log(29, initialData);
         setState({
             ...state,
             kpis: initialData
@@ -40,6 +42,14 @@ function KpisForm(props) {
 
     const handleChangeKpiName = (event) => {
         let value = event.target.value;
+        let { status, message } = ValidationHelper.validateName(props.translate, value);
+
+        if (!status) {
+            state.validate.name = message
+        } else {
+            state.validate.name = undefined
+        }
+
         state.kpi.name = value;
         setState(
             { ...state }
@@ -48,6 +58,14 @@ function KpisForm(props) {
 
     const handleChangeKpiCriteria = (event) => {
         let value = event.target.value;
+        let { status, message } = ValidationHelper.validateName(props.translate, value);
+
+        if (!status) {
+            state.validate.criteria = message
+        } else {
+            state.validate.criteria = undefined
+        }
+
         state.kpi.criteria = value;
         setState(
             { ...state }
@@ -56,6 +74,15 @@ function KpisForm(props) {
 
     const handleChangeKpiWeight = (event) => {
         let value = event.target.value;
+        let { status, message } = ValidationHelper.validateNumberInput(props.translate, value);
+
+        if (!status) {
+            state.validate.weight = message
+        }
+        else {
+            state.validate.weight = undefined
+        }
+
         state.kpi.weight = value;
         setState(
             { ...state }
@@ -78,40 +105,6 @@ function KpisForm(props) {
         );
     }
 
-    const handleChangeKpiFormula = (event) => {
-        let value = event.target.value;
-        state.kpi.formula = value;
-        const keyInFormula = value.replace(/[^a-z A-Z]/g, '-').split('-').filter(i => i !== "");
-        const keyArr = Array.from(new Set(keyInFormula));
-        console.log(78, keyArr)
-        state.keylist = keyArr;
-
-        setState(
-            { ...state }
-        );
-    }
-
-    // useEffect(() => {
-
-    //     const keyInFormula = state.kpi?.formula?.replace(/[^a-z A-Z]/g, '-').split('-').filter(i => i !== "");
-    //     const keyArr = Array.from(new Set(keyInFormula));
-    //     console.log(78, keyArr)
-    //     setState({
-    //         ...state,
-    //         keylist: keyArr
-    //     })
-
-    // }, [state.kpi.formula])
-
-    const handleChangeKpiKey = (event, item) => {
-        let value = event.target.value;
-        state.kpi.keys[item] = value;
-        setState(
-            { ...state }
-        );
-    }
-
-
     /** cancel editing an kpi*/
     const handleCancelEditKpi = (event) => {
         event.preventDefault(); // Ngăn không submit     
@@ -127,8 +120,6 @@ function KpisForm(props) {
 
     /**reset all data fields of kpi table */
     const handleClearKpi = (event) => {
-        console.log("object");
-        // event.preventDefault(); // Ngăn không submit
         setState(state => {
             return {
                 ...state,
@@ -136,13 +127,10 @@ function KpisForm(props) {
                 keylist: []
             }
         })
-        console.log("2");
     }
 
     /**Thêm 1 hoạt động */
     const handleAddKpi = (event) => {
-        console.log("object");
-        // event.preventDefault(); // Ngăn không submit
         let { kpis, kpi } = state;
 
         if (!kpis)
@@ -203,11 +191,15 @@ function KpisForm(props) {
         }, () => props.onDataChange(kpis))
     }
 
+    const isValidated = () => {
+        const { kpi, validate } = state;
+        if (kpi.name && !validate.name && kpi.weight && !validate.weight && kpi.criteria && !validate.criteria) {
+            return true;
+        }
+        return false
+    }
 
-    const { translate } = props;
     let { kpi, kpis } = state;
-    const { type } = props;
-
     return (
         /**Form chứa các thông tin của phần hoạt động của 1 kpi-template*/
         <fieldset className="scheduler-border">
@@ -215,33 +207,36 @@ function KpisForm(props) {
             <div className="row">
                 <div className='col-md-6'>
                     {/**ten muc tieu */}
-                    <div className={`form-group ${state.kpi.errorOnName === undefined ? "" : "has-error"}`} >
-                        <label className="control-label">Tên mục tiêu</label>
+                    <div className={`form-group ${state.validate.name === undefined ? "" : "has-error"}`} >
+                        <label className="control-label">Tên mục tiêu <span style={{ color: "red" }}>*</span></label>
                         <input type="text" className="form-control" placeholder={'Tên mục tiêu'} value={kpi.name} onChange={handleChangeKpiName} />
+                        <ErrorLabel content={state.validate.name} />
                     </div>
 
                     {/**Trong so */}
-                    <div className={`form-group ${state.kpi.errorOnName === undefined ? "" : "has-error"}`} >
-                        <label className="control-label">Trọng số</label>
-                        <input type="number" className="form-control" placeholder={"Trọng số"} value={kpi.weight} onChange={handleChangeKpiWeight} />
+                    <div className={`form-group ${state.validate.weight === undefined ? "" : "has-error"}`} >
+                        <label className="control-label">Trọng số <span style={{ color: "red" }}>*</span></label>
+                        <input type="number" max={100} min={0} className="form-control" placeholder={"Trọng số"} value={kpi.weight} onChange={handleChangeKpiWeight} />
+                        <ErrorLabel content={state.validate.weight} />
                     </div>
 
                     {/**tieu chi danh gia */}
-                    <div className={`form-group ${state.kpi.errorOnName === undefined ? "" : "has-error"}`} >
-                        <label className="control-label">Tiêu chí đánh giá</label>
+                    <div className={`form-group ${state.validate.criteria === undefined ? "" : "has-error"}`} >
+                        <label className="control-label">Tiêu chí đánh giá <span style={{ color: "red" }}>*</span></label>
                         <input type="text" className="form-control" placeholder="Tiêu chí đánh giá" value={kpi.criteria} onChange={handleChangeKpiCriteria} />
+                        <ErrorLabel content={state.validate.criteria} />
                     </div>
                 </div>
 
                 <div className='col-md-6'>
                     {/**Chi tieu */}
-                    <div className={`form-group ${state.kpi.errorOnName === undefined ? "" : "has-error"}`} >
+                    <div className={`form-group`} >
                         <label className="control-label">Chỉ tiêu</label>
                         <input type="number" className="form-control" placeholder={"Chỉ tiêu"} value={kpi.target} onChange={handleChangeKpiTarget} />
                     </div>
 
                     {/**Dơn vi */}
-                    <div className={`form-group ${state.kpi.errorOnName === undefined ? "" : "has-error"}`} >
+                    <div className={`form-group`} >
                         <label className="control-label">Đơn vị đo</label>
                         <input type="text" className="form-control" placeholder={"Đơn vị đo"} value={kpi.unit} onChange={handleChangeKpiUnit} />
                     </div>
@@ -254,7 +249,7 @@ function KpisForm(props) {
                                 <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleCancelEditKpi}>Hủy thay đổi</button>
                                 <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleSaveEditedKpi}>Lưu</button>
                             </React.Fragment> :
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleAddKpi}>Thêm</button>
+                            <button disabled={!isValidated()} className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleAddKpi}>Thêm</button>
                         }
                         <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearKpi}>Xóa trắng</button>
                     </div>

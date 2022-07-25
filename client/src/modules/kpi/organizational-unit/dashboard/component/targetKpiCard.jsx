@@ -127,6 +127,7 @@ const TargetKpiCard = (props) => {
         }
     }, [data])
 
+    console.log("ate", data)
     return <React.Fragment>
         <div>
             {
@@ -169,13 +170,13 @@ const TargetKpiCard = (props) => {
                                     <div style={{ display: 'flex', justifyContent: "space-around" }}>
                                         <span>
                                             <span className='text-primary' style={{ fontSize: 18, fontWeight: 600 }}>{
-                                                data?.target ? data?.current : (data?.current === 1 ? "Hoàn thành" : "Không hoàn thành")
+                                                data?.target?.current ?? 0
                                             }</span>
                                             <div>Tháng hiện tại</div>
                                         </span>
                                         <span>
                                             <div className='text-primary' style={{ fontSize: 18, fontWeight: 600 }}>{
-                                                data?.target ? data?.resultByMonth[4] : (data?.resultByMonth[4] === 1 ? "Hoàn thành" : "Không hoàn thành")
+                                                data?.resultByMonth[4]
                                             }</div>
                                             <div>Tháng trước</div>
                                         </span>

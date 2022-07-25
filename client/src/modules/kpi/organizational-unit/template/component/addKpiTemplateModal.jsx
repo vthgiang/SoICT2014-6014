@@ -6,7 +6,7 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 import { kpiTemplateActions } from '../redux/actions';
 
 import { AddKpiTemplate } from './addKpiTemplate';
-import { KpiTemplateFormValidator } from './kpiTemplateFormValidator';
+
 
 function ModalAddKpiTemplate(props) {
 
@@ -21,123 +21,25 @@ function ModalAddKpiTemplate(props) {
     })
 
 
-    // useEffect(() => {
-    //     props.getDepartment();
-    //     props.getAllUserOfCompany();
-    //     props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-    //     props.getDepartmentsThatUserIsManager();
-    //     props.getAllUserInAllUnitsOfCompany();
-    // }, [])
-
     /**Submit new template in data */
     const handleSubmit = async (event) => {
         let { templateData } = state;
-        console.log(templateData);
         props.addNewTemplate(templateData);
         props.getKpiTemplates(null, null, 1, props.limit);
-        // window.$("#addKpiTemplate").modal("hide");
     }
-
 
     /**
      * Xử lý form lớn kpitemplate
      */
     const isKpiTemplateFormValidated = () => {
-        // let result =
-        //     validateKpiTemplateUnit(state.templateData.organizationalUnit, false) &&
-        //     validateKpiTemplateRead(state.templateData.readByEmployees, false) &&
-        //     validateKpiTemplateName(state.templateData.name, false) &&
-        //     validateKpiTemplateDescription(state.templateData.description, false) &&
-        //     validateKpiTemplateFormula(state.templateData.formula, false);
-        // return result;
-    }
-
-
-    const validateKpiTemplateName = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateName(props.translate, value);
-
-        if (willUpdateState) {
-            state.templateData.name = value;
-            state.templateData.errorOnName = message;
-            setState(state => {
-                return {
-                    ...state,
-                };
-            });
+        let validateName = ValidationHelper.validateName(props.translate, state.templateData.name);
+        if (state.templateData.name && validateName.status && state.templateData.organizationalUnit.length !== 0) {
+            return true;
         }
-        return message === undefined;
-    }
-
-    const validateKpiTemplateDescription = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-            state.templateData.description = value;
-            state.templateData.errorOnDescription = message;
-            setState(state => {
-                return {
-                    ...state,
-                };
-            });
-        }
-        return message === undefined;
-    }
-
-    const validateKpiTemplateFormula = (value, willUpdateState = true) => {
-        let msg = KpiTemplateFormValidator.validateKpiTemplateFormula(value);
-
-        if (willUpdateState) {
-            state.templateData.formula = value;
-            state.templateData.errorOnFormula = msg;
-            setState(state => {
-                return {
-                    ...state,
-                };
-            });
-        }
-        return msg === undefined;
-    }
-
-    const validateKpiTemplateUnit = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    templateData: { // update lại unit, và reset các selection phía sau
-                        ...state.templateData,
-                        organizationalUnit: value,
-                        errorOnUnit: message,
-                        readByEmployees: [],
-                        responsibleEmployees: [],
-                        accountableEmployees: [],
-                        consultedEmployees: [],
-                        informedEmployees: [],
-                    }
-                };
-            });
-        }
-        return message === undefined;
-    }
-
-    const validateKpiTemplateRead = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-
-        if (willUpdateState) {
-            state.templateData.readByEmployees = value;
-            state.templateData.errorOnRead = message;
-            setState(state => {
-                return {
-                    ...state,
-                };
-            });
-        }
-        return message === undefined;
+        return false;
     }
 
     const onChangeTemplateData = (value) => {
-        console.log(138, value)
         setState({
             templateData: value
         });
@@ -152,6 +54,7 @@ function ModalAddKpiTemplate(props) {
                 formID={`form-add-kpi-template`}
                 title={"Thêm mới mẫu KPI đơn vị"}
                 func={handleSubmit}
+                disableSubmit={!isKpiTemplateFormValidated()}
                 size={75}
             >
                 <AddKpiTemplate
@@ -161,8 +64,6 @@ function ModalAddKpiTemplate(props) {
                     savedKpiAsTemplate={savedKpiAsTemplate}
                     savedKpiItem={savedKpiItem}
                     savedKpiId={savedKpiId}
-                // end
-
                 />
             </DialogModal>
         </React.Fragment>

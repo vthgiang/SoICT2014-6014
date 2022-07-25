@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
 
 // Model quản lý dữ liệu của một mẫu Kpi
-const OrganizationalUnitKpiTemplateSchema = new Schema(
+const OrganizationalUnitKpiTemplateSetSchema = new Schema(
     {
         organizationalUnit: {
             type: Schema.Types.ObjectId,
@@ -19,10 +19,15 @@ const OrganizationalUnitKpiTemplateSchema = new Schema(
         kpis: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "OrganizationalUnitKpi",
+                ref: "OrganizationalUnitKpiTemplate",
             }
         ],
-
+        kpiSet: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "OrganizationalUnitKpiSet",
+            }
+        ],
         description: {
             type: String,
         },
@@ -40,10 +45,10 @@ const OrganizationalUnitKpiTemplateSchema = new Schema(
     }
 );
 
-OrganizationalUnitKpiTemplateSchema.plugin(mongoosePaginate);
+OrganizationalUnitKpiTemplateSetSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.OrganizationalUnitKpiTemplate)
-        return db.model("OrganizationalUnitKpiTemplate", OrganizationalUnitKpiTemplateSchema);
-    return db.models.OrganizationalUnitKpiTemplate;
+    if (!db.models.OrganizationalUnitKpiTemplateSetSchema)
+        return db.model("OrganizationalUnitKpiSetTemplate", OrganizationalUnitKpiTemplateSetSchema);
+    return db.models.OrganizationalUnitKpiTemplateSetSchema;
 };

@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { QuillEditor, SelectBox } from '../../../../../common-components';
+import { ErrorLabel, QuillEditor, SelectBox } from '../../../../../common-components';
 import { getStorage } from '../../../../../config';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 // import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { KpisForm } from './kpisTemplate';
 
@@ -22,12 +23,21 @@ function AddKpiTemplate(props) {
         },
         showMore: props.isProcess ? false : true,
         currentRole: localStorage.getItem('currentRole'),
+        validate: {}
     })
     const { templateData } = state;
     const { descriptionDefault } = templateData;
 
     const handleChangeName = (e) => {
         const value = e.target.value;
+        let { status, message } = ValidationHelper.validateName(props.translate, value);
+
+        if (!status) {
+            state.validate.nameKpi = message
+        } else {
+            state.validate.nameKpi = undefined
+        }
+
         setState({
             ...state,
             templateData: {
@@ -39,10 +49,19 @@ function AddKpiTemplate(props) {
     }
 
     const handleChangeUnit = (value) => {
-        console.log('adu')
         if (value.length === 0) {
             value = null
         }
+
+        let status = value !== null;
+
+        if (!status) {
+            state.validate.unit = "Chọn đơn vị"
+        }
+        else {
+            state.validate.unit = undefined
+        }
+
         setState({
             ...state,
             templateData: {
@@ -53,7 +72,6 @@ function AddKpiTemplate(props) {
         props.onChangeTemplateData(state.templateData);
     }
     const handleChangeDescription = (value, imgs) => {
-        console.log(54, value)
         setState(state => {
             return {
                 ...state,
@@ -89,7 +107,7 @@ function AddKpiTemplate(props) {
                     <legend className="scheduler-border">Thông tin chung</legend>
                     <div className="row">
                         {/**Tên mẫu KPI */}
-                        <div className={` col-sm-6 form-group ${state.templateData.errorOnName === undefined ? "" : "has-error"}`} >
+                        <div className={` col-sm-6 form-group ${state.validate.nameKpi === undefined ? "" : "has-error"}`} >
                             <label className="control-label">Tên mẫu KPI <span style={{ color: "red" }}>*</span></label>
                             <input
                                 type="Name"
@@ -98,11 +116,12 @@ function AddKpiTemplate(props) {
                                 value={templateData.name}
                                 onChange={(e) => { handleChangeName(e) }}
                             />
+                            <ErrorLabel content={state.validate.nameKpi} />
                         </div>
 
                         {/**Đơn vị(phòng ban) của Kpi template*/}
-                        <div className={`col-sm-6 form-group ${state.templateData.errorOnUnit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                            <label className="control-label">Đơn vị quản lý</label>
+                        <div className={`col-sm-6 form-group ${state.validate.unit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
+                            <label className="control-label">Đơn vị quản lý <span style={{ color: "red" }}>*</span></label>
                             {unitArr &&
                                 <SelectBox
                                     id={`${props.savedKpiId}selectUnitInAddTemplateModal`}
@@ -118,6 +137,7 @@ function AddKpiTemplate(props) {
                                     multiple={false}>
                                 </SelectBox>
                             }
+                            <ErrorLabel content={state.validate.unit} />
                         </div>
                     </div>
 

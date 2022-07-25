@@ -84,23 +84,23 @@ exports.getKpiTemplate = async (req, res) => {
  * @param {*} res 
  */
 exports.createKpiTemplate = async (req, res) => {
-    try {
-        // let data = await KpiTemplateService.createKpiTemplate(req.portal, req.body, req.user._id);
-        let data = await KpiTemplateService.createKpiTemplate(req.body);
-        // await Logger.info(req.user.email, 'create_kpi_template', req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ['create_kpi_template_success'],
-            content: data
-        });
-    } catch (error) {
-        // await Logger.error(req.user.email, 'create_kpi_template', req.portal);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['create_kpi_template_failure'],
-            content: error
-        });
-    }
+    // try {
+    // let data = await KpiTemplateService.createKpiTemplate(req.portal, req.body, req.user._id);
+    let data = await KpiTemplateService.createKpiTemplate(req.body);
+    // await Logger.info(req.user.email, 'create_kpi_template', req.portal);
+    res.status(200).json({
+        success: true,
+        messages: ['create_kpi_template_success'],
+        content: data
+    });
+    // } catch (error) {
+    //     // await Logger.error(req.user.email, 'create_kpi_template', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['create_kpi_template_failure'],
+    //         content: error
+    //     });
+    // }
 }
 
 /**
@@ -109,24 +109,24 @@ exports.createKpiTemplate = async (req, res) => {
  * @param {*} res 
  */
 exports.deleteKpiTemplate = async (req, res) => {
-    try {
-        let data = await KpiTemplateService.deleteKpiTemplate(req.portal, req.params.id);
+    // try {
+    let data = await KpiTemplateService.deleteKpiTemplate(req.portal, req.params.id);
 
-        await Logger.info(req.user.email, 'delete_kpi_template', req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ['delete_kpi_template_success'],
-            content: data
-        });
-    } catch (error) {
+    await Logger.info(req.user.email, 'delete_kpi_template', req.portal);
+    res.status(200).json({
+        success: true,
+        messages: ['delete_kpi_template_success'],
+        content: data
+    });
+    // } catch (error) {
 
-        await Logger.error(req.user.email, 'delete_kpi_template', req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ['delete_kpi_template_failure'],
-            content: error
-        });
-    }
+    //     await Logger.error(req.user.email, 'delete_kpi_template', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['delete_kpi_template_failure'],
+    //         content: error
+    //     });
+    // }
 }
 
 /**
