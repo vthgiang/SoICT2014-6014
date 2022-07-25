@@ -24,6 +24,8 @@ export function policy(state = initialState, action) {
         case policyConstants.DELETE_POLICY_REQUEST:
         case policyConstants.CREATE_POLICY_REQUEST:
         case policyConstants.EDIT_POLICY_REQUEST:
+        case policyConstants.GET_POLICY_BY_ID_REQUEST:
+
             return {
                 ...state,
                 isLoading: true
@@ -32,6 +34,8 @@ export function policy(state = initialState, action) {
         case policyConstants.DELETE_POLICY_FAILURE:
         case policyConstants.CREATE_POLICY_FAILURE:
         case policyConstants.EDIT_POLICY_FAILURE:
+        case policyConstants.GET_POLICY_BY_ID_FAILURE:
+
             return {
                 ...state,
                 isLoading: false,
@@ -68,6 +72,13 @@ export function policy(state = initialState, action) {
                 ...state,
                 isLoading: false
             }
+        case policyConstants.GET_POLICY_BY_ID_SUCCESS:
+            console.log(action.payload)
+            return {
+                ...state,
+                policySatisfied: action.payload,
+                isLoading: false
+            };
         default:
             return state
     }

@@ -222,6 +222,25 @@ exports.getPolicies = async (portal, data) => {
     }
 }
 
+exports.satisfiedFunc = async (policy, portal) => {
+    let policyId = policy;
+    let polici = await Policy(connect(DB_CONNECTION, portal)).findOne({ _id: policyId })
+    polici = polici.toObject();
+    let currentPrivilegesHaveThisPolicy = await Privilege(connect(DB_CONNECTION, portal)).find({ policies: policyId }).populate({
+        path: 'resourceId',
+        select: '_id url description name'
+    });
+    let currentUserRoleHaveThisPolicy = await UserRole(connect(DB_CONNECTION, portal)).find({ policies: policyId }).populate([
+        { path: 'roleId', select: '_id name' },
+        { path: 'userId', select: '_id name email' },
+    ]);
+
+    polici.satisfiedSubjects = currentUserRoleHaveThisPolicy;
+    polici.satisfiedResources = currentPrivilegesHaveThisPolicy;
+    // console.log(polici)
+    return polici
+}
+
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
 exports.getPoliciesDelegation = async (portal, data) => {
     let keySearch = { category: "Delegation" };
@@ -280,6 +299,19 @@ exports.getOnlyPolicyName = async (portal, data) => {
 exports.getPolicyById = async (portal, id) => {
     let policy = await Policy(connect(DB_CONNECTION, portal)).findById({ _id: id });
     if (policy) {
+        policy = policy.toObject();
+        let currentPrivilegesHaveThisPolicy = await Privilege(connect(DB_CONNECTION, portal)).find({ policies: id }).populate({
+            path: 'resourceId',
+            select: '_id url description name'
+        });
+        let currentUserRoleHaveThisPolicy = await UserRole(connect(DB_CONNECTION, portal)).find({ policies: id }).populate([
+            { path: 'roleId', select: '_id name' },
+            { path: 'userId', select: '_id name email' },
+        ]);
+
+        policy.satisfiedSubjects = currentUserRoleHaveThisPolicy;
+        policy.satisfiedResources = currentPrivilegesHaveThisPolicy;
+        // console.log(policy)
         return policy;
     }
     return -1;

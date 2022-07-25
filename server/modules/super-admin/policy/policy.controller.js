@@ -66,6 +66,7 @@ exports.getPolicyById = async (req, res) => {
             throw Error("policy is invalid")
         }
     } catch (error) {
+        console.log(error)
         await Log.error(req.user.email, "GET_POLICY_BY_ID", req.portal);
 
         res.status(400).json({

@@ -198,18 +198,28 @@ exports.autoRevokeDelegation = async (delegation, portal) => {
     const a = this;
     const job = schedule.scheduleJob("Revoke_" + delegation._id, date, async function () {
         await a.revokeDelegation(portal, [delegation._id], "Automatic revocation")
-        await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
-            logs: [
-                ...delegation.logs,
-                {
-                    createdAt: new Date(),
-                    user: null,
-                    content: delegation.delegationName,
-                    time: new Date(delegation.endDate),
-                    category: "revoke"
-                }
-            ]
-        })
+        delegation.logs.push(
+            {
+                createdAt: new Date(),
+                user: null,
+                content: delegation.delegationName,
+                time: new Date(delegation.endDate),
+                category: "revoke"
+            }
+        )
+        await delegation.save();
+        // await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
+        //     logs: [
+        //         ...delegation.logs,
+        //         {
+        //             createdAt: new Date(),
+        //             user: null,
+        //             content: delegation.delegationName,
+        //             time: new Date(delegation.endDate),
+        //             category: "revoke"
+        //         }
+        //     ]
+        // })
     });
 
     return job;
@@ -459,7 +469,19 @@ exports.getDelegations = async (portal, data) => {
     let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate([
             { path: 'delegateRole', select: '_id name' },
-            { path: 'delegateTask' },
+            {
+                path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                populate: [
+                    { path: "taskActions.creator", select: "name email avatar" },
+                    {
+                        path: "taskActions.evaluations.creator",
+                        select: "name email avatar ",
+                    },
+                    { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                    { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                    { path: "logs.creator", select: "_id name avatar email " }
+                ]
+            },
             { path: 'delegatee', select: '_id name' },
             { path: 'delegatePolicy', select: '_id policyName' },
             { path: 'delegator', select: '_id name' },
@@ -541,7 +563,19 @@ exports.getDelegationsReceiveTask = async (portal, data) => {
     let totalList = await Delegation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate([
-            { path: 'delegateTask' },
+            {
+                path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                populate: [
+                    { path: "taskActions.creator", select: "name email avatar" },
+                    {
+                        path: "taskActions.evaluations.creator",
+                        select: "name email avatar ",
+                    },
+                    { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                    { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                    { path: "logs.creator", select: "_id name avatar email " }
+                ]
+            },
             { path: 'delegatee', select: '_id name' },
             { path: 'delegatePolicy', select: '_id policyName' },
             { path: 'delegator', select: '_id name' },
@@ -587,7 +621,19 @@ exports.getOnlyDelegationName = async (portal, data) => {
 exports.getDelegationById = async (portal, id) => {
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: id }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTask' },
+        {
+            path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+            populate: [
+                { path: "taskActions.creator", select: "name email avatar" },
+                {
+                    path: "taskActions.evaluations.creator",
+                    select: "name email avatar ",
+                },
+                { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                { path: "logs.creator", select: "_id name avatar email " }
+            ]
+        },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
@@ -697,7 +743,19 @@ exports.rejectDelegation = async (portal, delegationId, reason) => {
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationId }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTask' },
+        {
+            path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+            populate: [
+                { path: "taskActions.creator", select: "name email avatar" },
+                {
+                    path: "taskActions.evaluations.creator",
+                    select: "name email avatar ",
+                },
+                { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                { path: "logs.creator", select: "_id name avatar email " }
+            ]
+        },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
@@ -724,7 +782,19 @@ exports.confirmDelegation = async (portal, delegationId) => {
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationId }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTask' },
+        {
+            path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+            populate: [
+                { path: "taskActions.creator", select: "name email avatar" },
+                {
+                    path: "taskActions.evaluations.creator",
+                    select: "name email avatar ",
+                },
+                { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                { path: "logs.creator", select: "_id name avatar email " }
+            ]
+        },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
@@ -954,7 +1024,19 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
     }
 
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: newDelegation._id }).populate([
-        { path: 'delegateTask' },
+        {
+            path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+            populate: [
+                { path: "taskActions.creator", select: "name email avatar" },
+                {
+                    path: "taskActions.evaluations.creator",
+                    select: "name email avatar ",
+                },
+                { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                { path: "logs.creator", select: "_id name avatar email " }
+            ]
+        },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' }
@@ -1191,7 +1273,19 @@ exports.revokeTaskDelegation = async (portal, delegationIds, reason) => {
     await result.save();
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationIds[0] }).populate([
-        { path: 'delegateTask' },
+        {
+            path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+            populate: [
+                { path: "taskActions.creator", select: "name email avatar" },
+                {
+                    path: "taskActions.evaluations.creator",
+                    select: "name email avatar ",
+                },
+                { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                { path: "logs.creator", select: "_id name avatar email " }
+            ]
+        },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },

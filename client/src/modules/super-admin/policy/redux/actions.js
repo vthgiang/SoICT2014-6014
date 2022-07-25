@@ -5,7 +5,8 @@ export const PolicyActions = {
     getPolicies,
     deletePolicies,
     createPolicy,
-    editPolicy
+    editPolicy,
+    getPolicyById
 }
 
 function getPolicies(queryData) {
@@ -25,6 +26,28 @@ function getPolicies(queryData) {
             .catch((error) => {
                 dispatch({
                     type: policyConstants.GET_ALL_POLICIES_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getPolicyById(id) {
+    return (dispatch) => {
+        dispatch({
+            type: policyConstants.GET_POLICY_BY_ID_REQUEST
+        });
+        policyServices
+            .getPolicyById(id)
+            .then((res) => {
+                dispatch({
+                    type: policyConstants.GET_POLICY_BY_ID_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: policyConstants.GET_POLICY_BY_ID_FAILURE,
                     error
                 });
             });

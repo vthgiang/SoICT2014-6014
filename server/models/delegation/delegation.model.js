@@ -130,7 +130,8 @@ const DelegationSchema = new Schema({
                     "revoke",
                     "confirm",
                     "reject",
-                    "activate"
+                    "activate",
+                    "switch_delegate_role"
                 ],
             }
         },

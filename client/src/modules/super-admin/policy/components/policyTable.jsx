@@ -39,6 +39,11 @@ function PolicyTable(props) {
     }, [])
 
 
+    useEffect(() => {
+        if (curentRowDetail) {
+            props.getPolicyById(curentRowDetail._id); // props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
+        }
+    }, [curentRowDetail])
 
     const handleChangeAddRowAttribute = (name, value) => {
         setState({
@@ -299,7 +304,9 @@ function mapState(state) {
 const actions = {
     getPolicies: PolicyActions.getPolicies,
     deletePolicies: PolicyActions.deletePolicies,
-    getAttribute: AttributeActions.getAttributes
+    getAttribute: AttributeActions.getAttributes,
+    getPolicyById: PolicyActions.getPolicyById,
+
 }
 
 const connectedPolicyTable = connect(mapState, actions)(withTranslate(PolicyTable));

@@ -43,6 +43,7 @@ export const formatLog = (translate, data) => {
     else if (data === "login") return translate('manage_delegation.log_activity_tab.login');
     else if (data === "logout") return translate('manage_delegation.log_activity_tab.logout');
     else if (data === "activate") return translate('manage_delegation.log_activity_tab.activate');
+    else if (data === "switch_delegate_role") return translate('manage_delegation.log_activity_tab.switch_delegate_role');
 
 }
 

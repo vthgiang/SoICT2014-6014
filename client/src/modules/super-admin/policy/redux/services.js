@@ -4,7 +4,8 @@ export const policyServices = {
     getPolicies,
     deletePolicies,
     createPolicy,
-    editPolicy
+    editPolicy,
+    getPolicyById
 }
 
 function getPolicies(queryData) {
@@ -61,6 +62,17 @@ function editPolicy(id, data) {
             data: data
         },
         true,
+        true,
+        "super_admin.policy"
+    )
+}
+
+function getPolicyById(id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/policy/policies/${id}`,
+        method: "GET"
+    },
+        false,
         true,
         "super_admin.policy"
     )
