@@ -275,27 +275,24 @@ function OutgoingDataTab(props) {
                                 : <span>{translate('task.task_process.not_have_doc')}</span>
                         }
                         <div style={{ marginTop: 10 }}></div>
-                        <strong>Kết quả giao nộp:</strong>
+                        <strong>Kết quả công việc:</strong>
                         {performtasks.task?.taskOutputs?.map(item => {
-                            if (item.status === "approved") {
-                                return (
-                                    <div>
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                title={"TaskOutputs"}
-                                                name={item.tilte}
-                                                onClick={() => { handleCheckBoxOutputTaskOutput(item) }}
-                                                checked={isOutputTaskOutput && isOutputTaskOutput[item._id]}
-                                            // disabled={item.status !== "approved"}
-                                            // onChange={e => { }}
-                                            />
-                                            {item.title}
-                                        </label>
-                                    </div>
-                                )
-                            }
-                            return <></>;
+                            return (
+                                <div>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            title={"TaskOutputs"}
+                                            name={item.tilte}
+                                            onClick={() => { handleCheckBoxOutputTaskOutput(item) }}
+                                            checked={isOutputTaskOutput && isOutputTaskOutput[item._id]}
+                                        // disabled={item.status !== "approved"}
+                                        // onChange={e => { }}
+                                        />
+                                        {item.title}
+                                    </label>
+                                </div>
+                            )
                         })}
                         <div style={{ marginTop: 20 }}>
                             <button type="button" style={{ width: "100%" }} className="btn btn-block btn-default" onClick={() => handleSaveEdit()} disabled={documents.length === 0 && informations.length === 0 && taskOutputs.length === 0}>{translate('task.task_process.save')}</button>
@@ -305,7 +302,7 @@ function OutgoingDataTab(props) {
 
 
                     { /** Trao đổi */}
-                    <div>
+                    <div className="description-box">
                         <h4 style={{ marginBottom: "1.3em" }}>Trao đổi với các công việc khác về dữ liệu ra</h4>
                         {/* <CommentInProcess
                             task={performtasks.task}

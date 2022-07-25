@@ -464,7 +464,9 @@ function TaskOutputsTab(props) {
                             {/* phê duyệt */}
                             <div key={taskOutput._id} className={`item-box ${index > 3 ? "hide-component" : "block"}`}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <div>{taskOutput.status === "approved" && <i className='fa fa-check text-success' style={{ marginRight: "3px" }}></i>}<a style={{ fontWeight: 700, cursor: "pointer", marginLeft: taskOutput.status !== "approved" ? "17px" : 0 }}>{taskOutput.title}</a></div>
+                                    <div style={{ display: 'flex' }}>{taskOutput.status === "approved" && <i className='fa fa-check text-success' style={{ display: 'flex', marginRight: "3px", placeItems: "center" }}></i>}
+                                        <h4 className="title" style={{ marginLeft: taskOutput.status !== "approved" ? "17px" : 0 }}>{taskOutput.title}</h4>
+                                    </div>
                                     <div onClick={() => {
                                         if (showPanels.includes(taskOutput._id)) {
                                             let newShowPanels = showPanels.filter((panels) => panels !== taskOutput._id)
@@ -479,8 +481,16 @@ function TaskOutputsTab(props) {
                                 </div>
                                 <div style={{ display: `${showPanels.includes(taskOutput._id) ? "" : "none"}` }}>
                                     <div className='description'>
-                                        <div><strong>Yêu cầu:</strong> {parse(taskOutput.description)}</div>
+                                        {
+                                            checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected" || taskOutput.status === "approved") &&
+                                            <div style={{ display: "flex" }}>
+                                                <span style={{ paddingRight: "10px" }}>Phê duyệt kết quả:</span>
+                                                <a style={{ cursor: "pointer", paddingRight: "15px", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "approve" ? "700" : "" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>
+                                                <a style={{ cursor: "pointer", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "reject" ? "700" : "" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>
+                                            </div>
+                                        }
                                         <div><strong>Kiểu dữ liệu:</strong> {formatTypeInfo(taskOutput.type)}</div>
+                                        <div><strong>Yêu cầu:</strong> {parse(taskOutput.description)}</div>
                                         {/* <div><strong>Người đã phê duyệt: </strong>{getAcoutableEmployees(taskOutput.accountableEmployees)}</div> */}
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div>
@@ -548,7 +558,7 @@ function TaskOutputsTab(props) {
                                                                 <div>
                                                                     <div>
                                                                         {taskOutput.submissionResults?.description?.split('\n')?.map((elem, idx) => (
-                                                                            <div key={idx}>
+                                                                            <div key={idx} className="content-task-output-1">
                                                                                 {parse(elem)}
                                                                             </div>
                                                                         ))
@@ -557,7 +567,7 @@ function TaskOutputsTab(props) {
                                                                 </div>
                                                                 {/* Các action lựa chọn của người phê duyệt */}
 
-                                                                <ul className="list-inline" style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginTop: "-15px" }}>
+                                                                <ul className="list-inline" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
                                                                     <li className="text-sm" style={{ paddingRight: "10px", paddingLeft: "5px" }}><DateTimeConverter dateTime={taskOutput.submissionResults.createdAt} /></li>
                                                                     <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => {
                                                                         if (showAccountables.includes(taskOutput._id)) {
@@ -571,31 +581,9 @@ function TaskOutputsTab(props) {
                                                                     <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowFile(taskOutput.submissionResults._id)} ><i className="fa fa-paperclip" aria-hidden="true"></i> Tập tin đính kèm ({taskOutput.submissionResults.files && taskOutput.submissionResults.files.length})</a></li>
                                                                     <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowComment(taskOutput._id)} ><i className="fa fa-comments-o margin-r-5" aria-hidden="true"></i> Trao đổi ({taskOutput.comments && taskOutput.comments.length})</a></li>
                                                                 </ul>
-
-                                                                {
-                                                                    checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected" || taskOutput.status === "approved") &&
-                                                                    <div style={{ display: "flex" }}>
-                                                                        <span style={{ paddingRight: "10px" }}>Phê duyệt kết quả:</span>
-                                                                        <a style={{ cursor: "pointer", paddingRight: "15px", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "approve" ? "700" : "" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>
-                                                                        <a style={{ cursor: "pointer", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "reject" ? "700" : "" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>
-                                                                    </div>
-                                                                }
-
-                                                                {showAccountables.includes(taskOutput._id) && taskOutput.accountableEmployees.map((item, idx) => {
-                                                                    return (
-                                                                        <div key={idx}>
-                                                                            <b> {item.accountableEmployee?.name} </b>
-                                                                            <span style={{ fontSize: 10, marginRight: 10 }} className="text-green">[ Người phê duyệt ]</span>
-                                                                            {formatActionAccountable(item.action)}
-                                                                            &ensp;
-                                                                            {item.action === "approve" || item.action === "reject" && <DateTimeConverter dateTime={item.updatedAt} />}
-                                                                        </div >
-                                                                    )
-                                                                })}
                                                                 {showFile.some(obj => obj === taskOutput.submissionResults._id) &&
                                                                     <div style={{ cursor: "pointer" }}>
-                                                                        <div>Tập tin đính kèm:</div>
-                                                                        <ul>
+                                                                        <ul className='list-inline tool-level1'>
                                                                             {taskOutput.submissionResults.files.map((elem, index) => {
                                                                                 let listImage = taskOutput.submissionResults.files?.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                                 return <li key={index}>
@@ -623,6 +611,20 @@ function TaskOutputsTab(props) {
                                                                         </ul>
                                                                     </div>
                                                                 }
+
+
+                                                                {showAccountables.includes(taskOutput._id) && taskOutput.accountableEmployees.map((item, idx) => {
+                                                                    return (
+                                                                        <div key={idx}>
+                                                                            <b> {item.accountableEmployee?.name} </b>
+                                                                            <span style={{ fontSize: 10, marginRight: 10 }} className="text-green">[ Người phê duyệt ]</span>
+                                                                            {formatActionAccountable(item.action)}
+                                                                            &ensp;
+                                                                            {item.action === "approve" || item.action === "reject" && <DateTimeConverter dateTime={item.updatedAt} />}
+                                                                        </div >
+                                                                    )
+                                                                })}
+
                                                             </React.Fragment>
                                                         }
                                                         {editAction == taskOutput._id &&
@@ -670,7 +672,6 @@ function TaskOutputsTab(props) {
                                             }
                                             {showComment.some(x => x === taskOutput._id) &&
                                                 <div>
-                                                    <div style={{ fontWeight: 600, marginBottom: 10 }}>Trao đổi</div>
                                                     <div>
                                                         <img className="user-img-level1"
                                                             src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"

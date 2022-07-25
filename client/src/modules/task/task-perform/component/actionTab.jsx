@@ -23,6 +23,13 @@ import { htmlToText } from 'html-to-text';
 import ModalAddLogTime from './modalAddLogTime';
 import { TaskOutputsTab } from './taskOutputs';
 
+const getTaskOutputs = (data) => {
+    const taskOutputsApproval = data?.filter((item) => item.status === "approved");
+    if (!data) {
+        return "0";
+    }
+    return `${taskOutputsApproval.length}/${data.length}`
+}
 
 function ActionTab(props) {
     let idUser = getStorage("userId");
@@ -1116,7 +1123,7 @@ function ActionTab(props) {
                     <li className="active"><a href="#taskAction" onClick={() => handleChangeContent("taskAction")} data-toggle="tab">{translate("task.task_perform.actions")} ({taskActions && taskActions.length})</a></li>
                     <li><a href="#taskComment" onClick={() => handleChangeContent("actionComment")} data-toggle="tab">{translate("task.task_perform.communication")} ({taskComments && taskComments.length})</a></li>
                     <li><a href="#documentTask" onClick={() => handleChangeContent("documentTask")} data-toggle="tab">{translate("task.task_perform.documents")} ({documents && documents.length})</a></li>
-                    <li><a href="#taskOutputs" onClick={() => handleChangeContent("taskOutputs")} data-toggle="tab">Kết quả giao nộp</a></li>
+                    <li><a href="#taskOutputs" onClick={() => handleChangeContent("taskOutputs")} data-toggle="tab">Kết quả giao nộp ({getTaskOutputs(performtasks?.task?.taskOutputs)})</a></li>
                     <li><a href="#logTimer" onClick={() => handleChangeContent("logTimer")} data-toggle="tab">{translate("task.task_perform.timesheetlogs")} ({logTimer && logTimer.length})</a></li>
                     <li><a href="#subTask" onClick={() => handleChangeContent("subTask")} data-toggle="tab">{translate("task.task_perform.subtasks")} ({subtasks && subtasks.length})</a></li>
                     <li><a href="#historyLog" onClick={() => handleChangeContent("historyLog")} data-toggle="tab">{translate("task.task_perform.change_history")} ({logs && logs.length})</a></li>

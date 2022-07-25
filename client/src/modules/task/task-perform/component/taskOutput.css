@@ -50,3 +50,21 @@
     padding: 5px 10px;
     text-align: center;
 }
+
+.content-task-output-1 {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    border-radius: 10px;
+    background: #f5f5f5;
+    position: relative;
+}
+
+.title {
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
+    margin-bottom: 5px;
+    margin-top: 2px;
+}

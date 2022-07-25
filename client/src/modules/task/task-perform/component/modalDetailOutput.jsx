@@ -202,7 +202,7 @@ function TaskOutputDetail(props) {
                             </div>
                         </div>
                     }
-                    <div style={{ padding: "6px 0px 6px 0px" }}>
+                    {version.description ? <div style={{ padding: "6px 0px 6px 0px" }}>
                         <strong style={{ fontWeight: 600 }}>Kết quả giao nộp</strong>
                         <div>
                             {version.description?.split('\n')?.map((elem, idx) => (
@@ -212,7 +212,9 @@ function TaskOutputDetail(props) {
                             ))
                             }
                         </div>
-                    </div>
+                    </div> : <div style={{ padding: "6px 0px 6px 0px" }}><strong>Chưa giao nộp kết quả</strong></div>
+                    }
+
                     {version.files.length > 0 && <div style={{ cursor: "pointer" }}>
                         <div><strong style={{ fontWeight: 600 }}>Tập tin đính kèm:</strong></div>
                         <ul>
