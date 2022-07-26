@@ -201,12 +201,12 @@ const BiddingPackageEditFrom = (props) => {
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
-                afterClose={() => {
-                    setState(state => ({
-                        ...state,
-                        _id: null,
-                    }))
-                }}
+                // afterClose={() => {
+                //     setState(state => ({
+                //         ...state,
+                //         _id: null,
+                //     }))
+                // }}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-edit-biddingPackage"> */}

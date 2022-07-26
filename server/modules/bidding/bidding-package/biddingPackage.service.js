@@ -351,10 +351,11 @@ exports.deleteBiddingPackage = async (portal, id) => {
         connect(DB_CONNECTION, portal)
     ).countDocuments();
 
-    return {
-        totalList,
-        listBiddingPackages,
-    };
+    // return {
+    //     totalList,
+    //     listBiddingPackages,
+    // };
+    return await this.searchBiddingPackage(portal, {});
 };
 
 exports.autoUpdateEmployeeBiddingStatus = async (portal) => {
