@@ -149,64 +149,8 @@ function OrganizationalUnitKpiDashboard(props) {
         })
     }
 
-    const handleAdjustKpiEmployee = () => {
-        const { employeeKpiSet } = state;
-        console.log(153, employeeKpiSet)
-        const currentDate = new Date().getDate();
-        const employeeEffort = employeeKpiSet.map(kpi => {
-            let effort = 0;
-            let effortIndex = 0;
-            let count = 0;
-            for (let item of kpi.kpis) {
-                if (typeof item.target === 'number' && typeof item.current === 'number') {
-                    if (item.current >= item.target) {
-                        effort += 100 * item.weight;
-                    } else {
-                        effort += item.current / item.target * 100 * item.weight;
-                    }
-                    effortIndex += currentDate / 30 * 100 * item.weight;
-                }
-            }
-            if (count === 0) {
-                count = 1;
-            }
 
-            return {
-                id: kpi._id,
-                effort: effort,
-                effortIndex: effortIndex,
-            }
-        })
-        let total = 0;
-
-        for (let elem of employeeEffort) {
-            total += (elem.effortIndex - elem.effort);
-        }
-
-        const employeeEffortCoef = {};
-
-        employeeEffort.map(x => {
-            let coef = (x.effort + total / employeeEffort.length) / x.effortIndex;
-            if (coef <= 0) {
-                coef = 0.1;
-            }
-            employeeEffortCoef[x.id] = coef;
-        })
-
-        const adjustEmployeeKpiSet = employeeKpiSet.map(item => {
-            let coef = employeeEffortCoef[item.creator.id];
-            item.kpis.map(kpi => {
-                if (typeof (kpi.target) === 'number') {
-                    kpi.target *= coef
-                }
-            })
-            return item;
-        })
-        console.log(employeeEffortCoef)
-        props.balanceEmployeeKpiSet(employeeEffortCoef)
-    }
-
-    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, translate } = props;
+    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit, translate } = props;
     const { childUnitChart, organizationalUnitId,
         month, date, resultsOfOrganizationalUnitKpiChartData,
         resultsOfAllOrganizationalUnitsKpiChartData,
@@ -282,6 +226,7 @@ function OrganizationalUnitKpiDashboard(props) {
     } else {
         organizationalUnitNotInitialKpi = organizationalUnitSelectBox
     }
+
     let d = new Date(),
         monthDate = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -295,7 +240,6 @@ function OrganizationalUnitKpiDashboard(props) {
 
 
     return (
-
         <React.Fragment>
             {childrenOrganizationalUnit
                 ? <section>
@@ -328,7 +272,7 @@ function OrganizationalUnitKpiDashboard(props) {
 
                             <button type="button" className="btn btn-success" onClick={() => handleSearchData()}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                             {
-                                state.employeeKpiSet?.length === 0 ? <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
+                                createKpiUnit.currentKPI?.status && state.employeeKpiSet?.length === 0 ? <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
                                     <a className='btn btn-primary text-dark' data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
                                         <i className="fa fa-gears" style={{ fontSize: "16px" }} /> Khởi tạo KPI nhân viên tự động
                                     </a>
@@ -336,16 +280,19 @@ function OrganizationalUnitKpiDashboard(props) {
                                         organizationalUnitId={infoSearch?.organizationalUnitId}
                                         month={month}
                                     />
-                                </span> : <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
+                                </span> : null
+                            }
+                            {
+                                createKpiUnit.currentKPI?.status && state.employeeKpiSet?.length !== 0 ? <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
                                     <a className='btn btn-primary text-dark' data-toggle="modal" data-target="#employee-balance-kpi-auto" data-backdrop="static" data-keyboard="false">
-                                        Can bang KPI nhan vien
+                                        Cân bằng KPI nhân viên
                                     </a>
                                     <EmployeeBalanceKpiModal
                                         organizationalUnitId={infoSearch?.organizationalUnitId}
                                         month={month}
                                         employeeKpiSet={state.employeeKpiSet}
                                     />
-                                </span>
+                                </span> : null
 
                                 // <button type="button" className="btn btn-primary" onClick={() => handleAdjustKpiEmployee()}>Cân bằng KPI nhân viên</button>
                             }
@@ -422,48 +369,14 @@ function OrganizationalUnitKpiDashboard(props) {
                         </div>
                     </div>
 
-                    <OrganizationalUnitKPITarget
-                        organizationalUnitIds={organizationalUnitIds}
-                        month={month}
-                        onChangeData={handleChangeEmployeeKpiTarget}
-                    />
-                    {/* <div className="row"> {
-                        dataKpis?.map((item) => {
-                            return (
-                                <div className="col-sm-6">
-                                    <TargetKpiCard data={item} month={getMonthArr("2022-07")} />
-                                </div>
-                            )
-                        })
-                    }</div>
-                    <div className="row">
-
-                        {
-                            employeeKpiSet?.map((item, index) => {
-                                return (
-                                    <div key={`${index}_${item._id}`}>
-                                        <PreviewKpiEmployee data={item} />
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
                     {
-                        employeeKpiSet?.length && <div>
-                            <br />
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <div className="box box-primary">
-                                        <div className="box-header with-border">
-                                            <div className="box-title">Đóng góp nhân viên</div>
-                                        </div>
-                                        <EmployeeResultChart employeeKpi={employeeKpiSet} unitKpi={createKpiUnit?.currentKPI} />
+                        <OrganizationalUnitKPITarget
+                            organizationalUnitIds={organizationalUnitIds}
+                            month={month}
+                            onChangeData={handleChangeEmployeeKpiTarget}
+                        />
+                    }
 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    } */}
 
                     <div className="row">
                         <div className="col-md-12">
@@ -660,8 +573,8 @@ function OrganizationalUnitKpiDashboard(props) {
 }
 
 function mapState(state) {
-    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit } = state;
-    return { dashboardEvaluationEmployeeKpiSet, managerKpiUnit };
+    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit } = state;
+    return { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit };
 }
 
 const actionCreators = {

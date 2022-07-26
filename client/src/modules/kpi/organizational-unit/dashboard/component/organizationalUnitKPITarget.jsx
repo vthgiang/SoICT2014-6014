@@ -62,7 +62,7 @@ const OrganizationalUnitKPITarget = (props) => {
 
             for (let item of evaluatedTask) {
                 for (let eva of item.evaluations) {
-                    const key = eva.evaluatingMonth.slice(0, 7);
+                    const key = eva.evaluatingMonth?.slice(0, 7);
                     if (!evaluations[key]) {
                         evaluations[key] = {};
                     }
@@ -81,15 +81,15 @@ const OrganizationalUnitKPITarget = (props) => {
                 if (!item.target) {
                     //Mục tiêu không định lượng
                     return {
-                        name: item.name,
-                        type: 1
+                        ...item,
+                        itemType: 0
                     }
                 }
                 return {
                     name: item.name,
                     target: item.target,
                     unit: item.unit,
-                    current: evaluations[currentMonth][item?.criteria],
+                    current: evaluations[currentMonth] ? evaluations[currentMonth][item?.criteria] : 0,
                     resultByMonth: monthArr.map(x => {
                         if (evaluations[x] && evaluations[x][item?.criteria]) {
                             return evaluations[x][item?.criteria]
@@ -144,7 +144,8 @@ const OrganizationalUnitKPITarget = (props) => {
                         console.log(2154, evaluations[employeeId])
                         if (!kpis.target) {
                             //Mục tiêu không định lượng
-                            kpis.current = 'Đang thực hiện'
+                            kpis.current = 'Đang thực hiện';
+                            kpis.itemType = 0;
                         }
                         if (evaluations[employeeId]) {
                             kpis.current = evaluations[employeeId][kpis?.criteria] ?? 0

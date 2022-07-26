@@ -14,6 +14,7 @@ export const createKpiSetActions = {
     createEmployeeKpiSet,
     createEmployeeKpiSetAuto,
     approveEmployeeKpiSet,
+    balanceEmployeeKpiSetAuto,
 
     createComment,
     editComment,
@@ -257,6 +258,27 @@ function createEmployeeKpiSetAuto(data) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+
+// Can bang kpi nhan vien
+function balanceEmployeeKpiSetAuto(data) {
+    return dispatch => {
+        dispatch({ type: createKpiSetConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_REQUEST });
+
+        createKpiSetService.balanceEmployeeKpiSetAuto(data)
+            .then(res => {
+                dispatch({
+                    type: createKpiSetConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_FAILURE,
                     payload: error
                 })
             })

@@ -475,25 +475,32 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
     }
 }
 
-exports.balancEmployeeKpisAuto = async (portal, kpiSet, balanceCoef) => {
-    // console.log(475, kpiSet, balanceCoef)
+exports.balanceEmployeeKpisAuto = async (portal, kpiSet) => {
+    console.log(475, kpiSet)
     if (!portal) {
         portal = 'vnist';
     }
-    let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findById(kpiSet)
-        .select('kpis');
-    // console.log(482, employeeKpiSet)
+    for (let i = 0; i < kpiSet.kpis.length; i++) {
+        let kpis = kpiSet.kpis[i];
 
-    if (employeeKpiSet?.kpis) {
-        for (let kpiId of employeeKpiSet.kpis) {
-            let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiId);
-            if (kpi && typeof (kpi?.target) === 'number') {
-                let kpiBalance = await EmployeeKpi(connect(DB_CONNECTION, portal))
-                    .findByIdAndUpdate(kpi._id, { $set: { "target": Math.round(kpi.target * balanceCoef) } });
-            }
+        let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpis._id);
+        if (kpi && typeof (kpi?.target) === 'number') {
+            let kpiBalance = await EmployeeKpi(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(kpi._id, { $set: { "target": kpis.target } });
         }
     }
+    let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .findById(kpiSet)
+
+    // if (employeeKpiSet?.kpis) {
+    //     for (let kpiId of employeeKpiSet.kpis) {
+    //         let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiId);
+    //         if (kpi && typeof (kpi?.target) === 'number') {
+    //             let kpiBalance = await EmployeeKpi(connect(DB_CONNECTION, portal))
+    //                 .findByIdAndUpdate(kpi._id, { $set: { "target": kpi.target } });
+    //         }
+    //     }
+    // }
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit ")
         .populate({ path: "creator", select: "_id name email avatar" })
@@ -504,6 +511,7 @@ exports.balancEmployeeKpisAuto = async (portal, kpiSet, balanceCoef) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
+    console.log(482, employeeKpiSet)
 
     return employeeKpiSet;
 }

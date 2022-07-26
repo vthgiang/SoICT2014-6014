@@ -5,6 +5,7 @@ import { DialogModal } from '../../../../../common-components';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
+import { PreviewKpiEmployee } from '../../../organizational-unit/dashboard/component/previewKpiEmployee';
 
 const formatDate = (date) => {
     var d = new Date(date),
@@ -28,83 +29,113 @@ const convertMMYYtoYYMM = (value) => {
     return value.slice(3, 7) + '-' + value.slice(0, 2);
 };
 
-function EmployeeBalanceKpiModal(props) {
-    const { translate, user, createKpiUnit, department } = props;
-    const { organizationalUnit, organizationalUnitId, month, childrenOrganizationalUnit } = props;
-
-    const [state, setState] = useState({
-        date: null,
-        idUnit: null,
-        employees: {},
-        employeeIds: [],
-        formula: "(employeePoint * progressPoint * resultPoint) / 10000"
-    });
-    const { employees, employeeIds, idUnit, date, formula } = state;
-
-    const handleClickCheck = (id) => {
-        let employee = employees;
-        let employeeIds = [];
-        employee[id].check = !employee[id].check;
-        for (let key in employee) {
-            if (employee[key].check) {
-                employeeIds.push(employee[key].id)
+const getProgress = (kpis) => {
+    let progress = 0;
+    let count = 0;
+    if (kpis) {
+        for (let kpi of kpis) {
+            if (typeof (kpi.target) === 'number') {
+                let p = kpi.current / kpi.target * 100 > 100 ? 100 : kpi.current / kpi.target * 100;
+                progress += p;
+                count += 1;
             }
         }
-        setState({
-            ...state,
-            employees: employee,
-            employeeIds,
+    }
+    let res = 0;
+    if (count > 0) {
+        res = progress / count;
+    }
+
+    return res > 100 ? 100 : Math.round(res);
+}
+
+const getBalanceKpiInfo = (x) => {
+    let kpiSet = [...x];
+    let kpiTargetLeft = {};
+    let data = {};
+    let totalLeft = 0;
+    let kpiData = [];
+
+    for (let item of kpiSet) {
+        const itemData = { ...item };
+
+        const currentProgress = getProgress(itemData.kpis);
+        data[itemData.creator.id] = {
+            name: itemData.creator.name,
+            currentProgress: currentProgress,
+            progressLeft: 100 - currentProgress,
+        }
+
+        totalLeft += 100 - currentProgress;
+
+        for (let kpi of itemData.kpis) {
+            if (typeof (kpi.target) === 'number') {
+                if (!kpiTargetLeft[kpi.name]) {
+                    kpiTargetLeft[kpi.name] = 0;
+                }
+                kpiTargetLeft[kpi.name] += kpi.target - kpi.current;
+            }
+        }
+    }
+
+    for (let itemKpi of kpiSet) {
+        let kpisArr = [];
+        for (let kpi of itemKpi.kpis) {
+            let target;
+            if (typeof (kpi.target) === 'number') {
+                target = kpi.current + kpiTargetLeft[kpi.name] / kpiSet.length;
+            }
+            kpisArr.push(
+                {
+                    ...kpi,
+                    target: target ?? 0
+                })
+        }
+
+        kpiData.push({
+            ...itemKpi,
+            kpis: kpisArr
         })
     }
 
-    const handleChangeFormula = (e) => {
-        setState({
-            ...state,
-            formula: e.target.value
-        })
+    let balance = Math.round(totalLeft / kpiData.length);
+
+    for (let employee in data) {
+        data[employee].balanceProgress = data[employee].currentProgress + balance;
     }
+
+    return {
+        data,
+        kpiData,
+        kpiTargetLeft
+    };
+}
+
+function EmployeeBalanceKpiModal(props) {
+    const { translate } = props;
+    const { employeeKpiSet, organizationalUnitId } = props;
+
+    const [state, setState] = useState({
+        balanceData: null,
+    });
 
     const handleSubmit = () => {
-        let data = {
-            employees: employeeIds,
-            approver: localStorage.getItem("userId"),
-            month: month,
-            organizationalUnit: organizationalUnitId,
-            formula: formula
-        };
-
-        props.createEmployeeKpiSetAuto(data)
+        const { balanceData } = state;
+        props.balanceEmployeeKpiSetAuto(balanceData.kpiData)
     }
-
-
-    useEffect(() => {
-        if (idUnit && date) {
-            props.getCurrentKPIUnit(localStorage.getItem("currentRole"), idUnit, date);
-            props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: [idUnit], callApi: true })
-        }
-    }, [idUnit, date])
 
     //Get data employee
     useEffect(() => {
-        if (createKpiUnit?.currentKPI) {
-            const employeeOfUnit = {};
-            let employeeIds = [];
-            for (let item of createKpiUnit.currentKPI.employeeImportances) {
-                employeeOfUnit[item?.employee?.id] = {
-                    id: item?.employee?.id,
-                    name: item?.employee?.name,
-                    check: true,
-                }
-                employeeIds.push(item?.employee?.id)
-            }
+        if (employeeKpiSet) {
+            const data = getBalanceKpiInfo(employeeKpiSet);
+            console.log("132", data)
             setState({
                 ...state,
-                employees: employeeOfUnit,
-                employeeIds: employeeIds
-            });
+                balanceData: data
+            })
         }
-    }, [createKpiUnit])
-    console.log(140, employees)
+    }, [employeeKpiSet])
+
     return (
         <React.Fragment>
             <DialogModal
@@ -116,71 +147,49 @@ function EmployeeBalanceKpiModal(props) {
                 func={handleSubmit}
                 hasNote={false}
                 disableSubmit={false}
+                size={75}
             >
                 {/* Form khởi tạo KPI đơn vị */}
                 <form id="form-employee-balance-kpi-auto" onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
 
-                    <div className="row" style={{ marginBottom: 10 }}>
-
-                        <div className="col-md-12">
-                            {/**Công thức tính của mẫu công việc */}
-                            <div className="" >
-                                <label className="control-label" htmlFor="inputFormula">Công thức tính tỉ lệ hoàn thành KPI</label>
-                                <br />
-                                <input
-                                    style={{ width: '100%', margin: '10px 0px' }}
-                                    type="text"
-                                    className="form-control"
-                                    id="inputFormula"
-                                    placeholder="(employeePoint * progressPoint * resultPoint) / 10000"
-                                    value={formula}
-                                    onChange={handleChangeFormula}
-                                />
-                                <div>
-                                    <span style={{ fontWeight: 800 }}> Ví dụ:  </span>
-                                    (employeePoint * progressPoint * resultPoint) / 10000
-                                </div>
-                                <div><span style={{ fontWeight: 800 }}>Tham số:</span></div>
-                                <div><span style={{ fontWeight: 600 }}>employeePoint</span> - Điểm đánh giá nhân viên</div>
-                                <div><span style={{ fontWeight: 600 }}>progressPoint</span> - Điểm quá trình</div>
-                                <div><span style={{ fontWeight: 600 }}>resultPoint</span> - Điểm kết quả</div>
-                            </div>
-                        </div>
-                    </div>
-                    {
-                        (idUnit && date && !createKpiUnit.currentKPI)
-                            ? <div>Đơn vị chưa thiết lập KPI</div>
-                            :
-                            <div>
-                                <label className="control-label" htmlFor="inputFormula" style={{ marginBottom: 10 }}>Danh sách nhân viên </label>
-                                <br />
-                                <table className="table table-hover table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
-                                            <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                                            {/* <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th> */}
-                                            <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>Chọn</th>
+                    <div style={{ padding: "0px 15px" }}>
+                        <label className="control-label" htmlFor="inputFormula" style={{ marginBottom: 10 }}>Tiến độ thực hiện KPI </label>
+                        <br />
+                        <table className="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th title="STT">STT</th>
+                                    <th title="Họ tên">Họ và tên</th>
+                                    <th title="Tiến độ hiện tại">Tiến độ hiện tại</th>
+                                    <th title="Tiến độ còn lại">Tiến độ còn lại</th>
+                                    {/* <th title="Tỉ lệ hoàn thành sau cân bằng">Tỉ lệ hoàn thành sau cân bằng</th> */}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    state?.balanceData?.data && Object.values(state.balanceData.data).map((item, index) =>
+                                        <tr key={organizationalUnitId + index}>
+                                            <td style={{ width: '20px' }}>{index + 1}</td>
+                                            <td>{item.name}</td>
+                                            <td>{item.currentProgress}</td>
+                                            <td>{item.progressLeft}</td>
+                                            {/* <td>{item.balanceProgress}</td> */}
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            employees && Object.values(employees).map((item, index) =>
-                                                <tr key={organizationalUnitId + index}>
-                                                    <td style={{ width: '20px' }}>{index + 1}</td>
-                                                    <td>{item.name}</td>
-                                                    <td>
-                                                        <input type="checkbox" checked={employees[item.id].check} onClick={() => { handleClickCheck(item.id) }} />
-                                                    </td>
-                                                </tr>
-                                            )
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                    </div>
 
-
+                    <br />
+                    <label className="control-label" style={{ margin: "10px 0px", padding: "0px 15px" }}>KPI nhân viên sau cân bằng </label>
+                    <br />
+                    {
+                        state?.balanceData?.kpiData.map(item => {
+                            return <PreviewKpiEmployee data={item} disableNotice={true} />
+                        })
                     }
+
 
                 </form>
             </DialogModal>
@@ -195,7 +204,7 @@ function mapState(state) {
 }
 const actions = {
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    createEmployeeKpiSetAuto: createKpiSetActions.createEmployeeKpiSetAuto,
+    balanceEmployeeKpiSetAuto: createKpiSetActions.balanceEmployeeKpiSetAuto,
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit
 }
 

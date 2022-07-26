@@ -13,10 +13,9 @@ const formatTarget = (value) => {
 }
 
 const PreviewKpiEmployee = (props) => {
-    const { data } = props;
+    const { data, disableNotice } = props;
     const [delay, setDelay] = useState(false);
 
-    console.log(72, data)
     // Tinh chi so can no luc de thuc hien kpi
     useEffect(() => {
         const currentDate = new Date().getDate();
@@ -43,9 +42,8 @@ const PreviewKpiEmployee = (props) => {
             }
         }
     }, [data])
-
     return <React.Fragment>
-        <div className='col-md-4'  >
+        <div className='col-md-4' style={{ marginBottom: 20 }}  >
 
             {/* style={{ display: 'flex', alignItems: "stretch" }} style={{ display: 'flex', margin: 16 }}*/}
             {
@@ -56,7 +54,7 @@ const PreviewKpiEmployee = (props) => {
                     >
                         <div className="card-body" style={{ position: "relative" }}>
                             {
-                                delay && <span style={{ position: "absolute", right: 0 }} onClick={() => {
+                                delay && !disableNotice && <span style={{ position: "absolute", right: 0 }} onClick={() => {
                                     Swal.fire({
                                         title: 'Nhân viên này chậm tiến độ KPI. Hãy cân bằng KPI nhân viên để đạt mục tiêu',
                                         type: 'warning',
@@ -73,24 +71,36 @@ const PreviewKpiEmployee = (props) => {
                                 {
                                     data.kpis.map((kpi, index) => {
                                         return (<div style={{ margin: "15px 10px 0 10px" }} key={index}>
-                                            <span style={{ fontWeight: 600 }}>
-                                                {kpi.name}
-                                                {kpi.type === 0 &&
-                                                    <span className='text-success' style={{ marginLeft: 5 }}>{`(${Math.round(kpi.current / kpi.target * 100)}%)`}</span>
-                                                }
-                                            </span>
-                                            <div>
-                                                {
-                                                    kpi.type !== 0 ? <span>
-                                                        <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{kpi.current === 1 ? 'Hoàn thành' : 'Chưa hoàn thành'}</span>
-                                                    </span> : <span>
-                                                        <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{formatTarget(kpi.current)}</span>
-                                                        {`/${formatTarget(kpi.target)} ${kpi.unit}`}
+                                            {kpi.itemType === 0
+                                                ? <div>
+
+                                                    <span style={{ fontWeight: 600 }}>
+                                                        {kpi.name}
                                                     </span>
-                                                }
+                                                    <div>
+                                                        Hoàn thành công việc
+                                                    </div>
+                                                </div>
+                                                : <div>
+                                                    <span style={{ fontWeight: 600 }}>
+                                                        {kpi.name}
+                                                        {kpi.type === 0 &&
+                                                            <span className='text-success' style={{ marginLeft: 5 }}>{`(${Math.round(kpi.current / kpi.target * 100)}%)`}</span>
+                                                        }
+                                                    </span>
+                                                    <div>
+                                                        {
+                                                            kpi.type !== 0 ? <span>
+                                                                <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{kpi.current === 1 ? 'Hoàn thành' : 'Chưa hoàn thành'}</span>
+                                                            </span> : <span>
+                                                                <span className='text-info' style={{ fontWeight: 600, fontSize: 20 }}>{formatTarget(kpi.current)}</span>
+                                                                {`/${formatTarget(kpi.target)} ${kpi.unit}`}
+                                                            </span>
+                                                        }
 
-                                            </div>
-
+                                                    </div>
+                                                </div>
+                                            }
                                         </div>)
                                     })
                                 }
