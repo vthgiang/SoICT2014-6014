@@ -4,8 +4,8 @@ import { withTranslate } from "react-redux-multilingual";
 import { taskManagementActions } from "../../../../task/task-management/redux/actions";
 import { DashboardEvaluationEmployeeKpiSetAction } from "../../../evaluation/dashboard/redux/actions";
 import { createUnitKpiActions } from "../../creation/redux/actions";
+import { EmployeeResultChart } from "./employeeResultChart";
 import { PreviewKpiEmployee } from "./previewKpiEmployee";
-import { EmployeeResultChart } from "./sale-kpi-dashboard/employeeResultChart";
 import { TargetKpiCard } from './targetKpiCard';
 
 const getPrevDate = (date) => {

@@ -11,8 +11,8 @@ function KpisForm(props) {
     let EMPTY_KPI = {
         name: '',
         criteria: '',
-        weight: null,
-        target: null,
+        weight: '',
+        target: '',
         unit: '',
         formula: '',
         keys: {}
@@ -200,6 +200,7 @@ function KpisForm(props) {
     }
 
     let { kpi, kpis } = state;
+
     return (
         /**Form chứa các thông tin của phần hoạt động của 1 kpi-template*/
         <fieldset className="scheduler-border">
