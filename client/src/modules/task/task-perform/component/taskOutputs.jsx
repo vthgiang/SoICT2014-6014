@@ -393,8 +393,8 @@ function TaskOutputsTab(props) {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                cancelButtonText: "No",
-                confirmButtonText: "Yes"
+                cancelButtonText: `Hủy bỏ`,
+                confirmButtonText: `Xác nhận`,
             }).then((res) => {
                 if (res.value) {
                     props.approveTaskOutputs(performtasks.task._id, taskOutputId, { action: "approve", creator: idUser })
@@ -408,8 +408,8 @@ function TaskOutputsTab(props) {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                cancelButtonText: "No",
-                confirmButtonText: "Yes"
+                cancelButtonText: `Hủy bỏ`,
+                confirmButtonText: `Xác nhận`,
             }).then((res) => {
                 if (res.value) {
                     props.approveTaskOutputs(
@@ -430,7 +430,7 @@ function TaskOutputsTab(props) {
             html: `<div style="max-width: 100%; max-height: 100%" >Xác nhận xóa ${file.name} ? <div>`,
             showCancelButton: true,
             cancelButtonText: `Hủy bỏ`,
-            confirmButtonText: `Đồng ý`,
+            confirmButtonText: `Xác nhận`,
         }).then((result) => {
             if (result.isConfirmed) {
                 props.deleteFileOfTaskOutput(taskId, taskOutputId, file._id);
@@ -464,8 +464,8 @@ function TaskOutputsTab(props) {
                             {/* phê duyệt */}
                             <div key={taskOutput._id} className={`item-box ${index > 3 ? "hide-component" : "block"}`}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <div style={{ display: 'flex' }}>{taskOutput.status === "approved" && <i className='fa fa-check text-success' style={{ display: 'flex', marginRight: "3px", placeItems: "center" }}></i>}
-                                        <h4 className="title" style={{ marginLeft: taskOutput.status !== "approved" ? "17px" : 0 }}>{taskOutput.title}</h4>
+                                    <div style={{ display: 'flex' }}>{taskOutput.status === "approved" && <i className='fa fa-check text-success' style={{ display: 'flex', marginRight: "2px", placeItems: "center" }}></i>}
+                                        <h4 className="title" style={{ fontSize: "16px", marginLeft: taskOutput.status !== "approved" ? "17px" : 0 }}>{taskOutput.title}</h4>
                                     </div>
                                     <div onClick={() => {
                                         if (showPanels.includes(taskOutput._id)) {
@@ -484,7 +484,7 @@ function TaskOutputsTab(props) {
                                         {
                                             checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected" || taskOutput.status === "approved") &&
                                             <div style={{ display: "flex" }}>
-                                                <span style={{ paddingRight: "10px" }}>Phê duyệt kết quả:</span>
+                                                <span style={{ paddingRight: "10px", fontWeight: 600 }}>Phê duyệt kết quả:</span>
                                                 <a style={{ cursor: "pointer", paddingRight: "15px", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "approve" ? "700" : "" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>
                                                 <a style={{ cursor: "pointer", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "reject" ? "700" : "" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>
                                             </div>

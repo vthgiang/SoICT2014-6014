@@ -2062,10 +2062,10 @@ exports.createSubmissionResults = async (req, res) => {
             content: taskOutputs
         })
     } catch (error) {
-        await Logger.error(req.user.email, ` create task action  `, req.portal)
+        await Logger.error(req.user.email, ` create submissionTask  `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['create_task_action_failure'],
+            messages: ['create_submission_result_failure'],
             content: error
         })
     }

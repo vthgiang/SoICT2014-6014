@@ -1063,7 +1063,11 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.CREATE_TASK_OUTPUT_SUCCESS:
-            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            var task = {
+                ...state.task,
+                taskOutputs: action.payload.data.content.taskOutputs,
+                taskActions: action.payload.data.content.taskActions
+            }
 
             return {
                 ...state,

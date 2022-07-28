@@ -7825,7 +7825,7 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
 };
 
 exports.createSubmissionResults = async (portal, params, body, files) => {
-  const task = await Task(connect(DB_CONNECTION, portal))
+  const newTask = await Task(connect(DB_CONNECTION, portal))
     .findOneAndUpdate(
       { _id: params.taskId, "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId) },
       {
@@ -7839,6 +7839,27 @@ exports.createSubmissionResults = async (portal, params, body, files) => {
         },
       },
       { new: true })
+  console.log(7842)
+  const taskOutput = newTask.taskOutputs.find((item) => item._id == params.taskOutputId);
+  console.log(7844)
+  const taskAction = {
+    creator: mongoose.Types.ObjectId(body.creator),
+    description: body.description,
+    name: `Giao nộp kết quả ${taskOutput ? taskOutput.title : ""} lần ${taskOutput?.versions.length + 1}`,
+    files: taskOutput?.submissionResults?.files,
+  };
+  console.log(7850, taskAction)
+  const taskActions = await Task(connect(DB_CONNECTION, portal))
+    .findByIdAndUpdate(
+      params.taskId,
+      {
+        $push: {
+          taskActions: taskAction,
+        },
+      }, { new: true });
+  console.log(7863)
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
     .populate([
       {
         path: "taskActions.creator",
@@ -7862,27 +7883,8 @@ exports.createSubmissionResults = async (portal, params, body, files) => {
       }
     ])
 
-  // const taskOutput = task.taskOutputs.find((item) => item._id == params.taskOutputId);
-  // const taskAction = {
-  //   creator: mongoose.Types.ObjectId(body.creator),
-  //   description: body.description,
-  //   name: `Thêm kết quả giao nộp ${taskOutput ? taskOutput.title : ""}`,
-  //   files: files
-  // };
-  // const taskActions = await Task(connect(DB_CONNECTION, portal))
-  //   .findByIdAndUpdate(
-  //     params.taskId,
-  //     {
-  //       $push: {
-  //         taskActions: {
-  //           $each: [taskAction],
-  //           $position: 0
-  //         },
-  //       },
-  //     }, { new: true });
 
-
-  return task.taskOutputs;
+  return { taskOutputs: task.taskOutputs, taskActions: task.taskActions };
 }
 
 exports.getTaskOutputs = async (portal, params) => {

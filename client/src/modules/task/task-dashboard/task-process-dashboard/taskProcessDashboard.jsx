@@ -207,7 +207,7 @@ function TaskProcessDashboard(props) {
                             <div className="box-header with-border">
                                 <div className="box-title">
                                     {`Tổng quan quy trình `}
-                                    {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle} {`(10 công việc)`}</div>
+                                    {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle} {`(2 quy trình)`}</div>
                                 <a onClick={() => { }}>
                                     <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                                 </a>
