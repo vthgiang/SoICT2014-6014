@@ -1,0 +1,70 @@
+.description {
+    background-color: #fff;
+    box-shadow: none;
+    padding: 0px 15px 0px 15px;
+    line-height: 2.3;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+.description>strong,
+.description>div>strong,
+.description>div>div>strong,
+.description li>strong {
+    font-weight: 600;
+    padding-right: 10px;
+}
+
+.p {
+    margin-bottom: 0px !important;
+}
+
+.text-input-task-output {
+    border-radius: 10px !important;
+    padding: 5px 0px !important;
+    height: auto !important;
+    font-size: 13px !important;
+}
+
+.tool-task-output {
+    margin-left: 55px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+}
+
+.content-task-output {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    border-radius: 10px;
+    margin-left: 50px;
+    margin-top: -40px;
+    margin-bottom: 0px;
+    margin-right: 20px;
+    position: relative;
+}
+
+.acountable-employees {
+    border: 1px dashed #ccc;
+    padding: 5px 10px;
+    text-align: center;
+}
+
+.content-task-output-1 {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    border-radius: 10px;
+    background: #f5f5f5;
+    position: relative;
+}
+
+.title {
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
+    margin-bottom: 5px;
+    margin-top: 2px;
+}

@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { DialogModal } from "../../../../../common-components";
@@ -7,21 +7,21 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { performTaskAction } from "../../../task-perform/redux/actions";
 import { ViewTaskOutputs } from "./viewTaskOutputs";
 
-function ModalViewProcess(props) {
+function ModalViewTaskOutput(props) {
     const { translate, role, user } = props;
     const { data, listOrganizationalUnit, idProcess, xmlDiagram, processName, processDescription, infoTask, creator } = props;
 
     return (
         <React.Fragment>
             <DialogModal
-                size='100' modalID={`modal-view-process-task-list`} isLoading={false}
-                formID="modal-view-process-task-list"
+                size='100' modalID={`modal-view-task-output`} isLoading={false}
+                formID="modal-view-task-output"
                 // disableSubmit={!isTaskFormValidated()}
-                title={props.title}
+                title={"Kết quả giao nộp của công việc trong quy trình"}
                 hasSaveButton={false}
                 bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
             >
-                <ViewProcess
+                <ViewTaskOutputs
                     listOrganizationalUnit={listOrganizationalUnit}
                     data={data}
                     idProcess={idProcess}
@@ -30,7 +30,6 @@ function ModalViewProcess(props) {
                     processDescription={processDescription}
                     infoTask={infoTask}
                     creator={creator}
-                    checkManager={props.checkManager}
                 />
             </DialogModal>
         </React.Fragment>
@@ -49,5 +48,5 @@ const actionCreators = {
     getAllUsersWithRole: UserActions.getAllUsersWithRole,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 };
-const connectedModalViewProcess = connect(mapState, actionCreators)(withTranslate(ModalViewProcess));
-export { connectedModalViewProcess as ModalViewProcess };
+const connectedModalViewProcess = connect(mapState, actionCreators)(withTranslate(ModalViewTaskOutput));
+export { connectedModalViewProcess as ModalViewTaskOutput };

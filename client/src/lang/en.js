@@ -127,6 +127,7 @@ export default {
             },
 
             task_template: "Task Template",
+            task_process_dashboard: "Dashboard Process Task",
             cocautochuc: "Organizational Structure",
             taskmanagement: "Task Management",
             manageDocument: "Manage Document",

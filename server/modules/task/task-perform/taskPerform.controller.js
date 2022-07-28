@@ -13,7 +13,7 @@ const moment = require('moment');
  */
 exports.getTaskById = async (req, res) => {
     try {
-        var task = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id, req.thirdParty? true : false);
+        var task = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id, req.thirdParty ? true : false);
         await Logger.info(req.user.email, ` get task by id `, req.portal);
         res.status(200).json({
             success: true,
@@ -138,7 +138,6 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
-        console.log('err', error)
         await Logger.error(req.user.email, 'stop_timer_failureure', req.portal)
         res.status(400).json({
             success: false,
@@ -1057,7 +1056,7 @@ editTaskByAccountableEmployees = async (req, res) => {
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
         sendEmail(task.email, tasks.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người phê duyệt</p>`
-        +`<p>Mô tả công việc : ${tasks.description}  </p>`, `${task.tasks._id}@gmail.com`, null);
+            + `<p>Mô tả công việc : ${tasks.description}  </p>`, `${task.tasks._id}@gmail.com`, null);
 
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
@@ -2116,5 +2115,201 @@ evaluateTaskByAccountableEmployeesProject = async (req, res) => {
             messages: ['evaluate_task_failure'],
             content: error
         });
+    }
+}
+
+exports.createSubmissionResults = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+            })
+        }
+
+        let taskOutputs = await PerformTaskService.createSubmissionResults(req.portal, req.params, req.body, files);
+
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create submissionTask  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['create_submission_result_failure'],
+            content: error
+        })
+    }
+}
+
+exports.editTaskOutputs = async (req, res) => {
+    try {
+        let taskOutputs = await PerformTaskService.editTaskOutputs(req.portal, req.params, req.body);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_outputs_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit task output  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_outputs_failure'],
+            content: error
+        })
+    }
+}
+
+exports.getTaskOutputs = async (req, res) => {
+    try {
+        let taskOutputs = await PerformTaskService.getTaskOutputs(req.portal, req.params);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_outputs_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` get task outputs  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_outputs_failure'],
+            content: error
+        })
+    }
+}
+
+exports.approveTaskOutputs = async (req, res) => {
+    try {
+        let taskOutputs = await PerformTaskService.approveTaskOutputs(req.portal, req.params, req.body);
+        res.status(200).json({
+            success: true,
+            messages: ['approve_task_outputs_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` approve task outputs  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['approve_task_outputs_failure'],
+            content: error
+        })
+    }
+}
+
+exports.editSubmissionResults = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+            })
+        }
+        let taskOutputs = await PerformTaskService.editSubmissionResults(req.portal, req.params, req.body, files);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_submission_results_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create task action  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_submission_results_failure'],
+            content: error
+        })
+    }
+}
+
+exports.deleteSubmissionResults = async (req, res) => {
+    try {
+        let taskOutputs = await PerformTaskService.deleteSubmissionResults(req.portal, req.params);
+
+        res.status(200).json({
+            success: true,
+            messages: ['delete_submission_results_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create task action  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['delete_submission_results_failure'],
+            content: error
+        })
+    }
+}
+
+exports.deleteFileOfTaskOutput = async (req, res) => {
+    try {
+        let taskOutput = await PerformTaskService.deleteFileOfTaskOutput(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file of task output  `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_success'],
+            content: taskOutput
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `delete file of task output  `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_file_failure'],
+            content: error
+        })
+    }
+}
+
+exports.createCommentOfTaskOutput = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        let taskOutputs = await PerformTaskService.createCommentOfTaskOutput(req.portal, req.params, req.body, files);
+        res.status(200).json({
+            success: true,
+            messages: ['create_comment_of_task_outputs_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `create comment of task output`, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['create_comment_of_task_outputs_failure'],
+            content: error
+        })
+    }
+}
+
+exports.editCommentOfTaskOutput = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        let taskOutputs = await PerformTaskService.editCommentOfTaskOutput(req.portal, req.params, req.body, files);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_comment_of_task_outputs_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `edit comment of task output`, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_comment_of_task_outputs_failure'],
+            content: error
+        })
     }
 }

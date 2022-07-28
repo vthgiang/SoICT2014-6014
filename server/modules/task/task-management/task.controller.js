@@ -1161,3 +1161,25 @@ exports.getOrganizationTaskDashboardChartData = async (req, res) => {
         })
     }
 }
+
+exports.proposalPersonnel = async (req, res) => {
+    try {
+        console.log(1170)
+
+        var task = await TaskManagementService.proposalPersonnel(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, `Proposal Personnel`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['proposal_personnel_success'],
+            content: task
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `Propasal Personnel`, req.portal);
+        console.log(error)
+        res.status(400).json({
+            success: false,
+            messages: ['proposal_personnel_fail'],
+            content: error
+        });
+    }
+}

@@ -326,7 +326,7 @@ exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
 isStartTask = (task) => {
     let preTask = task.preceedingTasks;
     for (let i in preTask) {
-        let type = preTask[i].task?preTask[i].task.split("_"):["1"];
+        let type = preTask[i].task ? preTask[i].task.split("_") : ["1"];
         if (type[0] === "Event") {
             return true;
         }
@@ -690,6 +690,66 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         { path: 'manager', select: 'name' },
         { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
         { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
+    ]);;
+    if (body.template === false) {
+        return { process: newProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
+    } else {
+        return { process: myProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
+    }
+}
+
+/**
+ * lấy tất cả các quy trình công việc được tạo
+ * @param {Object} query Dữ liệu query
+ */
+exports.getAllTaskProcess = async (portal, query) => {
+    // let { name, noResultsPerPage, pageNumber } = query;
+    let name = query.name;
+    let noResultsPerPage = parseInt(query.noResultsPerPage);
+    let pageNumber = parseInt(query.pageNumber);
+    let userId = query.userId;
+    let currentRole = query.currentRole;
+
+    let data = await TaskProcess(connect(DB_CONNECTION, portal)).find({
+        processName: { $regex: name, $options: 'i' },
+        $or: [
+            { viewer: { $in: [userId] } },
+            { manager: { $in: [userId] } },
+            { viewer: { $in: [currentRole] } },
+            { manager: { $in: [currentRole] } },
+        ]
+    }).skip(noResultsPerPage * (pageNumber - 1)).limit(noResultsPerPage)
+        .populate([
+            { path: 'creator', select: 'name' },
+            // { path: 'viewer', select: 'name' },
+            { path: 'manager', select: 'name' },
+            {
+                path: 'tasks', populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", },
+                    { path: "collaboratedWithOrganizationalUnits", },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                    { path: "taskComments.creator", select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", select: 'name email avatar' },
+                    { path: "documents.creator", select: 'name email avatar' },
+                    { path: "process" },
+                ]
+            },
+            { path: 'processTemplate', select: 'processName' },
+        ]);
+    let myProcess = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate([
+        { path: 'creator', select: 'name' },
+        { path: 'viewer', select: 'name' },
+        { path: 'manager', select: 'name' },
+        { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
+        { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
     ]);
     if (body.template === false) {
         return { process: newProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
@@ -856,7 +916,7 @@ exports.updateDiagram = async (portal, params, body) => {
     }
 }
 
-convertT = (actualStartDate, actualEndDate,convertDayToHour, officeHours,cv) => {
+convertT = (actualStartDate, actualEndDate, convertDayToHour, officeHours, cv) => {
     let day1 = new Date(actualEndDate);
     let day2 = new Date(actualStartDate);
     let totalTime1 = 0;
@@ -937,18 +997,18 @@ exports.editProcessInfo = async (portal, params, body) => {
         const item = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(body.id, {
             $set: {
                 status: "finished",
-                actualEndDate:new Date()
+                actualEndDate: new Date()
             }
         }, (error, data) => {
             // if (error) console.log(error) ;
             // if (data) console.log(data);
         })
-        .populate([
-            {
-                path: 'tasks', 
-            },
-        ]);
-        if (item.processTemplate){
+            .populate([
+                {
+                    path: 'tasks',
+                },
+            ]);
+        if (item.processTemplate) {
             let itemProcessTemplate = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(item.processTemplate)
             // .populate([
             // {
@@ -962,18 +1022,18 @@ exports.editProcessInfo = async (portal, params, body) => {
             let listTaskProcessT = itemProcessTemplate.tasks
             let listTaskProcess = item.tasks
             // console.log(listTaskProcess[0].actualStartDate,listTaskProcess[0].actualEndDate,item.convertDayToHour,item.officeHours,"hours");
-            for (let x=0;x<listTaskProcess.length;x++){
+            for (let x = 0; x < listTaskProcess.length; x++) {
                 // console.log(listTaskProcess[x].actualStartDate,listTaskProcess[x].actualEndDate,item.convertDayToHour,item.officeHours,"hours");
-                let time3 = convertT(listTaskProcess[x].actualStartDate,listTaskProcess[x].actualEndDate,item.convertDayToHour,item.officeHours,"hours")
-                let time1 = listTaskProcessT[x].fastest?.time ? parseInt(listTaskProcessT[x].fastest?.time): time3+1;
-                let time2 = listTaskProcessT[x].slowest?.time ? parseInt(listTaskProcessT[x].slowest?.time): 0;
-                if (time3<time1){
+                let time3 = convertT(listTaskProcess[x].actualStartDate, listTaskProcess[x].actualEndDate, item.convertDayToHour, item.officeHours, "hours")
+                let time1 = listTaskProcessT[x].fastest?.time ? parseInt(listTaskProcessT[x].fastest?.time) : time3 + 1;
+                let time2 = listTaskProcessT[x].slowest?.time ? parseInt(listTaskProcessT[x].slowest?.time) : 0;
+                if (time3 < time1) {
                     listTaskProcessT[x].fastest.time = time3;
-                    listTaskProcessT[x].fastest.task=listTaskProcess[x]._id
+                    listTaskProcessT[x].fastest.task = listTaskProcess[x]._id
                 }
-                if (time3>time2){
+                if (time3 > time2) {
                     listTaskProcessT[x].slowest.time = time3;
-                    listTaskProcessT[x].slowest.task=listTaskProcess[x]._id
+                    listTaskProcessT[x].slowest.task = listTaskProcess[x]._id
                 }
             }
             await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(item.processTemplate, {
@@ -1105,7 +1165,6 @@ exports.editProcessInfo = async (portal, params, body) => {
                     if (item) {
                         console.log('22');
                         if (item.status === "inprocess") {
-                            console.log('23');
                             listFollowingTask.push({
                                 task: item._id,
                                 link: array[x].followingTasks[i].link,
@@ -1323,34 +1382,34 @@ exports.editProcessInfo = async (portal, params, body) => {
         }
     }
 
-        // let newTask12= await Task(connect(DB_CONNECTION, portal)).findOne()
+    // let newTask12= await Task(connect(DB_CONNECTION, portal)).findOne()
 
-        let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId)
-            .populate([
-                { path: 'creator', select: 'name' },
-                // { path: 'viewer', select: 'name' },
-                { path: 'manager', select: 'name' },
-                {
-                    path: 'tasks', populate: [
-                        { path: "parent", select: "name" },
-                        { path: "taskTemplate", select: "formula" },
-                        { path: "organizationalUnit collaboratedWithOrganizationalUnits", },
-                        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
-                        { path: "evaluations.results.employee", select: "name email _id" },
-                        { path: "evaluations.results.organizationalUnit", select: "name _id" },
-                        { path: "evaluations.results.kpis" },
-                        { path: "taskActions.creator", select: 'name email avatar' },
-                        { path: "taskActions.comments.creator", select: 'name email avatar' },
-                        { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
-                        { path: "taskComments.creator", select: 'name email avatar' },
-                        { path: "taskComments.comments.creator", select: 'name email avatar' },
-                        { path: "documents.creator", select: 'name email avatar' },
-                        { path: "process" },
-                    ]
-                },
-                { path: 'processTemplate', select: 'processName' },
-            ]);
-        return newProcess
+    let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId)
+        .populate([
+            { path: 'creator', select: 'name' },
+            // { path: 'viewer', select: 'name' },
+            { path: 'manager', select: 'name' },
+            {
+                path: 'tasks', populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit collaboratedWithOrganizationalUnits", },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                    { path: "taskComments.creator", select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", select: 'name email avatar' },
+                    { path: "documents.creator", select: 'name email avatar' },
+                    { path: "process" },
+                ]
+            },
+            { path: 'processTemplate', select: 'processName' },
+        ]);
+    return newProcess
 
 }
 

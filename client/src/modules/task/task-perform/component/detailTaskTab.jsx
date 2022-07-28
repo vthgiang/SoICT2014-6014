@@ -129,7 +129,7 @@ function DetailTaskTab(props) {
             let roles = [];
             if (task) {
                 let userId = getStorage("userId");
-                let tmp = task.responsibleEmployees.find(item => item._id === userId);
+                let tmp = task?.responsibleEmployees?.find(item => item._id === userId);
                 if (tmp) {
                     roles.push(ROLE.RESPONSIBLE);
                 }
@@ -149,9 +149,9 @@ function DetailTaskTab(props) {
                     roles.push(ROLE.INFORMED);
                 }
 
-                if (task.creator._id)
+                if (task.creator?._id)
                     if (userId === task.creator._id) roles.push(ROLE.CREATOR);
-                if (!task.creator._id)
+                if (!task.creator?._id)
                     if (userId === task.creator) roles.push(ROLE.CREATOR);
             }
 
@@ -815,7 +815,7 @@ function DetailTaskTab(props) {
             }
 
             if (task?.evaluations?.length !== 0) {
-                task.evaluations.map(item => {
+                task?.evaluations && task.evaluations.map(item => {
                     if (item.results && item.results.length !== 0) {
                         hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = {};
 
@@ -1111,10 +1111,10 @@ function DetailTaskTab(props) {
                             <div>
                                 <strong>{translate('task.task_management.collaborated_with_organizational_units')}: </strong>
                                 <span>
-                                    {task.collaboratedWithOrganizationalUnits.length !== 0
+                                    {task?.collaboratedWithOrganizationalUnits?.length !== 0
                                         ? <span>
                                             {
-                                                task.collaboratedWithOrganizationalUnits.map((item, index) => {
+                                                task?.collaboratedWithOrganizationalUnits?.map((item, index) => {
                                                     let seperator = index !== 0 ? ", " : "";
                                                     return <span key={index}>{seperator}{item.organizationalUnit && item.organizationalUnit.name}</span>
                                                 })

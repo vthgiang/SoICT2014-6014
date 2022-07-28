@@ -78,6 +78,17 @@ export const performTaskService = {
 
     evaluateTaskByResponsibleEmployeesProject,
     evaluateTaskByAccountableEmployeesProject,
+
+    createTaskOutputs,
+    editTaskOutputs,
+    getTaskOutputs,
+    approveTaskOutputs,
+    editSubmissionResults,
+    deleteSubmissionResults,
+    deleteFileOfTaskOutput,
+
+    createCommentOfTaskOutput,
+    editCommentOfTaskOutput,
 };
 
 /**
@@ -829,4 +840,79 @@ function evaluateTaskByAccountableEmployeesProject(data, taskId) {
             role: 'accountable',
         }
     }, true, true, 'task.task_management');
+}
+
+/**
+ * Thêm mới hoạt động
+ * @param {*} taskId id của task
+ * @param {*} newAction nội dung hành động
+ */
+function createTaskOutputs(taskId, taskOutputId, newAction) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/submissionResults`,
+        method: 'POST',
+        data: newAction
+    }, true, true, 'task.task_perform');
+}
+
+function getTaskOutputs(taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs`,
+        method: 'GET',
+    }, false, false, 'task.task_perform');
+}
+
+function approveTaskOutputs(taskId, taskOutputId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/approve`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_perform');
+}
+
+function editSubmissionResults(taskId, taskOutputId, newAction) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/submissionResults`,
+        method: 'PATCH',
+        data: newAction
+    }, true, true, 'task.task_perform');
+}
+
+function deleteSubmissionResults(taskId, taskOutputId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/submissionResults`,
+        method: 'DELETE',
+    }, true, true, 'task.task_perform');
+}
+
+function editTaskOutputs(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'task.task_perform');
+}
+
+function deleteFileOfTaskOutput(taskId, taskOutputId, fileId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/documents/${fileId}`,
+        method: 'PATCH',
+    }, true, true, 'task.task_perform');
+}
+
+
+function createCommentOfTaskOutput(taskId, taskOutputId, newComment) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/comments`,
+        method: 'POST',
+        data: newComment
+    }, true, true, 'task.task_perform');
+}
+
+function editCommentOfTaskOutput(taskId, taskOutputId, commentId, newComment) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/comments/${commentId}`,
+        method: 'PATCH',
+        data: newComment
+    }, true, true, 'task.task_perform');
 }

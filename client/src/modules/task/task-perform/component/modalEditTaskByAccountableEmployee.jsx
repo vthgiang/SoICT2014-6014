@@ -17,6 +17,7 @@ import { TaskTemplateFormValidator } from '../../task-template/component/taskTem
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import moment from 'moment';
+import { ExpectedResults } from '../../task-management/component/expectedResults';
 
 function ModalEditTaskByAccountableEmployee(props) {
     const [state, setState] = useState(initState(props.task))
@@ -26,7 +27,7 @@ function ModalEditTaskByAccountableEmployee(props) {
 
     const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
         startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
-        , taskProjectName, tags } = state;
+        , taskProjectName, tags, taskOutputs } = state;
 
     function initState(task) {
         let userId = getStorage("userId");
@@ -153,7 +154,8 @@ function ModalEditTaskByAccountableEmployee(props) {
             consultedEmployees: consultedEmployees,
             informedEmployees: informedEmployees,
             inactiveEmployees: inactiveEmployees,
-            errorInfo: {}
+            errorInfo: {},
+            taskOutputs: task?.taskOutputs
         }
     }
 
@@ -247,6 +249,13 @@ function ModalEditTaskByAccountableEmployee(props) {
                 ...state,
             }
         })
+    }
+
+    const handleChangeTaskOutputs = (data) => {
+        setState({
+            ...state,
+            taskOutputs: data,
+        });
     }
 
     const handleInfoDateChange = (value, code) => {
@@ -863,6 +872,7 @@ function ModalEditTaskByAccountableEmployee(props) {
             inactiveEmployees: inactiveEmployees,
             taskProject: state.taskProjectName,
             info: state.info,
+            taskOutputs: state.taskOutputs,
         }
         props.editTaskByAccountableEmployees(data, taskId);
     }
@@ -1319,6 +1329,11 @@ function ModalEditTaskByAccountableEmployee(props) {
                                 </div>
                             </div>
                         </fieldset>
+                        <ExpectedResults
+                            onChange={handleChangeTaskOutputs}
+                            id={props.id}
+                        // defaultValue={task?.taskOutputs}
+                        />
                     </form>
                 </DialogModal>
             </React.Fragment>

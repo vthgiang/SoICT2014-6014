@@ -129,6 +129,7 @@ export default {
             },
 
             task_template: "Mẫu Công Việc",
+            task_process_dashboard: "Dashboard công việc theo quy trình",
             taskmanagement: "Quản Lý Công Việc",
             task_management_unit: "Công việc đơn vị",
             manageDocument: "Quản lý văn bản",

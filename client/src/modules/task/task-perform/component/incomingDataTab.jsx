@@ -7,11 +7,14 @@ import { ApiImage, Comment } from '../../../../common-components'
 
 import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
+import { TaskOutputDetail } from './modalDetailOutput';
+
 function IncomingDataTab(props) {
     const { translate, performtasks } = props;
     const [state, setState] = useState({
         showComment: ""
     })
+    const [taskOutput, setTaskOutput] = useState();
     const { showComment } = state;
 
     useEffect(() => {
@@ -39,6 +42,10 @@ function IncomingDataTab(props) {
         props.downloadFile(path, fileName)
     }
 
+    const showDetailTaskOutput = (item) => {
+        window.$(`#modal-detail-task-output-${item._id}`).modal('show');
+    }
+
     let listTask = [];
     if (performtasks?.preceedingTasks) {
         performtasks.preceedingTasks.forEach(item => {
@@ -48,6 +55,7 @@ function IncomingDataTab(props) {
     }
     return (
         <React.Fragment>
+            <TaskOutputDetail taskOutput={taskOutput} />
             {
                 listTask && listTask.length > 0 && listTask.map((task, index) =>
                     <React.Fragment>
@@ -100,6 +108,24 @@ function IncomingDataTab(props) {
                                         </ul>
                                     )
                                     : <span>{translate('task.task_process.not_have_doc')}</span>
+                            }
+                            <div><strong>Kết quả giao nộp:</strong></div>
+                            {
+                                task?.taskOutputs && task.taskOutputs.length !== 0
+                                    ? task.taskOutputs.map((taskOutput, index) => {
+                                        if (taskOutput.isOutput) {
+                                            return (
+                                                <ul key={taskOutput._id}>
+                                                    <li>{taskOutput.title} <a style={{ cursor: "pointer", marginLeft: "5px" }}
+                                                        onClick={async () => {
+                                                            await setTaskOutput(taskOutput);
+                                                            showDetailTaskOutput(taskOutput)
+                                                        }}>(Xem chi tiết)</a></li>
+                                                </ul>
+                                            )
+                                        }
+                                        return <div></div>
+                                    }) : <span></span>
                             }
 
                             {/* Comment */}
