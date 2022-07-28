@@ -57,6 +57,7 @@ const OrganizationalUnitKpiDashboard = lazy(() => import("../modules/kpi/organiz
 const KPIUnitManager = lazy(() => import("../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview"))
 const KPIUnitEvaluate = lazy(() => import("../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation"))
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi"))
+const OrganizationalUnitKpiTemplate = lazy(() => import("../modules/kpi/organizational-unit/template/component/kpiSetTemplate"))
 
 const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
 const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
@@ -1517,6 +1518,25 @@ class Routes extends Component {
                         pageName={"kpi_unit_manager"}
                         layout={Layout}
                         component={KPIUnitManager}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.kpitemplates.isLoading}
+                        key={"kpi_unit_template"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/template-kpi-unit",
+                                name: "kpi_unit_template",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/template-kpi-unit"}
+                        path={"/template-kpi-unit"}
+                        pageName={"kpi_unit_template"}
+                        layout={Layout}
+                        component={OrganizationalUnitKpiTemplate}
                     />
                     <PrivateRoute
                         isLoading={this.props.createEmployeeKpiSet.isLoading}

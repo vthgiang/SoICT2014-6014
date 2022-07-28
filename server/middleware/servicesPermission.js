@@ -663,7 +663,7 @@ exports.links = [
         url: '/system/apis-default-management',
         apis: ['@all']
     }, {
-        url: '/system/manage-system-admin-page', 
+        url: '/system/manage-system-admin-page',
         apis: ['@all']
     }, {
         url: '/system/privilege-api-management',
@@ -790,7 +790,7 @@ exports.links = [
     //     url: '/hr-search-for-package',
     //     apis: ['@all']
     // },
-    
+
     {
         url: '/hr-list-major',
         apis: ['@all']
@@ -850,9 +850,6 @@ exports.links = [
         url: '/template-kpi-unit',
         apis: ['@all']
     }, {
-    }, {
-        url: '/kpi-units/sales-dashboard',
-        apis: ['@all']
     }, {
         url: '/kpi-units/manager',
         apis: ['@all']
