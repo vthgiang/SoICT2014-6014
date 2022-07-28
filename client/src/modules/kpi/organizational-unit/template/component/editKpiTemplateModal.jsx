@@ -66,7 +66,8 @@ function ModalEditKpiTemplate(props) {
 
     return (
         <DialogModal
-            modalID="modal-edit-kpi-template" isLoading={user.isLoading}
+            modalID={`modal-edit-kpi-template${kpiTemplateId}`}
+            isLoading={user.isLoading}
             formID="form-edit-kpi-template"
             title={"Chỉnh sửa mẫu KPI"}
             func={handleSubmit}

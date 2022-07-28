@@ -10,7 +10,7 @@ import { KpisForm } from './kpisTemplate';
 
 function EditKpiTemplate(props) {
     const { user } = props;
-    const { kpiTemplate } = props;
+    const { kpiTemplate, kpiTemplateId } = props;
 
     let userId = getStorage("userId")
 
@@ -131,7 +131,7 @@ function EditKpiTemplate(props) {
                             <label className="control-label">Đơn vị quản lý <span style={{ color: "red" }}>*</span></label>
                             {unitArr &&
                                 <SelectBox
-                                    id={`${props.savedKpiId}selectUnitInEditTemplateModal`}
+                                    id={`${kpiTemplateId}selectUnitInEditTemplateModal`}
                                     className="form-control select2"
                                     style={{ width: '100%' }}
                                     value={templateData?.organizationalUnit}

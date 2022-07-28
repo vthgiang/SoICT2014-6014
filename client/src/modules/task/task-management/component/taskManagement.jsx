@@ -379,7 +379,9 @@ function TaskManagement(props) {
             currentTaskId: id,
             taskName
         })
-        window.$(`#modelPerformTask${id}`).modal('show')
+        setTimeout(() => {
+            window.$(`#modelPerformTask${id}`).modal('show')
+        }, [500])
     }
 
     /**

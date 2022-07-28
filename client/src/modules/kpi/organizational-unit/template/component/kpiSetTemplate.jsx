@@ -103,7 +103,9 @@ function TemplateKpi(props) {
             currentEditRow: kpiTemplate,
             currentEditRowId: kpiTemplate._id,
         });
-        window.$('#modal-edit-kpi-template').modal('show');
+        setTimeout(() => {
+            window.$(`#modal-edit-kpi-template${kpiTemplate._id}`).modal('show');
+        }, [500])
     }
 
     /**Mở modal chỉnh sửa 1 mẫu kpi */
