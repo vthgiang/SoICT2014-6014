@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
+import parse from 'html-react-parser';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import parse from 'html-react-parser';
 import Swal from 'sweetalert2';
-import dayjs from 'dayjs';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, InputTags, ToolTip } from '../../../../common-components';
+import { DatePicker, ExportExcel, InputTags, PaginateBar, SelectBox, SelectMulti, ToolTip, Tree, TreeTable } from '../../../../common-components';
+import { getStorage } from '../../../../config';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getProjectName } from '../../../../helpers/taskModuleHelpers';
-import { getStorage } from '../../../../config';
 
+import cloneDeep from 'lodash/cloneDeep';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
-import { ProjectActions } from "../../../project/projects/redux/actions";
+import { convertDataToExportData, formatPriority, formatStatus, getTotalTimeSheetLogs } from './functionHelpers';
 import { TaskAddModal } from './taskAddModal';
-import { ModalPerform } from '../../task-perform/component/modalPerform';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
 import TaskListView from './taskListView';
 import TaskManagementImportForm from './taskManagementImportForm';
-import cloneDeep from 'lodash/cloneDeep';
 
 const list_to_tree = (list) => {
     let map = {}, node, roots = [], i, newarr = [];

@@ -1,14 +1,14 @@
-import React, { Component, Suspense, lazy } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import React, { Component, lazy, Suspense } from "react";
 import { connect } from "react-redux";
+import { Route, Switch } from "react-router-dom";
 
-import { PrivateRoute } from "./privateRoute";
 import { AuthRoute } from "./authRoute";
+import { PrivateRoute } from "./privateRoute";
 
 import Layout from "../layout/layout";
-import Login from "../modules/auth/components/login"
-import Introduction from "../modules/intro/components"
-import ResetPassword from "../modules/auth/components/resetPasswordNew"
+import Login from "../modules/auth/components/login";
+import ResetPassword from "../modules/auth/components/resetPasswordNew";
+import Introduction from "../modules/intro/components";
 import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
 import { ModalViewProcessById } from "../modules/task/task-process/component/task-process-management/modalViewProcessById";
 
@@ -2821,7 +2821,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={Payment}
                     />
-                    
+
                     <PrivateRoute
                         isLoading={false}
                         key={"order-request-management"}

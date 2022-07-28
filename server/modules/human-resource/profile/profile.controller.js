@@ -139,12 +139,12 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 req.user.company
             );
 
-            
+
             if (req.query.listPeople) {
                 let listPeople = req.query.listPeople;
                 listId = listId.filter((item) => !listPeople.includes(item));
             }
-            
+
             //  .log(listId);
 
             data = await EmployeeService.getEmployeeInforByListId(
@@ -598,7 +598,7 @@ exports.importEmployees = async (req, res) => {
                                     importData[i].positionId &&
                                     importData[i].positionId.length > 0 &&
                                     importData[i].employeeNumber.toString() ===
-                                        x.employeeNumber.toString()
+                                    x.employeeNumber.toString()
                                 ) {
                                     for (let k in importData[i].positionId) {
                                         if (importData[i].positionId[k])

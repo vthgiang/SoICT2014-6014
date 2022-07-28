@@ -12,6 +12,7 @@ export const taskManagementService = {
     getPaginateTasksByUser,
     getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
+    getAllTasksThatHasEvaluation,
 
     addNewTask,
     editTask,
@@ -258,6 +259,27 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
             aPeriodOfTime: aPeriodOfTime
+        }
+    }, false, true, 'task.task_management');
+}
+
+/**
+ * lấy công việc có đánh giá của đơn vị
+ * @param {*} unit đơn vị
+ * @param {*} month tháng
+ */
+
+function getAllTasksThatHasEvaluation(unit, startDate, endDate) {
+    var user = getStorage("userId");
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
+        method: 'GET',
+        params: {
+            type: 'task_has_evaluation',
+            unit: unit,
+            user: user,
+            startDate,
+            endDate
         }
     }, false, true, 'task.task_management');
 }

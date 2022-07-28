@@ -180,6 +180,7 @@ export default {
             kpi_unit_create_for_admin: "Create unit KPI in company",
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
+            kpi_unit_sales_dashboard: "Sale KPI dashboard",
             kpi_unit_dashboard: "Dashboard unit KPI",
             kpi_unit_statistic: "Ananyze the rationality of unit KPI",
             kpi_unit_manager: "Manage organizational unit KPI",
@@ -191,6 +192,7 @@ export default {
             kpi_personal_dashboard: "DashBoard personal KPI",
             kpi_personal_manager: "Manager personal KPI",
             kpi_member_detail: "Details of personal KPI",
+            kpi_unit_template: "KPI template",
 
             notifications: "Notifications",
 

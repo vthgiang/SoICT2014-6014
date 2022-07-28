@@ -3,19 +3,20 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { DatePicker, ExportExcel, LazyLoadComponent, SelectBox } from '../../../../../common-components/index';
+import { DatePicker, ExportExcel, LazyLoadComponent, SelectBox } from '../../../../../common-components';
 import { showListInSwal } from '../../../../../helpers/showListInSwal';
+import { EmployeeBalanceKpiModal } from '../../../evaluation/dashboard/component/employeeBalanceKpiModal';
+import { EmployeeCreateKpiAutoModal } from '../../../evaluation/dashboard/component/employeeCreateKpiAutoModal';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { ChildOfOrganizationalUnitKpi } from './childOfOrganizationalUnitKPI';
 import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrganizationalUnitKpiChart';
+import OrganizationalUnitKPITarget from './organizationalUnitKPITarget';
 import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizationalUnitKpiChart';
 import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUnitKpiChart';
 import StatisticsKpiUnits from './statisticsKpiUnits';
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
 import { TrendsInChildrenOrganizationalUnitKpiChart } from './trendsInChildrenOrganizationalUnitKpiChart';
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
-
-
 
 function OrganizationalUnitKpiDashboard(props) {
     const today = new Date();
@@ -35,6 +36,7 @@ function OrganizationalUnitKpiDashboard(props) {
         },
 
         childUnitChart: 1,
+        employeeKpiSet: null
     });
 
     useEffect(() => {
@@ -125,6 +127,13 @@ function OrganizationalUnitKpiDashboard(props) {
         })
     };
 
+    const handleChangeEmployeeKpiTarget = (data) => {
+        setState({
+            ...state,
+            employeeKpiSet: data
+        })
+    };
+
     const showDistributionOfOrganizationalUnitKpiDoc = () => {
         Swal.fire({
             icon: "question",
@@ -140,7 +149,8 @@ function OrganizationalUnitKpiDashboard(props) {
         })
     }
 
-    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, translate } = props;
+
+    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit, translate } = props;
     const { childUnitChart, organizationalUnitId,
         month, date, resultsOfOrganizationalUnitKpiChartData,
         resultsOfAllOrganizationalUnitsKpiChartData,
@@ -217,9 +227,6 @@ function OrganizationalUnitKpiDashboard(props) {
         organizationalUnitNotInitialKpi = organizationalUnitSelectBox
     }
 
-
-
-
     let d = new Date(),
         monthDate = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -230,6 +237,7 @@ function OrganizationalUnitKpiDashboard(props) {
     if (day.length < 2)
         day = '0' + day;
     let defaultDate = [monthDate, year].join('-');
+
 
     return (
         <React.Fragment>
@@ -263,6 +271,31 @@ function OrganizationalUnitKpiDashboard(props) {
                             </div>
 
                             <button type="button" className="btn btn-success" onClick={() => handleSearchData()}>{translate('kpi.evaluation.dashboard.analyze')}</button>
+                            {
+                                createKpiUnit.currentKPI?.status && state.employeeKpiSet?.length === 0 ? <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
+                                    <a className='btn btn-primary text-dark' data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                        <i className="fa fa-gears" style={{ fontSize: "16px" }} /> Khởi tạo KPI nhân viên tự động
+                                    </a>
+                                    <EmployeeCreateKpiAutoModal
+                                        organizationalUnitId={infoSearch?.organizationalUnitId}
+                                        month={month}
+                                    />
+                                </span> : null
+                            }
+                            {
+                                createKpiUnit.currentKPI?.status && state.employeeKpiSet?.length !== 0 ? <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
+                                    <a className='btn btn-primary text-dark' data-toggle="modal" data-target="#employee-balance-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                        Cân bằng KPI nhân viên
+                                    </a>
+                                    <EmployeeBalanceKpiModal
+                                        organizationalUnitId={infoSearch?.organizationalUnitId}
+                                        month={month}
+                                        employeeKpiSet={state.employeeKpiSet}
+                                    />
+                                </span> : null
+
+                                // <button type="button" className="btn btn-primary" onClick={() => handleAdjustKpiEmployee()}>Cân bằng KPI nhân viên</button>
+                            }
                         </div>
                     </div>
 
@@ -335,6 +368,15 @@ function OrganizationalUnitKpiDashboard(props) {
                             </div>
                         </div>
                     </div>
+
+                    {
+                        <OrganizationalUnitKPITarget
+                            organizationalUnitIds={organizationalUnitIds}
+                            month={month}
+                            onChangeData={handleChangeEmployeeKpiTarget}
+                        />
+                    }
+
 
                     <div className="row">
                         <div className="col-md-12">
@@ -531,11 +573,12 @@ function OrganizationalUnitKpiDashboard(props) {
 }
 
 function mapState(state) {
-    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit } = state;
-    return { dashboardEvaluationEmployeeKpiSet, managerKpiUnit };
+    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit } = state;
+    return { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit };
 }
 
 const actionCreators = {
+    balanceEmployeeKpiSet: DashboardEvaluationEmployeeKpiSetAction.balanceEmployeeKpiSet,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree
 };
 export default connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiDashboard));

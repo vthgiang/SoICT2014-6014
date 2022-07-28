@@ -33,6 +33,8 @@ module.exports = {
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
     OrganizationalUnitKpi: require('./kpi/organizationalUnitKpi.model'),
     OrganizationalUnitKpiSet: require('./kpi/organizationalUnitKpiSet.model'),
+    OrganizationalUnitKpiSetTemplate: require('./kpi/organizationalUnitKpiSetTemplate.model'),
+    OrganizationalUnitKpiTemplate: require('./kpi/organizationalUnitKpiTemplate.model'),
 
     Notification: require('./notification/notification.model'),
     ManualNotification: require('./notification/manualNotification.model'),

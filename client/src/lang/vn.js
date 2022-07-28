@@ -194,6 +194,7 @@ export default {
             kpi_unit_create_for_admin: "Khởi tạo KPI toàn công ty",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
+            kpi_unit_sales_dashboard: "Dashboard KPI phòng kinh doanh",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
             kpi_unit_statistic: "Phân tích tính hợp lý trong thiết lập KPI đơn vị",
             kpi_unit_manager: "Quản lý KPI đơn vị",
@@ -205,6 +206,7 @@ export default {
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
             kpi_member_detail: "Chi tiết KPI cá nhân",
+            kpi_unit_template: "Mẫu KPI",
 
             notifications: "Thông báo",
 
@@ -5846,7 +5848,7 @@ export default {
                 edit_failed: "Sửa phiếu đề nghị thất bại",
                 cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng",
                 number_purchasing_status: "Số lượng phiếu đề nghị mua hàng theo trạng thái"
-            },            
+            },
             work_schedule: {
                 //general
                 time: "Thời gian",

@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const dayjs = require("dayjs");
-const { Task, TaskTemplate, OrganizationalUnit, User, Company, UserRole, Role } = require('../../../models');
+const { Task, TaskTemplate, OrganizationalUnit, EmployeeKpiSet, User, Company, UserRole, Role } = require('../../../models');
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
+const EmployeeKpiService = require('../../kpi/employee/management/management.service')
 const overviewService = require(`../../kpi/employee/management/management.service`);
 const UserService = require(`../../super-admin/user/user.service`)
 const { sendEmail } = require(`../../../helpers/emailHelper`);
@@ -2461,6 +2462,45 @@ exports.getTasksByUser = async (portal, data) => {
     }
     return tasksbyuser;
 }
+
+/**
+ * Lấy các công việc có đánh giá trong tháng
+ * @param {*} data 
+ */
+exports.getAllTasksThatHasEvaluation = async (portal, data) => {
+    let startDate = new Date(data.startDate);
+    let endDate = new Date(data.endDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+    // Lấy danh sách các công việc gắn với KPI đơn vị
+    let tasks = await Task(connect(DB_CONNECTION, portal))
+        .find({
+            $and: [
+                { "organizationalUnit": data.unit },
+                {
+                    "evaluations": {
+                        $elemMatch: {
+                            $and: [
+                                { "evaluatingMonth": { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                                // {
+                                //     "results": {
+                                //         $elemMatch: {
+                                //             "organizationalUnit": mongoose.Types.ObjectId(data.unit)
+                                //         }
+                                //     }
+                                // }
+                            ]
+                        }
+                    }
+                }
+            ]
+        })
+    // .select("name evaluations responsibleEmployees");
+    console.log("ashfjlo", tasks)
+
+
+    return tasks;
+}
+
 
 /**
  * Lấy tất cả task của organizationalUnit theo tháng 

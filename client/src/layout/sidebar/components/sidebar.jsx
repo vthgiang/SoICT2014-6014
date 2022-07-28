@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import Item from "./item";
-import GroupItem from "./groupItem";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { withTranslate } from "react-redux-multilingual";
-import { ApiImage } from "../../../common-components";
+import { Link } from "react-router-dom";
+import GroupItem from "./groupItem";
+import Item from "./item";
 
 class SideBar extends Component {
     constructor(props) {
@@ -299,6 +298,11 @@ class SideBar extends Component {
                                             name: "menu.kpi_unit_manager",
                                             icon: "fa fa-circle-o",
                                             path: "/kpi-units/manager",
+                                        },
+                                        {
+                                            name: "menu.kpi_unit_template",
+                                            icon: "fa fa-circle-o",
+                                            path: "/template-kpi-unit",
                                         },
                                         {
                                             name: "menu.kpi_unit_statistic",

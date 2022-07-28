@@ -2,20 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { TabAnualLeave, TabHumanResource, TabSalary } from '../../human-resource/employee-dashboard/components/combinedContent';
 import { TabEmployeeCapacity, TabIntegratedStatistics, TabTask } from './combinedContent';
-import { TabHumanResource, TabSalary, TabAnualLeave } from '../../human-resource/employee-dashboard/components/combinedContent';
 
-import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible, CustomLegendC3js } from '../../../common-components';
+import { DatePicker, forceCheckOrVisible, LazyLoadComponent, SelectMulti } from '../../../common-components';
 import { showListInSwal } from '../../../helpers/showListInSwal';
 
+import { DisciplineActions } from '../../human-resource/commendation-discipline/redux/actions';
 import { getEmployeeDashboardActions } from '../../human-resource/employee-dashboard/redux/actions';
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
-import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
-import { DisciplineActions } from '../../human-resource/commendation-discipline/redux/actions';
 import { SalaryActions } from '../../human-resource/salary/redux/actions';
-import { taskManagementActions } from '../../task/task-management/redux/actions';
+import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 
+import { CEOKpiDashboard } from './ceo-dashboard/kpiDashboardCEO';
 import "./dashboardUnit.css";
 
 class MainDashboardUnit extends Component {
@@ -140,18 +140,18 @@ class MainDashboardUnit extends Component {
                 // arrayUnitShow = childOrganizationalUnit.map(x => x.id);
                 arrayUnit = childOrganizationalUnit.map(x => x.id);
             }
-            this.props.getAllSalaryChart({name: "salary-date-data",monthTime: month})
+            this.props.getAllSalaryChart({ name: "salary-date-data", monthTime: month })
             this.props.getEmployeeDashboardData({
                 searchChart: {
-                    employeeDashboardChart: { 
+                    employeeDashboardChart: {
                         organizationalUnits: this.searchData.current.organizationalUnits,
-                        month: this.formatNewDate(this.searchData.current.month), 
+                        month: this.formatNewDate(this.searchData.current.month),
                         startDateIncreaseAndDecreaseChart: this.formatNewDate(this.searchData.current.startDateIncreaseAndDecreaseChart),
                         endDateIncreaseAndDecreaseChart: this.formatNewDate(this.searchData.current.endDateIncreaseAndDecreaseChart),
                         startDateAnnualLeaveTrendsChart: this.formatNewDate(this.searchData.current.startDateAnnualLeaveTrendsChart),
                         endDateAnnualLeaveTrendsChart: this.formatNewDate(this.searchData.current.endDateAnnualLeaveTrendsChart),
                         startDateTrendOfOvertimeChart: this.formatNewDate(this.searchData.current.startDateTrendOfOvertimeChart),
-                        endDateTrendOfOvertimeChart: this.formatNewDate(this.searchData.current.endDateTrendOfOvertimeChart)    
+                        endDateTrendOfOvertimeChart: this.formatNewDate(this.searchData.current.endDateTrendOfOvertimeChart)
                     }
                 }
             });
@@ -193,7 +193,7 @@ class MainDashboardUnit extends Component {
 
             defaultParams: {
                 organizationalUnits: this.searchData.current.organizationalUnits,
-                month: this.formatNewDate(this.searchData.current.month), 
+                month: this.formatNewDate(this.searchData.current.month),
                 startDateIncreaseAndDecreaseChart: this.formatNewDate(this.searchData.current.startDateIncreaseAndDecreaseChart),
                 endDateIncreaseAndDecreaseChart: this.formatNewDate(this.searchData.current.endDateIncreaseAndDecreaseChart),
                 startDateAnnualLeaveTrendsChart: this.formatNewDate(this.searchData.current.startDateAnnualLeaveTrendsChart),
@@ -238,7 +238,7 @@ class MainDashboardUnit extends Component {
         const { monthShow, month, organizationalUnits, arrayUnitShow, monthSearch } = this.state;
 
         let listAllEmployees = employeeDashboardData.listEmployeesOfOrganizationalUnits;
-        
+
         let listEmployee = user.employees;
 
         let searchData = this.searchData;
@@ -279,7 +279,8 @@ class MainDashboardUnit extends Component {
 
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
-                            <li className="active"><a href="#task" data-toggle="tab" onClick={() => this.handleNavTabs()}>Công việc</a></li>
+                            <li className="active"><a href="#kpi" data-toggle="tab" onClick={() => this.handleNavTabs()}>KPI</a></li>
+                            <li><a href="#task" data-toggle="tab" onClick={() => this.handleNavTabs()}>Công việc</a></li>
                             <li><a href="#employee-capacity" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Năng lực nhân viên</a></li>
                             <li><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Tổng quan nhân sự</a></li>
                             <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Nghỉ phép-Tăng ca</a></li>
@@ -287,7 +288,16 @@ class MainDashboardUnit extends Component {
                             <li><a href="#integrated-statistics" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Thống kê tổng hợp</a></li>
                         </ul>
                         <div className="tab-content ">
-                            <div className="tab-pane active" id="task">
+                            <div className="tab-pane active" id="kpi">
+                                <CEOKpiDashboard
+                                    childOrganizationalUnit={childOrganizationalUnit?.length && childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                    organizationalUnits={organizationalUnits}
+                                    getUnitName={this.getUnitName}
+                                    showUnitTask={this.showUnitTask}
+                                    month={monthSearch}
+                                />
+                            </div>
+                            <div className="tab-pane" id="task">
                                 <TabTask
                                     childOrganizationalUnit={childOrganizationalUnit?.length && childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
                                     organizationalUnits={organizationalUnits}
@@ -398,11 +408,11 @@ class MainDashboardUnit extends Component {
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
                                 <LazyLoadComponent>
-                                    <TabIntegratedStatistics 
-                                        listAllEmployees={listAllEmployees} 
-                                        month={monthShow} 
-                                        listEmployee={listEmployee} 
-                                        organizationalUnits={organizationalUnits} 
+                                    <TabIntegratedStatistics
+                                        listAllEmployees={listAllEmployees}
+                                        month={monthShow}
+                                        listEmployee={listEmployee}
+                                        organizationalUnits={organizationalUnits}
                                     />
                                 </LazyLoadComponent>
                             </div>
