@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { forceCheckOrVisible, SelectBox, SlimScroll, LazyLoadComponent } from '../../../../common-components';
+import { forceCheckOrVisible, SelectBox, SlimScroll, LazyLoadComponent, DatePicker } from '../../../../common-components';
 import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 import { NewsFeed } from '../../../home/components/newsFeed';
 import { GanttCalendar } from '../../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
@@ -294,10 +294,16 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
         }
     }
 
+    const handleSelectMonthStart = (value) => {
+        setState({ startDate: value });
+    }
+
+    const handleSelectMonthEnd = (value) => {
+        setState({ endDate: value });
+    }
+
     const handleSearchData = async () => {
         let { startDate, endDate } = state;
-        /* console.log("startDate", startDate)
-        console.log("endDate",endDate) */
         let startTimeMiliSeconds = new Date(moment(startDate, 'MM-YYYY').format()).getTime();
         let endTimeMiliSeconds = new Date(moment(endDate, 'MM-YYYY').format()).getTime();
         if (startTimeMiliSeconds > endTimeMiliSeconds) {
@@ -331,7 +337,7 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                 <div className="box-title">Tổng quan công việc gói thầu</div>
             </div>
             <div className="box-body qlcv">
-                <div className="form-inline" style={{ marginBottom: 15 }}>
+                <div className="form-inline" style={{ marginBottom: 15, display: "flex", justifyContent: 'space-between' }}>
                     {/* Tên gói thầu */}
                     <div className="form-group">
                         <label className="form-control-static">Chọn gói thầu</label>
@@ -348,12 +354,37 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                             multiple={false}
                         />
                     </div>
+                    <div className="form-inline">
+                            <div className="form-group">
+                                <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
+                                <DatePicker
+                                    id="monthStartInHome"
+                                    dateFormat="month-year"
+                                    value={state.startDate}
+                                    onChange={handleSelectMonthStart}
+                                    disabled={false}
+                                />
+                            </div>
+
+                            {/**Chọn ngày kết thúc */}
+                            <div className="form-group">
+                                <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
+                                <DatePicker
+                                    id="monthEndInHome"
+                                    dateFormat="month-year"
+                                    value={state.endDate}
+                                    onChange={handleSelectMonthEnd}
+                                    disabled={false}
+                                />
+                            </div>
+
+                            {/**button tìm kiếm data để vẽ biểu đồ */}
+                            <div className="form-group">
+                                <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                            </div>
+                        </div>
                 </div>
-                <React.Fragment>
-                    {/* 
-                    <div className="box-header with-border">
-                        <div className="box-title">{`Tổng quan công việc (${listTasksGeneral ? listTasksGeneral.length : 0})`}</div>
-                    </div> */}
+                {/* <React.Fragment>
                     {
                         listTasksGeneral && listTasksGeneral.length > 0 ?
                             <LazyLoadComponent once={true}>
@@ -365,6 +396,60 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                                 <div className="table-info-panel">{translate('confirm.loading')}</div> :
                                 <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
+                </React.Fragment> */}
+                <React.Fragment>
+                    <div className="qlcv" style={{ marginBottom: 10 }}>
+                        {/**Chọn ngày bắt đầu */}
+                        
+                    </div>
+
+                    <div className="nav-tabs-custom">
+                        <ul className="nav nav-tabs">
+                            <li className="active"><a href="#tasks-oveview" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tổng quan công việc</a></li>
+                            <li><a href="#tasks-calendar" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('task.task_management.tasks_calendar')}</a></li>
+                            <li><a href="#newfeeds" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('news_feed.news_feed')}</a></li>
+                        </ul>
+
+                        <div className="tab-content">
+                            <div className="tab-pane active" id="tasks-oveview">
+                                <div className="box-header with-border">
+                                    <div className="box-title">{`Tổng quan công việc (${listTasksGeneral ? listTasksGeneral.length : 0})`}</div>
+                                </div>
+                                {
+                                    listTasksGeneral && listTasksGeneral.length > 0 ?
+                                        <LazyLoadComponent once={true}>
+                                            <GeneralTaskPersonalChart
+                                                tasks={listTasksGeneral}
+                                            />
+                                        </LazyLoadComponent>
+                                        : (loadingInformed && loadingCreator && loadingConsulted && loadingAccountable) ?
+                                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                            <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                }
+                            </div>
+
+                            <div className="tab-pane" id="tasks-calendar">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startDateWork} {translate('task.task_management.lower_to')} {endDateWork}</div>
+                                    </div>
+                                    <LazyLoadComponent once={true}>
+                                        <GanttCalendar
+                                            tasks={tasks}
+                                            unitOrganization={false}
+                                        />
+                                    </LazyLoadComponent>
+                                </div>
+                            </div>
+
+                            <div className="tab-pane" id="newfeeds">
+                                <LazyLoadComponent once={true}>
+                                    <NewsFeed />
+                                </LazyLoadComponent>
+                            </div>
+                        </div>
+                    </div>
+
                 </React.Fragment>
             </div>
         </div>

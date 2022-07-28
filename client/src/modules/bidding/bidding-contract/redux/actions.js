@@ -131,7 +131,7 @@ function createProjectByContract(data, id) {
             .then(res => {
                 dispatch({
                     type: BiddingContractConstant.CREATE_PROJECT_BY_BIDDING_CONTRACT_SUCCESS,
-                    payload: res.data.content.listBiddingContract
+                    payload: res.data.content
                 })
             })
             .catch(err => {

@@ -204,7 +204,7 @@ exports.getDetailBiddingPackageToEdit = async (portal, params) => {
  *
  */
 exports.createNewBiddingPackage = async (portal, data, company) => {
-    position = await BiddingPackage(connect(DB_CONNECTION, portal)).create({
+    let position = await BiddingPackage(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         code: data.code,
         customer: data.customer,
@@ -222,7 +222,8 @@ exports.createNewBiddingPackage = async (portal, data, company) => {
         company: company,
     });
 
-    return await this.searchBiddingPackage(portal, {});
+    return await this.getDetailBiddingPackage(portal, {id: position._id})
+    // return await this.searchBiddingPackage(portal, {});
 };
 
 /**
@@ -334,7 +335,8 @@ exports.editBiddingPackage = async (portal, data, params, company) => {
         }
     }
 
-    return await this.searchBiddingPackage(portal, {});
+    return await this.getDetailBiddingPackage(portal, params)
+    // return await this.searchBiddingPackage(portal, {});
 };
 
 /**
@@ -355,7 +357,9 @@ exports.deleteBiddingPackage = async (portal, id) => {
     //     totalList,
     //     listBiddingPackages,
     // };
-    return await this.searchBiddingPackage(portal, {});
+
+    return id;
+    // return await this.searchBiddingPackage(portal, {});
 };
 
 exports.autoUpdateEmployeeBiddingStatus = async (portal) => {
