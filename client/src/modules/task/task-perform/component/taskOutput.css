@@ -15,6 +15,10 @@
     padding-right: 10px;
 }
 
+.description-parse>p {
+    margin: 0px !important;
+}
+
 .p {
     margin-bottom: 0px !important;
 }

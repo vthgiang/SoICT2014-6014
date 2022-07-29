@@ -178,7 +178,7 @@ function ModalVersionsTaskOutput(props) {
                                 <span style={{ fontSize: 10, marginRight: 10 }} className="text-green">[ Người phê duyệt ]</span>
                                 {formatActionAccountable(item.action)}
                                 &ensp;
-                                {item.action === "approve" || item.action === "reject" && <DateTimeConverter dateTime={item.updatedAt} />}
+                                {(item.action === "approve" || item.action === "reject") && <span className='text-sm'><DateTimeConverter dateTime={item.updatedAt} /></span>}
                             </div >
                         )
                     })}

@@ -95,7 +95,6 @@ function TaskOutputsTab(props) {
             newCommentOfTaskOutput: {
                 creator: idUser,
                 description: "",
-                status: "",
                 files: [],
                 descriptionDefault: ""
             },
@@ -326,7 +325,7 @@ function TaskOutputsTab(props) {
         })
     }
 
-    const submitComment = (taskOutputId, taskId) => {
+    const submitComment = async (taskOutputId, taskId) => {
         let { newCommentOfTaskOutput, CommentOfTaskOutputFilePaste } = state;
         const data = new FormData();
         if (taskOutputId) {
@@ -338,16 +337,16 @@ function TaskOutputsTab(props) {
             if (newCommentOfTaskOutput[`${taskOutputId}`]?.description && newCommentOfTaskOutput[`${taskOutputId}`]?.creator) {
                 props.createCommentOfTaskOutput(taskId, taskOutputId, data);
             }
-            let commentOfTaskOutput = {
+            newCommentOfTaskOutput[`${taskOutputId}`] = {
                 description: "",
                 files: [],
-                descriptionDefault: ''
+                descriptionDefault: ""
             }
             CommentOfTaskOutputFilePaste = []
-            setState(state => {
+            await setState(state => {
                 return {
                     ...state,
-                    newCommentOfTaskOutput: commentOfTaskOutput,
+                    newCommentOfTaskOutput,
                     CommentOfTaskOutputFilePaste
                 }
             })
@@ -465,7 +464,7 @@ function TaskOutputsTab(props) {
                             <div key={taskOutput._id} className={`item-box ${index > 3 ? "hide-component" : "block"}`}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <div style={{ display: 'flex' }}>{taskOutput.status === "approved" && <i className='fa fa-check text-success' style={{ display: 'flex', marginRight: "2px", placeItems: "center" }}></i>}
-                                        <h4 className="title" style={{ fontSize: "16px", marginLeft: taskOutput.status !== "approved" ? "17px" : 0 }}>{taskOutput.title}</h4>
+                                        <h4 className="title" style={{ fontSize: "16px", marginLeft: taskOutput.status !== "approved" ? "15px" : 0 }}>{taskOutput.title}</h4>
                                     </div>
                                     <div onClick={() => {
                                         if (showPanels.includes(taskOutput._id)) {
@@ -481,27 +480,45 @@ function TaskOutputsTab(props) {
                                 </div>
                                 <div style={{ display: `${showPanels.includes(taskOutput._id) ? "" : "none"}` }}>
                                     <div className='description'>
-                                        {
-                                            checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected" || taskOutput.status === "approved") &&
-                                            <div style={{ display: "flex" }}>
-                                                <span style={{ paddingRight: "10px", fontWeight: 600 }}>Phê duyệt kết quả:</span>
-                                                <a style={{ cursor: "pointer", paddingRight: "15px", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "approve" ? "700" : "" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>
-                                                <a style={{ cursor: "pointer", fontWeight: getActionAccountable(idUser, taskOutput.accountableEmployees) === "reject" ? "700" : "" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>
-                                            </div>
-                                        }
                                         <div><strong>Kiểu dữ liệu:</strong> {formatTypeInfo(taskOutput.type)}</div>
-                                        <div><strong>Yêu cầu:</strong> {parse(taskOutput.description)}</div>
+                                        <div>
+                                            <strong>Yêu cầu:</strong>
+                                            <QuillEditor
+                                                id={`description-${taskOutput?._id}`}
+                                                toolbar={false}
+                                                quillValueDefault={taskOutput?.description}
+                                                maxHeight={250}
+                                                enableDropImage={false}
+                                                enableEdit={false}
+                                                showDetail={{
+                                                    enable: true,
+                                                    titleShowDetail: "Mô tả yêu cầu",
+                                                    width: "75%"
+                                                }}
+                                            />
+                                        </div>
                                         {/* <div><strong>Người đã phê duyệt: </strong>{getAcoutableEmployees(taskOutput.accountableEmployees)}</div> */}
-                                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "7px" }}>
                                             <div>
-                                                <span style={{ fontWeight: 600 }}>{taskOutput.submissionResults?.description ? `Kết quả giao nộp lần ${taskOutput.status === "approved" || taskOutput.status === "rejected" ? taskOutput.versions.length : taskOutput.versions.length + 1}` : "Chưa giao nộp kết quả"}</span>
+                                                <span style={{ fontWeight: 600 }}>{taskOutput.submissionResults?.description ? `Kết quả giao nộp lần ${taskOutput.status === "approved" ? taskOutput.versions.length : taskOutput.versions.length + 1}` : "Chưa giao nộp kết quả"}</span>
+                                                {role === "responsible" && taskOutput.status === "rejected" && <span className='text-sm' style={{ marginLeft: "3px" }}>(Bị từ chối)</span>}
+                                                {getActionAccountable(idUser, taskOutput.accountableEmployees) == "approve" && <span className='text-sm' style={{ marginLeft: "3px" }}>(Đã phê duyệt)</span>}
+                                                {getActionAccountable(idUser, taskOutput.accountableEmployees) == "reject" && <span className='text-sm' style={{ marginLeft: "3px" }}>(Đã từ chối)</span>}
                                                 {
                                                     taskOutput.status === "inprogess" && role === "responsible" &&
                                                     <a style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => { handleApprove("waiting_for_approval", taskOutput._id) }}>Yêu cầu phê duyệt</a>
                                                 }
                                             </div>
                                             <div style={{ display: "flex" }}>
-                                                {taskOutput.versions?.length > 0 && <a style={{ cursor: "pointer", marginRight: "3px" }}
+
+                                                {
+                                                    checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected" || taskOutput.status === "approved") &&
+                                                    <div style={{ display: "flex" }}>
+                                                        {getActionAccountable(idUser, taskOutput.accountableEmployees) !== "approve" && <a style={{ cursor: "pointer" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>}
+                                                        {getActionAccountable(idUser, taskOutput.accountableEmployees) !== "reject" && <a style={{ cursor: "pointer", paddingLeft: "15px" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>}
+                                                    </div>
+                                                }
+                                                {taskOutput.versions?.length > 0 && <a style={{ cursor: "pointer", marginRight: "3px", paddingLeft: "15px" }}
                                                     onClick={async () => {
                                                         await setTaskOutput(taskOutput);
                                                         showVersionsTaskOutput(taskOutput);
@@ -563,6 +580,7 @@ function TaskOutputsTab(props) {
                                                                             </div>
                                                                         ))
                                                                         }
+
                                                                     </div>
                                                                 </div>
                                                                 {/* Các action lựa chọn của người phê duyệt */}
@@ -579,10 +597,10 @@ function TaskOutputsTab(props) {
                                                                         }
                                                                     }} >Phê duyệt</a></li>
                                                                     <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowFile(taskOutput.submissionResults._id)} ><i className="fa fa-paperclip" aria-hidden="true"></i> Tập tin đính kèm ({taskOutput.submissionResults.files && taskOutput.submissionResults.files.length})</a></li>
-                                                                    <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowComment(taskOutput._id)} ><i className="fa fa-comments-o margin-r-5" aria-hidden="true"></i> Trao đổi ({taskOutput.comments && taskOutput.comments.length})</a></li>
+                                                                    <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowComment(taskOutput._id)} ><i className="fa fa-comments-o margin-r-2" aria-hidden="true"></i> Trao đổi ({taskOutput.comments && taskOutput.comments.length})</a></li>
                                                                 </ul>
                                                                 {showFile.some(obj => obj === taskOutput.submissionResults._id) &&
-                                                                    <div style={{ cursor: "pointer" }}>
+                                                                    <div style={{ cursor: "pointer", margintop: "-10px" }}>
                                                                         <ul className='list-inline tool-level1'>
                                                                             {taskOutput.submissionResults.files.map((elem, index) => {
                                                                                 let listImage = taskOutput.submissionResults.files?.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
@@ -611,16 +629,14 @@ function TaskOutputsTab(props) {
                                                                         </ul>
                                                                     </div>
                                                                 }
-
-
                                                                 {showAccountables.includes(taskOutput._id) && taskOutput.accountableEmployees.map((item, idx) => {
                                                                     return (
-                                                                        <div key={idx}>
+                                                                        <div key={idx} style={{ marginLeft: "55px", marginBottom: "10px", marginRight: "20px" }}>
                                                                             <b> {item.accountableEmployee?.name} </b>
                                                                             <span style={{ fontSize: 10, marginRight: 10 }} className="text-green">[ Người phê duyệt ]</span>
                                                                             {formatActionAccountable(item.action)}
                                                                             &ensp;
-                                                                            {item.action === "approve" || item.action === "reject" && <DateTimeConverter dateTime={item.updatedAt} />}
+                                                                            {(item.action === "approve" || item.action === "reject") && <span className='text-sm'><DateTimeConverter dateTime={item.updatedAt} /></span>}
                                                                         </div >
                                                                     )
                                                                 })}

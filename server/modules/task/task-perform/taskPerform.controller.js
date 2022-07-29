@@ -305,11 +305,11 @@ exports.createTaskAction = async (req, res) => {
                 </body>
         </html>`;
         sendEmail(
-            task.email, 
-            tasks.name, 
-            '', 
+            task.email,
+            tasks.name,
+            '',
             emailContent,
-            `${tasks.id}@gmail.com`, 
+            `${tasks.id}@gmail.com`,
             null
         );
 
