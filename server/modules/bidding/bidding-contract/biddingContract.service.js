@@ -71,7 +71,8 @@ exports.searchBiddingContract = async (portal, params, company) => {
         let data = await BiddingContract(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .sort({
-                endDate: -1,
+                // endDate: -1,
+                createdAt: -1,
             })
             .populate({
                 path: "biddingPackage", populate: [
@@ -99,7 +100,8 @@ exports.searchBiddingContract = async (portal, params, company) => {
         )
             .find(keySearch)
             .sort({
-                endDate: -1,
+                // endDate: -1,
+                createdAt: -1,
             })
             .skip((params.page - 1) * params.limit)
             .limit(params.limit)

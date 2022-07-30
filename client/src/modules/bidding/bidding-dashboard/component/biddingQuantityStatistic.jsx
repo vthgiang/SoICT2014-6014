@@ -4,39 +4,36 @@ import { withTranslate } from 'react-redux-multilingual'
 import c3 from 'c3';
 import 'c3/c3.css';
 
-const BiddingPriceAndProjectBudgetDashboard = (props) => {
+const BiddingStatusQuantityStatistic = (props) => {
     const { biddingPackagesManager, biddingContract, project } = props;
-    const refPriceBudget = React.createRef();
+    const refBiddingStatusByQuantity = React.createRef();
 
     const numofBP = biddingPackagesManager.totalList;
     const numOfContract = biddingContract.totalList;
     const numOfPrj = biddingContract.listBiddingContractStatistic.filter(x => x.project !== null)?.length ?? project.data.totalDocs;
 
     const setDataChart = () => {
-        let bidColumns, projectColumns, categories;
+        let bidColumns, categories;
 
-        bidColumns = ["Dự toán gói thầu"];
-        projectColumns = ["Ngân sách dự án"];
-        categories = [];
+        categories = ["Hoạt động", "Ngưng hoạt động", "Đang chờ kết quả dự thầu", "Đang thực hiện", "Hoàn thành"];
+        bidColumns = [];
+        // 1: hoạt động, 0: ngưng hoạt động, 2: đang chờ kết quả dự thầu, 3: Đang thực hiện gói thầu, 4:hoàn thành
+        const numberOfActive = biddingPackagesManager?.listBiddingPackages.filter(x => x.status === 1)?.length;
+        const numberOfInactive = biddingPackagesManager?.listBiddingPackages.filter(x => x.status === 0)?.length;
+        const numberOfWaitForBidding = biddingPackagesManager?.listBiddingPackages.filter(x => x.status === 2)?.length;
+        const numberOfInProcess = biddingPackagesManager?.listBiddingPackages.filter(x => x.status === 3)?.length;
+        const numberOfComplete = biddingPackagesManager?.listBiddingPackages.filter(x => x.status === 4)?.length;
 
-        const listContract = biddingContract.listBiddingContractStatistic.filter(x => x.project !== null && x.biddingPackage !== null && x.biddingPackage?.status === 3);
-
-        for (let ct of listContract) {
-            if (ct.project?.budget) {
-                categories.push(`${ct.biddingPackage?.name ?? ""}`);
-                bidColumns.push(ct.biddingPackage?.price ?? 0);
-                projectColumns.push(ct.project?.budget ?? 0);
-            }
-        }
+        bidColumns=["Số lượng gói thầu theo trạng thái", numberOfActive, numberOfInactive, numberOfWaitForBidding, numberOfInProcess, numberOfComplete];
 
         return {
-            dataChart: [bidColumns, projectColumns],
+            dataChart: [bidColumns],
             categories: categories,
         }
     }
 
     const removePreviousChart = () => {
-        const chart = refPriceBudget.current;
+        const chart = refBiddingStatusByQuantity.current;
 
         if (chart) {
             while (chart.hasChildNodes()) {
@@ -52,7 +49,7 @@ const BiddingPriceAndProjectBudgetDashboard = (props) => {
         let { dataChart, categories } = setDataChart();
 
         let chart = c3.generate({
-            bindto: refPriceBudget.current,
+            bindto: refBiddingStatusByQuantity.current,
 
             padding: {
                 top: 20,
@@ -75,15 +72,15 @@ const BiddingPriceAndProjectBudgetDashboard = (props) => {
                 x: {
                     type: 'categories',
                     categories: categories,
-                    label: "Tên gói thầu"
+                    label: "Trạng thái"
                 },
                 y: {
-                    label: "VND",
+                    label: "Số lượng gói thầu",
                 },
             },
 
             zoom: {
-                enabled: true
+                enabled: false
             }
         });
     };
@@ -95,10 +92,10 @@ const BiddingPriceAndProjectBudgetDashboard = (props) => {
     return (
         <div className='box'>
             <div className="box-header with-border">
-                <div className="box-title">Tương quan giữa dự toán gói thầu và ngân sách dự án</div>
+                <div className="box-title">Thống kê trạng thái gói thầu</div>
             </div>
             <div className="box-body">
-                <section ref={refPriceBudget}></section>
+                <section ref={refBiddingStatusByQuantity}></section>
             </div>
         </div>
     )
@@ -108,5 +105,5 @@ const mapStateToProps = (state) => (state)
 
 const mapDispatchToProps = {}
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(withTranslate(BiddingPriceAndProjectBudgetDashboard));
-export { connectedComponent as BiddingPriceAndProjectBudgetDashboard }
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(withTranslate(BiddingStatusQuantityStatistic));
+export { connectedComponent as BiddingStatusQuantityStatistic }
