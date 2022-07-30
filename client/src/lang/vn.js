@@ -2342,7 +2342,7 @@ export default {
 
                 bidding_package_management: {
                     type: {
-                        1: "Tư vẫn",
+                        1: "Tư vấn",
                         2: "Phi tư vấn",
                         3: "Hàng hóa",
                         4: "Xây dựng",
