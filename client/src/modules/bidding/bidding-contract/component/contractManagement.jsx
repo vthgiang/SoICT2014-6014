@@ -40,7 +40,7 @@ const ContractManagement = (props) => {
         tableId,
         name: "",
         page: 1,
-        limit: 10,
+        limit: 5,
         currentRow: null,
         currentRowView: null
     });
@@ -313,7 +313,7 @@ const ContractManagement = (props) => {
                                         {!x.project &&
                                             <a className="" style={{ color: "#28A745" }} onClick={() => {
                                                 handleCreateProject(x)
-                                                props.getListBiddingContract(state)
+                                                // props.getListBiddingContract(state)
                                             }} title={"Tạo dự án theo hợp đồng này"}>
                                                 <i className="material-icons">add_box</i>
                                             </a>

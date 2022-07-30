@@ -7,7 +7,7 @@ const QuantityStatistic = (props) => {
 
     const numofBP = biddingPackagesManager.totalList;
     const numOfContract = biddingContract.totalList;
-    const numOfPrj = biddingContract.listBiddingContractStatistic.filter(x => x.project !== null)?.length ?? project.data.totalDocs;
+    const numOfPrj = biddingContract.listBiddingContractStatistic.filter(x => !x.project === false)?.length ?? project.data.totalDocs;
 
     return (
         <div className='row'>

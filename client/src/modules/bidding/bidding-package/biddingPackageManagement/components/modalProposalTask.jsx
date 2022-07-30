@@ -46,6 +46,7 @@ const ModalProposeEmpForTask = (props) => {
             allEmployee: props.allEmployee,
             listCareer: props.listCareer,
             allTag: props.allTag,
+            isPreferedHighSkill: props.data?.isPreferedHighSkill ? true : false,
         })
         setDataProp(props.data);
     }, [props.id,
@@ -60,7 +61,8 @@ const ModalProposeEmpForTask = (props) => {
             tasks: dataProp.proposals?.tasks,
             biddingPackage: dataProp.biddingPackage,
             unitOfTime: dataProp.unitOfTime,
-            executionTime: dataProp.executionTime
+            executionTime: dataProp.executionTime,
+            isPreferedHighSkill: dataProp.isPreferedHighSkill,
         }).then(res => {
             const { data } = res;
 
@@ -79,11 +81,19 @@ const ModalProposeEmpForTask = (props) => {
         })
     }
 
+    const changeIsPreferedHighSkill = (skill) => {
+        setState({...state, isPreferedHighSkill: skill});
+        setDataProp({...dataProp, isPreferedHighSkill: skill});
+        props.setIsPreferedHighSkill(skill);
+    }
+
     const checkInArr = (item, arr) => {
         let check = arr.find(x => String(x) === String(item));
         if (check) return true;
         return false;
     }
+
+    const { isPreferedHighSkill } = state
 
     return (
         <React.Fragment>
@@ -134,7 +144,20 @@ const ModalProposeEmpForTask = (props) => {
                                         <br />
                                     </>}
                                 </li>
-                                <li>Giữa các nhân viên sẽ được sắp xếp theo thứ tự ưu tiên trình độ từ Tiến sĩ - Thạc sĩ - Kỹ sư...</li>
+                                <li>Giữa các nhân viên sẽ được sắp xếp theo thứ tự ưu tiên theo một trong hai cách:
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="isPreferedHighSkill" id="isPreferedHighSkill1" value={false} checked={isPreferedHighSkill === true} onChange={() => changeIsPreferedHighSkill(!isPreferedHighSkill)}/>
+                                        <label class="form-check-label" for="isPreferedHighSkill1" style={{fontWeight: "normal"}}>
+                                            Trình độ chuyên môn được sắp xếp ưu tiên từ cao tới thấp (từ Tiến sĩ - Thạc sĩ - Kỹ sư - Cử nhân - Đại học - Cao đẳng - Trung cấp)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="isPreferedHighSkill" id="isPreferedHighSkill2" value={true} checked={isPreferedHighSkill === false} onChange={() => changeIsPreferedHighSkill(!isPreferedHighSkill)}/>
+                                        <label class="form-check-label" for="isPreferedHighSkill2" style={{fontWeight: "normal"}}>
+                                            Trình độ chuyên môn được sắp xếp theo thứ tự ưu tiên đáp ứng được nhu cầu về trình độ và chi phí bỏ ra không quá lớn (từ Kỹ sư - Cử nhân - Thạc sĩ - Tiến sĩ - Đại học - Cao đẳng - Trung cấp)
+                                        </label>
+                                    </div>
+                                </li>
                                 <li>Giữa nhân viên cũng sẽ được sắp xếp theo số lượng công việc nhân viên đó phải làm trong thời gian diễn ra công việc đang muốn phân công</li>
                                 <li>Các nhân sự ứng có khả năng thực hiện công việc sẽ lấy ra theo danh sách nhân viên phù hợp với công việc dựa trên các tag đã chọn. 
                                     Bên cạnh đó các nhân viên cũng được sắp xếp theo thứ tự độ phù hợp với các tag đã chọn từ cao đến thấp

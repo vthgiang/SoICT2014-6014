@@ -25,7 +25,7 @@ const BiddingPriceAndProjectBudgetDashboard = (props) => {
             if (ct.project?.budget) {
                 categories.push(`${ct.biddingPackage?.name ?? ""}`);
                 bidColumns.push(ct.biddingPackage?.price ?? 0);
-                projectColumns.push(ct.project?.budget ?? 0);
+                projectColumns.push(Math.round(ct.project?.budget) ?? 0);
             }
         }
 
