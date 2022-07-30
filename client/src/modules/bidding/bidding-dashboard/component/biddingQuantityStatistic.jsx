@@ -87,7 +87,7 @@ const BiddingStatusQuantityStatistic = (props) => {
 
     useEffect(() => {
         renderChart();
-    }, [JSON.stringify(biddingContract)])
+    }, [JSON.stringify(biddingPackagesManager)])
 
     return (
         <div className='box'>
