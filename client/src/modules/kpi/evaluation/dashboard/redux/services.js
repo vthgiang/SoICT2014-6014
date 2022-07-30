@@ -3,7 +3,9 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const dashboardEmployeeKpiService = {
     getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds,
-    getChildrenOfOrganizationalUnitsAsTree
+    getChildrenOfOrganizationalUnitsAsTree,
+    getEmployeeKpiPerformance,
+    balanceEmployeeKpiSet
 };
 
 /**
@@ -31,7 +33,7 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
         method: 'GET',
         params: {
             role: role,
-            ids: ids
+            ids: ids,
         }
     }, false, true, 'kpi.evaluation');
 }
@@ -48,4 +50,28 @@ function getChildrenOfOrganizationalUnitsAsTree(role) {
             role: role
         }
     }, false, true, 'kpi.evaluation');
+}
+
+/**
+ * lay diem danh gia nhan vien
+ * @param {*} role 
+ */
+function getEmployeeKpiPerformance(ids) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/get-employee-kpi-performance`,
+        method: 'GET',
+        params: {
+            ids
+        }
+    }, false, true, 'kpi.evaluation');
+}
+
+/** Can bang muc tieu kpi nhan vien */
+
+function balanceEmployeeKpiSet(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpis-balance`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server')
 }

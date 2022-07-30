@@ -1,14 +1,14 @@
-import React, { Component, Suspense, lazy } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import React, { Component, lazy, Suspense } from "react";
 import { connect } from "react-redux";
+import { Route, Switch } from "react-router-dom";
 
-import { PrivateRoute } from "./privateRoute";
 import { AuthRoute } from "./authRoute";
+import { PrivateRoute } from "./privateRoute";
 
 import Layout from "../layout/layout";
-import Login from "../modules/auth/components/login"
-import Introduction from "../modules/intro/components"
-import ResetPassword from "../modules/auth/components/resetPasswordNew"
+import Login from "../modules/auth/components/login";
+import ResetPassword from "../modules/auth/components/resetPasswordNew";
+import Introduction from "../modules/intro/components";
 import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
 import { ModalViewProcessById } from "../modules/task/task-process/component/task-process-management/modalViewProcessById";
 
@@ -57,6 +57,7 @@ const OrganizationalUnitKpiDashboard = lazy(() => import("../modules/kpi/organiz
 const KPIUnitManager = lazy(() => import("../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview"))
 const KPIUnitEvaluate = lazy(() => import("../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation"))
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi"))
+const OrganizationalUnitKpiTemplate = lazy(() => import("../modules/kpi/organizational-unit/template/component/kpiSetTemplate"))
 
 const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
 const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
@@ -1519,6 +1520,25 @@ class Routes extends Component {
                         component={KPIUnitManager}
                     />
                     <PrivateRoute
+                        isLoading={this.props.kpitemplates.isLoading}
+                        key={"kpi_unit_template"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/template-kpi-unit",
+                                name: "kpi_unit_template",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/template-kpi-unit"}
+                        path={"/template-kpi-unit"}
+                        pageName={"kpi_unit_template"}
+                        layout={Layout}
+                        component={OrganizationalUnitKpiTemplate}
+                    />
+                    <PrivateRoute
                         isLoading={this.props.createEmployeeKpiSet.isLoading}
                         key={"kpi-personal-create"}
                         arrPage={[
@@ -2821,7 +2841,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={Payment}
                     />
-                    
+
                     <PrivateRoute
                         isLoading={false}
                         key={"order-request-management"}

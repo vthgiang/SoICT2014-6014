@@ -80,11 +80,15 @@ function ChildOfOrganizationalUnitCreate(props) {
 
     const childrenUnit = childrenOrganizationalUnit?.children || [];
 
-    const options = childrenUnit.map(x => {
+    let options = childrenUnit.map(x => {
         return {
             value: x.id,
             text: x.name
         }
+    })
+    options.unshift({
+        value: childrenOrganizationalUnit?.id,
+        text: childrenOrganizationalUnit?.name,
     })
 
     const handleKpiUnit = (id) => {
@@ -295,8 +299,8 @@ function ChildOfOrganizationalUnitCreate(props) {
                     <label>{translate('kpi.organizational_unit.management.copy_modal.list_target')}</label>
                     {currentKPI?.kpis?.length > 0
                         ? <ul style={{ listStyle: "none" }}>
-                            {currentKPI.kpis.map(item => {
-                                return <li key={item._id}>
+                            {currentKPI.kpis.map((item, index) => {
+                                return <li key={item._id + index}>
                                     {
                                         item?.type !== 0 ? <div>
                                             <input type="checkbox" checked={true} disabled={true} onChange={null} />

@@ -1,20 +1,20 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, ExportExcel, DatePicker, SelectBox, PaginateBar, SelectMulti, ToolTip } from '../../../../../common-components';
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { DataTableSetting, DatePicker, ExportExcel, PaginateBar, SelectBox, SelectMulti, ToolTip } from '../../../../../common-components';
 import { ROOT_ROLE } from '../../../../../helpers/constants';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { managerActions } from '../../../organizational-unit/management/redux/actions';
 import { kpiMemberActions } from '../redux/actions';
-import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 
+import { showWeeklyPoint } from '../../../employee/management/component/functionHelpers';
 import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
 import { EmployeeKpiEvaluateModal } from './employeeKpiEvaluateModal';
-import { showWeeklyPoint } from '../../../employee/management/component/functionHelpers'
 
 function EmployeeKpiManagement(props) {
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -76,7 +76,7 @@ function EmployeeKpiManagement(props) {
     const { translate } = props;
     const { status, kpiId, employeeKpiSet, startDate, endDate,
         perPage, userId, startDateDefault, employeeKpiSetApprove,
-        endDateDefault, organizationalUnit, 
+        endDateDefault, organizationalUnit,
         approver, infosearch, organizationalUnitSelectBox
     } = state;
 
@@ -123,7 +123,7 @@ function EmployeeKpiManagement(props) {
 
         if (state?.organizationalUnit?.length > 0 || childrenOrganizationalUnit?.[0]?.id) {
             let unit = state?.organizationalUnit?.length > 0 ? state?.organizationalUnit : [childrenOrganizationalUnit?.[0]?.id]
-            
+
             setState({
                 ...state,
                 organizationalUnitSelectBox: childrenOrganizationalUnit,
@@ -801,9 +801,9 @@ function EmployeeKpiManagement(props) {
 
     // Khởi tạo select box chọn nhân viên
     if (user?.error?.employees?.length > 0) {
-        unitMembers = user.error.employees.map(item => { 
+        unitMembers = user.error.employees.map(item => {
             return {
-                text: item?.userId?.name, 
+                text: item?.userId?.name,
                 value: item?.userId?._id
             }
         })
@@ -812,7 +812,7 @@ function EmployeeKpiManagement(props) {
 
     // Khởi tạo select box chọn người phê duyệt
     if (user?.error?.employees?.length > 0) {
-        approverSelectBox = user.error.employees.filter(employee => { 
+        approverSelectBox = user.error.employees.filter(employee => {
             let checkManager = false
 
             if (employee?.roleId?.length > 0) {
@@ -830,7 +830,7 @@ function EmployeeKpiManagement(props) {
             return checkManager
         }).map(employee => {
             return {
-                text: employee?.userId?.name, 
+                text: employee?.userId?.name,
                 value: employee?.userId?._id
             }
         });
@@ -843,12 +843,12 @@ function EmployeeKpiManagement(props) {
     if (kpimember) {
         exportData = convertDataToExportData(kpimember);
     }
-    
+
     return (
         <React.Fragment>
             <div className="box">
                 <div className="box-body">
-                    <EmployeeKpiApproveModal id={kpiId} employeeKpiSet={employeeKpiSetApprove}/>
+                    <EmployeeKpiApproveModal id={kpiId} employeeKpiSet={employeeKpiSetApprove} />
                     <EmployeeKpiEvaluateModal employeeKpiSet={employeeKpiSet} />
 
                     <div className="qlcv">
@@ -982,6 +982,7 @@ function EmployeeKpiManagement(props) {
                                     <th title="Thời gian">{translate('kpi.evaluation.employee_evaluation.time')}</th>
                                     <th title="Số lượng mục tiêu">{translate('kpi.evaluation.employee_evaluation.num_of_kpi')}</th>
                                     <th title="Trạng thái KPI">{translate('kpi.evaluation.employee_evaluation.kpi_status')}</th>
+                                    <th title="Loại tạo">Loại tạo</th>
                                     <th title={translate('task.task_management.eval_of')}>{translate('task.task_management.eval_of')}</th>
                                     <th title={translate('kpi.evaluation.employee_evaluation.weekly_point')} style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.weekly_point')}</th>
                                     <th title="Phê duyệt" style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.approve')}</th>
@@ -998,8 +999,9 @@ function EmployeeKpiManagement(props) {
                                             <td>{kpi ? formatDate(kpi.date) : ""}</td>
                                             <td>{kpi.kpis ? kpi.kpis.length : ""}</td>
                                             <td>{kpi ? checkStatusKPI(kpi.status) : ""}</td>
+                                            <td>{kpi?.type === 'auto' ? "Tự động" : "Thủ công"}</td>
                                             <td>
-                                                <ToolTip 
+                                                <ToolTip
                                                     type={'text_tooltip'}
                                                     dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
                                                 >
