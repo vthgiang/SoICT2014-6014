@@ -5,12 +5,32 @@ import { Link } from 'react-router-dom';
 import { DatePicker, LazyLoadComponent } from '../../../../common-components';
 import urgentIcon from '../task-personal-dashboard/warning.png';
 import todoIcon from '../task-personal-dashboard/to-do-list.png';
+import GeneralTaskProcessChart from "./generalProcessChart"
+import { TaskProcessActions } from '../../task-process/redux/actions';
+import { getStorage } from '../../../../config';
+import { TaskHasTaskOutputs } from './taskHasTaskOutputs';
+import { TaskHasDepartments } from './taskHasDepartments';
+
+
+const getTaskProcessManagement = (listTaskProcess, userId) => {
+    let numberTaskProcessManagement = 0
+    if (listTaskProcess && listTaskProcess.length) {
+        const listTaskProcessManagement = listTaskProcess?.map((item) => {
+            if (item.manager?.length) {
+                const manager = item.manager.find((user) => user.id === userId);
+                if (manager) {
+                    numberTaskProcessManagement = numberTaskProcessManagement + 1;
+                }
+            }
+        })
+    }
+    return numberTaskProcessManagement;
+}
 
 function TaskProcessDashboard(props) {
-    const { tasks, translate } = props;
-
-    const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable, loadingResponsible } = tasks;
-
+    const { tasks, taskProcess, translate } = props;
+    const { listTaskProcess } = taskProcess;
+    const userId = getStorage("userId");
     const [state, setState] = useState(initState())
     const [infoSearch, setInfoSearch] = useState(initInfoSearch())
     function initState() {
@@ -121,6 +141,10 @@ function TaskProcessDashboard(props) {
 
     let { startMonthTitle, endMonthTitle } = infoSearch;
 
+    useEffect(() => {
+        props.getAllTaskProcess()
+    }, [])
+
     return (
         <React.Fragment>
             <div className="qlcv" style={{ textAlign: "left" }}>
@@ -164,16 +188,8 @@ function TaskProcessDashboard(props) {
                                 <span style={{ fontWeight: 'bold' }}>Quy trình tham gia</span>
                             </div>
 
-                            <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
-                                {
-                                    fromTaskPersonalDashboard: true,
-                                    status: ["inprocess"],
-                                    startDate: infoSearch.startMonth,
-                                    endDate: infoSearch.endMonth,
-                                    roles: ["responsible", "accountable", "consulted", "creator", "informed"]
-                                }
-                            ))} target="_blank" rel="noopener noreferrer">
-                                <span style={{ fontSize: '21px' }} className="info-box-number">10</span>
+                            <Link to="/task-process-management" target="_blank" rel="noopener noreferrer">
+                                <span style={{ fontSize: '21px' }} className="info-box-number">{taskProcess?.listTaskProcess?.length}</span>
                             </Link>
                         </div>
                     </div>
@@ -186,16 +202,8 @@ function TaskProcessDashboard(props) {
                                 </span>
                                 <span style={{ fontWeight: 'bold' }}>Quy trình quản lý</span>
                             </div>
-                            <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
-                                {
-                                    fromTaskPersonalDashboard: true,
-                                    status: ["inprocess"],
-                                    startDate: infoSearch.startMonth,
-                                    endDate: infoSearch.endMonth,
-                                    roles: ["creator"]
-                                }
-                            ))} target="_blank" rel="noopener noreferrer">
-                                <span style={{ fontSize: '21px' }} className="info-box-number">5</span>
+                            <Link to="/task-process-management" target="_blank" rel="noopener noreferrer">
+                                <span style={{ fontSize: '21px' }} className="info-box-number">{getTaskProcessManagement(listTaskProcess, userId)}</span>
                             </Link>
                         </div>
                     </div>
@@ -207,28 +215,48 @@ function TaskProcessDashboard(props) {
                             <div className="box-header with-border">
                                 <div className="box-title">
                                     {`Tổng quan quy trình `}
-                                    {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle} {`(2 quy trình)`}</div>
+                                    {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle} {`(${taskProcess.listTaskProcess?.length ?? 0} quy trình)`}</div>
                                 <a onClick={() => { }}>
                                     <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                                 </a>
                             </div>
                             <LazyLoadComponent once={true}>
-                                {
-                                    <div className="qlcv box-body">
-                                        <div className="nav-tabs-custom" >
-                                            <ul className="general-tabs nav nav-tabs">
-                                                <li className="active"><a className="general-task-type" href="#allGeneralTaskUrgent" data-toggle="tab" ><img style={{ width: '18px', height: '18px', marginRight: '5px' }} src={urgentIcon} alt="urgent" />Tổng quan&nbsp;<span>0</span></a></li>
-                                                <li><a className="general-task-type" href="#allGeneralTaskTodo" data-toggle="tab" ><img src={todoIcon} alt="todo" style={{ width: '20px', marginRight: '5px' }} />  Đang thực hiện&nbsp;<span>0</span></a></li>
-                                                <li><a className="general-task-type" href="#allGeneralTaskOverdue" data-toggle="tab" >Sắp hết hạn&nbsp;<span> 0</span></a></li>
-                                                <li><a className="general-task-type" href="#allGeneralTaskDelay" data-toggle="tab" >Trễ tiến độ&nbsp;<span> 0</span></a></li>
-                                            </ul>
-
-                                        </div>
-                                    </div>
-                                }
+                                <GeneralTaskProcessChart />
                             </LazyLoadComponent>
                         </div>
+                        <div>
 
+                        </div>
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-6">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title">Kết quả giao nộp {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
+                        </div>
+                        <div className="box-body qlcv">
+                            <LazyLoadComponent once={true}>
+                                <TaskHasTaskOutputs
+                                    startMonth={state.startMonth}
+                                    endMonth={state.endMonth}
+                                />
+                            </LazyLoadComponent>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-6">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title">Quy trình công việc {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
+                        </div>
+                        <div className="box-body qlcv">
+                            <LazyLoadComponent once={true}>
+                                <TaskHasDepartments
+                                    startMonth={state.startMonth}
+                                    endMonth={state.endMonth}
+                                />
+                            </LazyLoadComponent>
+                        </div>
                     </div>
                 </div>
 
@@ -239,11 +267,11 @@ function TaskProcessDashboard(props) {
 
 
 function mapState(state) {
-    const { tasks } = state;
-    return { tasks };
+    const { tasks, taskProcess } = state;
+    return { tasks, taskProcess };
 }
 const actionCreators = {
-
+    getAllTaskProcess: TaskProcessActions.getAllTaskProcess,
 };
 
 export default connect(mapState, actionCreators)(withTranslate(TaskProcessDashboard));

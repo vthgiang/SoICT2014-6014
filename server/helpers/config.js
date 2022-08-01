@@ -1045,7 +1045,7 @@ const LINKS = [{
 },
 {
   url: '/task-process-dashboard',
-  description: 'Dashboard công việc theo quy trình',
+  description: 'Dashboard quy trình văn bản',
   category: LINK_CATEGORY.TASK.name,
   roles: [
     ROOT_ROLES.MANAGER.name,

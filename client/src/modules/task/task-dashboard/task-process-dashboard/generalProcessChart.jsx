@@ -6,251 +6,272 @@ import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { SlimScroll, ToolTip } from '../../../../common-components';
 
-import "./generalTaskPersonalChart.css";
-import urgentIcon from './warning.png';
-import todoIcon from './to-do-list.png';
-import { getRoleInTask, checkPrioritySetColor, formatPriority, getProjectName } from '../../../../helpers/taskModuleHelpers';
+import "./generalProcessChart.css";
+import { TaskProcessActions } from '../../task-process/redux/actions';
+import { ModalViewProcess } from '../../task-process/component/task-process-management/modalViewProcess';
 
-const GeneralTaskPersonalChart = (props) => {
-    const { translate, project } = props;
+const getNumberTaskFinished = (listTask) => {
+    if (listTask) {
+        const tasksFinished = listTask.filter((item) => item.status === "finished")
+        return tasksFinished?.length || 0;
+    }
+
+    return 0;
+}
+const GeneralTaskProcessChart = (props) => {
+    const { department, taskProcess, translate } = props;
     const [state, setState] = useState({
         userId: localStorage.getItem("userId")
     })
 
+    const [currentRow, setCurrentRow] = useState();
+    let listOrganizationalUnit = department?.list
+    const listTaskProcess = taskProcess?.listTaskProcess;
+
+    const formatTime = (date) => {
+        return dayjs(date).format("DD-MM-YYYY hh:mm A")
+    }
+
+    const isManager = (itemProcess) => {
+        let { currentUser, currentRole } = state;
+        let check = false;
+        let manager = itemProcess.manager;
+        for (let x in manager) {
+            if (manager[x].id === currentUser || manager[x].id === currentRole) {
+                check = true;
+            }
+        }
+        return check;
+    }
+
     useEffect(() => {
-        console.count()
         dayjs.extend(isSameOrAfter)
-        const { tasks } = props;
-        let overdueTask = [], delayTask = [], intimeTask = [], urgentTask = [], todoTask = [], deadlineNow = [], deadlineincoming = [];
+
+        let overdueTaskProcess = [], deadlineIncoming = [], inprocess = [];
         // xu ly du lieu
-        if (tasks && tasks.length) {
-            for (let i in tasks) {
-                let created = dayjs(tasks[i].createdAt);
-                let start = dayjs(tasks[i].startDate);
-                let end = dayjs(tasks[i].endDate);
+        if (listTaskProcess && listTaskProcess.length) {
+            for (let i in listTaskProcess) {
+                let end = dayjs(listTaskProcess[i].endDate);
                 let now = dayjs(new Date());
-                let duration = end.diff(start, 'day');
-                let createdToNow = now.diff(created, 'day');
                 let nowToEnd = end.diff(now, 'day');
 
-                if (dayjs(tasks[i].endDate).isSameOrAfter(dayjs(new Date()))) {
-                    const nowDate = new Date();
-
-                    // Lấy công việc khẩn cấp
-                    let minimumWorkingTime = getPercent(nowDate, tasks[i].startDate, tasks[i].endDate);
-                    let percentDifference = minimumWorkingTime - tasks[i].progress;
-
-                    if (tasks[i].priority === 1 && tasks[i].progress < minimumWorkingTime && percentDifference >= 50) {
-                        urgentTask = [...urgentTask, { ...tasks[i], createdToNow }]
-                    }
-                    if (tasks[i].priority === 2 && tasks[i].progress < minimumWorkingTime && percentDifference >= 40) {
-                        urgentTask = [...urgentTask, { ...tasks[i], createdToNow }]
-                    }
-                    if (tasks[i].priority === 3 && tasks[i].progress < minimumWorkingTime && percentDifference >= 30) {
-                        urgentTask = [...urgentTask, { ...tasks[i], createdToNow }]
-                    }
-                    if (tasks[i].priority === 4 && tasks[i].progress < minimumWorkingTime && percentDifference >= 20) {
-                        urgentTask = [...urgentTask, { ...tasks[i], createdToNow }];
-                    }
-                    if (tasks[i].priority === 5 && tasks[i].progress < minimumWorkingTime && percentDifference >= 10) {
-                        urgentTask = [...urgentTask, { ...tasks[i], createdToNow }];
-                    }
-
-                    // Lấy công việc cần làm
-                    if (tasks[i].priority === 5 && tasks[i].progress < minimumWorkingTime && 0 < percentDifference && percentDifference < 10) {
-                        todoTask = [...todoTask, { ...tasks[i], createdToNow }];
-                    }
-                    if (tasks[i].priority === 4 && tasks[i].progress < minimumWorkingTime && 10 < percentDifference && percentDifference < 20) {
-                        todoTask = [...todoTask, { ...tasks[i], createdToNow }];
-                    }
-                    if (tasks[i].priority === 3 && tasks[i].progress < minimumWorkingTime && 20 < percentDifference && percentDifference < 30) {
-                        todoTask = [...todoTask, { ...tasks[i], createdToNow }];
-                    }
-                    if (tasks[i].priority === 2 && tasks[i].progress < minimumWorkingTime && 30 < percentDifference && percentDifference < 40) {
-                        todoTask = [...todoTask, { ...tasks[i], createdToNow }];
-                    }
-                    if (tasks[i].priority === 1 && tasks[i].progress < minimumWorkingTime && 40 < percentDifference && percentDifference < 50) {
-                        todoTask = [...todoTask, { ...tasks[i], createdToNow }];
-                    }
-                } else {
-                    let tasksExpireUrgent = [];
-                    const nowDate = new Date();
-                    // Quá hạn (cv cấp 1, 2, 3, 4, 5 :25 %, 20%, 15%,10%, 5% số ngày đã quá )
-                    let delay = getPercentExpire(nowDate, tasks[i].startDate, tasks[i].endDate);
-                    if (tasks[i].priority === 1 && delay > 25) {
-                        tasksExpireUrgent = [...tasksExpireUrgent, { ...tasks[i], createdToNow }];
-                    } else if (tasks[i].priority === 2 && delay > 20) {
-                        tasksExpireUrgent = [...tasksExpireUrgent, { ...tasks[i], createdToNow }];
-                    } else if (tasks[i].priority === 3 && delay > 15) {
-                        tasksExpireUrgent = [...tasksExpireUrgent, { ...tasks[i], createdToNow }];
-                    } else if (tasks[i].priority === 4 && delay > 10) {
-                        tasksExpireUrgent = [...tasksExpireUrgent, { ...tasks[i], createdToNow }];
-                    } else if (tasks[i].priority === 5 && delay > 5) {
-                        tasksExpireUrgent = [...tasksExpireUrgent, { ...tasks[i], createdToNow }];
-                    } else {
-                        todoTask = [...todoTask, { ...tasks[i], createdToNow }];
-                    }
-
-                    urgentTask = [...urgentTask, ...tasksExpireUrgent];
+                if (listTaskProcess[i].status === "inprocess") {
+                    inprocess.push(listTaskProcess[i])
                 }
 
                 if (now > end) {
                     //viec Quá hạn
                     let add = {
-                        ...tasks[i],
+                        ...listTaskProcess[i],
                         nowToEnd: -parseInt(nowToEnd)
                     }
-                    overdueTask.push(add);
+                    overdueTaskProcess.push(add);
                 }
                 else {
-                    let processDay = Math.floor(tasks[i].progress * duration / 100);
-                    let startToNow = now.diff(start, 'days');
-                    // Công việc hạn sắp tới
                     if (nowToEnd <= 7) {
                         let add = {
-                            ...tasks[i],
+                            ...listTaskProcess[i],
                             totalDays: nowToEnd
                         }
-                        deadlineincoming.push(add);
+                        deadlineIncoming.push(add);
                     }
-                    if (startToNow > processDay) {
-                        //viec chậm tiến độ
-                        let add = {
-                            ...tasks[i],
-                            nowToEnd
-                        }
-                        delayTask.push(add);
-                    }
-                    else if (startToNow <= processDay) {
-                        // Đúng tiến độ
-                        let add = {
-                            ...tasks[i],
-                            nowToEnd
-                        }
-                        intimeTask.push(add);
-                    }
-                }
-
-                // Láy công việc hạn hôm nay
-                const endDate = dayjs(tasks[i].endDate).format();
-                const currentDate = dayjs().format();
-
-                if (dayjs(endDate).isSame(currentDate, 'day')) {
-                    let secondDiff = dayjs(endDate).diff(currentDate, 'millisecond')
-                    secondDiff = convertToDays(secondDiff);
-                    deadlineNow = [...deadlineNow, { ...tasks[i], diff: secondDiff }];
                 }
             }
         }
 
-        urgentTask?.length > 0 && urgentTask.sort((a, b) => (a.createdToNow < b.createdToNow) ? 1 : -1);
-        todoTask?.length > 0 && todoTask.sort((a, b) => (a.createdToNow < b.createdToNow) ? 1 : -1);
-        overdueTask?.length > 0 && overdueTask.sort((a, b) => (a.nowToEnd < b.nowToEnd) ? 1 : -1);
-        delayTask?.length > 0 && delayTask.sort((a, b) => (a.nowToEnd < b.nowToEnd) ? 1 : -1);
-        intimeTask?.length > 0 && intimeTask.sort((a, b) => (a.nowToEnd < b.nowToEnd) ? 1 : -1);
-        deadlineincoming?.length > 0 && deadlineincoming.sort((a, b) => (a.totalDays < b.totalDays) ? 1 : -1)
+        overdueTaskProcess?.length > 0 && overdueTaskProcess.sort((a, b) => (a.nowToEnd < b.nowToEnd) ? 1 : -1);
+        deadlineIncoming?.length > 0 && deadlineIncoming.sort((a, b) => (a.totalDays < b.totalDays) ? 1 : -1);
+
         setState({
             ...state,
-            urgentTask,
-            todoTask,
-            intimeTask,
-            delayTask,
-            overdueTask,
-            deadlineNow,
-            deadlineincoming
+            deadlineIncoming,
+            overdueTaskProcess,
+            inprocess
         })
-    }, [props.tasks])
+    }, [listTaskProcess])
 
-
-    const getPercent = (nowDate, startDate, endDate) => {
-        let start = new Date(startDate);
-        let end = new Date(endDate);
-
-        // lấy khoảng thời gian làm việc
-        let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24);
-        // lấy khoản thời gian làm việc tính đến ngày hiện tại
-        // tính phần trăm phải làm trong 1 ngày
-        let percentOneDay = 100 / workingTime;
-        // % tiến độ tối thiểu phải làm được trong time hiện tại
-        let workingTimeNow = Math.round((nowDate - start) / 1000 / 60 / 60 / 24);
-        return workingTimeNow * percentOneDay;
+    const viewProcess = async (item) => {
+        await setCurrentRow(item);
+        window.$(`#modal-view-process-task-list`).modal("show");
     }
 
-    const getPercentExpire = (nowDate, startDate, endDate) => {
-        let start = new Date(startDate);
-        let end = new Date(endDate);
-        // lấy khoảng thời gian làm việc
-        let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24);
-        // tính phần trăm phải làm trong ngày
-        let percentOneDay = 100 / workingTime;
-        // Tính số ngày quá hạn
-        let deadline2 = Math.round((nowDate - end) / 1000 / 60 / 60 / 24);
-        // tính phần trăm chậm tiến độ. số ngày quá hạn nhân với phần trăm phải làm trong 1 ngày
-        return percentOneDay * deadline2;
-    }
-
-
-    const convertToDays = (milliSeconds) => {
-        let hours = Math.floor(milliSeconds / (60 * 60 * 1000));
-        milliSeconds -= hours * (60 * 60 * 1000);
-        let minutes = Math.floor(milliSeconds / (60 * 1000));
-        return { hours, minutes };
-    }
-
-    // chú thích quá hạn
-    const showTaskOverDueDescription = () => {
-        Swal.fire({
-            html: `<h4><div>Công việc bạn tham gia với 1 trong 4 tư cách:  thực hiện, phê duyệt, tư vấn, quan sát và được xem là quá hạn nếu đã hết hạn thực hiện công việc nhưng vẫn chưa hoàn thành ?</div> </h4>`
-        })
-    }
-
-    // chú thích chậm tiến độ
-    const showTaskDelayDescription = () => {
-        Swal.fire({
-            html: `<h4><div>Công việc bạn tham gia với 1 trong 4 tư cách thực hiện, phê duyệt, tư vấn, quan sát vẫn chưa đến hạn kết thúc nhưng % hoàn thành đang nhỏ hơn  % hoàn thành cần đạt tính đến ngày hiện tại</div></h4>`
-        })
-    }
-
-    // Đúng tiến độ
-    const showTaskIntimeDescription = () => {
-        Swal.fire({
-            html: `<h4><div>Công việc bạn tham gia với 1 trong 4 tư cách thực hiện, phê duyệt, tư vấn, quan sát vẫn chưa đến hạn kết thúc và % hoàn thành đang bằng hoặc hơn  % hoàn thành cần đạt tính đến ngày hiện tại
-            </div></h4>`
-        })
-    }
-
-    //chú thích sắp hết hạn
-    const showTaskDeadLineDescription = () => {
-        Swal.fire({
-            html: `<h4<div>Công việc còn nhiều nhất 7 ngày nữa là đến hạn</div></h4>`
-        })
-    }
-
-    // chú thích hạn hôm nay
-    const formatTime = (date) => {
-        return dayjs(date).format("DD-MM-YYYY hh:mm A")
-    }
-    console.log('state.urgentTask', state.urgentTask)
     return (
         <div className="qlcv box-body">
+            {
+                currentRow !== undefined &&
+                <ModalViewProcess
+                    title={translate("task.task_process.view_task_process_modal")}
+                    listOrganizationalUnit={listOrganizationalUnit}
+                    data={currentRow}
+                    idProcess={currentRow._id}
+                    xmlDiagram={currentRow.xmlDiagram}
+                    processName={currentRow.processName}
+                    processDescription={currentRow.processDescription}
+                    infoTask={currentRow.taskList}
+                    creator={currentRow.creator}
+                    checkManager={isManager(currentRow)}
+                />
+            }
             <div className="nav-tabs-custom" >
                 <ul className="general-tabs nav nav-tabs">
-                    <li className="active"><a className="general-task-type" href="#allGeneralTaskUrgent" data-toggle="tab" ><img style={{ width: '18px', height: '18px', marginRight: '5px' }} src={urgentIcon} alt="urgent" />{`${translate('task.task_dashboard.urgent_task')}`}&nbsp;<span>{`(${state.urgentTask ? state.urgentTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskTodo" data-toggle="tab" ><img src={todoIcon} alt="todo" style={{ width: '20px', marginRight: '5px' }} />  {`${translate('task.task_dashboard.to_do_task')}`}&nbsp;<span>{`(${state.todoTask ? state.todoTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskOverdue" data-toggle="tab" >{`${translate('task.task_dashboard.overdue_task')}`}&nbsp;<span>{`(${state.overdueTask ? state.overdueTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskDelay" data-toggle="tab" >{`${translate('task.task_dashboard.delay_task')}`}&nbsp;<span>{`(${state.delayTask ? state.delayTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskDeedlineNow" data-toggle="tab" >{`Hạn hôm nay`}&nbsp;<span>{`(${state.deadlineNow ? state.deadlineNow.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskDeedlineIncoming" data-toggle="tab" >{`${translate('task.task_dashboard.incoming_task')}`}&nbsp;<span>{`(${state.deadlineincoming ? state.deadlineincoming.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskIntime" data-toggle="tab" >{`${translate('task.task_dashboard.intime_task')}`}&nbsp;<span>{`(${state.intimeTask ? state.intimeTask.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralProcessOverdue" data-toggle="tab" >{`${translate('task.task_dashboard.overdue_task')}`}&nbsp;<span>{`(${state.overdueTaskProcess ? state.overdueTaskProcess.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralProcessIncoming" data-toggle="tab" >{`${translate('task.task_dashboard.incoming_task')}`}&nbsp;<span>{`(${state.deadlineIncoming ? state.deadlineIncoming.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralProcessInprocess" data-toggle="tab" >{`Đang thực hiện`}&nbsp;<span>{`(${state.inprocess ? state.inprocess.length : 0})`}</span></a></li>
                 </ul>
+                <div className="tab-content" id="general-tasks-wraper">
+                    <div className="tab-pane active notifi-tab-pane StyleScrollDiv StyleScrollDiv-y" id="allGeneralProcessOverdue" style={{ maxHeight: '400px' }}>
+                        {
+                            state.overdueTaskProcess ?
+                                <div className="faqs-page block ">
+                                    <div className="panel-group" id="accordion-overdue" role="tablist" aria-multiselectable="true" style={{ marginBottom: 0 }}>
+                                        {
+                                            (state.overdueTaskProcess.length !== 0) ?
+                                                state.overdueTaskProcess.map((obj, index) => (
+                                                    <div className="panel panel-default" key={index}>
+                                                        <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-overdue" href={`#collapse-overdue${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span className="index">{index + 1}</span>
+                                                            <span className="task-name">{obj.processName}</span>
+                                                            <small className="label label-danger" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{translate('task.task_dashboard.overdue')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                        </span>
+                                                        <div id={`collapse-overdue${index}`} className="panel-collapse collapse" role="tabpanel">
+                                                            <div className="panel-body">
+                                                                <div className="time-todo-range">
+                                                                    <span style={{ marginRight: '10px' }}>Thời gian thực hiện quy trình: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
+                                                                </div>
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Số công việc trong quy trình: </span>
+                                                                    <span>{obj.tasks?.length ?? 0}</span>
+                                                                </div>
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Mức độ hoàn thành: </span>
+                                                                    <span>{getNumberTaskFinished(obj.tasks)}/{obj.tasks?.length ?? 0}</span>
+                                                                </div>
 
+                                                                <div className="role-in-task">
+                                                                    <span style={{ marginRight: '10px' }}>Người quản lý: </span>
+                                                                    {
+                                                                        obj?.manager?.length ?
+                                                                            <ToolTip dataTooltip={obj?.manager.map(o => o.name)} />
+                                                                            : null
+                                                                    }
+                                                                </div>
+
+                                                                <a onClick={() => { viewProcess(obj) }} target="_blank" className="seemore-task" style={{ cursor: "pointer" }}>Xem chi tiết</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )) : <small style={{ color: "#696767" }}>Không có quy trình nào</small>
+                                        }
+                                    </div>
+                                </div> : null
+                        }
+                    </div>
+                    <div className="tab-pane notifi-tab-pane" id="allGeneralProcessIncoming" style={{ maxHeight: '400px' }}>
+                        {
+                            state.deadlineIncoming ?
+                                <div className="faqs-page block ">
+                                    <div className="panel-group" id="accordion-incoming" role="tablist" aria-multiselectable="true" style={{ marginBottom: 0 }}>
+                                        {
+                                            (state.deadlineIncoming.length !== 0) ?
+                                                state.deadlineIncoming.map((obj, index) => (
+                                                    <div className="panel panel-default" key={index}>
+                                                        <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-incoming" href={`#collapse-incoming${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span className="index">{index + 1}</span>
+                                                            <span className="task-name">{obj.processName}</span>
+                                                            <small className="label label-warning" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>Còn {obj.totalDays} {translate('task.task_dashboard.day')}</small>
+                                                        </span>
+                                                        <div id={`collapse-incoming${index}`} className="panel-collapse collapse" role="tabpanel">
+                                                            <div className="panel-body">
+                                                                <div className="time-todo-range">
+                                                                    <span style={{ marginRight: '10px' }}>Thời gian thực hiện quy trình: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
+                                                                </div>
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Số công việc trong quy trình: </span>
+                                                                    <span>{obj.tasks?.length ?? 0}</span>
+                                                                </div>
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Mức độ hoàn thành: </span>
+                                                                    <span>{getNumberTaskFinished(obj.tasks)}/{obj.tasks?.length ?? 0}</span>
+                                                                </div>
+
+                                                                <div className="role-in-task">
+                                                                    <span style={{ marginRight: '10px' }}>Người quản lý: </span>
+                                                                    {
+                                                                        obj?.manager?.length ?
+                                                                            <ToolTip dataTooltip={obj?.manager.map(o => o.name)} />
+                                                                            : null
+                                                                    }
+                                                                </div>
+
+                                                                <a onClick={() => { viewProcess(obj) }} className="seemore-task" style={{ cursor: "pointer" }}>Xem chi tiết</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )) : <small style={{ color: "#696767" }}>Không có quy trình nào</small>
+                                        }
+                                    </div>
+                                </div> : null
+                        }
+                    </div>
+                    <div className="tab-pane notifi-tab-pane" id="allGeneralProcessInprocess" style={{ maxHeight: '400px' }}>
+                        {
+                            state.inprocess ?
+                                <div className="faqs-page block ">
+                                    <div className="panel-group" id="accordion-inprocess" role="tablist" aria-multiselectable="true" style={{ marginBottom: 0 }}>
+                                        {
+                                            (state.inprocess.length !== 0) ?
+                                                state.inprocess.map((obj, index) => (
+                                                    <div className="panel panel-default" key={index}>
+                                                        <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-inprocess" href={`#collapse-inprocess${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span className="index">{index + 1}</span>
+                                                            <span className="task-name">{obj.processName}</span>
+                                                            {/* <small className="label label-warning" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>Còn {obj.totalDays} {translate('task.task_dashboard.day')}</small> */}
+                                                        </span>
+                                                        <div id={`collapse-inprocess${index}`} className="panel-collapse collapse" role="tabpanel">
+                                                            <div className="panel-body">
+                                                                <div className="time-todo-range">
+                                                                    <span style={{ marginRight: '10px' }}>Thời gian thực hiện quy trình: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
+                                                                </div>
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Số công việc trong quy trình: </span>
+                                                                    <span>{obj.tasks?.length ?? 0}</span>
+                                                                </div>
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Mức độ hoàn thành: </span>
+                                                                    <span>{getNumberTaskFinished(obj.tasks)}/{obj.tasks?.length ?? 0}</span>
+                                                                </div>
+
+                                                                <div className="role-in-task">
+                                                                    <span style={{ marginRight: '10px' }}>Người quản lý: </span>
+                                                                    {
+                                                                        obj?.manager?.length ?
+                                                                            <ToolTip dataTooltip={obj?.manager.map(o => o.name)} />
+                                                                            : null
+                                                                    }
+                                                                </div>
+
+                                                                <a onClick={() => { viewProcess(obj) }} target="_blank" className="seemore-task" style={{ cursor: "pointer" }}>Xem chi tiết</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )) : <small style={{ color: "#696767" }}>Không có quy trình nào</small>
+                                        }
+                                    </div>
+                                </div> : null
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     )
 }
-function mapState(state) {
-    const { project } = state;
-    return { project };
-}
 
-export default connect(mapState, null)(withTranslate(GeneralTaskPersonalChart))
+function mapState(state) {
+    const { taskProcess, tasks, department } = state;
+    return { taskProcess, tasks, department };
+}
+const actionCreators = {
+    getAllTaskProcess: TaskProcessActions.getAllTaskProcess,
+};
+
+export default connect(mapState, actionCreators)(withTranslate(GeneralTaskProcessChart))

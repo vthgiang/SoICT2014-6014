@@ -129,7 +129,7 @@ export default {
             },
 
             task_template: "Mẫu Công Việc",
-            task_process_dashboard: "Dashboard công việc theo quy trình",
+            task_process_dashboard: "Dashboard quy trình văn bản",
             taskmanagement: "Quản Lý Công Việc",
             task_management_unit: "Công việc đơn vị",
             manageDocument: "Quản lý văn bản",
@@ -5847,7 +5847,7 @@ export default {
                 edit_failed: "Sửa phiếu đề nghị thất bại",
                 cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng",
                 number_purchasing_status: "Số lượng phiếu đề nghị mua hàng theo trạng thái"
-            },            
+            },
             work_schedule: {
                 //general
                 time: "Thời gian",
@@ -6559,8 +6559,8 @@ export default {
             show_task_project_fail: 'Hiển thị thông tin dự án thất bại',
             create_task_project_success: 'Tạo dự án mới thành công',
             create_task_project_fail: 'Không thể tạo mới dự án',
-            create_tasks_list_excel_cpm_success:'Tạo công việc từ file thành công',
-            create_tasks_list_excel_cpm_fail:'Tạo công việc từ file thất bại',
+            create_tasks_list_excel_cpm_success: 'Tạo công việc từ file thành công',
+            create_tasks_list_excel_cpm_fail: 'Tạo công việc từ file thất bại',
             edit_task_project_success: 'Chỉnh sửa thông tin dự án thành công',
             edit_task_project_fail: 'Không thể chỉnh sửa thông tin dự án',
             delete_task_project_success: 'Xoá dự án thành công',
