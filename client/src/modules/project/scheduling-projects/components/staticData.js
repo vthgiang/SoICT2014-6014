@@ -215,7 +215,7 @@ export const configImportCPMData = {
         value: ["Danh sách công việc"]
     },
     rowHeader: {
-        description: "Số tiêu đề của bảng",
+        description: "Số dòng tiêu đề của bảng",
         value: 2
     },
     code: {
@@ -232,6 +232,11 @@ export const configImportCPMData = {
         columnName: "Mã công việc tiền nhiệm",
         description: "Mã công việc tiền nhiệm",
         value: "Mã công việc tiền nhiệm"
+    },
+    projectPhase: {
+        columnName: "Mã giai đoạn",
+        description: "Mã giai đoạn",
+        value: "Mã giai đoạn"
     },
     estimateNormalTime: {
         columnName: "Thời gian ước lượng",
@@ -257,5 +262,47 @@ export const configImportCPMData = {
         columnName: 'Trọng số thành viên thực hiện (%)',
         description: 'Trọng số thành viên thực hiện (%)',
         value: 'Trọng số thành viên thực hiện (%)'
+    },
+}
+
+export const configMemberData = {
+    sheets: {
+        description: "Tên các sheet",
+        value: ["Danh sách thành viên dự án"]
+    },
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 2
+    },
+    memberName: {
+        columnName: 'Tên thành viên',
+        description: 'Tên thành viên',
+        value: 'Tên thành viên',
+    },
+    emailProjectMembers: {
+        columnName: 'Email',
+        description: 'Email',
+        value: 'Email',
+    },
+}
+
+export const configPhaseData = {
+    sheets: {
+        description: "Tên các sheet",
+        value: ["Các giai đoạn trong dự án"]
+    },
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 2
+    },
+    phaseCode: {
+        columnName: 'Mã giai đoạn',
+        description: 'Mã giai đoạn',
+        value: 'Mã giai đoạn',
+    },
+    phaseName: {
+        columnName: 'Tên giai đoạn',
+        description: 'Tên giai đoạn',
+        value: 'Tên giai đoạn',
     },
 }

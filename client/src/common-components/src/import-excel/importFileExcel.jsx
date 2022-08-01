@@ -44,7 +44,7 @@ class ImportFileExcel extends Component {
                 let checkFileImport = false;
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
-                    // Lấy index của các tiều đề cột mà người dùng muốn import
+                    // Lấy index của các tiêu đề cột mà người dùng muốn import
                     for (let i = 0; i < data.length - rowHeader; i++) {
                         let indexKey = { ...indexKeyImport };
                         for (let j = 0; j < rowHeader; j++) {
@@ -126,7 +126,7 @@ class ImportFileExcel extends Component {
         }
     }
 
-    // Bắt xự kiện chọn file import
+    // Bắt sự kiện chọn file import
     handleChangeFileImport = (files) => {
         let { configData, getFileImport, handleImportExcel } = this.props;
         let file = files[0];

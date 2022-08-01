@@ -250,7 +250,10 @@ export const getEmailMembers = (projectDetail) => {
     // }
     for (let employeeItem of projectDetail?.responsibleEmployees) {
         if (!resultArr.includes(employeeItem?.email)) {
-            resultArr.push(employeeItem?.email)
+            resultArr.push({
+                email: employeeItem?.email,
+                name: employeeItem?.name
+            })
         }
     }
     return resultArr;
@@ -432,7 +435,17 @@ export const processDataTasksStartEnd = (projectDetail, currentTasksData, curren
         }
     }
     // console.log('tempTasksData 33333333', tempTasksData);
-    return tempTasksData;
+    return tempTasksData.sort((firstTask, secondTask) => {
+        if (dayjs(firstTask.startDate).isBefore(dayjs(secondTask.startDate))) {
+            return -1;
+        }
+        else if (dayjs(firstTask.startDate).isAfter(dayjs(secondTask.startDate))) {
+            return 1;
+        }
+        else if (dayjs(firstTask.startDate).isSame(dayjs(secondTask.startDate))) {
+            return 0;
+        }
+    });
 }
 
 // render item ở phần thông tin
@@ -711,6 +724,8 @@ export const formatTaskStatus = (translate, status) => {
             return translate('task.task_management.canceled');
         case "requested_to_close":
             return translate('task.task_management.requested_to_close');
+        default:
+            return translate('task.task_management.inprocess');
     }
 }
 

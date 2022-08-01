@@ -30,7 +30,7 @@ const DetailContent = (props) => {
 						<div className="form-group">
 							<strong className="col-sm-4">Hình thức quản lý dự án</strong>
 							<div className="col-sm-8">
-								{projectDetail ? translate(renderProjectTypeText(projectDetail?.projectType)) : null}
+								{projectDetail ? renderProjectTypeText(projectDetail?.projectType) : null}
 							</div>
 						</div>
 					</div>

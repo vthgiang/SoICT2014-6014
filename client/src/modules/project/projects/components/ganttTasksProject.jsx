@@ -3,17 +3,41 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { formatTaskStatus } from './functionHelper';
 import moment from 'moment';
 import { ProjectGantt } from '../../../../common-components/src/gantt/projectGantt';
-import { getDurationWithoutSatSun } from './functionHelper';
+import DetailPhase from '../../project-phase/components/detailPhase.jsx'
+import { getDurationWithoutSatSun, getCurrentProjectDetails } from './functionHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import { ModalDetailTask } from '../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 
 const GanttTasksProject = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
-    const { translate, currentProjectTasks, user, project, tasks } = props;
+    const { translate, currentProjectTasks, user, project, tasks, currentProjectPhase, projectPhase } = props;
     const task = tasks && tasks.task;
+    let projectDetail = {};
+
+    if (props.projectDetail) {
+        projectDetail = props.projectDetail;
+    }
+
+    else projectDetail = getCurrentProjectDetails(project, currentProjectId)
+
+    const [state, setState] = useState({
+        currentPhase: {},
+        currentPhaseId: '',
+        currentTaskId: '',
+    });
+
+    const { currentPhase, currentPhaseId ,currentTaskId } = state;
+
+    const checkTaskType = (id) => {
+        if (currentProjectTasks?.find(taskItem => taskItem._id === id)) return 'task'
+        else if (currentProjectPhase?.find(phase => phase._id === id)) return 'phase'
+        return 'none'
+    }
+
     const [currentZoom, setCurrentZoom] = useState(translate('system_admin.system_setting.backup.date'));
     const [dataTask, setDataTask] = useState({
         data: [],
@@ -21,15 +45,39 @@ const GanttTasksProject = (props) => {
         count: 0,
         line: 0,
     });
+
     const taskStatus = ["inprocess"];
+
     const handleZoomChange = (zoom) => {
         setCurrentZoom(zoom);
         setDataTask(getDataTask(zoom));
     }
+
     const attachEvent = (id) => {
         if (!RegExp(/baseline/g).test(String(id))) {
-            props.getTaskById(id);
-            window.$(`#modal-detail-task-Employee`).modal('show');
+            let type = checkTaskType(id)
+
+            if (type === 'task') {
+                setState(state => {
+                    return {
+                        ...state,
+                        currentTaskId: id,
+                    }
+                })
+                props.getTaskById(id);
+                window.$(`#modal-detail-task-Employee`).modal('show');
+            }
+
+            if (type === 'phase') {
+                setState(state => {
+                    return {
+                        ...state,
+                        currentPhaseId: id,
+                        currentPhase: currentProjectPhase.find(phase => phase._id === id),
+                    }
+                })
+                window.$(`#modal-show-detail-phase-${id}`).modal('show')
+            }
         }
     }
 
@@ -111,11 +159,12 @@ const GanttTasksProject = (props) => {
                     start_date: moment(taskItem.startDate).format("YYYY-MM-DD HH:mm"),
                     end_date: (taskItem.actualEndDate && taskItem.status === 'finished')
                         ? moment(taskItem.actualEndDate).format("YYYY-MM-DD HH:mm")
-                        : (moment().isBefore(moment(taskItem.startDate)) ? moment(taskItem.startDate).format("YYYY-MM-DD HH:mm") : moment().format("YYYY-MM-DD HH:mm")),
+                        : (moment().isBefore(moment(taskItem.startDate).add(1, currentMode)) ? moment(taskItem.startDate).add(1, currentMode).format("YYYY-MM-DD HH:mm") : moment().format("YYYY-MM-DD HH:mm")),
                     progress: taskItem.progress / 100,
                     process,
-                    parent: '0',
-                    status: taskItem.status,
+                    parent: taskItem.taskPhase,
+                    status: formatTaskStatus(translate, taskItem.status),
+                    type: 'task',
                 });
 
                 // Nếu task có các task tiền nhiệm thì tạo link
@@ -133,6 +182,66 @@ const GanttTasksProject = (props) => {
             }
             line = data.length;
         }
+
+        if (currentProjectPhase && currentProjectPhase.length > 0) {
+            for (let phaseItem of currentProjectPhase) {
+                let start = moment(phaseItem.startDate);
+                let end = moment(phaseItem.endDate);
+                let now = moment(new Date());
+                let duration = 0;
+                if (currentMode === 'days') {
+                    duration = getDurationWithoutSatSun(phaseItem.startDate, phaseItem.endDate, 'days')
+                } else if (currentMode === 'hours') {
+                    duration = getDurationWithoutSatSun(phaseItem.startDate, phaseItem.endDate, 'hours')
+                } else {
+                    duration = end.diff(start, currentMode);
+                }
+                if (duration == 0) duration = 1;
+                let process = 0;
+
+                // Tô màu công việc
+                if (phaseItem.status != "inprocess") {
+                    process = 3;
+                }
+                else if (now > end) {
+                    process = 2; // Quá hạn
+                }
+                else {
+                    let processDay = Math.floor(phaseItem.progress * duration / 100);
+                    let uptonow = now.diff(start, currentMode);
+
+                    if (uptonow > processDay) {
+                        process = 0; // Trễ hạn
+                    }
+                    else if (uptonow <= processDay) {
+                        process = 1; // Đúng hạn
+                    }
+                }
+                data.push({
+                    id: phaseItem._id,
+                    text: phaseItem.status == "inprocess" ? `${phaseItem.name} - ${phaseItem.progress}%` : phaseItem.name,
+                    taskName: `${phaseItem.name}`,
+                    responsible: '',
+                    customDuration: numberWithCommas(duration),
+                    planned_start: moment(phaseItem.startDate).format("YYYY-MM-DD HH:mm"),
+                    planned_end: moment(phaseItem.endDate).format("YYYY-MM-DD HH:mm"),
+                    start_date: moment(phaseItem.startDate).format("YYYY-MM-DD HH:mm"),
+                    end_date: (phaseItem.actualEndDate && phaseItem.status === 'finished')
+                        ? moment(phaseItem.actualEndDate).format("YYYY-MM-DD HH:mm")
+                        : (moment().isBefore(moment(phaseItem.startDate).add(1, currentMode)) ? moment(phaseItem.startDate).add(1, currentMode).format("YYYY-MM-DD HH:mm") : moment().format("YYYY-MM-DD HH:mm")),
+                    progress: phaseItem.progress ? phaseItem.progress / 100 : 0,
+                    process,
+                    parent: '0',
+                    status: formatTaskStatus(translate, phaseItem.status),
+                    type: 'project',
+                });
+
+            }
+            line = data.length;
+        }
+
+
+
         return {
             data,
             count,
@@ -154,6 +263,14 @@ const GanttTasksProject = (props) => {
                         attachEvent={attachEvent}
                     />
                     {<ModalDetailTask action={'Employee'} task={task} />}
+                    {
+                        currentPhaseId && <DetailPhase
+                            phaseId={currentPhaseId}
+                            currentProjectTasks={currentProjectTasks}
+                            projectDetail={projectDetail}
+                            phase={currentPhase}
+                        />
+                    }
                     <div className="form-inline" style={{ textAlign: 'center' }}>
                         <div className="form-group">
                             <div id="in-time"></div>
@@ -175,8 +292,8 @@ const GanttTasksProject = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user, tasks } = state;
-    return { project, user, tasks }
+    const { project, user, tasks, projectPhase } = state;
+    return { project, user, tasks, projectPhase }
 }
 
 const mapDispatchToProps = {

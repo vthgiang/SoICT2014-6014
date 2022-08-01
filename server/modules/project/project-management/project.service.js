@@ -8,14 +8,15 @@ const {
     Salary,
     Task,
     ProjectChangeRequest,
-} = require('../../models');
+    ProjectPhase,
+} = require('../../../models');
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
 const ObjectId = require("mongoose").Types.ObjectId;
-const { connect, } = require(`../../helpers/dbHelper`);
-const { dateParse } = require(`../../helpers/functionHelper`);
+const { connect, } = require(`../../../helpers/dbHelper`);
+const { dateParse } = require(`../../../helpers/functionHelper`);
 const moment = require('moment');
-const { createProjectTask } = require('../task/task-management/task.service');
+const { createProjectTask } = require('../../task/task-management/task.service');
 
 const MILISECS_TO_DAYS = 86400000;
 
@@ -159,10 +160,8 @@ exports.get = async (portal, query) => {
         let currentPage, currentPerPage;
         currentPage = page ? Number(page) : 1;
         currentPerPage = perPage ? Number(perPage) : 5;
-        console.log('currentPage, currentPerPage', currentPage, currentPerPage)
-        console.log('options', options)
 
-        project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({createdAt: -1}).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
+        project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({ createdAt: -1 }).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
             .populate({ path: "responsibleEmployees", select: "_id name email" })
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" });
@@ -173,7 +172,7 @@ exports.get = async (portal, query) => {
     }
 
     else {
-        project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({createdAt: -1})
+        project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({ createdAt: -1 })
             .populate({ path: "responsibleEmployees", select: "_id name email" })
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" })
@@ -191,7 +190,6 @@ exports.show = async (portal, id) => {
  * @param {*} data 
  */
 exports.create = async (portal, data, company) => {
-    console.log('data', data)
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
 
@@ -336,6 +334,7 @@ exports.edit = async (portal, id, data) => {
         .populate({ path: "projectManager", select: "_id name email" })
         .populate({ path: "creator", select: "_id name email" })
 }
+
 /**
  * Xoá dự án theo id
  * @param {*} id
@@ -376,8 +375,6 @@ exports.getMembersWithScore = async (portal, id, evalMonth) => {
     members.forEach((memberItem) => {
         // Lấy những task mà trong responsibleEmployees chứa id của member
         const taskResOnly = currentTasksWithinEvalMonth.map((taskItem) => {
-            console.log(memberItem)
-            console.log(taskItem.responsibleEmployees)
             return taskItem.responsibleEmployees.includes(memberItem)
         });
         // Nếu có item nào thì xử lí, còn không thì lặp tiếp mảng members
@@ -499,10 +496,10 @@ exports.getSalaryMembers = async (portal, data) => {
  */
 exports.getListProjectChangeRequests = async (portal, query) => {
     let { name, status, affectedTask, creator, creationTime, calledId, page, perPage, projectId } = query;
-    
+
     let projectChangeRequestsList;
     let keySearch = {};
-    
+
     // Tìm kiếm yêu cầu theo dự án
     if (projectId) {
         keySearch = {
@@ -534,7 +531,7 @@ exports.getListProjectChangeRequests = async (portal, query) => {
 
     // Tìm kiếm công việc theo tên công việc bị ảnh hưởng
     if (affectedTask) {
-        const affected =  await Task(connect(DB_CONNECTION, portal)).find({
+        const affected = await Task(connect(DB_CONNECTION, portal)).find({
             name: {
                 $regex: affectedTask,
                 $options: "i",
@@ -621,15 +618,15 @@ exports.getListProjectChangeRequests = async (portal, query) => {
     let totalList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
 
     // Nếu calledId là 'get_all' thì bỏ qua page và perPage
-    if ( calledId === 'get_all' ) {
+    if (calledId === 'get_all') {
         projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find(keySearch).sort({ createdAt: -1 })
-        .populate({ path: "creator", select: "_id name email" });
+            .populate({ path: "creator", select: "_id name email" });
     }
 
     else {
         projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal))
-        .find(keySearch).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
-        .populate({ path: "creator", select: "_id name email" });
+            .find(keySearch).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .populate({ path: "creator", select: "_id name email" });
     }
 
     return {
@@ -643,7 +640,6 @@ exports.getListProjectChangeRequests = async (portal, query) => {
  * @param {*} changeRequest
 */
 exports.createProjectChangeRequest = async (portal, changeRequest) => {
-    console.log(changeRequest)
     const createCRResult = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).create(changeRequest);
     const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
         taskProject: createCRResult.taskProject,
@@ -657,13 +653,15 @@ exports.createProjectChangeRequest = async (portal, changeRequest) => {
  * @param {*} requestStatus
  */
 exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, requestStatus) => {
-    console.log(changeRequestId, requestStatus);
     // update requestStatus trong database
     const updateCRStatusResult = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).findByIdAndUpdate(changeRequestId, {
         $set: {
             requestStatus,
         }
     }, { new: true });
+    let oldPhaseId = updateCRStatusResult.affectedTasksList.map(item => item.old.taskPhase);
+    let newPhaseId = updateCRStatusResult.affectedTasksList.map(item => item.new.taskPhase);
+    let updatePhaseId = [...oldPhaseId, ...newPhaseId];
     // Nếu requestStatus là đồng ý thì thực thi
     if (Number(requestStatus) === 3) {
         // Nếu là dạng normal thì bỏ qua
@@ -697,6 +695,7 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
                             accountableEmployees: affectedItem.new.accountableEmployees,
                             totalResWeight: affectedItem.new.totalResWeight,
                             estimateAssetCost: affectedItem.new.estimateAssetCost,
+                            taskPhase: affectedItem.new.taskPhase,
                         }
                     }, { new: true });
                 }
@@ -705,6 +704,13 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
                     await createProjectTask(portal, updateCRStatusResult.currentTask);
                 }
             }
+
+            // Cập nhật lại thông số cho giai đoạn sau khi cập nhật các task
+
+            updatePhaseId.forEach(async (id) => {
+                await updatePhase(id, portal);
+            })
+
             await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(updateCRStatusResult.taskProject, {
                 $set: {
                     budgetChangeRequest: updateCRStatusResult.baseline.newCost,
@@ -716,7 +722,7 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
     // query lại danh sách projectChangeRequest
     const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
         taskProject: updateCRStatusResult.taskProject,
-    }).sort({createdAt: -1}).populate({ path: "creator", select: "_id name email" });
+    }).sort({ createdAt: -1 }).populate({ path: "creator", select: "_id name email" });
     return projectChangeRequestsList;
 }
 
@@ -725,7 +731,6 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
  * @param {*} data
  */
 exports.updateListProjectChangeRequests = async (portal, data) => {
-    console.log(data)
     const { newChangeRequestsList } = data
     for (let newCRItem of newChangeRequestsList) {
         await ProjectChangeRequest(connect(DB_CONNECTION, portal)).findOneAndUpdate(
@@ -744,3 +749,65 @@ exports.updateListProjectChangeRequests = async (portal, data) => {
     return projectChangeRequestsList;
 }
 
+// Tìm kiếm endDate muộn nhất trong list tasks
+const findLatestDate = (data) => {
+    if (data.length === 0) return null;
+    let currentMax = data[0].endDate;
+    for (let dataItem of data) {
+        if (moment(dataItem.endDate).isAfter(moment(currentMax))) {
+            currentMax = dataItem.endDate;
+        }
+    }
+    return currentMax;
+}
+
+// Tìm kiếm startDate sớm nhất trong list tasks
+const findEarliestDate = (data) => {
+    if (data.length === 0) return null;
+    let currentMin = data[0].startDate;
+    for (let dataItem of data) {
+        if (moment(dataItem.startDate).isBefore(moment(currentMin))) {
+            currentMin = dataItem.startDate;
+        }
+    }
+    return currentMin;
+}
+
+// Hàm hỗ trợ cập nhật lại thông tin của các giai đoạn sau khi cập nhật thông tin 1 công việc
+const updatePhase = async (phaseId, portal) => {
+    console.log(phaseId);
+    if (phaseId) {
+        let newBudget = 0;
+        let listTaskPhase = [];
+        let oldPhaseData = ProjectPhase(connect(DB_CONNECTION, portal)).findById(phaseId);
+        let newEndDate = oldPhaseData?.endDate;
+        let newStartDate = oldPhaseData?.startDate;
+        let newStatus = oldPhaseData?.status || "inprocess";
+        listTaskPhase = await Task(connect(DB_CONNECTION, portal)).find({taskPhase: phaseId});
+        // Chuyển danh sách công việc thành mảng
+        if (listTaskPhase && !Array.isArray(listTaskPhase)) {
+            listTaskPhase = [...listTaskPhase];
+        }
+        // Nếu danh sách công việc không rỗng, t cần tính lại ngày bắt đầu, ngày kết thúc
+        if (listTaskPhase && listTaskPhase.length > 0) {
+            newStartDate = findEarliestDate(listTaskPhase);
+            newEndDate = findLatestDate(listTaskPhase);
+            newBudget = listTaskPhase.reduce((current, next) => current + next.estimateNormalCost ,0);
+            // Nếu trạng thái hiện tại là đã hoàn thành và danh sách công việc có công việc chưa hoàn thành
+            // Tự động cập nhật lại trạng thái thực hiện giai đoạn thành đang thực hiện
+            if (newStatus === 'finished') {
+                let unfinishedTask = listTaskPhase.filter(task => task.status !== "finished");
+                if (unfinishedTask.length > 0) newStatus = "inprocess"
+            }
+        }
+        let newPhase = await ProjectPhase(connect(DB_CONNECTION, portal)).findByIdAndUpdate(phaseId, {
+            $set: {
+                budget: Number(newBudget),
+                endDate: newEndDate,
+                startDate: newStartDate,
+                status: newStatus,
+            }
+        }, { new: true });
+        console.log(newPhase);
+    }
+}

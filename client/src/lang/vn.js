@@ -6582,6 +6582,15 @@ export default {
 
             // Quản lý công việc trong dự án
             task_management: {
+                add_task: "Thêm công việc mới",
+                add_phase: "Thêm giai đoạn mới",
+                add_milestone: "Thêm cột mốc mới",
+                type: "Loại công việc",
+                phase: "Giai đoạn",
+                task: "Công việc",
+                milestone: "Cột mốc",
+                select_type: "Chọn loại công việc",
+                select_all_type: "Chọn tất cả loại công việc",
                 add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
                 end_date: "Ngày dự kiến kết thúc",
 
@@ -6661,10 +6670,19 @@ export default {
         phase: {
             projectCodeName: 'Mã dự án',
             fullName: 'Tên giai đoạn',
+            description: 'Mô tả giai đoạn',
+            startDate: 'Ngày bắt đầu giai đoạn',
+            endDate: 'Ngày kết thúc giai đoạn',
+            startTime: 'Thời gian bắt đầu giai đoạn',
+            endTime: 'Thời gian kết thúc giai đoạn',
             progress: 'Tiến độ',
-            listTasks: 'Công việc liên quan',
+            status: 'Trạng thái',
+            listTasks: 'Công việc thuộc giai đoạn',
             duration: 'Thời lượng',
             add_btn_new: "Thêm giai đoạn mới",
+            report: {
+                title: 'Báo cáo chi tiết giai đoạn'
+            }
         },
     },
 };

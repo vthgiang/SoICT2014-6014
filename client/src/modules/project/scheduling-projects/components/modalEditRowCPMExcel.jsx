@@ -84,10 +84,7 @@ const ModalEditRowCPMExcel = (props) => {
     }
     const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(currentAccountableEmployees, value)) {
-            message = 'Người thực hiện và Người phê duyệt không được trùng nhau';
-        }
-
+        
         if (willUpdateState) {
             setCurrentResponsibleEmployees(value)
             setTimeout(() => {
@@ -106,9 +103,7 @@ const ModalEditRowCPMExcel = (props) => {
     }
     const validateTaskAccountableEmployees = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(currentResponsibleEmployees, value)) {
-            message = 'Người thực hiện và Người phê duyệt không được trùng nhau';
-        }
+
 
         if (willUpdateState) {
             setCurrentAccountableEmployees(value)
@@ -272,6 +267,7 @@ const ModalEditRowCPMExcel = (props) => {
             code: currentRow?.code,
             name: currentRow?.name,
             preceedingTasks: currentRow?.preceedingTasks,
+            projectPhase: currentRow?.projectPhase,
             estimateNormalTime: currentEstimateNormalTime,
             estimateOptimisticTime: currentEstimateOptimisticTime,
             estimateNormalCost: currentEstimateNormalCost,
@@ -405,12 +401,26 @@ const ModalEditRowCPMExcel = (props) => {
 
                             {/* Dong 2 */}
                             <div className="row">
+
+                                {/* Công việc tiền nhiệm */}
                                 <div className="col-md-6">
                                     <div className="form-horizontal">
                                         <div className="form-group">
                                             <strong className="col-sm-4">Công việc tiền nhiệm</strong>
                                             <div className="col-sm-8">
                                                 <span>{currentRow?.preceedingTasks.join(', ')}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Giai đoạn */}
+                                <div className="col-md-6">
+                                    <div className="form-horizontal">
+                                        <div className="form-group">
+                                            <strong className="col-sm-4">Giai đoạn</strong>
+                                            <div className="col-sm-8">
+                                                <span>{currentRow?.projectPhase}</span>
                                             </div>
                                         </div>
                                     </div>

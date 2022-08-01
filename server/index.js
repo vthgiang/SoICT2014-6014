@@ -187,7 +187,8 @@ app.use("/business-department", require("./modules/production/order/business-dep
 app.use("/news-feed", require("./modules/news-feed/newsFeed.route"));
 
 // project
-app.use("/projects", require("./modules/project/project.route"));
+app.use("/projects", require("./modules/project/project-management/project.route"));
+app.use("/projects", require("./modules/project/project-phase/projectPhase.route"));
 app.use("/project-templates", require("./modules/project-template/projectTemplate.route"));
 
 app.use("/transport-requirement", require("./modules/production/transport/transportRequirements/transportRequirements.route"));

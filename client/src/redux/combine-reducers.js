@@ -153,6 +153,7 @@ import { projectTemplate } from "../modules/bidding/project-template/redux/reduc
 import { changeRequest } from "../modules/project/change-requests/redux/reducers";
 import { projectStatistic } from "../modules/project/statistic/redux/reducers";
 import { schedulingProjects } from "../modules/project/scheduling-projects/redux/reducers";
+import { projectPhase } from "../modules/project/project-phase/redux/reducers"
 
 
 import { newsFeeds } from "../modules/home/redux/reducers";
@@ -317,6 +318,7 @@ const appReducer = combineReducers({
     projectStatistic,
     changeRequest,
     schedulingProjects,
+    projectPhase,
 
     Intl,
 

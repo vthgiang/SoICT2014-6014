@@ -23,7 +23,7 @@ const ModalSalaryMembersEdit = (props) => {
                     }))
                 })
             }
-            props.getSalaryMembersDispatch({
+            responsibleEmployeesWithUnit.list.length > 0 && props.getSalaryMembersDispatch({
                 data: {
                     responsibleEmployeesWithUnit: createProjectCurrentSalaryMember || newResponsibleEmployeesWithUnit,
                 }

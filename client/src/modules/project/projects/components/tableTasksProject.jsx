@@ -2,16 +2,21 @@ import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'react-redux';
 import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, DeleteNotification, ToolTip } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+import { ProjectTreeTable } from '../components/projectTreeTable.jsx'
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from '../redux/actions';
+import { ProjectPhaseActions} from '../../project-phase/redux/actions'
+import PhaseEditForm from '../../project-phase/components/editPhase.jsx'
+import DetailPhase from '../../project-phase/components/detailPhase.jsx'
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { formatDate } from '../../../../helpers/formatDate';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { getStorage } from '../../../../config';
-import { formatTaskStatus, getCurrentProjectDetails, renderProgressBar, renderStatusColor, convertPriorityData } from './functionHelper';
+import { formatTaskStatus, getCurrentProjectDetails, renderProgressBar, renderStatusColor, convertPriorityData, checkIfAbleToCRUDProject, renderLongList, renderProjectTypeText } from './functionHelper';
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import Swal from 'sweetalert2';
 import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
+import { ModalPerformPhase} from '../../project-phase/components/modalPerfromPhase';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import moment from 'moment';
 import { getTotalTimeSheetLogs } from '../../../task/task-management/component/functionHelpers';
@@ -32,14 +37,18 @@ const TableTasksProject = (props) => {
         creatorEmployees: null,
         preceedingTasks: null,
         data: [],
+        taskType: ['task', 'phase', 'milestone'],
         currentTaskId: '',
+        currentPhaseId: '',
+        currentPhase: {},
     })
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(limit || defaultConfig.limit);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
-    const { translate, currentProjectTasks, user, project, performtasks, tasks } = props;
-    const { status, name, priority, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, preceedingTasks, data, currentTaskId } = state;
+    const { translate, currentProjectTasks, user, project, performtasks, tasks, projectPhase, currentProjectPhase, projectDetail } = props;
+    const { status, name, priority, startDate, endDate, responsibleEmployees, accountableEmployees, 
+        creatorEmployees, taskType, preceedingTasks, data, currentTaskId, currentPhaseId, currentPhase } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
 
@@ -68,10 +77,16 @@ const TableTasksProject = (props) => {
     //     window.$(`#modelPerformTask${currentTaskId}`).modal('show')
     // }, [currentTaskId])
 
+    // Khi có thay đổi công việc trong dự án cpm thì cập nhật lại
     useEffect(() => {
         let data = [];
-        if (!tasks?.isLoading && !user?.isLoading && !performtasks?.isLoading && !tasks?.isProjectPaginateLoading) {
+        if (!tasks?.isLoading && !user?.isLoading && !performtasks?.isLoading && !tasks?.isProjectPaginateLoading 
+            && !projectPhase.isLoading) {
             let currentTasks = _cloneDeep(tasks.tasks); // Sao chép ra mảng mới
+            let phases = _cloneDeep(projectPhase?.phases);
+            if (taskType.includes('task')) {
+                phases = processProjectPhase(currentTasks);
+            }
             for (let n in currentTasks) {
 
                 data[n] = {
@@ -84,12 +99,14 @@ const TableTasksProject = (props) => {
                     accountableEmployees: currentTasks[n]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.accountableEmployees.map(o => o.name)} /> : null,
                     creatorEmployees: currentTasks[n].creator ? currentTasks[n].creator.name : null,
                     status: <div style={{ color: renderStatusColor(currentTasks[n]) }}>{formatTaskStatus(translate, currentTasks[n]?.status)}</div>,
-                    startDate: moment(currentTasks[n]?.startDate).format('HH:mm DD/MM/YYYY'),
-                    endDate: moment(currentTasks[n]?.endDate).format('HH:mm DD/MM/YYYY'),
-                    actualEndDate: currentTasks[n]?.actualEndDate && moment(currentTasks[n]?.actualEndDate).format('HH:mm DD/MM/YYYY'),
+                    startDate: moment(currentTasks[n]?.startDate).format('HH:mm DD/MM/YYYY') || '',
+                    endDate: moment(currentTasks[n]?.endDate).format('HH:mm DD/MM/YYYY') || '',
+                    actualEndDate: currentTasks[n]?.actualEndDate && moment(currentTasks[n]?.actualEndDate).format('HH:mm DD/MM/YYYY') || '',
                     timesheetLogs: getTotalTimeSheetLogs(currentTasks[n]?.timesheetLogs),
                     progress: renderProgressBar(currentTasks[n]?.progress, currentTasks[n]),
-                    action: ["view"]
+                    parent: currentTasks[n].taskPhase ? currentTasks[n].taskPhase : null,
+                    type: 'task',
+                    action: ["edit"]
                 }
 
                 // Kiểm tra xem người dùng có quyền bấm giờ
@@ -98,13 +115,118 @@ const TableTasksProject = (props) => {
                 }
             }
 
+            for (let m in phases) {
+                phases[m]= {
+                    ...phases[m],
+                    rawData: phases[m],
+                    name: phases[m]?.name,
+                    priority: null,
+                    preceedingTask: null,
+                    responsibleEmployees: null,
+                    accountableEmployees: null,
+                    creatorEmployees: phases[m].creator ? phases[m].creator.name : null,
+                    status: <div style={{ color: renderStatusColor(phases[m]) }}>{formatTaskStatus(translate, phases[m]?.status)}</div>,
+                    startDate: moment(phases[m]?.startDate).format('HH:mm DD/MM/YYYY') || '',
+                    endDate: moment(phases[m]?.endDate).format('HH:mm DD/MM/YYYY') || '',
+                    actualEndDate: phases[m]?.actualEndDate && moment(phases[m]?.actualEndDate).format('HH:mm DD/MM/YYYY') || '',
+                    timesheetLogs: null,
+                    progress: renderProgressBar(phases[m]?.progress, phases[m]),
+                    parent: null,
+                    type: 'phase',
+                    action: ["view"],
+                }
+
+                if(checkIfAbleToCRUDProject({ project, user, currentProjectId })) {
+                    phases[m] = { ...phases[m], action: ["view", "edit", "delete"] }
+                }
+
+                data.push(phases[m]);
+            }
+
             setState({
                 ...state,
                 data: data
             })
         }
-        console.log(data);
-    }, [performtasks?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)])
+    }, [performtasks?.isLoading, projectPhase?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasksByProjectPaginate),
+         JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phases), JSON.stringify(tasks?.tasks), taskType])
+
+    // Khi gọi hàm lấy toàn bộ công việc, cập nhật lại bảng
+    // useEffect(() => {
+    //     let data = [];
+    //     if (!tasks?.isLoading && ! projectPhase.isLoading) {
+    //         let currentTasks = _cloneDeep(tasks.tasks); // Sao chép ra mảng mới
+    //         let currentTaskIds = currentTasks.map(task => {
+    //             return task._id;
+    //         })
+    //         currentTasks = tasks.tasksByProject.filter(item => currentTaskIds.includes(item._id)) ;
+    //         let phases = _cloneDeep(projectPhase.phases);
+    //         if (taskType.includes('task')) {
+    //             phases = processProjectPhase(currentTasks);
+    //         }
+    //         for (let n in currentTasks) {
+
+    //             data[n] = {
+    //                 ...currentTasks[n],
+    //                 rawData: currentTasks[n],
+    //                 name: currentTasks[n]?.name,
+    //                 priority: convertPriorityData(currentTasks[n].priority, translate),
+    //                 preceedingTask: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
+    //                 responsibleEmployees: currentTasks[n]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.responsibleEmployees.map(o => o.name)} /> : null,
+    //                 accountableEmployees: currentTasks[n]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.accountableEmployees.map(o => o.name)} /> : null,
+    //                 creatorEmployees: currentTasks[n].creator ? currentTasks[n].creator.name : null,
+    //                 status: <div style={{ color: renderStatusColor(currentTasks[n]) }}>{formatTaskStatus(translate, currentTasks[n]?.status)}</div>,
+    //                 startDate: moment(currentTasks[n]?.startDate).format('HH:mm DD/MM/YYYY') || '',
+    //                 endDate: moment(currentTasks[n]?.endDate).format('HH:mm DD/MM/YYYY') || '',
+    //                 actualEndDate: currentTasks[n]?.actualEndDate && moment(currentTasks[n]?.actualEndDate).format('HH:mm DD/MM/YYYY') || '',
+    //                 timesheetLogs: getTotalTimeSheetLogs(currentTasks[n]?.timesheetLogs),
+    //                 progress: renderProgressBar(currentTasks[n]?.progress, currentTasks[n]),
+    //                 parent: currentTasks[n].taskPhase ? currentTasks[n].taskPhase : null,
+    //                 type: 'task',
+    //                 action: ["edit"]
+    //             }
+
+    //             // Kiểm tra xem người dùng có quyền bấm giờ
+    //             if (currentTasks[n].responsibleEmployees && currentTasks[n].responsibleEmployees.find(e => e._id === userId) || currentTasks[n].accountableEmployees && currentTasks[n].accountableEmployees.find(e => e._id === userId)) {
+    //                 data[n] = { ...data[n], action: ["edit", "startTimer"] }
+    //             }
+    //         }
+
+    //         for (let m in phases) {
+    //             phases[m]= {
+    //                 ...phases[m],
+    //                 rawData: phases[m],
+    //                 name: phases[m]?.name,
+    //                 priority: null,
+    //                 preceedingTask: null,
+    //                 responsibleEmployees: null,
+    //                 accountableEmployees: null,
+    //                 creatorEmployees: phases[m].creator ? phases[m].creator.name : null,
+    //                 status: <div style={{ color: renderStatusColor(phases[m]) }}>{formatTaskStatus(translate, phases[m]?.status)}</div>,
+    //                 startDate: moment(phases[m]?.startDate).format('HH:mm DD/MM/YYYY') || '',
+    //                 endDate: moment(phases[m]?.endDate).format('HH:mm DD/MM/YYYY') || '',
+    //                 actualEndDate: phases[m]?.actualEndDate && moment(phases[m]?.actualEndDate).format('HH:mm DD/MM/YYYY') || '',
+    //                 timesheetLogs: null,
+    //                 progress: renderProgressBar(phases[m]?.progress, phases[m]),
+    //                 parent: null,
+    //                 type: 'phase',
+    //                 action: ["view"],
+    //             }
+
+    //             if(checkIfAbleToCRUDProject({ project, user, currentProjectId })) {
+    //                 phases[m] = { ...phases[m], action: ["view", "edit", "delete"] }
+    //             }
+
+    //             data.push(phases[m]);
+    //         }
+
+    //         setState({
+    //             ...state,
+    //             data: data
+    //         })
+    //     }
+    // }, [JSON.stringify(tasks.tasksByProject), tasks.isLoading, projectPhase.isLoading])
+
 
     // const handleChangeProjectName = (e) => {
     //     const { value } = e.target;
@@ -134,6 +256,14 @@ const TableTasksProject = (props) => {
         return <ToolTip dataTooltip={resultArr} />;
     }
 
+    // Kiểm tra những phase nào có ít nhất 1 công việc trong bảng
+    const processProjectPhase = (taskList) => {
+        let result = []
+        if (!currentProjectPhase || currentProjectPhase?.length === 0 || taskList?.length === 0 || !taskList) result = [] ;
+        else result = currentProjectPhase?.filter(phase => taskList.find(task => task.taskPhase === phase._id));
+        return result
+    }
+
     const handleChangeName = (e) => {
         let name = e.target.value;
         if (name === '') {
@@ -161,7 +291,7 @@ const TableTasksProject = (props) => {
     const handleSelectStatus = (value) => {
         setState({
             ...state,
-            status: value
+            status: value,
         });
     }
 
@@ -169,6 +299,13 @@ const TableTasksProject = (props) => {
         setState({
             ...state,
             priority: value
+        });
+    }
+
+    const handleSelectTaskType = (value) => {
+        setState({
+            ...state,
+            taskType: value
         });
     }
 
@@ -288,6 +425,54 @@ const TableTasksProject = (props) => {
         }, 500);
     }
 
+    const handleViewPhaseInfo = (id) => {
+        console.log(1);
+        setState(state => {
+            return {
+                ...state,
+                currentPhaseId: id,
+                currentPhase: currentProjectPhase.find(phase => phase._id === id),
+            }
+        })
+
+        setTimeout(() => {
+            // window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+            window.$(`#modal-show-detail-phase-${id}`).modal('show')
+        }, 500);
+    }
+
+    const handleDeletePhase = (id) => {
+        // Hàm xóa một giai đoạn theo id
+        Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa giai đoạn đã chọn?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: props.translate('general.no'),
+            confirmButtonText: props.translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.deletePhaseById(id);
+            }
+        })  
+    }
+    // Xem thông tin giai đoạn
+    const handleEditPhase = (id) => {
+        setState(state => {
+            return {
+                ...state,
+                currentPhaseId: id,
+                currentPhase: currentProjectPhase.find(phase => phase._id === id),
+            }
+        })
+
+        setTimeout(() => {
+            // window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+            window.$(`#modal-edit-phase-${id}`).modal('show')
+        }, 500);
+    }
+
     const handleUpdateData = () => {
         let startMonth, endMonth;
         if (startDate && endDate) {
@@ -397,6 +582,24 @@ const TableTasksProject = (props) => {
                 />
             }
 
+            {
+                currentPhaseId && <PhaseEditForm
+                    phaseEdit={currentPhase}
+                    phaseEditId={currentPhaseId}
+                    currentProjectTasks={currentProjectTasks}
+                />
+            }
+
+            {
+                currentPhaseId && <DetailPhase
+                    phaseId={currentPhaseId}
+                    currentProjectTasks={currentProjectTasks}
+                    projectDetail={projectDetail}
+                    projectDetailId={projectDetail._id}
+                    phase={currentPhase}
+                />
+            }
+
             <div className="box">
                 <div className="box-body qlcv">
                     <div style={{ height: "40px", display: 'flex', justifyContent: 'space-between' }}>
@@ -503,6 +706,25 @@ const TableTasksProject = (props) => {
                             />
                         </div>
 
+                        {/* Loại công việc */}
+                        <div className="form-group">
+                            <label>{translate('project.task_management.type')}</label>
+                            <SelectMulti id="multiSelectType" defaultValue={[
+                                translate('project.task_management.task'),
+                                translate('project.task_management.phase'),
+                                translate('project.task_management.milestone'),
+                            ]}
+                                value={taskType}
+                                items={[
+                                    { value: "task", text: translate('project.task_management.task') },
+                                    { value: "phase", text: translate('project.task_management.phase') },
+                                    { value: "milestone", text: translate('project.task_management.milestone') },
+                                ]}
+                                onChange={handleSelectTaskType}
+                                options={{ nonSelectedText: translate('project.task_management.select_type'), allSelectedText: translate('project.task_management.select_all_type') }}>
+                            </SelectMulti>
+                        </div>
+
                         <div className="form-row" >
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={() => handleUpdateData()}>{translate('project.search')}</button>
@@ -512,20 +734,23 @@ const TableTasksProject = (props) => {
 
                     {/* Danh sách công việc */}
                     <div className="qlcv StyleScrollDiv StyleScrollDiv-y" style={{ maxHeight: '600px' }}>
-                        <TreeTable
+                        <ProjectTreeTable
                             behaviour="show-children"
                             tableSetting={true}
                             tableId={tableId}
                             viewWhenClickName={true}
                             column={column}
-                            data={data}
+                            data={data.filter(task => state.taskType.includes(task.type))}
                             onSetNumberOfRowsPerPage={setLimit}
                             titleAction={{
                                 edit: translate('task.task_management.action_edit'),
                                 startTimer: translate('task.task_management.action_start_timer'),
                             }}
-                            funcEdit={handleShowDetailInfo}
+                            funcEditTask={handleShowDetailInfo}
+                            funcEditPhase={handleEditPhase}
                             funcStartTimer={startTimer}
+                            funcViewPhase={handleViewPhaseInfo}
+                            funcDeletePhase={handleDeletePhase}
                         />
                     </div>
 
@@ -547,14 +772,16 @@ const TableTasksProject = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user, tasks, performtasks } = state;
-    return { project, user, tasks, performtasks }
+    const { project, user, tasks, performtasks, projectPhase } = state;
+    return { project, user, tasks, performtasks, projectPhase }
 }
 
 const mapDispatchToProps = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    deletePhaseById: ProjectPhaseActions.deletePhase,
     deleteTaskById: taskManagementActions._delete,
     startTimer: performTaskAction.startTimerTask,
 }

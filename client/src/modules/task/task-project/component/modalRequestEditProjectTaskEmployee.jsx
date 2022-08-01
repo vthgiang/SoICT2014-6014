@@ -17,7 +17,7 @@ import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ChangeRequestActions } from '../../../project/change-requests/redux/actions';
 
 const ModalRequestEditProjectTaskEmployee = (props) => {
-    const { task, translate, progress, project, id, user, currentProjectTasks, tasks } = props;
+    const { task, translate, progress, project, id, user, currentProjectTasks, currentProjectPhase, tasks ,projectPhase } = props;
     const projectDetail = getCurrentProjectDetails(project, task.taskProject);
     const [state, setState] = useState({
         editTask: {
@@ -29,6 +29,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             preceedingTasks: task?.preceedingTasks?.map((preItem => preItem.task._id)) || [],
             estimateNormalTime: (Number(task?.estimateNormalTime) / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)) || '',
             estimateOptimisticTime: (Number(task?.estimateOptimisticTime) / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)) || '',
+            taskPhase: task?.taskPhase || '',
             estimateNormalCost: task?.estimateNormalCost || '',
             estimateMaxCost: task?.estimateMaxCost || '',
             estimateAssetCost: task?.estimateAssetCost || '1,000,000',
@@ -84,19 +85,33 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const timePickerRef = useRef(null);
     const [currentTasksToChoose, setCurrentTasksToChoose] = useState({
-        preceeding: currentProjectTasks ? currentProjectTasks?.map(item => ({
+        preceeding: [],
+    })
+    const [currentPhaseToChoose, setCurrentPhaseToChoose] = useState({
+        phases: []
+    })
+
+    useEffect(() => {
+        let res = currentProjectTasks ? currentProjectTasks?.map(item => ({
             value: item._id,
             text: item.name
-        })) : [],
-    })
-    useEffect(() => {
+        })) : [];
+        // res.unshift({value: "", text: "Chọn công việc tiền nhiệm"})
         setCurrentTasksToChoose({
-            preceeding: currentProjectTasks ? currentProjectTasks?.map(item => ({
-                value: item._id,
-                text: item.name
-            })) : []
+            preceeding: res
         })
     }, [currentProjectTasks])
+
+    useEffect(() => {
+        let res = currentProjectPhase ? currentProjectPhase?.map(item => ({
+            value: item._id,
+            text: item.name
+        })) : [];
+        res.unshift({value: "", text: "--Chọn giai đoạn--"})
+        setCurrentPhaseToChoose({
+            phases: res
+        })
+    }, [currentProjectPhase])
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
@@ -108,7 +123,6 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         validateTaskStartDate(value, true);
     }
     const validateTaskStartDate = (value, willUpdateState = true) => {
-        console.log('value', value)
         let { translate, project } = props;
         let { editTask } = state;
         let msg = TaskFormValidator.validateTaskStartDate(value, editTask.endDate, translate);
@@ -258,6 +272,17 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             ...state.editTask,
             preceedingTasks: selected,
             // errorOnPreceedFollowTasks: message,
+        }
+        setState({
+            ...state,
+            editTask: currentNewTask
+        })
+    }
+
+    const handleChangeTaskPhase = (selected) => {
+        const currentNewTask = {
+            ...state.editTask,
+            taskPhase: selected[0],
         }
         setState({
             ...state,
@@ -465,7 +490,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         const preceedingTasksEndDateArr = editTask.preceedingTasks.map((preceedingItem) => {
             return currentProjectTasks?.find(projectTaskItem => String(projectTaskItem._id) === String(preceedingItem)).endDate;
         })
-        console.log('preceedingTasksEndDateArr', preceedingTasksEndDateArr)
+        // console.log('preceedingTasksEndDateArr', preceedingTasksEndDateArr)
         const latestStartDate = getMaxMinDateInArr(preceedingTasksEndDateArr, 'max');
         const curStartDate = moment(latestStartDate).format('DD-MM-YYYY');
         const curStartTime = moment(latestStartDate).format('h:mm A');
@@ -477,8 +502,8 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
         const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : state.editTask.endDate;
         const curEndTime = curEndDateTime ? moment(curEndDateTime).format('h:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
-        console.log('curStartDate', curStartDate)
-        console.log('curStartTime', curStartTime)
+        // console.log('curStartDate', curStartDate)
+        // console.log('curStartTime', curStartTime)
         editTask.preceedingTasks.length > 0 && setStartTime(curStartTime);
         editTask.preceedingTasks.length > 0 && setEndTime(curEndTime);
         editTask.preceedingTasks.length > 0 && setState({
@@ -503,8 +528,8 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
 
     useEffect(() => {
         const curStartDateTime = convertDateTime(editTask.startDate, startTime);
-        console.log('curStartDateTime', curStartDateTime)
-        console.log('editTask.currentLatestStartDate', editTask.currentLatestStartDate)
+        // console.log('curStartDateTime', curStartDateTime)
+        // console.log('editTask.currentLatestStartDate', editTask.currentLatestStartDate)
         if (editTask.currentLatestStartDate && editTask.preceedingTasks.length > 0 && moment(curStartDateTime).isBefore(moment(editTask.currentLatestStartDate).set('second', 0))) {
             setState({
                 ...state,
@@ -536,8 +561,8 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                 })
             }
         })
-        console.log('currentProjectTasks', currentProjectTasks)
-        console.log('currentProjectTasksFormatPreceedingTasks', currentProjectTasksFormatPreceedingTasks)
+        // console.log('currentProjectTasks', currentProjectTasks)
+        // console.log('currentProjectTasksFormatPreceedingTasks', currentProjectTasksFormatPreceedingTasks)
 
         const editTaskFormatted = {
             ...task,
@@ -548,12 +573,14 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             estimateMaxCost: Number(String(editTask.estimateMaxCost).replace(/,/g, '')),
             preceedingTasks: editTask.preceedingTasks,
             actorsWithSalary: editTask.actorsWithSalary,
+            taskPhase: editTask.taskPhase !== "" ? editTask.taskPhase : null,
             estimateAssetCost: Number(String(editTask.estimateAssetCost).replace(/,/g, '')),
             totalResWeight: Number(editTask.totalResWeight),
             startDate: startDateTask,
             endDate: endDateTask,
         }
-        console.log('editTaskFormatted', editTaskFormatted)
+
+        // console.log('editTaskFormatted', editTaskFormatted)
         // Hàm đệ quy để lấy tất cả những tasks có liên quan tới task hiện tại
         const allTasksNodeRelationArr = getRecursiveRelevantTasks(currentProjectTasksFormatPreceedingTasks, editTaskFormatted);
         allTasksNodeRelationArr.unshift({
@@ -563,6 +590,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         const allTasksNodeRelationFormattedArr = allTasksNodeRelationArr;
 
         const { affectedTasks, newTasksList } = processAffectedTasksChangeRequest(projectDetail, allTasksNodeRelationFormattedArr, editTaskFormatted);
+        // console.log(affectedTasks, 123);
         const newAffectedTasksList = affectedTasks.map(affectedItem => {
             return {
                 ...affectedItem,
@@ -588,7 +616,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                 }
             }
         })
-        console.log('newAffectedTasksList', newAffectedTasksList)
+        // console.log('newAffectedTasksList', newAffectedTasksList )
         const currentTask = {
             ...task,
             ...editTaskFormatted,
@@ -616,7 +644,8 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             }
             return taskItem;
         })
-        console.log('newCurrentProjectTasks', newCurrentProjectTasks)
+        // console.log('newCurrentProjectTasks', newCurrentProjectTasks)
+
         // const newTasksListAfterCR = getNewTasksListAfterCR(projectDetail, newCurrentProjectTasks, editTaskFormatted);
         // console.log('newTasksListAfterCR', newTasksListAfterCR)
         if (newAffectedTasksList.length > 0) {
@@ -639,6 +668,14 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         }
     }
 
+    const isFormValidated = () => {
+        const { editTask } = state;
+        return !checkIfHasCommonItems(editTask?.accountableEmployees, editTask?.responsibleEmployees) && editTask?.estimateMaxCost && editTask?.startDate?.trim()?.length > 0
+            && editTask?.endDate?.trim()?.length > 0 && editTask?.responsibleEmployees?.length > 0 && editTask?.accountableEmployees?.length > 0
+            && editTask?.estimateAssetCost && !editTask?.errorOnAccountableEmployees && !editTask?.errorOnAssetCode && !editTask?.errorOnBudget && !editTask?.errorOnEndDate && !editTask?.errorOnMaxTimeEst 
+            && !editTask?.errorOnPreceedFollowTasks && !editTask?.errorOnResponsibleEmployees && !editTask?.errorOnStartDate && !editTask?.errorOnTimeEst && !editTask?.errorOnTotalWeight
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -648,6 +685,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                 hasSaveButton={true}
                 func={save}
                 size={100}
+                disableSubmit={!isFormValidated()}
             >
                 <div>
                     {
@@ -674,6 +712,22 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                                                 <ErrorLabel content={editTask.errorOnPreceedFollowTasks} />
                                             </div>
                                         }
+
+                                    </div>
+                                    <div className='row'>
+                                        {/* Giai đoạn trong dự án */}
+                                        <div className={`form-group col-md-12 col-xs-12`}>
+                                            <label>{translate('project.task_management.phase')}</label>
+                                            <SelectBox
+                                                id={`select-project-phase-modal-request`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={currentPhaseToChoose.phases}
+                                                value={editTask.taskPhase}
+                                                multiple={false}
+                                                onChange={handleChangeTaskPhase}
+                                            />
+                                        </div>
                                     </div>
                                 </fieldset>
 
@@ -717,7 +771,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                                             <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group`}>
                                                 <label className="control-label">
                                                     Chi phí ước lượng nhân lực ({projectDetail?.unitCost})
-                                    </label>
+                                                </label>
                                                 <input className="form-control" value={numberWithCommas(editTask.estimateHumanCost)} disabled={true} />
                                             </div>
                                         </div>
@@ -787,7 +841,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                                         <div className={`col-lg-3 col-md-3 col-ms-12 col-xs-12 ${editTask.errorOnTimeEst === undefined ? "" : "has-error"}`}>
                                             <label className="control-label">
                                                 Thời gian ước lượng ({translate(`project.unit.${projectDetail?.unitTime}`)})
-                                        <span className="text-red">*</span>
+                                                <span className="text-red">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -802,7 +856,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                                         <div className={`col-lg-3 col-md-3 col-ms-12 col-xs-12 ${editTask.errorOnMaxTimeEst === undefined ? "" : "has-error"}`}>
                                             <label className="control-label">
                                                 Thời gian thoả hiệp ({translate(`project.unit.${projectDetail?.unitTime}`)})
-                                        <span className="text-red">*</span>
+                                                <span className="text-red">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -970,8 +1024,8 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
 }
 
 function mapState(state) {
-    const { tasks, user, project } = state;
-    return { tasks, user, project };
+    const { tasks, user, project, projectPhase } = state;
+    return { tasks, user, project, projectPhase };
 }
 const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,

@@ -826,7 +826,7 @@ const TaskSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Project'
         },
-        //tên phase mà task thuộc về
+        // tên phase mà task thuộc về
         taskPhase: {
             type: Schema.Types.ObjectId,
             ref: 'ProjectPhase'

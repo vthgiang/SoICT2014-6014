@@ -1,5 +1,5 @@
 const ProjectService = require('./project.service');
-const Logger = require('../../logs');
+const Logger = require('../../../logs');
 
 /** 
  *  Lấy thông tin dự án
@@ -24,6 +24,7 @@ exports.get = async (req, res) => {
         })
     }
 }
+
 /**
  *  Xem thông tin
  */
@@ -280,3 +281,4 @@ exports.updateListProjectChangeRequests = async (req, res) => {
         })
     }
 }
+

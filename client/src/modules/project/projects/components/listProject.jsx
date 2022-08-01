@@ -6,6 +6,7 @@ import ProjectCreateForm from "./createProject";
 import ProjectEditForm from './editProject';
 import ProjectDetailForm from './detailProject';
 import { ProjectActions } from '../redux/actions';
+import { ProjectPhaseActions } from '../../project-phase/redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
 import { checkIfAbleToCRUDProject, renderLongList, renderProjectTypeText } from "./functionHelper";
@@ -32,7 +33,7 @@ function ListProject(props) {
         data: [],
     })
 
-    const { project, translate, user, tasks } = props;
+    const { project, translate, user, tasks, projectPhase } = props;
     const userId = getStorage("userId");
     const { projectName, projectType, page, creatorEmployee, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state;
 
@@ -68,7 +69,7 @@ function ListProject(props) {
                 data: data
             })
         }
-    }, [user?.isLoading, project?.isLoading])
+    }, [user?.isLoading, project?.isLoading, JSON.stringify(project.data.paginate)])
     
 
     // Sau khi add project mới hoặc edit project thì call lại tất cả list project
@@ -181,6 +182,7 @@ function ListProject(props) {
             projectDetail: project.data.paginate.find(p => p?._id === id)
         });
         props.getAllTasksByProject(id);
+        props.getAllPhaseByProject(id);
         setTimeout(() => {
             window.$(`#modal-detail-project-${id}`).modal('show');
         }, 10);
@@ -191,7 +193,8 @@ function ListProject(props) {
         setState({
             ...state,
             currentRow: project.data.paginate.find(p => p?._id === id)
-        })
+        });
+        props.getAllTasksByProject(id);
         setTimeout(() => {
             window.$(`#modal-edit-project-${id}`).modal('show')
         }, 10);
@@ -270,10 +273,12 @@ function ListProject(props) {
                 projectDetailId={projectDetail && projectDetail._id}
                 projectDetail={projectDetail}
                 currentProjectTasks={tasks && tasks.tasksByProject}
+                currentProjectPhase={projectPhase && projectPhase.phases}
             />
 
             <ProjectEditForm
                 currentProjectTasks={tasks && tasks.tasksByProject}
+                currentProjectPhase={projectPhase && projectPhase.phases}
                 projectEditId={currentRow && currentRow._id}
                 projectEdit={currentRow}
                 handleAfterCreateProject={handleAfterCreateProject}
@@ -441,8 +446,8 @@ function ListProject(props) {
 }
 
 function mapState(state) {
-    const { project, user, tasks } = state;
-    return { project, user, tasks }
+    const { project, user, tasks, projectPhase } = state;
+    return { project, user, tasks, projectPhase }
 }
 const actions = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
@@ -450,6 +455,7 @@ const actions = {
     createProjectDispatch: ProjectActions.createProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllTasksByProject: taskManagementActions.getAllTasksByProject,
+    getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
 }
 
 const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProject));
