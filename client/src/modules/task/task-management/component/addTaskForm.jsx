@@ -746,16 +746,16 @@ function AddTaskForm(props) {
                     {/* Phân định trách nhiệm công việc */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
-                        <div>
+                        {!isProcess && <div>
                             <div style={{ display: "flex", justifyContent: "flex-end", cursor: "pointer" }}>
                                 <a onClick={() => {
                                     // setShowProposalPersonnel(!showProposalPersonnel)
                                     handleProposalPersonnel()
                                 }}>
-                                    Đề xuất nhân sự tự động
+                                    Đề xuất nhân sự phù hợp
                                 </a>
                             </div>
-                        </div>
+                        </div>}
                         {/* Những người thực hiện công việc */}
                         <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
                             <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>

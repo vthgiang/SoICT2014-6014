@@ -1,10 +1,7 @@
 import { connect } from 'react-redux';
 import React, { Component, useState, useEffect } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
-import { ApiImage, ContentMaker, DateTimeConverter, DialogModal, ErrorLabel, SelectBox, ShowMoreShowLess } from '../../../../common-components';
-import parse from 'html-react-parser';
-import { getStorage } from '../../../../config';
-import { AuthActions } from '../../../auth/redux/actions';
+import { DialogModal, ErrorLabel, SelectBox, ShowMoreShowLess } from '../../../../common-components';
 import { taskManagementActions } from '../redux/actions';
 import { TaskFormValidator } from './taskFormValidator';
 
@@ -46,15 +43,15 @@ function ModalProposalPresonnel(props) {
         }
         if (value == 2) {
             const newAccountableEmployees = [...accountableEmployees, userId]
-            props.handleChangeTaskAccountableEmployees([newAccountableEmployees])
+            props.handleChangeTaskAccountableEmployees(newAccountableEmployees)
         }
         if (value == 3) {
             const newConsultedEmployees = [...consultedEmployees, userId]
-            props.handleChangeTaskConsultedEmployees([newConsultedEmployees])
+            props.handleChangeTaskConsultedEmployees(newConsultedEmployees)
         }
         if (value == 4) {
             const newInformedEmployees = [...informedEmployees, userId]
-            props.handleChangeTaskInformedEmployees([newInformedEmployees])
+            props.handleChangeTaskInformedEmployees(newInformedEmployees)
         }
     }
 
@@ -63,9 +60,8 @@ function ModalProposalPresonnel(props) {
             unitIds: [organizationalUnit, ...collaboratedWithOrganizationalUnits],
             formula: formula
         })
-    }, [])
+    }, [organizationalUnit, collaboratedWithOrganizationalUnits])
 
-    console.log(47, tasks?.proposalPersonnel)
     return (
         <React.Fragment>
             <DialogModal

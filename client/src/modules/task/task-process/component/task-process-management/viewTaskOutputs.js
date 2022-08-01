@@ -420,7 +420,6 @@ function ViewTaskOutputs(props) {
     //     console.log(info[`${id}`]);
     // }
     //`contain-border ${showInfo ||showInfoProcess? 'col-md-8' : 'col-md-12'}`
-    console.log(420, id && info && info[`${id}`]);
     return (
         <React.Fragment>
             <div>

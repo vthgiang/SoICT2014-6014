@@ -392,7 +392,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             viewer: body.viewer,
             manager: body.manager,
             officeHours: body.officeHours,
-            convertDayToHour: body.convertDayToHour
+            convertDayToHour: body.convertDayToHour,
         })
     } else {
         newTaskProcess = await TaskProcess(connect(DB_CONNECTION, portal)).create({
@@ -457,6 +457,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             taskTemplate: null,
             taskInformations: taskInformations,
             taskActions: cloneActions,
+            taskOutputs: data[i].taskOutputs,
             parent: null,
             level: 1,
             status: status,

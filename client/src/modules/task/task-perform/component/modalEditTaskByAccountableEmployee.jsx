@@ -18,6 +18,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import moment from 'moment';
 import { ExpectedResults } from '../../task-management/component/expectedResults';
+import { ModalProposalPresonnel } from '../../task-management/component/modalProposalPresonnel';
 
 function ModalEditTaskByAccountableEmployee(props) {
     const [state, setState] = useState(initState(props.task))
@@ -934,6 +935,10 @@ function ModalEditTaskByAccountableEmployee(props) {
         return new Date(strDateTime);
     }
 
+    const handleProposalPersonnel = () => {
+        window.$('#modal-proposal-presonnel').modal('show');
+    }
+
 
     // list công việc liên quan.
     let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
@@ -996,6 +1001,13 @@ function ModalEditTaskByAccountableEmployee(props) {
                     disableSubmit={!isFormValidated()}
                 >
                     <form id={`form-edit-task-${role}-${id}`}>
+                        {state.organizationalUnit && <ModalProposalPresonnel
+                            newTask={state}
+                            handleChangeTaskAccountableEmployees={handleSelectedAccountableEmployee}
+                            handleChangeTaskResponsibleEmployees={handleSelectedResponsibleEmployee}
+                            handleChangeTaskConsultedEmployees={handleSelectedConsultedEmployee}
+                            handleChangeTaskInformedEmployees={handleSelectedInformEmployee}
+                        />}
                         {/*Thông tin cơ bản*/}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.edit_basic_info')}</legend>
@@ -1195,6 +1207,16 @@ function ModalEditTaskByAccountableEmployee(props) {
                         />
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.edit_member_info')}</legend>
+                            <div>
+                                <div style={{ display: "flex", justifyContent: "flex-end", cursor: "pointer" }}>
+                                    <a onClick={() => {
+                                        // setShowProposalPersonnel(!showProposalPersonnel)
+                                        handleProposalPersonnel()
+                                    }}>
+                                        Đề xuất nhân sự phù hợp
+                                    </a>
+                                </div>
+                            </div>
 
                             {/*Người thực hiện*/}
                             <div className="form-group">
