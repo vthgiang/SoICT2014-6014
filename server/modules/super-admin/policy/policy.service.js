@@ -216,6 +216,10 @@ exports.getPolicies = async (portal, data) => {
         .skip((page - 1) * perPage)
         .limit(perPage);
 
+    if (!data.page && !data.perpage) {
+        policies = await Policy(connect(DB_CONNECTION, portal)).find(keySearch)
+    }
+
     return {
         data: policies,
         totalList
@@ -261,6 +265,10 @@ exports.getPoliciesDelegation = async (portal, data) => {
     let policies = await Policy(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip((page - 1) * perPage)
         .limit(perPage);
+
+    if (!data.page && !data.perpage) {
+        policies = await Policy(connect(DB_CONNECTION, portal)).find(keySearch)
+    }
 
     return {
         data: policies,

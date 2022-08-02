@@ -67,7 +67,9 @@ exports.getAttributes = async (portal, data) => {
     let attributes = await Attribute(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip((page - 1) * perPage)
         .limit(perPage);
-
+    if (!data.page && !data.perpage) {
+        attributes = await Attribute(connect(DB_CONNECTION, portal)).find(keySearch)
+    }
     return {
         data: attributes,
         totalList
