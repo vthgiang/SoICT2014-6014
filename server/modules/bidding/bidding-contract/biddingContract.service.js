@@ -297,7 +297,8 @@ exports.createProjectByContract = async (portal, contractId, data, company) => {
     await BiddingContract(connect(DB_CONNECTION, portal)).findByIdAndUpdate(contractId, { $set: { 'project': projectId } }, { new: true });
 
     const listContract = await this.searchBiddingContract(portal, {}, company);
-    const newContract = await BiddingContract(connect(DB_CONNECTION, portal)).findById(contractId);
+    // const newContract = await BiddingContract(connect(DB_CONNECTION, portal)).findById(contractId);
+    const newContract = await this.getBidContractById(portal, contractId);
 
     return {
         newContract: newContract,

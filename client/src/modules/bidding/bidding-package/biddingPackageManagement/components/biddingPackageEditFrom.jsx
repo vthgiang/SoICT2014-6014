@@ -159,7 +159,6 @@ const BiddingPackageEditFrom = (props) => {
         return result;
     }
 
-    console.log(111,state, props.biddingPackagesManager?.biddingPackageDetail);
     const save = async () => {
         let { _id, biddingPackage } = state;
         let proposal = oldBP.proposals

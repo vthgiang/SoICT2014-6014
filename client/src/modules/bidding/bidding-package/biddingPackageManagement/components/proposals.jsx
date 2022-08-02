@@ -65,7 +65,6 @@ function Proposals(props) {
 
     useEffect(() => {
         if (props.type) {
-            console.log(props.type, props.oldBiddingPackage);
             if (props.type === "create") {
                 setOldProposal(initProposal)
             }
@@ -109,6 +108,9 @@ function Proposals(props) {
         // proposal: null,
         // isComplete: 0,
     });
+    useEffect(() => {
+        setBiddingPackage(props.biddingPackage)
+    }, [JSON.stringify(props.biddingPackage)])
     const [isLoading, setLoading] = useState(false);
     const handleGoToStep = (index, e = undefined) => {
         if (e) e.preventDefault();
@@ -539,12 +541,11 @@ function Proposals(props) {
         JSON.stringify(proposals?.tasks),
         JSON.stringify(proposedData.proposal?.tasks),
     ])
-    console.log({ proposals: proposals, oldProposal: oldProposal, proposedData: proposedData }, generateLog(), state, {isPreferedHighSkill: isPreferedHighSkill});
+    // console.log({ proposals: proposals, oldProposal: oldProposal, proposedData: proposedData }, generateLog(), state, {isPreferedHighSkill: isPreferedHighSkill});
 
     // end code for logs
 
     useEffect(() => {
-        props.getAllEmployee();
         setState({
             ...state,
             id: props.id,
@@ -552,6 +553,13 @@ function Proposals(props) {
             bidId: props.bidId,
             listCareer: props.listCareer,
         });
+    }, [
+        props.id,
+        JSON.stringify(props.listCareer)
+    ]);
+
+    useEffect(() => {
+        props.getAllEmployee();
         props.getPaginateTasks({ getAll: true });
     }, [props.id]);
 
@@ -704,7 +712,7 @@ function Proposals(props) {
                             </div>
                             <div>
                                 <div className={`form-group`}>
-                                    <label className="control-label">Thẻ công việc<span className="text-red">*</span>
+                                    <label className="control-label">Tags công việc<span className="text-red">*</span>
                                         ( <a style={{ cursor: "pointer" }} onClick={() => handleShowCreateTag(`${currentIndex}-${id}`)}>Quản lý</a> )
                                     </label>
                                     {<SelectBox

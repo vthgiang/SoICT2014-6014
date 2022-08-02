@@ -249,6 +249,7 @@ const BiddingPackageCreateForm = (props) => {
                             type={`create`}
                             id={`proposals_create`}
                             handleChange={handleChange}
+                            listCareer={career?.listPosition}
                             proposals={state.biddingPackage.proposals}
                             biddingPackage={biddingPackage}
                             setLog={setLog}

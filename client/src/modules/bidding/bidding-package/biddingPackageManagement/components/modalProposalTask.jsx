@@ -49,8 +49,13 @@ const ModalProposeEmpForTask = (props) => {
             isPreferedHighSkill: props.data?.isPreferedHighSkill ? true : false,
         })
         setDataProp(props.data);
-    }, [props.id,
-        // JSON.stringify(props.data)
+    }, [
+        props.id,
+        JSON.stringify(props.data?.biddingPackage),
+        JSON.stringify(props.listCareer),
+        JSON.stringify(props.proposalType),
+        JSON.stringify(props.allEmployee),
+        JSON.stringify(props.allTag),
     ]);
 
     const handlePropose = async () => {
@@ -145,15 +150,15 @@ const ModalProposeEmpForTask = (props) => {
                                     </>}
                                 </li>
                                 <li>Giữa các nhân viên sẽ được sắp xếp theo thứ tự ưu tiên theo một trong hai cách:
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="isPreferedHighSkill" id="isPreferedHighSkill1" value={false} checked={isPreferedHighSkill === true} onChange={() => changeIsPreferedHighSkill(!isPreferedHighSkill)}/>
-                                        <label class="form-check-label" for="isPreferedHighSkill1" style={{fontWeight: "normal"}}>
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="radio" name="isPreferedHighSkill" id="isPreferedHighSkill1" value={false} checked={isPreferedHighSkill === true} onChange={() => changeIsPreferedHighSkill(!isPreferedHighSkill)}/>
+                                        <label className="form-check-label" htmlFor="isPreferedHighSkill1" style={{fontWeight: "normal"}}>
                                             Trình độ chuyên môn được sắp xếp ưu tiên từ cao tới thấp (từ Tiến sĩ - Thạc sĩ - Kỹ sư - Cử nhân - Đại học - Cao đẳng - Trung cấp)
                                         </label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="isPreferedHighSkill" id="isPreferedHighSkill2" value={true} checked={isPreferedHighSkill === false} onChange={() => changeIsPreferedHighSkill(!isPreferedHighSkill)}/>
-                                        <label class="form-check-label" for="isPreferedHighSkill2" style={{fontWeight: "normal"}}>
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="radio" name="isPreferedHighSkill" id="isPreferedHighSkill2" value={true} checked={isPreferedHighSkill === false} onChange={() => changeIsPreferedHighSkill(!isPreferedHighSkill)}/>
+                                        <label className="form-check-label" htmlFor="isPreferedHighSkill2" style={{fontWeight: "normal"}}>
                                             Trình độ chuyên môn được sắp xếp theo thứ tự ưu tiên đáp ứng được nhu cầu về trình độ và chi phí bỏ ra không quá lớn (từ Kỹ sư - Cử nhân - Thạc sĩ - Tiến sĩ - Đại học - Cao đẳng - Trung cấp)
                                         </label>
                                     </div>

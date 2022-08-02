@@ -104,6 +104,14 @@ const CreateBiddingContract = (props) => {
 	const [state, setState] = useState(initState);
 	const [id, setId] = useState(props.id);
 	const listActiveBiddingPackage = biddingPackagesManager?.listActiveBiddingPackage;
+	// console.log(109, listActiveBiddingPackage);
+
+	useEffect(() => {
+		props.getAllBiddingPackage({ callId: "contract", name: '', status: 3, page: undefined, limit: undefined });
+	}, [
+		JSON.stringify(biddingPackagesManager?.listBiddingPackages),
+		JSON.stringify(biddingPackagesManager?.listAllBiddingPackages),
+	])
 
 	useEffect(() => {
 		props.getAllBiddingPackage({ callId: "contract", name: '', status: 3, page: undefined, limit: undefined });
@@ -378,7 +386,7 @@ const CreateBiddingContract = (props) => {
 					<div className={`form-group col-md-6`}>
 						<label>Đơn vị chi phí<span className="text-red">*</span></label>
 						<SelectBox
-							id={`select-unit-code-biddingContract-`}
+							id={`select-unit-code-biddingContract-${id}`}
 							className="form-control select2"
 							style={{ width: "100%" }}
 							items={fakeUnitCostList}
@@ -393,7 +401,7 @@ const CreateBiddingContract = (props) => {
 					<div className="form-group col-md-6">
 						<label>Ngày có hiệu lực<span className="text-red">*</span></label>
 						<DatePicker
-							id={`create-biddingContract-start-date--`}
+							id={`create-biddingContract-start-date--${id}`}
 							value={state.effectiveDate}
 							onChange={(e) => handleChangeForm(e, 'effectiveDate')}
 							dateFormat="day-month-year"
@@ -403,7 +411,7 @@ const CreateBiddingContract = (props) => {
 					<div className="form-group col-md-6">
 						<label>Ngày hết hạn<span className="text-red">*</span></label>
 						<DatePicker
-							id={`create-biddingContract-end-date--`}
+							id={`create-biddingContract-end-date--${id}`}
 							value={state.endDate}
 							onChange={(e) => handleChangeForm(e, 'endDate')}
 							dateFormat="day-month-year"
@@ -416,7 +424,7 @@ const CreateBiddingContract = (props) => {
 					<div className="form-group col-md-6">
 						<label>Đơn vị thời gian<span className="text-red">*</span></label>
 						<SelectBox
-							id={`select-biddingContract-unitTime`}
+							id={`select-biddingContract-unitTime-${id}`}
 							className="form-control select2"
 							style={{ width: "100%" }}
 							items={fakeUnitTimeList}
@@ -428,7 +436,7 @@ const CreateBiddingContract = (props) => {
 					<div className="form-group col-md-6">
 						<label >Chọn gói thầu<span className="text-red">*</span></label>
 						<SelectBox
-							id={`package`}
+							id={`package-${id}`}
 							className="form-control select2"
 							style={{ width: "100%" }}
 							items={listActiveBiddingPackage?.map(x => {
