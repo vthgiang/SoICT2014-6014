@@ -28,6 +28,9 @@ const getTaskOutputs = (data) => {
     if (!data) {
         return "0";
     }
+    if (data && data.length === 0) {
+        return "0";
+    }
     return `${taskOutputsApproval.length}/${data.length}`
 }
 
