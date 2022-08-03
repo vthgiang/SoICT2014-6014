@@ -175,7 +175,7 @@ const TableTasksProject = (props) => {
                     milestones[k] = { ...milestones[k], action: ["view", "edit", "delete"] }
                 }
 
-                else if (milestones[k].accountableEmployees && milestones[k].accountableEmployees.filter(o => o._id === userId).length > 0) {
+                else if (projectPhase.milestones[k]?.accountableEmployees && projectPhase.milestones[k]?.accountableEmployees?.filter(o => o._id === userId).length > 0) {
                     milestones[k] = { ...milestones[k], action: ["view", "edit"] }
                 }
 
