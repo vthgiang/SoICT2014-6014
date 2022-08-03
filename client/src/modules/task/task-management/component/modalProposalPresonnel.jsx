@@ -79,7 +79,8 @@ function ModalProposalPresonnel(props) {
                         <input type="text" className="form-control" id="inputFormula" placeholder="averagePoint - 10 * numberOfTaskInprocess"
                             value={formula} onChange={handleChangeFormula}
                         />
-                        <button className="btn btn-success" onClick={() => {
+                        <button className="btn btn-success" onClick={(e) => {
+                            e.preventDefault();
                             props.proposalPersonnel({
                                 unitIds: [organizationalUnit, ...collaboratedWithOrganizationalUnits],
                                 formula: formula

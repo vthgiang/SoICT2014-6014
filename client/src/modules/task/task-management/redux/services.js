@@ -516,7 +516,7 @@ function getTasksByProject(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
-        params: { ...data, type: 'project'}
+        params: { ...data, type: 'project' }
     }, false, true, 'project');
 }
 
@@ -542,5 +542,5 @@ function proposalPersonnel(data) {
         url: `${process.env.REACT_APP_SERVER}/task/tasks/proposal-personnel`,
         method: 'POST',
         data: data
-    }, false, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }

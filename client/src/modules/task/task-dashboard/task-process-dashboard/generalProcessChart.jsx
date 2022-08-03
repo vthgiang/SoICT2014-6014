@@ -56,24 +56,23 @@ const GeneralTaskProcessChart = (props) => {
                 let nowToEnd = end.diff(now, 'day');
 
                 if (listTaskProcess[i].status === "inprocess") {
-                    inprocess.push(listTaskProcess[i])
-                }
-
-                if (now > end) {
-                    //viec Quá hạn
-                    let add = {
-                        ...listTaskProcess[i],
-                        nowToEnd: -parseInt(nowToEnd)
-                    }
-                    overdueTaskProcess.push(add);
-                }
-                else {
-                    if (nowToEnd <= 7) {
+                    inprocess.push(listTaskProcess[i]);
+                    if (now > end) {
+                        //viec Quá hạn
                         let add = {
                             ...listTaskProcess[i],
-                            totalDays: nowToEnd
+                            nowToEnd: -parseInt(nowToEnd)
                         }
-                        deadlineIncoming.push(add);
+                        overdueTaskProcess.push(add);
+                    }
+                    else {
+                        if (nowToEnd <= 7) {
+                            let add = {
+                                ...listTaskProcess[i],
+                                totalDays: nowToEnd
+                            }
+                            deadlineIncoming.push(add);
+                        }
                     }
                 }
             }

@@ -1779,20 +1779,20 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}
-                        key={"task-process-dashboard"}
+                        key={"administrative-document-process-dashboard"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/task-process-dashboard",
-                                name: "task_process_dashboard",
+                                link: "/administrative-document-process-dashboard",
+                                name: "administrative_document_process_dashboard",
                                 icon: "",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/task-process-dashboard"}
-                        path={"/task-process-dashboard"}
-                        pageName={"task_process_dashboard"}
+                        link={"/administrative-document-process-dashboard"}
+                        path={"/administrative-document-process-dashboard"}
+                        pageName={"administrative_document_process_dashboard"}
                         layout={Layout}
                         component={TaskProcessDashboard}
                     />
@@ -2841,7 +2841,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={Payment}
                     />
-                    
+
                     <PrivateRoute
                         isLoading={false}
                         key={"order-request-management"}

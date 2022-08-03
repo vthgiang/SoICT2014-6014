@@ -24,20 +24,21 @@ function TaskHasDepartments(props) {
 
         if (listTaskProcess && listTaskProcess.length) {
             for (let i in listTaskProcess) {
+                let checkProcessHasDepartment = 0;
                 for (let j in listTaskProcess[i].tasks) {
-                    listTask.push(listTaskProcess[i].tasks[j]);
+                    if (listTaskProcess[i].tasks[j].collaboratedWithOrganizationalUnits.length) {
+                        checkProcessHasDepartment = checkProcessHasDepartment + 1;
+                        break;
+                    }
                 }
-            }
-        };
-        if (listTask) {
-            listTask.map(task => {
-                if (task.collaboratedWithOrganizationalUnits.length) {
+
+                if (checkProcessHasDepartment) {
                     numberHasDepartment = numberHasDepartment + 1;
                 } else {
                     numberNomarmallyTask = numberNomarmallyTask + 1;
                 }
-            });
-        }
+            }
+        };
 
         dataPieChart = [
             [LABEL.TASK_HAS_DEPARTMENTS, numberHasDepartment],

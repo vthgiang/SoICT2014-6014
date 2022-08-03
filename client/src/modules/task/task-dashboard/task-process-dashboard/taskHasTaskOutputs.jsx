@@ -14,8 +14,8 @@ function TaskHasTaskOutputs(props) {
     const { translate, tasks, taskProcess } = props;
     const { listTaskProcess } = taskProcess;
     const LABEL = {
-        TASK_HAVE_OUTPUTS: "Công việc có kết quả giao nộp",
-        NO_TASK_OUTPUTS: "Công việc bình thường",
+        TASK_NO_SUBMIT_OUTPUTS: "Công việc chưa hoàn thành kết quả giao nộp",
+        NO_TASK_OUTPUTS: "Công việc thông thường thường",
         TASK_OUTPUTS_APPROVED: "Công việc có kết quả giao nộp đã phê duyệt",
     }
 
@@ -25,7 +25,7 @@ function TaskHasTaskOutputs(props) {
 
     useEffect(() => {
 
-        let dataPieChart, numberHasTaskOutputs = 0, numberNoTaskOutput = 0, numberTaskOutputsApproved = 0;
+        let dataPieChart, numberHasTaskOutputs = 0, numberNoTaskOutput = 0, numberTaskOutputsApproved = 0, numberNoSubmitOutputs = 0;
         let listTask = [];
 
         if (listTaskProcess && listTaskProcess.length) {
@@ -47,10 +47,11 @@ function TaskHasTaskOutputs(props) {
                     numberNoTaskOutput = numberNoTaskOutput + 1;
                 }
             });
+            numberNoSubmitOutputs = numberHasTaskOutputs - numberTaskOutputsApproved;
         }
 
         dataPieChart = [
-            [LABEL.TASK_HAVE_OUTPUTS, numberHasTaskOutputs],
+            [LABEL.TASK_NO_SUBMIT_OUTPUTS, numberNoSubmitOutputs],
             [LABEL.NO_TASK_OUTPUTS, numberNoTaskOutput],
             [LABEL.TASK_OUTPUTS_APPROVED, numberTaskOutputsApproved],
         ];

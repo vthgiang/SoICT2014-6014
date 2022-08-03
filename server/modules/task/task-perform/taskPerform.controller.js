@@ -2249,14 +2249,14 @@ exports.deleteFileOfTaskOutput = async (req, res) => {
         await Logger.info(req.user.email, ` delete file of task output  `, req.portal);
         res.status(200).json({
             success: true,
-            messages: ['delete_file_success'],
+            messages: ['delete_file_of_task_outputs_success'],
             content: taskOutput
         })
     } catch (error) {
         await Logger.error(req.user.email, `delete file of task output  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_file_failure'],
+            messages: ['delete_file_of_task_outputs_failure'],
             content: error
         })
     }

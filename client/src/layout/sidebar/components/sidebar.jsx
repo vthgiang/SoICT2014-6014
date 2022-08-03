@@ -256,9 +256,9 @@ class SideBar extends Component {
                                             path: "/task-template",
                                         },
                                         {
-                                            name: "menu.task_process_dashboard",
+                                            name: "menu.administrative_document_process_dashboard",
                                             icon: "fa fa-circle-o",
-                                            path: "/task-process-dashboard",
+                                            path: "/administrative-document-process-dashboard",
                                         },
                                         {
                                             name: "menu.task_process_template",

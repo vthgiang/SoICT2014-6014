@@ -129,7 +129,7 @@ export default {
             },
 
             task_template: "Mẫu Công Việc",
-            task_process_dashboard: "Dashboard quy trình văn bản",
+            administrative_document_process_dashboard: "Dashboard quy trình văn bản",
             taskmanagement: "Quản Lý Công Việc",
             task_management_unit: "Công việc đơn vị",
             manageDocument: "Quản lý văn bản",
@@ -3775,6 +3775,10 @@ export default {
                 approval_close_task_failure: "Phê duyệt yêu cầu kết thúc công việc thất bại",
                 decline_close_task_failure: "Từ chối yêu cầu kết thúc công việc thất bại",
 
+                // Đề xuất nhân sự công việc
+                proposal_personnel_success: "Lấy danh sách nhân sự phù hợp thành công",
+                proposal_personnel_fail: "Lấy danh sách nhân sự phù hợp thất bại",
+
                 // Mở lại công việc
                 open_task_again_success: 'Kích hoạt lại công việc thành công',
                 open_task_again_failure: 'Kích hoạt lại công việc thất bại',
@@ -4007,6 +4011,28 @@ export default {
                 log_edit_kpi_new: "Liên kết KPI mới",
                 log_edit_eval_info: "Chỉnh sửa thông tin đánh giá công việc",
                 log_edit_progress: "Mức độ hoàn thành công việc mới",
+
+                // danh sách kết quả giao nộp
+                get_task_outputs_success: "Lấy danh sách kết quả giao nộp thành công",
+                get_task_outputs_failure: "Lấy danh sách kết quả giao nộp thất bại",
+
+                approve_task_outputs_success: "Phê duyệt kết quả giao nộp thành công",
+                approve_task_outputs_failure: "Phê duyệt kết quả giao nộp thất bại",
+
+                edit_submission_results_success: "Chỉnh sửa báo cáo kết quả giao nộp thành công",
+                edit_submission_results_failure: "Chỉnh sửa báo cáo kết quả giao nộp thất bại",
+
+                delete_submission_results_success: "Xóa báo cáo kết quả giao nộp thành công",
+                delete_submission_results_failure: "Xóa báo cáo kết quả giao nộp thất bại",
+
+                delete_file_of_task_outputs_success: "Xóa tập tin của báo cáo kết quả giao nộp thành công",
+                delete_file_of_task_outputs_failure: "Xóa tập tin của báo cáo kết quả giao nộp thất bại",
+
+                create_comment_of_task_outputs_success: "Thêm bình luận kết quả giao nộp thành công",
+                create_comment_of_task_outputs_failure: "Thêm bình luận kết quả giao nộp thất bại",
+
+                edit_comment_of_task_outputs_success: "Chỉnh sửa bình luận kết quả giao nộp thành công",
+                edit_comment_of_task_outputs_failure: "Chỉnh sửa bình luận kết quả giao nộp thất bại",
 
                 // modal approve task
                 modal_approve_task: {

@@ -229,37 +229,38 @@ function TaskProcessDashboard(props) {
                         </div>
                     </div>
                 </div>
-                <div className="col-xs-12 col-sm-12 col-md-6">
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <div className="box-title">Kết quả giao nộp {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
+                <div className='row'>
+                    <div className="col-xs-12 col-sm-12 col-md-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Tổng quan công việc trong quy trình {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <LazyLoadComponent once={true}>
+                                    <TaskHasTaskOutputs
+                                        startMonth={state.startMonth}
+                                        endMonth={state.endMonth}
+                                    />
+                                </LazyLoadComponent>
+                            </div>
                         </div>
-                        <div className="box-body qlcv">
-                            <LazyLoadComponent once={true}>
-                                <TaskHasTaskOutputs
-                                    startMonth={state.startMonth}
-                                    endMonth={state.endMonth}
-                                />
-                            </LazyLoadComponent>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Quy trình công việc {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <LazyLoadComponent once={true}>
+                                    <TaskHasDepartments
+                                        startMonth={state.startMonth}
+                                        endMonth={state.endMonth}
+                                    />
+                                </LazyLoadComponent>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="col-xs-12 col-sm-12 col-md-6">
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <div className="box-title">Quy trình công việc {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
-                        </div>
-                        <div className="box-body qlcv">
-                            <LazyLoadComponent once={true}>
-                                <TaskHasDepartments
-                                    startMonth={state.startMonth}
-                                    endMonth={state.endMonth}
-                                />
-                            </LazyLoadComponent>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </React.Fragment>
     );

@@ -1044,7 +1044,7 @@ const LINKS = [{
   components: getComponentsInLink('/task-management-dashboard')
 },
 {
-  url: '/task-process-dashboard',
+  url: '/administrative-document-process-dashboard',
   description: 'Dashboard quy trình văn bản',
   category: LINK_CATEGORY.TASK.name,
   roles: [
@@ -1052,7 +1052,7 @@ const LINKS = [{
     ROOT_ROLES.DEPUTY_MANAGER.name,
     ROOT_ROLES.EMPLOYEE.name,
   ],
-  components: getComponentsInLink('/task-process-dashboard')
+  components: getComponentsInLink('/administrative-document-process-dashboard')
 },
 {
   url: '/task-organization-management-dashboard',

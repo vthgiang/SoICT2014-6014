@@ -673,7 +673,7 @@ exports.links = [
         url: '/system/apis-default-management',
         apis: ['@all']
     }, {
-        url: '/system/manage-system-admin-page', 
+        url: '/system/manage-system-admin-page',
         apis: ['@all']
     }, {
         url: '/system/privilege-api-management',
@@ -800,7 +800,7 @@ exports.links = [
     //     url: '/hr-search-for-package',
     //     apis: ['@all']
     // },
-    
+
     {
         url: '/hr-list-major',
         apis: ['@all']
@@ -906,7 +906,7 @@ exports.links = [
         url: '/task-organization-management-dashboard',
         apis: ['@all']
     }, {
-        url: '/task-process-dashboard',
+        url: '/administrative-document-process-dashboard',
         apis: ['@all']
     },
     {

@@ -1164,8 +1164,6 @@ exports.getOrganizationTaskDashboardChartData = async (req, res) => {
 
 exports.proposalPersonnel = async (req, res) => {
     try {
-        console.log(1170)
-
         var task = await TaskManagementService.proposalPersonnel(req.portal, req.params, req.body);
         await Logger.info(req.user.email, `Proposal Personnel`, req.portal);
         res.status(200).json({
