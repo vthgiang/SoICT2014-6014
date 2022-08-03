@@ -931,6 +931,147 @@ const TaskSchema = new Schema(
                 default: 1 / 3,
             },
         },
+        taskOutputs: [
+            {
+                title: {
+                    type: String
+                },
+                type: {
+                    type: Number
+                }, // có các kiểu 0:text, 1: document
+                description: {
+                    type: String
+                },
+                status: {
+                    type: String
+                },
+                isOutput: {
+                    type: Boolean,
+                },
+                accountableEmployees: [
+                    {
+                        accountableEmployee: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        action: {
+                            type: String
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        }
+                    }
+                ],
+                submissionResults:
+                {
+                    creator: {
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    description: {
+                        type: String,
+                    },
+                    createdAt: {
+                        type: Date,
+                        default: Date.now,
+                    },
+                    updatedAt: {
+                        type: Date,
+                        default: Date.now,
+                    },
+                    files: [
+                        {
+                            // Các file đi báo cáo kết quả giao nộp
+                            name: {
+                                type: String,
+                            },
+                            url: {
+                                type: String,
+                            },
+                        },
+                    ],
+                },
+                comments: [
+                    {
+                        // Comments của taskoutput
+                        creator: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        version: { // trường này cho biết comments tương ứng với từng version
+                            type: Number,
+                        },
+                        description: {
+                            type: String,
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        files: [
+                            {
+                                // Các file đi kèm comments
+                                name: {
+                                    type: String,
+                                },
+                                url: {
+                                    type: String,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                versions: [{
+                    creator: {
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    description: {
+                        type: String
+                    },
+                    status: {
+                        type: String,
+                    },
+                    accountableEmployees: [
+                        {
+                            accountableEmployee: {
+                                type: Schema.Types.ObjectId,
+                                ref: "User",
+                            },
+                            description: {
+                                type: String,
+                            }, // id của công việc cần xác nhận phê duyệt
+                            action: {
+                                type: String
+                            },
+                            updatedAt: {
+                                type: Date,
+                                default: Date.now,
+                            },
+                        }
+                    ],
+                    files: [
+                        {
+                            name: {
+                                type: String,
+                            },
+                            url: {
+                                type: String,
+                            },
+                        },
+                    ],
+                    createdAt: {
+                        type: Date,
+                        default: Date.now,
+                    }
+                }]
+            }
+        ],
         memberWeight: {
             // Số bé hơn 1
             timeWeight: {

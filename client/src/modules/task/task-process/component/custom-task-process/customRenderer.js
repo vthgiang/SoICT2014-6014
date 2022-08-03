@@ -46,7 +46,7 @@ export default class CustomRenderer extends BaseRenderer {
         let responsible = element.businessObject.$attrs.responsibleName ? element.businessObject.$attrs.responsibleName : ""
         let responsibleName = ""
         let i
-        if(Array.isArray(responsible)) {
+        if (Array.isArray(responsible)) {
             for (i = 0; i < responsible.length; i++) {
                 if (i !== responsible.length - 1) {
                     responsibleName = responsibleName + responsible[i] + ", "
@@ -64,9 +64,10 @@ export default class CustomRenderer extends BaseRenderer {
                 }
             }
         }
+
         let accountable = element.businessObject.$attrs.accountableName ? element.businessObject.$attrs.accountableName : ""
         let accountableName = ""
-        if(Array.isArray(accountable)) {
+        if (Array.isArray(accountable)) {
             for (i = 0; i < accountable.length; i++) {
                 if (i !== accountable.length - 1) {
                     accountableName = accountableName + accountable[i] + ", "
@@ -84,9 +85,31 @@ export default class CustomRenderer extends BaseRenderer {
                 }
             }
         }
+        // 87
+        let taskOutputs = element.businessObject.$attrs.taskOutputs ? element.businessObject.$attrs.taskOutputs : [];
+        // let taskOutputName = ""
+        // if (Array.isArray(taskOutputs)) {
+        //     for (i = 0; i < taskOutputs.length; i++) {
+        //         if (i !== taskOutputs.length - 1) {
+        //             taskOutputName = taskOutputName + taskOutputs[i] + " \n "
+        //         } else {
+        //             taskOutputName = taskOutputName + taskOutputs[i]
+        //         }
+        //     }
+        // } else {
+        //     let taskOutput1 = taskOutputs.split(",")
+        //     for (i = 0; i < taskOutput1.length; i++) {
+        //         if (i !== taskOutputs.length - 1) {
+        //             taskOutput1 = taskOutputName + taskOutputs[i] + ", "
+        //         } else {
+        //             taskOutputName = taskOutputName + taskOutputs[i]
+        //         }
+        //     }
+        // }
+
         let manager = element.businessObject.$attrs.managerName ? element.businessObject.$attrs.managerName : ""
         let managerName = ""
-        if(Array.isArray(manager)) {
+        if (Array.isArray(manager)) {
             for (i = 0; i < manager.length; i++) {
                 if (i !== manager.length - 1) {
                     managerName = managerName + manager[i] + ", "
@@ -106,7 +129,7 @@ export default class CustomRenderer extends BaseRenderer {
         }
         let viewer = element.businessObject.$attrs.viewerName ? element.businessObject.$attrs.viewerName : ""
         let viewerName = ""
-        if(Array.isArray(viewer)) {
+        if (Array.isArray(viewer)) {
             for (i = 0; i < viewer.length; i++) {
                 if (i !== viewer.length - 1) {
                     viewerName = viewerName + viewer[i] + ", "
@@ -179,6 +202,38 @@ export default class CustomRenderer extends BaseRenderer {
             foreignObject1.appendChild(div2);
             svgAppend(parentNode, foreignObject1);
 
+            let foreignObjectTaskOutput = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+            foreignObjectTaskOutput.setAttribute('x', 5);
+            foreignObjectTaskOutput.setAttribute('y', 130);
+            foreignObjectTaskOutput.setAttribute('height', 200);
+            foreignObjectTaskOutput.setAttribute('width', 200);
+            if (Array.isArray(taskOutputs)) {
+                for (i = 0; i < taskOutputs.length; i++) {
+                    let divTaskOutput = document.createElement('div');
+                    divTaskOutput.setAttribute("style", "display: flex")
+
+                    let divTaskOutputName = document.createElement('div');
+                    let attTaskOutputName = document.createAttribute("class");        // Create a "href" attribute
+                    attTaskOutputName.value = "list-task-output";            // Set the value of the href attribute
+                    divTaskOutputName.setAttributeNode(attTaskOutputName);
+                    attTaskOutputName = document.createAttribute("style");        // Create a "href" attribute
+                    divTaskOutputName.setAttributeNode(attTaskOutputName);
+
+                    let icon = document.createElement("i")
+                    let attIcon = document.createAttribute("class");
+                    attIcon = "fa fa-check";
+                    icon.setAttribute("class", attIcon);
+
+                    divTaskOutputName.innerHTML = taskOutputs[i].title;
+                    if (taskOutputs[i] && taskOutputs[i].status === "approved") {
+                        divTaskOutput.append(icon, divTaskOutputName)
+                    } else {
+                        divTaskOutput.append(divTaskOutputName)
+                    }
+                    foreignObjectTaskOutput.appendChild(divTaskOutput);
+                }
+                svgAppend(parentNode, foreignObjectTaskOutput);
+            }
 
             let progress = element.businessObject.$attrs.progress
 
@@ -203,8 +258,8 @@ export default class CustomRenderer extends BaseRenderer {
 
         }
 
-        if ( element.type == 'bpmn:SubProcess') {
-          
+        if (element.type == 'bpmn:SubProcess') {
+
             // const svg = document.getElementsByTagName("svg");
             // let marker = document.createElement('marker');
             // marker.setAttribute('id','arrow')
@@ -219,9 +274,9 @@ export default class CustomRenderer extends BaseRenderer {
             let b = element.businessObject.$attrs.shapeName
             const line = drawLine(parentNode, 0, 50, 260, 50, 'black');
             const line2 = drawLine(parentNode, 0, 131, 260, 131, 'black');
-            const line1 = drawLine(parentNode, 52, 155, 194, 155, 'black',"url(#arrow)");
-            const circle_start = drawCircle(parentNode,36,155,14.5,'black',1.7,'white')
-            const circle_end = drawCircle(parentNode,210,155,14.5,'black',3.4,'white')
+            const line1 = drawLine(parentNode, 52, 155, 194, 155, 'black', "url(#arrow)");
+            const circle_start = drawCircle(parentNode, 36, 155, 14.5, 'black', 1.7, 'white')
+            const circle_end = drawCircle(parentNode, 210, 155, 14.5, 'black', 3.4, 'white')
             let foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
             //Vẽ tên của công việc lên shape
             foreignObject.setAttribute('x', 5);
@@ -331,6 +386,34 @@ export default class CustomRenderer extends BaseRenderer {
             foreignObject1.appendChild(div2);
 
 
+            if (Array.isArray(taskOutputs)) {
+                for (i = 0; i < taskOutputs.length; i++) {
+                    let divTaskOutput = document.createElement('div');
+                    divTaskOutput.setAttribute("style", "display: flex")
+
+                    let divTaskOutputName = document.createElement('div');
+                    let attTaskOutputName = document.createAttribute("class");        // Create a "href" attribute
+                    attTaskOutputName.value = "list-task-output";            // Set the value of the href attribute
+                    divTaskOutputName.setAttributeNode(attTaskOutputName);
+                    attTaskOutputName = document.createAttribute("style");        // Create a "href" attribute
+                    divTaskOutputName.setAttributeNode(attTaskOutputName);
+
+                    let icon = document.createElement("i")
+                    let attIcon = document.createAttribute("class");
+                    attIcon = "fa fa-check";
+                    icon.setAttribute("class", attIcon);
+                    divTaskOutputName.innerHTML = taskOutputs[i].title;
+                    if (taskOutputs[i] && taskOutputs[i].status === "approved") {
+                        divTaskOutput.append(icon, divTaskOutputName)
+                    } else {
+                        divTaskOutput.append(divTaskOutputName)
+                    }
+                    foreignObject1.appendChild(divTaskOutput);
+                }
+                svgAppend(parentNode, foreignObject1);
+            }
+
+
             let div3 = document.createElement('div');
             let att3 = document.createAttribute("class");        // Create a "href" attribute
             att3.value = "gate-way-progress";            // Set the value of the href attribute
@@ -398,7 +481,7 @@ function drawRect(parentNode, width, height, borderRadius, color) {
     return rect;
 }
 
-function drawCircle(parentNode, cx, cy, r, stroke_color, strokeWidth,color) {
+function drawCircle(parentNode, cx, cy, r, stroke_color, strokeWidth, color) {
     const circle = svgCreate('circle');
 
     svgAttr(circle, {

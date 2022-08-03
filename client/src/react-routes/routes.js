@@ -83,6 +83,7 @@ const TaskManagement = lazy(() => import("../modules/task/task-management/compon
 const TaskManagementOfUnit = lazy(() => import("../modules/task/task-management/component/taskManagementOfUnit"))
 const TaskComponent = lazy(() => import("../modules/task/task-perform/component/taskComponent"))
 const TaskDashboard = lazy(() => import("../modules/task/task-dashboard/task-personal-dashboard/taskDashboard"))
+const TaskProcessDashboard = lazy(() => import("../modules/task/task-dashboard/task-process-dashboard/taskProcessDashboard"))
 const TaskTemplate = lazy(() => import("../modules/task/task-template/component/taskTemplate"))
 const TaskProcessManagement = lazy(() => import("../modules/task/task-process/component/task-process-management/taskProcessManagement"))
 const ProcessTemplate = lazy(() => import("../modules/task/task-process/component/process-template/processTemplate"))
@@ -1795,6 +1796,25 @@ class Routes extends Component {
                         pageName={"task_management_dashboard"}
                         layout={Layout}
                         component={TaskDashboard}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.tasks.isLoading}
+                        key={"administrative-document-process-dashboard"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/administrative-document-process-dashboard",
+                                name: "administrative_document_process_dashboard",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/administrative-document-process-dashboard"}
+                        path={"/administrative-document-process-dashboard"}
+                        pageName={"administrative_document_process_dashboard"}
+                        layout={Layout}
+                        component={TaskProcessDashboard}
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}

@@ -33,6 +33,7 @@ export const taskManagementService = {
     importTasks,
 
     getOrganizationTaskDashboardChart,
+    proposalPersonnel,
 };
 
 
@@ -537,7 +538,7 @@ function getTasksByProject(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
-        params: { ...data, type: 'project'}
+        params: { ...data, type: 'project' }
     }, false, true, 'project');
 }
 
@@ -555,5 +556,13 @@ function getOrganizationTaskDashboardChart(data) {
         url: `${process.env.REACT_APP_SERVER}/task/organization-task-dashboard-chart-data`,
         method: 'GET',
         params: data
+    }, false, true, 'task.task_management');
+}
+
+function proposalPersonnel(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/proposal-personnel`,
+        method: 'POST',
+        data: data
     }, false, true, 'task.task_management');
 }

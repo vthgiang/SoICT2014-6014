@@ -12,6 +12,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { getStorage } from '../../../../config';
 import ValidationHelper from '../../../../helpers/validationHelper';
+
 import parse from 'html-react-parser';
 
 function AddTaskTemplate(props) {

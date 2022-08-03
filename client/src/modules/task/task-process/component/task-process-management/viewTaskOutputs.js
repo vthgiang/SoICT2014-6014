@@ -2,7 +2,6 @@ import React, { Component, useEffect, useState } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { getStorage } from '../../../../../config';
-import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard/modalDetailTask";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { performTaskAction } from "../../../task-perform/redux/actions";
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
@@ -12,11 +11,7 @@ import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../process-template/processDiagram.css';
-import { ViewProcessChild } from "./viewProcessChild";
-import { ReportProcess } from "./report/reportProcess";
-import { ReportHumanOfProcess } from "./report/reportHumanOfProcess";
-import { ModalViewTaskOutput } from "./modalViewTaskOutput";
-import { ViewTaskOutputs } from "./viewTaskOutputs";
+import { TaskOutputTab } from "./taskOutputTab";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -30,10 +25,28 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
     return entries;
 }
 
+const formatStatusTaskOutput = (value) => {
+    switch (value) {
+        case "unfinished":
+            return "Chưa hoàn thành";
+        case "inprogess":
+            return "Đang thực hiện"
+        case "waiting_for_approval":
+            return "Đang chờ phê duyệt";
+        case "rejected":
+            return "Bị từ chối";
+        case "approved":
+            return "Đã phê duyệt";
+        default:
+            return "";
+            break;
+    }
+}
+
 // khởi tạo giá trị mặc định zoomIn zoomOut
 var zlevel = 1;
 
-function ViewProcess(props) {
+function ViewTaskOutputs(props) {
 
     let { data } = props;
     const [state, setState] = useState({
@@ -48,8 +61,7 @@ function ViewProcess(props) {
         zlevel: 1,
         startDate: "",
         endDate: "",
-        status: "",
-        selectedView: "info",
+        status: ""
     })
 
     const [modeler, setModeler] = useState(
@@ -61,7 +73,9 @@ function ViewProcess(props) {
             ],
         })
     )
-    const generateId = 'viewtaskprocesstab';
+
+    const generateId = 'viewtaskoutputtab';
+
     useEffect(() => {
         modeler.attachTo('#' + generateId);
         var eventBus = modeler.get('eventBus');
@@ -78,6 +92,7 @@ function ViewProcess(props) {
 
         modeler.on('element.click', 1000, (e) => interactPopup(e));
     }, [])
+
     useEffect(() => {
         let info = {};
         let infoTask = props.data.tasks;
@@ -105,6 +120,7 @@ function ViewProcess(props) {
         })
         props.getDepartment();
         let { user } = props;
+
         let defaultUnit;
         if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
             item.manager === state.currentRole
@@ -125,46 +141,56 @@ function ViewProcess(props) {
                     for (let i in infoTask) {
                         let responsible = []
                         let accountable = []
-                        console.log(infoTask[i].responsibleEmployees)
+                        let taskOutputs = []
                         infoTask[i].responsibleEmployees.forEach(x => {
                             responsible.push(x.name)
                         })
                         infoTask[i].accountableEmployees.forEach(x => {
                             accountable.push(x.name)
                         })
+                        if (infoTask[i].taskOutputs?.length > 0) {
+                            infoTask[i].taskOutputs.forEach(x => {
+                                let check = formatStatusTaskOutput(x.status);
+                                let title = x.title;
+                                taskOutputs.push({ title: x.title, status: x.status })
+                            })
+                        }
+
                         let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
                         element1 && modeling.updateProperties(element1, {
                             progress: infoTask[i].progress,
                             shapeName: infoTask[i].name,
                             responsibleName: responsible,
-                            accountableName: accountable
+                            accountableName: accountable,
+                            taskOutputs: taskOutputs,
                         });
-                        if (infoTask[i].status === "finished") {
-                            element1 && modeling.setColor(element1, {
-                                fill: '#f9f9f9',
-                                stroke: '#c4c4c7'
-                            });
-
-                            var outgoing = element1.outgoing;
-                            outgoing.forEach(x => {
-                                if (info?.[x?.businessObject?.targetRef?.id]?.status === "inprocess") {
-                                    var outgoingEdge = modeler.get('elementRegistry').get(x.id);
-
-                                    modeling.setColor(outgoingEdge, {
-                                        stroke: '#c4c4c7',
-                                        width: '5px'
-                                    })
-                                }
-                            })
+                        let checkStatusTaskOutputs = "normal";
+                        let check = 0;
+                        for (let x in infoTask[i].taskOutputs) {
+                            if (x.status !== "approved") {
+                                checkStatusTaskOutputs = "unfinished";
+                            } else {
+                                check = check + 1;
+                            }
                         }
-                        if (infoTask[i].status === "inprocess") {
-                            element1 && modeling.setColor(element1, {
-                                fill: '#84ffb8',
-                                stroke: '#14984c', //E02001
-                                width: '5px'
-                            });
-
+                        if (check == infoTask[i].taskOutputs.length) {
+                            checkStatusTaskOutputs = "approved"
                         }
+
+                        // if (checkStatusTaskOutputs === "approved") {
+                        //     element1 && modeling.setColor(element1, {
+                        //         fill: '#84ffb8',
+                        //         stroke: '#14984c', //E02001
+                        //     });
+                        // }
+                        // if (checkStatusTaskOutputs === "unfinished") {
+                        //     element1 && modeling.setColor(element1, {
+                        //         fill: 'rgba(254, 202, 202)',
+                        //         stroke: 'rgba(239, 68, 68)', //E02001
+                        //         width: '5px'
+                        //     });
+
+                        // }
                     }
                 }
 
@@ -172,13 +198,16 @@ function ViewProcess(props) {
         }
     }, [props.idProcess])
 
+    const { id, info, startDate, endDate, status,
+        processDescription, processName, showProcessChild, processChilds, showInfo } = state;
+
     // Các hàm  xử lý sự kiện của bpmn
 
-    const interactPopup = (event) => {
+    const interactPopup = async (event) => {
         var element = event.element;
         let nameStr = element.type.split(':');
         // console.log(element.businessObject.id);
-        setState(state => {
+        await setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
                 if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                     state.info[`${element.businessObject.id}`] = {
@@ -219,10 +248,12 @@ function ViewProcess(props) {
 
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
-            window.$(`#modal-detail-task-view-process`).modal("show");
+            // window.$(`#modal-task-outputs-of-task`).modal("show");
+            console.log(253)
         }
         if (element.type === 'bpmn:SubProcess') {
-            window.$(`#modal-view-process-child`).modal("show");
+            // window.$(`#modal-view-process-child`).modal("show");
+            console.log(257)
         }
     }
 
@@ -381,18 +412,10 @@ function ViewProcess(props) {
         else if (data === "delayed") return translate('task.task_management.delayed');
         else if (data === "canceled") return translate('task.task_management.canceled');
     }
-    const handleChangeContent = async (content) => {
-        await setState(state => {
-            return {
-                ...state,
-                selectedView: content
-            }
-        })
-    }
+
     const { translate, role, user } = props;
-    const { id, info, startDate, endDate, status,
-        processDescription, processName, showProcessChild, processChilds, showInfo, selectedView } = state;
-    const { isTabPane, idProcess, listOrganizationalUnit, xmlDiagram, creator, infoTask } = props
+
+    const { isTabPane } = props
     // if (id){
     //     console.log(info[`${id}`]);
     // }
@@ -400,131 +423,48 @@ function ViewProcess(props) {
     return (
         <React.Fragment>
             <div>
-                {id !== undefined && showInfo &&
-                    <ModalDetailTask action={"view-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
-                }
-                {id !== undefined && showProcessChild &&
-                    <ViewProcessChild id={id}
-                        processChild={(processChilds && processChilds[`${id}`]) && processChilds[`${id}`]} />
-                }
-                <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
-                    <ul className="nav nav-tabs">
-                        <li className="active"><a href="#info-view" onClick={() => handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
-                        <li><a className="viewReport" href="#view-task-output" onClick={() => handleChangeContent("viewTaskOutput")} data-toggle="tab">Kết quả công việc</a></li>
-                        {props.checkManager &&
-                            <React.Fragment>
-                                <li><a className="viewReport" href="#report-view" onClick={() => handleChangeContent("report")} data-toggle="tab">Báo cáo</a></li>
-                                <li><a className="viewReportHuman" href="#report-human-view" onClick={() => handleChangeContent("reportHuman")} data-toggle="tab">Báo cáo thành viên</a></li>
-                            </React.Fragment>
-                        }
+                <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
+                    {/* Quy trình công việc */}
+                    <div className={`${isTabPane ? '' : 'col-md-8'}`} style={{ paddingRight: "0px" }}>
+                        <div className="contain-border">
+                            {/* Diagram */}
+                            <div id={generateId}></div>
 
-                    </ul>
-                </div>
-                <div className="tab-content">
-                    <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
-                        <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
-                            {/* Quy trình công việc */}
-                            <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
-                                {/* Diagram */}
-                                <div id={generateId}></div>
-
-                                {/* Zoom button */}
-                                <div className="row">
-                                    <div className="io-zoom-controls">
-                                        <ul className="io-zoom-reset io-control io-control-list">
-                                            <li>
-                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
-                                                    <i className="fa fa-crosshairs"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
-                                                    <i className="fa fa-plus"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
-                                                    <i className="fa fa-minus"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className={`${isTabPane ? "" : "col-md-4"}`}>
-                                <div className='description-box without-border'>
-                                    {/* tên quy trình */}
-                                    <div>
-                                        <strong>{translate("task.task_process.process_name")}:</strong>
-                                        <span>{processName}</span>
-                                    </div>
-
-                                    {/* mô tả quy trình */}
-                                    <div>
-                                        <strong>{translate("task.task_process.process_description")}:</strong>
-                                        <span>{processDescription}</span>
-                                    </div>
-
-                                    {/* mô tả quy trình */}
-                                    <div>
-                                        <strong>{translate("task.task_process.process_status")}:</strong>
-                                        <span>{formatStatus(status)}</span>
-                                    </div>
-
-                                    {/* thời gian thực hiện quy trình */}
-                                    <div>
-                                        <strong>{translate("task.task_process.time_of_process")}:</strong>
-                                        <span>{formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {formatDate(endDate)}</span>
-                                    </div>
-
-                                    <div>
-                                        <strong>{translate("task.task_process.notice")}:</strong>
-                                    </div>
-
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.wait_for_approval")}
-                                    </div>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <div style={{ backgroundColor: "#84ffb8", height: "30px", width: "40px", border: "2px solid #14984c", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.inprocess")}
-                                    </div>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <div style={{ backgroundColor: "#f9f9f9", height: "30px", width: "40px", border: "2px solid #c4c4c7", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.finished")}
-                                    </div>
-                                    <div>
-                                        <strong>Báo cáo tổng quan:</strong>
-                                    </div>
+                            {/* Zoom button */}
+                            <div className="row">
+                                <div className="io-zoom-controls">
+                                    <ul className="io-zoom-reset io-control io-control-list">
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
+                                                <i className="fa fa-crosshairs"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
+                                                <i className="fa fa-plus"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
+                                                <i className="fa fa-minus"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div className={`${isTabPane ? "" : "col-md-4"}`}>
+                        <div className='description-box without-border'>
+                            {id !== undefined && showInfo &&
+                                <TaskOutputTab id={id} task={(info && info[`${id}`]) && info[`${id}`]} />
+                            }
+                            {/* tên quy trình */}
+
+                        </div>
+                    </div>
                 </div>
-                <React.Fragment>
-                    <div className="tab-content">
-                        <div className={selectedView === "report" ? "active tab-pane" : "tab-pane"} id="info-report">
-                            <ReportProcess officeHours={props.data.officeHours} convertDayToHour={props.data.convertDayToHour} listTask={props.data.tasks} processTemplate={props.data.processTemplate} />
-                        </div>
-                    </div>
-                    <div className="tab-content">
-                        <div className={selectedView === "reportHuman" ? "active tab-pane" : "tab-pane"} id="info-report-human">
-                            <ReportHumanOfProcess officeHours={props.data.officeHours} convertDayToHour={props.data.convertDayToHour} listTask={props.data.tasks} />
-                        </div>
-                    </div>
-                    <div className="tab-content">
-                        <div className={selectedView === "viewTaskOutput" ? "active tab-pane" : "tab-pane"} id="info-report-human">
-                            <ViewTaskOutputs
-                                listOrganizationalUnit={listOrganizationalUnit}
-                                data={data}
-                                idProcess={idProcess}
-                                xmlDiagram={xmlDiagram}
-                                processName={processName}
-                                processDescription={processDescription}
-                                infoTask={infoTask}
-                                creator={creator}
-                            />
-                        </div>
-                    </div>
-                </React.Fragment>
             </div>
         </React.Fragment>
     )
@@ -542,5 +482,5 @@ const actionCreators = {
     getAllUsersWithRole: UserActions.getAllUsersWithRole,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 };
-const connectedViewProcess = connect(mapState, actionCreators)(withTranslate(ViewProcess));
-export { connectedViewProcess as ViewProcess };
+const connectedViewProcess = connect(mapState, actionCreators)(withTranslate(ViewTaskOutputs));
+export { connectedViewProcess as ViewTaskOutputs };
