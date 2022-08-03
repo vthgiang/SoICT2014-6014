@@ -46,7 +46,7 @@ const data = [{
 router.get('/employees/search-for-package', auth, EmployeeController.searchEmployeeForPackage);
 router.get('/employees/all', auth, EmployeeController.searchEmployeeForPackage);
 // Lấy thông tin cá nhân
-router.get('/employees/:id', EmployeeController.getEmployeeProfile);
+router.get('/employees/:id', auth, EmployeeController.getEmployeeProfile);
 
 // Cập nhật thông tin cá nhân
 router.patch('/employees/:userId', auth, uploadFile([{

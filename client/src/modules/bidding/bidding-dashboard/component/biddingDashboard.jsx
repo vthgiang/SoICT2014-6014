@@ -14,6 +14,7 @@ import { BiddingStatusQuantityStatistic } from './biddingQuantityStatistic'
 import { QuantityStatistic } from './quantityStatistic'
 import { ContractBidProjectRelation } from './statisticContractBidAndProjectRelation'
 import { StatisticTaskRelatedBiddingPackage } from './statisticTaskRelatedToBiddingPackage'
+import TaskCalenderOfUnit from './taskCalenderOfUnit'
 
 const BiddingDashboard = (props) => {
     const { biddingPackagesManager, biddingContract, project } = props;
@@ -60,6 +61,7 @@ const BiddingDashboard = (props) => {
             <BidAndProjectStatistic />
             <BiddingInProcessStatistic />
             <StatisticTaskRelatedBiddingPackage />
+            <TaskCalenderOfUnit />
         </div>
     )
 }

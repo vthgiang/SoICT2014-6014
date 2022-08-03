@@ -250,7 +250,7 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                 }
             })
         }
-    }, [JSON.stringify(tasks), JSON.stringify(state.bid)])
+    }, [JSON.stringify(tasks), JSON.stringify(state.bid), ])
 
     useEffect(() => {
         let { startDate, endDate } = state;
@@ -354,61 +354,15 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                             multiple={false}
                         />
                     </div>
-                    <div className="form-inline">
-                            <div className="form-group">
-                                <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
-                                <DatePicker
-                                    id="monthStartInHome"
-                                    dateFormat="month-year"
-                                    value={state.startDate}
-                                    onChange={handleSelectMonthStart}
-                                    disabled={false}
-                                />
-                            </div>
-
-                            {/**Chọn ngày kết thúc */}
-                            <div className="form-group">
-                                <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
-                                <DatePicker
-                                    id="monthEndInHome"
-                                    dateFormat="month-year"
-                                    value={state.endDate}
-                                    onChange={handleSelectMonthEnd}
-                                    disabled={false}
-                                />
-                            </div>
-
-                            {/**button tìm kiếm data để vẽ biểu đồ */}
-                            <div className="form-group">
-                                <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                            </div>
-                        </div>
                 </div>
-                {/* <React.Fragment>
-                    {
-                        listTasksGeneral && listTasksGeneral.length > 0 ?
-                            <LazyLoadComponent once={true}>
-                                <GeneralTaskPersonalChart
-                                    tasks={listTasksGeneral}
-                                />
-                            </LazyLoadComponent>
-                            : (loadingInformed && loadingCreator && loadingConsulted && loadingAccountable) ?
-                                <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                                <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-                </React.Fragment> */}
                 <React.Fragment>
-                    <div className="qlcv" style={{ marginBottom: 10 }}>
-                        {/**Chọn ngày bắt đầu */}
-                        
-                    </div>
 
                     <div className="nav-tabs-custom">
-                        <ul className="nav nav-tabs">
+                        {/* <ul className="nav nav-tabs">
                             <li className="active"><a href="#tasks-oveview" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tổng quan công việc</a></li>
                             <li><a href="#tasks-calendar" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('task.task_management.tasks_calendar')}</a></li>
                             <li><a href="#newfeeds" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('news_feed.news_feed')}</a></li>
-                        </ul>
+                        </ul> */}
 
                         <div className="tab-content">
                             <div className="tab-pane active" id="tasks-oveview">
@@ -428,7 +382,7 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                                 }
                             </div>
 
-                            <div className="tab-pane" id="tasks-calendar">
+                            {/* <div className="tab-pane" id="tasks-calendar">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startDateWork} {translate('task.task_management.lower_to')} {endDateWork}</div>
@@ -440,13 +394,13 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                                         />
                                     </LazyLoadComponent>
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className="tab-pane" id="newfeeds">
+                            {/* <div className="tab-pane" id="newfeeds">
                                 <LazyLoadComponent once={true}>
                                     <NewsFeed />
                                 </LazyLoadComponent>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
