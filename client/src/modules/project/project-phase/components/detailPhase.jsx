@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, forceCheckOrVisible, LazyLoadComponent } from '../../../../common-components'
-import { ProjectGantt } from '../../../../common-components/src/gantt/projectGantt';
+import { DialogModal, forceCheckOrVisible, LazyLoadComponent } from '../../../../common-components';
 import { ProjectActions } from "../../projects/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { StatisticActions } from '../../statistic/redux/actions';
@@ -48,7 +47,7 @@ const DetailPhase = (props) => {
         props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
         props.getAllTasksByProject(projectDetailId || projectDetail?._id);
-        props.getListTasksEvalDispatch(currentProjectId, currentMonth.format());
+        props.getListTasksEvalDispatch(currentProjectId || projectDetail?._id, currentMonth.format());
         setTimeout(() => {
             setIsLoading(false);
         }, 1000);

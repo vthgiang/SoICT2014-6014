@@ -9,6 +9,7 @@ const {
     Task,
     ProjectChangeRequest,
     ProjectPhase,
+    ProjectMilestone,
 } = require('../../../models');
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
@@ -71,7 +72,7 @@ exports.createCPMProjectPhase = async (portal, data) => {
 
 /**
  * Tạo 1 giai đoạn mới trong dự án
- * @param {*} data 
+ * @param {*} data dữ liệu về giai đoạn
  */
 exports.create = async (portal, data) => {
     let phase = await ProjectPhase(connect(DB_CONNECTION, portal)).create({
@@ -91,6 +92,38 @@ exports.create = async (portal, data) => {
     phase = await ProjectPhase(connect(DB_CONNECTION, portal)).findById(phase._id)
         .populate({ path: "creator", select: "_id name email" })
     return phase;
+}
+
+/**
+ * Tạo 1 giai cột mốc trong dự án
+ * @param {*} data dữ liệu của cột mốc
+ */
+exports.createMilestone = async (portal, data) => {
+    let milestone = await ProjectMilestone(connect(DB_CONNECTION, portal)).create({
+        ...data,
+        projectPhase: data.projectPhase,
+        name: data.name,
+        description: data.description,
+        priority: data.priority,
+        responsibleEmployees: data.responsibleEmployees,
+        accountableEmployees: data.accountableEmployees,
+        consultedEmployees: data.consultedEmployees,
+        informedEmployees: data.informEmployees,
+        confirmedByEmployees: data.responsibleEmployees.concat(data.accountableEmployees).concat(data.consultedEmployees).includes(data.creator) ? [data.creator] : [],
+        preceedingTasks: data.preceedingTasks,
+        project: data.project,
+        startDate: data.startDate,
+        creator: data.creator,
+        endDate: data.endDate,
+    })
+
+    milestone = await ProjectMilestone(connect(DB_CONNECTION, portal)).findById(milestone._id)
+        .populate({ path: "creator", select: "_id name email" })
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" });
+    return milestone;
 }
 
 /**
@@ -121,11 +154,17 @@ exports.get = async (portal, id, userId) => {
  * @param {*} data dữ liệu cần cập nhật
  */
 exports.editPhase = async (portal, id, data) => {
+    data = {
+        ...data,
+        actualEndDate: data.status === "finished"? new Date(): undefined,
+    }
+
     const a = await ProjectPhase(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             name: data.name,
             startDate: data.startDate,
             endDate: data.endDate,
+            actualEndDate: data.actualEndDate,
             description: data.description,
             progress: data.progress,
             status: data.status,
@@ -145,5 +184,68 @@ exports.editPhase = async (portal, id, data) => {
 */
 exports.deletePhase = async (portal, id) => {
     await ProjectPhase(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
+    return id;
+}
+
+/**
+ * Lấy thông tin toàn bộ cột mốc trong 1 dự án
+ * @param {*} id id của project
+ */
+exports.getProjectMilestone = async (portal, id) => {
+    let milestones = await ProjectMilestone(connect(DB_CONNECTION, portal)).find({
+        project: id
+    }).populate({ path: "creator", select: "_id name email" })
+    .populate({ path: "responsibleEmployees", select: "_id name" })
+    .populate({ path: "accountableEmployees", select: "_id name" })
+    .populate({ path: "consultedEmployees", select: "_id name" })
+    .populate({ path: "informedEmployees", select: "_id name" });
+    return milestones;
+}
+
+/**
+ * Thay đổi thông tin của 1 cột mốc
+ * @param {*} id của cột mốc
+ * @param {*} data dữ liệu cần cập nhật
+ */
+exports.editMilestone = async (portal, id, data) => {
+    data = {
+        ...data,
+        actualEndDate: data.status === "finished"? new Date(): undefined,
+    }
+    const a = await ProjectMilestone(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: {
+            name: data.name,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            actualEndDate: data.actualEndDate,
+            description: data.description,
+            progress: data.progress,
+            status: data.status,
+            priority: data.priority,
+            projectPhase: data.projectPhase,
+            responsibleEmployees: data.responsibleEmployees,
+            accountableEmployees: data.accountableEmployees,
+            consultedEmployees: data.consultedEmployees,
+            informedEmployees: data.informedEmployees,
+            preceedingTasks: data.preceedingTasks,
+        }
+    }, { new: true });
+
+    // Cập nhật lại thông tin về giai đoạn của các task
+    const milestone = await ProjectMilestone(connect(DB_CONNECTION, portal)).findOne({ _id: id })
+        .populate({ path: "creator", select: "_id name email" })
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" });
+    return milestone;
+}
+
+/**
+ * Xoá cột mốc theo id
+ * @param {*} id
+*/
+exports.deleteMilestone = async (portal, id) => {
+    await ProjectMilestone(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
     return id;
 }

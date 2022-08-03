@@ -6541,7 +6541,7 @@ export default {
             select_all_type: 'Chọn tất cả hình thức',
             search_by_employees: 'Nhập tên hoặc email',
             search: 'Tìm kiếm',
-            add_err_end_date: 'Ngày kết thúc dự án phải sau ngày bắt đầu',
+            add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
             add_err_empty_start_date: "Hãy chọn ngày bắt đầu",
             add_err_empty_end_date: "Hãy chọn ngày kết thúc",
             col_start_time: "Thời điểm bắt đầu",
@@ -6589,6 +6589,7 @@ export default {
                 phase: "Giai đoạn",
                 task: "Công việc",
                 milestone: "Cột mốc",
+                milestone_info: "Thông tin cột mốc",
                 select_type: "Chọn loại công việc",
                 select_all_type: "Chọn tất cả loại công việc",
                 add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
@@ -6682,6 +6683,10 @@ export default {
             add_btn_new: "Thêm giai đoạn mới",
             report: {
                 title: 'Báo cáo chi tiết giai đoạn'
+            },
+            milestone: {
+                name: 'Tên cột mốc',
+                date: 'Thời điểm'
             }
         },
     },

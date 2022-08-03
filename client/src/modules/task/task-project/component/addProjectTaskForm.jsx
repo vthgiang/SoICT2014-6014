@@ -67,14 +67,10 @@ const AddProjectTaskForm = (props) => {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role, currentProjectTasks, currentProjectPhase } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
-    const initTasksToChoose = currentProjectTasks ? currentProjectTasks?.map(item => ({
-        value: item._id,
-        text: item.name
-    })) : []
 
     const [currentTasksToChoose, setCurrentTasksToChoose] = useState({
-        preceeding: [...initTasksToChoose],
-        following: [...initTasksToChoose],
+        preceeding: [],
+        following: [],
     })
 
     const [currentPhaseToChoose, setCurrentPhaseToChoose] = useState({
@@ -90,7 +86,19 @@ const AddProjectTaskForm = (props) => {
         setCurrentPhaseToChoose({
             phases: res
         })
-    }, [currentProjectPhase])
+    }, [JSON.stringify(currentProjectPhase)])
+
+    useEffect(() => {
+        let res = currentProjectTasks ? currentProjectTasks?.map(item => ({
+            value: item._id,
+            text: item.name
+        })) : [];
+        // res.unshift({value: "", text: "Chọn công việc tiền nhiệm"})
+        setCurrentTasksToChoose({
+            preceeding: res,
+            following: []
+        })
+    }, [JSON.stringify(currentProjectTasks)])
 
     let listTaskTemplate;
     let taskTemplate;
@@ -256,9 +264,6 @@ const AddProjectTaskForm = (props) => {
         let { translate, project } = props;
         const projectDetail = getCurrentProjectDetails(project);
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(value, newTask.accountableEmployees)) {
-            message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
-        }
 
         if (willUpdateState) {
             const responsiblesWithSalaryArr = value?.map(valueItem => {
@@ -709,7 +714,7 @@ const AddProjectTaskForm = (props) => {
 
     useEffect(() => {
         const curStartDateTime = convertDateTime(newTask.startDate, startTime);
-        console.log('curStartDateTime', curStartDateTime, 'newTask.currentLatestStartDate', newTask.currentLatestStartDate)
+        // console.log('curStartDateTime', curStartDateTime, 'newTask.currentLatestStartDate', newTask.currentLatestStartDate)
         if (newTask.currentLatestStartDate && newTask.preceedingTasks.length > 0
             && moment(curStartDateTime).isBefore(moment(newTask.currentLatestStartDate).set('second', 0))) {
             setState({

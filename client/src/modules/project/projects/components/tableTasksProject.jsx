@@ -16,7 +16,9 @@ import { formatTaskStatus, getCurrentProjectDetails, renderProgressBar, renderSt
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import Swal from 'sweetalert2';
 import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
-import { ModalPerformPhase} from '../../project-phase/components/modalPerfromPhase';
+import { ModalDetailTask } from '../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
+import { MilestoneEditForm } from '../../project-phase/components/editMilestone';
+import DetailMilestone from '../../project-phase/components/detailMilestone';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import moment from 'moment';
 import { getTotalTimeSheetLogs } from '../../../task/task-management/component/functionHelpers';
@@ -41,13 +43,16 @@ const TableTasksProject = (props) => {
         currentTaskId: '',
         currentPhaseId: '',
         currentPhase: {},
+        currentMilestoneId: '',
+        currentMilestone: {},
     })
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(limit || defaultConfig.limit);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
-    const { translate, currentProjectTasks, user, project, performtasks, tasks, projectPhase, currentProjectPhase, projectDetail } = props;
-    const { status, name, priority, startDate, endDate, responsibleEmployees, accountableEmployees, 
+    const { translate, currentProjectTasks, user, project, performtasks, tasks, projectPhase, currentProjectPhase,
+        currentProjectMilestone, projectDetail } = props;
+    const { status, name, priority, startDate, endDate, responsibleEmployees, accountableEmployees, currentMilestone, currentMilestoneId,
         creatorEmployees, taskType, preceedingTasks, data, currentTaskId, currentPhaseId, currentPhase } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
@@ -84,8 +89,10 @@ const TableTasksProject = (props) => {
             && !projectPhase.isLoading) {
             let currentTasks = _cloneDeep(tasks.tasks); // Sao chép ra mảng mới
             let phases = _cloneDeep(projectPhase?.phases);
+            let milestones = _cloneDeep(projectPhase?.milestones)
             if (taskType.includes('task')) {
                 phases = processProjectPhase(currentTasks);
+                milestones = processProjectMilestone(currentTasks);
             }
             for (let n in currentTasks) {
 
@@ -106,12 +113,12 @@ const TableTasksProject = (props) => {
                     progress: renderProgressBar(currentTasks[n]?.progress, currentTasks[n]),
                     parent: currentTasks[n].taskPhase ? currentTasks[n].taskPhase : null,
                     type: 'task',
-                    action: ["edit"]
+                    action: ["edit", "view"]
                 }
 
                 // Kiểm tra xem người dùng có quyền bấm giờ
                 if (currentTasks[n].responsibleEmployees && currentTasks[n].responsibleEmployees.find(e => e._id === userId) || currentTasks[n].accountableEmployees && currentTasks[n].accountableEmployees.find(e => e._id === userId)) {
-                    data[n] = { ...data[n], action: ["edit", "startTimer"] }
+                    data[n] = { ...data[n], action: ["edit", "view", "startTimer"] }
                 }
             }
 
@@ -143,13 +150,45 @@ const TableTasksProject = (props) => {
                 data.push(phases[m]);
             }
 
+            for (let k in milestones) {
+                milestones[k]= {
+                    ...milestones[k],
+                    rawData: milestones[k],
+                    name: milestones[k]?.name,
+                    priority: convertPriorityData(milestones[k].priority, translate),
+                    preceedingTask: processPreceedingTasks(milestones[k]?.preceedingTasks),
+                    responsibleEmployees: milestones[k]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={milestones[k]?.responsibleEmployees.map(o => o.name)} /> : null,
+                    accountableEmployees: milestones[k]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={milestones[k]?.accountableEmployees.map(o => o.name)} /> : null,
+                    creatorEmployees: milestones[k].creator ? milestones[k].creator.name : null,
+                    status: <div style={{ color: renderStatusColor(milestones[k]) }}>{formatTaskStatus(translate, milestones[k]?.status)}</div>,
+                    startDate: moment(milestones[k]?.startDate).format('HH:mm DD/MM/YYYY') || '',
+                    endDate: moment(milestones[k]?.endDate).format('HH:mm DD/MM/YYYY') || '',
+                    actualEndDate: milestones[k]?.actualEndDate && moment(milestones[k]?.actualEndDate).format('HH:mm DD/MM/YYYY') || '',
+                    timesheetLogs: null,
+                    progress: renderProgressBar(milestones[k]?.progress, milestones[k]),
+                    parent: milestones[k].projectPhase ? milestones[k].projectPhase : null,
+                    type: 'milestone',
+                    action: ["view"],
+                }
+
+                if(checkIfAbleToCRUDProject({ project, user, currentProjectId })) {
+                    milestones[k] = { ...milestones[k], action: ["view", "edit", "delete"] }
+                }
+
+                else if (milestones[k].accountableEmployees && milestones[k].accountableEmployees.filter(o => o._id === userId).length > 0) {
+                    milestones[k] = { ...milestones[k], action: ["view", "edit"] }
+                }
+
+                data.push(milestones[k]);
+            }
+
             setState({
                 ...state,
                 data: data
             })
         }
     }, [performtasks?.isLoading, projectPhase?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasksByProjectPaginate),
-         JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phases), JSON.stringify(tasks?.tasks), taskType])
+         JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phases), JSON.stringify(tasks?.tasks), taskType, JSON.stringify(projectPhase.milestones)]);
 
     // Khi gọi hàm lấy toàn bộ công việc, cập nhật lại bảng
     // useEffect(() => {
@@ -261,6 +300,17 @@ const TableTasksProject = (props) => {
         let result = []
         if (!currentProjectPhase || currentProjectPhase?.length === 0 || taskList?.length === 0 || !taskList) result = [] ;
         else result = currentProjectPhase?.filter(phase => taskList.find(task => task.taskPhase === phase._id));
+        return result
+    }
+
+    // Kiểm tra những milestone có công việc tiền nhiệm ở trong bảng
+    const processProjectMilestone = (taskList) => {
+        let listTaskId = taskList.map(task => {
+            return task._id;
+        })
+        let result = []
+        if (!currentProjectMilestone || currentProjectMilestone?.length === 0 || taskList?.length === 0 || !taskList) result = [] ;
+        else result = currentProjectMilestone?.filter(milestone => milestone.preceedingTasks.find(taskItem => listTaskId.includes(taskItem.task)));
         return result
     }
 
@@ -425,8 +475,23 @@ const TableTasksProject = (props) => {
         }, 500);
     }
 
+    const handleViewTaskInfo = (id) => {
+        if (currentTaskId !== id ) props.getTaskById(id);
+        setState(state => {
+            return {
+                ...state,
+                currentTaskId: id
+            }
+        })
+
+        setTimeout(() => {
+            // window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+            window.$(`#modal-detail-task-Employee`).modal('show');
+        }, 500);
+    }
+
+    // Xem thông tin giai đoạn
     const handleViewPhaseInfo = (id) => {
-        console.log(1);
         setState(state => {
             return {
                 ...state,
@@ -441,6 +506,7 @@ const TableTasksProject = (props) => {
         }, 500);
     }
 
+    // Xoá 1 giai đoạn
     const handleDeletePhase = (id) => {
         // Hàm xóa một giai đoạn theo id
         Swal.fire({
@@ -457,7 +523,8 @@ const TableTasksProject = (props) => {
             }
         })  
     }
-    // Xem thông tin giai đoạn
+
+    // Sửa thông tin giai đoạn
     const handleEditPhase = (id) => {
         setState(state => {
             return {
@@ -471,6 +538,56 @@ const TableTasksProject = (props) => {
             // window.$(`#modelPerformTask${currentTaskId}`).modal('show')
             window.$(`#modal-edit-phase-${id}`).modal('show')
         }, 500);
+    }
+
+    // Sửa thông tin cột mốc
+    const handleViewMilestone = (id) => {
+        setState(state => {
+            return {
+                ...state,
+                currentMilestoneId: id,
+                currentMilestone: currentProjectMilestone.find(milestone => milestone._id === id),
+            }
+        })
+
+        setTimeout(() => {
+            // window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+            window.$(`#modal-show-detail-milestone-${id}`).modal('show')
+        }, 500);
+    }
+
+    // Xem thông tin cột mốc
+    const handleEditMilestone = (id) => {
+        setState(state => {
+            return {
+                ...state,
+                currentMilestoneId: id,
+                currentMilestone: currentProjectMilestone.find(milestone => milestone._id === id),
+            }
+        })
+
+        setTimeout(() => {
+            // window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+            window.$(`#modal-edit-milestone-${id}`).modal('show')
+        }, 500);
+    }
+
+    // Xoá 1 cột mốc
+    const handleDeleteMilestone = (id) => {
+        // Hàm xóa một cột mốc theo id
+        Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa cột mốc đã chọn?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: props.translate('general.no'),
+            confirmButtonText: props.translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.deleteMilestoneById(id);
+            }
+        })  
     }
 
     const handleUpdateData = () => {
@@ -575,6 +692,7 @@ const TableTasksProject = (props) => {
 
     return (
         <React.Fragment>
+            {<ModalDetailTask action={'Employee'} task={props.tasks.task} />}
             {
                 currentTaskId && <ModalPerform
                     units={units}
@@ -587,6 +705,7 @@ const TableTasksProject = (props) => {
                     phaseEdit={currentPhase}
                     phaseEditId={currentPhaseId}
                     currentProjectTasks={currentProjectTasks}
+                    currentProjectMilestone={currentProjectMilestone}
                 />
             }
 
@@ -597,6 +716,25 @@ const TableTasksProject = (props) => {
                     projectDetail={projectDetail}
                     projectDetailId={projectDetail._id}
                     phase={currentPhase}
+                />
+            }
+
+            {
+                currentMilestoneId && <MilestoneEditForm
+                    milestoneEdit={currentMilestone}
+                    milestoneEditId={currentMilestoneId}
+                    currentProjectTasks={currentProjectTasks}
+                    currentProjectPhase={currentProjectPhase}
+                />
+            }
+
+            {
+                currentMilestoneId && <DetailMilestone
+                    milestoneId={currentMilestoneId}
+                    currentProjectTasks={currentProjectTasks}
+                    projectDetail={projectDetail}
+                    projectDetailId={projectDetail._id}
+                    milestone={currentMilestone}
                 />
             }
 
@@ -747,10 +885,14 @@ const TableTasksProject = (props) => {
                                 startTimer: translate('task.task_management.action_start_timer'),
                             }}
                             funcEditTask={handleShowDetailInfo}
+                            funcViewTask={handleViewTaskInfo}
                             funcEditPhase={handleEditPhase}
                             funcStartTimer={startTimer}
                             funcViewPhase={handleViewPhaseInfo}
                             funcDeletePhase={handleDeletePhase}
+                            funcEditMilestone={handleEditMilestone}
+                            funcViewMilestone={handleViewMilestone}
+                            funcDeleteMilestone={handleDeleteMilestone}
                         />
                     </div>
 
@@ -781,7 +923,9 @@ const mapDispatchToProps = {
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
     getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getTaskById: performTaskAction.getTaskById,
     deletePhaseById: ProjectPhaseActions.deletePhase,
+    deleteMilestoneById: ProjectPhaseActions.deleteMilestone,
     deleteTaskById: taskManagementActions._delete,
     startTimer: performTaskAction.startTimerTask,
 }

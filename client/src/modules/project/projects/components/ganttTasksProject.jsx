@@ -6,15 +6,17 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { formatTaskStatus } from './functionHelper';
 import moment from 'moment';
 import { ProjectGantt } from '../../../../common-components/src/gantt/projectGantt';
-import DetailPhase from '../../project-phase/components/detailPhase.jsx'
+import DetailPhase from '../../project-phase/components/detailPhase.jsx';
+import DetailMilestone from '../../project-phase/components/detailMilestone.jsx';
 import { getDurationWithoutSatSun, getCurrentProjectDetails } from './functionHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import { ModalDetailTask } from '../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 
+
 const GanttTasksProject = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
-    const { translate, currentProjectTasks, user, project, tasks, currentProjectPhase, projectPhase } = props;
+    const { translate, currentProjectTasks, user, project, tasks, currentProjectPhase, currentProjectMilestone, projectPhase } = props;
     const task = tasks && tasks.task;
     let projectDetail = {};
 
@@ -28,13 +30,17 @@ const GanttTasksProject = (props) => {
         currentPhase: {},
         currentPhaseId: '',
         currentTaskId: '',
+        currentMilestone: '',
+        currentMilestoneId: '',
     });
 
-    const { currentPhase, currentPhaseId ,currentTaskId } = state;
+    const { currentPhase, currentPhaseId, currentTaskId, currentMilestoneId, currentMilestone } = state;
 
+    // Kiểm tra xem công việc thuộc loại nào
     const checkTaskType = (id) => {
         if (currentProjectTasks?.find(taskItem => taskItem._id === id)) return 'task'
         else if (currentProjectPhase?.find(phase => phase._id === id)) return 'phase'
+        else if (currentProjectMilestone?.find(milestone => milestone._id === id)) return 'milestone'
         return 'none'
     }
 
@@ -73,11 +79,23 @@ const GanttTasksProject = (props) => {
                     return {
                         ...state,
                         currentPhaseId: id,
-                        currentPhase: currentProjectPhase.find(phase => phase._id === id),
+                        currentPhase: currentProjectPhase?.find(phase => phase._id === id),
                     }
                 })
                 window.$(`#modal-show-detail-phase-${id}`).modal('show')
             }
+
+            if (type === 'milestone') {
+                setState(state => {
+                    return {
+                        ...state,
+                        currentMilestoneId: id,
+                        currentMilestone: currentProjectMilestone.find(milestone => milestone._id === id),
+                    }
+                })
+                window.$(`#modal-show-detail-milestone-${id}`).modal('show')
+            }
+
         }
     }
 
@@ -162,7 +180,7 @@ const GanttTasksProject = (props) => {
                         : (moment().isBefore(moment(taskItem.startDate).add(1, currentMode)) ? moment(taskItem.startDate).add(1, currentMode).format("YYYY-MM-DD HH:mm") : moment().format("YYYY-MM-DD HH:mm")),
                     progress: taskItem.progress / 100,
                     process,
-                    parent: taskItem.taskPhase,
+                    parent: taskItem?.taskPhase ? taskItem.taskPhase : '0',
                     status: formatTaskStatus(translate, taskItem.status),
                     type: 'task',
                 });
@@ -180,7 +198,6 @@ const GanttTasksProject = (props) => {
                     }
                 }
             }
-            line = data.length;
         }
 
         if (currentProjectPhase && currentProjectPhase.length > 0) {
@@ -235,12 +252,80 @@ const GanttTasksProject = (props) => {
                     status: formatTaskStatus(translate, phaseItem.status),
                     type: 'project',
                 });
-
             }
-            line = data.length;
         }
 
+        if (currentProjectMilestone && currentProjectMilestone.length > 0) {
+            for (let milestoneItem of currentProjectMilestone) {
+                let start = moment(milestoneItem.startDate);
+                let end = moment(milestoneItem.endDate);
+                let now = moment(new Date());
+                let duration = 0;
+                if (currentMode === 'days') {
+                    duration = getDurationWithoutSatSun(milestoneItem.startDate, milestoneItem.endDate, 'days')
+                } else if (currentMode === 'hours') {
+                    duration = getDurationWithoutSatSun(milestoneItem.startDate, milestoneItem.endDate, 'hours')
+                } else {
+                    duration = end.diff(start, currentMode);
+                }
+                if (duration == 0) duration = 1;
+                let process = 0;
 
+                // Tô màu công việc
+                if (milestoneItem.status != "inprocess") {
+                    process = 3;
+                }
+                else if (now > end) {
+                    process = 2; // Quá hạn
+                }
+                else {
+                    let processDay = Math.floor(milestoneItem.progress * duration / 100);
+                    let uptonow = now.diff(start, currentMode);
+
+                    if (uptonow > processDay) {
+                        process = 0; // Trễ hạn
+                    }
+                    else if (uptonow <= processDay) {
+                        process = 1; // Đúng hạn
+                    }
+                }
+                data.push({
+                    id: milestoneItem._id,
+                    text: milestoneItem.status == "inprocess" ? `${milestoneItem.name} - ${milestoneItem.progress}%` : milestoneItem.name,
+                    taskName: `${milestoneItem.name}`,
+                    responsible: `${milestoneItem.responsibleEmployees.map(resItem => resItem.name).join(', ')}`,
+                    customDuration: numberWithCommas(duration),
+                    planned_start: moment(milestoneItem.startDate).format("YYYY-MM-DD HH:mm"),
+                    planned_end: moment(milestoneItem.endDate).format("YYYY-MM-DD HH:mm"),
+                    start_date: moment(milestoneItem.startDate).format("YYYY-MM-DD HH:mm"),
+                    end_date: (milestoneItem.actualEndDate && milestoneItem.status === 'finished')
+                        ? moment(milestoneItem.actualEndDate).format("YYYY-MM-DD HH:mm")
+                        : (moment().isBefore(moment(milestoneItem.startDate).add(1, currentMode)) ? moment(milestoneItem.startDate).add(1, currentMode).format("YYYY-MM-DD HH:mm") : moment().format("YYYY-MM-DD HH:mm")),
+                    progress: milestoneItem.progress ? milestoneItem.progress / 100 : 0,
+                    process,
+                    parent: milestoneItem?.projectPhase ? milestoneItem.projectPhase : '0',
+                    status: formatTaskStatus(translate, milestoneItem.status),
+                    type: 'milestone',
+                    actualEndDate: (milestoneItem.actualEndDate && milestoneItem.status === 'finished')
+                        ? moment(milestoneItem.actualEndDate).format("YYYY-MM-DD HH:mm")
+                        : (moment().isBefore(moment(milestoneItem.startDate).add(1, currentMode)) ? moment(milestoneItem.startDate).add(1, currentMode).format("YYYY-MM-DD HH:mm") : moment().format("YYYY-MM-DD HH:mm")),
+                });
+                // Nếu cột mốc có các công việc tiền nhiệm thì tạo link
+                if (milestoneItem.preceedingTasks && milestoneItem.preceedingTasks.length > 0) {
+                    for (let preceedingItem of milestoneItem.preceedingTasks) {
+                        links.push({
+                            id: linkId,
+                            source: preceedingItem.task,
+                            target: milestoneItem._id,
+                            type: '0',
+                        })
+                        linkId++;
+                    }
+                }
+            }
+        }
+
+        line = data.length;
 
         return {
             data,
@@ -269,6 +354,14 @@ const GanttTasksProject = (props) => {
                             currentProjectTasks={currentProjectTasks}
                             projectDetail={projectDetail}
                             phase={currentPhase}
+                        />
+                    }
+                    {
+                        currentMilestoneId && <DetailMilestone
+                            milestoneId={currentMilestoneId}
+                            currentProjectTasks={currentProjectTasks}
+                            projectDetail={projectDetail}
+                            milestone={currentMilestone}
                         />
                     }
                     <div className="form-inline" style={{ textAlign: 'center' }}>

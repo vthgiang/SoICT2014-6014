@@ -29,6 +29,14 @@ const ProjectPhaseSchema = new Schema(
         endDate: {
             type: Date,
         },
+        //thời điểm thực kết thúc giai đoạn
+        actualEndDate: {
+            type: Date,
+        },
+        //thời điểm thực bắt đầu giai đoạn
+        actualStartDate: {
+            type: Date,
+        },
         // Người tạo
         creator: {
             type: Schema.Types.ObjectId,
@@ -54,18 +62,6 @@ const ProjectPhaseSchema = new Schema(
         budget: {
             type: Number,
         },
-        // Ngân sách cho giai đoạn sau khi 1 change request được accept
-        budgetChangeRequest: {
-            type: Number,
-        },
-        // Thời điểm dự kiến bắt đầu giai đoạn sau khi 1 change request được accept
-        startDateRequest: {
-            type: Date,
-        },
-        // Thời điểm dự kiến kết thúc giai đoạn sau khi 1 change request được accept
-        endDateRequest: {
-            type: Date,
-        }
     },
     {
         timestamps: true,

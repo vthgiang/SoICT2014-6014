@@ -2320,7 +2320,7 @@ exports.createProjectTask = async (portal, task) => {
         accountableEmployees: task.accountableEmployees,
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
-        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
+        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? [task.creator] : [],
         taskProject,
         taskPhase,
         estimateNormalTime: task.estimateNormalTime,

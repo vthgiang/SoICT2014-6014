@@ -5738,6 +5738,7 @@ export default {
                 phase: "Phase",
                 task: "Task",
                 milestone: "Milestone",
+                milestone_info: "Milestone detail",
                 select_type: "Select task type",
                 select_all_type: "Select all type",
                 estimate: "Estimating",
@@ -5830,6 +5831,10 @@ export default {
             add_btn_new: "Add new phase",
             report: {
                 title: 'Detail phase report'
+            },
+            milestone: {
+                name: 'Milestone name',
+                date: 'date'
             }
         },
     },

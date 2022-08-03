@@ -119,7 +119,6 @@ function ListProjectReport(props) {
     }
 
     const handleShowDetailInfo = (id) => {
-        console.log(id,123);
         setState({
             ...state,
             projectDetail: project.data.paginate.find(p => p?._id === id)

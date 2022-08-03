@@ -12,7 +12,8 @@ import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from './functionHe
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import ModalAddTaskSchedule from '../../scheduling-projects/components/modalAddTaskSchedule';
 import ProjectEditForm from './editProject';
-import PhaseCreateForm from '../../project-phase/components/createPhase'
+import PhaseCreateForm from '../../project-phase/components/createPhase';
+import {MilestoneCreateForm} from '../../project-phase/components/createMilestone';
 import moment from 'moment';
 import { TaskProjectAddModal } from '../../../task/task-project/component/taskProjectAddModal';
 import TabProjectInfo from './tabProjectInfo';
@@ -23,7 +24,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { isEqual } from 'lodash';
 
 const TabProjectTasksList = (props) => {
-    const { translate, project, user, tasks, currentProjectTasks, currentProjectPhase } = props;
+    const { translate, project, user, tasks, currentProjectTasks, currentProjectPhase, currentProjectMilestone } = props;
     const userId = getStorage("userId");
     // const [projectDetail, setProjectDetail] = useState(getCurrentProjectDetails(project));
     let projectDetail = getCurrentProjectDetails(project);
@@ -39,6 +40,10 @@ const TabProjectTasksList = (props) => {
         window.$(`#modal-create-project-phase-${currentProjectId}`).modal('show');
     }
 
+    const handleOpenCreateProjectMilestone = () => {
+        window.$(`#modal-create-project-milestone-${currentProjectId}`).modal('show');
+    }
+
     const handleOpenCreateTask = () => {
         window.$(`#addNewTask-undefined`).modal('show');
     }
@@ -50,6 +55,7 @@ const TabProjectTasksList = (props) => {
         setTimeout(() => {
             props.getAllTasksByProject(currentProjectId);
             props.getAllPhaseByProject(currentProjectId);
+            props.getAllMilestoneByProject(currentProjectId);
         }, 1000);
     }
 
@@ -78,6 +84,7 @@ const TabProjectTasksList = (props) => {
                             onClick={() => {
                                 props.getAllTasksByProject(currentProjectId);
                                 props.getAllPhaseByProject(currentProjectId);
+                                props.getAllMilestoneByProject(currentProjectId);
                             }}
                         >
                             <span className="material-icons">refresh</span>
@@ -114,6 +121,7 @@ const TabProjectTasksList = (props) => {
                             <div>
                                 <PhaseCreateForm currentProjectTasks={currentProjectTasks} projectId={currentProjectId} />
                                 <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} currentProjectPhase={currentProjectPhase} parentTask={parentTask} />
+                                <MilestoneCreateForm currentProjectTasks={currentProjectTasks} projectId={currentProjectId} currentProjectPhase={currentProjectPhase} />
                                 <div className="dropdown">
                                     <button type="button" style={{ display: 'flex', marginTop: 15, marginRight: 10 }} className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                                     {
@@ -121,7 +129,7 @@ const TabProjectTasksList = (props) => {
                                             <ul className="dropdown-menu pull-right">
                                                 <li><a href="#" title={translate('project.task_management.add_task')} onClick={handleOpenCreateProjectTask}>{translate('project.task_management.add_task')}</a></li>
                                                 <li><a href="#" title={translate('project.task_management.add_phase')} onClick={handleOpenCreateProjectPhase}>{translate('project.task_management.add_phase')}</a></li>
-                                                {/* <li><a href="#" title={translate('project.task_management.add_milestone')} onClick={console.log(111)}>{translate('project.task_management.add_milestone')}</a></li> */}
+                                                <li><a href="#" title={translate('project.task_management.add_milestone')} onClick={handleOpenCreateProjectMilestone}>{translate('project.task_management.add_milestone')}</a></li> 
                                             </ul>
                                             : <ul className="dropdown-menu pull-right">
                                                 <li><a href="#" title={translate('project.task_management.add_task')} onClick={handleOpenCreateProjectTask}>{translate('project.task_management.add_task')}</a></li>
@@ -141,9 +149,14 @@ const TabProjectTasksList = (props) => {
                         currentProjectTasks={currentProjectTasks}
                         currentProjectPhase={currentProjectPhase}
                         projectDetail={projectDetail}
-
+                        currentProjectMilestone={currentProjectMilestone}
                     /> :
-                    <GanttTasksProject currentProjectTasks={currentProjectTasks} currentProjectPhase={currentProjectPhase} projectDetail={projectDetail} />}
+                    <GanttTasksProject 
+                        currentProjectTasks={currentProjectTasks} 
+                        currentProjectPhase={currentProjectPhase} 
+                        projectDetail={projectDetail} 
+                        currentProjectMilestone={currentProjectMilestone}
+                    />}
 
             </div>
         </React.Fragment>
@@ -162,6 +175,7 @@ const mapDispatchToProps = {
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getAllMilestoneByProject: ProjectPhaseActions.getAllMilestoneByProject,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
 }

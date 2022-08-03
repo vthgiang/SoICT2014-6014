@@ -74,6 +74,30 @@ exports.create = async (req, res) => {
 }
 
 /** 
+ *  Tạo cột mốc mới
+ */
+ exports.createMilestone = async (req, res) => {
+    try {
+        let tp = await ProjectPhaseService.createMilestone(req.portal, req.body);
+
+        await Logger.info(req.user.email, 'create_milestone_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['create_milestone_success'],
+            content: tp
+        });
+    } catch (error) {
+        await Logger.error(req.user.email, 'create_milestone_fail', req.portal)
+        console.log(error)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_milestone_fail'],
+            content: error
+        })
+    }
+}
+
+/** 
  * Tạo giai đoạn mới trong dự án
  */
 exports.createCPMProjectPhase = async (req, res) => {
@@ -138,6 +162,77 @@ exports.deletePhase = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_phase_fail'],
+            content: error
+        })
+    }
+}
+
+/** 
+ *  Lấy thông tin tất cả cột mốc theo dự án
+ */
+exports.getProjectMilestone = async (req, res) => {
+    try {
+        let tp = await ProjectPhaseService.getProjectMilestone(req.portal, req.params.id);
+
+        await Logger.info(req.user.email, 'get_project_milestone_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_project_milestone_success'],
+            content: tp
+        });
+    } catch (error) {
+
+        await Logger.error(req.user.email, 'get_project_milestone_fail', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_project_milestone_fail'],
+            content: error
+        })
+    }
+}
+
+/** 
+ * Chỉnh sửa thông tin 1 cột mốc
+ */
+exports.editMilestone = async (req, res) => {
+    try {
+        const projectPhase = await ProjectPhaseService.editMilestone(req.portal, req.params.id, req.body);
+        await Logger.info(req.user.email, 'edit_milestone_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_milestone_success'],
+            content: projectPhase
+        });
+    } catch (error) {
+        console.log('error', error)
+        await Logger.error(req.user.email, ' edit_milestone_fail ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_milestone_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Xoá cột mốc
+ */
+exports.deleteMilestone = async (req, res) => {
+    try {
+        let tp = await ProjectPhaseService.deleteMilestone(req.portal, req.params.id);
+
+        await Logger.info(req.user.email, 'delete_milestone', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_milestone_success'],
+            content: tp
+        });
+    } catch (error) {
+
+        await Logger.error(req.user.email, 'delete_milestone', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_milestone_fail'],
             content: error
         })
     }

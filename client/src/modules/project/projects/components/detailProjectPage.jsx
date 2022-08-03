@@ -36,16 +36,20 @@ const ProjectDetailPage = (props) => {
         props.getAllUserInAllUnitsOfCompany();
         props.getAllTasksByProject(currentProjectId);
         props.getAllPhaseByProject(currentProjectId);
+        props.getAllMilestoneByProject(currentProjectId);
         props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'get_all' });
     }, [currentProjectId]);
 
     const currentProjectTasks = tasks?.tasksByProject;
     const currentProjectPhase = projectPhase.phases;
+    const currentProjectMilestone = projectPhase?.milestones;
     
     // Hàm lấy lại thông tin sau khi dự án sau khi tạo dự án mới
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
         await props.getAllTasksByProject(currentProjectId);
+        await props.getAllPhaseByProject(currentProjectId);
+        await props.getAllMilestoneByProject(currentProjectId);
         projectDetail = getCurrentProjectDetails(project);
         await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId : 'get_all' });
     }
@@ -68,6 +72,7 @@ const ProjectDetailPage = (props) => {
                             projectDetail={projectDetail}
                             currentProjectTasks={currentProjectTasks}
                             currentProjectPhase={currentProjectPhase}
+                            currentProjectMilestone={currentProjectMilestone}
                             handleAfterCreateProject={handleAfterCreateProject}
                         />
                     </LazyLoadComponent>
@@ -78,7 +83,12 @@ const ProjectDetailPage = (props) => {
                     <LazyLoadComponent
                         key="TabProjectTasksList"
                     >
-                        <TabProjectTasksList projectDetail={projectDetail} currentProjectTasks={currentProjectTasks} currentProjectPhase={currentProjectPhase}/>
+                        <TabProjectTasksList 
+                            projectDetail={projectDetail} 
+                            currentProjectTasks={currentProjectTasks} 
+                            currentProjectPhase={currentProjectPhase}
+                            currentProjectMilestone={currentProjectMilestone}
+                        />
                     </LazyLoadComponent>
                 </div>
 
@@ -87,7 +97,11 @@ const ProjectDetailPage = (props) => {
                     <LazyLoadComponent
                         key="TabChangeRequestProject"
                     >
-                        <TabChangeRequestProject currentProjectTasks={currentProjectTasks} currentProjectPhase={currentProjectPhase}/>
+                        <TabChangeRequestProject 
+                            currentProjectTasks={currentProjectTasks}  
+                            currentProjectPhase={currentProjectPhase}
+                            currentProjectMilestone={currentProjectMilestone}
+                        />
                     </LazyLoadComponent>
                 </div>
             </div>
@@ -107,6 +121,7 @@ const mapDispatchToProps = {
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getAllMilestoneByProject:ProjectPhaseActions.getAllMilestoneByProject,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
 }

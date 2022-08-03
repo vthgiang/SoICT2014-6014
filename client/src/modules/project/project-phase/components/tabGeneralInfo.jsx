@@ -11,11 +11,24 @@ const TabGeneralInfo = (props) => {
         <div className="description-box" style={{ lineHeight: 1.5 }}>
 
             <div className="row">
+                {/* Người thiết lập */}
+                <div className="col-md-6">
+                    <div className="form-horizontal">
+                        <div className="form-group">
+                            <strong className="col-sm-4">{translate('task.task_management.creator')}</strong>
+                            <div className="col-sm-8">
+                                <span>{phase?.creator ? phase?.creator?.name : null}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
                 {/* Ngày bắt đầu */}
                 <div className="col-md-6">
                     <div className="form-horizontal">
                         <div className="form-group">
-                            <strong className="col-sm-4">{translate('project.startDate')}</strong>
+                            <strong className="col-sm-4">{translate('task.task_management.start_date')}</strong>
                             <div className="col-sm-8">
                                 <span>{phase?.startDate ? moment(phase?.startDate).format('HH:mm DD/MM/YYYY') : null}</span>
                             </div>
@@ -27,7 +40,7 @@ const TabGeneralInfo = (props) => {
                 <div className="col-md-6">
                     <div className="form-horizontal">
                         <div className="form-group">
-                            <strong className="col-sm-4">{translate('project.endDate')}</strong>
+                            <strong className="col-sm-4">{translate('task.task_management.end_date')}</strong>
                             <div className="col-sm-8">
                                 <span>{phase?.endDate ? moment(phase?.endDate).format('HH:mm DD/MM/YYYY') : null}</span>
                             </div>
@@ -43,7 +56,7 @@ const TabGeneralInfo = (props) => {
                         <div className="form-group">
                             <strong className="col-sm-4">{translate('phase.progress')}</strong>
                             <div className="col-sm-8">
-                                <span>{phase?.progress ? `{phase.progress}%` : `0%`}</span>
+                                <span>{phase?.progress ? `${phase.progress}%` : `0%`}</span>
                             </div>
                         </div>
                     </div>

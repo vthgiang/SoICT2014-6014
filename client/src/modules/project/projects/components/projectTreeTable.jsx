@@ -85,7 +85,7 @@ function ProjectTreeTable(props) {
                         let a = window.$("<a/>").text(`${$columnName.text()}`).click(() => {
                             type === 'task' ? funcEditTask(id) : type === 'phase' ? funcEditPhase(id) : console.log('');
                         })
-                        if (type === 'phase') a.css('color', 'gray');
+                        if (type === 'phase') a.css('color', 'black').css('font-weight', 'bold');
                         if (type === 'milestone') a.css('color', 'orange');
                         div.append(a);
 
@@ -277,6 +277,10 @@ function ProjectTreeTable(props) {
                     return <a style={{ cursor: 'pointer' }} onClick={() => props.funcEditTask(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
                         <i className="material-icons"></i>
                     </a>
+                case "view":
+                    return <a style={{ cursor: 'pointer' }} onClick={() => props.funcViewTask(id)} data-toggle="modal" title={titleAction.view}>
+                        <i className="material-icons">view_list</i>
+                    </a>
                 case "startTimer":
                     return <a
                         style={{ cursor: 'pointer' }}
@@ -305,9 +309,24 @@ function ProjectTreeTable(props) {
                     return <a style={{ cursor: 'pointer' }} onClick={() => props.funcDeletePhase(id)} className="delete" title={titleAction.delete}>
                         <i className="material-icons"></i>
                     </a>
-                case "add":
-                    return <a style={{ cursor: 'pointer' }} onClick={() => props.funcAdd(id)} className="add_circle" data-toggle="modal" title={titleAction.add}>
-                        <i className="material-icons">add_circle</i>
+                default:
+                    return null
+            }
+        }
+
+        if (type === 'milestone') {
+            switch (actionData) {
+                case "edit":
+                    return <a style={{ cursor: 'pointer' }} onClick={() => props.funcEditMilestone(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
+                        <i className="material-icons"></i>
+                    </a>
+                case "view":
+                    return <a style={{ cursor: 'pointer' }} onClick={() => props.funcViewMilestone(id)} data-toggle="modal" title={titleAction.view}>
+                        <i className="material-icons">view_list</i>
+                    </a>
+                case "delete":
+                    return <a style={{ cursor: 'pointer' }} onClick={() => props.funcDeleteMilestone(id)} className="delete" title={titleAction.delete}>
+                        <i className="material-icons"></i>
                     </a>
                 default:
                     return null

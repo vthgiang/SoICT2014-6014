@@ -57,23 +57,24 @@ const PhaseCreateForm = (props) => {
 
     useEffect(() => {
         //Đặt lại thời gian mặc định khi mở modal
-        window.$(`#modal-create-project`).on('shown.bs.modal', regenerateTime);
+        window.$(`#modal-create-project-phase-${projectId}`).on('shown.bs.modal', regenerateTime);
         return () => {
-            window.$(`#modal-create-project`).unbind('shown.bs.modal', regenerateTime)
+            window.$(`#modal-create-project-phase-${projectId}`).unbind('shown.bs.modal', regenerateTime)
         }
     }, [])
 
     // Hàm bắt sự kiện thay đổi tên giai đoạn
     const handleChangePhaseName = (event) => {
         let { value } = event.target;
-        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+        let message_length = ValidationHelper.validateName(translate, value, 6, 255).message;
+        let message_dup = ValidationHelper.validateTaskName(translate, value, projectPhase.phases).message;
 
         setState({
             ...state,
             newPhase: {
                 ...state.newPhase,
                 phaseName: value,
-                errorOnPhaseName: message,
+                errorOnPhaseName: message_length || message_dup,
             }
 
         })
@@ -96,7 +97,8 @@ const PhaseCreateForm = (props) => {
         if (data.length === 0) return null;
         let currentMax = data[0].endDate;
         for (let dataItem of data) {
-            if (dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
+            if (!currentMax) currentMax = dataItem.endDate;
+            else if (dataItem?.endDate && dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
                 currentMax = dataItem.endDate;
             }
         }
@@ -108,7 +110,8 @@ const PhaseCreateForm = (props) => {
         if (data.length === 0) return null;
         let currentMin = data[0].startDate;
         for (let dataItem of data) {
-            if (dayjs(dataItem.startDate).isBefore(dayjs(currentMin))) {
+            if (!currentMin) currentMin = dataItem.startDate;
+            else if (dataItem?.startDate && dayjs(dataItem.startDate).isBefore(dayjs(currentMin))) {
                 currentMin = dataItem.startDate;
             }
         }
@@ -250,7 +253,7 @@ const PhaseCreateForm = (props) => {
 
     // Kiểm tra xem các thông tin đầu vào có hợp lệ
     const isFormValidated = () => {
-        if (!ValidationHelper.validateName(translate, phaseName, 6, 255).status || errorOnStartDate || errorOnStartDate) return false;
+        if (!ValidationHelper.validateName(translate, phaseName, 6, 255).status || errorOnStartDate || errorOnEndDate) return false;
         return true;
     }
 
@@ -319,6 +322,7 @@ const PhaseCreateForm = (props) => {
                                             />
                                             : startDate
                                     }
+                                    <ErrorLabel content={errorOnStartDate} />
                                 </div>
                                 <div className="form-group col-md-6">
                                     <label className="control-label">{translate('phase.startTime')}<span className="text-red">*</span></label>
@@ -333,7 +337,6 @@ const PhaseCreateForm = (props) => {
                                             : startTime
                                     }
                                 </div>
-                                <ErrorLabel content={errorOnStartDate} />
                             </div>
 
 
@@ -351,6 +354,7 @@ const PhaseCreateForm = (props) => {
                                             />
                                             : endDate
                                     }
+                                    <ErrorLabel content={errorOnEndDate} />
                                 </div>
                                 <div className="form-group col-md-6">
                                     <label className="control-label">{translate('phase.endTime')}<span className="text-red">*</span></label>
@@ -365,7 +369,6 @@ const PhaseCreateForm = (props) => {
                                             : endTime
                                     }
                                 </div>
-                                <ErrorLabel content={errorOnEndDate} />
                             </div>
 
                             {/* Mô tả giai đoạn */}

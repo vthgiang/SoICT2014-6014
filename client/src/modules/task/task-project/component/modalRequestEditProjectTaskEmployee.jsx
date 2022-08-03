@@ -100,7 +100,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         setCurrentTasksToChoose({
             preceeding: res
         })
-    }, [currentProjectTasks])
+    }, [JSON.stringify(currentProjectTasks)])
 
     useEffect(() => {
         let res = currentProjectPhase ? currentProjectPhase?.map(item => ({
@@ -111,7 +111,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         setCurrentPhaseToChoose({
             phases: res
         })
-    }, [currentProjectPhase])
+    }, [JSON.stringify(currentProjectPhase)])
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");

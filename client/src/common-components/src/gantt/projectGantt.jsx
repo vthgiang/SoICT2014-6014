@@ -30,6 +30,18 @@ function ProjectGantt(props) {
         return false;
     }
 
+    const renderTaskName = (task) => {
+        if (task.type === 'task') {
+            return "<div class='text-primary'>" + task.taskName + "</div>";
+        }
+        if (task.type === 'milestone') {
+            return "<div class='text-warning'>" + task.taskName + "</div>";
+        }
+        if (task.type === 'project') {
+            return "<div style='font-weight: bold;'>" + task.taskName + "</div>";
+        }
+    }
+
     useEffect(() => {
         initZoom(gantt);
 
@@ -48,6 +60,7 @@ function ProjectGantt(props) {
                     tree: true,
                     resize: true,
                     width: '*',
+                    template: renderTaskName,
                 },
                 // {
                 //     name: 'responsible',
@@ -133,7 +146,10 @@ function ProjectGantt(props) {
                 // critical_path: true,
             });
             gantt.templates.tooltip_text = function (start, end, task) {
-                return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.taskName}
+                return `${task.type === 'task'
+                        ? `<b>${translate('task.task_dashboard.task_name')}:</b>`: task.type === 'project' 
+                        ? `<b>${translate('project.task_management.phase')}:</b>`: task.type === 'milestone'
+                        ? `<b>${translate('project.task_management.milestone')}:</b>`: ''}</b> ${task.taskName}</b>
                         <br/>
                         <b>Thời điểm bắt đầu dự kiến:</b> ${moment(task.planned_start).format("DD-MM-YYYY hh:mm A")} 
                         <br/>
@@ -145,20 +161,28 @@ function ProjectGantt(props) {
                         ? `<b>Thời điểm kết thúc thực tế:</b> ${moment(task.end_date).format("DD-MM-YYYY hh:mm A")}
                         <br/>`
                         : ``}
-                        <b>Trạng thái công việc:</b> ${task.status}
+                        <b>Trạng thái :</b> ${task.status}
                         <br/>
                         <b>Tiến độ:</b> ${numberWithCommas(Number(task.progress) * 100)}%`;
             };
 
             // Hiển thị text quá hạn bao nhiêu ngày
             gantt.templates.rightside_text = function (start, end, task) {
-                if (task.planned_end) {
+                if (task.planned_end && task.type !== "milestone") {
                     if (end.getTime() > task.planned_end.getTime()) {
                         var overdue = Math.ceil(Math.abs((end.getTime() - task.planned_end.getTime()) / (24 * 60 * 60 * 1000)));
                         var text = "<b>Quá hạn: " + overdue + " ngày</b>";
                         return text;
                     }
                 }
+                // console.log(Date.parse(task.actualEndDate));
+                else if (task.planned_end && task.type === "milestone") {
+                    if (Date.parse(task.actualEndDate) > task.planned_end.getTime()) {
+                        var overdue = Math.ceil(Math.abs((Date.parse(task.actualEndDate) - task.planned_end.getTime()) / (24 * 60 * 60 * 1000)));
+                        var text = "<b>Quá hạn: " + overdue + " ngày</b>";
+                        return text;
+                    }
+                } 
             };
 
             gantt.attachEvent("onTaskLoading", function (task) {
@@ -226,6 +250,7 @@ function ProjectGantt(props) {
                 resize: true,
                 tree: true,
                 width: '*',
+                template: renderTaskName,
             },
             // {
             //     name: 'responsible',

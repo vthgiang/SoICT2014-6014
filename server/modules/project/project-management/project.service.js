@@ -9,6 +9,7 @@ const {
     Task,
     ProjectChangeRequest,
     ProjectPhase,
+    ProjectMilestone
 } = require('../../../models');
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
@@ -659,9 +660,24 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
             requestStatus,
         }
     }, { new: true });
-    let oldPhaseId = updateCRStatusResult.affectedTasksList.map(item => item.old.taskPhase);
-    let newPhaseId = updateCRStatusResult.affectedTasksList.map(item => item.new.taskPhase);
+
+    // Lấy id của các giai đoạn bị ảnh hưởng
+    let oldPhaseId = updateCRStatusResult.affectedTasksList.map(item => String(item.old.taskPhase));
+    let newPhaseId = updateCRStatusResult.affectedTasksList.map(item => String(item.new.taskPhase));
     let updatePhaseId = [...oldPhaseId, ...newPhaseId];
+    // Lọc phần tử thừa
+    updatePhaseId = new Set(updatePhaseId);
+    updatePhaseId = [...updatePhaseId];
+
+    // Lấy id của các cột mốc bị ảnh hưởng
+    let taskArrId = updateCRStatusResult.affectedTasksList.map(item => String(item.task));
+    let updateMilestoneList = await ProjectMilestone(connect(DB_CONNECTION, portal)).find({
+        "preceedingTasks.task": {
+            $in: taskArrId
+        }
+    })
+    let updateMilestoneId = updateMilestoneList.map(milestone => String(milestone._id));
+
     // Nếu requestStatus là đồng ý thì thực thi
     if (Number(requestStatus) === 3) {
         // Nếu là dạng normal thì bỏ qua
@@ -705,12 +721,15 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
                 }
             }
 
+            // Cập nhật lại thông số cho các cột mốc sau khi cập nhật các task
+            await Promise.all(updateMilestoneId.map(async (id) => {
+                await updateMilestone(id, portal);
+            }))
+
             // Cập nhật lại thông số cho giai đoạn sau khi cập nhật các task
-
-            updatePhaseId.forEach(async (id) => {
+            await Promise.all(updatePhaseId.map(async (id) => {
                 await updatePhase(id, portal);
-            })
-
+            }))
             await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(updateCRStatusResult.taskProject, {
                 $set: {
                     budgetChangeRequest: updateCRStatusResult.baseline.newCost,
@@ -754,7 +773,8 @@ const findLatestDate = (data) => {
     if (data.length === 0) return null;
     let currentMax = data[0].endDate;
     for (let dataItem of data) {
-        if (moment(dataItem.endDate).isAfter(moment(currentMax))) {
+        if (!currentMax) currentMax = dataItem.endDate;
+        else if (dataItem?.endDate && moment(dataItem.endDate).isAfter(moment(currentMax))) {
             currentMax = dataItem.endDate;
         }
     }
@@ -766,46 +786,92 @@ const findEarliestDate = (data) => {
     if (data.length === 0) return null;
     let currentMin = data[0].startDate;
     for (let dataItem of data) {
-        if (moment(dataItem.startDate).isBefore(moment(currentMin))) {
+        if (!currentMin) currentMin = dataItem.startDate;
+        else if (dataItem?.startDate && moment(dataItem.startDate).isBefore(moment(currentMin))) {
             currentMin = dataItem.startDate;
         }
     }
     return currentMin;
 }
 
-// Hàm hỗ trợ cập nhật lại thông tin của các giai đoạn sau khi cập nhật thông tin 1 công việc
+// Hàm hỗ trợ cập nhật lại thông tin của các cột mốc sau khi cập nhật thông tin công việc
+const updateMilestone = async (milestoneId, portal) => {
+    console.log(milestoneId);
+    if (milestoneId) {
+        let oldMilestoneData = await ProjectMilestone(connect(DB_CONNECTION, portal)).findById(milestoneId)
+        .populate({ path: "preceedingTasks.task", select: "endDate startDate _id" });
+        let listTaskMilestone = oldMilestoneData.preceedingTasks.map(item => item.task)
+        let newEndDate = oldMilestoneData?.endDate;
+        let newStartDate = oldMilestoneData?.startDate;
+            listTaskMilestone = [...listTaskMilestone, oldMilestoneData];
+
+        // Nếu danh sách công việc không rỗng, t cần tính lại ngày bắt đầu, ngày kết thúc
+        if (listTaskMilestone && listTaskMilestone.length > 0) {
+            newEndDate = findLatestDate(listTaskMilestone);
+            console.log(listTaskMilestone)
+        }
+        let newMilestone = await ProjectMilestone(connect(DB_CONNECTION, portal)).findByIdAndUpdate(milestoneId, {
+            $set: {
+                endDate: newEndDate,
+                startDate: newEndDate,
+            }
+        }, { new: true });
+        console.log(newMilestone ,oldMilestoneData);
+    }
+}
+
+// Hàm hỗ trợ cập nhật lại thông tin của các giai đoạn sau khi cập nhật thông tin công việc
 const updatePhase = async (phaseId, portal) => {
     console.log(phaseId);
     if (phaseId) {
         let newBudget = 0;
         let listTaskPhase = [];
-        let oldPhaseData = ProjectPhase(connect(DB_CONNECTION, portal)).findById(phaseId);
+        let oldPhaseData = await ProjectPhase(connect(DB_CONNECTION, portal)).findById(phaseId);
         let newEndDate = oldPhaseData?.endDate;
         let newStartDate = oldPhaseData?.startDate;
         let newStatus = oldPhaseData?.status || "inprocess";
-        listTaskPhase = await Task(connect(DB_CONNECTION, portal)).find({taskPhase: phaseId});
+        let newActualEndDate = oldPhaseData?.actualEndDate;
+
+        // Tìm những công việc và cột mốc thuộc giai đoạn
+        listTaskPhase = await Task(connect(DB_CONNECTION, portal)).find({taskPhase: phaseId}) || [];
+        listMilestonePhase = await ProjectMilestone(connect(DB_CONNECTION, portal)).find({projectPhase: phaseId}) || [];
+        
         // Chuyển danh sách công việc thành mảng
         if (listTaskPhase && !Array.isArray(listTaskPhase)) {
             listTaskPhase = [...listTaskPhase];
         }
-        // Nếu danh sách công việc không rỗng, t cần tính lại ngày bắt đầu, ngày kết thúc
-        if (listTaskPhase && listTaskPhase.length > 0) {
-            newStartDate = findEarliestDate(listTaskPhase);
-            newEndDate = findLatestDate(listTaskPhase);
+
+        // Chuyển danh sách cột mốc thành mảng
+        if (listMilestonePhase && !Array.isArray(listMilestonePhase)) {
+            listTaskPhase = [...listTaskPhase];
+        }
+
+        listTaskAndMilestone = [...listTaskPhase, ...listMilestonePhase];
+
+        
+        // Nếu danh sách công việc và cột mốc không rỗng, t cần tính lại ngày bắt đầu, ngày kết thúc
+        if (listTaskAndMilestone && listTaskAndMilestone.length > 0) {
+            newStartDate = findEarliestDate(listTaskAndMilestone);
+            newEndDate = findLatestDate(listTaskAndMilestone);
             newBudget = listTaskPhase.reduce((current, next) => current + next.estimateNormalCost ,0);
             // Nếu trạng thái hiện tại là đã hoàn thành và danh sách công việc có công việc chưa hoàn thành
             // Tự động cập nhật lại trạng thái thực hiện giai đoạn thành đang thực hiện
             if (newStatus === 'finished') {
-                let unfinishedTask = listTaskPhase.filter(task => task.status !== "finished");
-                if (unfinishedTask.length > 0) newStatus = "inprocess"
+                let unfinishedTask = listTaskAndMilestone.filter(task => task?.status && task?.status !== "finished");
+                if (unfinishedTask.length > 0) {
+                    newStatus = "inprocess";
+                    newActualEndDate = undefined
+                }
             }
         }
+
         let newPhase = await ProjectPhase(connect(DB_CONNECTION, portal)).findByIdAndUpdate(phaseId, {
             $set: {
                 budget: Number(newBudget),
                 endDate: newEndDate,
                 startDate: newStartDate,
                 status: newStatus,
+                actualEndDate: newActualEndDate,
             }
         }, { new: true });
         console.log(newPhase);

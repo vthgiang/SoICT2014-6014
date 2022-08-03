@@ -100,7 +100,8 @@ const ModalCalculateRecommend = (props) => {
         if (data.length === 0) return null;
         let currentMax = data[0].endDate;
         for (let dataItem of data) {
-            if (dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
+            if (!currentMax) currentMax = dataItem.endDate;
+            if (dataItem?.endDate && dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
                 currentMax = dataItem.endDate;
             }
         }

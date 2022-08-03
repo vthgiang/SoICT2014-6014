@@ -304,7 +304,7 @@ const TabChangeRequestProject = (props) => {
         }
     }
 
-    const handleApprove = (changeRequestId) => {
+    const handleApprove = async (changeRequestId) => {
         setCurrentChangeRequestId(changeRequestId);
         const message = "Bạn có muốn phê duyệt yêu cầu thay đổi này?"
         Swal.fire({
@@ -315,15 +315,16 @@ const TabChangeRequestProject = (props) => {
             cancelButtonColor: '#d33',
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.value) {
-                props.updateStatusProjectChangeRequestDispatch({
+                await props.updateStatusProjectChangeRequestDispatch({
                     changeRequestId,
                     requestStatus: 3,
                 });
-                setTimeout(() => {
-                    props.getAllTasksByProject( currentProjectId || projectDetail._id );
-                    props.getAllPhaseByProject( currentProjectId || projectDetail._id );
+                setTimeout(async () => {
+                    await props.getAllTasksByProject( currentProjectId || projectDetail._id );
+                    await props.getAllPhaseByProject( currentProjectId || projectDetail._id );
+                    await props.getAllMilestoneByProject( currentProjectId || projectDetail._id );
                 }, 20);
             }
         }).catch(err => {
@@ -331,7 +332,7 @@ const TabChangeRequestProject = (props) => {
         })
     }
 
-    const handleCancel = (changeRequestId) => {
+    const handleCancel = async (changeRequestId) => {
         const message = "Bạn có muốn từ chối yêu cầu thay đổi này?"
         Swal.fire({
             html: `<h4 style="color: red"><div>${message}</div></h4>`,
@@ -341,15 +342,16 @@ const TabChangeRequestProject = (props) => {
             cancelButtonColor: '#d33',
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.value) {
-                props.updateStatusProjectChangeRequestDispatch({
+                await props.updateStatusProjectChangeRequestDispatch({
                     changeRequestId,
                     requestStatus: 2,
                 });
-                setTimeout(() => {
-                    props.getAllTasksByProject( currentProjectId || projectDetail._id );
-                    props.getAllPhaseByProject( currentProjectId || projectDetail._id );
+                setTimeout(async () => {
+                    await props.getAllTasksByProject( currentProjectId || projectDetail._id );
+                    await props.getAllPhaseByProject( currentProjectId || projectDetail._id );
+                    await props.getAllMilestoneByProject( currentProjectId || projectDetail._id );
                 }, 20);
             }
         })
@@ -646,6 +648,7 @@ const mapDispatchToProps = {
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getAllMilestoneByProject: ProjectPhaseActions.getAllMilestoneByProject,
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TabChangeRequestProject));

@@ -112,7 +112,8 @@ const ModalCalculateCPM = (props) => {
         if (data.length === 0) return null;
         let currentMax = data[0].endDate;
         for (let dataItem of data) {
-            if (moment(dataItem.endDate).isAfter(moment(currentMax))) {
+            if (!currentMax) currentMax = dataItem.endDate;
+            if (dataItem?.endDate && moment(dataItem.endDate).isAfter(moment(currentMax))) {
                 currentMax = dataItem.endDate;
             }
         }
@@ -124,7 +125,8 @@ const ModalCalculateCPM = (props) => {
         if (data.length === 0) return null;
         let currentMin = data[0].startDate;
         for (let dataItem of data) {
-            if (moment(dataItem.startDate).isBefore(moment(currentMin))) {
+            if (!currentMin) currentMin = dataItem.startDate;
+            if (dataItem?.startDate && moment(dataItem.startDate).isBefore(moment(currentMin))) {
                 currentMin = dataItem.startDate;
             }
         }

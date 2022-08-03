@@ -635,12 +635,12 @@ export function tasks(state = {
             };
 
         case taskManagementConstants.GETTASK_BYPROJECT_SUCCESS:
-            let updatePaginateId = state.tasksByProjectPaginate?.map(task => task._id) || [];
-            let updateId = state.tasks?.map(task => task._id) || [];
+            let updateTaskProjectPaginateId = state.tasksByProjectPaginate?.map(task => task._id) || [];
+            let updateTaskProjectId = state.tasks?.map(task => task._id) || [];
             return {
                 ...state,
-                tasksByProjectPaginate: action.payload.docs?.filter(doc => updatePaginateId?.includes(doc._id)),
-                tasks: action.payload.docs?.filter(doc => updateId?.includes(doc._id)),
+                tasksByProjectPaginate: action.payload.docs?.filter(doc => updateTaskProjectPaginateId?.includes(doc._id)),
+                tasks: action.payload.docs?.filter(doc => updateTaskProjectId?.includes(doc._id)),
                 tasksByProject: action.payload.docs,
                 totalDocs: action.payload.totalDocs,
                 isLoading: false

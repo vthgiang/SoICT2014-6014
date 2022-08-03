@@ -13,7 +13,7 @@ import { TaskFormValidator } from '../../../task/task-management/component/taskF
 import dayjs from 'dayjs';
 
 const PhaseEditForm = (props) => {
-    const { translate, user, tasks, phaseEdit, phaseEditId, currentProjectTasks, projectPhase } = props;
+    const { translate, user, tasks, phaseEdit, phaseEditId, currentProjectTasks, projectPhase, currentProjectMilestone } = props;
     const [state, setState] = useState({
         newPhase: {
             phaseName: '',
@@ -23,6 +23,7 @@ const PhaseEditForm = (props) => {
             status: '',
             progress: 0,
             listTask: [],
+            listMilestone: [],
             estimateCost: '',
             startTime: '',
             endTime: '05:30 PM',
@@ -38,24 +39,24 @@ const PhaseEditForm = (props) => {
 
     let { newPhase } = state;
 
-    let { phaseName, description, status, listTask, startDate, endDate, estimateCost, startTime, endTime, errorOnPhaseName, progress,
+    let { phaseName, description, status, listTask, listMilestone, startDate, endDate, estimateCost, startTime, endTime, errorOnPhaseName, progress,
         errorOnProgress, errorOnStartDate, errorOnEndDate, errorOnStartTime, errorOnEndTime, errorOnStatus } = state?.newPhase;
 
     // Cập nhật lại các trường thông tin nếu chọn giai đoạn khác
     useEffect(() => {
         phaseEdit?.project && props.getAllTasksByProject(phaseEdit?.project);
-
     }, [phaseEditId, JSON.stringify(tasks?.tasks)]);
 
     useEffect(() => {
-        if (!tasks?.isLoading) {
+        if (!tasks?.isLoading && !projectPhase.isLoading) {
             let listTask = tasks?.tasksByProject?.filter(task => task.taskPhase === phaseEditId);
+            let listMilestone = projectPhase?.milestones?.filter(milestone => milestone.projectPhase === phaseEditId);
             setState(state => {
                 return {
                     ...state,
                     newPhase: {
                         phaseName: phaseEdit?.name || "",
-                        description: phaseEdit?.description,
+                        description: phaseEdit?.description || "",
                         startDate: phaseEdit?.startDate ? formatDate(phaseEdit?.startDate) : '',
                         endDate: phaseEdit?.endDate ? formatDate(phaseEdit?.endDate) : '',
                         estimateCost: listTask?.reduce((current, next) => current + next.estimateNormalCost, 0),
@@ -63,6 +64,7 @@ const PhaseEditForm = (props) => {
                         status: phaseEdit?.status || 'inprocess',
                         progress: phaseEdit?.progress || 0,
                         listTask,
+                        listMilestone,
                         endTime: formatTime(phaseEdit?.endDate) || '05:30 PM',
                         errorOnPhaseName: undefined,
                         errorOnStartDate: undefined,
@@ -73,15 +75,17 @@ const PhaseEditForm = (props) => {
                 }
             })
         }
-    }, [tasks?.isLoading, phaseEditId, JSON.stringify(tasks?.tasks)])
-
-
+    }, [tasks?.isLoading, projectPhase?.isLoading, phaseEditId, JSON.stringify(tasks?.tasks)])
 
     // Hàm bắt sự kiện thay đổi tên giai đoạn
     const handleChangePhaseName = (event) => {
         let { value } = event.target;
-        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+        let message_length = ValidationHelper.validateName(translate, value, 6, 255).message;
+        let message_dup = ValidationHelper.validateTaskName(translate, value, projectPhase.phases).message;
+        let message = undefined;
 
+        // Kiểm tra tên hiện tại có giống tên gốc
+        if (value !== phaseEdit.name) message = message_length || message_dup;
         setState({
             ...state,
             newPhase: {
@@ -89,7 +93,6 @@ const PhaseEditForm = (props) => {
                 phaseName: value,
                 errorOnPhaseName: message,
             }
-
         })
     }
 
@@ -100,13 +103,23 @@ const PhaseEditForm = (props) => {
         else return true;
     }
 
-    // Tính tiến độ dựa trên những công việc thành phần
+    // Tính tiến độ dựa trên những công việc và cột mốc thành phần
     const calculateProgress = async () => {
-
         let point = 0;
+        let taskPoint = 0;
+        let milestonePoint = 0;
         if (listTask && listTask.length > 0) {
-            point = listTask.reduce((current, next) => current + next.progress, 0) / listTask.length;
+            taskPoint = listTask.reduce((current, next) => current + next.progress, 0)
         }
+
+        if (listMilestone && listMilestone.length > 0) {
+            milestonePoint = listMilestone.reduce((current, next) => current + next.progress, 0)
+        }
+
+        if ( (listTask && listTask.length > 0) || (listMilestone && listMilestone.length > 0) ) {
+            point = (taskPoint + milestonePoint) / (listMilestone.length + listTask.length);
+        }
+
         setState({
             ...state,
             newPhase: {
@@ -117,15 +130,16 @@ const PhaseEditForm = (props) => {
     }
 
     const handleChangeStatus = (value) => {
-        // kiểm tra trạng thái của các công việc thuộc giai đoạn
+        // kiểm tra trạng thái của các công việc và cột mốc thuộc giai đoạn
         if (value[0] === "finished") {
             let unFinishedTask = listTask.filter(task => task.status !== "finished");
-            if (unFinishedTask && unFinishedTask.length > 0) {
+            let unFinishedMilestone = listMilestone.filter(milestone => milestone.status !== "finished");
+            if ( (unFinishedTask && unFinishedTask.length > 0) || (unFinishedMilestone && unFinishedMilestone.length >0) ) {
                 setState({
                     ...state,
                     newPhase: {
                         ...state.newPhase,
-                        errorOnStatus: "Giai đoạn không được hoàn thành khi công việc thành phần chưa hoàn thành",
+                        errorOnStatus: "Giai đoạn không được hoàn thành khi công việc hoặc cột mốc thành phần chưa hoàn thành",
                         status: value[0]
                     }
                 })
@@ -183,7 +197,8 @@ const PhaseEditForm = (props) => {
         if (data.length === 0) return null;
         let currentMax = data[0].endDate;
         for (let dataItem of data) {
-            if (dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
+            if (!currentMax) currentMax = dataItem.endDate;
+            else if (dataItem?.endDate && dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
                 currentMax = dataItem.endDate;
             }
         }
@@ -195,7 +210,8 @@ const PhaseEditForm = (props) => {
         if (data.length === 0) return null;
         let currentMin = data[0].startDate;
         for (let dataItem of data) {
-            if (dayjs(dataItem.startDate).isBefore(dayjs(currentMin))) {
+            if (!currentMin) currentMin = dataItem.startDate;
+            else if (dataItem?.startDate && dayjs(dataItem.startDate).isBefore(dayjs(currentMin))) {
                 currentMin = dataItem.startDate;
             }
         }
@@ -337,8 +353,8 @@ const PhaseEditForm = (props) => {
 
     // Kiểm tra xem các thông tin đầu vào có hợp lệ
     const isFormValidated = () => {
-        if (!ValidationHelper.validateName(translate, phaseName, 6, 255).status || errorOnStartDate || errorOnStartDate || errorOnStatus
-            || errorOnProgress) return false;
+        if (!ValidationHelper.validateName(translate, phaseName, 6, 255).status || errorOnStartDate || errorOnEndDate || errorOnStatus
+            || errorOnProgress || !ValidationHelper.validateTaskName(translate, phaseName, projectPhase?.phases).status ) return false;
         return true;
     }
 
@@ -407,6 +423,7 @@ const PhaseEditForm = (props) => {
                                             />
                                             : startDate
                                     }
+                                    <ErrorLabel content={errorOnStartDate} />
                                 </div>
                                 <div className="form-group col-md-6">
                                     <label className="control-label">{translate('phase.startTime')}<span className="text-red">*</span></label>
@@ -421,7 +438,6 @@ const PhaseEditForm = (props) => {
                                             : startTime
                                     }
                                 </div>
-                                <ErrorLabel content={errorOnStartDate} />
                             </div>
 
 
@@ -439,6 +455,7 @@ const PhaseEditForm = (props) => {
                                             />
                                             : endDate
                                     }
+                                    <ErrorLabel content={errorOnEndDate} />
                                 </div>
                                 <div className="form-group col-md-6">
                                     <label className="control-label">{translate('phase.endTime')}<span className="text-red">*</span></label>
@@ -453,7 +470,6 @@ const PhaseEditForm = (props) => {
                                             : endTime
                                     }
                                 </div>
-                                <ErrorLabel content={errorOnEndDate} />
                             </div>
 
                             {/* Mô tả giai đoạn */}
@@ -511,7 +527,7 @@ const PhaseEditForm = (props) => {
                                 <ErrorLabel content={errorOnProgress} />
                             </div>
                             <div className="pull-right">
-                                <a onClick={calculateProgress} style={{ cursor: 'pointer', fontWeight: "normal" }}>Tự động tính mức độ hoàn thành dựa trên các công việc thành phần</a>
+                                <a onClick={calculateProgress} style={{ cursor: 'pointer', fontWeight: "normal" }}>Tự động tính mức độ hoàn thành dựa trên các công việc và cột mốc thành phần</a>
                             </div>
 
                         </fieldset>
@@ -529,6 +545,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllTasksByProject: taskManagementActions.getAllTasksByProject,
+    getAllMilestoneByProject: ProjectPhaseActions.getAllMilestoneByProject,
     editPhase: ProjectPhaseActions.editPhase,
+    
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PhaseEditForm));

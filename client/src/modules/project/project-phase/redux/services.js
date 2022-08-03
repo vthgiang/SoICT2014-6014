@@ -5,7 +5,11 @@ export const ProjectPhaseServices = {
     getPhaseById,
     createPhase,
     editPhase,
-    deletePhase
+    deletePhase,
+    createMilestone,
+    editMilestone,
+    deleteMilestone,
+    getAllMilestoneByProject,
 }
 
 /**
@@ -84,6 +88,73 @@ function deletePhase(id) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/projects/project-phase/${id}`,
+            method: "DELETE",
+        },
+        true,
+        true,
+        "project"
+    );
+}
+
+/**
+ * thêm mới 1 cột mốc
+ * @param {*} data dữ liệu về cột mốc
+ */
+function createMilestone(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/projects/project-milestone`,
+            method: "POST",
+            data: data,
+        },
+        true,
+        true,
+        "project"
+    );
+};
+
+/**
+ * chỉnh sửa thông tin cột mốc
+ * @param {*} id id của cột mốc
+ * @param {*} milestone thông tin cần cập nhật
+ */
+function editMilestone(id, milestone) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/projects/project-milestone/${id}`,
+            method: "PATCH",
+            data: milestone,
+        },
+        true,
+        true,
+        "project"
+    );
+};
+
+/**
+ * lấy toàn bộ cột mốc thuộc dự án
+ * @param {*} id id của dự án
+ */
+function getAllMilestoneByProject(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/projects/project/project-milestone/${id}`,
+            method: "GET",
+        },
+        false,
+        true,
+        "project"
+    );
+};
+
+/**
+ * xoá thông tin cột mốc
+ * @param {*} id id của cột mốc
+ */
+function deleteMilestone(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/projects/project-milestone/${id}`,
             method: "DELETE",
         },
         true,
