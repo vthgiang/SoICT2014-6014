@@ -62,7 +62,6 @@ const ModalCreateChangeRequest = (props) => {
     }
 
     const isAbleToSave = () => {
-        console.log(name.trim().length > 0 && description.trim().length > 0 && affectedTasks.length > 0);
         return name.trim().length > 0 && description.trim().length > 0 && affectedTasks.length > 0;
     }
 

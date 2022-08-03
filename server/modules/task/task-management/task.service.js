@@ -2288,6 +2288,7 @@ exports.createProjectTask = async (portal, task) => {
         return mongoose.Types.ObjectId.isValid(value) ? value : undefined;
     }
     let taskProject = (taskTemplate && taskTemplate.taskProject) ? getValidObjectId(taskTemplate.taskProject) : getValidObjectId(task.taskProject);
+    let taskPhase = (taskTemplate && taskTemplate.taskPhase) ? getValidObjectId(taskTemplate.taskPhase) : getValidObjectId(task.taskPhase);
 
     let taskActions = [];
     if (task.taskActions) {
@@ -2337,8 +2338,9 @@ exports.createProjectTask = async (portal, task) => {
         accountableEmployees: task.accountableEmployees,
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
-        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
+        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? [task.creator] : [],
         taskProject,
+        taskPhase,
         estimateNormalTime: task.estimateNormalTime,
         estimateOptimisticTime: task.estimateOptimisticTime,
         estimateNormalCost: task.estimateNormalCost,
@@ -3266,7 +3268,6 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
 
 exports.getTasksByProject = async (portal, data) => {
     let { perPage, page, status, priority, name, preceedingTasks, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, calledId } = data;
-
     let tasks;
 
     let keySearch = {};

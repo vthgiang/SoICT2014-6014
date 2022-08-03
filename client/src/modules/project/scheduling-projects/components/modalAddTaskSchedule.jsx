@@ -46,6 +46,7 @@ const ModalAddTaskSchedule = (props) => {
             endDate: '',
         },
         listTasks: [],
+        listPhases: [],
     })
     const [currentEditRowIndex, setCurrentEditRowIndex] = useState(undefined);
     const [currentRow, setCurrentRow] = useState(undefined);
@@ -97,7 +98,7 @@ const ModalAddTaskSchedule = (props) => {
         }, 10);
     }
 
-    const handleImportCPM = (data) => {
+    const handleImportCPM = (data, phaseData = []) => {
         const formattedData = data.map((dataItem) => {
             let currentResMemberIdArr = [], currentAccMemberIdArr = [];
             for (let empItem of projectDetail?.responsibleEmployees) {
@@ -156,28 +157,22 @@ const ModalAddTaskSchedule = (props) => {
                 totalResWeight: Number(dataItem.totalResWeight),
             }
         })
-        console.log('formattedData', formattedData)
+        console.log('formattedData', formattedData);
+        let formattedPhaseData = phaseData.map(phase => {
+            return {
+                ...phase,
+                name: phase.phaseName,
+                code: phase.phaseCode
+            }
+        })
+
         setTimeout(() => {
             setState({
                 ...state,
-                listTasks: formattedData
+                listTasks: formattedData,
+                listPhases: formattedPhaseData,
             });
         }, 100);
-        // console.log('data', data)
-        // setState({
-        //     ...state,
-        //     listTasks: data
-        // });
-        // setState({
-        //     ...state,
-        //     listTasks: data.map(item => {
-        //         return {
-        //             ...item,
-        //             estimateNormalCost: numberWithCommas(10000000),
-        //             estimateMaxCost: numberWithCommas(15000000),
-        //         }
-        //     })
-        // });
     }
 
     const resetForm = () => {
@@ -343,66 +338,103 @@ const ModalAddTaskSchedule = (props) => {
                                 </div>
                             }
 
-                            <table id="project-table" className="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>{translate('project.schedule.taskCode')}</th>
-                                        <th>{translate('project.schedule.taskName')}</th>
-                                        <th>{translate('project.schedule.preceedingTasks')}</th>
-                                        <th>{translate('project.schedule.estimatedTime')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
-                                        <th>{translate('project.schedule.estimatedTimeOptimistic')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
-                                        <th>Người thực hiện</th>
-                                        <th>Người phê duyệt</th>
-                                        <th>Trọng số tổng thực hiện (%)</th>
-                                        <th>Trọng số tổng phê duyệt (%)</th>
-                                        <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
-                                        <th>{translate('project.schedule.estimatedCostMaximum')} (VND)</th>
-                                        <th>{translate('task_template.action')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        (state.listTasks && state.listTasks !== 0) &&
-                                        state.listTasks.map((taskItem, index) => (
-                                            <tr style={{ cursor: 'pointer' }} onClick={() => handleEditRow(index)} key={index}>
-                                                <td>{taskItem?.code}</td>
-                                                <td>{taskItem?.name}</td>
-                                                <td>{taskItem?.preceedingTasks?.join(', ')}</td>
-                                                <td>
-                                                    {taskItem?.estimateNormalTime}
-                                                    <strong style={{ color: 'red' }}>
-                                                        {isDurationNotSuitable(taskItem?.estimateNormalTime)
-                                                            ? ' - Thời gian không được lớn hơn 7 Ngày và nhỏ hơn 4 Giờ'
-                                                            : null}
-                                                    </strong></td>
-                                                <td>
-                                                    {taskItem?.estimateOptimisticTime}
-                                                    <strong style={{ color: 'red' }}>
-                                                        {isDurationNotSuitable(taskItem?.estimateOptimisticTime)
-                                                            ? ' - Thời gian không được lớn hơn 7 Ngày và nhỏ hơn 4 Giờ'
-                                                            : null}
-                                                    </strong></td>
-                                                <td>{taskItem?.currentResponsibleEmployees?.map(resItem => convertUserIdToUserName(listUsers, resItem)).join(', ')}</td>
-                                                <td>{taskItem?.currentAccountableEmployees?.map(accItem => convertUserIdToUserName(listUsers, accItem)).join(', ')}</td>
-                                                <td>{taskItem?.totalResWeight}</td>
-                                                <td>{taskItem?.totalResWeight ? 100 - Number(taskItem?.totalResWeight) : ''}</td>
-                                                <td>{checkIsNullUndefined(taskItem?.estimateNormalCost) ? 'Chưa tính được' : taskItem?.estimateNormalCost}</td>
-                                                <td>{checkIsNullUndefined(taskItem?.estimateMaxCost) ? 'Chưa tính được' : taskItem?.estimateMaxCost}</td>
-                                                {currentModeImport === 'HAND' &&
-                                                    <td>
-                                                        <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
-                                                    </td>
+                            {/* Hiển thị data import */}
+                            <div className="nav-tabs-custom row" >
+                                <ul className="nav nav-tabs">
+                                    <li className="active"><a data-toggle="tab" href="#import_task_project">Danh sách công việc</a></li>
+                                    <li><a data-toggle="tab" href="#import_phase_project"> Các giai đoạn trong dự án</a></li>
+                                </ul>
+                                <div className="tab-content">
+                                    {/* Bảng các công việc trong dự án */}
+                                    <div id="import_task_project" className="tab-pane active">
+                                        <table id="project-table" className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>{translate('project.schedule.taskCode')}</th>
+                                                    <th>{translate('project.schedule.taskName')}</th>
+                                                    <th>{translate('project.schedule.preceedingTasks')}</th>
+                                                    <th>Giai đoạn</th>
+                                                    <th>{translate('project.schedule.estimatedTime')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
+                                                    <th>{translate('project.schedule.estimatedTimeOptimistic')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
+                                                    <th>Người thực hiện</th>
+                                                    <th>Người phê duyệt</th>
+                                                    <th>Trọng số tổng thực hiện (%)</th>
+                                                    <th>Trọng số tổng phê duyệt (%)</th>
+                                                    <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
+                                                    <th>{translate('project.schedule.estimatedCostMaximum')} (VND)</th>
+                                                    <th>{translate('task_template.action')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    (state.listTasks && state.listTasks.length !== 0) &&
+                                                    state.listTasks.map((taskItem, index) => (
+                                                        <tr style={{ cursor: 'pointer' }} onClick={() => handleEditRow(index)} key={`task-${index}`}>
+                                                            <td>{taskItem?.code}</td>
+                                                            <td>{taskItem?.name}</td>
+                                                            <td>{taskItem?.preceedingTasks?.join(', ')}</td>
+                                                            <td>{taskItem?.projectPhase}</td>
+                                                            <td>
+                                                                {taskItem?.estimateNormalTime}
+                                                                <strong style={{ color: 'red' }}>
+                                                                    {isDurationNotSuitable(taskItem?.estimateNormalTime)
+                                                                        ? ' - Thời gian không được lớn hơn 7 Ngày và nhỏ hơn 4 Giờ'
+                                                                        : null}
+                                                                </strong></td>
+                                                            <td>
+                                                                {taskItem?.estimateOptimisticTime}
+                                                                <strong style={{ color: 'red' }}>
+                                                                    {isDurationNotSuitable(taskItem?.estimateOptimisticTime)
+                                                                        ? ' - Thời gian không được lớn hơn 7 Ngày và nhỏ hơn 4 Giờ'
+                                                                        : null}
+                                                                </strong></td>
+                                                            <td>{taskItem?.currentResponsibleEmployees?.map(resItem => convertUserIdToUserName(listUsers, resItem)).join(', ')}</td>
+                                                            <td>{taskItem?.currentAccountableEmployees?.map(accItem => convertUserIdToUserName(listUsers, accItem)).join(', ')}</td>
+                                                            <td>{taskItem?.totalResWeight}</td>
+                                                            <td>{taskItem?.totalResWeight ? 100 - Number(taskItem?.totalResWeight) : ''}</td>
+                                                            <td>{checkIsNullUndefined(taskItem?.estimateNormalCost) ? 'Chưa tính được' : taskItem?.estimateNormalCost}</td>
+                                                            <td>{checkIsNullUndefined(taskItem?.estimateMaxCost) ? 'Chưa tính được' : taskItem?.estimateMaxCost}</td>
+                                                            {currentModeImport === 'HAND' &&
+                                                                <td>
+                                                                    <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
+                                                                </td>
+                                                            }
+                                                            {currentModeImport === 'EXCEL' &&
+                                                                <td>
+                                                                    <a className="edit" title={translate('general.edit')}><i className="material-icons">edit</i></a>
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    ))
                                                 }
-                                                {currentModeImport === 'EXCEL' &&
-                                                    <td>
-                                                        <a className="edit" title={translate('general.edit')}><i className="material-icons">edit</i></a>
-                                                    </td>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* Bảng các giai đoạn trong dự án */}
+                                    <div id="import_phase_project" className="tab-pane">
+                                        <table id="phase-project-table" className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mã giai đoạn</th>
+                                                    <th>Tên giai đoạn</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    (state.listPhases && state.listPhases.length !== 0) &&
+                                                    state.listPhases.map((phaseItem, index) => (
+                                                        <tr style={{ cursor: 'pointer' }} key={`phase-${index}`}>
+                                                            <td>{phaseItem?.code}</td>
+                                                            <td>{phaseItem?.name}</td>
+                                                        </tr>
+                                                    ))
                                                 }
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </>
                     }
                     {
@@ -410,6 +442,7 @@ const ModalAddTaskSchedule = (props) => {
                         <ModalCalculateCPM
                             estDurationEndProject={Number(estDurationEndProject)}
                             tasksData={state.listTasks}
+                            phasesData={state.listPhases}
                             handleHideModal={handleHideModal}
                         />
                     }

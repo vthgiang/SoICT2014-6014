@@ -23,6 +23,7 @@ const ModalEditRowCPMExcel = (props) => {
     const [currentEstimateNormalCost, setCurrentEstimateNormalCost] = useState(numberWithCommas(currentRow?.estimateNormalCost));
     const [currentEstimateMaxCost, setCurrentEstimateMaxCost] = useState(numberWithCommas(currentRow?.estimateMaxCost));
     const [currentEstimateNormalTime, setCurrentEstimateNormalTime] = useState(numberWithCommas(currentRow?.estimateNormalTime));
+    const [currentEstimateOptimisticTime, setCurrentEstimateOptimisticTime] = useState(numberWithCommas(currentRow?.estimateOptimisticTime));
     const [currentDescription, setCurrentDescription] = useState(currentRow?.description);
     const [currentAssetCost, setCurrentAssetCost] = useState('');
     const [currentHumanCost, setCurrentHumanCost] = useState('');
@@ -39,6 +40,7 @@ const ModalEditRowCPMExcel = (props) => {
         errorOnBudget: undefined,
         errorOnNormalTime: undefined,
         errorOnTotalWeight: undefined,
+        errorOnOptimisticTime: undefined,
     })
 
     useEffect(() => {
@@ -53,6 +55,7 @@ const ModalEditRowCPMExcel = (props) => {
         setCurrentHumanCost(currentRow?.currentHumanCost || '');
         setCurrentEstimateMaxCost(currentRow?.estimateMaxCost || '');
         setCurrentEstimateNormalTime(currentRow?.estimateNormalTime || '');
+        setCurrentEstimateOptimisticTime(currentRow?.estimateOptimisticTime || '');
         setCurrentResponsibleEmployees(currentRow?.currentResponsibleEmployees || []);
         setCurrentAccountableEmployees(currentRow?.currentAccountableEmployees || []);
         setCurrentTotalResWeight(currentRow?.totalResWeight || 80);
@@ -81,10 +84,7 @@ const ModalEditRowCPMExcel = (props) => {
     }
     const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(currentAccountableEmployees, value)) {
-            message = 'Người thực hiện và Người phê duyệt không được trùng nhau';
-        }
-
+        
         if (willUpdateState) {
             setCurrentResponsibleEmployees(value)
             setTimeout(() => {
@@ -103,9 +103,7 @@ const ModalEditRowCPMExcel = (props) => {
     }
     const validateTaskAccountableEmployees = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(currentResponsibleEmployees, value)) {
-            message = 'Người thực hiện và Người phê duyệt không được trùng nhau';
-        }
+
 
         if (willUpdateState) {
             setCurrentAccountableEmployees(value)
@@ -169,11 +167,45 @@ const ModalEditRowCPMExcel = (props) => {
             message = projectDetail?.unitTime === 'days' ? "Không được bỏ trống và chỉ được điền số <= 7 và >= 1/6"
                 : "Không được bỏ trống và chỉ được điền số <= 56 và >= 4"
         }
+        
+        else if(value <= currentEstimateOptimisticTime) {
+            message = "Thời gian ước lượng phải lớn hơn thời gian thoả hiệp"
+        }
+
         if (willUpdateState) {
             setCurrentEstimateNormalTime(value);
             setError({
                 ...error,
                 errorOnNormalTime: message,
+                errorOnOptimisticTime: !message && currentEstimateOptimisticTime? message: error.errorOnOptimisticTime,
+            });
+        }
+        return message === undefined;
+    }
+
+    // Hàm thay đổi thời gian thoả hiệp
+    const handleChangeOptimisticTime = (event) => {
+        let value = event.target.value;
+        validateOptimisticTime(value, true);
+    }
+    const validateOptimisticTime = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let message = undefined;
+        if (value?.length === 0 || value?.match(/.*[a-zA-Z]+.*/) || isDurationNotSuitable(Number(value))) {
+            message = projectDetail?.unitTime === 'days' ? "Không được bỏ trống và chỉ được điền số <= 7 và >= 1/6"
+                : "Không được bỏ trống và chỉ được điền số <= 56 và >= 4"
+        }
+
+        if (value >= currentEstimateNormalTime) {
+            message = "Thời gian thoả hiệp phải nhỏ hơn thời gian ước lượng"
+        }
+
+        if (willUpdateState) {
+            setCurrentEstimateOptimisticTime(value);
+            setError({
+                ...error,
+                errorOnOptimisticTime: message,
+                errorOnNormalTime: !message && currentEstimateNormalTime? message: error.errorOnNormalTime,
             });
         }
         return message === undefined;
@@ -235,8 +267,9 @@ const ModalEditRowCPMExcel = (props) => {
             code: currentRow?.code,
             name: currentRow?.name,
             preceedingTasks: currentRow?.preceedingTasks,
+            projectPhase: currentRow?.projectPhase,
             estimateNormalTime: currentEstimateNormalTime,
-            estimateOptimisticTime: currentRow?.estimateOptimisticTime,
+            estimateOptimisticTime: currentEstimateOptimisticTime,
             estimateNormalCost: currentEstimateNormalCost,
             estimateMaxCost: currentEstimateMaxCost,
             description: currentDescription,
@@ -253,7 +286,7 @@ const ModalEditRowCPMExcel = (props) => {
     }
 
     const isFormValidated = useMemo(() => {
-        return !checkIfHasCommonItems(currentAccountableEmployees, currentResponsibleEmployees) && currentAccountableEmployees.length > 0 && currentResponsibleEmployees.length > 0
+        return currentAccountableEmployees.length > 0 && currentResponsibleEmployees.length > 0
             && Number(currentEstimateMaxCost.replace(/,/g, '')) >= Number(currentEstimateNormalCost.replace(/,/g, ''))
             && currentEstimateNormalTime.toString().trim().length > 0;
     }, [currentAccountableEmployees, currentResponsibleEmployees, currentEstimateMaxCost, currentEstimateNormalCost, currentEstimateNormalTime])
@@ -368,6 +401,8 @@ const ModalEditRowCPMExcel = (props) => {
 
                             {/* Dong 2 */}
                             <div className="row">
+
+                                {/* Công việc tiền nhiệm */}
                                 <div className="col-md-6">
                                     <div className="form-horizontal">
                                         <div className="form-group">
@@ -378,18 +413,50 @@ const ModalEditRowCPMExcel = (props) => {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Giai đoạn */}
+                                <div className="col-md-6">
+                                    <div className="form-horizontal">
+                                        <div className="form-group">
+                                            <strong className="col-sm-4">Giai đoạn</strong>
+                                            <div className="col-sm-8">
+                                                <span>{currentRow?.projectPhase}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Thời gian ước lượng */}
                                 <div className="col-md-6">
                                     <div className="form-horizontal">
                                         <div className={`form-group  ${error.errorOnNormalTime === undefined ? "" : 'has-error'}`}>
                                             <strong className="col-sm-4">Thời gian ước lượng ({translate(`project.unit.${projectDetail?.unitTime}`)})</strong>
                                             <div className="col-sm-8">
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     className="form-control"
                                                     value={currentEstimateNormalTime}
                                                     onChange={handleChangeNormalTime}
                                                 />
                                                 <ErrorLabel content={error.errorOnNormalTime} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Thời gian thoả hiệp */}
+                                <div className="col-md-6">
+                                    <div className="form-horizontal">
+                                        <div className={`form-group  ${error.errorOnOptimisticTime === undefined ? "" : 'has-error'}`}>
+                                            <strong className="col-sm-4">Thời gian thoả hiệp ({translate(`project.unit.${projectDetail?.unitTime}`)})</strong>
+                                            <div className="col-sm-8">
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    value={currentEstimateOptimisticTime}
+                                                    onChange={handleChangeOptimisticTime}
+                                                />
+                                                <ErrorLabel content={error.errorOnOptimisticTime} />
                                             </div>
                                         </div>
                                     </div>

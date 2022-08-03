@@ -649,15 +649,17 @@ exports.links = [
 
             //project
             { path: "/projects/project", method: "GET" },
+            { path: "/projects/project/:id", method: "GET" },
             { path: "/projects/project", method: "POST" },
-            { path: "/projects/project/:id", method: "DELETE" },
             { path: "/projects/project/:id", method: "PATCH" },
-
-            // router.get('/project', auth, ProjectController.get);
-            // router.get('/project/:id', auth, ProjectController.show);
-            // router.post('/project', auth, ProjectController.create);
-            // router.patch('/project/:id', auth, ProjectController.edit);
-            // router.delete('/project/:id', auth, ProjectController.delete);
+            { path: "/projects/project/:id", method: "DELETE" },
+            { path: "/projects/project/:id/getListTasksEval/:evalMonth", method: "GET" },
+            { path: "/projects/project/salary-members", method: "POST" },
+            { path: "/projects/project/change-requests", method: "POST" },
+            { path: "/projects/project/change-requests/:projectId", method: "GET" },
+            { path: "/projects/project/change-requests/update-lists", method: "PATCH" },
+            { path: "/projects/project/change-requests/:id/:status", method: "PATCH" },
+            { path: "/projects/project/project-phase", method: "POST" },
 
         ]
     }, {

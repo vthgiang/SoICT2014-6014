@@ -119,7 +119,6 @@ function ListProjectReport(props) {
     }
 
     const handleShowDetailInfo = (id) => {
-        console.log(id,123);
         setState({
             ...state,
             projectDetail: project.data.paginate.find(p => p?._id === id)
@@ -174,7 +173,7 @@ function ListProjectReport(props) {
             })
 
         }
-    }, [user?.isLoading, project?.isLoading])
+    }, [user?.isLoading, project?.isLoading, JSON.stringify(project.data.paginate)])
 
     let column = [
         { name: translate('project.name'), key: "name" },

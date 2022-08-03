@@ -3,6 +3,7 @@ import { SchedulingProjectsConstants } from './constants';
 
 export const SchedulingProjectsActions = {
     createProjectTasksFromCPMDispatch,
+    createProjectPhaseFromCPMDispatch,
 }
 
 function createProjectTasksFromCPMDispatch(tasksList) {
@@ -16,7 +17,23 @@ function createProjectTasksFromCPMDispatch(tasksList) {
                 });
             })
             .catch((err) => {
-                dispatch({ type: SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM_FAILE });
+                dispatch({ type: SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM_FAIL });
+            });
+    };
+}
+
+function createProjectPhaseFromCPMDispatch(phaseList) {
+    return (dispatch) => {
+        dispatch({ type: SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM });
+        ProjectServices.createProjectPhaseFromCPM(phaseList)
+            .then((res) => {
+                dispatch({
+                    type: SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM_SUCCESS,
+                    // payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM_FAIL });
             });
     };
 }

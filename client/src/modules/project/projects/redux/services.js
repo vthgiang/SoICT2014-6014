@@ -5,7 +5,6 @@ export const ProjectServices = {
     createProject,
     editProject,
     deleteProject,
-
     getSalaryMembersAPI,
 }
 
@@ -73,3 +72,4 @@ function getSalaryMembersAPI(data) {
         data,
     }, false, true, 'project');
 }
+

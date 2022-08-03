@@ -28,7 +28,7 @@ const ModalListTasks = (props) => {
                 modalID={`modal-list-tasks-report-${listType}`} isLoading={false}
                 formID={`form-show-detail-report-${listType}`}
                 title={title}
-                hasSave={false}
+                hasSaveButton={false}
                 size={100}
                 resetOnClose={true}
             >

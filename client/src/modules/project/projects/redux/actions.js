@@ -6,7 +6,6 @@ export const ProjectActions = {
     createProjectDispatch,
     editProjectDispatch,
     deleteProjectDispatch,
-
     getSalaryMembersDispatch,
 }
 
@@ -100,3 +99,4 @@ function getSalaryMembersDispatch(data) {
             });
     };
 }
+

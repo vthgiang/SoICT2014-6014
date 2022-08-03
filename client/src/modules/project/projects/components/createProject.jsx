@@ -428,7 +428,8 @@ const ProjectCreateForm = (props) => {
         // console.log(startDate.length === 0)
         // console.log(endDate.length === 0)
         if (!ValidationHelper.validateName(translate, projectName, 6, 255).status|| projectManager.length === 0
-            || responsibleEmployeesWithUnit.list.length === 0|| errorOnStartDate|| errorOnStartDate) return false;
+            || responsibleEmployeesWithUnit.list.length === 0|| errorOnStartDate|| errorOnStartDate || !startDate || !endDate
+            || !startTime || ! endTime) return false;
         return true;
     }
 

@@ -160,6 +160,11 @@ const ProjectChangeRequestSchema = new Schema(
             estimateAssetCost: {
                 type: Number,
             },
+            // Giai đoạn
+            taskPhase: {
+                type: Schema.Types.ObjectId,
+                ref: 'ProjectPhase'
+            },
         },
         affectedTasksList: [
             {
@@ -269,14 +274,16 @@ const ProjectChangeRequestSchema = new Schema(
                     estimateAssetCost: {
                         type: Number,
                     },
+                    // Giai đoạn
+                    taskPhase: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'ProjectPhase'
+                    },
                 },
 
                 /** Từ phần dưới trở xuống là những trường có thể sẽ bị ảnh hưởng khi có changeRequest liên quan tới task này */
                 new: {
                     name: {
-                        type: String,
-                    },
-                    description: {
                         type: String,
                     },
                     status: {
@@ -378,6 +385,11 @@ const ProjectChangeRequestSchema = new Schema(
                     },
                     estimateAssetCost: {
                         type: Number,
+                    },
+                    // Giai đoạn
+                    taskPhase: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'ProjectPhase'
                     },
                 },
 
