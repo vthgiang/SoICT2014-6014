@@ -564,5 +564,5 @@ function proposalPersonnel(data) {
         url: `${process.env.REACT_APP_SERVER}/task/tasks/proposal-personnel`,
         method: 'POST',
         data: data
-    }, false, true, 'task.task_management');
+    }, false, false, 'task.task_management');
 }
