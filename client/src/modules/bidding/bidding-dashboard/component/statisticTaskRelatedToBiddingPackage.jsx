@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { forceCheckOrVisible, SelectBox, SlimScroll, LazyLoadComponent } from '../../../../common-components';
+import { forceCheckOrVisible, SelectBox, SlimScroll, LazyLoadComponent, DatePicker } from '../../../../common-components';
 import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 import { NewsFeed } from '../../../home/components/newsFeed';
 import { GanttCalendar } from '../../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
@@ -48,14 +48,44 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
 
     const [state, setState] = useState({
         startDate: formatDate(Date.now(), true, 3),
-        endDate: formatDate(Date.now(), true)
+        endDate: formatDate(Date.now(), true),
+        bid: listBiddingPackages[0],
     })
+
+    const checkTaskInPackage = (task, bid) => {
+        const contract = biddingContract.listBiddingContractStatistic.find(x => x.biddingPackage?._id === bid?._id);
+        const projectBP = contract?.project;
+
+        let projectID = projectBP?._id;
+        let taskPrj = task?.taskProject;
+
+        if (String(taskPrj) === String(projectID)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    useEffect(() => {
+        let bp = listBiddingPackages[0];
+        
+        if (bp) {
+            const contract = biddingContract.listBiddingContractStatistic.find(x => x.biddingPackage?._id === bp._id);
+            const project = contract?.project;
+            setState({
+                ...state,
+                bid: bp,
+                contract: contract,
+                projectBP: project,
+            })
+        }
+    }, [JSON.stringify(listBiddingPackages), JSON.stringify(biddingContract.listBiddingContractStatistic)]);
 
     useEffect(() => {
         const { tasks } = props;
         const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable, loadingResponsible
         } = tasks;
-        const { userId } = state;
+        const { userId, bid } = state;
         if (tasks && !loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable && !loadingResponsible) {
             let currentMonth = new Date().getMonth() + 1;
             let currentYear = new Date().getFullYear();
@@ -68,11 +98,11 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
             let conTasks = tasks.consultedTasks;
 
             if (accTasks && accTasks.length > 0)
-                accTasks = accTasks.filter(task => task.status === "inprocess");
+                accTasks = accTasks.filter(task => task.status === "inprocess" && checkTaskInPackage(task, bid));
             if (resTasks && resTasks.length > 0)
-                resTasks = resTasks.filter(task => task.status === "inprocess");
+                resTasks = resTasks.filter(task => task.status === "inprocess" && checkTaskInPackage(task, bid));
             if (conTasks && conTasks.length > 0)
-                conTasks = conTasks.filter(task => task.status === "inprocess");
+                conTasks = conTasks.filter(task => task.status === "inprocess" && checkTaskInPackage(task, bid));
 
             // Láy công việc chưa phê duyệt yêu cầu kết thúc
             accTasks && accTasks.forEach(o => {
@@ -220,17 +250,7 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                 }
             })
         }
-    }, [JSON.stringify(tasks)])
-
-    useEffect(() => {
-        let bp = listBiddingPackages[0];
-        if (bp) {
-            setState({
-                ...state,
-                bid: bp,
-            })
-        }
-    }, [JSON.stringify(listBiddingPackages), JSON.stringify(biddingContract.listBiddingContractStatistic)]);
+    }, [JSON.stringify(tasks), JSON.stringify(state.bid), ])
 
     useEffect(() => {
         let { startDate, endDate } = state;
@@ -243,17 +263,6 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
         props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
     }, [])
 
-    // useEffect(() => {
-    //     window.$('#dashboard-about-to-overdue').ready(function () {
-    //         SlimScroll.removeVerticalScrollStyleCSS('dashboard-about-to-overdue')
-    //         SlimScroll.addVerticalScrollStyleCSS("dashboard-about-to-overdue", 300, true);
-    //     })
-
-    //     window.$('#dashboard-overdue').ready(function () {
-    //         SlimScroll.removeVerticalScrollStyleCSS('dashboard-overdue')
-    //         SlimScroll.addVerticalScrollStyleCSS("dashboard-overdue", 300, true);
-    //     })
-    // })
 
     const viewAllTask = () => {
         window.$('#modal-view-all-task').modal('show')
@@ -263,25 +272,38 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
         if (value.length === 0) {
             value = null
         };
-        let bp = biddingPackagesManager?.listBiddingPackages?.find(x => x._id == value[0])
+        let bp = biddingPackagesManager?.listActiveBiddingPackage?.find(x => x._id == value[0])
         if (bp) {
+            const contract = biddingContract.listBiddingContractStatistic.find(x => x.biddingPackage?._id === value[0]);
+            const project = contract?.project;
+
             setState({
                 ...state,
                 bid: bp,
+                contract: contract,
+                projectBP: project,
             })
         }
         else {
             setState({
                 ...state,
                 bid: null,
+                contract: null,
+                projectBP: null,
             })
         }
     }
 
+    const handleSelectMonthStart = (value) => {
+        setState({ startDate: value });
+    }
+
+    const handleSelectMonthEnd = (value) => {
+        setState({ endDate: value });
+    }
+
     const handleSearchData = async () => {
         let { startDate, endDate } = state;
-        /* console.log("startDate", startDate)
-        console.log("endDate",endDate) */
         let startTimeMiliSeconds = new Date(moment(startDate, 'MM-YYYY').format()).getTime();
         let endTimeMiliSeconds = new Date(moment(endDate, 'MM-YYYY').format()).getTime();
         if (startTimeMiliSeconds > endTimeMiliSeconds) {
@@ -315,7 +337,7 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                 <div className="box-title">Tổng quan công việc gói thầu</div>
             </div>
             <div className="box-body qlcv">
-                <div className="form-inline" style={{ marginBottom: 15 }}>
+                <div className="form-inline" style={{ marginBottom: 15, display: "flex", justifyContent: 'space-between' }}>
                     {/* Tên gói thầu */}
                     <div className="form-group">
                         <label className="form-control-static">Chọn gói thầu</label>
@@ -334,49 +356,13 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                     </div>
                 </div>
                 <React.Fragment>
-                    {/* {
-                        listAlarmTask &&
-                        <ViewAllTasks listAlarmTask={listAlarmTask} />
-                    } */}
-                    <div className="qlcv" style={{ marginBottom: 10 }}>
-                        {/**Chọn ngày bắt đầu */}
-                        <div className="form-inline">
-                            {/* <div className="form-group">
-                                <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
-                                <DatePicker
-                                    id="monthStartInHome"
-                                    dateFormat="month-year"
-                                    value={state.startDate}
-                                    onChange={handleSelectMonthStart}
-                                    disabled={false}
-                                />
-                            </div> */}
-
-                            {/**Chọn ngày kết thúc */}
-                            {/* <div className="form-group">
-                                <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
-                                <DatePicker
-                                    id="monthEndInHome"
-                                    dateFormat="month-year"
-                                    value={state.endDate}
-                                    onChange={handleSelectMonthEnd}
-                                    disabled={false}
-                                />
-                            </div> */}
-
-                            {/**button tìm kiếm data để vẽ biểu đồ */}
-                            {/* <div className="form-group">
-                                <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                            </div> */}
-                        </div>
-                    </div>
 
                     <div className="nav-tabs-custom">
-                        <ul className="nav nav-tabs">
+                        {/* <ul className="nav nav-tabs">
                             <li className="active"><a href="#tasks-oveview" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tổng quan công việc</a></li>
                             <li><a href="#tasks-calendar" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('task.task_management.tasks_calendar')}</a></li>
                             <li><a href="#newfeeds" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('news_feed.news_feed')}</a></li>
-                        </ul>
+                        </ul> */}
 
                         <div className="tab-content">
                             <div className="tab-pane active" id="tasks-oveview">
@@ -396,7 +382,7 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                                 }
                             </div>
 
-                            <div className="tab-pane" id="tasks-calendar">
+                            {/* <div className="tab-pane" id="tasks-calendar">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startDateWork} {translate('task.task_management.lower_to')} {endDateWork}</div>
@@ -408,23 +394,17 @@ const StatisticTaskRelatedBiddingPackage = (props) => {
                                         />
                                     </LazyLoadComponent>
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className="tab-pane" id="newfeeds">
+                            {/* <div className="tab-pane" id="newfeeds">
                                 <LazyLoadComponent once={true}>
                                     <NewsFeed />
                                 </LazyLoadComponent>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
-                    {/* <label className="alarm-task-arrow animated alram-task-bounce" htmlFor="toggle-1" onClick={() => viewAllTask()}>
-                        <span className="material-icons" >
-                            alarm
-                        </span>
-                    </label> */}
                 </React.Fragment>
-
             </div>
         </div>
     )

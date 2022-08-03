@@ -62,6 +62,8 @@ const BiddingPackageCreateForm = (props) => {
         },
         editBiddingPackge: initBiddingPackage
     })
+    
+    const [log, setLog] = useState(null)
 
     // useEffect()
 
@@ -143,30 +145,36 @@ const BiddingPackageCreateForm = (props) => {
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
         let { keyPeople, biddingPackage, keyPersonnelRequires, code, startDate, endDate, status, type,
-            description, name, price, customer, openLocal, receiveLocal, proposals } = state;
-
+            description, name, price, customer, openLocal, receiveLocal, proposals } = state.biddingPackage;
+        console.log(149, log, state);
+        
+        let dataReq = {
+            ...biddingPackage,
+            name: name,
+            code: code,
+            customer: customer,
+            price: price,
+            openLocal: openLocal,
+            receiveLocal: receiveLocal,
+            startDate: startDate,
+            endDate: endDate,
+            status: status,
+            type: type,
+            description: description,
+            KeyPeople: keyPeople,
+            keyPersonnelRequires: keyPersonnelRequires,
+            proposals: {
+                ...proposals,
+                logs: log ? [log] : []
+            }
+        }
         await setState(state => ({
             ...state,
-            biddingPackage: {
-                ...biddingPackage,
-                name,
-                code,
-                customer,
-                price,
-                openLocal,
-                receiveLocal,
-                startDate,
-                endDate,
-                status,
-                type,
-                description,
-                KeyPeople: keyPeople,
-                keyPersonnelRequires: keyPersonnelRequires,
-                proposals: proposals
-            }
-        }))
+            biddingPackage: dataReq
+        })) 
+        console.log(171, dataReq);
 
-        props.addNewBiddingPackage({ ...biddingPackage });
+        props.addNewBiddingPackage({ ...dataReq });
     }
 
     const { translate, biddingPackagesManager, career, major, certificate } = props;
@@ -181,24 +189,24 @@ const BiddingPackageCreateForm = (props) => {
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
-                afterClose={() => {
-                    setState(state => ({
-                        ...state,
-                        biddingPackage: {
-                            name: "",
-                            code: "",
-                            type: "",
-                            status: "",
-                            startDate: "",
-                            endDate: "",
-                            description: "",
-                            KeyPeople: [],
-                            keyPersonnelRequires: [],
-                            proposals: [],
-                            errorOnName: undefined,
-                        },
-                    }))
-                }}
+                // afterClose={() => {
+                //     setState(state => ({
+                //         ...state,
+                //         biddingPackage: {
+                //             name: "",
+                //             code: "",
+                //             type: "",
+                //             status: "",
+                //             startDate: "",
+                //             endDate: "",
+                //             description: "",
+                //             KeyPeople: [],
+                //             keyPersonnelRequires: [],
+                //             proposals: [],
+                //             errorOnName: undefined,
+                //         },
+                //     }))
+                // }}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-create-bidding-package"> */}
@@ -241,8 +249,10 @@ const BiddingPackageCreateForm = (props) => {
                             type={`create`}
                             id={`proposals_create`}
                             handleChange={handleChange}
+                            listCareer={career?.listPosition}
                             proposals={state.biddingPackage.proposals}
                             biddingPackage={biddingPackage}
+                            setLog={setLog}
                         />
                     </div>
                 </div>

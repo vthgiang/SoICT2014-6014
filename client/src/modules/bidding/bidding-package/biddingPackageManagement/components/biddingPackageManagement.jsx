@@ -38,7 +38,7 @@ const BiddingPackageManagement = (props) => {
     }, [search])
 
     const tableId = "table-biddingPackage-management";
-    const defaultConfig = { limit: 10 }
+    const defaultConfig = { limit: 5 }
     const _limit = getTableConfiguration(tableId, defaultConfig).limit;
 
     const [state, setState] = useState({
@@ -50,7 +50,7 @@ const BiddingPackageManagement = (props) => {
         professionalSkills: null,
         careerFields: null,
         page: 0,
-        limit: 15,
+        limit: 5,
         currentRow: {},
         currentRowView: {}
     });
@@ -380,7 +380,10 @@ const BiddingPackageManagement = (props) => {
                                             name="delete"
                                             className="text-red"
                                             content={`<h4>Delete ${x.name + " - " + x.code}</h4>`}
-                                            func={() => props.deleteBiddingPackage(x._id)}
+                                            func={() => {
+                                                props.deleteBiddingPackage(x._id)
+                                                props.getAllBiddingPackage(state)
+                                            }}
                                         />
                                         {!x?.hasContract && x.status === 3 &&
                                             <a className="" style={{ color: "#28A745" }} onClick={() => handleCreateContract(x)} title={"Tạo hợp đồng cho gói thầu này"}>

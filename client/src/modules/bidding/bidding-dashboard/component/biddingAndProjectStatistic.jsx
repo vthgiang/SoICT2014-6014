@@ -206,10 +206,10 @@ const BidAndProjectStatistic = (props) => {
                                             </ul>
                                         </div>
 
-                                        {
-                                            (projectBP?.budgetChangeRequest || projectBP?.endDateRequest) && (
-                                                <div>
-                                                    <strong>Thay đổi phát sinh trong dự án: &nbsp;</strong>
+                                        <div>
+                                            <strong>Thay đổi phát sinh trong dự án: &nbsp;</strong>
+                                            {(projectBP?.budgetChangeRequest && projectBP?.budgetChangeRequest !== projectBP?.budget ||
+                                                projectBP?.endDateRequest && formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest) !== formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDate)) ? (
                                                     <ul>
                                                         {projectBP?.budgetChangeRequest && projectBP?.budgetChangeRequest !== projectBP?.budget &&
                                                             <li key={`budgetChangeRequest}`}>
@@ -228,9 +228,9 @@ const BidAndProjectStatistic = (props) => {
                                                             </li>
                                                         }
                                                     </ul>
-                                                </div>
-                                            )
-                                        }
+                                                ) : <span> Chưa phát sinh thay đổi trong dự án</span>
+                                            }
+                                        </div>
                                     </div> : <span>Không có thông tin dự án liên quan đến gói thầu này</span>
                                 }
                             </fieldset>

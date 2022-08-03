@@ -12,6 +12,7 @@ export const taskManagementService = {
     getPaginateTasksByUser,
     getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
+    getAllTasksThatHasEvaluation,
 
     addNewTask,
     editTask,
@@ -32,6 +33,7 @@ export const taskManagementService = {
     importTasks,
 
     getOrganizationTaskDashboardChart,
+    proposalPersonnel,
 };
 
 
@@ -258,6 +260,27 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
             aPeriodOfTime: aPeriodOfTime
+        }
+    }, false, true, 'task.task_management');
+}
+
+/**
+ * lấy công việc có đánh giá của đơn vị
+ * @param {*} unit đơn vị
+ * @param {*} month tháng
+ */
+
+function getAllTasksThatHasEvaluation(unit, startDate, endDate) {
+    var user = getStorage("userId");
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
+        method: 'GET',
+        params: {
+            type: 'task_has_evaluation',
+            unit: unit,
+            user: user,
+            startDate,
+            endDate
         }
     }, false, true, 'task.task_management');
 }
@@ -515,7 +538,7 @@ function getTasksByProject(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
-        params: { ...data, type: 'project'}
+        params: { ...data, type: 'project' }
     }, false, true, 'project');
 }
 
@@ -534,4 +557,12 @@ function getOrganizationTaskDashboardChart(data) {
         method: 'GET',
         params: data
     }, false, true, 'task.task_management');
+}
+
+function proposalPersonnel(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/proposal-personnel`,
+        method: 'POST',
+        data: data
+    }, false, false, 'task.task_management');
 }

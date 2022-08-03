@@ -40,6 +40,8 @@ const BiddingPackageEditFrom = (props) => {
             ],
         }
     })
+    const [log, setLog] = useState(null)
+    const [oldBP, setOldBP] = useState(null)
 
     const mountedRef = useRef(true)
 
@@ -59,8 +61,9 @@ const BiddingPackageEditFrom = (props) => {
                 setState({
                     ...state,
                     dataStatus: DATA_STATUS.AVAILABLE,
-                    biddingPackage: props.biddingPackagesManager?.biddingPackageDetail,
+                    biddingPackage: {...props.biddingPackagesManager?.biddingPackageDetail},
                 });
+                setOldBP({...props.biddingPackagesManager?.biddingPackageDetail})
             };
         }
         shouldUpdate();
@@ -158,8 +161,29 @@ const BiddingPackageEditFrom = (props) => {
 
     const save = async () => {
         let { _id, biddingPackage } = state;
+        let proposal = oldBP.proposals
+        let oldLogs = proposal?.logs ?? []
+        let newLogItem = log
 
-        await props.updateBiddingPackage(_id, biddingPackage);
+        let dataReq = {
+            ...biddingPackage,
+        }
+        
+        if (newLogItem){
+            dataReq = {
+                ...biddingPackage,
+                proposals: {
+                    ...biddingPackage.proposals,
+                    logs: [...oldLogs, newLogItem]
+                }
+            }
+        }
+
+        console.log("====1817===",dataReq);
+
+        await props.updateBiddingPackage(_id, dataReq);
+
+        // await props.updateBiddingPackage(_id, biddingPackage);
         await props.getDetailBiddingPackage(props._id, {});
         setState({
             ...state,
@@ -176,19 +200,19 @@ const BiddingPackageEditFrom = (props) => {
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
-                afterClose={() => {
-                    setState(state => ({
-                        ...state,
-                        _id: null,
-                    }))
-                }}
+                // afterClose={() => {
+                //     setState(state => ({
+                //         ...state,
+                //         _id: null,
+                //     }))
+                // }}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-edit-biddingPackage"> */}
                 {biddingPackage &&
                     <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
-                            <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general_bidding_package${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
+                            <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                             <li><a title="Yêu cầu nhân sự chủ chốt" data-toggle="tab" href={`#edit_contact_bidding_package${_id}`}>Yêu cầu nhân sự chủ chốt</a></li>
                             <li><a title="Danh sách nhân sự chủ chốt" data-toggle="tab" href={`#edit_key_people_bidding_package${_id}`}>Nhân sự chủ chốt</a></li>
                             <li><a title="Hồ sơ đề xuất" data-toggle="tab" href={`#proposals_edit_${_id}`}>Hồ sơ đề xuất</a></li>
@@ -230,6 +254,8 @@ const BiddingPackageEditFrom = (props) => {
                                 listCareer={career?.listPosition}
                                 proposals={state.biddingPackage.proposals}
                                 biddingPackage={biddingPackage}
+                                oldBiddingPackage={oldBP}
+                                setLog={setLog}
                             />
                         </div>
                     </div>}

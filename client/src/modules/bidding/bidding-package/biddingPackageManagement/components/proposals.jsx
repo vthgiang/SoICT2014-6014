@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, ErrorLabel, forceCheckOrVisible, SelectBox } from '../../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 import { EmployeeManagerActions } from '../../../../human-resource/profile/employee-management/redux/actions';
 import getAllEmployeeSelectBoxItems, { convertTagIdToTagName, getAllEmployeeWithTaskSelectBoxItems, getEmployeeInfoWithTask } from './employeeHelper';
@@ -13,6 +13,7 @@ import { ViewTaskInGantt } from './viewTaskInGantt';
 import { TagActions } from '../../../tags/redux/actions';
 import CreateTagForm from '../../../tags/component/createForm';
 import { BiddingPackageService } from '../redux/services';
+import { getStorage } from '../../../../../config';
 
 function Proposals(props) {
     const EDIT_TYPE = "EDIT_TYPE", ADD_TYPE = "ADD_TYPE" // , RESET_TYPE = "RESET_TYPE", DELETE_TYPE = "DELETE_TYPE", CANCEL_TYPE = "CANCEL_TYPE";
@@ -25,6 +26,7 @@ function Proposals(props) {
     const allUsers = user && user.list
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
 
+    const userId = getStorage("userId");
     const initTaskData = {
         code: "",
         // tag: proposals.tags?.length ? proposals.tags[0].name : "",
@@ -49,8 +51,29 @@ function Proposals(props) {
         unitOfTime: "days",
         tags: [],
         tasks: [],
+        logs: [],
     }
     const [proposals, setProposals] = useState(props.biddingPackage.proposals ? props.biddingPackage.proposals : initProposal);
+    const [showMessage, setShowMessage] = useState(false);
+    const [isPreferedHighSkill, setIsPreferedHighSkill] = useState(true);
+
+    // dùng cho phần logs
+    const [logData, setLogData] = useState(null);
+    const [isSatisfiedWithProposal, setIsSatisfiedProposal] = useState(false);
+    const [useCalcPropose, setUseCalcPropose] = useState(false);
+    const [oldProposal, setOldProposal] = useState();
+
+    useEffect(() => {
+        if (props.type) {
+            if (props.type === "create") {
+                setOldProposal(initProposal)
+            }
+            else if (props.type === "edit") setOldProposal({ ...props.biddingPackagesManager?.biddingPackageDetail?.proposals })
+        }
+    }, [props.type])
+
+    // end
+
     const [biddingPackage, setBiddingPackage] = useState(props.biddingPackage ? props.biddingPackage : {});
     const [isTable, setIsTable] = useState(true);
     const [state, setState] = useState({
@@ -60,6 +83,8 @@ function Proposals(props) {
         tagType: ADD_TYPE,
         currentTag: initTag,
         currentTagIndex: null,
+        currentLog: null,
+        currentLogIndex: null,
         showFormTask: proposals?.tasks?.length === 0 ? true : false,
         showFormTag: proposals?.tags?.length === 0 ? true : false,
     });
@@ -83,6 +108,9 @@ function Proposals(props) {
         // proposal: null,
         // isComplete: 0,
     });
+    useEffect(() => {
+        setBiddingPackage(props.biddingPackage)
+    }, [JSON.stringify(props.biddingPackage)])
     const [isLoading, setLoading] = useState(false);
     const handleGoToStep = (index, e = undefined) => {
         if (e) e.preventDefault();
@@ -156,13 +184,13 @@ function Proposals(props) {
         //         }
         //     })
         // } else {
-            setState({
-                ...state,
-                currentTask: {
-                    ...state.currentTask,
-                    [key]: value
-                }
-            })
+        setState({
+            ...state,
+            currentTask: {
+                ...state.currentTask,
+                [key]: value
+            }
+        })
         // }
     }
 
@@ -173,7 +201,7 @@ function Proposals(props) {
         let res = [];
 
         tagList = alltag?.filter(x => tag.find(t => String(t) === String(x._id)));
-        
+
         if (tagList.length === 0) {
             res = [];
         }
@@ -186,11 +214,11 @@ function Proposals(props) {
                 listEmpByTag = [...t.employees, ...listEmpByTag];
             }
 
-            for(let x of listEmpByTag) {
+            for (let x of listEmpByTag) {
                 let chk = listEmpByTag.filter(o => String(o) === String(x));
                 if (chk?.length > 1 && res.indexOf(String(x)) === -1) {
                     res.push(String(x));
-                } 
+                }
             }
         }
 
@@ -303,9 +331,9 @@ function Proposals(props) {
         let newList = proposals.tasks.map((x, idx) => {
 
             if (idx === index) {
-                x = { 
+                x = {
                     ...x,
-                    [key]: value 
+                    [key]: value
                 }
             }
             return x;
@@ -316,11 +344,16 @@ function Proposals(props) {
             tasks: newList,
         }
 
+        setShowMessage(false);
+
         setProposals(newProposal);
         props.handleChange("proposals", newProposal);
     }
 
     const calcPropose = async () => {
+        setShowMessage(true);
+        setUseCalcPropose(true);
+        setIsSatisfiedProposal(true);
         setLoading(true);
         await BiddingPackageService.proposeEmployeeForTask(bidId, {
             type: proposalType,
@@ -328,7 +361,8 @@ function Proposals(props) {
             tasks: proposals?.tasks,
             biddingPackage: biddingPackage,
             unitOfTime: proposals?.unitOfTime,
-            executionTime: proposals?.executionTime
+            executionTime: proposals?.executionTime,
+            isPreferedHighSkill: isPreferedHighSkill
         }).then(res => {
             const { data } = res;
             let newProposal = data.content?.proposal;
@@ -349,7 +383,7 @@ function Proposals(props) {
             setLoading(false)
         })
     }
-    
+
     // end
 
     const handleShowViewEmployee = (id) => {
@@ -375,8 +409,143 @@ function Proposals(props) {
         props.handleChange("proposals", newProposal);
     }
 
+    // logs
+
+    const checkIsChangeData = () => {
+        let currentTasks = proposals.tasks;
+        let oldTasks = oldProposal?.tasks;
+
+        if (oldTasks) {
+            for (let c of currentTasks) {
+                for (let o of oldTasks) {
+                    if (c?.code?.trim() === o?.code?.trim()) {
+                        const filteredDirectEmp = c.directEmployees.filter(value => o.directEmployees.includes(value))
+                        const filteredBackupEmp = c.backupEmployees.filter(value => o.backupEmployees.includes(value))
+
+                        if (filteredBackupEmp.length !== c.backupEmployees?.length || filteredDirectEmp.length !== c.directEmployees?.length ||
+                            filteredBackupEmp.length !== o.backupEmployees?.length || filteredDirectEmp.length !== o.directEmployees?.length) {
+                            return true; // có thay đổi
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    const checkIsSatisfied = () => {
+        if (!useCalcPropose) return false;
+
+        let currentTasks = proposals.tasks;
+        let proposedTasks = proposedData.proposal?.tasks;
+
+        if (proposedTasks) {
+            for (let c of currentTasks) {
+                for (let p of proposedTasks) {
+                    if (c?.code?.trim() === p?.code?.trim()) {
+                        const filteredDirectEmp = c.directEmployees.filter(value => p.directEmployees.includes(value))
+                        const filteredBackupEmp = c.backupEmployees.filter(value => p.backupEmployees.includes(value))
+
+                        if (filteredBackupEmp.length !== c.backupEmployees?.length || filteredDirectEmp.length !== c.directEmployees?.length ||
+                            filteredBackupEmp.length !== p.backupEmployees?.length || filteredDirectEmp.length !== p.directEmployees?.length) {
+                            return false; // k hài lòng vì có thay đổi
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    // ghi lại lag mỗi khi dùng đề xuất tự động
+    const generateLog = () => {
+        const isChange = checkIsChangeData();
+        const satisfied = checkIsSatisfied();
+
+        const oldTasks = oldProposal?.tasks;
+        const currentTasks = proposals?.tasks;
+        const proposedTasks = proposedData.proposal?.tasks;
+
+        if (!useCalcPropose) return null // k dùng đề xuất tự động thì return null
+
+        // if (satisfied) { // đã dùng đề xuất tự động và hài lòng, thay đổi bằng cách đề xuất tự động
+        //     return {
+        //         oldVersion: {
+        //             isProposal: false,
+        //             tasks: oldTasks // có cả trường hợp tạo mới và chỉnh sửa
+        //         },
+        //         newVersion: { // đề xuất
+        //             isProposal: true,
+        //             tasks: currentTasks
+        //         },
+        //         createdBy: userId,
+        //         note: "Người dùng hài lòng với đề xuất nhân dự tự động của hệ thống",
+        //         type: oldTasks.length > 0 ? "edit" : "create",
+        //         isSatisfied: true,
+        //         createdAt: Date.now()
+        //     }
+        // }
+
+        if (isChange) {
+            if (satisfied) { // đã dùng đề xuất tự động và hài lòng, thay đổi bằng cách đề xuất tự động
+                return {
+                    oldVersion: {
+                        isProposal: false,
+                        tasks: oldTasks // có cả trường hợp tạo mới và chỉnh sửa
+                    },
+                    newVersion: { // đề xuất
+                        isProposal: true,
+                        tasks: currentTasks
+                    },
+                    createdBy: userId,
+                    note: "Người dùng hài lòng với đề xuất nhân dự tự động của hệ thống",
+                    type: props.type,
+                    isSatisfied: true,
+                    createdAt: Date.now()
+                }
+            }
+            return {
+                // proposal
+                oldVersion: {
+                    isProposal: true,
+                    tasks: proposedTasks
+                },
+                newVersion: { // chỉnh sửa thủ công
+                    isProposal: false,
+                    tasks: currentTasks
+                },
+                createdBy: userId,
+                note: "Chưa hài lòng với đề xuất nhân sự",
+                // type: oldTasks.length > 0 ? "edit" : "create",
+                type: props.type,
+                isSatisfied: false,
+                createdAt: Date.now()
+            }
+        }
+
+        return null;
+    }
+
     useEffect(() => {
-        props.getAllEmployee();
+        const logData = generateLog();
+
+        if (logData) {
+            setLogData(logData);
+            props.setLog(logData);
+        }
+    }, [
+        useCalcPropose,
+        props.type,
+        JSON.stringify(oldProposal?.tasks),
+        JSON.stringify(proposals?.tasks),
+        JSON.stringify(proposedData.proposal?.tasks),
+    ])
+    // console.log({ proposals: proposals, oldProposal: oldProposal, proposedData: proposedData }, generateLog(), state, {isPreferedHighSkill: isPreferedHighSkill});
+
+    // end code for logs
+
+    useEffect(() => {
         setState({
             ...state,
             id: props.id,
@@ -384,6 +553,13 @@ function Proposals(props) {
             bidId: props.bidId,
             listCareer: props.listCareer,
         });
+    }, [
+        props.id,
+        JSON.stringify(props.listCareer)
+    ]);
+
+    useEffect(() => {
+        props.getAllEmployee();
         props.getPaginateTasks({ getAll: true });
     }, [props.id]);
 
@@ -396,7 +572,7 @@ function Proposals(props) {
         allEmployee = employeesManager.listAllEmployees
     }
 
-    const { id, currentIndex, currentTask, currentTag, currentTagIndex, bidId, proposalType, listCareer, showFormTag, showFormTask } = state;
+    const { id, currentIndex, currentTask, currentTag, currentTagIndex, bidId, proposalType, listCareer, showFormTag, showFormTask, currentLog, currentLogIndex } = state;
     const { currentStep, steps } = step;
 
     let listEmpInfoFormated = getEmployeeInfoWithTask(allUsers, allEmployee, tasks?.tasks ?? [], proposals?.executionTime ?? 0, proposals?.unitOfTime, biddingPackage);
@@ -427,16 +603,16 @@ function Proposals(props) {
     const getListSuitableEmpSelectBox = (listSuitableEmp) => {
         let res = [];
         if (allEmployee) {
-            res = allEmployee?.filter(item => listSuitableEmp?.indexOf(String(item?._id)) !== -1)?.map (o => {
+            res = allEmployee?.filter(item => listSuitableEmp?.indexOf(String(item?._id)) !== -1)?.map(o => {
                 // let text = o.fullName + " (" + o.emailInCompany + ")"
                 let text = o.fullName
-                    return {
-                        value: o._id,
-                        text: text
-                    }
+                return {
+                    value: o._id,
+                    text: text
+                }
             })
         }
-        
+
         return res;
     }
 
@@ -536,7 +712,7 @@ function Proposals(props) {
                             </div>
                             <div>
                                 <div className={`form-group`}>
-                                    <label className="control-label">Thẻ công việc<span className="text-red">*</span>
+                                    <label className="control-label">Tags công việc<span className="text-red">*</span>
                                         ( <a style={{ cursor: "pointer" }} onClick={() => handleShowCreateTag(`${currentIndex}-${id}`)}>Quản lý</a> )
                                     </label>
                                     {<SelectBox
@@ -695,25 +871,47 @@ function Proposals(props) {
                                 biddingPackage: biddingPackage,
                                 unitOfTime: proposals?.unitOfTime,
                                 executionTime: proposals?.executionTime,
+                                isPreferedHighSkill: isPreferedHighSkill
                             }}
                             handleAcceptProposal={handleAcceptProposal}
+                            setIsPreferedHighSkill={setIsPreferedHighSkill}
                         />
                         <span>
+                            {/* <div className="btn-group">
+                                <span type="button" className="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <span className="caret"></span>
+                                </span>
+                                <ul className="dropdown-menu" style={{zIndex: 10000}}>
+                                    <li>
+                                        <a style={{ cursor: "pointer" }} onClick={() => { handelProposeModal(id) }} >
+                                            <i title="Xem cơ chế đề xuất" className='fa fa-question-circle-o'></i>
+                                            Xem cơ ché đề xuất
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a className="checkbox">
+                                            <label>
+                                                <input type="checkbox" checked={isPreferedHighSkill} onChange={() => setIsPreferedHighSkill(!isPreferedHighSkill)} />Ưu tiên theo trình độ chuyên môn cao
+                                            </label>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div> */}
                             <a style={{ margin: '0 0 5px 5px', textDecoration: "underline", fontWeight: "600", cursor: "pointer" }} onClick={() => calcPropose()} >
                                 Tự động phân công nhân sự &nbsp;
                             </a>
                             <i style={{ cursor: "pointer" }} title="Xem cơ ché đề xuất" onClick={() => { handelProposeModal(id) }} className='fa fa-question-circle-o'></i>
                         </span>
-                        
+
                     </div> : null
                     }
                 </div>
                 <br />
-                {isLoading === true && <div style={{ display: 'flex', justifyContent: 'center' }}>Đang tính toán đề xuất...</div>}
-                {isLoading === false && proposedData.isComplete === 1 && 
+                {showMessage && isLoading === true && <div style={{ display: 'flex', justifyContent: 'center' }}>Đang tính toán đề xuất...</div>}
+                {showMessage && isLoading === false && proposedData.isComplete === 1 &&
                     <div style={{ display: 'flex', justifyContent: 'center', color: 'green' }}>Đã tính toán xong - Thông tin đề xuất phân công nhân sự hiển thị ở bảng bên dưới!</div>
                 }
-                {isLoading === false && proposedData.isComplete === 0 && 
+                {showMessage && isLoading === false && proposedData.isComplete === 0 &&
                     <div style={{ display: 'flex', justifyContent: 'center', color: 'red' }}>Hãy kiểm tra lại thông tin nhân sự phù hợp và số lượng nhân sự để phân công nhân sự tối ưu hơn!</div>
                 }
                 {
@@ -749,7 +947,7 @@ function Proposals(props) {
                                             <td>{item?.suitableEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
                                             <td>{item?.numberOfEmployees}</td>
                                             {/* <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
-                                            <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td> */}
+                                                        <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td> */}
                                             <td>
                                                 <SelectBox
                                                     id={`-proposal-direct-employee-${listIndex}-${id}`}
@@ -790,8 +988,8 @@ function Proposals(props) {
 
 
 function mapState(state) {
-    const { employeesManager, user, tasks, tag } = state;
-    return { employeesManager, user, tasks, tag };
+    const { employeesManager, biddingPackagesManager, user, tasks, tag } = state;
+    return { employeesManager, biddingPackagesManager, user, tasks, tag };
 }
 
 const actionCreators = {

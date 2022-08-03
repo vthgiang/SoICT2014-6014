@@ -52,6 +52,7 @@ function getChildTargetOfCurrentTarget(kpiId) {
 }
 
 function copyKPIUnit(kpiId, data) {
+    console.log(55, kpiId, data)
     return dispatch => {
         dispatch({ type: managerConstants.COPY_KPIUNIT_REQUEST });
         managerServices.copyKPIUnit(kpiId, data)

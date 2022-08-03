@@ -1,8 +1,8 @@
-import React, {Component, useState} from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, SelectBox, QuillEditor } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, QuillEditor, SelectBox } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { createUnitKpiActions } from '../redux/actions';
@@ -13,6 +13,8 @@ function OrganizationalUnitKpiAddTargetModal(props) {
         parent: null,
         weight: "",
         criteria: "",
+        unit: "",
+        target: "",
         organizationalUnitKpiSetId: "",
 
         adding: false,
@@ -24,7 +26,7 @@ function OrganizationalUnitKpiAddTargetModal(props) {
     });
     const { createKpiUnit, translate } = props;
     const { organizationalUnit } = props;
-    const { name, adding, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = state;
+    const { name, adding, weight, criteria, target, unit, errorOnName, errorOnCriteria, errorOnWeight } = state;
 
     let parentKPI;
     const onAddItem = async () => {
@@ -38,11 +40,11 @@ function OrganizationalUnitKpiAddTargetModal(props) {
         }
 
         if (!state.parent) {
-            if (!parentKPI){
+            if (!parentKPI) {
                 parent = null;
             } else {
                 items = parentKPI.kpis.filter(item => item.type === 0).map(x => {
-                    return {value: x._id, text: x.name}
+                    return { value: x._id, text: x.name }
                 });
                 parent = items && items[0] && items[0].value;
             }
@@ -50,12 +52,14 @@ function OrganizationalUnitKpiAddTargetModal(props) {
             parent = state.parent;
         }
 
-        if (isFormValidated()){
+        if (isFormValidated()) {
             return await props.addTargetKPIUnit({
-                name: state.name,
-                parent: parent,
-                weight: state.weight,
-                criteria: state.criteria,
+                name,
+                parent,
+                weight,
+                criteria,
+                target,
+                unit,
                 organizationalUnitKpiSetId: props.organizationalUnitKpiSetId,
             });
         }
@@ -65,7 +69,7 @@ function OrganizationalUnitKpiAddTargetModal(props) {
         let value = e.target.value;
         let validation = ValidationHelper.validateName(props.translate, value);
 
-        setState( {
+        setState({
             ...state,
             errorOnName: validation.message,
             name: value,
@@ -73,16 +77,16 @@ function OrganizationalUnitKpiAddTargetModal(props) {
     };
 
     const handleParentChange = (value) => {
-        setState( {
+        setState({
             ...state,
             parent: value[0]
         });
     };
 
-   const handleCriteriaChange = (value, imgs) => {
+    const handleCriteriaChange = (value, imgs) => {
         let validation = ValidationHelper.validateDescription(props.translate, value);
 
-        setState( {
+        setState({
             ...state,
             errorOnCriteria: validation.message,
             criteria: value,
@@ -95,10 +99,26 @@ function OrganizationalUnitKpiAddTargetModal(props) {
         let value = e.target.value;
         let validation = ValidationHelper.validateNumberInput(translate, value, 0, 100);
 
-        setState(  {
+        setState({
             ...state,
             errorOnWeight: validation.message,
             weight: value,
+        });
+    }
+
+    const handleChangeTarget = (e) => {
+        let value = e.target.value;
+        setState({
+            ...state,
+            target: value,
+        });
+    }
+
+    const handleChangeUnit = (e) => {
+        let value = e.target.value;
+        setState({
+            ...state,
+            unit: value,
         });
     }
 
@@ -122,11 +142,11 @@ function OrganizationalUnitKpiAddTargetModal(props) {
     }
 
     let items;
-    if(!parentKPI){
+    if (!parentKPI) {
         items = [];
     } else {
         items = parentKPI.kpis.filter(item => item.type === 0).map(x => {
-            return {value: x._id, text: x.name};
+            return { value: x._id, text: x.name };
         });
     }
 
@@ -144,29 +164,29 @@ function OrganizationalUnitKpiAddTargetModal(props) {
                 {/* Form thêm mục tiêu */}
                 <form id="form-add-target" onSubmit={() => onAddItem(translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.success'))}>
                     {/* Tên mục tiêu */}
-                    <div className={`form-group ${!errorOnName? "": "has-error"}`}>
+                    <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
                         <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.name')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" value={name} onChange = {handleNameChange}/>
-                        <ErrorLabel content={errorOnName}/>
+                        <input type="text" className="form-control" value={name} onChange={handleNameChange} />
+                        <ErrorLabel content={errorOnName} />
                     </div>
 
                     {/* Mục tiêu cha */}
                     {(organizationalUnit && organizationalUnit.parent) && (items.length !== 0) &&
-                    <div className="form-group">
-                        <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.parents')}</label>
-                        <SelectBox
-                            id={`parent-target-add`}
-                            className="form-control select2"
-                            style={{width: "100%"}}
-                            items = {items}
-                            onChange={handleParentChange}
-                            multiple={false}
-                        />
-                    </div>
+                        <div className="form-group">
+                            <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.parents')}</label>
+                            <SelectBox
+                                id={`parent-target-add`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={items}
+                                onChange={handleParentChange}
+                                multiple={false}
+                            />
+                        </div>
                     }
 
                     {/* Tiêu chí đánh giá */}
-                    <div className={`form-group ${!errorOnCriteria? "": "has-error"}`}>
+                    <div className={`form-group ${!errorOnCriteria ? "" : "has-error"}`}>
                         <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                         <QuillEditor
                             id={'create-organizational-unit-kpi'}
@@ -177,10 +197,22 @@ function OrganizationalUnitKpiAddTargetModal(props) {
                     </div>
 
                     {/* Trọng số */}
-                    <div className={`form-group ${!errorOnWeight? "": "has-error"}`}>
+                    <div className={`form-group ${!errorOnWeight ? "" : "has-error"}`}>
                         <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.weight')}<span className="text-red">*</span></label>
-                        <input type="number" className="form-control" value={weight} onChange = {handleWeightChange}/>
-                        <ErrorLabel content={errorOnWeight}/>
+                        <input type="number" className="form-control" value={weight} onChange={handleWeightChange} />
+                        <ErrorLabel content={errorOnWeight} />
+                    </div>
+
+                    {/* Chỉ tiêu  */}
+                    <div className='form-group'>
+                        <label>Chỉ tiêu</label>
+                        <input type="number" min={0} className="form-control" value={target} onChange={handleChangeTarget} />
+                    </div>
+
+                    {/* Đơn vị  */}
+                    <div className='form-group'>
+                        <label>Đơn vị</label>
+                        <input type="text" className="form-control" value={unit} onChange={handleChangeUnit} />
                     </div>
                 </form>
             </DialogModal>

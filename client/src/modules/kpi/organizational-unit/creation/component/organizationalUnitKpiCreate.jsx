@@ -16,8 +16,14 @@ import { OrganizationalUnitKpiAddTargetModal } from './organizationalUnitKpiAddT
 import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateModal';
 import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEditTargetModal';
 
-
-
+const convertTargetKpi = (target, unit) => {
+    if (target) {
+        const number = new Intl.NumberFormat().format(target);
+        return `${number} (${unit})`
+    } else {
+        return 'Hoàn thành mục tiêu';
+    }
+}
 
 function OrganizationalUnitKpiCreate(props) {
     const { translate, dashboardEvaluationEmployeeKpiSet, createKpiUnit, user, department } = props;
@@ -613,6 +619,21 @@ function OrganizationalUnitKpiCreate(props) {
                                                 }
                                             </span>
                                         }
+                                        {/* 
+                                        {checkEdittingPermission(currentKPI && currentKPI.organizationalUnit && currentKPI.status === 1) &&
+                                            <span>
+                                                <span>
+                                                    <a className="btn btn-app" data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                                        <i className="fa fa-gears" style={{ fontSize: "16px" }} /> Khởi tạo KPI nhân viên tự động
+                                                    </a>
+                                                    <EmployeeCreateKpiAutoModal
+                                                        organizationalUnit={currentKPI.organizationalUnit}
+                                                        organizationalUnitId={currentKPI.organizationalUnit && currentKPI.organizationalUnit._id}
+                                                        month={month}
+                                                    />
+                                                </span>
+                                            </span>
+                                        } */}
                                     </div>
 
                                     <div className="">
@@ -644,6 +665,7 @@ function OrganizationalUnitKpiCreate(props) {
                                                     <th title="Tên mục tiêu">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
                                                     {currentKPI?.organizationalUnit?.parent && <th title="Mục tiêu cha">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.parents_target')}</th>}
                                                     <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
+                                                    <th title="Chỉ tiêu">Chỉ tiêu</th>
                                                     <th title="Trọng số" className="col-sort-number" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
                                                     <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>
                                                 </tr>
@@ -656,6 +678,7 @@ function OrganizationalUnitKpiCreate(props) {
                                                             <td title={item.name}>{item.name}</td>
                                                             {currentKPI?.organizationalUnit?.parent && <td title={item?.parent?.name}>{item?.parent?.name}</td>}
                                                             <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
+                                                            <td title={item.target}>{convertTargetKpi(item.target, item.unit)}</td>
                                                             <td title={item.weight}>{item.weight}</td>
                                                             <td>
                                                                 <a

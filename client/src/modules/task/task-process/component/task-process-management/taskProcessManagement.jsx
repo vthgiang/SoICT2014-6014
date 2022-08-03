@@ -1,4 +1,4 @@
-import React, { Component, useEffect,useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from '../../../../../config';
@@ -27,7 +27,7 @@ function TaskProcessManagement(props) {
 		tableId: TableId,
 	})
 	const { translate, taskProcess, department } = props
-	const { currentRow, currentRole, currentUser, tableId ,showmodalCreateTaskByProcess} = state
+	const { currentRow, currentRole, currentUser, tableId, showmodalCreateTaskByProcess } = state
 	let listTaskProcess = [];
 	if (taskProcess && taskProcess.listTaskProcess) {
 		listTaskProcess = taskProcess.listTaskProcess
@@ -65,7 +65,7 @@ function TaskProcessManagement(props) {
 	}
 
 	const deleteTaskProcess = async (taskProcessId) => {
-		
+
 		props.deleteTaskProcess(taskProcessId, state.pageNumber, state.noResultsPerPage, "");
 	}
 
@@ -78,6 +78,17 @@ function TaskProcessManagement(props) {
 			}
 		});
 		window.$(`#modal-view-process-task-list`).modal("show");
+	}
+
+	const viewTaskOutputs = async (item) => {
+		// console.log(item)
+		setState(state => {
+			return {
+				...state,
+				currentRow: item,
+			}
+		});
+		window.$(`#modal-view-task-output`).modal("show");
 	}
 
 	const showModalCreateTaskByProcess = async () => {
@@ -116,27 +127,27 @@ function TaskProcessManagement(props) {
 		}
 	}
 	const formatDate = (date, monthYear = false) => {
-        if (!date) return null;
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+		if (!date) return null;
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
 
-        if (month.length < 2) {
-            month = '0' + month;
-        }
+		if (month.length < 2) {
+			month = '0' + month;
+		}
 
-        if (day.length < 2) {
-            day = '0' + day;
-        }
+		if (day.length < 2) {
+			day = '0' + day;
+		}
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else {
-            return [day, month, year].join('-');
-        }
-    }
-	const handleUpdateData = ()=>{
+		if (monthYear === true) {
+			return [month, year].join('-');
+		} else {
+			return [day, month, year].join('-');
+		}
+	}
+	const handleUpdateData = () => {
 
 	}
 
@@ -155,25 +166,25 @@ function TaskProcessManagement(props) {
 	}
 
 	const handleFinished = async (item) => {
-        const { tasks, translate } = props;
+		const { tasks, translate } = props;
 		console.log(item);
 		let listTask = item.tasks
-		let length = 0, lengthProcess=0;
+		let length = 0, lengthProcess = 0;
 		let listProcess = item.processChilds
 		listTask.forEach(value => {
-			if (value.status!=="finished") length=length+1;
+			if (value.status !== "finished") length = length + 1;
 		});
 		listProcess.forEach(value => {
-			if (value.status!=="finished") lengthProcess=lengthProcess+1;
+			if (value.status !== "finished") lengthProcess = lengthProcess + 1;
 		});
-		let message = length!==0? `Còn ${length} công việc chưa hoàn thành`:""
-		message = lengthProcess==0? message : length==0?`Còn ${lengthProcess} quy trình chưa hoàn thành`: `${message} và ${lengthProcess} quy trình chưa hoàn thành`
-		if (message){
+		let message = length !== 0 ? `Còn ${length} công việc chưa hoàn thành` : ""
+		message = lengthProcess == 0 ? message : length == 0 ? `Còn ${lengthProcess} quy trình chưa hoàn thành` : `${message} và ${lengthProcess} quy trình chưa hoàn thành`
+		if (message) {
 			Swal.fire({
 				title: `${message}`,
 				icon: 'warning',
 				showCancelButton: true,
-				showConfirmButton:false,
+				showConfirmButton: false,
 				confirmButtonColor: '#3085d6',
 				cancelButtonColor: '#d33',
 				cancelButtonText: translate('general.close'),
@@ -194,28 +205,28 @@ function TaskProcessManagement(props) {
 				confirmButtonText: translate('general.yes'),
 			}).then(async (result) => {
 				if (result.value) {
-					await props.editProcessInfo(item._id,{finished:true,id:item._id});
+					await props.editProcessInfo(item._id, { finished: true, id: item._id });
 				}
 			})
 		}
-        
 
-    }
+
+	}
 
 	//console.log(listTaskProcess);
-	const convertStatus= (status)=>{
-		switch(status) {
+	const convertStatus = (status) => {
+		switch (status) {
 			case "inprocess":
-			  return parse('<p style="color:blue;">Đang thực hiện</p>')
+				return parse('<p style="color:blue;">Đang thực hiện</p>')
 			case "not_initialized":
-			  return parse('<p style="color:red;">Chưa khởi tạo</p>')
+				return parse('<p style="color:red;">Chưa khởi tạo</p>')
 			case "delayed":
 				return "Trễ hạn"
 			case "finished":
 				return parse('<p style="color:green;">Đã hoàn thành</p>')
 			default:
-			  // code block
-		  }
+			// code block
+		}
 	}
 	return (
 		<div className="box">
@@ -232,7 +243,7 @@ function TaskProcessManagement(props) {
 						processDescription={currentRow.processDescription}
 						infoTask={currentRow.taskList}
 						creator={currentRow.creator}
-						checkManager = {isManager(currentRow)}
+						checkManager={isManager(currentRow)}
 					/>
 				}
 				{
@@ -306,7 +317,7 @@ function TaskProcessManagement(props) {
 					<tbody className="task-table">
 						{
 							(listTaskProcess && listTaskProcess.length !== 0) ? listTaskProcess.map((item, key) => {
-								
+
 								return <tr key={key} >
 									<td>{item.processName}</td>
 									<td>{item.processDescription}</td>
@@ -318,7 +329,7 @@ function TaskProcessManagement(props) {
 										<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
 											<i className="material-icons">view_list</i>
 										</a>
-										{isManager(item) && item.status !=="finished" &&
+										{isManager(item) && item.status !== "finished" &&
 											<React.Fragment>
 												<a className="edit" onClick={() => { showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
 													<i className="material-icons">edit</i>
@@ -326,10 +337,10 @@ function TaskProcessManagement(props) {
 												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
 													<i className="material-icons"></i>
 												</a>
-												<a className="doneP" onClick={()=>{handleFinished(item)}}  title={translate('task_template.delete_this_task_template')}>
+												<a className="doneP" onClick={() => { handleFinished(item) }} title={translate('task_template.delete_this_task_template')}>
 													<i class="material-icons">check_circle</i>
 												</a>
-												
+
 											</React.Fragment>
 										}
 

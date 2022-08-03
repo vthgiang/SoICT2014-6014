@@ -10,10 +10,17 @@ const { auth, uploadFile } = require(`../../../../middleware`);
  * Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
  * Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc
  */
+
 router.get('/employee-kpi-sets', auth, EmployeeKpiSetController.getEmployeeKpiSet);
 
 // Khởi tạo KPI cá nhân
 router.post('/employee-kpi-sets', auth, EmployeeKpiSetController.createEmployeeKpiSet);
+
+// Khởi tạo KPI cá nhân tự động
+router.post('/employee-kpi-sets-auto', auth, EmployeeKpiSetController.createEmployeeKpiSetAuto);
+
+// Cân bằng các mục tiêu của KPI cá nhân tự động
+router.patch('/employee-kpis-balance', EmployeeKpiSetController.balanceEmployeeKpisAuto);
 
 // Chỉnh sửa thông tin chung của KPI cá nhân
 router.post('/employee-kpi-sets/:id/edit', auth, EmployeeKpiSetController.editEmployeeKpiSet);

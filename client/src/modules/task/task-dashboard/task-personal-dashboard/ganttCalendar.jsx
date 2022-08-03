@@ -19,7 +19,7 @@ function GanttCalendar(props) {
         taskStatus: ["inprocess"],
         dataCalendar: {}
     })
-    const { translate, organizationUnitTasks, unit, tasks } = props
+    const { translate, organizationUnitTasks, unit, tasks, hideFilterStatus = false } = props
     const { taskDashboardCharts } = tasks
     const { dataCalendar, currentZoom } = state
 
@@ -416,7 +416,7 @@ function GanttCalendar(props) {
     return (
         <React.Fragment>
             <div className="gantt qlcv" >
-                <section className="form-inline" style={{ textAlign: "right", marginBottom: "10px" }}>
+                { hideFilterStatus ? null : <section className="form-inline" style={{ textAlign: "right", marginBottom: "10px" }}>
                     {/* Chọn trạng thái công việc */}
                     <div className="form-group">
                         <label style={{ minWidth: "150px" }}>{translate('task.task_management.task_status')}</label>
@@ -439,6 +439,7 @@ function GanttCalendar(props) {
                         <button className="btn btn-success" onClick={handleSearchData}>{translate('task.task_management.filter')}</button>
                     </div>
                 </section>
+                }
 
                 {<ModalDetailTask action={'Employee'} task={task}
                 />}

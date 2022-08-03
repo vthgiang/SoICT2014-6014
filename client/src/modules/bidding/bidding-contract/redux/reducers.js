@@ -38,33 +38,39 @@ export function biddingContract(state = initState, action) {
                 };
             }
         case BiddingContractConstant.CREATE_BIDDING_CONTRACT_SUCCESS:
+            state.listBiddingContract = [action.payload, ...state.listBiddingContract];
             return {
                 ...state,
                 isLoading: false,
-                listBiddingContract: action.payload?.listBiddingContract !== undefined ? action.payload?.listBiddingContract : [],
-                totalList: action.payload?.totalList,
             };
         case BiddingContractConstant.DELETE_BIDDING_CONTRACT_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listBiddingContract: action.payload?.listBiddingContract !== undefined ? action.payload?.listBiddingContract : [],
-                totalList: action.payload?.totalList,
             };
         case BiddingContractConstant.CREATE_PROJECT_BY_BIDDING_CONTRACT_SUCCESS:
+            state.listBiddingContract = state.listBiddingContract.map(x => {
+                if ((String(x._id) === String(action.payload?.newContract?._id))) {
+                    return action.payload?.newContract
+                }
+                return x
+            });
             return {
                 ...state,
                 isLoading: false,
-                listBiddingContract: action.payload !== undefined ? action.payload : [],
-                listBiddingContractStatistic: action.payload?.listBiddingContract !== undefined ? action.payload?.listBiddingContract : [],
-                totalList: action.payload?.totalList,
+                listBiddingContractStatistic: action.payload?.contracts?.listBiddingContract ? action.payload?.contracts?.listBiddingContract : [],
+                // totalList: action.payload?.contracts?.totalList,
             };
         case BiddingContractConstant.UPDATE_BIDDING_CONTRACT_SUCCESS:
+            state.listBiddingContract = state.listBiddingContract.map(x => {
+                if ((String(x._id) === String(action.payload?._id))) {
+                    return action.payload
+                }
+                return x
+            });
             return {
                 ...state,
                 isLoading: false,
-                listBiddingContract: action.payload?.listBiddingContract !== undefined ? action.payload?.listBiddingContract : [],
-                totalList: action.payload?.totalList,
             };
         case BiddingContractConstant.GET_BIDDING_CONTRACT_FAILURE:
         case BiddingContractConstant.CREATE_BIDDING_CONTRACT_FAILURE:

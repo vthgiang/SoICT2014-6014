@@ -113,21 +113,109 @@ const BiddingPackageSchema = new Schema(
                     "months",
                 ],
             },
-            // Danh sách các tag cv và nhân sự phù hợp từng tag
-            tags: [{
-                // tên của tag
-                name: {
+            // ghi lại lịch sử từng lần phân công - chỉnh sửa phân công nhân sự
+            logs: [{
+                // phiên bản cũ
+                oldVersion: {
+                    isProposal: {
+                        type: Boolean,
+                        default: false
+                    },
+                    tasks: [{
+                        // mã công việc
+                        code: {
+                            type: String,
+                        },
+                        // tên công việc
+                        taskName: {
+                            type: String
+                        },
+                        // mô tả công việc
+                        taskDescription: {
+                            type: String
+                        },
+                        // nhân sự trực tiếp
+                        directEmployees: [{
+                            type: Schema.Types.ObjectId,
+                            ref: "Employee",
+                        }],
+                        // nhân sự dự phòng
+                        backupEmployees: [{
+                            type: Schema.Types.ObjectId,
+                            ref: "Employee",
+                        }],
+                    }]
+                },
+                // phiên bản mới
+                newVersion: {
+                    isProposal: {
+                        type: Boolean,
+                        default: false
+                    },
+                    tasks: [{
+                        // mã công việc
+                        code: {
+                            type: String,
+                        },
+                        // tên công việc
+                        taskName: {
+                            type: String
+                        },
+                        // mô tả công việc
+                        taskDescription: {
+                            type: String
+                        },
+                        // nhân sự trực tiếp
+                        directEmployees: [{
+                            type: Schema.Types.ObjectId,
+                            ref: "Employee",
+                        }],
+                        // nhân sự dự phòng
+                        backupEmployees: [{
+                            type: Schema.Types.ObjectId,
+                            ref: "Employee",
+                        }],
+                    }]
+                },
+                createdBy: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+                type: {
+                    type: String,
+                    default: "create",
+                    enum: [
+                        "create",
+                        "edit",
+                    ],
+                },
+                note:{
                     type: String,
                 },
-                // mô tả tag
-                description: {
-                    type: String
+                isSatisfied: {
+                    type: Boolean,
+                    default: true,
                 },
-                employees: [{
-                    type: Schema.Types.ObjectId,
-                    ref: "Employee",
-                }]
+                createdAt: {
+                    type: Date,
+                    default: Date.now(),
+                },
             }],
+            // Danh sách các tag cv và nhân sự phù hợp từng tag
+            // tags: [{
+            //     // tên của tag
+            //     name: {
+            //         type: String,
+            //     },
+            //     // mô tả tag
+            //     description: {
+            //         type: String
+            //     },
+            //     employees: [{
+            //         type: Schema.Types.ObjectId,
+            //         ref: "Employee",
+            //     }]
+            // }],
             // Danh sách các công việc trong hồ sơ đề xuất
             tasks: [{
                 // mã công việc

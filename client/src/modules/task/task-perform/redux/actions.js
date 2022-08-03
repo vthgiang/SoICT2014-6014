@@ -77,6 +77,17 @@ export const performTaskAction = {
 
     evaluateTaskByResponsibleEmployeesProject,
     evaluateTaskByAccountableEmployeesProject,
+
+    createTaskOutputs,
+    editTaskOutputs,
+    getTaskOutputs,
+    approveTaskOutputs,
+    editSubmissionResults,
+    deleteSubmissionResults,
+    deleteFileOfTaskOutput,
+
+    createCommentOfTaskOutput,
+    editCommentOfTaskOutput
 };
 
 
@@ -1259,5 +1270,115 @@ function evaluateTaskByAccountableEmployeesProject(data, taskId) {
             .catch(error => {
                 dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE, error });
             });
+    };
+}
+
+function createTaskOutputs(taskId, taskOutputId, newAction) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.CREATE_TASK_OUTPUT_REQUEST });
+
+        performTaskService.createTaskOutputs(taskId, taskOutputId, newAction)
+            .then(
+                payload => dispatch({ type: performTaskConstants.CREATE_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.CREATE_TASK_OUTPUT_FAILURE, error })
+            );
+    };
+}
+
+function editTaskOutputs(taskId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_TASK_OUTPUT_REQUEST });
+
+        performTaskService.editTaskOutputs(taskId, data)
+            .then(
+                payload => dispatch({ type: performTaskConstants.EDIT_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.EDIT_TASK_OUTPUT_FAILURE, error })
+            );
+    };
+}
+
+
+function getTaskOutputs(taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_REQUEST });
+
+        performTaskService.getTaskOutputs(taskId)
+            .then(
+                payload => dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_FAILURE, error })
+            );
+    };
+}
+
+function approveTaskOutputs(taskId, taskOutputId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.APPROVE_TASK_OUTPUTS_REQUEST });
+
+        performTaskService.approveTaskOutputs(taskId, taskOutputId, data)
+            .then(
+                payload => dispatch({ type: performTaskConstants.APPROVE_TASK_OUTPUTS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.APPROVE_TASK_OUTPUTS_FAILURE, error })
+            );
+    };
+}
+
+function editSubmissionResults(taskId, taskOutputId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_SUBMISSION_RESULTS_REQUEST });
+
+        performTaskService.editSubmissionResults(taskId, taskOutputId, data)
+            .then(
+                payload => dispatch({ type: performTaskConstants.EDIT_SUBMISSION_RESULTS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.EDIT_SUBMISSION_RESULTS_FAILURE, error })
+            );
+    };
+}
+
+function deleteSubmissionResults(taskId, taskOutputId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_REQUEST });
+
+        performTaskService.deleteSubmissionResults(taskId, taskOutputId)
+            .then(
+                payload => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_FAILURE, error })
+            );
+    };
+}
+
+
+function deleteFileOfTaskOutput(taskId, taskOutputId, fileId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_REQUEST });
+
+        performTaskService.deleteFileOfTaskOutput(taskId, taskOutputId, fileId)
+            .then(
+                payload => dispatch({ type: performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_FAILURE, error })
+            );
+    };
+}
+
+function createCommentOfTaskOutput(taskId, taskOutputId, newComment) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_REQUEST });
+
+        performTaskService.createCommentOfTaskOutput(taskId, taskOutputId, newComment)
+            .then(
+                payload => dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_FAILURE, error })
+            );
+    };
+}
+
+function editCommentOfTaskOutput(taskId, taskOutputId, commentId, newComment) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_REQUEST });
+
+        performTaskService.editCommentOfTaskOutput(taskId, taskOutputId, commentId, newComment)
+            .then(
+                payload => dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_FAILURE, error })
+            );
     };
 }

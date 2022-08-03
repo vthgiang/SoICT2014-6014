@@ -4,6 +4,7 @@ export function tasks(state = {
     isLoading: false,
     allTimeSheetLogs: [],
     userTimeSheetLogs: [],
+    proposalPersonnel: [],
     totalCount: 0,
     totalDocs: 0,
     tasks: [],
@@ -167,6 +168,24 @@ export function tasks(state = {
                 ...state,
                 error: action.error,
                 loadingCreator: false,
+                isLoading: false
+            };
+        case taskManagementConstants.GET_TASK_HAS_EVALUATION_REQUEST:
+            return {
+                ...state,
+                evaluatedTask: null,
+                isLoading: true,
+            };
+        case taskManagementConstants.GET_TASK_HAS_EVALUATION_SUCCESS:
+            return {
+                ...state,
+                evaluatedTask: action.payload,
+                isLoading: false
+            };
+        case taskManagementConstants.GET_TASK_HAS_EVALUATION_FAILURE:
+            return {
+                ...state,
+                error: action.error,
                 isLoading: false
             };
         case taskManagementConstants.ADDNEW_TASK_REQUEST:
@@ -767,6 +786,25 @@ export function tasks(state = {
                 ...state,
                 error: action.error,
                 isLoading: false
+            }
+        case taskManagementConstants.PROPOSAL_PERSONNEL_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+            };
+
+        case taskManagementConstants.PROPOSAL_PERSONNEL_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                proposalPersonnel: action.payload,
+            }
+
+        case taskManagementConstants.PROPOSAL_PERSONNEL_FAILURE:
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false,
             }
 
         default:

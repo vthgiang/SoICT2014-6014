@@ -48,13 +48,13 @@ exports.copyKPI = async (portal, id, data) => {
         creator: creator,
         "$and": [
             {
-                "$expr": { 
-                    "$eq": [ { "$month": "$date" }, monthSearch.getMonth() + 1 ]
+                "$expr": {
+                    "$eq": [{ "$month": "$date" }, monthSearch.getMonth() + 1]
                 }
             },
             {
-                "$expr": { 
-                    "$eq": [ { "$year": "$date" }, monthSearch.getFullYear() ]
+                "$expr": {
+                    "$eq": [{ "$year": "$date" }, monthSearch.getFullYear()]
                 }
             }
         ]
@@ -68,17 +68,17 @@ exports.copyKPI = async (portal, id, data) => {
         oldEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(id)
             .populate("organizationalUnit")
-            .populate({path: "creator", select :"_id name email avatar"})
+            .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate({ path: "logs.creator", select: "_id name email avatar" })
-           
+
         parentUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .findOne({
                 organizationalUnit: mongoose.Types.ObjectId(oldEmployeeKpiSet?.organizationalUnit?._id),
                 date: { $gte: monthSearch, $lt: nextMonthSearch }
             })
             .populate({ path: "kpis" });
-        
+
         newEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
                 organizationalUnit: oldEmployeeKpiSet?.organizationalUnit?._id,
@@ -93,7 +93,7 @@ exports.copyKPI = async (portal, id, data) => {
                 return item?.name === oldEmployeeKpiSet.kpis[i]?.parent?.name
             })
 
-            let parent = parentKpi?.[0]?._id 
+            let parent = parentKpi?.[0]?._id
 
             let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
                 .create({
@@ -112,8 +112,8 @@ exports.copyKPI = async (portal, id, data) => {
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(newEmployeeKpiSet)
             .populate("organizationalUnit")
-            .populate({path: "approver", select: "_id name email avatar"})
-            .populate({path: "creator", select :"_id name email avatar"})
+            .populate({ path: "approver", select: "_id name email avatar" })
+            .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate({ path: "logs.creator", select: "_id name email avatar" })
 
@@ -160,12 +160,12 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                                 $expr: {
                                     $eq: [{ $year: '$date' }, currentYear],
                                     $eq: [{ $month: '$date' }, currentMonth],
-                                
+
                                 }
                             },
                             { organizationalUnit: organizationalUnit._id }
                         ]
-                        
+
                     }
                 },
 
@@ -272,7 +272,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
     let beginOfCurrentMonth = new Date(query.month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth() + 1);
-
+    console.log(275, beginOfCurrentMonth, endOfCurrentMonth)
     let organizationalUnit, employeeKpiSets;
     if (!query.organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
@@ -468,7 +468,7 @@ exports.getChildTargetByParentId = async (portal, data) => {
                         kpis: kpiunits[i].target[j]._id
                     })
                     .populate("organizationalUnit")
-                    .populate({path: "creator", select :"_id name email avatar"})
+                    .populate({ path: "creator", select: "_id name email avatar" })
                     .select("organizationalUnit creator");
                 target = {
                     organizationalUnit: employeekpiset.organizationalUnit,
@@ -515,7 +515,7 @@ exports.createEmployeeKpiSetLogs = async (portal, data) => {
     let kpiLogs = await this.getEmployeeKpiSetLogs(portal, employeeKpiSetId);
 
     return kpiLogs;
-} 
+}
 
 exports.getEmployeeKpiSetLogs = async (portal, employeeKpiSetId) => {
     let kpiLogs = await EmployeeKpiSet(connect(DB_CONNECTION, portal))

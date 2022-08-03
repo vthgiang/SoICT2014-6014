@@ -206,7 +206,7 @@ exports.createProjectCpmByContract = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['create_project_by_contract_success'],
-            content: tp.contracts
+            content: tp
         });
     } catch (error) {
         console.log('create_project_by_contract_fail', error);

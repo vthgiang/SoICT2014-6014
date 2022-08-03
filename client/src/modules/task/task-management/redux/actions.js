@@ -9,6 +9,7 @@ export const taskManagementActions = {
     getPaginateTasksByUser,
     getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
+    getAllTasksThatHasEvaluation,
 
     addTask,
     editTask,
@@ -30,7 +31,8 @@ export const taskManagementActions = {
 
     importTasks,
 
-    getOrganizationTaskDashboardChart
+    getOrganizationTaskDashboardChart,
+    proposalPersonnel,
 };
 
 
@@ -207,6 +209,34 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
             .catch(error => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+/**
+ * lấy công việc có đánh giá của đơn vị
+ * @param {*} unit đơn vị
+ * @param {*} month tháng
+ */
+
+function getAllTasksThatHasEvaluation(unit, startDate, endDate) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GET_TASK_HAS_EVALUATION_REQUEST
+        });
+
+        taskManagementService.getAllTasksThatHasEvaluation(unit, startDate, endDate)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_HAS_EVALUATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_HAS_EVALUATION_FAILURE,
                     error
                 })
             })
@@ -647,6 +677,27 @@ function getOrganizationTaskDashboardChart(data) {
                 dispatch({
                     type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_FAILURE,
                     error
+                });
+            })
+    }
+}
+function proposalPersonnel(data) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.PROPOSAL_PERSONNEL_REQUEST
+        });
+
+        taskManagementService.proposalPersonnel(data)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.PROPOSAL_PERSONNEL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: taskManagementConstants.PROPOSAL_PERSONNEL_FAILURE,
+                    error: err?.response?.data?.content
                 });
             })
     }

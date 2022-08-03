@@ -19,12 +19,14 @@ const BiddingPriceAndProjectBudgetDashboard = (props) => {
         projectColumns = ["Ngân sách dự án"];
         categories = [];
 
-        const listContract = biddingContract.listBiddingContractStatistic.filter(x => x.project !== null && x.biddingPackage !== null);
+        const listContract = biddingContract.listBiddingContractStatistic.filter(x => x.project !== null && x.biddingPackage !== null && x.biddingPackage?.status === 3);
 
         for (let ct of listContract) {
-            categories.push(`${ct.biddingPackage?.name ?? ""}`);
-            bidColumns.push(ct.biddingPackage?.price ?? 0);
-            projectColumns.push(ct.project?.budget ?? 0);
+            if (ct.project?.budget) {
+                categories.push(`${ct.biddingPackage?.name ?? ""}`);
+                bidColumns.push(ct.biddingPackage?.price ?? 0);
+                projectColumns.push(Math.round(ct.project?.budget) ?? 0);
+            }
         }
 
         return {

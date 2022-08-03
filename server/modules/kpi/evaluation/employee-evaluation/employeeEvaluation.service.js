@@ -3,6 +3,8 @@ const { EmployeeKpiSet, OrganizationalUnit, Task, EmployeeKpi, User } = Models;
 const mongoose = require("mongoose");
 const { connect } = require(`../../../../helpers/dbHelper`);
 const NotificationServices = require(`../../../notification/notification.service`);
+const EmployeeService = require('../../../human-resource/profile/profile.service')
+const UserService = require('../../../super-admin/user/user.service');
 
 /**
  * Lấy tất cả tập KPI hiện tại
@@ -65,7 +67,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
     if (status !== -1 && status && status !== 5 || status === 0) {
         keySearch = {
             ...keySearch,
-            status:  status
+            status: status
         }
     }
 
@@ -145,11 +147,11 @@ exports.getKpisByMonth = async (portal, data) => {
     nextDate.setMonth(nextDate.getMonth() + 1);
 
     let employeeKpiSets = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findOne({ 
-            creator: userId, 
+        .findOne({
+            creator: userId,
             date: {
                 $gte: date, $lt: nextDate
-            } 
+            }
         })
         .populate("organizationalUnit")
         .populate({ path: "creator", select: "_id name email avatar" })
@@ -307,10 +309,10 @@ exports.editKpi = async (portal, id, data) => {
     target = target && await target.populate("parent").execPopulate();
 
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findOne({ kpis: { $in: [mongoose.Types.ObjectId(id)] }})
+        .findOne({ kpis: { $in: [mongoose.Types.ObjectId(id)] } })
         .populate("organizationalUnit ")
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "logs.creator", select: "_id name email avatar" })
 
     return {
@@ -337,7 +339,7 @@ exports.getKpisByKpiSetId = async (portal, id) => {
         ])
         .populate({ path: "logs.creator", select: "_id name email avatar" })
 
-        for (let i = 0; i < employeeKpiSet?.kpis?.length; i++) {
+    for (let i = 0; i < employeeKpiSet?.kpis?.length; i++) {
         let data = {
             id: employeeKpiSet?.kpis?.[i]?._id,
             employeeId: employeeKpiSet?.creator?._id,
@@ -542,15 +544,15 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
             { new: true }
         )
         .populate("organizationalUnit")
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "logs.creator", select: "_id name email avatar" })
 
     return { task, result, updateKpiSet };
 }
 
 // Tính điểm KPI từng tuần
-function setPointForWeek (tasks, title, startDate, endDate) {
+function setPointForWeek(tasks, title, startDate, endDate) {
     startDate = new Date(startDate)
     endDate = new Date(endDate)
 
@@ -762,7 +764,7 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
     let approvedPointSet = 0;
     let totalWeight = 0;
     let weeklyEvaluations = {}
-    
+
     for (let i in kpis) {
         let obj = {
             id: kpis[i].id,
@@ -794,7 +796,7 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
                 },
                 { new: true }
             );
-        
+
         // Đánh giá KPI tháng
         let automaticPoint = 0;
         let approvedPoint = 0;
@@ -950,4 +952,165 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
     return updateKpiSet;
 }
 
+exports.getEmployeeKpiPerformance = async (portal, userId, formula) => {
+    // Chấm ĐIỂM PROFILE nhân viên. Điểm max = 120
+    // Tiêu chí chấm điểm profile
+    const statusPoint = {
+        active: 10,
+        probationary: 10,
+        leave: -100,
+        maternity_leave: -100,
+        unpaid_leave: -100,
+        sick_leave: -100
+    }
 
+    const professionalSkillPoint = {
+        unavailable: 5,
+        intermediate_degree: 5,
+        colleges: 10,
+        university: 10,
+        bachelor: 10,
+        engineer: 10,
+        master_degree: 15,
+        phd: 15
+    }
+
+    const degreePoint = {
+        unknown: 0,
+        no_rating: 0,
+        ordinary: 10,
+        average_good: 10,
+        good: 15,
+        very_good: 15,
+        excellent: 15
+    }
+
+    let profilePoint = 0;
+    let resultPoint = 0;
+    let progressPoint = 0;
+
+    // Lấy thông tin profile nhân viên
+
+    if (!portal) portal = 'vnist';
+    let user = await UserService.getUser(portal, userId);
+    let inforEmployee = await EmployeeService.getEmployeeProfile(portal, user.email);
+    const profile = inforEmployee.employees[0];
+
+    // trường hợp không tìm thấy employee 
+    if (!profile) {
+        return {
+            completeRatio: 80 * 80 * 80 / 10000,
+            performance: {
+                employeeId: userId,
+                name: user.name,
+                profilePoint: 80,
+                resultPoint: 80,
+                progressPoint: 80
+            }
+        };
+    }
+
+    // chấm ĐIỂM PROFILE
+
+    if (profile.status) {
+        profilePoint += statusPoint[profile.status];
+    }
+    if (profile.professionalSkill) {
+        profilePoint += professionalSkillPoint[profile.professionalSkill];
+    }
+    if (profile?.degrees.length > 0) {
+        let point = 0;
+        profile.degrees.map(x => {
+            point += degreePoint[x.degreeType];
+        })
+        if (point > 15) {
+            point = 20;
+        };
+        profilePoint += point;
+    }
+    if (profile?.certificates) {
+        let point = 20 * profile.certificates.length;
+        if (point > 20) {
+            point = 25;
+        };
+        profilePoint += point;
+    }
+    if (profile?.experiences) {
+        let point = 20 * profile.experiences.length;
+        if (point > 20) {
+            point = 25;
+        };
+        profilePoint += point;
+    }
+    if (profile?.workProcess) {
+        let point = 20 * profile.workProcess.length;
+        if (point > 20) {
+            point = 25;
+        };
+        profilePoint += point;
+    }
+
+    // Chấm điểm ĐIỂM KẾT QUẢ và ĐIỂM QUÁ TRÌNH
+    let numOfKpis = 0;
+    let now = new Date();
+    let before = new Date();
+    before.setMonth(now.getMonth() - 3);
+
+    let kpiRecently = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .find({
+            creator: userId,
+            date: {
+                $gte: before, $lt: now
+            }
+        })
+        .populate("kpis");
+
+    if (kpiRecently?.length > 0) {
+        kpiRecently.map(x => {
+            // Chấm điểm ĐIỂM KẾT QUẢ 
+            // Nếu đã có đủ điểm đánh giá thì điểm kết quả bằng trung bình cộng, nếu chưa có thì mặc định là 80
+            if (x.automaticPoint && x.employeePoint && x.approvedPoint) {
+                resultPoint += (x.automaticPoint + x.employeePoint + x.approvedPoint) / 3;
+            } else {
+                resultPoint += 80;
+            }
+
+            // Chấm ĐIỂM QUÁ TRÌNH
+            if (x.kpis.length === 0) {
+                progressPoint = 80;
+                numOfKpis++;
+            } else {
+                x.kpis.map(item => {
+                    numOfKpis++;
+                    if (item.automaticPoint && item.employeePoint && item.approvedPoint) {
+                        progressPoint += (item.automaticPoint + item.employeePoint + item.approvedPoint) / 3;
+                    } else {
+                        progressPoint += 80;
+                    }
+                })
+            }
+        })
+        progressPoint /= numOfKpis;
+        resultPoint /= kpiRecently.length;
+    } else {
+        //Nếu tháng trước đó chưa có KPI thì mặc định ĐIỂM KẾT QUẢ và ĐIỂM QUÁ TRÌNH là 80
+        resultPoint = 80;
+        progressPoint = 80;
+    }
+
+    formula = formula.replace(/employeePoint/g, `${profilePoint}`);
+    formula = formula.replace(/resultPoint/g, `${resultPoint}`);
+    formula = formula.replace(/progressPoint/g, `${progressPoint}`);
+    const completeRatio = Math.round(eval(formula));
+
+    return {
+        completeRatio: completeRatio,
+        performance: {
+            employeeId: userId,
+            name: user.name,
+            profilePoint: Math.round(profilePoint),
+            resultPoint: Math.round(resultPoint),
+            progressPoint: Math.round(progressPoint)
+        }
+    };
+}

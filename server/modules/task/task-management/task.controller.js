@@ -60,6 +60,9 @@ exports.getTasks = async (req, res) => {
     else if (req.query.type === "project") {
         getTasksByProject(req, res)
     }
+    else if (req.query.type === "task_has_evaluation") {
+        getAllTasksThatHasEvaluation(req, res)
+    }
 }
 
 
@@ -907,6 +910,30 @@ getTasksByUser = async (req, res) => {
     }
 }
 
+/**
+ * lấy các công việc đã được đánh giá trong tháng
+ */
+getAllTasksThatHasEvaluation = async (req, res) => {
+    try {
+        const tasks = await TaskManagementService.getAllTasksThatHasEvaluation(req.portal, req.query);
+
+        await Logger.info(req.user.email, 'get_task_that_has_evaluation', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_that_has_evaluation_success'],
+            content: tasks
+        });
+    }
+    catch (error) {
+        await Logger.error(req.user.email, 'get_task_that_has_evaluation', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_that_has_evaluation_fail'],
+            content: error
+        });
+    }
+}
+
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
@@ -1169,5 +1196,25 @@ exports.getOrganizationTaskDashboardChartData = async (req, res) => {
             messages: Array.isArray(error) ? error : ['get_task_dashboard_data_fail'],
             content: error
         })
+    }
+}
+
+exports.proposalPersonnel = async (req, res) => {
+    try {
+        var task = await TaskManagementService.proposalPersonnel(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, `Proposal Personnel`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['proposal_personnel_success'],
+            content: task
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `Propasal Personnel`, req.portal);
+        console.log(error)
+        res.status(400).json({
+            success: false,
+            messages: ['proposal_personnel_fail'],
+            content: error
+        });
     }
 }

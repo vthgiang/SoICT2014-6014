@@ -6,122 +6,122 @@ const ROLE_TYPES = {
 
 const ROOT_ROLES = {
   SYSTEM_ADMIN: {
-      code: '@sys_ad',
-      name: 'System Admin',
-      description: 'Quản trị viên của toàn hệ thống'
+    code: '@sys_ad',
+    name: 'System Admin',
+    description: 'Quản trị viên của toàn hệ thống'
   },
 
   SUPER_ADMIN: {
-      code: '@super_ad',
-      name: 'Super Admin',
-      description: 'Quản trị cấp cao nhất của một công ty'
+    code: '@super_ad',
+    name: 'Super Admin',
+    description: 'Quản trị cấp cao nhất của một công ty'
   },
 
   ADMIN: {
-      code: '@ad',
-      name: 'Admin',
-      description: 'Quản trị viên của một công ty'
+    code: '@ad',
+    name: 'Admin',
+    description: 'Quản trị viên của một công ty'
   },
 
   MANAGER: {
-      code: '@manager',
-      name: 'Manager',
-      description: 'Trưởng đơn vị'
+    code: '@manager',
+    name: 'Manager',
+    description: 'Trưởng đơn vị'
   },
 
   DEPUTY_MANAGER: {
-      code: '@deputy_manager',
-      name: 'Deputy Manager',
-      description: 'Phó đơn vị'
+    code: '@deputy_manager',
+    name: 'Deputy Manager',
+    description: 'Phó đơn vị'
   },
 
   EMPLOYEE: {
-      code: '@employee',
-      name: 'Employee',
-      description: 'Nhân viên đơn vị'
+    code: '@employee',
+    name: 'Employee',
+    description: 'Nhân viên đơn vị'
   },
 }
 
 const LINK_CATEGORY = {
   COMMON: {
-      name: 'common',
-      description: 'Các trang web dùng chung'
+    name: 'common',
+    description: 'Các trang web dùng chung'
   },
   RBAC: {
-      name: 'rbac-management',
-      description: 'Quản lý phân quyền rbac'
+    name: 'rbac-management',
+    description: 'Quản lý phân quyền rbac'
   },
   KPI: {
-      name: 'kpi-management',
-      description: 'Quản lý kpi'
+    name: 'kpi-management',
+    description: 'Quản lý kpi'
   },
   TASK: {
-      name: 'task-management',
-      description: 'Quản lý công việc'
+    name: 'task-management',
+    description: 'Quản lý công việc'
   },
   HUMAN_RESOURCE: {
-      name: 'employee-management',
-      description: 'Quản lý nhân sự'
+    name: 'employee-management',
+    description: 'Quản lý nhân sự'
   },
   EDUCATION: {
-      name: 'education-management',
-      description: 'Quản lý đào tạo'
+    name: 'education-management',
+    description: 'Quản lý đào tạo'
   },
   DOCUMENT: {
-      name: 'document-management',
-      description: 'Quản lý tài liệu, biểu mẫu'
+    name: 'document-management',
+    description: 'Quản lý tài liệu, biểu mẫu'
   },
   PROCESS: {
-      name: 'process-management',
-      description: 'Quản lý quy trình'
+    name: 'process-management',
+    description: 'Quản lý quy trình'
   },
   ASSET: {
-      name: 'asset-management',
-      description: 'Quản lý tài sản'
+    name: 'asset-management',
+    description: 'Quản lý tài sản'
   },
   SUPPIES: {
-      name: 'supplies-management',
-      description: 'Quản lý vật tư tiêu hao'
+    name: 'supplies-management',
+    description: 'Quản lý vật tư tiêu hao'
   },
   REPORT: {
-      name: 'report-management',
-      description: 'Quản lý báo cáo'
+    name: 'report-management',
+    description: 'Quản lý báo cáo'
   },
   WAREHOUSE: {
-      name: 'stock-management',
-      description: 'Quản lý kho'
+    name: 'stock-management',
+    description: 'Quản lý kho'
   },
   ORDER: {
-      name: "orders-management",
-      description: "Quản lý đơn hàng"
+    name: "orders-management",
+    description: "Quản lý đơn hàng"
   },
   CRM: {
-      name: 'customer-management',
-      description: 'Quản lý khách hàng'
+    name: 'customer-management',
+    description: 'Quản lý khách hàng'
   },
   PLAN: {
-      name: "plans-management",
-      description: "Quản lý kế hoạch sản xuất"
+    name: "plans-management",
+    description: "Quản lý kế hoạch sản xuất"
   },
   EXAMPLE: {
-      name: "examples-management",
-      description: "Quản lý ví dụ"
+    name: "examples-management",
+    description: "Quản lý ví dụ"
   },
   MANUFACTURING: {
-      name: "manufacturing-management",
-      description: "Quản lý sản xuất"
+    name: "manufacturing-management",
+    description: "Quản lý sản xuất"
   },
   TRANSPORT: {
-      name: "transport-management",
-      description: "Quản lý vận chuyển"
+    name: "transport-management",
+    description: "Quản lý vận chuyển"
   },
   PROJECT: {
-      name: "projects-manager",
-      description: "Quản lý dự án",
+    name: "projects-manager",
+    description: "Quản lý dự án",
   },
   USERGUIDE: {
-      name: "user_guide",
-      description: "Hướng dẫn sử dụng",
+    name: "user_guide",
+    description: "Hướng dẫn sử dụng",
   },
   BIDDING: {
     name: "bidding-manager",
@@ -133,118 +133,118 @@ const COMPONENTS = [{
   name: 'create-notification',
   description: 'Tạo thông báo mới',
   roles: [
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
   ],
   links: [
-      '/notifications'
+    '/notifications'
   ]
 },
 {
   name: 'create-task-template-button',
   description: 'Button thêm mới mẫu công việc',
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   links: [
-      '/task-template'
+    '/task-template'
   ]
 },
 {
   name: 'refresh-kpi-unit-in-dashboard',
   description: 'Button làm mới biểu đồ thống kê KPI giữa các đơn vị',
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   links: [
-      '/kpi-units/dashboard',
-      '/dashboard-all-unit'
+    '/kpi-units/dashboard',
+    '/dashboard-all-unit'
   ]
 },
 {
   name: 'create-task-process-button',
   description: 'Button thêm mới mẫu quy trình công việc',
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   links: [
-      '/task-process-template'
+    '/task-process-template'
   ]
 }, {
   name: 'create-asset',
   description: 'Button thêm mới tài sản',
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   links: [
-      '/employee-manage-info-asset',
-      '/manage-info-asset'
+    '/employee-manage-info-asset',
+    '/manage-info-asset'
   ],
 }, {
   name: 'select-manufacturing-works',
   description: 'Select Box chọn nhà máy sản xuất',
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   links: [
-      '/manage-work-schedule',
+    '/manage-work-schedule',
   ],
 }, {
   name: 'create-manufacturing-plan',
   description: 'Button tạo kế hoạch sản xuất',
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
   ],
   links: [
-      '/manage-manufacturing-plan',
+    '/manage-manufacturing-plan',
   ],
 },
 {
   name: 'create-stock-button',
   description: 'Button thêm mới kho',
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   links: [
-      '/stock-management'
+    '/stock-management'
   ]
 },
 {
   name: 'create-quote',
   description: 'Button thêm mới kho',
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   links: [
-      '/manage-quote'
+    '/manage-quote'
   ]
 },
 {
   name: 'create-sales-order',
   description: 'Button thêm mới kho',
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   links: [
-      '/manage-sales-order'
+    '/manage-sales-order'
   ]
 },
 {
   name: 'view-sales-order-dashboard',
   description: 'Button thêm mới kho',
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   links: [
-      '/manage-sales-order-dashboard'
+    '/manage-sales-order-dashboard'
   ]
 }, {
   name: 'view-pie-chart-purchasing',
@@ -252,28 +252,28 @@ const COMPONENTS = [{
   roles: [
   ],
   links: [
-      '/manufacturing-dashboard'
+    '/manufacturing-dashboard'
   ]
 }, {
   name: 'create-transport-plan',
   description: 'Tạo kế hoạch vận chuyển',
   roles: [],
   links: [
-      '/manage-transport-plan'
+    '/manage-transport-plan'
   ]
 }, {
   name: 'button-import-task',
   description: 'Button import công việc',
   roles: [ROOT_ROLES.ADMIN.name],
   links: [
-      '/task-management'
+    '/task-management'
   ]
 }];
 
 const getComponentsInLink = (link) => {
   return COMPONENTS
-      .filter(component => component.links.indexOf(link) !== -1)
-      .map(component => component.name);
+    .filter(component => component.links.indexOf(link) !== -1)
+    .map(component => component.name);
 }
 
 const LINKS = [{
@@ -281,11 +281,11 @@ const LINKS = [{
   description: `Trang chủ công ty`,
   category: LINK_CATEGORY.COMMON.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name
   ],
   components: getComponentsInLink('/home')
 },
@@ -294,11 +294,11 @@ const LINKS = [{
   description: 'Thông báo',
   category: LINK_CATEGORY.COMMON.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/notifications')
 },
@@ -307,8 +307,8 @@ const LINKS = [{
   description: 'Cấu hình hệ thống',
   category: LINK_CATEGORY.COMMON.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/manage-configuration')
 },
@@ -318,8 +318,8 @@ const LINKS = [{
   description: 'Quản lý sao lưu - phục hồi dữ liệu',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/system-management')
 },
@@ -329,8 +329,8 @@ const LINKS = [{
   description: 'Quản lý cơ cấu tổ chức',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/departments-management')
 },
@@ -339,8 +339,8 @@ const LINKS = [{
   description: 'Quản lý người dùng',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/users-management')
 },
@@ -349,8 +349,8 @@ const LINKS = [{
   description: 'Quản lý phân quyền',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/roles-management')
 },
@@ -359,8 +359,8 @@ const LINKS = [{
   description: 'Quản lý trang web của công ty',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/links-management')
 },
@@ -369,8 +369,8 @@ const LINKS = [{
   description: 'Quản lý API web của công ty',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/apis-management')
 },
@@ -379,8 +379,8 @@ const LINKS = [{
   description: 'Quản lý đăng ký sử dụng API của công ty',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/apis-registration')
 },
@@ -389,11 +389,11 @@ const LINKS = [{
   description: 'Quản lý đăng ký sử dụng API của nhân viên',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER,
-      ROOT_ROLES.DEPUTY_MANAGER,
-      ROOT_ROLES.EMPLOYEE,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER,
+    ROOT_ROLES.DEPUTY_MANAGER,
+    ROOT_ROLES.EMPLOYEE,
   ],
   components: getComponentsInLink('/apis-registration-employee')
 },
@@ -402,8 +402,8 @@ const LINKS = [{
   description: 'Quản lý các thành phần UI trên trang web của công ty',
   category: LINK_CATEGORY.RBAC.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/components-management')
 },
@@ -415,8 +415,8 @@ const LINKS = [{
   description: 'Quản lý tài liệu biểu mẫu',
   category: LINK_CATEGORY.DOCUMENT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ]
 },
 {
@@ -424,7 +424,7 @@ const LINKS = [{
   description: 'Quản lý tài liệu biểu mẫu của đơn vị',
   category: LINK_CATEGORY.DOCUMENT.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ]
 },
 {
@@ -432,9 +432,9 @@ const LINKS = [{
   description: 'Tài liệu',
   category: LINK_CATEGORY.DOCUMENT.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ]
 },
 
@@ -443,7 +443,7 @@ const LINKS = [{
   description: 'Quản lý kế hoạch làm việc',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-manage-work-plan')
 },
@@ -452,7 +452,7 @@ const LINKS = [{
   description: 'Quản lý ngành nghề/ lĩnh vực',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-manage-field')
 },
@@ -461,7 +461,7 @@ const LINKS = [{
   description: 'Thêm mới nhân viên',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-add-employee')
 },
@@ -470,7 +470,7 @@ const LINKS = [{
   description: 'Quản lý thông tin nhân viên',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-list-employee')
 },
@@ -479,7 +479,7 @@ const LINKS = [{
   description: 'Quản lý nhân sự các đơn vị',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-manage-department')
 },
@@ -488,9 +488,9 @@ const LINKS = [{
   description: 'Cập nhật thông tin cá nhân của nhân viên',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/hr-update-employee')
 },
@@ -499,9 +499,9 @@ const LINKS = [{
   description: 'Thông tin cá nhân của nhân viên',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/hr-detail-employee')
 },
@@ -510,9 +510,9 @@ const LINKS = [{
   description: 'Nghỉ phép',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/hr-annual-leave-personal')
 },
@@ -521,9 +521,9 @@ const LINKS = [{
   description: 'Bảng tin cá nhân',
   category: LINK_CATEGORY.COMMON.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/dashboard-personal')
 },
@@ -532,7 +532,7 @@ const LINKS = [{
   description: 'Bảng tin đơn vị',
   category: LINK_CATEGORY.COMMON.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/dashboard-unit')
 },
@@ -541,7 +541,7 @@ const LINKS = [{
   description: 'Bảng tin đơn vị toàn công ty',
   category: LINK_CATEGORY.COMMON.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/dashboard-all-unit')
 },
@@ -550,8 +550,8 @@ const LINKS = [{
   description: 'Quản lý đơn xin nghỉ đơn vị',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
   ],
   components: getComponentsInLink('/hr-manage-leave-application')
 },
@@ -560,7 +560,7 @@ const LINKS = [{
   description: 'Quản lý lương nhân viên',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-salary-employee')
 },
@@ -569,7 +569,7 @@ const LINKS = [{
   description: 'Quản lý nghỉ phép của nhân viên',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-annual-leave')
 },
@@ -578,7 +578,7 @@ const LINKS = [{
   description: 'Quản lý khen thưởng, kỷ luật',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-discipline')
 },
@@ -587,7 +587,7 @@ const LINKS = [{
   description: 'Dashboard nhân sự',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-dashboard-employee')
 },
@@ -596,7 +596,7 @@ const LINKS = [{
   description: 'Quản lý chấm công',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-time-keeping')
 },
@@ -605,8 +605,8 @@ const LINKS = [{
   description: 'Thông tin nhân viên',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/employees-infomation')
 },
@@ -618,7 +618,7 @@ const LINKS = [{
   description: 'Quản lý đào tạo',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-trainning-course')
 },
@@ -627,7 +627,7 @@ const LINKS = [{
   description: 'Thông tin tài khoản ',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-account')
 },
@@ -636,7 +636,7 @@ const LINKS = [{
   description: 'Kế hoạch đào tạo',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-training-plan')
 },
@@ -645,9 +645,9 @@ const LINKS = [{
   description: 'Kế hoạch đào tạo',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name
   ],
   components: getComponentsInLink('/hr-training-plan-employee')
 },
@@ -656,7 +656,7 @@ const LINKS = [{
   description: 'Chương trình đào tạo bắt buộc',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/hr-list-education')
 },
@@ -665,17 +665,17 @@ const LINKS = [{
   description: 'Lấy thông tin bảng tin nhân sự',
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.ADMIN.name
   ],
   component: getComponentsInLink('/hr-list-education')
-}, 
+},
 {
   url: "/time-sheet-log/all",
   description: "Thống kê thời gian số lượng công việc và thời gian bấm giờ của toàn bộ nhân viên",
   category: LINK_CATEGORY.HUMAN_RESOURCE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/time-sheet-log/all')
 },
@@ -760,11 +760,11 @@ const LINKS = [{
   description: "Dashboard đấu thầu",
   category: LINK_CATEGORY.BIDDING.name,
   roles: [
-    ROOT_ROLES.SUPER_ADMIN.name,
-    ROOT_ROLES.ADMIN.name,
+    // ROOT_ROLES.SUPER_ADMIN.name,
+    // ROOT_ROLES.ADMIN.name,
     ROOT_ROLES.MANAGER.name,
-    ROOT_ROLES.DEPUTY_MANAGER.name,
-    ROOT_ROLES.EMPLOYEE.name,
+    // ROOT_ROLES.DEPUTY_MANAGER.name,
+    // ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink("/bidding-dashboard"),
 },
@@ -860,7 +860,7 @@ const LINKS = [{
   description: 'Khởi tạo KPI đơn vị',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/kpi-units/create-for-admin')
 },
@@ -869,7 +869,7 @@ const LINKS = [{
   description: 'Khởi tạo KPI đơn vị',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/kpi-units/create')
 },
@@ -878,18 +878,29 @@ const LINKS = [{
   description: 'Dashboard KPI đơn vị',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/kpi-units/dashboard')
+},
+{
+  url: '/template-kpi-unit',
+  description: 'Mẫu KPI đơn vị',
+  category: LINK_CATEGORY.KPI.name,
+  roles: [
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
+  ],
+  components: getComponentsInLink('/template-kpi-unit')
 },
 {
   url: '/kpi-units/manager',
   description: 'Quản lý KPI đơn vị',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/kpi-units/manager')
 },
@@ -898,7 +909,7 @@ const LINKS = [{
   description: 'Thống kê KPI đơn vị',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/kpi-units/statistic')
 },
@@ -907,7 +918,7 @@ const LINKS = [{
   description: 'Quản lí kpi nhân viên',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/kpi-member/manager')
 },
@@ -916,7 +927,7 @@ const LINKS = [{
   description: 'Dashboard KPI nhân viên',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/kpi-member/dashboard')
 },
@@ -925,8 +936,8 @@ const LINKS = [{
   description: 'DashBoard Kpi cá nhân',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/kpi-personals/dashboard')
 },
@@ -935,8 +946,8 @@ const LINKS = [{
   description: 'Khởi tạo KPI cá nhân',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/kpi-personals/create')
 },
@@ -945,8 +956,8 @@ const LINKS = [{
   description: 'Quản lí KPI cá nhân',
   category: LINK_CATEGORY.KPI.name,
   roles: [
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/kpi-personals/manager')
 },
@@ -960,9 +971,9 @@ const LINKS = [{
   description: 'Mẫu công việc',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/task-template')
 },
@@ -971,9 +982,9 @@ const LINKS = [{
   description: 'Xem danh sách công việc',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/task-management')
 },
@@ -982,7 +993,7 @@ const LINKS = [{
   description: 'Xem danh sách công việc đơn vị',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name
+    ROOT_ROLES.MANAGER.name
   ],
   components: getComponentsInLink('/task-management-unit')
 },
@@ -991,9 +1002,9 @@ const LINKS = [{
   description: 'Danh sách quy trình công việc',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ]
 },
 {
@@ -1001,9 +1012,9 @@ const LINKS = [{
   description: 'Mẫu quy trình công việc',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/task-process-template')
 
@@ -1013,9 +1024,9 @@ const LINKS = [{
   description: 'Chi tiết mẫu quy trình công việc',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/process-template')
 
@@ -1025,9 +1036,9 @@ const LINKS = [{
   description: 'Chi tiết quy trình công việc',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/process')
 
@@ -1037,18 +1048,29 @@ const LINKS = [{
   description: 'Dashboard công việc',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/task-management-dashboard')
+},
+{
+  url: '/administrative-document-process-dashboard',
+  description: 'Dashboard quy trình văn bản',
+  category: LINK_CATEGORY.TASK.name,
+  roles: [
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
+  ],
+  components: getComponentsInLink('/administrative-document-process-dashboard')
 },
 {
   url: '/task-organization-management-dashboard',
   description: 'Dashboard công việc của đơn vị',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/task-organization-management-dashboard')
 },
@@ -1057,10 +1079,10 @@ const LINKS = [{
   description: 'Chi tiết công việc',
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/task')
 },
@@ -1074,7 +1096,7 @@ const LINKS = [{
   description: 'DashBoard quản lý tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/dashboard-asset')
 },
@@ -1083,7 +1105,7 @@ const LINKS = [{
   description: 'Quản lý loại tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-type-asset')
 },
@@ -1092,7 +1114,7 @@ const LINKS = [{
   description: 'Quản lý thông tin tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-info-asset')
 },
@@ -1101,7 +1123,7 @@ const LINKS = [{
   description: 'Quản lý thông tin lô tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-info-asset-lot')
 },
@@ -1110,7 +1132,7 @@ const LINKS = [{
   description: 'Quản lý bảo trì tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-maintainance-asset')
 },
@@ -1119,7 +1141,7 @@ const LINKS = [{
   description: 'Quản lý sử dụng tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      // ROOT_ROLES.ADMIN.name,
+    // ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-usage-asset')
 },
@@ -1128,7 +1150,7 @@ const LINKS = [{
   description: 'Quản lý khấu hao tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-depreciation-asset')
 },
@@ -1137,7 +1159,7 @@ const LINKS = [{
   description: 'Quản lý sự cố tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-incident-asset')
 },
@@ -1146,7 +1168,7 @@ const LINKS = [{
   description: 'Quản lý đề nghị mua sắm tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-asset-purchase-request')
 },
@@ -1155,7 +1177,7 @@ const LINKS = [{
   description: 'Quản lý đăng ký sử dụng tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-asset-use-request')
 },
@@ -1165,9 +1187,9 @@ const LINKS = [{
   description: 'Quản lý thông tin tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/employee-manage-info-asset')
 },
@@ -1176,9 +1198,9 @@ const LINKS = [{
   description: 'Quản lý đăng kí sử dụng tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/employee-manage-asset-use-request')
 },
@@ -1189,9 +1211,9 @@ const LINKS = [{
   description: 'Đăng ký mua sắm tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/asset-purchase-request')
 },
@@ -1200,9 +1222,9 @@ const LINKS = [{
   description: 'Đăng ký sử dụng tài sản',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/asset-use-request')
 },
@@ -1211,9 +1233,9 @@ const LINKS = [{
   description: 'Quản lý tài sản được bàn giao',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-assigned-asset')
 },
@@ -1222,7 +1244,7 @@ const LINKS = [{
   description: 'Xem danh sách mặt bằng',
   category: LINK_CATEGORY.ASSET.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/view-building-list')
 },
@@ -1235,7 +1257,7 @@ const LINKS = [{
   description: 'Dashboard quản lý vật tư',
   category: LINK_CATEGORY.SUPPIES.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/dashboard-supplies')
 },
@@ -1244,7 +1266,7 @@ const LINKS = [{
   description: 'Quản lý vật tư tiêu hao',
   category: LINK_CATEGORY.SUPPIES.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-supplies')
 },
@@ -1253,7 +1275,7 @@ const LINKS = [{
   description: 'Quản lý hóa đơn mua vật tư',
   category: LINK_CATEGORY.SUPPIES.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-purchase-invoice')
 },
@@ -1262,7 +1284,7 @@ const LINKS = [{
   description: 'Quản lý lịch sử cấp phát vật tư',
   category: LINK_CATEGORY.SUPPIES.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-allocation-history')
 },
@@ -1271,7 +1293,7 @@ const LINKS = [{
   description: 'Quản lý yêu cầu mua sắm vật tư',
   category: LINK_CATEGORY.SUPPIES.name,
   roles: [
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/manage-supplies-request')
 },
@@ -1280,9 +1302,9 @@ const LINKS = [{
   description: 'Đăng ký mua vật tư',
   category: LINK_CATEGORY.SUPPIES.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/supplies-purchase-request')
 },
@@ -1295,9 +1317,9 @@ const LINKS = [{
   description: 'Quản lý báo cáo công việc',
   category: LINK_CATEGORY.REPORT.name,
   roles: [
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/task-report')
 },
@@ -1307,8 +1329,8 @@ const LINKS = [{
   description: 'Bảng tin quản lý hàng tồn',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/dashboard-inventory')
 },
@@ -1317,8 +1339,8 @@ const LINKS = [{
   description: 'Bảng tin quản lý các phiếu',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
   ],
   components: getComponentsInLink('/dashboard-bill')
 },
@@ -1327,8 +1349,8 @@ const LINKS = [{
   description: 'Quản lý thông tin kho',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/stock-management')
 },
@@ -1337,8 +1359,8 @@ const LINKS = [{
   description: 'Quản lý thông tin lưu kho',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/bin-location-management')
 },
@@ -1347,8 +1369,8 @@ const LINKS = [{
   description: 'Quản lý danh mục hàng hóa',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/category-management')
 },
@@ -1357,8 +1379,8 @@ const LINKS = [{
   description: 'Quản lý thông tin hàng hóa',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/good-management')
 },
@@ -1367,8 +1389,8 @@ const LINKS = [{
   description: 'Quản lý thông tin phiếu',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/bill-management')
 },
@@ -1377,8 +1399,8 @@ const LINKS = [{
   description: 'Quản lý hàng tồn kho',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/inventory-management')
 },
@@ -1387,8 +1409,8 @@ const LINKS = [{
   description: 'Quản lý đề nghị',
   category: LINK_CATEGORY.WAREHOUSE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/product-request-management/stock')
 },
@@ -1397,11 +1419,11 @@ const LINKS = [{
   description: "Đơn hàng kinh doanh",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-sales-order'),
 },
@@ -1410,11 +1432,11 @@ const LINKS = [{
   description: "Đơn mua hàng",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-purchase-order'),
 },
@@ -1423,11 +1445,11 @@ const LINKS = [{
   description: "Báo giá",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-quote'),
 },
@@ -1436,11 +1458,11 @@ const LINKS = [{
   description: "Dashboard đơn kinh doanh",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-sales-order-dashboard'),
 },
@@ -1449,11 +1471,11 @@ const LINKS = [{
   description: "Khuyến mãi",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-discount'),
 },
@@ -1462,11 +1484,11 @@ const LINKS = [{
   description: "Thuế",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
 
   components: getComponentsInLink('/manage-tax'),
@@ -1476,11 +1498,11 @@ const LINKS = [{
   description: "Cam kết chất lượng",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-sla'),
 },
@@ -1489,11 +1511,11 @@ const LINKS = [{
   description: "Quản lý thu chi",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-payment'),
 },
@@ -1502,8 +1524,8 @@ const LINKS = [{
   description: 'Quản lý đề nghị',
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/product-request-management/order')
 },
@@ -1512,11 +1534,11 @@ const LINKS = [{
   description: "Phòng ban liên quan quản lý đơn hàng",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      // ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      // ROOT_ROLES.MANAGER.name,
-      // ROOT_ROLES.DEPUTY_MANAGER.name,
-      // ROOT_ROLES.EMPLOYEE.name,
+    // ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    // ROOT_ROLES.MANAGER.name,
+    // ROOT_ROLES.DEPUTY_MANAGER.name,
+    // ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-business-department'),
 },
@@ -1525,11 +1547,11 @@ const LINKS = [{
   description: "Số tài khoản ngân hàng",
   category: LINK_CATEGORY.ORDER.name,
   roles: [
-      // ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      // ROOT_ROLES.MANAGER.name,
-      // ROOT_ROLES.DEPUTY_MANAGER.name,
-      // ROOT_ROLES.EMPLOYEE.name,
+    // ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    // ROOT_ROLES.MANAGER.name,
+    // ROOT_ROLES.DEPUTY_MANAGER.name,
+    // ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-bank-account'),
 },
@@ -1538,11 +1560,11 @@ const LINKS = [{
   description: `Bảng tin quản lý khách hàng`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/crm/dashboard')
 },
@@ -1551,10 +1573,10 @@ const LINKS = [{
   description: `Bảng tin đơn vị quản lý khách hàng`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
   ],
   components: getComponentsInLink('/crm/dashboardUnit')
 },
@@ -1563,11 +1585,11 @@ const LINKS = [{
   description: `Quản lý khách hàng`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/crm/customer')
 }, {
@@ -1575,11 +1597,11 @@ const LINKS = [{
   description: `Khách hàng thân thiết`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/crm/loyal-customer')
 }, {
@@ -1587,10 +1609,10 @@ const LINKS = [{
   description: `Đánh giá hoạt động CSKH`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
 
   ],
   components: getComponentsInLink('/crm/evaluation')
@@ -1600,11 +1622,11 @@ const LINKS = [{
   description: `Quản lý nhóm khách hàng`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/crm/group')
 },
@@ -1613,11 +1635,11 @@ const LINKS = [{
   description: `Chăm sóc khách hàng`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/crm/care')
 },
@@ -1626,10 +1648,10 @@ const LINKS = [{
   description: `Cấu hình chung`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
 
   ],
   components: getComponentsInLink('/crm/generalConfiguration')
@@ -1639,8 +1661,8 @@ const LINKS = [{
   description: `Cấu hình đơn vị chăm sóc khách hàng`,
   category: LINK_CATEGORY.CRM.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
 
   ],
   components: getComponentsInLink('/crm/crmUnitConfiguration')
@@ -1652,11 +1674,11 @@ const LINKS = [{
   description: "Quản lý đơn hàng",
   category: LINK_CATEGORY.PLAN.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-plans'),
 },
@@ -1665,11 +1687,11 @@ const LINKS = [{
   description: "Quản lý Ví dụ 1",
   category: LINK_CATEGORY.EXAMPLE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-examples-1'),
 },
@@ -1678,11 +1700,11 @@ const LINKS = [{
   description: "Quản lý Ví dụ 2",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-examples-2'),
 },
@@ -1691,11 +1713,11 @@ const LINKS = [{
   description: "Quản lý Ví dụ Hooks 1",
   category: LINK_CATEGORY.EXAMPLE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-examples-hooks-1'),
 },
@@ -1704,11 +1726,11 @@ const LINKS = [{
   description: "Quản lý Ví dụ Hooks 2",
   category: LINK_CATEGORY.EXAMPLE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-examples-hooks-2'),
 },
@@ -1717,11 +1739,11 @@ const LINKS = [{
   description: "Quản lý Ví dụ 3",
   category: LINK_CATEGORY.EXAMPLE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-examples-3'),
 },
@@ -1731,11 +1753,11 @@ const LINKS = [{
   description: "Quản lý Ví dụ Hooks 3",
   category: LINK_CATEGORY.EXAMPLE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/manage-examples-hooks-3'),
 },
@@ -1745,8 +1767,8 @@ const LINKS = [{
   description: "Quản lý kế hoạch sản xuất",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/manage-manufacturing-plan'),
 },
@@ -1755,10 +1777,10 @@ const LINKS = [{
   description: "Quản lý lệnh sản xuất",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
   ],
   components: getComponentsInLink('/manage-manufacturing-command'),
 },
@@ -1767,8 +1789,8 @@ const LINKS = [{
   description: "Quản lý lịch sản xuất",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/manage-work-schedule'),
 },
@@ -1777,8 +1799,8 @@ const LINKS = [{
   description: "Quản lý phiếu đề nghị mua hàng",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/manage-purchasing-request'),
 },
@@ -1787,8 +1809,8 @@ const LINKS = [{
   description: "Dashboard Quản lý sản xuất",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/manufacturing-dashboard'),
 },
@@ -1797,8 +1819,8 @@ const LINKS = [{
   description: "Phân tích hiệu suất sản xuất",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/analysis-manufacturing-performance'),
 },
@@ -1807,8 +1829,8 @@ const LINKS = [{
   description: "Quản lý nhà máy sản xuất",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/manage-manufacturing-works'),
 },
@@ -1817,8 +1839,8 @@ const LINKS = [{
   description: "Quản lý xưởng sản xuất",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/manage-manufacturing-mill'),
 },
@@ -1827,8 +1849,8 @@ const LINKS = [{
   description: "Quản lý lô sản xuất",
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/manage-manufacturing-lot'),
 },
@@ -1837,8 +1859,8 @@ const LINKS = [{
   description: 'Quản lý đề nghị',
   category: LINK_CATEGORY.MANUFACTURING.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ],
   components: getComponentsInLink('/product-request-management/manufacturing')
 },
@@ -1848,11 +1870,11 @@ const LINKS = [{
   description: "Quản lý yêu cầu vận chuyển",
   category: LINK_CATEGORY.TRANSPORT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.EMPLOYEE.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ]
 },
 {
@@ -1860,11 +1882,11 @@ const LINKS = [{
   description: "Quản lý kế hoạch vận chuyển",
   category: LINK_CATEGORY.TRANSPORT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.EMPLOYEE.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ],
   components: getComponentsInLink('/manage-transport-plan')
 },
@@ -1873,11 +1895,11 @@ const LINKS = [{
   description: "Quản lý lệnh vận chuyển",
   category: LINK_CATEGORY.TRANSPORT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.EMPLOYEE.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ]
 },
 {
@@ -1885,9 +1907,9 @@ const LINKS = [{
   description: "Phương tiện vận chuyển",
   category: LINK_CATEGORY.TRANSPORT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
   ]
 },
 {
@@ -1895,11 +1917,11 @@ const LINKS = [{
   description: "Hành trình vận chuyển",
   category: LINK_CATEGORY.TRANSPORT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.EMPLOYEE.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.MANAGER.name,
   ]
 },
 {
@@ -1907,8 +1929,8 @@ const LINKS = [{
   description: "Phân vai trò đơn vị vận chuyển",
   category: LINK_CATEGORY.TRANSPORT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name
   ]
 },
 {
@@ -1916,9 +1938,9 @@ const LINKS = [{
   description: "Nhiệm vụ vận chuyển ngày hôm nay",
   category: LINK_CATEGORY.TRANSPORT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ]
 },
 // {
@@ -1936,11 +1958,11 @@ const LINKS = [{
   description: 'Danh sách dự án',
   category: LINK_CATEGORY.PROJECT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/project/projects-list'),
 },
@@ -1949,11 +1971,11 @@ const LINKS = [{
   description: 'Chi tiết dự án',
   category: LINK_CATEGORY.PROJECT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/project/project-details'),
 },
@@ -1962,11 +1984,11 @@ const LINKS = [{
   description: 'Danh sách giai đoạn dự án',
   category: LINK_CATEGORY.PROJECT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/project/phases-list'),
 },
@@ -1975,11 +1997,11 @@ const LINKS = [{
   description: 'Chi tiết giai đoạn dự án',
   category: LINK_CATEGORY.PROJECT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/project/phase-details'),
 },
@@ -1988,11 +2010,11 @@ const LINKS = [{
   description: 'Danh sách công việc dự án',
   category: LINK_CATEGORY.PROJECT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/project/tasks-list'),
 },
@@ -2001,11 +2023,11 @@ const LINKS = [{
   description: 'Danh sách vấn đề phát sinh dự án',
   category: LINK_CATEGORY.PROJECT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/project/issues-list'),
 },
@@ -2014,11 +2036,11 @@ const LINKS = [{
   description: 'Danh sách báo cáo',
   category: LINK_CATEGORY.PROJECT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/project/project-report'),
 },
@@ -2027,11 +2049,11 @@ const LINKS = [{
   description: 'Danh sách đánh giá dự án',
   category: LINK_CATEGORY.PROJECT.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/project/project-evaluation'),
 },
@@ -2042,11 +2064,11 @@ const LINKS = [{
   description: "Hướng dẫn sử dụng",
   category: LINK_CATEGORY.USERGUIDE.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/user-guide')
 }, {
@@ -2054,11 +2076,11 @@ const LINKS = [{
   description: "Thống kê bấm giờ cá nhân",
   category: LINK_CATEGORY.TASK.name,
   roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+    ROOT_ROLES.SUPER_ADMIN.name,
+    ROOT_ROLES.ADMIN.name,
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
   ],
   component: getComponentsInLink('/personal-time-sheet-log')
 }
