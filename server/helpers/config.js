@@ -1055,6 +1055,17 @@ const LINKS = [{
   components: getComponentsInLink('/task-management-dashboard')
 },
 {
+  url: '/administrative-document-process-dashboard',
+  description: 'Dashboard quy trình văn bản',
+  category: LINK_CATEGORY.TASK.name,
+  roles: [
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
+  ],
+  components: getComponentsInLink('/administrative-document-process-dashboard')
+},
+{
   url: '/task-organization-management-dashboard',
   description: 'Dashboard công việc của đơn vị',
   category: LINK_CATEGORY.TASK.name,

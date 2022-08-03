@@ -319,6 +319,7 @@ exports.links = [
             // Task-management
             { path: '/task/tasks', method: 'GET' },
             { path: '/task/tasks', method: 'POST' },
+            { path: '/task/tasks/proposal-presonnel', method: 'POST' },
             { path: '/task/tasks/:taskId', method: 'DELETE' },
             { path: '/task/tasks/:taskId/sub-tasks', method: 'GET' },
             { path: '/task/task-evaluations', method: 'GET' },
@@ -367,7 +368,16 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-comments/:commentId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/files/:fileId', method: 'PATCH' },
 
+            // task outputs
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/task-outputs', method: 'PATCH' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', method: 'DELETE' },
+            { path: '/performtask/tasks/:taskId/task-outputs', method: 'GET' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/documents/:fileId', method: 'PATCH' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/approve', method: 'PATCH' },
 
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/comments', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/comments/:commentId', method: 'PATCH' },
 
             //comment of task comment
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST' },
@@ -900,6 +910,10 @@ exports.links = [
         url: '/task-organization-management-dashboard',
         apis: ['@all']
     }, {
+        url: '/administrative-document-process-dashboard',
+        apis: ['@all']
+    },
+    {
         url: '/task',
         apis: ['@all']
     }, {
