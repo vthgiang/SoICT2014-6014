@@ -18,6 +18,7 @@ const { isToday, compareDate, arrayEquals } = require('../../helpers/functionHel
 const schedule = require('node-schedule');
 const taskTemplateModel = require('../../models/task/taskTemplate.model');
 const PolicyService = require('../super-admin/policy/policy.service');
+const NotificationServices = require(`../notification/notification.service`);
 
 // Tạo mới mảng Ví dụ
 exports.createDelegation = async (portal, data, logs = []) => {
@@ -29,7 +30,6 @@ exports.createDelegation = async (portal, data, logs = []) => {
             for (let i = 0; i < array.length; i++) {
                 const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: array[i].delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
                 if (checkDelegationCreated && !array[i].notCheck && !array[i].notCheckName) {
-                    console.log("gddgdg")
                     throw ['delegation_name_exist'];
                 }
                 if (array[i]) resArray = [...resArray, array[i]];
@@ -133,7 +133,7 @@ exports.createDelegation = async (portal, data, logs = []) => {
         { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
-        { path: 'delegator', select: '_id name' },
+        { path: 'delegator', select: '_id name company' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
             populate: {
@@ -154,6 +154,14 @@ exports.getNewlyCreateDelegation = async (id, data, portal) => {
     if (oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !== data.delegationName.trim().toLowerCase().replace(/ /g, "")) {
         if (checkDelegationCreated) {
             throw ['delegation_name_exist'];
+        }
+        if (oldDelegation.delegator._id.toString() !== data.delegator.toString() ||
+            oldDelegation.delegatee._id.toString() !== data.delegatee.toString() ||
+            oldDelegation.delegateRole._id.toString() !== data.delegateRole.toString()
+        ) {
+            data.notCheck = false;
+        } else {
+            data.notCheck = true;
         }
     } else {
         if (oldDelegation.delegator._id.toString() !== data.delegator.toString() ||
@@ -197,7 +205,10 @@ exports.autoRevokeDelegation = async (delegation, portal) => {
     const date = new Date(delegation.endDate);
     const a = this;
     const job = schedule.scheduleJob("Revoke_" + delegation._id, date, async function () {
-        await a.revokeDelegation(portal, [delegation._id], "Automatic revocation")
+        let revokedDelegation = await a.revokeDelegation(portal, [delegation._id], "Automatic revocation")
+
+        await a.sendNotification(portal, revokedDelegation, "revoke", true)
+
         delegation.logs.push(
             {
                 createdAt: new Date(),
@@ -254,9 +265,13 @@ exports.updateMissedDelegation = async (portal) => {
 
         if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
             if (delegation.delegateType == 'Role') {
-                await this.revokeDelegation(portal, [delegation._id], "Automatic revocation");
+                let revokedDelegation = await this.revokeDelegation(portal, [delegation._id], "Automatic revocation");
+                await this.sendNotification(portal, revokedDelegation, "revoke", true)
+
             } else if (delegation.delegateType == 'Task') {
-                await this.revokeTaskDelegation(portal, [delegation._id], "Automatic revocation");
+                let revokedDelegationTask = await this.revokeTaskDelegation(portal, [delegation._id], "Automatic revocation");
+                await this.sendNotification(portal, revokedDelegationTask, "revoke", true)
+
             }
 
             await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
@@ -484,7 +499,7 @@ exports.getDelegations = async (portal, data) => {
             },
             { path: 'delegatee', select: '_id name' },
             { path: 'delegatePolicy', select: '_id policyName' },
-            { path: 'delegator', select: '_id name' },
+            { path: 'delegator', select: '_id name company' },
             {
                 path: 'delegatePrivileges', select: '_id resourceId resourceType',
                 populate: {
@@ -525,7 +540,7 @@ exports.getDelegationsReceive = async (portal, data) => {
             { path: 'delegateRole', select: '_id name' },
             { path: 'delegatee', select: '_id name' },
             { path: 'delegatePolicy', select: '_id policyName' },
-            { path: 'delegator', select: '_id name' },
+            { path: 'delegator', select: '_id name company' },
             {
                 path: 'delegatePrivileges', select: '_id resourceId resourceType',
                 populate: {
@@ -578,7 +593,7 @@ exports.getDelegationsReceiveTask = async (portal, data) => {
             },
             { path: 'delegatee', select: '_id name' },
             { path: 'delegatePolicy', select: '_id policyName' },
-            { path: 'delegator', select: '_id name' },
+            { path: 'delegator', select: '_id name company' },
 
         ])
         .skip((page - 1) * perPage)
@@ -636,7 +651,7 @@ exports.getDelegationById = async (portal, id) => {
         },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
-        { path: 'delegator', select: '_id name' },
+        { path: 'delegator', select: '_id name company' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
             populate: {
@@ -719,7 +734,7 @@ exports.revokeDelegation = async (portal, delegationIds, reason) => {
         { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
-        { path: 'delegator', select: '_id name' },
+        { path: 'delegator', select: '_id name company' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
             populate: {
@@ -758,7 +773,7 @@ exports.rejectDelegation = async (portal, delegationId, reason) => {
         },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
-        { path: 'delegator', select: '_id name' },
+        { path: 'delegator', select: '_id name company' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
             populate: {
@@ -797,7 +812,7 @@ exports.confirmDelegation = async (portal, delegationId) => {
         },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
-        { path: 'delegator', select: '_id name' },
+        { path: 'delegator', select: '_id name company' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
             populate: {
@@ -830,10 +845,22 @@ exports.saveLog = async (portal, delegation, userId, content, category, time) =>
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegation._id }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTask' },
+        {
+            path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+            populate: [
+                { path: "taskActions.creator", select: "name email avatar" },
+                {
+                    path: "taskActions.evaluations.creator",
+                    select: "name email avatar ",
+                },
+                { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                { path: "logs.creator", select: "_id name avatar email " }
+            ]
+        },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
-        { path: 'delegator', select: '_id name' },
+        { path: 'delegator', select: '_id name company' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
             populate: {
@@ -913,7 +940,7 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
             }).populate({
                 path: "delegations", populate: [
                     { path: 'delegatee', select: '_id name' },
-                    { path: 'delegator', select: '_id name' },
+                    { path: 'delegator', select: '_id name company' },
                 ]
             })
 
@@ -1039,7 +1066,7 @@ exports.createTaskDelegation = async (portal, data, logs = []) => {
         },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
-        { path: 'delegator', select: '_id name' }
+        { path: 'delegator', select: '_id name company' }
 
     ]);
 
@@ -1054,6 +1081,15 @@ exports.getNewlyCreateTaskDelegation = async (id, data, portal) => {
     if (oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !== data.delegationName.trim().toLowerCase().replace(/ /g, "")) {
         if (checkDelegationCreated) {
             throw ['delegation_name_exist'];
+        }
+        if (oldDelegation.delegator._id.toString() !== data.delegator.toString() ||
+            oldDelegation.delegatee._id.toString() !== data.delegatee.toString() ||
+            oldDelegation.delegateTask._id.toString() !== data.delegateTask.toString()
+            // || !arrayEquals(oldDelegation.delegateTaskRoles, data.delegateTaskRoles)
+        ) {
+            data.notCheck = false;
+        } else {
+            data.notCheck = true;
         }
     } else {
         if (oldDelegation.delegator._id.toString() !== data.delegator.toString() ||
@@ -1179,7 +1215,9 @@ exports.autoRevokeTaskDelegation = async (delegation, portal) => {
     const date = new Date(delegation.endDate);
     const a = this;
     const job = schedule.scheduleJob("Revoke_" + delegation._id, date, async function () {
-        await a.revokeTaskDelegation(portal, [delegation._id], "Automatic revocation")
+        let revokedDelegation = await a.revokeTaskDelegation(portal, [delegation._id], "Automatic revocation")
+        await a.sendNotification(portal, revokedDelegation, "revoke", true)
+
         await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
             logs: [
                 ...delegation.logs,
@@ -1288,7 +1326,7 @@ exports.revokeTaskDelegation = async (portal, delegationIds, reason) => {
         },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
-        { path: 'delegator', select: '_id name' },
+        { path: 'delegator', select: '_id name company' },
     ]);
 
     return newDelegation;
@@ -1340,6 +1378,263 @@ exports.deleteTaskDelegationWhenTaskIsDeleted = async (portal, taskId) => {
         await Delegation(connect(DB_CONNECTION, portal)).deleteMany({ delegateTask: task._id })
 
     }
+
+}
+
+exports.handleDelegatorLosesRole = async (portal, users, roles) => {
+    // Từ manage role
+    if (Array.isArray(users)) {
+        // Kiem tra ton tai uy quyen delegator khong nam trong user ma co uy quyen vai tro khong
+        let checkDelegationUser = await Delegation(connect(DB_CONNECTION, portal)).find({ delegator: { $nin: users }, delegateRole: roles, status: { $in: ['pending', 'activated'] } }).populate([
+            { path: 'delegateRole', select: '_id name' },
+            {
+                path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                populate: [
+                    { path: "taskActions.creator", select: "name email avatar" },
+                    {
+                        path: "taskActions.evaluations.creator",
+                        select: "name email avatar ",
+                    },
+                    { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                    { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                    { path: "logs.creator", select: "_id name avatar email " }
+                ]
+            },
+            { path: 'delegatee', select: '_id name' },
+            { path: 'delegatePolicy', select: '_id policyName' },
+            { path: 'delegator', select: '_id name company' },
+            {
+                path: 'delegatePrivileges', select: '_id resourceId resourceType',
+                populate: {
+                    path: 'resourceId',
+                    select: '_id url category description'
+                }
+            }
+        ]);
+        if (checkDelegationUser.length > 0) {
+            checkDelegationUser.forEach(async delegation => {
+                await this.revokeDelegation(portal, [delegation._id], "Delegator no longer has delegate role");
+                await this.sendNotification(portal, delegation, "revoke", true)
+            })
+        }
+    }
+
+    // Từ manage users
+    if (Array.isArray(roles)) {
+        // Kiem tra ton tai uy quyen delegator = user va delegate role khong nam trong role cua user
+
+        let checkDelegationRole = await Delegation(connect(DB_CONNECTION, portal)).find({ delegator: users, delegateRole: { $nin: roles }, status: { $in: ['pending', 'activated'] } }).populate([
+            { path: 'delegateRole', select: '_id name' },
+            {
+                path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
+                populate: [
+                    { path: "taskActions.creator", select: "name email avatar" },
+                    {
+                        path: "taskActions.evaluations.creator",
+                        select: "name email avatar ",
+                    },
+                    { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
+                    { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                    { path: "logs.creator", select: "_id name avatar email " }
+                ]
+            },
+            { path: 'delegatee', select: '_id name' },
+            { path: 'delegatePolicy', select: '_id policyName' },
+            { path: 'delegator', select: '_id name company' },
+            {
+                path: 'delegatePrivileges', select: '_id resourceId resourceType',
+                populate: {
+                    path: 'resourceId',
+                    select: '_id url category description'
+                }
+            }
+        ]);
+        if (checkDelegationRole.length > 0) {
+            checkDelegationRole.forEach(async delegation => {
+                await this.revokeDelegation(portal, [delegation._id], "Delegator no longer has delegate role");
+                await this.sendNotification(portal, delegation, "revoke", true)
+            })
+        }
+    }
+}
+
+exports.sendNotification = async (portal, delegation, type, auto = false) => {
+    let content;
+    let notification;
+    if (type == "create") {
+        if (delegation.delegateType == "Role") {
+            content = `
+            <p>Bạn được ủy quyền vai trò: ${delegation.delegateRole.name}. </p>
+            <p>Người ủy quyền: ${delegation.delegator.name}.</p>
+            <p>Mã ủy quyền: ${delegation.delegationName}<p>
+            <p>Xem danh sách ủy quyền nhận <a target="_blank" href="${process.env.WEBSITE}/delegation-receive">tại đây</a><p>
+            <br/>
+            <p>You received delegation of role: ${delegation.delegateRole.name}. </p>
+            <p>Delegator: ${delegation.delegator.name}.</p>
+            <p>Delegation code: ${delegation.delegationName}<p>
+            <p>View delegation received <a target="_blank" href="${process.env.WEBSITE}/delegation-receive">here</a><p>
+        `
+        }
+
+        if (delegation.delegateType == "Task") {
+            content = `
+            <p>Bạn được ủy quyền công việc: ${delegation.delegateTask.name}. </p>
+            <p>Người ủy quyền: ${delegation.delegator.name}.</p>
+            <p>Mã ủy quyền: ${delegation.delegationName}<p>
+            <p>Xem danh sách ủy quyền nhận <a target="_blank" href="${process.env.WEBSITE}/delegation-receive">tại đây</a><p>
+            <br/>
+            <p>You received delegation of task: ${delegation.delegateTask.name}. </p>
+            <p>Delegator: ${delegation.delegator.name}.</p>
+            <p>Delegation code: ${delegation.delegationName}<p>
+            <p>View delegation received <a target="_blank" href="${process.env.WEBSITE}/delegation-receive">here</a><p>
+        `
+        }
+
+        // users = users.map(x => x._id);
+        // users = [...users, ...annualLeave.userReceiveds];
+
+        notification = {
+            users: [delegation.delegatee._id],
+            organizationalUnits: [],
+            title: "Nhận ủy quyền - Receive delegation",
+            level: "general",
+            content: content,
+            sender: delegation.delegator.name,
+        }
+    }
+
+    if (type == "revoke") {
+        if (delegation.delegateType == "Role") {
+            content = `
+            <p>Đã thu hồi ủy quyền vai trò: ${delegation.delegateRole.name}. </p>
+            <p>Người thu hồi: ${!auto ? delegation.delegator.name : "Hệ thống"}.</p>
+            <p>Mã ủy quyền: ${delegation.delegationName}<p>
+            <p>Xem danh sách ủy quyền <a target="_blank" href="${process.env.WEBSITE}/delegation-receive">tại đây</a><p>
+            <br/>
+            <p>Revoked delegation of role: ${delegation.delegateRole.name}. </p>
+            <p>Delegator: ${!auto ? delegation.delegator.name : "System"}.</p>
+            <p>Delegation code: ${delegation.delegationName}<p>
+            <p>View delegation <a target="_blank" href="${process.env.WEBSITE}/delegation-receive">here</a><p>
+        `
+        }
+
+        if (delegation.delegateType == "Task") {
+            content = `
+            <p>Đã thu hồi ủy quyền công việc: ${delegation.delegateTask.name}. </p>
+            <p>Người thu hồi: ${!auto ? delegation.delegator.name : "Hệ thống"}.</p>
+            <p>Mã ủy quyền: ${delegation.delegationName}<p>
+            <p>Xem danh sách ủy quyền <a target="_blank" href="${process.env.WEBSITE}/delegation-receive">tại đây</a><p>
+            <br/>
+            <p>Revoked delegation of task: ${delegation.delegateTask.name}. </p>
+            <p>Delegator: ${!auto ? delegation.delegator.name : "System"}.</p>
+            <p>Delegation code: ${delegation.delegationName}<p>
+            <p>View delegation <a target="_blank" href="${process.env.WEBSITE}/delegation-receive">here</a><p>
+        `
+        }
+
+        // users = users.map(x => x._id);
+        // users = [...users, ...annualLeave.userReceiveds];
+
+        notification = {
+            users: [delegation.delegatee._id],
+            organizationalUnits: [],
+            title: "Đã thu hồi ủy quyền - Revoked delegation",
+            level: "general",
+            content: content,
+            sender: delegation.delegator.name,
+        }
+    }
+
+    if (type == "confirm") {
+        if (delegation.delegateType == "Role") {
+
+            content = `
+            <p>Đã xác nhận ủy quyền vai trò: ${delegation.delegateRole.name}. </p>
+            <p>Người nhận ủy quyền: ${delegation.delegatee.name}.</p>
+            <p>Mã ủy quyền: ${delegation.delegationName}<p>
+            <p>Xem danh sách ủy quyền <a target="_blank" href="${process.env.WEBSITE}/delegation-list">tại đây</a><p>
+            <br/>
+            <p>Confirmed role delegation: ${delegation.delegateRole.name}. </p>
+            <p>Delegatee: ${delegation.delegatee.name}.</p>
+            <p>Delegation code: ${delegation.delegationName}<p>
+            <p>View delegation <a target="_blank" href="${process.env.WEBSITE}/delegation-list">here</a><p>
+        `
+        }
+
+        if (delegation.delegateType == "Task") {
+
+            content = `
+                <p>Đã xác nhận ủy quyền công việc: ${delegation.delegateTask.name}. </p>
+                <p>Người nhận ủy quyền: ${delegation.delegatee.name}.</p>
+                <p>Mã ủy quyền: ${delegation.delegationName}<p>
+                <p>Xem danh sách ủy quyền <a target="_blank" href="${process.env.WEBSITE}/delegation-list">tại đây</a><p>
+                <br/>
+                <p>Confirmed task delegation: ${delegation.delegateTask.name}. </p>
+                <p>Delegatee: ${delegation.delegatee.name}.</p>
+                <p>Delegation code: ${delegation.delegationName}<p>
+                <p>View delegation <a target="_blank" href="${process.env.WEBSITE}/delegation-list">here</a><p>
+            `
+        }
+
+        // users = users.map(x => x._id);
+        // users = [...users, ...annualLeave.userReceiveds];
+
+        notification = {
+            users: [delegation.delegator._id],
+            organizationalUnits: [],
+            title: "Đã xác nhận ủy quyền - Confirmed delegation",
+            level: "general",
+            content: content,
+            sender: delegation.delegatee.name,
+        }
+    }
+
+    if (type == "reject") {
+        if (delegation.delegateType == "Role") {
+
+            content = `
+        <p>Có yêu cầu từ chối ủy quyền vai trò: ${delegation.delegateRole.name}. </p>
+        <p>Người nhận ủy quyền: ${delegation.delegatee.name}.</p>
+        <p>Mã ủy quyền: ${delegation.delegationName}<p>
+        <p>Xem danh sách ủy quyền <a target="_blank" href="${process.env.WEBSITE}/delegation-list">tại đây</a><p>
+        <br/>
+        <p>Request to reject role delegation: ${delegation.delegateRole.name}. </p>
+        <p>Delegatee: ${delegation.delegatee.name}.</p>
+        <p>Delegation code: ${delegation.delegationName}<p>
+        <p>View delegation <a target="_blank" href="${process.env.WEBSITE}/delegation-list">here</a><p>
+    `
+
+        }
+
+        if (delegation.delegateType == "Task") {
+
+            content = `
+            <p>Có yêu cầu từ chối ủy quyền công việc: ${delegation.delegateTask.name}. </p>
+            <p>Người nhận ủy quyền: ${delegation.delegatee.name}.</p>
+            <p>Mã ủy quyền: ${delegation.delegationName}<p>
+            <p>Xem danh sách ủy quyền <a target="_blank" href="${process.env.WEBSITE}/delegation-list">tại đây</a><p>
+            <br/>
+            <p>Request to reject task delegation: ${delegation.delegateTask.name}. </p>
+            <p>Delegatee: ${delegation.delegatee.name}.</p>
+            <p>Delegation code: ${delegation.delegationName}<p>
+            <p>View delegation <a target="_blank" href="${process.env.WEBSITE}/delegation-list">here</a><p>
+        `
+
+        }
+        // users = users.map(x => x._id);
+        // users = [...users, ...annualLeave.userReceiveds];
+
+        notification = {
+            users: [delegation.delegator._id],
+            organizationalUnits: [],
+            title: "Có yêu cầu từ chối ủy quyền - Request to reject delegation",
+            level: "general",
+            content: content,
+            sender: delegation.delegatee.name,
+        }
+    }
+
+    await NotificationServices.createNotification(portal, delegation.delegator.company, notification)
 
 }
 

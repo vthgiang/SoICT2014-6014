@@ -13,6 +13,7 @@ const generator = require("generate-password");
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const { connect } = require(`../../../helpers/dbHelper`);
 const { sendEmail } = require("../../../helpers/emailHelper");
+const DelegationService = require(`../../delegation/delegation.service`)
 
 /**
  * Lấy danh sách tất cả user trong 1 công ty
@@ -887,9 +888,12 @@ exports.editRolesForUser = async (portal, userId, roleIdArr) => {
             policies: roleIdsWithPolicies.includes(roleId.toString()) ? userRoleWithPolicies.filter(ur => ur.roleId.equals(roleId))[0].policies : []
         };
     });
+
     var relationship = await UserRole(
         connect(DB_CONNECTION, portal)
     ).insertMany(data);
+
+    await DelegationService.handleDelegatorLosesRole(portal, userId, roleIdArr)
 
     return relationship;
 };

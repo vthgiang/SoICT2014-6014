@@ -66,7 +66,7 @@ function TaskDelegationForm(props) {
         if (tasks?.task) {
             let task = tasks.task; /// chú ý: cần check thêm trường hợp quy trình có lấy dữ liệu ở performTasks hay ko
 
-            if (task?.organizationalUnit) props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
+            // if (task?.organizationalUnit) props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
             let roles = [];
             if (task) {
@@ -91,46 +91,17 @@ function TaskDelegationForm(props) {
                     roles.push(ROLE.INFORMED);
                 }
 
-                // if (task.creator._id)
-                //     if (userId === task.creator._id) roles.push(ROLE.CREATOR);
-                // if (!task.creator._id)
-                //     if (userId === task.creator) roles.push(ROLE.CREATOR);
+
             }
             setState({
                 ...state,
                 taskId: props.taskId,
                 roles: roles,
                 delegateTaskName: props.taskName,
-                // delegationName: props.delegationName,
-                // description: props.description,
-                // delegator: props.delegator,
-                // delegatee: props.delegatee,
-                // delegateType: props.delegateType,
-                // delegateTaskRoles: props.delegateTaskRoles,
-                // delegateTask: props.delegateTask,
-                // status: props.status,
-                // delegateDuration: {
-                //     startDate: formatDate(props.startDate),
-                //     endDate: props.endDate ? formatDate(props.endDate) : "",
-                //     startTime: formatTime(props.startDate),
-                //     endTime: props.endDate ? formatTime(props.endDate) : "11:59 PM",
-                //     errorOnStartDate: undefined,
-                //     errorOnEndDate: undefined,
-                // },
-                // revokedDate: props.revokedDate,
-                // revokeReason: props.revokeReason,
-                // showChooseRevoke: props.showChooseRevoke,
-                // delegatePolicy: props.delegatePolicy,
-                // logs: props.logs,
-                // forReceive: props.forReceive,
-                // replyStatus: props.replyStatus,
-                // declineReason: props.declineReason,
+
             });
         }
 
-        // window.$('#delegateLinksEdit').prop("checked", props.showChooseLinks);
-        // window.$('#delegateRevokeEdit').prop("checked", props.showChooseRevoke);
-        // validateDelegateTaskRoles(props.delegateTaskRoles._id, true)
 
     }, [tasks?.task])
 
@@ -228,7 +199,7 @@ function TaskDelegationForm(props) {
 
         const { translate } = props;
         if (!value || value.length == 0) {
-            msg = translate('manage_delegation.no_blank_delegate_role');
+            msg = translate('manage_delegation.no_blank_delegate_task_role');
         }
         if (willUpdateState) {
 

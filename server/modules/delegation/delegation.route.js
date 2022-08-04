@@ -14,6 +14,10 @@ router.patch('/delegations-confirm', auth, DelegationController.confirmDelegatio
 router.patch('/delegations-reject', auth, DelegationController.rejectDelegation);
 router.get('/delegations-receive', auth, DelegationController.getDelegationsReceive);
 router.get('/delegations-receive/tasks', auth, DelegationController.getDelegationsReceiveTask);
+router.post('/delegations-tasks', auth, DelegationController.createTaskDelegation);
+router.patch('/delegations-tasks/:id', auth, DelegationController.editTaskDelegation);
+router.delete('/delegations-tasks', auth, DelegationController.deleteTaskDelegations);
+router.patch('/delegations-tasks', auth, DelegationController.revokeTaskDelegation);
 
 module.exports = router;
 

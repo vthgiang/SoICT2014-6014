@@ -157,7 +157,10 @@ exports.links = [
             { path: '/delegation/delegations-receive/tasks', method: 'GET' },
             { path: '/delegation/delegations-confirm', method: 'PATCH' },
             { path: '/delegation/delegations-reject', method: 'PATCH' },
-
+            { path: '/delegation/delegations-tasks', method: 'POST' },
+            { path: '/delegation/delegations-tasks/:id', method: 'PATCH' },
+            { path: '/delegation/delegations-tasks/:id', method: 'DELETE' },
+            { path: '/delegation/delegations-tasks', method: 'PATCH' },
 
             { path: '/educationProgram/educationPrograms', method: 'GET' },
             { path: '/educationProgram/educationPrograms', method: 'POST' },

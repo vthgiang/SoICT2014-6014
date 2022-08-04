@@ -202,7 +202,7 @@ function TaskDelegation(props) {
                                     <tr>
                                         <th className="col-fixed">{translate('manage_delegation.index')}</th>
                                         <th style={{ width: '14%' }}>{translate('manage_delegation.delegationName')}</th>
-                                        <th>{translate('manage_delegation.delegateObject')}</th>
+                                        <th>{translate('manage_delegation.delegateObjectTaskRole')}</th>
                                         <th>{translate('manage_delegation.delegatee')}</th>
                                         <th>{translate('manage_delegation.delegateStartDate')}</th>
                                         <th>{translate('manage_delegation.delegateEndDate')}</th>
@@ -279,7 +279,7 @@ function TaskDelegation(props) {
                                     <tr>
                                         <th className="col-fixed">{translate('manage_delegation.index')}</th>
                                         <th style={{ width: '14%' }}>{translate('manage_delegation.delegationName')}</th>
-                                        <th>{translate('manage_delegation.delegateObject')}</th>
+                                        <th>{translate('manage_delegation.delegateObjectTaskRole')}</th>
                                         <th>{translate('manage_delegation.delegator')}</th>
                                         <th>{translate('manage_delegation.delegateStartDate')}</th>
                                         <th>{translate('manage_delegation.delegateEndDate')}</th>

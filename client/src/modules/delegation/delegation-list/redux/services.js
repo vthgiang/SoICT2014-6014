@@ -9,7 +9,11 @@ export const delegationServices = {
     createDelegation,
     editDelegation,
     revokeDelegation,
-    getDelegationsTask
+    getDelegationsTask,
+    deleteTaskDelegations,
+    createTaskDelegation,
+    editTaskDelegation,
+    revokeTaskDelegation,
 }
 
 function getDelegations(queryData) {
@@ -102,6 +106,63 @@ function editDelegation(id, data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/delegation/delegations/${id}`,
+            method: "PATCH",
+            data: data
+        },
+        true,
+        true,
+        "manage_delegation"
+    )
+}
+
+function deleteTaskDelegations(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks`,
+            method: "DELETE",
+            data: {
+                delegationIds: data?.delegationIds
+            }
+        },
+        true,
+        true,
+        "manage_delegation"
+    )
+}
+
+function revokeTaskDelegation(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks`,
+            method: "PATCH",
+            data: {
+                delegationIds: data?.delegationIds,
+                reason: data?.reason
+            }
+        },
+        true,
+        true,
+        "manage_delegation"
+    )
+}
+
+function createTaskDelegation(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks`,
+            method: "POST",
+            data: data
+        },
+        true,
+        true,
+        "manage_delegation"
+    )
+}
+
+function editTaskDelegation(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks/${id}`,
             method: "PATCH",
             data: data
         },

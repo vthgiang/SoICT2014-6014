@@ -148,7 +148,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
         path: "delegations", populate: [
           { path: 'delegatee', select: '_id name' },
           { path: 'delegatePolicy', select: '_id policyName' },
-          { path: 'delegator', select: '_id name' },
+          { path: 'delegator', select: '_id name company' },
           {
             path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
             populate: [
@@ -377,7 +377,7 @@ exports.startTimesheetLog = async (portal, params, body, user) => {
     {
       path: "delegations", populate: [
         { path: 'delegatee', select: '_id name' },
-        { path: 'delegator', select: '_id name' }
+        { path: 'delegator', select: '_id name company' }
       ]
 
     }
@@ -663,7 +663,7 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
     {
       path: "delegations", populate: [
         { path: 'delegatee', select: '_id name' },
-        { path: 'delegator', select: '_id name' }
+        { path: 'delegator', select: '_id name company' }
       ]
 
     }
@@ -1395,7 +1395,7 @@ exports.createTaskAction = async (portal, params, body, files) => {
     {
       path: "delegations", populate: [
         { path: 'delegatee', select: '_id name' },
-        { path: 'delegator', select: '_id name' }
+        { path: 'delegator', select: '_id name company' }
       ]
 
     }
@@ -2558,7 +2558,7 @@ exports.addTaskLog = async (portal, taskId, body) => {
     {
       path: "delegations", populate: [
         { path: 'delegatee', select: '_id name' },
-        { path: 'delegator', select: '_id name' }
+        { path: 'delegator', select: '_id name company' }
       ]
 
     }

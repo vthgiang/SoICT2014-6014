@@ -82,7 +82,7 @@ function GeneralTab(props) {
                             <span> {delegateRole?.name}</span>
                         </React.Fragment> :
                         <React.Fragment>
-                            <label>{translate('manage_delegation.delegateObject')}:</label>
+                            <label>{translate('manage_delegation.delegateObjectTaskRole')}:</label>
                             <span> {delegateTaskRoles ? delegateTaskRoles.map(r => translate('task.task_management.' + r)).join(", ") : ""}</span>
                         </React.Fragment>
                     }

@@ -5,7 +5,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { RevokeNotification, DeleteNotification, PaginateBar, SmartTable, ToolTip } from "../../../../common-components";
 
 import { DelegationCreateFormTask } from "./delegationCreateFormTask";
-import { DelegationEditForm } from "./delegationEditForm";
+import { DelegationEditFormTask } from "./delegationEditFormTask";
 import { DelegationDetailInfoTask } from "./delegationDetailInfoTask";
 import { DelegationImportForm } from "./delegationImortForm";
 import { UserActions } from '../../../super-admin/user/redux/actions';
@@ -17,10 +17,11 @@ import { DelegationActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import dayjs from "dayjs";
 import { colorfyDelegationStatus } from './functionHelper';
-
+import { performTaskAction } from '../../../task/task-perform/redux/actions';
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
 
 function DelegationTableTask(props) {
-    const { delegation, translate, user } = props;
+    const { delegation, translate, user, tasks } = props;
 
     const getTableId = "table-manage-delegation1-hooks-Task";
     const defaultConfig = { limit: 5 }
@@ -42,10 +43,13 @@ function DelegationTableTask(props) {
         props.getUser();
         props.getRoles();
         props.getLinks({ type: "active" });
+
     }, [])
 
     useEffect(() => {
         props.getDepartment();
+        props.getTasksByUser({ type: "user", organizationUnitId: null })
+
     }, [])
 
 
@@ -122,7 +126,7 @@ function DelegationTableTask(props) {
      * @param {*} id của ví dụ cần xóa
      */
     const handleDelete = (id) => {
-        props.deleteDelegations({
+        props.deleteTaskDelegations({
             delegationIds: [id]
         });
         props.getDelegationsTask({
@@ -134,7 +138,7 @@ function DelegationTableTask(props) {
     }
 
     const handleRevoke = (id) => {
-        props.revokeDelegation({
+        props.revokeTaskDelegation({
             delegationIds: [id],
             reason: window.$(`#revokeReason-${id}`).val()
         });
@@ -195,26 +199,22 @@ function DelegationTableTask(props) {
 
     return (
         <React.Fragment>
-            {user && user.organizationalUnitsOfUser && <DelegationEditForm
+            {user && user.organizationalUnitsOfUser && <DelegationEditFormTask
+
+                delegateTask={currentRow && currentRow.delegateTask}
                 delegationID={currentRow && currentRow._id}
                 delegationName={currentRow && currentRow.delegationName}
                 description={currentRow && currentRow.description}
                 delegator={currentRow && currentRow.delegator}
                 delegatee={currentRow && currentRow.delegatee}
-                delegatePrivileges={currentRow && currentRow.delegatePrivileges}
                 delegateType={currentRow && currentRow.delegateType}
-                delegateRole={currentRow && currentRow.delegateRole}
-                delegateTask={currentRow && currentRow.delegateTask}
+                delegateTaskRoles={currentRow && currentRow.delegateTaskRoles}
                 status={currentRow && currentRow.status}
-                allPrivileges={currentRow && currentRow.allPrivileges}
                 startDate={currentRow && currentRow.startDate}
                 endDate={currentRow && currentRow.endDate}
-                revokedDate={currentRow && currentRow.revokedDate}
-                revokeReason={currentRow && currentRow.revokeReason}
                 delegatePolicy={currentRow && currentRow.delegatePolicy}
-                showChooseLinks={currentRow && currentRow.allPrivileges == true ? false : true}
-                showChooseRevoke={currentRow && currentRow.revokedDate != null ? true : false}
-                logs={currentRow && currentRow.logs}
+                showChooseRevoke={currentRow && currentRow.endDate != null ? true : false}
+
 
             />
 
@@ -242,11 +242,11 @@ function DelegationTableTask(props) {
                 logs={curentRowDetail && curentRowDetail.logs}
             />
 
-            {/* {user && user.organizationalUnitsOfUser && <DelegationCreateFormTask
+            {user && user.organizationalUnitsOfUser && tasks.tasksbyuser && <DelegationCreateFormTask
                 pageTask={pageTask}
                 perPageTask={perPageTask}
             />
-            } */}
+            }
             <DelegationImportForm
                 pageTask={pageTask}
                 perPageTask={perPageTask}
@@ -288,7 +288,7 @@ function DelegationTableTask(props) {
                         delegationName: translate('manage_delegation.delegationName'),
                         // delegateType: translate('manage_delegation.delegateType'),
                         delegateObjectTask: translate('manage_delegation.delegateObjectTask'),
-                        delegateTaskRoles: translate('manage_delegation.delegateObject'),
+                        delegateTaskRoles: translate('manage_delegation.delegateObjectTaskRole'),
                         delegatee: translate('manage_delegation.delegatee'),
                         delegateStartDate: translate('manage_delegation.delegateStartDate'),
                         delegateEndDate: translate('manage_delegation.delegateEndDate'),
@@ -300,7 +300,7 @@ function DelegationTableTask(props) {
                         delegationName: <th>{translate('manage_delegation.delegationName')}</th>,
                         // delegateType: <th>{translate('manage_delegation.delegateType')}</th>,
                         delegateObjectTask: <th>{translate('manage_delegation.delegateObjectTask')}</th>,
-                        delegateTaskRoles: <th>{translate('manage_delegation.delegateObject')}</th>,
+                        delegateTaskRoles: <th>{translate('manage_delegation.delegateObjectTaskRole')}</th>,
                         delegatee: <th>{translate('manage_delegation.delegatee')}</th>,
                         delegateStartDate: <th>{translate('manage_delegation.delegateStartDate')}</th>,
                         delegateEndDate: <th>{translate('manage_delegation.delegateEndDate')}</th>,
@@ -371,18 +371,19 @@ function DelegationTableTask(props) {
 }
 
 function mapState(state) {
-    const { delegation, user, role, link } = state;
-    return { delegation, user, role, link }
+    const { delegation, user, role, link, tasks } = state;
+    return { delegation, user, role, link, tasks }
 }
 
 const actions = {
     getDelegationsTask: DelegationActions.getDelegationsTask,
-    deleteDelegations: DelegationActions.deleteDelegations,
-    revokeDelegation: DelegationActions.revokeDelegation,
+    deleteTaskDelegations: DelegationActions.deleteTaskDelegations,
+    revokeTaskDelegation: DelegationActions.revokeTaskDelegation,
     getUser: UserActions.get,
     getLinks: LinkActions.get,
     getRoles: RoleActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
+    getTasksByUser: taskManagementActions.getTasksByUser,
 }
 
 const connectedDelegationTableTask = connect(mapState, actions)(withTranslate(DelegationTableTask));

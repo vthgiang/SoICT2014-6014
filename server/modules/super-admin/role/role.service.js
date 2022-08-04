@@ -3,6 +3,8 @@ const { OrganizationalUnit, Role, RoleType, UserRole, Privilege, Attribute } = r
 const { connect } = require('../../../helpers/dbHelper');
 const RoleService = require('./role.service');
 const mongoose = require('mongoose');
+const DelegationService = require(`../../delegation/delegation.service`)
+
 /**
  * Lấy danh sách tất cả các role của 1 công ty
  * @portal portal của db
@@ -443,7 +445,11 @@ exports.editRelationshipUserRole = async (portal, roleId, userArr = []) => {
             };
         })
         // console.log('user_role', user_role)
-        return await UserRole(connect(DB_CONNECTION, portal)).insertMany(user_role);
+        var relationship = await UserRole(connect(DB_CONNECTION, portal)).insertMany(user_role);
+
+        await DelegationService.handleDelegatorLosesRole(portal, userArr, roleId)
+
+        return relationship
     }
 }
 

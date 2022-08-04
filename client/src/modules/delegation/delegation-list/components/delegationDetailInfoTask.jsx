@@ -21,7 +21,7 @@ const DelegationDetailInfoTask = (props) => {
 
     // Nhận giá trị từ component cha
     useEffect(() => {
-        if (props.delegationID !== state.delegationID || props.status !== state.status || props.replyStatus !== state.replyStatus || props.logs !== state.logs) {
+        if (props.delegationID !== state.delegationID || props.status !== state.status || props.replyStatus !== state.replyStatus || props.logs !== state.logs || props.delegateTask !== state.delegateTask) {
             setState({
                 ...state,
                 delegationID: props.delegationID,
@@ -47,8 +47,9 @@ const DelegationDetailInfoTask = (props) => {
                 logs: props.logs
             })
         }
-    }, [props.delegationID, props.status, props.replyStatus, props.logs])
+    }, [props.delegationID, props.status, props.replyStatus, props.delegateTask, props.delegateTask])
 
+    console.log(state)
     const showDetailTimer = (nameAction, timeSheetLogs) => {
         nameAction = htmlToText(nameAction);
         let result = [];

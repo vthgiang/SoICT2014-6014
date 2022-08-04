@@ -8,6 +8,10 @@ export const DelegationActions = {
     editDelegation,
     revokeDelegation,
     getDelegationsTask,
+    deleteTaskDelegations,
+    createTaskDelegation,
+    editTaskDelegation,
+    revokeTaskDelegation,
 }
 
 function getDelegations(queryData) {
@@ -143,6 +147,99 @@ function editDelegation(id, data) {
             .catch((error) => {
                 dispatch({
                     type: delegationConstants.EDIT_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function deleteTaskDelegations(data) {
+    return (dispatch) => {
+        dispatch({
+            type: delegationConstants.DELETE_TASK_DELEGATION_REQUEST
+        });
+
+        delegationServices
+            .deleteTaskDelegations(data)
+            .then((res) => {
+                dispatch({
+                    type: delegationConstants.DELETE_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationIds: data.delegationIds
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: delegationConstants.DELETE_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function revokeTaskDelegation(data) {
+    return (dispatch) => {
+        dispatch({
+            type: delegationConstants.REVOKE_TASK_DELEGATION_REQUEST
+        });
+
+        delegationServices
+            .revokeTaskDelegation(data)
+            .then((res) => {
+                dispatch({
+                    type: delegationConstants.REVOKE_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationIds: data.delegationIds,
+                    reason: data.reason
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: delegationConstants.REVOKE_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function createTaskDelegation(data) {
+    return (dispatch) => {
+        dispatch({
+            type: delegationConstants.CREATE_TASK_DELEGATION_REQUEST
+        });
+        delegationServices
+            .createTaskDelegation(data)
+            .then((res) => {
+                dispatch({
+                    type: delegationConstants.CREATE_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: delegationConstants.CREATE_TASK_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function editTaskDelegation(id, data) {
+    return (dispatch) => {
+        dispatch({
+            type: delegationConstants.EDIT_TASK_DELEGATION_REQUEST
+        });
+        delegationServices
+            .editTaskDelegation(id, data)
+            .then((res) => {
+                dispatch({
+                    type: delegationConstants.EDIT_TASK_DELEGATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: delegationConstants.EDIT_TASK_DELEGATION_FAILURE,
                     error
                 });
             });

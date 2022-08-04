@@ -4823,7 +4823,10 @@ exports.addTaskDelegation = async (portal, taskId, data) => {
 
     // let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId })
     // let taskDelegation =
-    await DelegationService.createTaskDelegation(portal, [data])
+    let newDelegation = await DelegationService.createTaskDelegation(portal, [data])
+    await DelegationService.sendNotification(portal, newDelegation, "create")
+
+    await DelegationService.saveLog(portal, newDelegation, newDelegation.delegator, newDelegation.delegationName, "create", newDelegation.createdAt)
     // await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: taskId }, {
     //     delegations: [
     //         ...task.delegations,
@@ -4843,7 +4846,7 @@ exports.addTaskDelegation = async (portal, taskId, data) => {
             path: "delegations", populate: [
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
-                { path: 'delegator', select: '_id name' },
+                { path: 'delegator', select: '_id name company' },
                 {
                     path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
                     populate: [
@@ -4868,13 +4871,14 @@ exports.addTaskDelegation = async (portal, taskId, data) => {
 
 exports.editTaskDelegation = async (portal, taskId, data) => {
 
-    await DelegationService.editTaskDelegation(portal, data)
+    let updatedDelegation = await DelegationService.editTaskDelegation(portal, data)
     // await Task(connect(DB_CONNECTION, portal)).updateOne({ _id: taskId }, {
     //     delegations: [
     //         ...task.delegations.filter(d => d.toString() == data.delegationId.toString()),
     //         taskDelegation._id
     //     ]
     // })
+    await DelegationService.sendNotification(portal, updatedDelegation, "create")
 
     let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
         { path: "organizationalUnit parent" },
@@ -4888,7 +4892,7 @@ exports.editTaskDelegation = async (portal, taskId, data) => {
             path: "delegations", populate: [
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
-                { path: 'delegator', select: '_id name' },
+                { path: 'delegator', select: '_id name company' },
                 {
                     path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
                     populate: [
@@ -4927,7 +4931,7 @@ exports.deleteTaskDelegation = async (portal, taskId, data) => {
             path: "delegations", populate: [
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
-                { path: 'delegator', select: '_id name' },
+                { path: 'delegator', select: '_id name company' },
                 {
                     path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
                     populate: [
@@ -4952,8 +4956,10 @@ exports.deleteTaskDelegation = async (portal, taskId, data) => {
 
 exports.revokeTaskDelegation = async (portal, taskId, data) => {
 
-    await DelegationService.revokeTaskDelegation(portal, [data.delegationId], data.reason)
+    let revokedDelegation = await DelegationService.revokeTaskDelegation(portal, [data.delegationId], data.reason)
+    await DelegationService.saveLog(portal, revokedDelegation, revokedDelegation.delegator, revokedDelegation.delegationName, "revoke", revokedDelegation.revokedDate)
 
+    await DelegationService.sendNotification(portal, revokedDelegation, "revoke")
 
     let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
         { path: "organizationalUnit parent" },
@@ -4967,7 +4973,7 @@ exports.revokeTaskDelegation = async (portal, taskId, data) => {
             path: "delegations", populate: [
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
-                { path: 'delegator', select: '_id name' },
+                { path: 'delegator', select: '_id name company' },
                 {
                     path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
                     populate: [
@@ -4992,8 +4998,10 @@ exports.revokeTaskDelegation = async (portal, taskId, data) => {
 
 exports.rejectTaskDelegation = async (portal, taskId, data) => {
 
-    await DelegationService.rejectDelegation(portal, data.delegationId, data.reason)
+    let rejectedDelegation = await DelegationService.rejectDelegation(portal, data.delegationId, data.reason)
+    await DelegationService.saveLog(portal, rejectedDelegation, rejectedDelegation.delegatee, rejectedDelegation.delegationName, "reject", new Date())
 
+    await DelegationService.sendNotification(portal, rejectedDelegation, "reject")
 
     let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
         { path: "organizationalUnit parent" },
@@ -5007,7 +5015,7 @@ exports.rejectTaskDelegation = async (portal, taskId, data) => {
             path: "delegations", populate: [
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
-                { path: 'delegator', select: '_id name' },
+                { path: 'delegator', select: '_id name company' },
                 {
                     path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
                     populate: [
@@ -5032,8 +5040,10 @@ exports.rejectTaskDelegation = async (portal, taskId, data) => {
 
 exports.confirmTaskDelegation = async (portal, taskId, data) => {
 
-    await DelegationService.confirmDelegation(portal, data.delegationId)
+    let confirmedDelegation = await DelegationService.confirmDelegation(portal, data.delegationId)
+    await DelegationService.saveLog(portal, confirmedDelegation, confirmedDelegation.delegatee, confirmedDelegation.delegationName, "confirm", new Date())
 
+    await DelegationService.sendNotification(portal, confirmedDelegation, "confirm")
 
     let updateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: taskId }).populate([
         { path: "organizationalUnit parent" },
@@ -5047,7 +5057,7 @@ exports.confirmTaskDelegation = async (portal, taskId, data) => {
             path: "delegations", populate: [
                 { path: 'delegatee', select: '_id name' },
                 { path: 'delegatePolicy', select: '_id policyName' },
-                { path: 'delegator', select: '_id name' },
+                { path: 'delegator', select: '_id name company' },
                 {
                     path: 'delegateTask', select: '_id name taskActions logs timesheetLogs',
                     populate: [

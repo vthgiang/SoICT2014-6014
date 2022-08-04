@@ -4,20 +4,18 @@ import { connect } from 'react-redux';
 import { ButtonModal, DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker, SelectMulti } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
-import { DelegationActions } from '../../../delegation/delegation-list/redux/actions';
+import { DelegationActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import { DelegationFormValidator } from '../../../delegation/delegation-list/components/delegationFormValidator';
+import { DelegationFormValidator } from './delegationFormValidator';
 import '../../../delegation/delegation-list/components/selectLink.css'
 import dayjs from "dayjs";
-import { generateCode } from "../../../../helpers/generateCode";
-import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
 import { PolicyActions } from '../../../super-admin/policy-delegation/redux/actions';
-import { performTaskAction } from '../../task-perform/redux/actions';
-import { taskManagementActions } from '../redux/actions';
+import { performTaskAction } from '../../../task/task-perform/redux/actions';
 
 
-function TaskDelegationFormEdit(props) {
+function DelegationEditFormTask(props) {
 
     const [state, setState] = useState({
         delegationNameError: {
@@ -36,7 +34,7 @@ function TaskDelegationFormEdit(props) {
         validLinks: [],
         unitMembers: [],
     })
-    const { delegationID, taskId, delegateTaskName, delegationName, description, delegationNameError, delegateTaskRoles, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateTaskRoles, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateTaskRoles, errorOnDelegateLinks, unitMembers, delegatePolicy, errorDelegatePolicy, roles } = state;
+    const { delegationID, errorDelegateTask, delegateTask, delegationName, description, delegationNameError, delegateTaskRoles, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateTaskRoles, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateTaskRoles, errorOnDelegateLinks, unitMembers, delegatePolicy, errorDelegatePolicy, roles } = state;
 
     const { translate, performtasks, auth, user, policyDelegation, tasks } = props;
 
@@ -54,6 +52,13 @@ function TaskDelegationFormEdit(props) {
     //         props.getTaskById(props.taskId); // props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
     //     }
     // }, [props.taskId])
+
+    useEffect(() => {
+        if (props.delegateTask) {
+            props.getTaskById(props.delegateTask._id); // props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
+        }
+    }, [props.delegateTask])
+
 
     useEffect(() => {
 
@@ -93,9 +98,7 @@ function TaskDelegationFormEdit(props) {
             if (props.delegationID !== state.delegationID) {
                 setState({
                     ...state,
-                    taskId: props.taskId,
                     roles: roles,
-                    delegateTaskName: props.taskName,
                     delegationID: props.delegationID,
                     delegationName: props.delegationName,
                     description: props.description,
@@ -112,10 +115,11 @@ function TaskDelegationFormEdit(props) {
                         errorOnEndDate: undefined,
                     },
                     showChooseRevoke: props.showChooseRevoke,
-                    delegatePolicy: props.delegatePolicy._id
+                    delegatePolicy: props.delegatePolicy._id,
+                    delegateTask: props.delegateTask._id
                 });
 
-                window.$('#delegateRevokeEdit').prop("checked", props.showChooseRevoke);
+                window.$('#delegateRevokeEdit-Task').prop("checked", props.showChooseRevoke);
 
             }
         }
@@ -143,7 +147,7 @@ function TaskDelegationFormEdit(props) {
      */
     const isFormValidated = () => {
         if (!delegationNameError.status || !validateDelegatee(state.delegatee, false) || !validateDelegateTaskRoles(state.delegateTaskRoles, false) || (showChooseRevoke && !ValidationHelper.validateEmpty(translate, delegateDuration.endDate).status)
-            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || !validateDelegatePolicy(state.delegatePolicy, false)) {
+            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || !validateDelegatePolicy(state.delegatePolicy, false) || !validateDelegateTask(state.delegateTask, false)) {
 
             return false;
         }
@@ -169,11 +173,11 @@ function TaskDelegationFormEdit(props) {
             delegationStart: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
             delegationEnd: delegationEnd != "" ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
             delegatePolicy: delegatePolicy,
-            delegateTask: taskId,
+            delegateTask: delegateTask,
             delegationId: delegationID,
         }
         if (isFormValidated() && delegationName) {
-            return props.editTaskDelegation(taskId, data);
+            return props.editTaskDelegation(delegationID, data);
         }
     }
 
@@ -208,7 +212,26 @@ function TaskDelegationFormEdit(props) {
         return msg === undefined;
     }
 
+    const handleDelegateTask = (value) => {
+        validateDelegateTask(value[0], true);
+    }
 
+    const validateDelegateTask = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (!value) {
+            msg = translate('manage_delegation.no_blank_delegate_task');
+        }
+
+        if (willUpdateState) {
+            setState({
+                ...state,
+                delegateTask: value,
+                errorDelegateTask: msg,
+            })
+        }
+        return msg === undefined;
+    }
     /**
      * Hàm xử lý khi tên ví dụ thay đổi
      * @param {*} e 
@@ -493,23 +516,35 @@ function TaskDelegationFormEdit(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-task-delegation-form-edit`}
+                modalID={`modal-edit-delegation-hooks-Task`}
                 formID={`form-task-delegation-form-edit`}
                 title={translate('manage_delegation.task_delegation_title_add')}
                 msg_success={translate('manage_delegation.add_success')}
                 msg_failure={translate('manage_delegation.add_fail')}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={65}
+                size={50}
             >
                 <form id={`form-task-delegation-form-edit`} onSubmit={() => save(translate('manage_delegation.add_success'))}>
                     <div className="row form-group">
-                        {/* Tên công việc ủy quyền*/}
-                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group`}>
+                        {/* Chọn công việc ủy quyền*/}
+                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegateTask === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_delegation.delegateTaskName')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" value={delegateTaskName} disabled></input>
+                            {tasks.tasksbyuser && <SelectBox
+                                id="select-delegate-task-edit"
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={
+                                    tasks.tasksbyuser.expire.map(e => e.task).concat(tasks.tasksbyuser.deadlineincoming.map(d => d.task)).map(task => { return { value: task ? task._id : null, text: task ? task.name : "" } })
+                                }
+                                onChange={handleDelegateTask}
+                                multiple={false}
+                                value={delegateTask}
+                                options={{ placeholder: translate('manage_delegation.choose_delegateTaskName') }}
+                            />
+                            }
+                            <ErrorLabel content={errorDelegateTask} />
                         </div>
-
                     </div>
 
 
@@ -556,7 +591,7 @@ function TaskDelegationFormEdit(props) {
                             <label>{translate('manage_delegation.delegate_receiver')}<span className="text-red">*</span></label>
                             {allUnitsMember &&
                                 <SelectBox
-                                    id="select-delegate-receiver-edit"
+                                    id="select-delegate-receiver-edit-task"
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
@@ -581,8 +616,8 @@ function TaskDelegationFormEdit(props) {
                             <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
 
                                 <form style={{ marginBottom: '5px' }}>
-                                    <input type="checkbox" id="delegateRevokeEdit" name="delegateRevokeEdit" onChange={chooseRevoke} />
-                                    <label htmlFor="delegateRevokeEdit">&nbsp;{translate('manage_delegation.choose_revoke')}</label>
+                                    <input type="checkbox" id="delegateRevokeEdit-Task" name="delegateRevokeEdit-Task" onChange={chooseRevoke} />
+                                    <label htmlFor="delegateRevokeEdit-Task">&nbsp;{translate('manage_delegation.choose_revoke')}</label>
                                 </form>
 
                             </div>
@@ -593,14 +628,14 @@ function TaskDelegationFormEdit(props) {
                         <div style={{ marginBottom: "0px" }} className={`${showChooseRevoke ? "col-lg-6 col-md-6" : "col-lg-12 col-md-12"} col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnStartDate === undefined ? "" : "has-error"}`}>
                             <label className="control-label">{translate('manage_delegation.start_date')}<span className="text-red">*</span></label>
                             <DatePicker
-                                id={`datepicker1edit`}
+                                id={`datepicker1edit-task`}
                                 dateFormat="day-month-year"
                                 value={delegateDuration.startDate}
                                 onChange={handleChangeTaskStartDate}
                                 pastDate={false}
                             />
                             <TimePicker
-                                id={`time-picker-1edit`}
+                                id={`time-picker-1edit-task`}
                                 refs={`time-picker-1`}
                                 value={delegateDuration.startTime}
                                 onChange={handleStartTimeChange}
@@ -612,13 +647,13 @@ function TaskDelegationFormEdit(props) {
                             <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('manage_delegation.end_date')}</label>
                                 <DatePicker
-                                    id={`datepicker2edit`}
+                                    id={`datepicker2edit-task`}
                                     value={delegateDuration.endDate}
                                     onChange={handleChangeTaskEndDate}
                                     pastDate={false}
                                 />
                                 < TimePicker
-                                    id={`time-picker-2edit`}
+                                    id={`time-picker-2edit-task`}
                                     refs={`time-picker-2`}
                                     value={delegateDuration.endTime}
                                     onChange={handleEndTimeChange}
@@ -633,7 +668,7 @@ function TaskDelegationFormEdit(props) {
                         <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegatePolicy === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_delegation.delegate_policy')}<span className="text-red">*</span></label>
                             <SelectBox
-                                id="select-delegate-policy-edit"
+                                id="select-delegate-policy-edit-task"
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
@@ -666,9 +701,9 @@ const actions = {
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getPolicies: PolicyActions.getPolicies,
     getTaskById: performTaskAction.getTaskById,
-    editTaskDelegation: taskManagementActions.editTaskDelegation,
+    editTaskDelegation: DelegationActions.editTaskDelegation,
 
 }
 
-const connectedTaskDelegationFormEdit = connect(mapState, actions)(withTranslate(TaskDelegationFormEdit));
-export { connectedTaskDelegationFormEdit as TaskDelegationFormEdit };
+const connectedDelegationEditFormTask = connect(mapState, actions)(withTranslate(DelegationEditFormTask));
+export { connectedDelegationEditFormTask as DelegationEditFormTask };

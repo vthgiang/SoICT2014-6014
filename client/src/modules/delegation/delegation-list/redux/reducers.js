@@ -29,6 +29,10 @@ export function delegation(state = initialState, action) {
         case delegationConstants.REVOKE_DELEGATION_REQUEST:
         case delegationConstants.CREATE_DELEGATION_REQUEST:
         case delegationConstants.EDIT_DELEGATION_REQUEST:
+        case delegationConstants.DELETE_TASK_DELEGATION_REQUEST:
+        case delegationConstants.REVOKE_TASK_DELEGATION_REQUEST:
+        case delegationConstants.CREATE_TASK_DELEGATION_REQUEST:
+        case delegationConstants.EDIT_TASK_DELEGATION_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -39,6 +43,10 @@ export function delegation(state = initialState, action) {
         case delegationConstants.REVOKE_DELEGATION_FAILURE:
         case delegationConstants.CREATE_DELEGATION_FAILURE:
         case delegationConstants.EDIT_DELEGATION_FAILURE:
+        case delegationConstants.DELETE_TASK_DELEGATION_FAILURE:
+        case delegationConstants.REVOKE_TASK_DELEGATION_FAILURE:
+        case delegationConstants.CREATE_TASK_DELEGATION_FAILURE:
+        case delegationConstants.EDIT_TASK_DELEGATION_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -86,6 +94,39 @@ export function delegation(state = initialState, action) {
             index = findIndex(state.lists, action.payload[0]);
             if (index !== -1) {
                 state.lists[index] = action.payload[1];
+            }
+            return {
+                ...state,
+                isLoading: false
+            }
+        case delegationConstants.DELETE_TASK_DELEGATION_SUCCESS:
+            return {
+                ...state,
+                listsTask: state.listsTask.filter(delegation => !action.delegationIds.includes(delegation?._id)),
+                isLoading: false
+            }
+        case delegationConstants.REVOKE_TASK_DELEGATION_SUCCESS:
+            index = findIndex(state.listsTask, action.payload._id);
+            if (index !== -1) {
+                state.listsTask[index] = action.payload
+            }
+            return {
+                ...state,
+                isLoading: false
+            }
+        case delegationConstants.CREATE_TASK_DELEGATION_SUCCESS:
+            return {
+                ...state,
+                listsTask: [
+                    ...state.listsTask,
+                    action.payload
+                ],
+                isLoading: false
+            }
+        case delegationConstants.EDIT_TASK_DELEGATION_SUCCESS:
+            index = findIndex(state.listsTask, action.payload[0]);
+            if (index !== -1) {
+                state.listsTask[index] = action.payload[1];
             }
             return {
                 ...state,

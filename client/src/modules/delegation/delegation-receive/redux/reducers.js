@@ -21,6 +21,7 @@ const initialState = {
 
 export function delegationReceive(state = initialState, action) {
     let index = -1;
+    let indexTask = -1;
     switch (action.type) {
         case delegationConstants.GET_ALL_DELEGATIONS_REQUEST:
         case delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST:
@@ -51,6 +52,11 @@ export function delegationReceive(state = initialState, action) {
             if (index !== -1) {
                 state.listsRole[index] = action.payload
             }
+
+            indexTask = findIndex(state.listsTask, action.payload._id);
+            if (indexTask !== -1) {
+                state.listsTask[indexTask] = action.payload
+            }
             return {
                 ...state,
                 isLoading: false
@@ -59,6 +65,11 @@ export function delegationReceive(state = initialState, action) {
             index = findIndex(state.listsRole, action.payload._id);
             if (index !== -1) {
                 state.listsRole[index] = action.payload
+            }
+
+            indexTask = findIndex(state.listsTask, action.payload._id);
+            if (indexTask !== -1) {
+                state.listsTask[indexTask] = action.payload
             }
             return {
                 ...state,
