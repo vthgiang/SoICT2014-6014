@@ -194,7 +194,7 @@ const ModalCalculateCPM = (props) => {
         }).then(async (result) => {
             if (result.value) {
                 const newTasksList = currentProcessData.map((processDataItem, processDataIndex) => {
-                    const taskPhase = processedPhaseData.find(phase => phase.code == processDataItem.projectPhase).name
+                    const taskPhase = processedPhaseData?.find(phase => phase.code == processDataItem.projectPhase)?.name
                     const responsiblesWithSalaryArr = processDataItem.currentResponsibleEmployees?.map((resItem, resIndex) => {
                         return ({
                             userId: resItem,
