@@ -382,7 +382,7 @@ export const CreateTaskProjectTemplate = (props) => {
 
                             <div className="row">
                                 <div className="form-group col-md-6">
-                                    <label>Thòi gian ước lượng<span className="text-red">*</span></label>
+                                    <label>Thời gian ước lượng<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="estimateNormalTime" value={state.currentTask.estimateNormalTime} onChange={(e) => handleChangeEstimateNormalTime(e)}></input>
                                 </div>
                                 <div className="form-group col-md-6">

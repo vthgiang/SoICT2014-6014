@@ -14,6 +14,11 @@ import { ViewDecisionForImplement } from './viewDecision';
 import { contractDocxCreate } from './contractDocxCreator';
 import { saveAs } from "file-saver";
 import { Packer } from "docx";
+// var JSZip = require("jszip");
+import * as JSZip from 'jszip';
+import { TagActions } from '../../tags/redux/actions';
+import { acceptanceRecordDocxCreate } from './acceptanceRecordCreator';
+import { taskReportDocxCreate } from './reportsListCreator';
 
 const ViewBiddingContract = (props) => {
 	const [showFile, setShowFile] = useState(false)
@@ -64,12 +69,21 @@ const ViewBiddingContract = (props) => {
 
 	const [state, setState] = useState(initState);
 	const [id, setId] = useState(props.id)
-	const { translate, biddingContract, biddingPackagesManager, tasks } = props;
+	const { translate, biddingContract, biddingPackagesManager, tasks, tag } = props;
 	const listActiveBiddingPackage = biddingPackagesManager?.listActiveBiddingPackage;
 
 	useEffect(() => {
 		setId(props.id)
 	}, [props.id])
+
+	useEffect(() => {
+		props.getListTag({});
+	}, []);
+
+	let alltag = [];
+	if (tag && tag.listTag) {
+		alltag = tag?.listTag
+	}
 
 	useEffect(() => {
 		const { data } = props;
@@ -122,7 +136,9 @@ const ViewBiddingContract = (props) => {
 				props.getTasksByProject(data.project?._id);
 			}
 		}
-	}, [props.id])
+	}, [props.id, JSON.stringify(props.data?.project?._id)])
+
+	console.log(129, "____", state);
 
 	// Function format dữ liệu Date thành string
 	const formatDate = (date, monthYear = false) => {
@@ -172,6 +188,109 @@ const ViewBiddingContract = (props) => {
 		props.downloadFile(path, fileName)
 	}
 
+	const isEqualTagArray = (arr1, arr2) => {
+		// trả về mảng các phần tử mảng 1 có trong mảng 2
+		const filteredArr = arr1.filter(value => arr2.includes(value))
+
+		if (arr1.length === arr2.length && filteredArr.length === arr1.length) {
+			return true; // bằng nhau
+		}
+		return false;
+	}
+
+	const convertTagIdToTagName = (listTag, id) => {
+		const tag = listTag?.find(x => String(x._id) === String(id));
+		// return tag?.name;
+		return tag?.description;
+	}
+
+	const getALlTagOfBiddingTask = (tasks, allTag) => {
+		let tagsList = [];
+
+		for (let t of tasks) {
+			tagsList.push(t.tag)
+		}
+
+		let uniqueTagsArr = [];
+
+		for (let t of tagsList) {
+			let isExist = uniqueTagsArr.find(x => JSON.stringify(x) === JSON.stringify(t))
+			if (!isExist) {
+				uniqueTagsArr.push(t);
+			}
+		}
+		let objectTmp = {};
+		for (let u of uniqueTagsArr) {
+			let fmTagStr = u?.map(x => convertTagIdToTagName(allTag, x)).join(", ")
+			objectTmp[JSON.stringify(u)] = {
+				tag: fmTagStr,
+				tasks: [],
+			}
+			for (let x of tasks) {
+				if (JSON.stringify(x.tag) === JSON.stringify(u)) {
+					objectTmp[JSON.stringify(u)].tasks.push(x);
+				}
+			}
+		}
+
+		let res = [];
+		for (let i in objectTmp) {
+			let o = objectTmp[i];
+
+			res.push(o);
+		}
+
+		return res;
+	}
+
+
+	const generateReportsZip = async (state) => {
+		let zip = new JSZip();
+		// zip.file("Hello.txt", "Hello World\n");
+		// var img = zip.folder("images");
+		let report = zip.folder(`Bao_cao_cong_viec`); // reports
+		let acceptance = zip.folder(`Bien_ban_nghiem_thu`); // acceptanceRecord
+
+
+		const acceptanceRecord = acceptanceRecordDocxCreate(alltag, state);
+
+		await Packer.toBlob(acceptanceRecord).then(blob => {
+			acceptance.file("Biên bản nghiệm thu hợp đồng đợt xxx.docx", blob)
+		});
+
+		await Packer.toBlob(acceptanceRecord).then(blob => {
+			zip.file("Biên bản nghiệm thu hợp đồng đợt xxx.docx", blob)
+		});
+
+		const taskByTagArr = getALlTagOfBiddingTask(state?.biddingPackage?.proposals?.tasks ?? [], alltag);
+		for (let x = 0; x < taskByTagArr?.length; x++) {
+			let taskByTagitem = taskByTagArr[x];
+			let docGenerator = taskReportDocxCreate(taskByTagitem, state);
+
+			await Packer.toBlob(docGenerator).then(blob => {
+				console.log(blob);
+				report.file(`${x + 1}-BC Txx-${taskByTagitem?.tag}.docx`, blob)
+			});
+		}
+
+		zip.generateAsync({ type: "blob" }).then(function (content) {
+			saveAs(content, `Tài liệu báo cáo thực hiện gói thầu theo hợp đồng số ${state?.code}`);
+		});
+	}
+
+	const generateDEMO = (state) => {
+		// const doc = acceptanceRecordDocxCreate(alltag, state);
+		const taskByTagArr = getALlTagOfBiddingTask(state?.biddingPackage?.proposals?.tasks ?? [], alltag);
+		const test = taskByTagArr[0];
+
+		const doc = taskReportDocxCreate(test, state);
+
+		Packer.toBlob(doc).then(blob => {
+			console.log(blob);
+			saveAs(blob, `demoooooo.docx`);
+			console.log("Document created successfully");
+		});
+	}
 
 	const generateContract = (state) => {
 		const doc = contractDocxCreate(state);
@@ -187,6 +306,7 @@ const ViewBiddingContract = (props) => {
 		return (
 			<div>
 				<div style={{ display: 'flex', justifyContent: "flex-end" }}>
+					{/* <div className="btn btn-danger" onClick={() => generateDEMO(state)}>Tải file DM</div> */}
 					<div className="btn btn-success" onClick={() => generateContract(state)}>Tải file hợp đồng</div>
 				</div>
 				<div style={{ lineHeight: 2, marginLeft: "5px" }} className="row">
@@ -304,13 +424,21 @@ const ViewBiddingContract = (props) => {
 							}
 						</div>
 						<div className={state.selectedTab === "project" ? "active tab-pane" : "tab-pane"} id="project">
-							{
-								state.project ?
+							{/* <div style={{ display: 'flex', justifyContent: "flex-end" }}>
+								<div className="btn btn-primary" onClick={() => generateReportsZip(state)}>Tải báo cáo theo đầu mục công việc</div>
+							</div> */}
+							{state.project ?
+								<div>
+									<div style={{ display: 'flex', justifyContent: "flex-end" }}>
+										<div className="btn btn-primary" onClick={() => generateReportsZip(state)}>Tải báo cáo theo đầu mục công việc</div>
+									</div>
 									<DetailContent
 										projectDetailId={state.project && state.project._id}
 										projectDetail={state.project}
-										currentProjectTasks={tasks && tasks.tasksbyproject}
-									/> : <span>Chưa có dự án theo hợp đồng này</span>
+										currentProjectTasks={tasks && tasks.tasksByProject}
+									/>
+
+								</div> : <span>Chưa có dự án theo hợp đồng này</span>
 							}
 						</div>
 						<div className={state.selectedTab === `#view-decision-${id}` ? "active tab-pane" : "tab-pane"} id={`#view-decision-${id}`}>
@@ -333,7 +461,8 @@ const mapDispatchToProps = {
 	editBiddingContract: BiddingContractActions.editBiddingContract,
 	getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
 	downloadFile: AuthActions.downloadFile,
-	getTasksByProject: taskManagementActions.getTasksByProject,
+	getTasksByProject: taskManagementActions.getAllTasksByProject,
+	getListTag: TagActions.getListTag,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ViewBiddingContract));

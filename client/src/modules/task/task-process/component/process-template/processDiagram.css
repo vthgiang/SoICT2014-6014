@@ -10,11 +10,25 @@
     text-align: center;
 }
 
-#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a,#viewprocesschild > div > a, #editprocess > div > a, #createprocess > div > a, #createtaskbyprocess > div > a, #viewtaskprocesstab > div > a, #edittaskprocess > div > a, #edittaskprocessnoinit > div > a  {
+#viewprocess>div>a,
+#editprocess>div>a,
+#createprocess>div>a,
+#viewprocesschild>div>a,
+#editprocess>div>a,
+#createprocess>div>a,
+#createtaskbyprocess>div>a,
+#viewtaskprocesstab>div>a,
+#viewtaskoutputtab>div>a,
+#edittaskprocess>div>a,
+#edittaskprocessnoinit>div>a {
     visibility: hidden;
 }
 
-#createprocess, #editprocess, #viewprocess,#viewprocesschild, #createtaskbyprocess {
+#createprocess,
+#editprocess,
+#viewprocess,
+#viewprocesschild,
+#createtaskbyprocess {
     padding: 0;
 }
 
@@ -36,7 +50,7 @@
     padding: 0 15px;
 }
 
-.io-zoom-controls button{
+.io-zoom-controls button {
     padding: 5px;
     outline: none;
     cursor: pointer;
@@ -47,7 +61,7 @@
     border: none;
 }
 
-.io-zoom-controls button:hover{
+.io-zoom-controls button:hover {
     color: #fff;
 }
 
@@ -81,42 +95,65 @@
     padding: 0 15px;
 }
 
-#createtaskbyprocess > div > div > div.djs-palette.two-column.open, #createtaskbyprocess > div > div > div.djs-overlay-container > div > div > div {
+#createtaskbyprocess>div>div>div.djs-palette.two-column.open,
+#createtaskbyprocess>div>div>div.djs-overlay-container>div>div>div {
     display: none;
 }
-#viewtaskprocesstab > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewtaskprocesstab > div > div > div.djs-palette.two-column.open,
-#edittaskprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #edittaskprocess > div > div > div.djs-palette.two-column.open,
-#edittaskprocessnoinit > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #edittaskprocessnoinit > div > div > div.djs-palette.two-column.open,
-#viewprocesschild > div > div > div.djs-palette.two-column.open > div.djs-palette-entries,#viewprocesschild > div > div > div.djs-palette.two-column.open
-#viewprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewprocess > div > div > div.djs-palette.two-column.open,
-#viewtaskprocesstab > div > div > div.djs-palette.open {
+
+#viewtaskprocesstab>div>div>div.djs-palette.two-column.open>div.djs-palette-entries,
+#viewtaskprocesstab>div>div>div.djs-palette.two-column.open,
+#viewtaskoutputtab>div>div>div.djs-palette.two-column.open>div.djs-palette-entries,
+#viewtaskoutputtab>div>div>div.djs-palette.two-column.open,
+#edittaskprocess>div>div>div.djs-palette.two-column.open>div.djs-palette-entries,
+#edittaskprocess>div>div>div.djs-palette.two-column.open,
+#edittaskprocessnoinit>div>div>div.djs-palette.two-column.open>div.djs-palette-entries,
+#edittaskprocessnoinit>div>div>div.djs-palette.two-column.open,
+#viewprocesschild>div>div>div.djs-palette.two-column.open>div.djs-palette-entries,
+#viewprocesschild>div>div>div.djs-palette.two-column.open #viewprocess>div>div>div.djs-palette.two-column.open>div.djs-palette-entries,
+#viewprocess>div>div>div.djs-palette.two-column.open,
+#viewtaskprocesstab>div>div>div.djs-palette.open,
+#viewtaskoutputtab>div>div>div.djs-palette.open {
     display: none;
 }
-#viewtaskprocesstab > div > div > div.djs-overlay-container > div > div > div, 
-#viewprocess > div > div > div.djs-overlay-container > div > div > div,
-#viewprocesschild > div > div > div.djs-overlay-container > div > div > div,
-#edittaskprocess > div > div > div.djs-overlay-container > div > div > div {
+
+#viewtaskprocesstab>div>div>div.djs-overlay-container>div>div>div,
+#viewtaskoutputtab>div>div>div.djs-overlay-container>div>div>div,
+#viewprocess>div>div>div.djs-overlay-container>div>div>div,
+#viewprocesschild>div>div>div.djs-overlay-container>div>div>div,
+#edittaskprocess>div>div>div.djs-overlay-container>div>div>div {
     display: none;
 }
-#edittaskprocessnoinit > div > div > div.djs-overlay-container > div > div > div {
+
+#edittaskprocessnoinit>div>div>div.djs-overlay-container>div>div>div {
     display: none;
 }
+
 #viewprocesschild .djs-palette {
     display: none !important;
 }
+
 /* .djs-container {
     position: relative !important;
     overflow: scroll !important;
     background-color: white !important;
 } */
-#createprocess svg, #editprocess svg, #viewprocess svg,#viewprocesschild svg, #createtaskbyprocess svg {
+#createprocess svg,
+#editprocess svg,
+#viewprocess svg,
+#viewprocesschild svg,
+#createtaskbyprocess svg {
     /* border: 1px solid black; */
     height: calc(100vh - 300px);
 }
-#viewtaskprocesstab svg, #edittaskprocess svg, #edittaskprocessnoinit svg {
+
+#viewtaskoutputtab svg,
+#viewtaskprocesstab svg,
+#edittaskprocess svg,
+#edittaskprocessnoinit svg {
     /* border: 1px solid black; */
     height: calc(100vh - 200px);
 }
+
 .right-content {
     overflow: auto;
     height: calc(100vh - 230px);
@@ -127,25 +164,30 @@
     height: calc(100vh - 360px);
 }
 
-#createprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
-    display: none;
-}
-#editprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
-    display: none;
-}
-#createtaskbyprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
-    display: none;
-}
-#viewprocess > div > div > svg > g > g > g > g > g > text:nth-child(2),
-#viewprocesschild > div > div > svg > g > g > g > g > g > text:nth-child(2){
-    display: none;
-}
-#viewtaskprocesstab > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2),
-#edittaskprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
+#createprocess>div>div>svg>g>g.layer-base>g>g>g>text:nth-child(2) {
     display: none;
 }
 
-#edittaskprocessnoinit > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
+#editprocess>div>div>svg>g>g.layer-base>g>g>g>text:nth-child(2) {
+    display: none;
+}
+
+#createtaskbyprocess>div>div>svg>g>g.layer-base>g>g>g>text:nth-child(2) {
+    display: none;
+}
+
+#viewprocess>div>div>svg>g>g>g>g>g>text:nth-child(2),
+#viewprocesschild>div>div>svg>g>g>g>g>g>text:nth-child(2) {
+    display: none;
+}
+
+#viewtaskoutputtab>div>div>svg>g>g.layer-base>g>g>g>text:nth-child(2),
+#viewtaskprocesstab>div>div>svg>g>g.layer-base>g>g>g>text:nth-child(2),
+#edittaskprocess>div>div>svg>g>g.layer-base>g>g>g>text:nth-child(2) {
+    display: none;
+}
+
+#edittaskprocessnoinit>div>div>svg>g>g.layer-base>g>g>g>text:nth-child(2) {
     display: none;
 }
 
@@ -160,151 +202,185 @@
 }
 
 .task-process-title {
-    font-size: 12px; 
-    line-height: 1em; 
-    font-weight: bold; 
-    width: 150px; 
-    height: 45px; 
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 3; /* số dòng */ 
+    font-size: 12px;
+    line-height: 1em;
+    font-weight: bold;
+    width: 150px;
+    height: 45px;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    /* số dòng */
     -webkit-box-orient: vertical;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
     overflow: hidden;
 }
 
 .list-task-process-responsible {
-    font-size: 10px; 
-    line-height: 1em; 
-    font-weight: bold; 
-    width: 150px; 
-    max-height: 40px; 
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 2 !important; /* số dòng */ 
+    font-size: 10px;
+    line-height: 1em;
+    font-weight: bold;
+    width: 150px;
+    max-height: 40px;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2 !important;
+    /* số dòng */
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
-    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
-    white-space: pre-wrap;  
+    white-space: -moz-pre-wrap;
+    /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;
 }
 
 .list-task-process-accountable {
     margin-top: 5px;
-    font-size: 10px; 
-    line-height: 1em; 
-    width: 150px; 
-    max-height: 40px; 
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 2 !important; /* số dòng */  
+    font-size: 10px;
+    line-height: 1em;
+    width: 150px;
+    max-height: 40px;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2 !important;
+    /* số dòng */
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
-    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
-    white-space: pre-wrap;  
+    white-space: -moz-pre-wrap;
+    /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;
 }
 
 .process-title {
-    font-size: 12px; 
-    line-height: 1em; 
-    font-weight: bold; 
-    width: 150px; 
-    height: 45px; 
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 3; /* số dòng */ 
+    font-size: 12px;
+    line-height: 1em;
+    font-weight: bold;
+    width: 150px;
+    height: 45px;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    /* số dòng */
     -webkit-box-orient: vertical;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
     overflow: hidden;
 }
 
 .list-process-manager {
-    font-size: 10px; 
-    line-height: 1em; 
-    font-weight: bold; 
-    width: 150px; 
-    max-height: 40px; 
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 2 !important; /* số dòng */ 
+    font-size: 10px;
+    line-height: 1em;
+    font-weight: bold;
+    width: 150px;
+    max-height: 40px;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2 !important;
+    /* số dòng */
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
-    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
-    white-space: pre-wrap;  
+    white-space: -moz-pre-wrap;
+    /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;
 }
 
 .list-process-viewer {
     margin-top: 5px;
-    font-size: 10px; 
-    line-height: 1em; 
-    width: 150px; 
-    max-height: 40px; 
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 2 !important; /* số dòng */  
+    font-size: 10px;
+    line-height: 1em;
+    width: 150px;
+    max-height: 40px;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2 !important;
+    /* số dòng */
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
-    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
-    white-space: pre-wrap;  
+    white-space: -moz-pre-wrap;
+    /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;
 }
+
 .task-process-gate-way-title {
     margin-bottom: 5px;
     text-align: center;
-    font-size: 12px; 
-    line-height: 1em; 
-    font-weight: bold; 
-    max-width: 150px; 
-    max-height: 45px; 
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 3; /* số dòng */ 
+    font-size: 12px;
+    line-height: 1em;
+    font-weight: bold;
+    max-width: 150px;
+    max-height: 45px;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    /* số dòng */
     -webkit-box-orient: vertical;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
     overflow: hidden;
-    
+
 }
 
+.list-task-output {
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1em;
+    font-weight: bold;
+    max-width: 150px;
+    max-height: 30px;
+    background-color: white;
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* số dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    white-space: -moz-pre-wrap;
+    /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;
+}
 
 .list-task-process-gate-way-responsible {
     margin-top: 5px;
     text-align: center;
-    font-size: 10px; 
-    line-height: 1em; 
-    font-weight: bold; 
-    max-width: 150px; 
-    max-height: 30px; 
+    font-size: 10px;
+    line-height: 1em;
+    font-weight: bold;
+    max-width: 150px;
+    max-height: 30px;
     background-color: white;
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 2; /* số dòng */ 
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* số dòng */
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
-    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
-    white-space: pre-wrap;  
+    white-space: -moz-pre-wrap;
+    /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;
 }
 
 .list-task-process-gate-way-accountable {
     margin-top: 5px;
     text-align: center;
-    font-size: 10px; 
-    line-height: 1em; 
-    max-width: 150px; 
-    max-height: 30px; 
+    font-size: 10px;
+    line-height: 1em;
+    max-width: 150px;
+    max-height: 30px;
     /* text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff; */
     background-color: white;
-    display: block; 
-    display: -webkit-box; 
-    -webkit-line-clamp: 2; /* số dòng */ 
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* số dòng */
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 .progress-task-process {
-    font-size: 15px; 
+    font-size: 15px;
     max-width: 40px;
     max-height: 25px;
     margin-bottom: 5px;
@@ -320,8 +396,9 @@
     width: 100%;
     height: 100%;
 }
+
 .gate-way-progress {
-    font-size: 15px; 
+    font-size: 15px;
     font-weight: bold;
     text-align: center;
     background-color: white;
@@ -330,15 +407,17 @@
 .bpmn-icon-intermediate-event-none {
     display: none !important;
 }
-.entry.bpmn-icon-screw-wrench, .entry.bpmn-icon-text-annotation {
+
+.entry.bpmn-icon-screw-wrench,
+.entry.bpmn-icon-text-annotation {
     display: none;
 }
 
-.viewbpmnprocesschild{
+.viewbpmnprocesschild {
     cursor: pointer;
 }
 
-.processbyid{
+.processbyid {
     height: 100%;
     background-color: #fff;
 }

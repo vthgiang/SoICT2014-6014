@@ -10,9 +10,11 @@ import { BiddingPackageManagerActions } from '../../bidding-package/biddingPacka
 import { BidAndProjectStatistic } from './biddingAndProjectStatistic'
 import { BiddingInProcessStatistic } from './biddingInProcessStatistic'
 import { BiddingPriceAndProjectBudgetDashboard } from './biddingPriceAndProjectBudgetDashboard'
+import { BiddingStatusQuantityStatistic } from './biddingQuantityStatistic'
 import { QuantityStatistic } from './quantityStatistic'
 import { ContractBidProjectRelation } from './statisticContractBidAndProjectRelation'
 import { StatisticTaskRelatedBiddingPackage } from './statisticTaskRelatedToBiddingPackage'
+import TaskCalenderOfUnit from './taskCalenderOfUnit'
 
 const BiddingDashboard = (props) => {
     const { biddingPackagesManager, biddingContract, project } = props;
@@ -48,10 +50,18 @@ const BiddingDashboard = (props) => {
             </div>
 
             <ContractBidProjectRelation />
-            <BiddingPriceAndProjectBudgetDashboard />
+            <div className='row'>
+                <div className="col-md-6">
+                    <BiddingStatusQuantityStatistic />
+                </div>
+                <div className="col-md-6">
+                    <BiddingPriceAndProjectBudgetDashboard />
+                </div>
+            </div>
             <BidAndProjectStatistic />
             <BiddingInProcessStatistic />
             <StatisticTaskRelatedBiddingPackage />
+            <TaskCalenderOfUnit />
         </div>
     )
 }

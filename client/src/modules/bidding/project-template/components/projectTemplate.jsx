@@ -221,7 +221,7 @@ function ProjectTemplateManage(props) {
                                             <td>{item?.projectManager.map(o => o.name).join(", ")}</td>
                                             <td style={{ maxWidth: 450 }}>{renderLongList(item?.responsibleEmployees.map(o => o.name))}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a className="edit text-blue" style={{ width: '5px' }} onClick={() => handleDetail(item)}><i className="material-icons">visibility</i></a>
+                                                <a className="edit text-blue" style={{ width: '5px' }} onClick={() => handleDetail(item)}><i className="material-icons">view_list</i></a>
                                                 {<a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>}
                                                 {<DeleteNotification
                                                     content={translate('project.delete')}

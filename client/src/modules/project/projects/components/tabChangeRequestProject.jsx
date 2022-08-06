@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from '../redux/actions';
+import { ProjectPhaseActions} from '../../project-phase/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import 'c3/c3.css';
@@ -162,10 +163,10 @@ const TabChangeRequestProject = (props) => {
             }));
 
         // const requestsPendingListFromDB = [...currentChangeRequestsList];
-        console.log('requestsPendingListFromDB', requestsPendingListFromDB)
+        // console.log('requestsPendingListFromDB', requestsPendingListFromDB)
         let newChangeRequestsList = []
         for (let requestsPendingItem of requestsPendingListFromDB) {
-            console.log('\n---------------------requestsPendingItem', requestsPendingItem)
+            // console.log('\n---------------------requestsPendingItem', requestsPendingItem)
             const tempCurrentTask = {
                 ...requestsPendingItem.currentTask,
                 _id: requestsPendingItem.currentTask.task,
@@ -184,7 +185,7 @@ const TabChangeRequestProject = (props) => {
                     }
                 ]
                 const newTasksList = [...currentProjectTasks, tempCurrentTask];
-                console.log('newTasksList', newTasksList);
+                // console.log('newTasksList', newTasksList);
                 newChangeRequestsList.push({
                     ...requestsPendingItem,
                     baseline: {
@@ -195,7 +196,7 @@ const TabChangeRequestProject = (props) => {
                     },
                     affectedTasksList: newAffectedTasksList,
                 })
-                console.log('newChangeRequestsList', newChangeRequestsList)
+                // console.log('newChangeRequestsList', newChangeRequestsList)
             }
 
             else if (requestsPendingItem.type === 'edit_task' && requestsPendingItem.requestStatus === 1) {
@@ -221,20 +222,20 @@ const TabChangeRequestProject = (props) => {
                         return;
                     }
                 }
-                console.log('currentProjectTasksFormatPreceedingTasks', currentProjectTasksFormatPreceedingTasks)
-                console.log('tempCurrentTask', tempCurrentTask)
+                // console.log('currentProjectTasksFormatPreceedingTasks', currentProjectTasksFormatPreceedingTasks)
+                // console.log('tempCurrentTask', tempCurrentTask)
                 getAllRelationTasks(currentProjectTasksFormatPreceedingTasks, tempCurrentTask);
                 // Tìm task cũ để cho vào đầu array
                 const currentOldTask = currentProjectTasksFormatPreceedingTasks.find((item) => String(item._id) === (tempCurrentTask._id || tempCurrentTask.task))
-                console.log('currentOldTask', currentOldTask)
+                // console.log('currentOldTask', currentOldTask)
                 allTasksNodeRelationArr.unshift({
                     ...currentOldTask,
                     estimateNormalTime: Number(currentOldTask.estimateNormalTime),
                     estimateOptimisticTime: Number(currentOldTask.estimateOptimisticTime),
                 });
-                console.log('allTasksNodeRelationArr', allTasksNodeRelationArr)
+                // console.log('allTasksNodeRelationArr', allTasksNodeRelationArr)
                 const allTasksNodeRelationFormattedArr = allTasksNodeRelationArr;
-                console.log('allTasksNodeRelationFormattedArr', allTasksNodeRelationFormattedArr)
+                // console.log('allTasksNodeRelationFormattedArr', allTasksNodeRelationFormattedArr)
                 const { affectedTasks, newTasksList } = processAffectedTasksChangeRequest(projectDetail, allTasksNodeRelationFormattedArr, tempCurrentTask);
                 const newAffectedTasksList = affectedTasks.map(affectedItem => {
                     return {
@@ -261,7 +262,7 @@ const TabChangeRequestProject = (props) => {
                         }
                     }
                 })
-                console.log('newAffectedTasksList', newAffectedTasksList)
+                // console.log('newAffectedTasksList', newAffectedTasksList)
                 // newTasksList ngắn hơn currentProjectTasks vì ta chỉ xét những tasks có liên quan tới task hiện tại
                 const newCurrentProjectTasks = currentProjectTasks.map((taskItem) => {
                     for (let newTaskItem of newTasksList) {
@@ -284,25 +285,26 @@ const TabChangeRequestProject = (props) => {
                     },
                     affectedTasksList: newAffectedTasksList,
                 })
-                console.log('newChangeRequestsList', newChangeRequestsList)
+                // console.log('newChangeRequestsList', newChangeRequestsList)
             }
 
             else {
                 newChangeRequestsList.push({
                     ...requestsPendingItem,
                 });
-                console.log('newChangeRequestsList', newChangeRequestsList)
+                // console.log('newChangeRequestsList', newChangeRequestsList)
             }
         }
 
         if (newChangeRequestsList.length > 0) {
+            // console.log(newChangeRequestsList);
             props.updateStatusProjectChangeRequestDispatch({
                 newChangeRequestsList,
             });
         }
     }
 
-    const handleApprove = (changeRequestId) => {
+    const handleApprove = async (changeRequestId) => {
         setCurrentChangeRequestId(changeRequestId);
         const message = "Bạn có muốn phê duyệt yêu cầu thay đổi này?"
         Swal.fire({
@@ -313,22 +315,24 @@ const TabChangeRequestProject = (props) => {
             cancelButtonColor: '#d33',
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.value) {
-                props.updateStatusProjectChangeRequestDispatch({
+                await props.updateStatusProjectChangeRequestDispatch({
                     changeRequestId,
                     requestStatus: 3,
                 });
-                setTimeout(() => {
-                    props.getAllTasksByProject( currentProjectId || projectDetail._id );
+                setTimeout(async () => {
+                    await props.getAllTasksByProject( currentProjectId || projectDetail._id );
+                    await props.getAllPhaseByProject( currentProjectId || projectDetail._id );
+                    await props.getAllMilestoneByProject( currentProjectId || projectDetail._id );
                 }, 20);
             }
         }).catch(err => {
-            console.error('Change request', err)
+            // console.error('Change request', err)
         })
     }
 
-    const handleCancel = (changeRequestId) => {
+    const handleCancel = async (changeRequestId) => {
         const message = "Bạn có muốn từ chối yêu cầu thay đổi này?"
         Swal.fire({
             html: `<h4 style="color: red"><div>${message}</div></h4>`,
@@ -338,14 +342,16 @@ const TabChangeRequestProject = (props) => {
             cancelButtonColor: '#d33',
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.value) {
-                props.updateStatusProjectChangeRequestDispatch({
+                await props.updateStatusProjectChangeRequestDispatch({
                     changeRequestId,
                     requestStatus: 2,
                 });
-                setTimeout(() => {
-                    props.getAllTasksByProject( currentProjectId || projectDetail._id );
+                setTimeout(async () => {
+                    await props.getAllTasksByProject( currentProjectId || projectDetail._id );
+                    await props.getAllPhaseByProject( currentProjectId || projectDetail._id );
+                    await props.getAllMilestoneByProject( currentProjectId || projectDetail._id );
                 }, 20);
             }
         })
@@ -631,8 +637,8 @@ const TabChangeRequestProject = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user, changeRequest } = state;
-    return { project, user, changeRequest }
+    const { project, user, changeRequest, projectPhase } = state;
+    return { project, user, changeRequest, projectPhase }
 }
 
 const mapDispatchToProps = {
@@ -641,6 +647,8 @@ const mapDispatchToProps = {
     updateStatusProjectChangeRequestDispatch: ChangeRequestActions.updateStatusProjectChangeRequestDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllTasksByProject: taskManagementActions.getAllTasksByProject,
+    getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getAllMilestoneByProject: ProjectPhaseActions.getAllMilestoneByProject,
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TabChangeRequestProject));

@@ -127,6 +127,7 @@ export default {
             },
 
             task_template: "Task Template",
+            administrative_document_process_dashboard: "Dashboard Administrative Document Process",
             cocautochuc: "Organizational Structure",
             taskmanagement: "Task Management",
             manageDocument: "Manage Document",
@@ -3560,6 +3561,10 @@ export default {
                 approval_close_task_failure: "Can not approve request to close task",
                 decline_close_task_failure: "Can not decline request to close task",
 
+                // đề xuất nhân sự phù hợp
+                proposal_personnel_success: "Get the list of suitable personnel successfully",
+                proposal_personnel_fail: "Get the list of suitable personnel failed",
+
                 // Mở lại công việc
                 open_task_again_success: 'Open task again successfully',
                 open_task_again_failure: 'Can not open task again',
@@ -3776,6 +3781,28 @@ export default {
 
                 // swal
                 confirm: "Confirm",
+
+                // danh sách kết quả giao nộp
+                get_task_outputs_success: "Get the list of task outputs successfully",
+                get_task_outputs_failure: "Get the list of task outputs failed",
+
+                approve_task_outputs_success: "Approving successful submission results",
+                approve_task_outputs_failure: "Approve failed submission results",
+
+                edit_submission_results_success: "Edit successful submission results",
+                edit_submission_results_failure: "Edit failed submission results",
+
+                delete_submission_results_success: "Delete successful submission results",
+                delete_submission_results_failure: "Delete failed submission results",
+
+                delete_file_of_task_outputs_success: "Delete file of successful submission report",
+                delete_file_of_task_outputs_failure: "Delete file of failed submission report",
+
+                create_comment_of_task_outputs_success: "Add a comment on successful submission results",
+                create_comment_of_task_outputs_failure: "Add a comment on failed submission results",
+
+                edit_comment_of_task_outputs_success: "Edit a comment on successful submission results",
+                edit_comment_of_task_outputs_failure: "Edit a comment on successful submission results",
 
                 // modal approve task
                 modal_approve_task: {
@@ -5738,6 +5765,16 @@ export default {
 
             // Quản lý công việc trong dự án
             task_management: {
+                add_task: "Add new task",
+                add_phase: "Add new phase",
+                add_milestone: "Add new milestone",
+                type: "Type of task",
+                phase: "Phase",
+                task: "Task",
+                milestone: "Milestone",
+                milestone_info: "Milestone detail",
+                select_type: "Select task type",
+                select_all_type: "Select all type",
                 estimate: "Estimating",
                 add_err_time_cost: "Time & Cost must be numeric and greater or equal than 0",
                 end_date: "Estimated end date",
@@ -5810,16 +5847,29 @@ export default {
 
             // Báo cáo
             report: {
-                title: 'Detailed project report'
+                title: 'Detail project report'
             }
         },
         phase: {
             projectCodeName: 'Project codename',
             fullName: 'Phase name',
-            progress: 'Progress',
-            listTasks: 'List of tasks',
+            description: 'Phase description',
+            startDate: 'Start date of phase',
+            endDate: 'End date of phase',
+            startTime: 'Start time of phase',
+            endTime: 'End time of phase',
+            progress: 'progress',
+            status: 'Status',
+            listTasks: 'Task in phase',
             duration: 'Duration',
             add_btn_new: "Add new phase",
+            report: {
+                title: 'Detail phase report'
+            },
+            milestone: {
+                name: 'Milestone name',
+                date: 'date'
+            }
         },
     },
 };

@@ -174,7 +174,7 @@ function ListProjectEvaluation(props) {
             })
 
         }
-    }, [user?.isLoading, project?.isLoading])
+    }, [user?.isLoading, project?.isLoading, JSON.stringify(project.data.paginate)])
 
     let column = [
         { name: translate('project.name'), key: "name" },

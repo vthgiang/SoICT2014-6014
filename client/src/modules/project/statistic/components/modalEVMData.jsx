@@ -49,7 +49,6 @@ const ModalEVMData = (props) => {
                                     <th>Planned Value (VND)</th>
                                     <th>Actual Cost (VND)</th>
                                     <th>Earned Value (VND)</th>
-                                    <th>Test</th>
                                 </tr>
                             </thead>
 
@@ -58,7 +57,7 @@ const ModalEVMData = (props) => {
                                     return evmItem?.listTasksEachMoment?.map((taskMomentItem, taskMomentIndex) => {
                                         if (taskMomentIndex === evmItem?.listTasksEachMoment.length - 1) {
                                             return (
-                                                <tbody key={`summary_row-${taskMomentIndex}-${evmIndex}`}>
+                                                <tbody key={`summary-row-${taskMomentIndex}-${evmIndex}`}>
                                                     <tr key={`${taskMomentIndex}-${evmIndex}`}>
                                                         <td><strong>{
                                                             taskMomentIndex === 0
@@ -72,7 +71,6 @@ const ModalEVMData = (props) => {
                                                         <td>{numberWithCommas(taskMomentItem?.plannedValue)}</td>
                                                         <td>{numberWithCommas(taskMomentItem?.actualCost)}</td>
                                                         <td>{numberWithCommas(taskMomentItem?.earnedValue)}</td>
-                                                        <td>{`${taskMomentIndex}-${evmIndex}`}</td>
                                                     </tr>
 
                                                     <tr key={`${taskMomentItem._id} - ${taskMomentIndex} - ${evmIndex}`} style={{ backgroundColor: '#28A745' }}>
@@ -83,14 +81,13 @@ const ModalEVMData = (props) => {
                                                         <td style={{ color: 'white', fontWeight: 'bold' }}>{numberWithCommas(evmItem?.totalPVEachMoment)}</td>
                                                         <td style={{ color: 'white', fontWeight: 'bold' }}>{numberWithCommas(evmItem?.totalACEachMoment)}</td>
                                                         <td style={{ color: 'white', fontWeight: 'bold' }}>{numberWithCommas(evmItem?.totalEVEachMoment)}</td>
-                                                        <td>{`${taskMomentItem._id}-${taskMomentIndex}-${evmIndex}`}</td>
                                                     </tr>
                                                 </tbody>
                                             )
                                         }
 
                                         return (
-                                            <tbody key={`normal_row-${taskMomentIndex}-${evmIndex}`}>
+                                            <tbody key={`normal-row-${taskMomentIndex}-${evmIndex}`}>
                                                 <tr key={`${taskMomentIndex}-${evmIndex}`}>
                                                     <td><strong>{
                                                         taskMomentIndex === 0
@@ -104,7 +101,6 @@ const ModalEVMData = (props) => {
                                                     <td>{numberWithCommas(taskMomentItem?.plannedValue)}</td>
                                                     <td>{numberWithCommas(taskMomentItem?.actualCost)}</td>
                                                     <td>{numberWithCommas(taskMomentItem?.earnedValue)}</td>
-                                                    <td>{`${taskMomentIndex}-${evmIndex}`}</td>
                                                 </tr>
                                             </tbody>
                                         )

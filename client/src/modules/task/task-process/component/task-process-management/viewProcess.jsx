@@ -15,6 +15,8 @@ import './../process-template/processDiagram.css';
 import { ViewProcessChild } from "./viewProcessChild";
 import { ReportProcess } from "./report/reportProcess";
 import { ReportHumanOfProcess } from "./report/reportHumanOfProcess";
+import { ModalViewTaskOutput } from "./modalViewTaskOutput";
+import { ViewTaskOutputs } from "./viewTaskOutputs";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -123,6 +125,7 @@ function ViewProcess(props) {
                     for (let i in infoTask) {
                         let responsible = []
                         let accountable = []
+                        console.log(infoTask[i].responsibleEmployees)
                         infoTask[i].responsibleEmployees.forEach(x => {
                             responsible.push(x.name)
                         })
@@ -389,7 +392,7 @@ function ViewProcess(props) {
     const { translate, role, user } = props;
     const { id, info, startDate, endDate, status,
         processDescription, processName, showProcessChild, processChilds, showInfo, selectedView } = state;
-    const { isTabPane } = props
+    const { isTabPane, idProcess, listOrganizationalUnit, xmlDiagram, creator, infoTask } = props
     // if (id){
     //     console.log(info[`${id}`]);
     // }
@@ -407,13 +410,14 @@ function ViewProcess(props) {
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#info-view" onClick={() => handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
-                         {props.checkManager &&
+                        <li><a className="viewReport" href="#view-task-output" onClick={() => handleChangeContent("viewTaskOutput")} data-toggle="tab">Kết quả công việc</a></li>
+                        {props.checkManager &&
                             <React.Fragment>
-                            <li><a className="viewReport" href="#report-view" onClick={() => handleChangeContent("report")} data-toggle="tab">Báo cáo</a></li>
-                            <li><a className="viewReportHuman" href="#report-human-view" onClick={() => handleChangeContent("reportHuman")} data-toggle="tab">Báo cáo thành viên</a></li>
-                        </React.Fragment>
+                                <li><a className="viewReport" href="#report-view" onClick={() => handleChangeContent("report")} data-toggle="tab">Báo cáo</a></li>
+                                <li><a className="viewReportHuman" href="#report-human-view" onClick={() => handleChangeContent("reportHuman")} data-toggle="tab">Báo cáo thành viên</a></li>
+                            </React.Fragment>
                         }
-                            
+
                     </ul>
                 </div>
                 <div className="tab-content">
@@ -495,18 +499,32 @@ function ViewProcess(props) {
                         </div>
                     </div>
                 </div>
-                    <React.Fragment>
-                        <div className="tab-content">
-                            <div className={selectedView === "report" ? "active tab-pane" : "tab-pane"} id="info-report">
-                                <ReportProcess officeHours={props.data.officeHours} convertDayToHour={props.data.convertDayToHour} listTask ={props.data.tasks} processTemplate = {props.data.processTemplate}/>
-                            </div>
+                <React.Fragment>
+                    <div className="tab-content">
+                        <div className={selectedView === "report" ? "active tab-pane" : "tab-pane"} id="info-report">
+                            <ReportProcess officeHours={props.data.officeHours} convertDayToHour={props.data.convertDayToHour} listTask={props.data.tasks} processTemplate={props.data.processTemplate} />
                         </div>
-                        <div className="tab-content">
-                            <div className={selectedView === "reportHuman" ? "active tab-pane" : "tab-pane"} id="info-report-human">
-                                <ReportHumanOfProcess officeHours={props.data.officeHours} convertDayToHour={props.data.convertDayToHour} listTask ={props.data.tasks}/>
-                            </div>
+                    </div>
+                    <div className="tab-content">
+                        <div className={selectedView === "reportHuman" ? "active tab-pane" : "tab-pane"} id="info-report-human">
+                            <ReportHumanOfProcess officeHours={props.data.officeHours} convertDayToHour={props.data.convertDayToHour} listTask={props.data.tasks} />
                         </div>
-                    </React.Fragment>
+                    </div>
+                    <div className="tab-content">
+                        <div className={selectedView === "viewTaskOutput" ? "active tab-pane" : "tab-pane"} id="info-report-human">
+                            <ViewTaskOutputs
+                                listOrganizationalUnit={listOrganizationalUnit}
+                                data={data}
+                                idProcess={idProcess}
+                                xmlDiagram={xmlDiagram}
+                                processName={processName}
+                                processDescription={processDescription}
+                                infoTask={infoTask}
+                                creator={creator}
+                            />
+                        </div>
+                    </div>
+                </React.Fragment>
             </div>
         </React.Fragment>
     )

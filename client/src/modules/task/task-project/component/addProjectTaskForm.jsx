@@ -38,6 +38,7 @@ const AddProjectTaskForm = (props) => {
             preceedingTasks: [],
             followingTasks: [],
             taskProject: "",
+            taskPhase: "",
             estimateNormalTime: '',
             estimateOptimisticTime: '',
             estimateNormalCost: '',
@@ -63,17 +64,41 @@ const AddProjectTaskForm = (props) => {
     const { id, newTask } = state;
     const { estimateNormalTime, estimateOptimisticTime, estimateNormalCost, estimateMaxCost, estimateAssetCost, responsibleEmployees, accountableEmployees,
         totalResWeight, totalAccWeight, currentResWeightArr, currentAccWeightArr, estimateHumanCost } = newTask;
-    const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role, currentProjectTasks } = props;
+    const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role, currentProjectTasks, currentProjectPhase } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
-    const initTasksToChoose = currentProjectTasks ? currentProjectTasks?.map(item => ({
-        value: item._id,
-        text: item.name
-    })) : []
+
     const [currentTasksToChoose, setCurrentTasksToChoose] = useState({
-        preceeding: [...initTasksToChoose],
-        following: [...initTasksToChoose],
+        preceeding: [],
+        following: [],
     })
+
+    const [currentPhaseToChoose, setCurrentPhaseToChoose] = useState({
+        phases: []
+    })
+
+    useEffect(() => {
+        let res = currentProjectPhase ? currentProjectPhase?.map(item => ({
+            value: item._id,
+            text: item.name
+        })) : [];
+        res.unshift({ value: "", text: "--Chọn giai đoạn--" })
+        setCurrentPhaseToChoose({
+            phases: res
+        })
+    }, [JSON.stringify(currentProjectPhase)])
+
+    useEffect(() => {
+        let res = currentProjectTasks ? currentProjectTasks?.map(item => ({
+            value: item._id,
+            text: item.name
+        })) : [];
+        // res.unshift({value: "", text: "Chọn công việc tiền nhiệm"})
+        setCurrentTasksToChoose({
+            preceeding: res,
+            following: []
+        })
+    }, [JSON.stringify(currentProjectTasks)])
 
     let listTaskTemplate;
     let taskTemplate;
@@ -99,6 +124,21 @@ const AddProjectTaskForm = (props) => {
         let value = event.target.value;
         validateChangeTaskName(value, true);
     }
+
+    const handleChangeTaskPhase = (selected) => {
+        const currentNewTask = {
+            ...state.newTask,
+            taskPhase: selected[0],
+        }
+        setState({
+            ...state,
+            newTask: currentNewTask
+        })
+        setTimeout(() => {
+            props.handleChangeTaskData(currentNewTask)
+        }, 10);
+    }
+
     const validateChangeTaskName = (value, willUpdateState = true) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateTaskName(translate, value, props.currentProjectTasks);
@@ -224,9 +264,6 @@ const AddProjectTaskForm = (props) => {
         let { translate, project } = props;
         const projectDetail = getCurrentProjectDetails(project);
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(value, newTask.accountableEmployees)) {
-            message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
-        }
 
         if (willUpdateState) {
             const responsiblesWithSalaryArr = value?.map(valueItem => {
@@ -423,7 +460,7 @@ const AddProjectTaskForm = (props) => {
             const newCurrentTask = {
                 ...state.newTask,
                 estimateNormalTime: value,
-                estimateOptimisticTime: estimateOptimisticTime ?estimateOptimisticTime :predictEstimateOptimisticTime,
+                estimateOptimisticTime: estimateOptimisticTime ? estimateOptimisticTime : predictEstimateOptimisticTime,
                 errorOnTimeEst: message,
                 endDate: curEndDate,
             }
@@ -677,7 +714,7 @@ const AddProjectTaskForm = (props) => {
 
     useEffect(() => {
         const curStartDateTime = convertDateTime(newTask.startDate, startTime);
-        console.log('curStartDateTime', curStartDateTime, 'newTask.currentLatestStartDate', newTask.currentLatestStartDate)
+        // console.log('curStartDateTime', curStartDateTime, 'newTask.currentLatestStartDate', newTask.currentLatestStartDate)
         if (newTask.currentLatestStartDate && newTask.preceedingTasks.length > 0
             && moment(curStartDateTime).isBefore(moment(newTask.currentLatestStartDate).set('second', 0))) {
             setState({
@@ -782,6 +819,22 @@ const AddProjectTaskForm = (props) => {
                                     <ErrorLabel content={newTask.errorOnPreceedFollowTasks} />
                                 </div>
                             } */}
+                        </div>
+
+                        <div className='row'>
+                            {/* Giai đoạn trong dự án */}
+                            <div className={`form-group col-md-12 col-xs-12`}>
+                                <label>{translate('project.task_management.phase')}</label>
+                                <SelectBox
+                                    id={`select-project-phase`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={currentPhaseToChoose.phases}
+                                    value={newTask.taskPhase}
+                                    multiple={false}
+                                    onChange={handleChangeTaskPhase}
+                                />
+                            </div>
                         </div>
 
                         {/* Mô tả công việc */}
@@ -909,7 +962,7 @@ const AddProjectTaskForm = (props) => {
                             <div className={`col-lg-3 col-md-3 col-ms-12 col-xs-12 ${newTask.errorOnTimeEst === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">
                                     Thời gian ước lượng ({translate(`project.unit.${getCurrentProjectDetails(props.project).unitTime}`)})
-                                        <span className="text-red">*</span>
+                                    <span className="text-red">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -924,7 +977,7 @@ const AddProjectTaskForm = (props) => {
                             <div className={`col-lg-3 col-md-3 col-ms-12 col-xs-12 ${newTask.errorOnMaxTimeEst === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">
                                     Thời gian thoả hiệp ({translate(`project.unit.${getCurrentProjectDetails(props.project).unitTime}`)})
-                                        <span className="text-red">*</span>
+                                    <span className="text-red">*</span>
                                 </label>
                                 <input
                                     type="text"

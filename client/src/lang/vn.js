@@ -129,6 +129,7 @@ export default {
             },
 
             task_template: "Mẫu Công Việc",
+            administrative_document_process_dashboard: "Dashboard quy trình văn bản",
             taskmanagement: "Quản Lý Công Việc",
             task_management_unit: "Công việc đơn vị",
             manageDocument: "Quản lý văn bản",
@@ -2342,7 +2343,7 @@ export default {
 
                 bidding_package_management: {
                     type: {
-                        1: "Tư vẫn",
+                        1: "Tư vấn",
                         2: "Phi tư vấn",
                         3: "Hàng hóa",
                         4: "Xây dựng",
@@ -3776,6 +3777,10 @@ export default {
                 approval_close_task_failure: "Phê duyệt yêu cầu kết thúc công việc thất bại",
                 decline_close_task_failure: "Từ chối yêu cầu kết thúc công việc thất bại",
 
+                // Đề xuất nhân sự công việc
+                proposal_personnel_success: "Lấy danh sách nhân sự phù hợp thành công",
+                proposal_personnel_fail: "Lấy danh sách nhân sự phù hợp thất bại",
+
                 // Mở lại công việc
                 open_task_again_success: 'Kích hoạt lại công việc thành công',
                 open_task_again_failure: 'Kích hoạt lại công việc thất bại',
@@ -4008,6 +4013,28 @@ export default {
                 log_edit_kpi_new: "Liên kết KPI mới",
                 log_edit_eval_info: "Chỉnh sửa thông tin đánh giá công việc",
                 log_edit_progress: "Mức độ hoàn thành công việc mới",
+
+                // danh sách kết quả giao nộp
+                get_task_outputs_success: "Lấy danh sách kết quả giao nộp thành công",
+                get_task_outputs_failure: "Lấy danh sách kết quả giao nộp thất bại",
+
+                approve_task_outputs_success: "Phê duyệt kết quả giao nộp thành công",
+                approve_task_outputs_failure: "Phê duyệt kết quả giao nộp thất bại",
+
+                edit_submission_results_success: "Chỉnh sửa báo cáo kết quả giao nộp thành công",
+                edit_submission_results_failure: "Chỉnh sửa báo cáo kết quả giao nộp thất bại",
+
+                delete_submission_results_success: "Xóa báo cáo kết quả giao nộp thành công",
+                delete_submission_results_failure: "Xóa báo cáo kết quả giao nộp thất bại",
+
+                delete_file_of_task_outputs_success: "Xóa tập tin của báo cáo kết quả giao nộp thành công",
+                delete_file_of_task_outputs_failure: "Xóa tập tin của báo cáo kết quả giao nộp thất bại",
+
+                create_comment_of_task_outputs_success: "Thêm bình luận kết quả giao nộp thành công",
+                create_comment_of_task_outputs_failure: "Thêm bình luận kết quả giao nộp thất bại",
+
+                edit_comment_of_task_outputs_success: "Chỉnh sửa bình luận kết quả giao nộp thành công",
+                edit_comment_of_task_outputs_failure: "Chỉnh sửa bình luận kết quả giao nộp thất bại",
 
                 // modal approve task
                 modal_approve_task: {
@@ -6555,7 +6582,7 @@ export default {
             select_all_type: 'Chọn tất cả hình thức',
             search_by_employees: 'Nhập tên hoặc email',
             search: 'Tìm kiếm',
-            add_err_end_date: 'Ngày kết thúc dự án phải sau ngày bắt đầu',
+            add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
             add_err_empty_start_date: "Hãy chọn ngày bắt đầu",
             add_err_empty_end_date: "Hãy chọn ngày kết thúc",
             col_start_time: "Thời điểm bắt đầu",
@@ -6596,6 +6623,16 @@ export default {
 
             // Quản lý công việc trong dự án
             task_management: {
+                add_task: "Thêm công việc mới",
+                add_phase: "Thêm giai đoạn mới",
+                add_milestone: "Thêm cột mốc mới",
+                type: "Loại công việc",
+                phase: "Giai đoạn",
+                task: "Công việc",
+                milestone: "Cột mốc",
+                milestone_info: "Thông tin cột mốc",
+                select_type: "Chọn loại công việc",
+                select_all_type: "Chọn tất cả loại công việc",
                 add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
                 end_date: "Ngày dự kiến kết thúc",
 
@@ -6675,10 +6712,23 @@ export default {
         phase: {
             projectCodeName: 'Mã dự án',
             fullName: 'Tên giai đoạn',
+            description: 'Mô tả giai đoạn',
+            startDate: 'Ngày bắt đầu giai đoạn',
+            endDate: 'Ngày kết thúc giai đoạn',
+            startTime: 'Thời gian bắt đầu giai đoạn',
+            endTime: 'Thời gian kết thúc giai đoạn',
             progress: 'Tiến độ',
-            listTasks: 'Công việc liên quan',
+            status: 'Trạng thái',
+            listTasks: 'Công việc thuộc giai đoạn',
             duration: 'Thời lượng',
             add_btn_new: "Thêm giai đoạn mới",
+            report: {
+                title: 'Báo cáo chi tiết giai đoạn'
+            },
+            milestone: {
+                name: 'Tên cột mốc',
+                date: 'Thời điểm'
+            }
         },
     },
 };

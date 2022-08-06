@@ -8,6 +8,16 @@
     background: #DCDCDC;
 }
 
+/* progress of project bars */
+.notAchive.gantt_bar_project .gantt_task_progress {
+    background-color: #de3c29;
+}
+
+/* progress of project bars */
+.delay.gantt_bar_project .gantt_task_progress {
+    background-color: #ff8900;
+}
+
 .gantt_task_line, .gantt_line_wrapper {
     margin-top: -9px;
 }
@@ -22,4 +32,41 @@
 
 .gantt_side_content.gantt_right {
     bottom: 0;
+}
+
+.gantt_task_line.notAchive {
+    border: 2px solid #ff8080;
+    color: #ff8080;
+    background-color: #ff8080;
+}
+
+.gantt_task_line.delay {
+    border: 2px solid #FAC547;
+    color: #FAC547;
+    background: #FAC547;
+}
+
+.gantt_project:after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: -2px;
+    height: calc(100% + 25px);
+    width: 100%;
+    border-right: 2px solid black;
+}
+
+.gantt_project:before {
+    content: "";
+    position: absolute;
+    left: -3px;
+    top: -2px;
+    height: calc(100% + 25px);
+    width: 100%;
+    border-left: 2px solid black;
+}
+
+.gantt_tree_content {
+    overflow:hidden;
+    text-overflow: ellipsis;
 }

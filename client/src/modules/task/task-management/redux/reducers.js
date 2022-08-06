@@ -4,6 +4,7 @@ export function tasks(state = {
     isLoading: false,
     allTimeSheetLogs: [],
     userTimeSheetLogs: [],
+    proposalPersonnel: [],
     totalCount: 0,
     totalDocs: 0,
     tasks: [],
@@ -280,11 +281,6 @@ export function tasks(state = {
                 isLoading: false
             };
         case taskManagementConstants.ADDNEW_TASK_SUCCESS:
-            console.log('action.payload', action.payload);
-            console.log('kkkkk', [
-                action.payload,
-                ...state.tasks,
-            ]);
             return {
                 ...state,
                 tasks: [
@@ -658,9 +654,12 @@ export function tasks(state = {
             };
 
         case taskManagementConstants.GETTASK_BYPROJECT_SUCCESS:
+            let updateTaskProjectPaginateId = state.tasksByProjectPaginate?.map(task => task._id) || [];
+            let updateTaskProjectId = state.tasks?.map(task => task._id) || [];
             return {
                 ...state,
-                tasks: action.payload.docs,
+                tasksByProjectPaginate: action.payload.docs?.filter(doc => updateTaskProjectPaginateId?.includes(doc._id)),
+                tasks: action.payload.docs?.filter(doc => updateTaskProjectId?.includes(doc._id)),
                 tasksByProject: action.payload.docs,
                 totalDocs: action.payload.totalDocs,
                 isLoading: false
@@ -787,6 +786,25 @@ export function tasks(state = {
                 ...state,
                 error: action.error,
                 isLoading: false
+            }
+        case taskManagementConstants.PROPOSAL_PERSONNEL_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+            };
+
+        case taskManagementConstants.PROPOSAL_PERSONNEL_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                proposalPersonnel: action.payload,
+            }
+
+        case taskManagementConstants.PROPOSAL_PERSONNEL_FAILURE:
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false,
             }
 
         default:

@@ -266,7 +266,7 @@ const CreateProjectByProjectTemplateModal = (props) => {
         <DialogModal
             modalID={`modal-create-project-by-template--${id}`}
             formID={`form-create-project-by-template--${id}`}
-            title="Tạo dự án cho hợp đồng"
+            title="Tạo dự án theo mẫu"
             // disableSubmit={!isFormValidated()}
             func={save}
             size={100}

@@ -55,6 +55,7 @@ function Proposals(props) {
     }
     const [proposals, setProposals] = useState(props.biddingPackage.proposals ? props.biddingPackage.proposals : initProposal);
     const [showMessage, setShowMessage] = useState(false);
+    const [isPreferedHighSkill, setIsPreferedHighSkill] = useState(true);
 
     // dùng cho phần logs
     const [logData, setLogData] = useState(null);
@@ -64,7 +65,6 @@ function Proposals(props) {
 
     useEffect(() => {
         if (props.type) {
-            console.log(props.type, props.oldBiddingPackage);
             if (props.type === "create") {
                 setOldProposal(initProposal)
             }
@@ -108,6 +108,9 @@ function Proposals(props) {
         // proposal: null,
         // isComplete: 0,
     });
+    useEffect(() => {
+        setBiddingPackage(props.biddingPackage)
+    }, [JSON.stringify(props.biddingPackage)])
     const [isLoading, setLoading] = useState(false);
     const handleGoToStep = (index, e = undefined) => {
         if (e) e.preventDefault();
@@ -358,7 +361,8 @@ function Proposals(props) {
             tasks: proposals?.tasks,
             biddingPackage: biddingPackage,
             unitOfTime: proposals?.unitOfTime,
-            executionTime: proposals?.executionTime
+            executionTime: proposals?.executionTime,
+            isPreferedHighSkill: isPreferedHighSkill
         }).then(res => {
             const { data } = res;
             let newProposal = data.content?.proposal;
@@ -537,12 +541,11 @@ function Proposals(props) {
         JSON.stringify(proposals?.tasks),
         JSON.stringify(proposedData.proposal?.tasks),
     ])
-    console.log({ proposals: proposals, oldProposal: oldProposal, proposedData: proposedData }, generateLog(), state);
+    // console.log({ proposals: proposals, oldProposal: oldProposal, proposedData: proposedData }, generateLog(), state, {isPreferedHighSkill: isPreferedHighSkill});
 
     // end code for logs
 
     useEffect(() => {
-        props.getAllEmployee();
         setState({
             ...state,
             id: props.id,
@@ -550,6 +553,13 @@ function Proposals(props) {
             bidId: props.bidId,
             listCareer: props.listCareer,
         });
+    }, [
+        props.id,
+        JSON.stringify(props.listCareer)
+    ]);
+
+    useEffect(() => {
+        props.getAllEmployee();
         props.getPaginateTasks({ getAll: true });
     }, [props.id]);
 
@@ -702,7 +712,7 @@ function Proposals(props) {
                             </div>
                             <div>
                                 <div className={`form-group`}>
-                                    <label className="control-label">Thẻ công việc<span className="text-red">*</span>
+                                    <label className="control-label">Tags công việc<span className="text-red">*</span>
                                         ( <a style={{ cursor: "pointer" }} onClick={() => handleShowCreateTag(`${currentIndex}-${id}`)}>Quản lý</a> )
                                     </label>
                                     {<SelectBox
@@ -861,10 +871,32 @@ function Proposals(props) {
                                 biddingPackage: biddingPackage,
                                 unitOfTime: proposals?.unitOfTime,
                                 executionTime: proposals?.executionTime,
+                                isPreferedHighSkill: isPreferedHighSkill
                             }}
                             handleAcceptProposal={handleAcceptProposal}
+                            setIsPreferedHighSkill={setIsPreferedHighSkill}
                         />
                         <span>
+                            {/* <div className="btn-group">
+                                <span type="button" className="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <span className="caret"></span>
+                                </span>
+                                <ul className="dropdown-menu" style={{zIndex: 10000}}>
+                                    <li>
+                                        <a style={{ cursor: "pointer" }} onClick={() => { handelProposeModal(id) }} >
+                                            <i title="Xem cơ chế đề xuất" className='fa fa-question-circle-o'></i>
+                                            Xem cơ ché đề xuất
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a className="checkbox">
+                                            <label>
+                                                <input type="checkbox" checked={isPreferedHighSkill} onChange={() => setIsPreferedHighSkill(!isPreferedHighSkill)} />Ưu tiên theo trình độ chuyên môn cao
+                                            </label>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div> */}
                             <a style={{ margin: '0 0 5px 5px', textDecoration: "underline", fontWeight: "600", cursor: "pointer" }} onClick={() => calcPropose()} >
                                 Tự động phân công nhân sự &nbsp;
                             </a>

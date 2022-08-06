@@ -165,7 +165,7 @@ const BiddingPackageCreateForm = (props) => {
             keyPersonnelRequires: keyPersonnelRequires,
             proposals: {
                 ...proposals,
-                logs:[log]
+                logs: log ? [log] : []
             }
         }
         await setState(state => ({
@@ -189,24 +189,24 @@ const BiddingPackageCreateForm = (props) => {
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
-                afterClose={() => {
-                    setState(state => ({
-                        ...state,
-                        biddingPackage: {
-                            name: "",
-                            code: "",
-                            type: "",
-                            status: "",
-                            startDate: "",
-                            endDate: "",
-                            description: "",
-                            KeyPeople: [],
-                            keyPersonnelRequires: [],
-                            proposals: [],
-                            errorOnName: undefined,
-                        },
-                    }))
-                }}
+                // afterClose={() => {
+                //     setState(state => ({
+                //         ...state,
+                //         biddingPackage: {
+                //             name: "",
+                //             code: "",
+                //             type: "",
+                //             status: "",
+                //             startDate: "",
+                //             endDate: "",
+                //             description: "",
+                //             KeyPeople: [],
+                //             keyPersonnelRequires: [],
+                //             proposals: [],
+                //             errorOnName: undefined,
+                //         },
+                //     }))
+                // }}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-create-bidding-package"> */}
@@ -249,6 +249,7 @@ const BiddingPackageCreateForm = (props) => {
                             type={`create`}
                             id={`proposals_create`}
                             handleChange={handleChange}
+                            listCareer={career?.listPosition}
                             proposals={state.biddingPackage.proposals}
                             biddingPackage={biddingPackage}
                             setLog={setLog}

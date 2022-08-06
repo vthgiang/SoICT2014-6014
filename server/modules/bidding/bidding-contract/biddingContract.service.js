@@ -71,7 +71,8 @@ exports.searchBiddingContract = async (portal, params, company) => {
         let data = await BiddingContract(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .sort({
-                endDate: -1,
+                // endDate: -1,
+                createdAt: -1,
             })
             .populate({
                 path: "biddingPackage", populate: [
@@ -99,7 +100,8 @@ exports.searchBiddingContract = async (portal, params, company) => {
         )
             .find(keySearch)
             .sort({
-                endDate: -1,
+                // endDate: -1,
+                createdAt: -1,
             })
             .skip((params.page - 1) * params.limit)
             .limit(params.limit)
@@ -146,9 +148,10 @@ exports.createNewBiddingContract = async (portal, data, files, company) => {
     data.createdDate = Date.now()
     data.files = filesConvert
 
-    await BiddingContract(connect(DB_CONNECTION, portal)).create(data);
+    let newContract = await BiddingContract(connect(DB_CONNECTION, portal)).create(data);
 
-    return await this.searchBiddingContract(portal, {}, company);
+    return await this.getBidContractById(portal, newContract._id);
+    // return await this.searchBiddingContract(portal, {}, company);
 };
 
 /**
@@ -211,7 +214,8 @@ exports.editBiddingContract = async (portal, data, params, files, company) => {
         { $new: true }
     );
 
-    return await this.searchBiddingContract(portal, {}, company);
+    return await this.getBidContractById(portal, params.id);
+    // return await this.searchBiddingContract(portal, {}, company);
 };
 
 // =================DELETE=====================
@@ -225,6 +229,23 @@ exports.deleteBiddingContract = async (portal, data, id, company) => {
     return await this.searchBiddingContract(portal, {}, company);
 };
 
+
+exports.getBidContractById = async (portal, id) => {
+    return await BiddingContract(connect(DB_CONNECTION, portal)).findById(id)
+    .populate({
+        path: "biddingPackage", populate: [
+            { path: 'proposals.tasks.backupEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
+            { path: 'proposals.tasks.directEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
+        ]
+    })
+    .populate({
+        path: "project", populate: [
+            { path: 'projectManager', select: 'name email avatar' },
+            { path: 'responsibleEmployees', select: 'name email avatar' },
+        ]
+    })
+    .populate({ path: "creator" });
+}
 
 /**
  * upload file hợp đồng
@@ -276,8 +297,11 @@ exports.createProjectByContract = async (portal, contractId, data, company) => {
     await BiddingContract(connect(DB_CONNECTION, portal)).findByIdAndUpdate(contractId, { $set: { 'project': projectId } }, { new: true });
 
     const listContract = await this.searchBiddingContract(portal, {}, company);
+    // const newContract = await BiddingContract(connect(DB_CONNECTION, portal)).findById(contractId);
+    const newContract = await this.getBidContractById(portal, contractId);
 
     return {
+        newContract: newContract,
         contracts: listContract,
         tasks: createdTaskList,
     }

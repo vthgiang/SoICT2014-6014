@@ -31,7 +31,8 @@ export const taskManagementActions = {
 
     importTasks,
 
-    getOrganizationTaskDashboardChart
+    getOrganizationTaskDashboardChart,
+    proposalPersonnel,
 };
 
 
@@ -676,6 +677,27 @@ function getOrganizationTaskDashboardChart(data) {
                 dispatch({
                     type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_FAILURE,
                     error
+                });
+            })
+    }
+}
+function proposalPersonnel(data) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.PROPOSAL_PERSONNEL_REQUEST
+        });
+
+        taskManagementService.proposalPersonnel(data)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.PROPOSAL_PERSONNEL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: taskManagementConstants.PROPOSAL_PERSONNEL_FAILURE,
+                    error: err?.response?.data?.content
                 });
             })
     }

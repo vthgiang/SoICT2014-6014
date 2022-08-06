@@ -40,7 +40,7 @@ const ContractManagement = (props) => {
         tableId,
         name: "",
         page: 1,
-        limit: 10,
+        limit: 5,
         currentRow: null,
         currentRowView: null
     });
@@ -305,10 +305,16 @@ const ContractManagement = (props) => {
                                             name="delete"
                                             className="text-red"
                                             content={`<h4>Xóa "${x.name + " - " + x.code}"</h4>`}
-                                            func={() => props.deleteBiddingContract(x._id)}
+                                            func={() => {
+                                                props.deleteBiddingContract(x._id)
+                                                props.getListBiddingContract(state)
+                                            }}
                                         />
                                         {!x.project &&
-                                            <a className="" style={{ color: "#28A745" }} onClick={() => handleCreateProject(x)} title={"Tạo dự án theo hợp đồng này"}>
+                                            <a className="" style={{ color: "#28A745" }} onClick={() => {
+                                                handleCreateProject(x)
+                                                // props.getListBiddingContract(state)
+                                            }} title={"Tạo dự án theo hợp đồng này"}>
                                                 <i className="material-icons">add_box</i>
                                             </a>
                                         }

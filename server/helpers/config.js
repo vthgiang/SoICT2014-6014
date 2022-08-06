@@ -760,11 +760,11 @@ const LINKS = [{
   description: "Dashboard đấu thầu",
   category: LINK_CATEGORY.BIDDING.name,
   roles: [
-    ROOT_ROLES.SUPER_ADMIN.name,
-    ROOT_ROLES.ADMIN.name,
+    // ROOT_ROLES.SUPER_ADMIN.name,
+    // ROOT_ROLES.ADMIN.name,
     ROOT_ROLES.MANAGER.name,
-    ROOT_ROLES.DEPUTY_MANAGER.name,
-    ROOT_ROLES.EMPLOYEE.name,
+    // ROOT_ROLES.DEPUTY_MANAGER.name,
+    // ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink("/bidding-dashboard"),
 },
@@ -1053,6 +1053,17 @@ const LINKS = [{
     ROOT_ROLES.EMPLOYEE.name,
   ],
   components: getComponentsInLink('/task-management-dashboard')
+},
+{
+  url: '/administrative-document-process-dashboard',
+  description: 'Dashboard quy trình văn bản',
+  category: LINK_CATEGORY.TASK.name,
+  roles: [
+    ROOT_ROLES.MANAGER.name,
+    ROOT_ROLES.DEPUTY_MANAGER.name,
+    ROOT_ROLES.EMPLOYEE.name,
+  ],
+  components: getComponentsInLink('/administrative-document-process-dashboard')
 },
 {
   url: '/task-organization-management-dashboard',

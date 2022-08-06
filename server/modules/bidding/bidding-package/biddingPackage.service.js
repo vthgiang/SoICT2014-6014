@@ -204,7 +204,7 @@ exports.getDetailBiddingPackageToEdit = async (portal, params) => {
  *
  */
 exports.createNewBiddingPackage = async (portal, data, company) => {
-    position = await BiddingPackage(connect(DB_CONNECTION, portal)).create({
+    let position = await BiddingPackage(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         code: data.code,
         customer: data.customer,
@@ -222,7 +222,8 @@ exports.createNewBiddingPackage = async (portal, data, company) => {
         company: company,
     });
 
-    return await this.searchBiddingPackage(portal, {});
+    return await this.getDetailBiddingPackage(portal, {id: position._id})
+    // return await this.searchBiddingPackage(portal, {});
 };
 
 /**
@@ -334,7 +335,8 @@ exports.editBiddingPackage = async (portal, data, params, company) => {
         }
     }
 
-    return await this.searchBiddingPackage(portal, {});
+    return await this.getDetailBiddingPackage(portal, params)
+    // return await this.searchBiddingPackage(portal, {});
 };
 
 /**
@@ -351,10 +353,13 @@ exports.deleteBiddingPackage = async (portal, id) => {
         connect(DB_CONNECTION, portal)
     ).countDocuments();
 
-    return {
-        totalList,
-        listBiddingPackages,
-    };
+    // return {
+    //     totalList,
+    //     listBiddingPackages,
+    // };
+
+    return id;
+    // return await this.searchBiddingPackage(portal, {});
 };
 
 exports.autoUpdateEmployeeBiddingStatus = async (portal) => {
@@ -725,25 +730,41 @@ const checkIskeyPeople = (uid, keyPeople) => {
     return check;
 }
 
-const labelingSkill = (skill) => {
+const labelingSkill = (skill, isPreferedHighSkill) => {
     // Trình độ chuyên môn: intermediate_degree - Trung cấp, colleges - Cao đẳng, university - Đại học, bachelor - cử nhân, engineer - kỹ sư, master_degree - Thạc sỹ, phd- Tiến sỹ, unavailable - Không có
-    switch (skill) {
-        case "intermediate_degree": return 1;
-        case "colleges": return 2;
-        case "university": return 3;
-        case "bachelor": return 4;
-        case "engineer": return 5;
-        case "master_degree": return 6;
-        case "phd": return 7;
+    if (isPreferedHighSkill) { // nếu ưu tiên theo thứ tự trình độ cao đến thấp
+        switch (skill) {
+            case "intermediate_degree": return 1;
+            case "colleges": return 2;
+            case "university": return 3;
+            case "bachelor": return 4;
+            case "engineer": return 5;
+            case "master_degree": return 6;
+            case "phd": return 7;
+    
+            default:
+                return 0;
+        }
+    }
+    else { // nếu không
+        switch (skill) {
+            case "intermediate_degree": return 1;
+            case "colleges": return 2;
+            case "university": return 3;
+            case "phd": return 4;
+            case "master_degree": return 5;
+            case "bachelor": return 6;
+            case "engineer": return 7;
 
-        default:
-            return 0;
+            default:
+                return 0;
+        }
     }
 }
 
 // a - b
-const compareProfessionalSkill = (skill1, skill2) => {
-    return (labelingSkill(skill2) - labelingSkill(skill1)); // > 0 thì a > b => a sau b tức là ai có skill xịn hơn thì xếp trước
+const compareProfessionalSkill = (skill1, skill2, isPreferedHighSkill) => {
+    return (labelingSkill(skill2, isPreferedHighSkill) - labelingSkill(skill1, isPreferedHighSkill)); // > 0 thì a > b => a sau b tức là ai có skill xịn hơn thì xếp trước
 }
 
 
@@ -760,6 +781,7 @@ exports.getEmployeeInfoWithTask = async (
     allTag = [],
     currentTag = [],
     suitableEmployees = [],
+    isPreferedHighSkill = true,
 ) => {
     let start = startDate ?? Date.now();
     let end = moment(start).add(Number(estimateTime), unitOfTime).toDate();
@@ -890,7 +912,7 @@ exports.getEmployeeInfoWithTask = async (
         else if (a.numOfTask !== b.numOfTask) {
             return a.numOfTask - b.numOfTask // < 0 thì a xếp trước b
         }
-        return compareProfessionalSkill(a?.employeeInfo?.professionalSkill, b?.employeeInfo?.professionalSkill);
+        return compareProfessionalSkill(a?.employeeInfo?.professionalSkill, b?.employeeInfo?.professionalSkill, isPreferedHighSkill);
     });
 
     allEmployee = formatedListActiveEmp.map(item => {
@@ -908,7 +930,7 @@ exports.getEmployeeInfoWithTask = async (
 
 exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
     //bid, estimateTime = 0, unitOfTime = "days", task
-    const { tags, tasks, biddingPackage, unitOfTime, executionTime, type } = body;
+    const { tags, tasks, biddingPackage, unitOfTime, executionTime, type, isPreferedHighSkill } = body;
     const { bidId } = params;
 
     // lấy all user
@@ -958,6 +980,7 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
             allTag, 
             t.tag,
             t.suitableEmployees,
+            isPreferedHighSkill,
         );
         endOfTask = moment(startOfTask).add(Number(t.estimateTime), unitOfTime).toDate();
         oldEmployees = empWithTask;

@@ -141,6 +141,8 @@ module.exports = {
     Project: require('./project/project.model'),
     ProjectTemplate: require('./project/projectTemplate.model'),
     ProjectChangeRequest: require('./project/projectChangeRequest.model'),
+    ProjectPhase: require('./project/projectPhase.model'),
+    ProjectMilestone: require('./project/projectMilestone.model'),
 
     // news feed
     NewsFeed: require('./news-feed/newsFeed.model')

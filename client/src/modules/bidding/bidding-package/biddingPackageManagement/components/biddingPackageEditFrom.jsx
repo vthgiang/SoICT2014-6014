@@ -159,7 +159,6 @@ const BiddingPackageEditFrom = (props) => {
         return result;
     }
 
-    console.log(111,state, props.biddingPackagesManager?.biddingPackageDetail);
     const save = async () => {
         let { _id, biddingPackage } = state;
         let proposal = oldBP.proposals
@@ -201,12 +200,12 @@ const BiddingPackageEditFrom = (props) => {
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
-                afterClose={() => {
-                    setState(state => ({
-                        ...state,
-                        _id: null,
-                    }))
-                }}
+                // afterClose={() => {
+                //     setState(state => ({
+                //         ...state,
+                //         _id: null,
+                //     }))
+                // }}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-edit-biddingPackage"> */}
