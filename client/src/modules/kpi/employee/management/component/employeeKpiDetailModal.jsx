@@ -1,18 +1,18 @@
+import parse from 'html-react-parser';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import parse from 'html-react-parser';
 
-import { DialogModal } from '../../../../../common-components/index';
 import { DataTableSetting, ExportExcel, ToolTip } from '../../../../../common-components';
+import { DialogModal } from '../../../../../common-components/index';
 
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 
-import { TaskDialog } from '../../../evaluation/employee-evaluation/component/taskImpotanceDialog';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
+import { TaskDialog } from '../../../evaluation/employee-evaluation/component/taskImpotanceDialog';
 import { EmployeeKpiOverviewModal } from './employeeKpiOverviewModal';
 
-import { showWeeklyPoint } from './functionHelpers'
+import { showWeeklyPoint } from './functionHelpers';
 
 function ModalDetailKPIPersonal(props) {
 
@@ -318,23 +318,28 @@ function ModalDetailKPIPersonal(props) {
                                                     <span> {item.weight}/100</span>
                                                 </div>
 
-                                            <div>
-                                                <label>{translate('task.task_management.eval_of')}:</label>
-                                                <ToolTip 
-                                                    type={'text_tooltip'}
-                                                    dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
-                                                >
-                                                    <span>
-                                                        <span> {item.automaticPoint !== null && item.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
-                                                        <span> - {item.employeePoint !== null && item.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
-                                                        <span> - {item.approvedPoint !== null && item.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
-                                                    </span>
-                                                </ToolTip>
-                                            </div>
-                                            <div>
-                                                <label>{translate('kpi.evaluation.employee_evaluation.weekly_point')}:</label>
-                                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(translate, item?.weeklyEvaluations)}> {translate('general.detail')}</a>
-                                            </div>
+                                                <div>
+                                                    <label>Chỉ tiêu: </label>
+                                                    <span> {` ${Math.ceil(item.target)} (${item.unit})`}</span>
+                                                </div>
+
+                                                <div>
+                                                    <label>{translate('task.task_management.eval_of')}:</label>
+                                                    <ToolTip
+                                                        type={'text_tooltip'}
+                                                        dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
+                                                    >
+                                                        <span>
+                                                            <span> {item.automaticPoint !== null && item.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                            <span> - {item.employeePoint !== null && item.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                            <span> - {item.approvedPoint !== null && item.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                        </span>
+                                                    </ToolTip>
+                                                </div>
+                                                <div>
+                                                    <label>{translate('kpi.evaluation.employee_evaluation.weekly_point')}:</label>
+                                                    <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(translate, item?.weeklyEvaluations)}> {translate('general.detail')}</a>
+                                                </div>
 
                                                 {item.updatedAt &&
                                                     <div>
