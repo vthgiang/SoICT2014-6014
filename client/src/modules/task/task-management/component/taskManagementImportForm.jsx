@@ -406,7 +406,7 @@ function TaskManagementImportForm(props) {
         return statusConvert;
     }
 
-    // thêm creatỏ
+    // thêm creator
 
     const getUserIdFromEmail = (email) => {
         if (!email)
@@ -884,7 +884,7 @@ function TaskManagementImportForm(props) {
                 </div>
             </div>
         </div>
-        {/* Hiện thị data import */}
+        {/* Hiển thị data import */}
         <div className="nav-tabs-custom row" >
             <ul className="nav nav-tabs">
                 <li className="active"><a data-toggle="tab" href="#import_task_general">Thông tin chung</a></li>

@@ -12,7 +12,19 @@ export function schedulingProjects(state = initState, action) {
                 isLoading: true,
             }
 
-        case SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM_FAILE:
+        case SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM_FAIL:
+            return {
+                ...state,
+                isLoading: false,
+            }
+
+        case SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM:
+            return {
+                ...state,
+                isLoading: true,
+            }
+
+        case SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM_FAIL:
             return {
                 ...state,
                 isLoading: false,

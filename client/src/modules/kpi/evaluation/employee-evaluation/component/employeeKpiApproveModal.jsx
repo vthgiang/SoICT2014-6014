@@ -342,6 +342,7 @@ function EmployeeKpiApproveModal(props) {
                                             <th title="Mục tiêu đơn vị">{translate('kpi.evaluation.employee_evaluation.target')}</th>
                                             <th title="Tiêu chí đánh giá">{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
                                             <th title="Trọng số">{translate('kpi.evaluation.employee_evaluation.weight')}</th>
+                                            <th title="Chỉ tiêu">Chỉ tiêu</th>
                                             <th title="Kết quả đánh giá">{translate('kpi.evaluation.employee_evaluation.result')}</th>
                                         </tr>
                                     </thead>
@@ -354,6 +355,7 @@ function EmployeeKpiApproveModal(props) {
                                                     <td>{item.parent ? item.parent.name : ""}</td>
                                                     <td>{item ? parse(item.criteria) : ""}</td>
                                                     <td>{item.weight}</td>
+                                                    <td>{`${Math.ceil(item.target)} (${item.unit})`}</td>
                                                     <td>{item ? item.approvedPoint : ""}</td>
                                                 </tr>
                                             ) : <tr><td colSpan={6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
@@ -382,6 +384,7 @@ function EmployeeKpiApproveModal(props) {
                                 , 'Mục tiêu đơn vị',
                                 'Tiêu chí đánh giá',
                                 'Trọng số',
+                                'Chỉ tiêu',
                                 'Trạng thái',
                                 'Kết quả đánh giá',
                                 'Hành động'
@@ -396,6 +399,7 @@ function EmployeeKpiApproveModal(props) {
                                         <th>{translate('kpi.evaluation.employee_evaluation.target')}</th>
                                         <th>{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
                                         <th>{translate('kpi.evaluation.employee_evaluation.weight')}</th>
+                                        <th>Chỉ tiêu</th>
                                         <th>{translate('kpi.evaluation.employee_evaluation.status')}</th>
                                         <th>{translate('kpi.evaluation.employee_evaluation.result')}</th>
                                         <th className="col-fixed" style={{ width: 130 }}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
@@ -409,6 +413,7 @@ function EmployeeKpiApproveModal(props) {
                                             <td>{item.parent ? item.parent.name : ""}</td>
                                             <td>{item ? parse(item.criteria) : ""}</td>
                                             <td>{item.weight}</td>
+                                            <td>{`${Math.ceil(item.target)} (${item.unit})`}</td>
                                             <td>{handleCheckEmployeeKpiStatus(item.status)}</td>
                                             <td>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
                                             <td>
@@ -449,6 +454,7 @@ function EmployeeKpiApproveModal(props) {
                                     'Mục tiêu đơn vị',
                                     'Tiêu chí đánh giá',
                                     'Trọng số',
+                                    'Chỉ tiêu',
                                     'Trạng thái',
                                     'Kết quả đánh giá',
                                     'Hành động'
@@ -463,6 +469,7 @@ function EmployeeKpiApproveModal(props) {
                                             <th>{translate('kpi.evaluation.employee_evaluation.target')}</th>
                                             <th>{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
                                             <th>{translate('kpi.evaluation.employee_evaluation.weight')}</th>
+                                            <th>Chỉ tiêu</th>
                                             <th>{translate('kpi.evaluation.employee_evaluation.status')}</th>
                                             <th>{translate('kpi.evaluation.employee_evaluation.result')}</th>
                                             <th className="col-fixed" style={{ width: 130 }}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
@@ -476,6 +483,7 @@ function EmployeeKpiApproveModal(props) {
                                                 <td>{item.parent ? item.parent.name : ""}</td>
                                                 <td>{item ? parse(item.criteria) : ""}</td>
                                                 <td>{item.weight}</td>
+                                                <td>{`${Math.ceil(item.target)} (${item.unit})`}</td>
                                                 <td>{handleCheckEmployeeKpiStatus(item.status)}</td>
                                                 <td>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
                                                 <td>

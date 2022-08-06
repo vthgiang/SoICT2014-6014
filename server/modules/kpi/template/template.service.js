@@ -81,10 +81,7 @@ exports.getAllKpiTemplates = async (portal, query) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedKpiTemplates = async (portal, query) => {
-    portal = 'vnist';
     let { limit, number, keyword, unit } = query;
-    console.log(84, query)
-
     let kpiTemplates;
     let perPage = Number(limit);
     let page = Number(number);
@@ -124,8 +121,6 @@ exports.getPaginatedKpiTemplates = async (portal, query) => {
         .populate({ path: "kpis" })
         .populate({ path: "kpiSet", select: "approvedPoint automaticPoint employeePoint organizationalUnit date", populate: { path: "organizationalUnit" } })
 
-    // console.log(122, kpiTemplates)
-
     var totalCount = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
             keySearch,
@@ -157,17 +152,11 @@ exports.getKpiTemplate = async (portal, id) => {
  * @body dữ liệu tạo mới mẫu kpi
  */
 exports.createKpiTemplate = async (data) => {
-    console.log(160, data)
     const { name, organizationalUnit, description, creator, kpis } = data;
-
-    let portal = 'vnist';
-    // let userId = '62c560164729e4114590dd1d';
 
     //kiểm tra tên mẫu kpi đã tồn tại hay chưa ?
     let checkKpiTemplate = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal)).findOne({ name: name });
-    if (checkKpiTemplate) throw ['kpi_template_name_exist'];
-    console.log(105, name, organizationalUnit)
-
+    if (checkKpiTemplate) throw { messages: "kpi_template_name_exist" };
 
     //Tạo dữ liệu mẫu kpi
     var kpiSettemplate = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal)).create({
@@ -181,7 +170,6 @@ exports.createKpiTemplate = async (data) => {
 
     // Them muc tieu kpi
     let kpiTemplate = [];
-    console.log(184, kpis)
     for (let item of kpis) {
         kpiTemplate.push({
             name: item.name,
@@ -194,12 +182,9 @@ exports.createKpiTemplate = async (data) => {
 
     if (kpiTemplate) {
         let kpis = await Promise.all(kpiTemplate.map(async (item) => {
-            console.log(207, item)
             let kpi = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).create(item)
             return kpi._id;
         }));
-        console.log(210, kpis)
-        console.log(211, kpiSettemplate._id)
 
         kpiSettemplate = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(
@@ -214,7 +199,6 @@ exports.createKpiTemplate = async (data) => {
         { path: "kpis" }
     ])
         .execPopulate();
-    console.log(221, kpiSettemplate)
     return kpiSettemplate;
 }
 
@@ -232,7 +216,7 @@ exports.deleteKpiTemplate = async (portal, id) => {
         }))
     }
     kpiTemplate = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal)).findByIdAndDelete(id);
-    return [kpiTemplate, kpis];
+    return kpiTemplate;
 }
 
 /**
@@ -246,7 +230,6 @@ exports.editKpiTemplate = async (portal, data, id) => {
 
         // muc tieu them moi
         if (!item._id) {
-            console.log(251, 'create')
             let data = {
                 name: item.name,
                 weight: item.weight,
@@ -254,15 +237,11 @@ exports.editKpiTemplate = async (portal, data, id) => {
                 target: item.target,
                 unit: item.unit,
             }
-            console.log(259, data)
             let kpi = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).create(data);
 
-            console.log(261, kpi._id)
-            // kpiIds.push(kpi._id)
             kpiIds.push(kpi._id)
         } else {
             // muc tieu chinh sua
-            console.log(266)
             let kpi = await OrganizationalUnitKpiTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(item._id,
                 {
                     $set: {
@@ -275,13 +254,9 @@ exports.editKpiTemplate = async (portal, data, id) => {
                 },
                 { new: true },
             )
-            console.log(279)
             kpiIds.push(kpi._id)
         }
     }
-
-    console.log(278, kpiIds)
-    console.log('data', data, id)
 
     var kpiTemplate = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id,
         {

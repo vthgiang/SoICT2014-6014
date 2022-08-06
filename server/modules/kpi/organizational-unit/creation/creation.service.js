@@ -14,7 +14,6 @@ const mongoose = require('mongoose');
  */
 exports.getOrganizationalUnitKpiSet = async (portal, query) => {
     let month, nextMonth, department;
-    console.log(17, query)
 
     if (query.month) {
         month = new Date(query.month);
@@ -179,7 +178,6 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizati
                 { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
             )
     }
-    console.log(organizationalUnitKpiSets);
 
     return organizationalUnitKpiSets;
 }

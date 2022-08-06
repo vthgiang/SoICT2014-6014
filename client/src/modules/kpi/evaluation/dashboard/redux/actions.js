@@ -6,7 +6,8 @@ export const DashboardEvaluationEmployeeKpiSetAction = {
     getAllEmployeeKpiSetOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree,
     getEmployeeKpiPerformance,
-    balanceEmployeeKpiSet,
+    balanceEmployeeKpiSetAuto,
+    createEmployeeKpiSetAuto
 };
 
 /**
@@ -105,23 +106,44 @@ function getEmployeeKpiPerformance(ids) {
     };
 }
 
-// Can bang muc tieu của KPI cá nhân
-function balanceEmployeeKpiSet(data) {
+// Khởi tạo KPI cá nhân tu dong
+function createEmployeeKpiSetAuto(data) {
     return dispatch => {
-        dispatch({ type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_REQUEST });
-
-        dashboardEmployeeKpiService.balanceEmployeeKpiSet(data)
+        dispatch({ type: dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_REQUEST });
+        dashboardEmployeeKpiService.createEmployeeKpiSetAuto(data)
             .then(res => {
                 dispatch({
-                    type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_SUCCESS,
+                    type: dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_FAILURE,
+                    type: dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_FAILURE,
                     payload: error
                 })
             })
     };
 }
+
+// Can bang kpi nhan vien
+function balanceEmployeeKpiSetAuto(data) {
+    return dispatch => {
+        dispatch({ type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_REQUEST });
+
+        dashboardEmployeeKpiService.balanceEmployeeKpiSetAuto(data)
+            .then(res => {
+                dispatch({
+                    type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+

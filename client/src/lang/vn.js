@@ -4413,6 +4413,11 @@ export default {
                         create_employee_kpi_failure:
                             "Thêm mục tiêu KPI thất bại",
 
+                        balance_employee_kpi_set_success:
+                            "Cân bằng mục tiêu KPI thành công",
+                        balance_employee_kpi_set_failure:
+                            "Cân bằng mục tiêu KPI thất bại",
+
                         edit_employee_kpi_set_success:
                             "Chỉnh sửa tập KPI nhân viên thành công",
                         edit_employee_kpi_set_failure:
@@ -4893,6 +4898,8 @@ export default {
                     "Cập nhật điểm đánh giá KPI đơn vị lỗi",
                 copy_kpi_unit_success: "Sao chép KPI đơn vị thành công",
                 copy_kpi_unit_failure: "Sao chép KPI đơn vị thất bại",
+                copy_kpi_template_unit_success: "Sử dụng mẫu KPI đơn vị thành công",
+                copy_kpi_template_unit_failure: "Sử dụng mẫu KPI đơn vị thất bại",
                 copy_employee_kpi_success: "Sao chép KPI cá nhân thành công",
                 copy_employee_kpi_failure: "Sao chép KPI cá nhân thất bại",
                 organizatinal_unit_kpi_set_exist: "KPI đơn vị đã tồn tại",
@@ -4900,6 +4907,11 @@ export default {
                 calculate_kpi_unit_success: "Tính điểm KPI thành công",
                 calculate_kpi_unit_failure: "Tính điểm KPI thất bại"
             },
+            kpi_template: {
+                create_kpi_template_success: "Tạo mới mẫu KPI thành công",
+                delete_kpi_template_success: "Xóa mẫu KPI thành công",
+                edit_kpi_template_success: "Chỉnh sửa mẫu KPI thành công",
+            }
         },
 
         manage_warehouse: {
@@ -6570,7 +6582,7 @@ export default {
             select_all_type: 'Chọn tất cả hình thức',
             search_by_employees: 'Nhập tên hoặc email',
             search: 'Tìm kiếm',
-            add_err_end_date: 'Ngày kết thúc dự án phải sau ngày bắt đầu',
+            add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
             add_err_empty_start_date: "Hãy chọn ngày bắt đầu",
             add_err_empty_end_date: "Hãy chọn ngày kết thúc",
             col_start_time: "Thời điểm bắt đầu",
@@ -6611,6 +6623,16 @@ export default {
 
             // Quản lý công việc trong dự án
             task_management: {
+                add_task: "Thêm công việc mới",
+                add_phase: "Thêm giai đoạn mới",
+                add_milestone: "Thêm cột mốc mới",
+                type: "Loại công việc",
+                phase: "Giai đoạn",
+                task: "Công việc",
+                milestone: "Cột mốc",
+                milestone_info: "Thông tin cột mốc",
+                select_type: "Chọn loại công việc",
+                select_all_type: "Chọn tất cả loại công việc",
                 add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
                 end_date: "Ngày dự kiến kết thúc",
 
@@ -6690,10 +6712,23 @@ export default {
         phase: {
             projectCodeName: 'Mã dự án',
             fullName: 'Tên giai đoạn',
+            description: 'Mô tả giai đoạn',
+            startDate: 'Ngày bắt đầu giai đoạn',
+            endDate: 'Ngày kết thúc giai đoạn',
+            startTime: 'Thời gian bắt đầu giai đoạn',
+            endTime: 'Thời gian kết thúc giai đoạn',
             progress: 'Tiến độ',
-            listTasks: 'Công việc liên quan',
+            status: 'Trạng thái',
+            listTasks: 'Công việc thuộc giai đoạn',
             duration: 'Thời lượng',
             add_btn_new: "Thêm giai đoạn mới",
+            report: {
+                title: 'Báo cáo chi tiết giai đoạn'
+            },
+            milestone: {
+                name: 'Tên cột mốc',
+                date: 'Thời điểm'
+            }
         },
     },
 };

@@ -15,7 +15,7 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { AddProjectTaskForm } from './addProjectTaskForm';
 
 const TaskProjectAddModal = (props) => {
-    const { translate, task, id, parentTask, currentTasks, currentProjectTasks, project, user } = props;
+    const { translate, task, id, parentTask, currentTasks, currentProjectTasks, project, user, projectPhase } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const [state, setState] = useState({
         newTask: {
@@ -34,6 +34,7 @@ const TaskProjectAddModal = (props) => {
             collaboratedWithOrganizationalUnits: [],
             taskTemplate: "",
             taskProject: "",
+            taskPhase: "",
             estimateNormalTime: '',
             estimateOptimisticTime: '',
             estimateNormalCost: '',
@@ -94,12 +95,14 @@ const TaskProjectAddModal = (props) => {
             estimateMaxCost: Number(newTask.estimateMaxCost.replace(/,/g, '')),
             preceedingTasks: newTask.preceedingTasks,
             actorsWithSalary: newTask.actorsWithSalary,
+            taskPhase: newTask.taskPhase !== "" ? newTask.taskPhase : null,
             estimateAssetCost: Number(newTask.estimateAssetCost.replace(/,/g, '')),
             totalResWeight: Number(newTask.totalResWeight),
             startDate: startDateTask,
             endDate: endDateTask,
             description,
         }
+
         console.log('newTaskFormatted', newTaskFormatted)
         // const { affectedTasks, newTasksList } = processAffectedTasksChangeRequest(projectDetail, currentProjectTasks, newTaskFormatted);
         const newAffectedTasksList = [
@@ -169,9 +172,9 @@ const TaskProjectAddModal = (props) => {
 
     const isFormValidated = () => {
         const { newTask } = state;
-        return !checkIfHasCommonItems(newTask.accountableEmployees, newTask.responsibleEmployees) && newTask.name.trim().length > 0 && newTask.estimateMaxCost.trim().length > 0 && newTask.startDate.trim().length > 0
-            && newTask.endDate.trim().length > 0 && newTask.responsibleEmployees.length > 0 && newTask.accountableEmployees.length > 0
-            && newTask.estimateAssetCost.trim().length > 0
+        return !checkIfHasCommonItems(newTask?.accountableEmployees, newTask?.responsibleEmployees) && newTask?.name?.trim()?.length > 0 && newTask?.estimateMaxCost?.trim()?.length > 0 && newTask?.startDate?.trim()?.length > 0
+            && newTask?.endDate?.trim()?.length > 0 && newTask?.responsibleEmployees?.length > 0 && newTask?.accountableEmployees?.length > 0
+            && newTask?.estimateAssetCost?.trim()?.length > 0
     }
 
     return (
@@ -193,6 +196,7 @@ const TaskProjectAddModal = (props) => {
                     task={task}
                     parentTask={parentTask}
                     currentProjectTasks={currentProjectTasks}
+                    currentProjectPhase={projectPhase?.phases}
                 />
             </DialogModal>
         </React.Fragment>
@@ -200,8 +204,8 @@ const TaskProjectAddModal = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, department, role, user } = state;
-    return { project, department, role, user }
+    const { project, department, role, user, projectPhase } = state;
+    return { project, department, role, user, projectPhase }
 }
 
 const actionCreators = {

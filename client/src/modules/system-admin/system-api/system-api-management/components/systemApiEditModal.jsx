@@ -80,7 +80,7 @@ function SystemApiEditModal(props) {
                     <div className="form-group">
                         <label>{translate('system_admin.system_api.table.method')}</label>
                         <SelectBox
-                            id={`method-create-system-api`}
+                            id={`method-edit-system-api`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[

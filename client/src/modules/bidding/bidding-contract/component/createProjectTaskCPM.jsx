@@ -60,6 +60,7 @@ const AddTaskSchedule = (props) => {
             endDate: '',
         },
         listTasks: [],
+        listPhases: [],
     })
     const [currentEditRowIndex, setCurrentEditRowIndex] = useState(undefined);
     const [currentRow, setCurrentRow] = useState(undefined);
@@ -392,6 +393,7 @@ const AddTaskSchedule = (props) => {
                     <ModalCalculateCPM
                         estDurationEndProject={Number(estDurationEndProject)}
                         tasksData={state.listTasks}
+                        phasesData={state.listPhases}
                         projectData={projectDetail}
                         handleTaskProjectList={props.handleTaskProjectList}
                         handleHideModal={handleHideModal}

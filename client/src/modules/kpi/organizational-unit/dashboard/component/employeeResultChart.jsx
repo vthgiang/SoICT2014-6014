@@ -80,7 +80,7 @@ const EmployeeResultChart = (props) => {
 
     return (
         <React.Fragment>
-            <div>
+            <div className='padding-10'>
                 {
                     data && <Radar data={data}
                         height={"500px"}

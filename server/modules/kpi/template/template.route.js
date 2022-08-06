@@ -4,10 +4,10 @@ const { auth } = require(`../../../middleware`);
 
 const KpiTemplateController = require("./template.controller");
 
-router.get('/', KpiTemplateController.getPaginatedKpiTemplates);
+router.get('/', auth, KpiTemplateController.getPaginatedKpiTemplates);
 router.get('/:id', auth, KpiTemplateController.getKpiTemplate);
 
-router.post('/', KpiTemplateController.createKpiTemplate);
+router.post('/', auth, KpiTemplateController.createKpiTemplate);
 
 router.delete('/:id', auth, KpiTemplateController.deleteKpiTemplate);
 

@@ -4,10 +4,17 @@ import React, { useEffect } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
+const formatTarget = (value) => {
+    let number;
+    if (value > 1000000) {
+        number = Math.round(value / 1000) * 1000;
+        return new Intl.NumberFormat().format(number);
+    }
+    else return new Intl.NumberFormat().format(value);
+}
 
 const TargetKpiCard = (props) => {
     const { data, month } = props;
-
     const refProcessChart = React.createRef();
     const refGeneralChart = React.createRef();
 
@@ -64,13 +71,30 @@ const TargetKpiCard = (props) => {
                     categories: month
                 },
                 y: {
+                    // type: 'category',
                     tick: {
-                        values: !data.target && [0, 1]
+                        // values: data.target,
+                        count: 10,
+                        format: function (e) {
+                            let val = parseInt(e);
+
+                            if (val >= 1000 && val < 1000000) {
+                                return `${Math.floor(val / 1000)}K`
+                            } else if (val >= 1000000 && val < 1000000000) {
+                                return `${Math.floor(val / 1000000)}M`
+                            } else if (val >= 1000000000) {
+                                return `${Math.floor(val / 1000000000)}B`
+                            }
+                            return val;
+                        }
+                    },
+                    label: {
+                        text: data.unit ?? ""
                     }
                 }
             },
             size: {
-                height: 200
+                height: 180
             }
         });
     };
@@ -101,13 +125,12 @@ const TargetKpiCard = (props) => {
         <div>
             {data.itemType === 0
                 ? <div>
-                    <div className="box box-primary"
-                    >
+                    <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">{data?.name}</div>
                         </div>
 
-                        <div className='row'>
+                        <div className='row padding-10'>
                             <div className="col-sm-6" style={{ padding: '10px 20px' }}>
                                 <div className='' style={{ textAlign: "center" }}>
                                     <div>Mục tiêu</div>
@@ -128,60 +151,57 @@ const TargetKpiCard = (props) => {
                             </div>
 
                         </div>
-                        <div ref={refGeneralChart}>
-
-                        </div>
+                        <div className="padding-10" ref={refGeneralChart} />
                     </div>
                 </div>
                 :
-                <div >
-                    <div className="box box-primary"
-                    >
+                <div>
+                    <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">{data?.name}</div>
                         </div>
 
-                        <div className='row'>
-                            <section className='col-sm-7'>
-                                <div ref={refProcessChart} />
-                            </section>
-                            <div className="col-sm-5" style={{ padding: '10px 20px' }}>
-                                <div className='' style={{ textAlign: "center" }}>
-                                    <div>Mục tiêu</div>
-                                    <span className='text-primary' style={{ fontSize: 20, fontWeight: 600 }}>{
-                                        `${data.target} ${data.unit}`
-                                    }</span>
-                                    <hr style={{ border: "1px solid #ddd" }} />
-                                    <div style={{ display: 'flex', justifyContent: "space-around" }}>
-                                        <span>
-                                            <span className='text-primary' style={{ fontSize: 18, fontWeight: 600 }}>{
-                                                data?.target?.current ?? 0
-                                            }</span>
-                                            <div>Tháng hiện tại</div>
-                                        </span>
-                                        <span>
-                                            <div className='text-primary' style={{ fontSize: 18, fontWeight: 600 }}>{
-                                                data?.resultByMonth ? data?.resultByMonth[4] : 0
-                                            }</div>
-                                            <div>Tháng trước</div>
-                                        </span>
+                        <div className='box-body'>
+                            <div className="row">
+                                <section className='col-md-7'>
+                                    <div ref={refProcessChart} />
+                                </section>
+                                <div className="col-md-5" style={{ padding: '10px 20px' }}>
+                                    <div className='' style={{ textAlign: "center" }}>
+                                        <div>Mục tiêu</div>
+                                        <span className='text-primary' style={{ fontSize: 20, fontWeight: 600 }}>{
+                                            `${formatTarget(data.target)} ${data.unit}`
+                                        }</span>
+                                        <hr style={{ border: "1px solid #ddd" }} />
+                                        <div style={{ display: 'flex', justifyContent: "space-around" }}>
+                                            <span>
+                                                <span className='text-primary' style={{ fontSize: 18, fontWeight: 600 }}>{
+                                                    data?.current ? formatTarget(data.current) : 0
+                                                }</span>
+                                                <div>Tháng hiện tại</div>
+                                            </span>
+                                            <span style={{ width: 10 }}></span>
+                                            <span>
+                                                <div className='text-secondary' style={{ fontSize: 18, fontWeight: 600 }}>{
+                                                    data?.resultByMonth ? formatTarget(data?.resultByMonth[4]) : 0
+                                                }</div>
+                                                <div>Tháng trước</div>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-
-
-
                             </div>
-
                         </div>
-                        <div ref={refGeneralChart}>
 
+                        <div style={{ marginRight: 10 }} >
+                            <div ref={refGeneralChart} />
                         </div>
                     </div>
                 </div>
             }
         </div>
 
-    </React.Fragment>
+    </React.Fragment >
 }
 
 function mapState(state) {

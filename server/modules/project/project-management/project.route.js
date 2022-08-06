@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { auth } = require('../../middleware');
+const { auth } = require('../../../middleware');
 
 const ProjectController = require("./project.controller");
 
@@ -14,7 +14,7 @@ router.post('/project/salary-members', auth, ProjectController.getSalaryMembers)
 
 router.post('/project/change-requests', auth, ProjectController.createProjectChangeRequest);
 router.get('/project/change-requests/:projectId', auth, ProjectController.getListProjectChangeRequests);
-router.post('/project/change-requests/update-lists', auth, ProjectController.updateListProjectChangeRequests)
+router.patch('/project/change-requests/update-lists', auth, ProjectController.updateListProjectChangeRequests)
 router.patch('/project/change-requests/:id/:status', auth, ProjectController.updateStatusProjectChangeRequest);
 
 module.exports = router;

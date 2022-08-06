@@ -100,7 +100,8 @@ const ModalCalculateRecommend = (props) => {
         if (data.length === 0) return null;
         let currentMax = data[0].endDate;
         for (let dataItem of data) {
-            if (dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
+            if (!currentMax) currentMax = dataItem.endDate;
+            if (dataItem?.endDate && dayjs(dataItem.endDate).isAfter(dayjs(currentMax))) {
                 currentMax = dataItem.endDate;
             }
         }
@@ -239,7 +240,6 @@ const ModalCalculateRecommend = (props) => {
         })
         let fastestProcessedData = processDataTasksStartEnd(projectDetail, fastestCase);
         let earliestEndDate = findLatestDate(fastestProcessedData);
-        console.log('early',earliestEndDate);
         let isReduceSuccessful = dayjs(earliestEndDate).isSameOrBefore(dayjs(projectDetail?.endDate));
         setContent({
             status: isReduceSuccessful,
@@ -253,11 +253,10 @@ const ModalCalculateRecommend = (props) => {
         let desiredEndDate = convertDateTime(state.endDate,state.endTime);
         // Sao chép dữ liệu ra mảng mới để tránh ảnh hưởng tới dữ liệu gốc
         let currentProcessedData = _cloneDeep(processedData);
-        let lowerTime = Math.ceil(getDurationWithoutSatSun(desiredEndDate, oldCPMEndDate, projectDetail?.unitTime));
+        let lowerTime = getDurationWithoutSatSun(desiredEndDate, oldCPMEndDate, projectDetail?.unitTime);
         setTimeToReduce(lowerTime);
         if (lowerTime > 0) {
             answer = await calculateRecommendation(currentProcessedData, normalTime - Math.min(lowerTime,maxReducedTime));
-            console.log(answer);
         }
 
 
@@ -311,7 +310,6 @@ const ModalCalculateRecommend = (props) => {
         })
 
         const newProcessedData = processDataTasksStartEnd(projectDetail, currentProcessedData);
-        console.log('newProcessedData', newProcessedData)
         currentProcessedData = newProcessedData;
 
         setContent({

@@ -9,6 +9,11 @@ const ProjectSchema = new Schema(
         //     type: String,
         //     default: generateUniqueCode('PJ', 'v1')
         // },
+        company: {
+            //thuộc công ty nào
+            type: Schema.Types.ObjectId,
+            ref: "Company",
+        },    
         projectTemplate: {
             type: Schema.Types.ObjectId,
             ref: "ProjectTemplate"

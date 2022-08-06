@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -11,6 +11,19 @@ import { KpisForm } from './kpisTemplate';
 function AddKpiTemplate(props) {
     const { user } = props;
     let userId = getStorage("userId")
+    const { organizationalUnitsOfUser: unitArr } = user;
+
+    useEffect(() => {
+        if (unitArr) {
+            setState({
+                ...state,
+                templateData: {
+                    ...templateData,
+                    organizationalUnit: unitArr[0]._id
+                }
+            })
+        }
+    }, [unitArr])
 
     const [state, setState] = useState({
         templateData: {
@@ -95,7 +108,7 @@ function AddKpiTemplate(props) {
         })
     }
 
-    const { organizationalUnitsOfUser: unitArr } = user;
+
 
     return (
         <React.Fragment>
@@ -128,6 +141,7 @@ function AddKpiTemplate(props) {
                                     className="form-control select2"
                                     style={{ width: '100%' }}
                                     value={templateData?.organizationalUnit}
+                                    // defaultValue={[unitArr[0]._id]}
                                     onChange={handleChangeUnit}
                                     items={unitArr.map(item => { return { value: item._id, text: item.name } })}
                                     options={{

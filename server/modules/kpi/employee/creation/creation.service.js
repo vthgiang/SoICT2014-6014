@@ -345,12 +345,10 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
 
             let ratio = await EmployeeEvaluationService.getEmployeeKpiPerformance(portal, employees[i], formula);
             completeRatio[employees[i]] = {};
-            // console.log(342, ratio)
             totalRatio += ratio.completeRatio;
             completeRatio[employees[i]].ratio = ratio.completeRatio;
 
         }
-        console.log(347, completeRatio)
         const avg = totalRatio / employees.length;
         const { employeeImportances } = organizationalUnitKpiSet;
 
@@ -365,10 +363,8 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                     importance = 100;
                 }
             }
-            // console.log(360, completeRatio)
             completeRatio[key] = { ...completeRatio[key], importance }
         }
-        // console.log(362, completeRatio)
         // Phan chia cac muc tieu kpi cho nhan vien
         //Lay danh sach muc tieu kpi don vi theo trong so giam dan
         let otherKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -398,14 +394,12 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 }
             ])
 
-        // console.log(390, otherKpis)
         // Gan kpi cho nhan vien
         let kpiEmployee = []
         let numOfKpis = Math.round(completeRatio[employee].ratio * otherKpis.length);
         if (numOfKpis > otherKpis.length) {
             numOfKpis = otherKpis.length;
         }
-        // console.log(397, completeRatio[employee].ratio, numOfKpis)
         // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
         if (otherKpis.length > 0 && completeRatio[employee].importance < 90) {
             let weightOver = 0;
@@ -476,10 +470,6 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
 }
 
 exports.balanceEmployeeKpisAuto = async (portal, kpiSet) => {
-    console.log(475, kpiSet)
-    if (!portal) {
-        portal = 'vnist';
-    }
     for (let i = 0; i < kpiSet.kpis.length; i++) {
         let kpis = kpiSet.kpis[i];
 
@@ -491,16 +481,6 @@ exports.balanceEmployeeKpisAuto = async (portal, kpiSet) => {
     }
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(kpiSet)
-
-    // if (employeeKpiSet?.kpis) {
-    //     for (let kpiId of employeeKpiSet.kpis) {
-    //         let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiId);
-    //         if (kpi && typeof (kpi?.target) === 'number') {
-    //             let kpiBalance = await EmployeeKpi(connect(DB_CONNECTION, portal))
-    //                 .findByIdAndUpdate(kpi._id, { $set: { "target": kpi.target } });
-    //         }
-    //     }
-    // }
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit ")
         .populate({ path: "creator", select: "_id name email avatar" })
@@ -511,7 +491,6 @@ exports.balanceEmployeeKpisAuto = async (portal, kpiSet) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
-    console.log(482, employeeKpiSet)
 
     return employeeKpiSet;
 }

@@ -35,7 +35,7 @@ function updateStatusProjectChangeRequestAPI(data) {
     }
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests/update-lists`,
-        method: 'POST',
+        method: 'PATCH',
         data,
     }, true, true, 'project');
 }

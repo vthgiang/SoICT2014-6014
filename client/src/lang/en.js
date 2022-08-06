@@ -4668,6 +4668,11 @@ export default {
                 calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
                 calculate_kpi_unit_failure: "Can not calculate organizational unit KPI"
             },
+            kpi_template: {
+                create_kpi_template_success: "Create KPI template Success",
+                delete_kpi_template_success: "Delete KPI template Success",
+                edit: "Edit KPI template Success",
+            }
         },
 
         manage_warehouse: {
@@ -5760,6 +5765,16 @@ export default {
 
             // Quản lý công việc trong dự án
             task_management: {
+                add_task: "Add new task",
+                add_phase: "Add new phase",
+                add_milestone: "Add new milestone",
+                type: "Type of task",
+                phase: "Phase",
+                task: "Task",
+                milestone: "Milestone",
+                milestone_info: "Milestone detail",
+                select_type: "Select task type",
+                select_all_type: "Select all type",
                 estimate: "Estimating",
                 add_err_time_cost: "Time & Cost must be numeric and greater or equal than 0",
                 end_date: "Estimated end date",
@@ -5832,16 +5847,29 @@ export default {
 
             // Báo cáo
             report: {
-                title: 'Detailed project report'
+                title: 'Detail project report'
             }
         },
         phase: {
             projectCodeName: 'Project codename',
             fullName: 'Phase name',
-            progress: 'Progress',
-            listTasks: 'List of tasks',
+            description: 'Phase description',
+            startDate: 'Start date of phase',
+            endDate: 'End date of phase',
+            startTime: 'Start time of phase',
+            endTime: 'End time of phase',
+            progress: 'progress',
+            status: 'Status',
+            listTasks: 'Task in phase',
             duration: 'Duration',
             add_btn_new: "Add new phase",
+            report: {
+                title: 'Detail phase report'
+            },
+            milestone: {
+                name: 'Milestone name',
+                date: 'date'
+            }
         },
     },
 };

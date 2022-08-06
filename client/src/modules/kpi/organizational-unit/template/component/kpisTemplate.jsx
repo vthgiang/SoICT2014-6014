@@ -266,7 +266,7 @@ function KpisForm(props) {
                         <th title="Trọng số">Trọng số</th>
                         <th title="Chỉ tiêu">Chỉ tiêu</th>
                         <th title="Tiêu chí đánh giá">Tiêu chí đánh giá</th>
-                        <th title="Công thức">Công thức</th>
+                        {/* <th title="Công thức">Công thức</th> */}
                         <th style={{ width: '60px' }} title="Hành động">Hành động</th>
                     </tr>
                 </thead>
@@ -282,7 +282,7 @@ function KpisForm(props) {
                                     <td>{item?.weight}</td>
                                     <td>{`${item?.target} (${item?.unit})`}</td>
                                     <td>{item?.criteria}</td>
-                                    <td>{item?.formula}</td>
+                                    {/* <td>{item?.formula}</td> */}
                                     {/**các button sửa, xóa 1 hoạt động */}
                                     <td >
                                         <a href="#abc" className="edit" title="Edit" data-toggle="tooltip" onClick={() => { handleEditKpi(item, index) }}><i className="material-icons"></i></a>

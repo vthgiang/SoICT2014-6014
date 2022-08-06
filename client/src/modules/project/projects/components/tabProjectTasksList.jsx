@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from '../redux/actions';
+import { ProjectPhaseActions } from '../../project-phase/redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import TableTasksProject from './tableTasksProject';
 import GanttTasksProject from './ganttTasksProject';
@@ -11,6 +12,8 @@ import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from './functionHe
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import ModalAddTaskSchedule from '../../scheduling-projects/components/modalAddTaskSchedule';
 import ProjectEditForm from './editProject';
+import PhaseCreateForm from '../../project-phase/components/createPhase';
+import {MilestoneCreateForm} from '../../project-phase/components/createMilestone';
 import moment from 'moment';
 import { TaskProjectAddModal } from '../../../task/task-project/component/taskProjectAddModal';
 import TabProjectInfo from './tabProjectInfo';
@@ -21,7 +24,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { isEqual } from 'lodash';
 
 const TabProjectTasksList = (props) => {
-    const { translate, project, user, tasks, currentProjectTasks } = props;
+    const { translate, project, user, tasks, currentProjectTasks, currentProjectPhase, currentProjectMilestone } = props;
     const userId = getStorage("userId");
     // const [projectDetail, setProjectDetail] = useState(getCurrentProjectDetails(project));
     let projectDetail = getCurrentProjectDetails(project);
@@ -31,6 +34,14 @@ const TabProjectTasksList = (props) => {
 
     const handleOpenCreateProjectTask = () => {
         window.$(`#addNewProjectTask-undefined`).modal('show');
+    }
+
+    const handleOpenCreateProjectPhase = () => {
+        window.$(`#modal-create-project-phase-${currentProjectId}`).modal('show');
+    }
+
+    const handleOpenCreateProjectMilestone = () => {
+        window.$(`#modal-create-project-milestone-${currentProjectId}`).modal('show');
     }
 
     const handleOpenCreateTask = () => {
@@ -43,14 +54,14 @@ const TabProjectTasksList = (props) => {
         }, 10);
         setTimeout(() => {
             props.getAllTasksByProject(currentProjectId);
+            props.getAllPhaseByProject(currentProjectId);
+            props.getAllMilestoneByProject(currentProjectId);
         }, 1000);
     }
 
     const onHandleOpenScheduleModal = () => {
         window.$('#modal-add-task-schedule').modal('show')
     }
-
-    console.log('currentProjectTasks', currentProjectTasks)
 
     return (
         <React.Fragment>
@@ -72,11 +83,13 @@ const TabProjectTasksList = (props) => {
                         <button style={{ paddingTop: 5, width: 35, height: 35, justifyContent: 'center', alignItems: 'center', marginTop: 15, marginRight: 10 }}
                             onClick={() => {
                                 props.getAllTasksByProject(currentProjectId);
+                                props.getAllPhaseByProject(currentProjectId);
+                                props.getAllMilestoneByProject(currentProjectId);
                             }}
                         >
                             <span className="material-icons">refresh</span>
                         </button>
-                        
+
                         {/* Button thêm mới */}
                         {
                             projectDetail?.projectType === 1 &&
@@ -91,8 +104,8 @@ const TabProjectTasksList = (props) => {
                         }
                         {
                             projectDetail?.projectType === 2 &&
-                                checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) && currentProjectTasks && currentProjectTasks.length > 0 ? null :
-                                (projectDetail && <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />)
+                            checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) && currentProjectTasks && currentProjectTasks.length === 0 &&
+                            projectDetail && <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />
                         }
                         {
                             projectDetail?.projectType === 2 &&
@@ -105,13 +118,28 @@ const TabProjectTasksList = (props) => {
                         {
                             projectDetail?.projectType === 2 &&
                             currentProjectTasks && currentProjectTasks.length > 0 &&
-                            <>
-                                <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
-                                <button style={{ display: 'flex', marginTop: 15, marginRight: 10 }} type="button" className="btn btn-success" onClick={handleOpenCreateProjectTask}
-                                    title={translate('task_template.add')}>
-                                    {translate('task_template.add')}
-                                </button>
-                            </>
+                            <div>
+                                <PhaseCreateForm currentProjectTasks={currentProjectTasks} projectId={currentProjectId} />
+                                <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} currentProjectPhase={currentProjectPhase} parentTask={parentTask} />
+                                <MilestoneCreateForm currentProjectTasks={currentProjectTasks} projectId={currentProjectId} currentProjectPhase={currentProjectPhase} />
+                                <div className="dropdown">
+                                    <button type="button" style={{ display: 'flex', marginTop: 15, marginRight: 10 }} className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                    {
+                                        checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) ?
+                                            <ul className="dropdown-menu pull-right">
+                                                <li><a href="#" title={translate('project.task_management.add_task')} onClick={handleOpenCreateProjectTask}>{translate('project.task_management.add_task')}</a></li>
+                                                <li><a href="#" title={translate('project.task_management.add_phase')} onClick={handleOpenCreateProjectPhase}>{translate('project.task_management.add_phase')}</a></li>
+                                                <li><a href="#" title={translate('project.task_management.add_milestone')} onClick={handleOpenCreateProjectMilestone}>{translate('project.task_management.add_milestone')}</a></li> 
+                                            </ul>
+                                            : <ul className="dropdown-menu pull-right">
+                                                <li><a href="#" title={translate('project.task_management.add_task')} onClick={handleOpenCreateProjectTask}>{translate('project.task_management.add_task')}</a></li>
+                                            </ul>
+
+                                    }
+
+                                </div>
+
+                            </div>
                         }
                     </div>
                 </div>
@@ -119,8 +147,16 @@ const TabProjectTasksList = (props) => {
                 {isTableType ?
                     <TableTasksProject
                         currentProjectTasks={currentProjectTasks}
+                        currentProjectPhase={currentProjectPhase}
+                        projectDetail={projectDetail}
+                        currentProjectMilestone={currentProjectMilestone}
                     /> :
-                    <GanttTasksProject currentProjectTasks={currentProjectTasks} />}
+                    <GanttTasksProject 
+                        currentProjectTasks={currentProjectTasks} 
+                        currentProjectPhase={currentProjectPhase} 
+                        projectDetail={projectDetail} 
+                        currentProjectMilestone={currentProjectMilestone}
+                    />}
 
             </div>
         </React.Fragment>
@@ -128,8 +164,8 @@ const TabProjectTasksList = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, changeRequest, user, tasks } = state;
-    return { project, changeRequest, user, tasks }
+    const { project, changeRequest, user, tasks, projectPhase } = state;
+    return { project, changeRequest, user, tasks, projectPhase }
 }
 
 const mapDispatchToProps = {
@@ -138,6 +174,8 @@ const mapDispatchToProps = {
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllTasksByProject: taskManagementActions.getAllTasksByProject,
+    getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getAllMilestoneByProject: ProjectPhaseActions.getAllMilestoneByProject,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
 }

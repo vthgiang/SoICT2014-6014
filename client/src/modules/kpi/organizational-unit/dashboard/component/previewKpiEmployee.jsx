@@ -9,7 +9,7 @@ const formatTarget = (value) => {
         number = Math.round(value / 1000) * 1000;
         return new Intl.NumberFormat().format(number);
     }
-    else return new Intl.NumberFormat().format(value);
+    else return new Intl.NumberFormat().format(Math.ceil(value));
 }
 
 const PreviewKpiEmployee = (props) => {
@@ -42,8 +42,9 @@ const PreviewKpiEmployee = (props) => {
             }
         }
     }, [data])
+
     return <React.Fragment>
-        <div className='col-md-4' style={{ marginBottom: 20 }}  >
+        <div className={`${disableNotice ? "" : 'ml-15 mr-15'}`} style={{ marginBottom: "15px" }}  >
 
             {/* style={{ display: 'flex', alignItems: "stretch" }} style={{ display: 'flex', margin: 16 }}*/}
             {
@@ -56,7 +57,7 @@ const PreviewKpiEmployee = (props) => {
                             {
                                 delay && !disableNotice && <span style={{ position: "absolute", right: 0 }} onClick={() => {
                                     Swal.fire({
-                                        title: 'Nhân viên này chậm tiến độ KPI. Hãy cân bằng KPI nhân viên để đạt mục tiêu',
+                                        title: 'Nhân viên này đang chậm tiến độ KPI',
                                         type: 'warning',
                                         confirmButtonColor: '#3085d6',
                                         confirmButtonText: 'OK',

@@ -24,3 +24,37 @@ p.kpi-number-target{
 .progress-weigth-kpi .fillmult{
     border-radius: 5px;
 }
+
+
+.padding-10{
+    padding: 10px;
+}
+
+.pl-15{
+    padding-left: 15px;
+}
+
+.pr-15{
+    padding-right: 15px;
+}
+
+.ml-15{
+    margin-left: 15px;
+}
+
+.mr-15{
+    margin-right: 15px;
+}
+
+.mb{
+    margin-bottom: 10px;
+}
+.ml{
+    margin-left: 10px;
+}
+.mr{
+    margin-right: 10px;
+}
+.mt{
+    margin-top: 10px;
+}

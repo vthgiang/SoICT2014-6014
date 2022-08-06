@@ -991,7 +991,6 @@ exports.getEmployeeKpiPerformance = async (portal, userId, formula) => {
 
     // Lấy thông tin profile nhân viên
 
-    if (!portal) portal = 'vnist';
     let user = await UserService.getUser(portal, userId);
     let inforEmployee = await EmployeeService.getEmployeeProfile(portal, user.email);
     const profile = inforEmployee.employees[0];

@@ -2288,6 +2288,7 @@ exports.createProjectTask = async (portal, task) => {
         return mongoose.Types.ObjectId.isValid(value) ? value : undefined;
     }
     let taskProject = (taskTemplate && taskTemplate.taskProject) ? getValidObjectId(taskTemplate.taskProject) : getValidObjectId(task.taskProject);
+    let taskPhase = (taskTemplate && taskTemplate.taskPhase) ? getValidObjectId(taskTemplate.taskPhase) : getValidObjectId(task.taskPhase);
 
     let taskActions = [];
     if (task.taskActions) {
@@ -2337,8 +2338,9 @@ exports.createProjectTask = async (portal, task) => {
         accountableEmployees: task.accountableEmployees,
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
-        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
+        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? [task.creator] : [],
         taskProject,
+        taskPhase,
         estimateNormalTime: task.estimateNormalTime,
         estimateOptimisticTime: task.estimateOptimisticTime,
         estimateNormalCost: task.estimateNormalCost,
@@ -2497,7 +2499,7 @@ exports.getAllTasksThatHasEvaluation = async (portal, data) => {
                     "evaluations": {
                         $elemMatch: {
                             $and: [
-                                { "evaluatingMonth": { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                                { "evaluatingMonth": { $lte: new Date(endDate), $gte: new Date(startDate) } },
                                 // {
                                 //     "results": {
                                 //         $elemMatch: {
@@ -2512,7 +2514,7 @@ exports.getAllTasksThatHasEvaluation = async (portal, data) => {
             ]
         })
     // .select("name evaluations responsibleEmployees");
-    console.log("ashfjlo", tasks)
+    console.log("2499", tasks)
 
 
     return tasks;
@@ -3266,7 +3268,6 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
 
 exports.getTasksByProject = async (portal, data) => {
     let { perPage, page, status, priority, name, preceedingTasks, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, calledId } = data;
-
     let tasks;
 
     let keySearch = {};
@@ -3477,36 +3478,36 @@ exports.getTasksByProject = async (portal, data) => {
     let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
 
     // Nếu calledId là 'get_all' thì bỏ qua page và perPage
-    if ( calledId === 'get_all' ) {
+    if (calledId === 'get_all') {
         tasks = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ createdAt: -1 })
-        .populate({ path: "responsibleEmployees", select: "_id name" })
-        .populate({ path: "accountableEmployees", select: "_id name" })
-        .populate({ path: "consultedEmployees", select: "_id name" })
-        .populate({ path: "informedEmployees", select: "_id name" })
-        .populate({ path: "creator", select: "_id name" })
-        .populate({ path: "preceedingTasks", select: "_id name" })
-        .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
-        .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+            .populate({ path: "preceedingTasks", select: "_id name" })
+            .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+            .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
     }
 
     else {
         tasks = await Task(connect(DB_CONNECTION, portal))
-        .find( optionQuery ).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
-        .populate({ path: "responsibleEmployees", select: "_id name" })
-        .populate({ path: "accountableEmployees", select: "_id name" })
-        .populate({ path: "consultedEmployees", select: "_id name" })
-        .populate({ path: "informedEmployees", select: "_id name" })
-        .populate({ path: "creator", select: "_id name" })
-        .populate({ path: "preceedingTasks", select: "_id name" })
-        .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
-        .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
+            .find(optionQuery).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+            .populate({ path: "preceedingTasks", select: "_id name" })
+            .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+            .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
     }
 
     return {
         docs: tasks,
         totalDocs: totalList,
     }
-    
+
 }
 
 

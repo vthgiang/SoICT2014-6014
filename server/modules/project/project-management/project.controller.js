@@ -1,5 +1,5 @@
 const ProjectService = require('./project.service');
-const Logger = require('../../logs');
+const Logger = require('../../../logs');
 
 /** 
  *  Lấy thông tin dự án
@@ -24,6 +24,7 @@ exports.get = async (req, res) => {
         })
     }
 }
+
 /**
  *  Xem thông tin
  */
@@ -54,7 +55,7 @@ exports.show = async (req, res) => {
  */
 exports.create = async (req, res) => {
     try {
-        const project = await ProjectService.create(req.portal, req.body);
+        const project = await ProjectService.create(req.portal, req.body, req.user.company._id);
         await Logger.info(req.user.email, 'create_task_project_success', req.portal)
         res.status(200).json({
             success: true,
@@ -280,3 +281,4 @@ exports.updateListProjectChangeRequests = async (req, res) => {
         })
     }
 }
+

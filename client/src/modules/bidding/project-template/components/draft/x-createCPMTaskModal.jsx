@@ -42,7 +42,6 @@ const CreateCPMTaskModal = (props) => {
             estimateHumanCost: '',
             preceedingTasks: [],
             budget: '',
-            estimateAssetCost: '',
             actorsWithSalary: [],
             totalResWeight: 80,
             totalAccWeight: 20,

@@ -272,7 +272,6 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
     let beginOfCurrentMonth = new Date(query.month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth() + 1);
-    console.log(275, beginOfCurrentMonth, endOfCurrentMonth)
     let organizationalUnit, employeeKpiSets;
     if (!query.organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))

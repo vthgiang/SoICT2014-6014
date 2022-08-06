@@ -190,7 +190,6 @@ exports.copyUseTemplateKpi = async (portal, kpiTemplateId, data) => {
     if (checkOrganizationalUnitKpiSet) {
         throw { messages: "organizatinal_unit_kpi_set_exist" }
     } else {
-        console.log(data, kpiTemplateId)
         let organizationalUnitKpiSet, organizationalUnitNewKpi;
 
         // Tạo kpi tháng mới
@@ -242,22 +241,18 @@ exports.copyUseTemplateKpi = async (portal, kpiTemplateId, data) => {
                 { new: true }
             );
 
-        console.log(245, kpiTemplateId)
         // Thêm lịch sử sử dụng KPI mẫu
         organizationalUnitTemplateKPISet = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(kpiTemplateId, { $push: { kpiSet: organizationalUnitNewKpi._id } })
-        console.log(249)
         // Lấy dữ liệu kpi được sao chép
         organizationalUnitTemplateKPISet = await OrganizationalUnitKpiSetTemplate(connect(DB_CONNECTION, portal))
             .findById(kpiTemplateId)
             .populate("organizationalUnit")
             .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } });
-        console.log(256)
 
         // Thêm các mục tiêu kpi
         let kpisFromTemplate = [];
-        console.log(184, organizationalUnitTemplateKPISet.kpis)
         for (let item of organizationalUnitTemplateKPISet.kpis) {
             kpisFromTemplate.push({
                 name: item.name,
@@ -267,14 +262,11 @@ exports.copyUseTemplateKpi = async (portal, kpiTemplateId, data) => {
                 unit: item.unit
             })
         }
-        console.log(270, kpisFromTemplate)
         if (kpisFromTemplate) {
             let kpis = await Promise.all(kpisFromTemplate.map(async (item) => {
-                console.log(207, item)
                 let kpi = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).create(item)
                 return kpi._id;
             }));
-            console.log(210, kpis)
 
             organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
                 .findByIdAndUpdate(
@@ -287,7 +279,6 @@ exports.copyUseTemplateKpi = async (portal, kpiTemplateId, data) => {
         //     .findByIdAndUpdate(
         //         organizationalUnitNewKpi?._id, { $set: { kpis: data?.listKpiUnit } }, { new: true }
         //     );
-        // console.log(257, organizationalUnitKpiSet)
 
 
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))

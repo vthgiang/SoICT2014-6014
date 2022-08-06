@@ -5,7 +5,8 @@ export const dashboardEmployeeKpiService = {
     getAllEmployeeKpiSetOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree,
     getEmployeeKpiPerformance,
-    balanceEmployeeKpiSet
+    balanceEmployeeKpiSetAuto,
+    createEmployeeKpiSetAuto
 };
 
 /**
@@ -66,12 +67,20 @@ function getEmployeeKpiPerformance(ids) {
     }, false, true, 'kpi.evaluation');
 }
 
-/** Can bang muc tieu kpi nhan vien */
+/** Khởi tạo KPI cá nhân tu dong */
+function createEmployeeKpiSetAuto(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets-auto`,
+        method: 'POST',
+        data: data
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+}
 
-function balanceEmployeeKpiSet(data) {
+/** Can bang kpi nhan vien */
+function balanceEmployeeKpiSetAuto(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpis-balance`,
         method: 'PATCH',
-        data: data,
-    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server')
+        data: data
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }

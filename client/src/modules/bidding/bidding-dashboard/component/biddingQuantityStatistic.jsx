@@ -24,10 +24,18 @@ const BiddingStatusQuantityStatistic = (props) => {
         const numberOfInProcess = biddingPackagesManager?.listBiddingPackages.filter(x => x.status === 3)?.length;
         const numberOfComplete = biddingPackagesManager?.listBiddingPackages.filter(x => x.status === 4)?.length;
 
-        bidColumns=["Số lượng gói thầu theo trạng thái", numberOfActive, numberOfInactive, numberOfWaitForBidding, numberOfInProcess, numberOfComplete];
+        // bidColumns = ["Số lượng gói thầu theo trạng thái", numberOfActive, numberOfInactive, numberOfWaitForBidding, numberOfInProcess, numberOfComplete];
+
+        bidColumns = [
+            ["Hoạt động", numberOfActive],
+            ["Đang chờ kết quả dự thầu", numberOfWaitForBidding],
+            ["Đang thực hiện", numberOfInProcess],
+            ["Ngưng hoạt động", numberOfInactive],
+            ["Hoàn thành", numberOfComplete],
+        ]
 
         return {
-            dataChart: [bidColumns],
+            dataChart: bidColumns,
             categories: categories,
         }
     }
@@ -47,41 +55,66 @@ const BiddingStatusQuantityStatistic = (props) => {
         const { translate } = props;
 
         let { dataChart, categories } = setDataChart();
+        // let catColor = ['#2ca02c', '#d62728', '#f57b0f', '#bab104', '#1f77b4']
 
         let chart = c3.generate({
             bindto: refBiddingStatusByQuantity.current,
+            data: {                                 // Dữ liệu biểu đồ
+                columns: dataChart,
+                type: 'pie',
+            },
 
+            // Căn lề biểu đồ
             padding: {
                 top: 20,
                 bottom: 20,
-                right: 20
+                right: 20,
+                left: 20
             },
 
-            data: {
-                columns: dataChart,
-                type: "bar",
-                labels: true,
-            },
-            bar: {
-                width: {
-                    ratio: 0.2
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id, index) {
+                        return value;
+
+                    }
                 }
             },
 
-            axis: {
-                x: {
-                    type: 'categories',
-                    categories: categories,
-                    label: "Trạng thái"
-                },
-                y: {
-                    label: "Số lượng gói thầu",
-                },
-            },
+            // padding: {
+            //     top: 20,
+            //     bottom: 20,
+            //     right: 20
+            // },
 
-            zoom: {
-                enabled: false
-            }
+            // data: {
+            //     columns: dataChart,
+            //     type: "bar",
+            //     labels: true,
+            //     color: function (color, d) {                    
+            //         return catColor[d.x];
+            //     }
+            // },
+            // bar: {
+            //     width: {
+            //         ratio: 0.2
+            //     }
+            // },
+
+            // axis: {
+            //     x: {
+            //         type: 'categories',
+            //         categories: categories,
+            //         label: "Trạng thái"
+            //     },
+            //     y: {
+            //         label: "Số lượng gói thầu",
+            //     },
+            // },
+
+            // zoom: {
+            //     enabled: false
+            // }
         });
     };
 

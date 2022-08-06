@@ -15,8 +15,6 @@ import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetCha
 import { DatePicker, ExportExcel, SelectBox, SelectMulti } from '../../../../../common-components';
 import { showListInSwal } from '../../../../../helpers/showListInSwal';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
-import { EmployeeCreateKpiAutoModal } from './employeeCreateKpiAutoModal';
-import { EmployeeCreateKpiDashboard } from './employeeCreateKpiDashboard';
 import { PerformanceKpiOfEmployeeChart } from './performanceKpiOfEmployeeChart';
 
 function EmployeeKpiEvaluationDashboard(props) {
@@ -583,7 +581,7 @@ function EmployeeKpiEvaluationDashboard(props) {
 
 
                     {/* Dashboard trang thai khoi tao kpi nhan vien */}
-                    <div className="row">
+                    {/* <div className="row">
                         <div className="col-md-12">
                             <div className="box">
                                 <div className="box-header with-border" style={{ 'display': 'flex' }}>
@@ -603,7 +601,7 @@ function EmployeeKpiEvaluationDashboard(props) {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Thống kê kết quả KPI của nhân viên */}
                     <div className="row">
