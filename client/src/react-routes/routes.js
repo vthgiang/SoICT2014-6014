@@ -1459,7 +1459,8 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={
-                            this.props.dashboardOrganizationalUnitKpi.isLoading
+                            this.props.dashboardOrganizationalUnitKpi.isLoading ||
+                            this.props.createEmployeeKpiSet.isLoading
                         }
                         key={"kpi-unit-dashboard"}
                         arrPage={[

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { createKpiSetActions } from '../../../employee/creation/redux/actions';
+import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 
 const formatDate = (date) => {
@@ -74,7 +74,7 @@ function EmployeeCreateKpiAutoModal(props) {
             formula: formula
         };
 
-        props.createEmployeeKpiSetAuto(data)
+        props.createEmployeeKpiSetAuto(data);
     }
 
     const isFormValidated = () => {
@@ -113,7 +113,6 @@ function EmployeeCreateKpiAutoModal(props) {
             });
         }
     }, [createKpiUnit])
-    console.log(140, employees)
     return (
         <React.Fragment>
             <DialogModal
@@ -204,8 +203,9 @@ function mapState(state) {
 }
 const actions = {
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    createEmployeeKpiSetAuto: createKpiSetActions.createEmployeeKpiSetAuto,
-    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit
+    createEmployeeKpiSetAuto: DashboardEvaluationEmployeeKpiSetAction.createEmployeeKpiSetAuto,
+    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
+    getAllEmployeeKpiSetOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
 }
 
 const connectedEmployeeCreateKpiAutoModal = connect(mapState, actions)(withTranslate(EmployeeCreateKpiAutoModal));

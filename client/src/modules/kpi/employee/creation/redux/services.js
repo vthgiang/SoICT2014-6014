@@ -12,8 +12,6 @@ export const createKpiSetService = {
     createEmployeeKpi,
     editEmployeeKpi,
     createEmployeeKpiSet,
-    createEmployeeKpiSetAuto,
-    balanceEmployeeKpiSetAuto,
     approveEmployeeKpiSet,
 
     createComment,
@@ -75,23 +73,6 @@ function createEmployeeKpiSet(newKPI) {
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
-/** Khởi tạo KPI cá nhân tu dong */
-function createEmployeeKpiSetAuto(data) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets-auto`,
-        method: 'POST',
-        data: data
-    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
-}
-
-/** Can bang kpi nhan vien */
-function balanceEmployeeKpiSetAuto(data) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpis-balance`,
-        method: 'PATCH',
-        data: data
-    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
-}
 
 /** Tạo 1 mục tiêu KPI cá nhân mới */
 function createEmployeeKpi(newTarget) {

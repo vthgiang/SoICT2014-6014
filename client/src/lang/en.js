@@ -4641,6 +4641,11 @@ export default {
                 calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
                 calculate_kpi_unit_failure: "Can not calculate organizational unit KPI"
             },
+            kpi_template: {
+                create_kpi_template_success: "Create KPI template Success",
+                delete_kpi_template_success: "Delete KPI template Success",
+                edit: "Edit KPI template Success",
+            }
         },
 
         manage_warehouse: {
@@ -5709,8 +5714,8 @@ export default {
             show_task_project_fail: 'Show project fail',
             create_task_project_success: 'Create project success',
             create_task_project_fail: 'Create project fail',
-            create_tasks_list_excel_cpm_success:'Create tasks from file successfully',
-            create_tasks_list_excel_cpm_fail:'Fail to create tasks from file',
+            create_tasks_list_excel_cpm_success: 'Create tasks from file successfully',
+            create_tasks_list_excel_cpm_fail: 'Fail to create tasks from file',
             edit_task_project_success: 'Edit project success',
             edit_task_project_fail: 'Edit project fail',
             delete_task_project_success: 'Delete project success',

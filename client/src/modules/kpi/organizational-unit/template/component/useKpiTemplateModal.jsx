@@ -39,8 +39,9 @@ function UseKpiTemplateModal(props) {
     };
     const { translate, createKpiUnit } = props;
     const { kpiTemplate, unit } = props;
+
     const [state, setState] = useState({
-        organizationalUnitId: null,
+        organizationalUnitId: unit[0]._id ?? null,
         month: new Date()
     });
     const { organizationalUnitId, month } = state;
@@ -94,7 +95,6 @@ function UseKpiTemplateModal(props) {
                     multiple={false}
                     onChange={handleSelectOrganizationalUnit}
                     value={organizationalUnitId}
-                    defaultValue={null}
                 />
             </div>
 

@@ -1,19 +1,19 @@
-import React, { Component, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import Swal from 'sweetalert2';
-import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DatePicker, PaginateBar, InputTags, SelectMulti, TreeTable, ExportExcel, ToolTip } from '../../../../common-components';
-import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
+import parse from 'html-react-parser';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
+import { DatePicker, ExportExcel, InputTags, PaginateBar, SelectMulti, ToolTip, TreeTable } from '../../../../common-components';
+import { getStorage } from '../../../../config';
+import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
-import { taskManagementActions } from '../redux/actions';
-import { getStorage } from '../../../../config';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
-import parse from 'html-react-parser';
-import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
+import { taskManagementActions } from '../redux/actions';
+import { convertDataToExportData, formatPriority, formatStatus, getTotalTimeSheetLogs } from './functionHelpers';
 
 function TaskManagementOfUnit(props) {
     const [state, setState] = useState(() => initState())
@@ -111,9 +111,9 @@ function TaskManagementOfUnit(props) {
         }
     }, [state.organizationalUnit, dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnitLoading, dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit])
 
-    useEffect(() => {
-        window.$(`#modelPerformTask${state.currentTaskId}`).modal('show')
-    }, [state.currentTaskId])
+    // useEffect(() => {
+    //     window.$(`#modelPerformTask${state.currentTaskId}`).modal('show')
+    // }, [state.currentTaskId])
 
     const list_to_tree = (list) => {
         let map = {}, node, roots = [], i, newarr = [];
@@ -306,13 +306,14 @@ function TaskManagementOfUnit(props) {
                 break;
             }
         }
-
         setState({
-                ...state,
-                currentTaskId: id,
-                taskName
+            ...state,
+            currentTaskId: id,
+            taskName
         })
-        window.$(`#modelPerformTask${id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modelPerformTask${id}`).modal('show')
+        }, 500)
     }
 
     const handleSelectOrganizationalUnit = (value) => {

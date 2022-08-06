@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { createKpiSetActions } from '../../../employee/creation/redux/actions';
+import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 import { PreviewKpiEmployee } from '../../../organizational-unit/dashboard/component/previewKpiEmployee';
 
@@ -60,8 +60,8 @@ const getBalanceKpiInfo = (x) => {
         const itemData = { ...item };
 
         const currentProgress = getProgress(itemData.kpis);
-        data[itemData.creator.id] = {
-            name: itemData.creator.name,
+        data[itemData.creator?.id] = {
+            name: itemData.creator?.name,
             currentProgress: currentProgress,
             progressLeft: 100 - currentProgress,
         }
@@ -126,9 +126,8 @@ function EmployeeBalanceKpiModal(props) {
 
     //Get data employee
     useEffect(() => {
-        if (employeeKpiSet) {
+        if (employeeKpiSet && employeeKpiSet.length > 0) {
             const data = getBalanceKpiInfo(employeeKpiSet);
-            console.log("132", data)
             setState({
                 ...state,
                 balanceData: data
@@ -141,7 +140,7 @@ function EmployeeBalanceKpiModal(props) {
             <DialogModal
                 modalID="employee-balance-kpi-auto" isLoading={false}
                 formID="form-employee-balance-kpi-auto"
-                title={`Tự động thiết lập KPI nhân viên`}
+                title={`Cân bằng KPI nhân viên`}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
                 msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
@@ -149,7 +148,7 @@ function EmployeeBalanceKpiModal(props) {
                 disableSubmit={false}
                 size={75}
             >
-                {/* Form khởi tạo KPI đơn vị */}
+                {/* Form cân bằng kpi nhân viên */}
                 <form id="form-employee-balance-kpi-auto" onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
 
                     <div style={{ padding: "0px 15px" }}>
@@ -162,7 +161,6 @@ function EmployeeBalanceKpiModal(props) {
                                     <th title="Họ tên">Họ và tên</th>
                                     <th title="Tiến độ hiện tại">Tiến độ hiện tại</th>
                                     <th title="Tiến độ còn lại">Tiến độ còn lại</th>
-                                    {/* <th title="Tỉ lệ hoàn thành sau cân bằng">Tỉ lệ hoàn thành sau cân bằng</th> */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -173,7 +171,6 @@ function EmployeeBalanceKpiModal(props) {
                                             <td>{item.name}</td>
                                             <td>{item.currentProgress}</td>
                                             <td>{item.progressLeft}</td>
-                                            {/* <td>{item.balanceProgress}</td> */}
                                         </tr>
                                     )
                                 }
@@ -184,11 +181,15 @@ function EmployeeBalanceKpiModal(props) {
                     <br />
                     <label className="control-label" style={{ margin: "10px 0px", padding: "0px 15px" }}>KPI nhân viên sau cân bằng </label>
                     <br />
-                    {
-                        state?.balanceData?.kpiData.map(item => {
-                            return <PreviewKpiEmployee data={item} disableNotice={true} />
-                        })
-                    }
+
+                    <div className='row'>
+                        {
+                            state?.balanceData?.kpiData.map(item => {
+                                return <div className="col-md-4"><PreviewKpiEmployee data={item} disableNotice={true} /></div>
+                            })
+                        }
+                    </div>
+
 
 
                 </form>
@@ -204,7 +205,7 @@ function mapState(state) {
 }
 const actions = {
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    balanceEmployeeKpiSetAuto: createKpiSetActions.balanceEmployeeKpiSetAuto,
+    balanceEmployeeKpiSetAuto: DashboardEvaluationEmployeeKpiSetAction.balanceEmployeeKpiSetAuto,
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit
 }
 

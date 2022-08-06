@@ -4386,6 +4386,11 @@ export default {
                         create_employee_kpi_failure:
                             "Thêm mục tiêu KPI thất bại",
 
+                        balance_employee_kpi_set_success:
+                            "Cân bằng mục tiêu KPI thành công",
+                        balance_employee_kpi_set_failure:
+                            "Cân bằng mục tiêu KPI thất bại",
+
                         edit_employee_kpi_set_success:
                             "Chỉnh sửa tập KPI nhân viên thành công",
                         edit_employee_kpi_set_failure:
@@ -4866,6 +4871,8 @@ export default {
                     "Cập nhật điểm đánh giá KPI đơn vị lỗi",
                 copy_kpi_unit_success: "Sao chép KPI đơn vị thành công",
                 copy_kpi_unit_failure: "Sao chép KPI đơn vị thất bại",
+                copy_kpi_template_unit_success: "Sử dụng mẫu KPI đơn vị thành công",
+                copy_kpi_template_unit_failure: "Sử dụng mẫu KPI đơn vị thất bại",
                 copy_employee_kpi_success: "Sao chép KPI cá nhân thành công",
                 copy_employee_kpi_failure: "Sao chép KPI cá nhân thất bại",
                 organizatinal_unit_kpi_set_exist: "KPI đơn vị đã tồn tại",
@@ -4873,6 +4880,11 @@ export default {
                 calculate_kpi_unit_success: "Tính điểm KPI thành công",
                 calculate_kpi_unit_failure: "Tính điểm KPI thất bại"
             },
+            kpi_template: {
+                create_kpi_template_success: "Tạo mới mẫu KPI thành công",
+                delete_kpi_template_success: "Xóa mẫu KPI thành công",
+                edit_kpi_template_success: "Chỉnh sửa mẫu KPI thành công",
+            }
         },
 
         manage_warehouse: {
@@ -6560,8 +6572,8 @@ export default {
             show_task_project_fail: 'Hiển thị thông tin dự án thất bại',
             create_task_project_success: 'Tạo dự án mới thành công',
             create_task_project_fail: 'Không thể tạo mới dự án',
-            create_tasks_list_excel_cpm_success:'Tạo công việc từ file thành công',
-            create_tasks_list_excel_cpm_fail:'Tạo công việc từ file thất bại',
+            create_tasks_list_excel_cpm_success: 'Tạo công việc từ file thành công',
+            create_tasks_list_excel_cpm_fail: 'Tạo công việc từ file thất bại',
             edit_task_project_success: 'Chỉnh sửa thông tin dự án thành công',
             edit_task_project_fail: 'Không thể chỉnh sửa thông tin dự án',
             delete_task_project_success: 'Xoá dự án thành công',

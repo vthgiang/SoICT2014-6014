@@ -143,10 +143,9 @@ export function kpitemplates(state = {
             };
 
         case kpiTemplateConstants.DELETE_KPI_TEMPLATE_SUCCESS:
-            const res = state.items.filter(template => template._id !== action.payload.content.id)
             return {
                 ...state,
-                items: res,
+                items: state.items.filter(template => template._id !== action.payload.content._id),
                 isLoading: false
             };
 

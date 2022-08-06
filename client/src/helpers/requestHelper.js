@@ -1,13 +1,12 @@
 import axios from 'axios';
-import { getStorage, clearStorage } from '../config';
-import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
-import { toast } from 'react-toastify';
 import React from 'react';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { toast } from 'react-toastify';
+import { clearStorage, getStorage } from '../config';
+import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
 // import store from '../redux/store'
 // import { AuthConstants } from '../modules/auth/redux/constants';
 import JSEncrypt from 'jsencrypt';
-import { key } from './pub.json'
+import { key } from './pub.json';
 
 function encryptMessage(message) {
     const publicKey = key;
@@ -21,7 +20,7 @@ const AuthenticateHeader = async () => {
     // const fpAgent = await FingerprintJS.load();
     // const result = await fpAgent.get();
     // const fingerprint = result.visitorId;
-  
+
     return {
         "crtp": encryptMessage(window.location.pathname),
         // "fgp": encryptMessage(fingerprint.toString()),
@@ -67,7 +66,7 @@ const showServerDisconnectedError = async () => {
  * @data : data truyền đi - có thể có hoặc không
  */
 export async function sendRequest(options, showSuccessAlert = false, showFailAlert = true, module, successTitle = 'general.success', errorTitle = 'general.error') {
-   
+
     const requestOptions = {
         url: options.url,
         method: options.method,
@@ -79,12 +78,11 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
 
     return axios(requestOptions).then(res => {
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
-
         showSuccessAlert && toast.success(
             <ServerResponseAlert
                 type='success'
                 title={successTitle}
-                content={messages.map(message =>`${module}.${message}`)}
+                content={messages.map(message => `${module}.${message}`)}
             />,
             { containerId: 'toast-notification' }
         );

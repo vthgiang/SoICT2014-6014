@@ -98,13 +98,33 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         isLoading: false
       };
 
-    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_REQUEST:
+    case dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_REQUEST:
+      return {
+        ...state,
+        adding: true,
+        isLoading: true
+      };
+    case dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_SUCCESS:
+      return {
+        ...state,
+        adding: false,
+        employeeKpiSets: action.payload,
+        isLoading: false
+      };
+    case dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+        isLoading: false
+      };
+
+    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_REQUEST:
       return {
         ...state,
         isLoading: false
       };
 
-    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_SUCCESS:
+    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_SUCCESS:
       const kpiSet = {};
       const employeeKpiSets = state.employeeKpiSets;
 
@@ -125,13 +145,12 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         isLoading: false
       };
 
-    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_FAILURE:
+    case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_FAILURE:
       return {
         ...state,
         error: action.payload,
         isLoading: false
       };
-
 
     default:
       return state

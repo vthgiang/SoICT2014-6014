@@ -74,7 +74,7 @@ function TemplateKpi(props) {
                 if (res.value) {
                     props.deleteDeleteTemplateById(id);
 
-                    props.getKpiTemplates(unit, keyword, 1, limit);
+                    // props.getKpiTemplates(unit, keyword, 1, limit);
                 }
             });
         } else {
