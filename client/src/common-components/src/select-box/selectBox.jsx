@@ -145,8 +145,9 @@ class SelectBox extends Component {
     componentDidMount = () => {
         const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple } = this.props;
         window.$("#" + id).select2(options);
-
+        console.log(id);
         window.$("#" + id).on("change", () => {
+            
             let optionsCollection = this.select?.current?.options
             let value;
             if (optionsCollection) {

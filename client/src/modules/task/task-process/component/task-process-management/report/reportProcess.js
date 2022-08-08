@@ -83,7 +83,6 @@ function ReportProcess(props) {
             })}
         return result
     }
-    console.log(props.processTemplate)
     
     const { translate } = props
     return (
