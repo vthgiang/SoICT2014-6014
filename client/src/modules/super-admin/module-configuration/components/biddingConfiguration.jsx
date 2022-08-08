@@ -49,22 +49,22 @@ function BiddingConfiguration(props) {
     }, [props.id]);
 
     useEffect(() => {
-        if (modelConfiguration.biddingConfig != '') {
-            const data = modelConfiguration.biddingConfig
+        if (modelConfiguration?.biddingConfig != '') {
+            const data = modelConfiguration?.biddingConfig
             setState({
                 ...state,
-                company: data.company,
-                address: data.address,
-                phone: data.phone,
-                email: data.email,
-                taxCode: data.taxCode,
-                representativeName: data.representative.name,
-                representativeRole: data.representative.role,
-                bankName: data.bank.name,
-                bankAccountNumber: data.bank.accountNumber,
+                company: data?.company,
+                address: data?.address,
+                phone: data?.phone,
+                email: data?.email,
+                taxCode: data?.taxCode,
+                representativeName: data?.representative?.name,
+                representativeRole: data?.representative?.role,
+                bankName: data?.bank?.name,
+                bankAccountNumber: data?.bank?.accountNumber,
             })
         }
-    }, [modelConfiguration.biddingConfig])
+    }, [JSON.stringify(modelConfiguration?.biddingConfig)])
 
     // hàm thay đổi giá trị form
     const handleChangeForm = (event, currentKey) => {
