@@ -24,6 +24,9 @@ const TaskProcessSchema = new Schema({
         type: Date,
         required: true
     },
+    actualStartDate: {
+        type: Date,
+    },
     actualEndDate: {
         type: Date,
     },
