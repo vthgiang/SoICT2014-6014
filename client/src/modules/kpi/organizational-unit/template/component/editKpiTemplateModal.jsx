@@ -72,7 +72,7 @@ function ModalEditKpiTemplate(props) {
             title={"Chỉnh sửa mẫu KPI"}
             func={handleSubmit}
             disableSubmit={!isKpiTemplateFormValidated()}
-            size={100}
+            size={75}
         >
             <React.Fragment>
                 <EditKpiTemplate
