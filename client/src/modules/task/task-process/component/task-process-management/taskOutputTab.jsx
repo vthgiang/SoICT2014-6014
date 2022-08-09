@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { ApiImage, DateTimeConverter, DialogModal, SelectBox, ShowMoreShowLess } from "../../../../../common-components";
+import { ApiImage, DateTimeConverter, DialogModal, QuillEditor, SelectBox, ShowMoreShowLess } from "../../../../../common-components";
 import { performTaskAction } from "../../../task-perform/redux/actions";
 import parse from 'html-react-parser';
 import { getStorage } from "../../../../../config";
@@ -32,6 +32,14 @@ const formatActionAccountable = (value) => {
             break;
     }
 }
+
+const getTaskOutputsApproved = (taskOutputs) => {
+    if (taskOutputs) {
+        const taskOutputsApproved = taskOutputs.filter((item) => item.status == "approved")
+        return `${taskOutputsApproved.length}`;
+    }
+    return "0";
+};
 
 const isImage = (src) => {
     let string = src.toLowerCase().split(".");
@@ -142,33 +150,59 @@ function TaskOutputTab(props) {
         setState({ ...state, taskOutput: taskOutputSelect })
     }
 
+    let taskOutputsLabel = [{ value: "0", text: "Chọn kết quả cần giao nộp" }]
+
+    for (let i in taskOutputs) {
+        taskOutputsLabel.push({ value: taskOutputs[i]._id, text: taskOutputs[i].title })
+    }
+
     return (
         <React.Fragment>
             <div style={{ overFlow: "auto" }}>
                 <ModalVersionsTaskOutput taskOutput={taskOutput} />
                 <div>
-                    <strong style={{ fontWeight: 600 }}>Tên công việc: </strong>
+                    <strong style={{ fontWeight: 600, paddingRight: "10px" }}>Tên công việc: </strong>
                     <span>{props.task?.name}</span>
                 </div>
                 <div>
+                    <strong style={{ fontWeight: 600, paddingRight: "10px" }}>Số kết quả cần giao nộp: </strong>
+                    <span>{taskOutputs?.length ? taskOutputs.length : "Không có yêu cầu kết quả giao nộp"}</span>
+                </div>
+                {getTaskOutputsApproved(taskOutputs) != "0" && <div>
+                    <strong style={{ fontWeight: 600, color: "green", paddingRight: "10px" }}>Số kết quả đã được phê duyệt: </strong>
+                    <span style={{ color: "green" }}>{getTaskOutputsApproved(taskOutputs)}</span>
+                </div>}
+                {taskOutputsLabel.length > 1 && <div>
                     <strong style={{ fontWeight: 600 }}>Kết quả giao nộp:</strong>
                     <SelectBox
                         id={`select-task-output`}
                         className="form-control select2"
                         style={{ width: "100%" }}
-                        items={taskOutputs?.map(x => ({ value: x._id, text: x.title }))}
+                        items={taskOutputsLabel}
                         onChange={(value) => { selectTaskOutput(value) }}
                         value={taskOutput?._id}
                         multiple={false}
                     />
-                </div>
+                </div>}
                 {taskOutput && <div>
+                    <div><strong style={{ fontWeight: 600, paddingRight: "10px" }}>Kiểu dữ liệu:</strong> {formatTypeInfo(taskOutput.type)}</div>
                     <div>
                         <strong style={{ fontWeight: 600 }}>Yêu cầu:</strong>
-                        <span>{parse(taskOutput.description)}</span>
+                        <QuillEditor
+                            id={`description-${taskOutput?._id}`}
+                            toolbar={false}
+                            quillValueDefault={taskOutput?.description}
+                            maxHeight={250}
+                            enableDropImage={false}
+                            enableEdit={false}
+                            showDetail={{
+                                enable: true,
+                                titleShowDetail: "Mô tả yêu cầu",
+                                width: "75%"
+                            }}
+                        />
                     </div>
-                    <div><strong style={{ fontWeight: 600 }}>Kiểu dữ liệu:</strong> {formatTypeInfo(taskOutput.type)}</div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginTop: "7px" }}>
                         <div>
                             <span style={{ fontWeight: 600 }}>{taskOutput.submissionResults?.description ? `Kết quả giao nộp lần ${taskOutput.versions.length + 1}` : "Chưa giao nộp kết quả"}</span>
                         </div>

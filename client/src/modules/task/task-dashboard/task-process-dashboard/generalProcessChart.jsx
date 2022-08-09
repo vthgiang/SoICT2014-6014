@@ -18,6 +18,28 @@ const getNumberTaskFinished = (listTask) => {
 
     return 0;
 }
+
+const getTaskOutputs = (listTask) => {
+    let numberTaskOutput = 0, taskOutputsApproved = 0;
+    if (listTask) {
+        for (let i in listTask) {
+            if (listTask[i]) {
+                for (let j in listTask[i].taskOutputs) {
+                    numberTaskOutput = numberTaskOutput + 1;
+                    if (listTask[i].taskOutputs[j].status === "approved") {
+                        taskOutputsApproved = taskOutputsApproved + 1;
+                    }
+                }
+            }
+        }
+    }
+    if (numberTaskOutput > 0) {
+        return `${taskOutputsApproved}/${numberTaskOutput}`;
+    }
+
+    return "Không có yêu cầu kết quả giao nộp";
+}
+
 const GeneralTaskProcessChart = (props) => {
     const { department, taskProcess, translate } = props;
     const [state, setState] = useState({
@@ -145,7 +167,10 @@ const GeneralTaskProcessChart = (props) => {
                                                                     <span style={{ marginRight: '10px' }}>Mức độ hoàn thành: </span>
                                                                     <span>{getNumberTaskFinished(obj.tasks)}/{obj.tasks?.length ?? 0}</span>
                                                                 </div>
-
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Kết quả giao nộp quy trình: </span>
+                                                                    <span>{getTaskOutputs(obj.tasks)}</span>
+                                                                </div>
                                                                 <div className="role-in-task">
                                                                     <span style={{ marginRight: '10px' }}>Người quản lý: </span>
                                                                     {
@@ -192,7 +217,10 @@ const GeneralTaskProcessChart = (props) => {
                                                                     <span style={{ marginRight: '10px' }}>Mức độ hoàn thành: </span>
                                                                     <span>{getNumberTaskFinished(obj.tasks)}/{obj.tasks?.length ?? 0}</span>
                                                                 </div>
-
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Kết quả giao nộp trong quy trình: </span>
+                                                                    <span>{getTaskOutputs(obj.tasks)}</span>
+                                                                </div>
                                                                 <div className="role-in-task">
                                                                     <span style={{ marginRight: '10px' }}>Người quản lý: </span>
                                                                     {
@@ -239,7 +267,10 @@ const GeneralTaskProcessChart = (props) => {
                                                                     <span style={{ marginRight: '10px' }}>Mức độ hoàn thành: </span>
                                                                     <span>{getNumberTaskFinished(obj.tasks)}/{obj.tasks?.length ?? 0}</span>
                                                                 </div>
-
+                                                                <div className="priority-task-wraper">
+                                                                    <span style={{ marginRight: '10px' }}>Kết quả giao nộp trong quy trình: </span>
+                                                                    <span>{getTaskOutputs(obj.tasks)}</span>
+                                                                </div>
                                                                 <div className="role-in-task">
                                                                     <span style={{ marginRight: '10px' }}>Người quản lý: </span>
                                                                     {

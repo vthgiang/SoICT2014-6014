@@ -8090,7 +8090,7 @@ exports.approveTaskOutputs = async (portal, params, body) => {
   // Thay đổi hành động của người phê duyệt với kết quả giao nộp
   let accountableEmployees = taskOutput?.accountableEmployees.map((item) => {
     let action = item.action;
-    let updatedAt = item.updateAt;
+    let updatedAt = item.updatedAt;
     if (item.accountableEmployee == body.creator) {
       action = body.action;
       updatedAt = Date.now();
