@@ -151,7 +151,7 @@ exports.getKpiTemplate = async (portal, id) => {
  * Tạo mới mẫu kpi
  * @body dữ liệu tạo mới mẫu kpi
  */
-exports.createKpiTemplate = async (data) => {
+exports.createKpiTemplate = async (portal, data) => {
     const { name, organizationalUnit, description, creator, kpis } = data;
 
     //kiểm tra tên mẫu kpi đã tồn tại hay chưa ?
@@ -192,13 +192,13 @@ exports.createKpiTemplate = async (data) => {
             )
     }
 
-
     kpiSettemplate = await kpiSettemplate.populate([
         { path: "organizationalUnit", select: "name managers" },
         { path: "creator", select: "name email" },
         { path: "kpis" }
     ])
         .execPopulate();
+
     return kpiSettemplate;
 }
 

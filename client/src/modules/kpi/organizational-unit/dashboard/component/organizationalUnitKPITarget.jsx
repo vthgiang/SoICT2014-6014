@@ -96,7 +96,6 @@ const OrganizationalUnitKPITarget = (props) => {
         if (tasks?.evaluatedTask && createKpiUnit?.currentKPI) {
             const { evaluatedTask } = tasks;
             const evaluations = {};
-            console.log(evaluatedTask)
             for (let item of evaluatedTask) {
                 for (let eva of item.evaluations) {
                     const key = eva.evaluatingMonth?.slice(0, 7);
@@ -123,7 +122,7 @@ const OrganizationalUnitKPITarget = (props) => {
                         itemType: 0
                     }
                 }
-                console.log(evaluations[currentMonth])
+
                 return {
                     name: item.name,
                     target: item.target,
@@ -136,8 +135,6 @@ const OrganizationalUnitKPITarget = (props) => {
                     })
                 }
             })
-
-            console.log(142, dataKpis);
 
             setDataKpis(dataKpis);
 
@@ -201,8 +198,8 @@ const OrganizationalUnitKPITarget = (props) => {
                                 kpis.current = 'Đang thực hiện';
                                 kpis.itemType = 0;
                             }
-                            if (evaluations[employeeId]) {
-                                kpis.current = evaluations[employeeId][kpis?.criteria] ?? 0
+                            else if (evaluations[employeeId]) {
+                                kpis.current = evaluations[employeeId][kpis?.criteria] || 0
                             }
                             else {
                                 kpis.current = 0;

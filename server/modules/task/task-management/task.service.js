@@ -2500,22 +2500,12 @@ exports.getAllTasksThatHasEvaluation = async (portal, data) => {
                         $elemMatch: {
                             $and: [
                                 { "evaluatingMonth": { $lte: new Date(endDate), $gte: new Date(startDate) } },
-                                // {
-                                //     "results": {
-                                //         $elemMatch: {
-                                //             "organizationalUnit": mongoose.Types.ObjectId(data.unit)
-                                //         }
-                                //     }
-                                // }
                             ]
                         }
                     }
                 }
             ]
         })
-    // .select("name evaluations responsibleEmployees");
-    console.log("2499", tasks)
-
 
     return tasks;
 }

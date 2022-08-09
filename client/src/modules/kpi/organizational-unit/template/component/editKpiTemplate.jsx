@@ -157,7 +157,7 @@ function EditKpiTemplate(props) {
                                 id={`kpi-template-edit-modal-quill`}
                                 table={false}
                                 embeds={false}
-                                getTextData={handleChangeDescription}
+                                getTextData={() => handleChangeDescription()}
                                 maxHeight={80}
                                 quillValueDefault={templateData.descriptionDefault}
                                 placeholder={"Mô tả"}

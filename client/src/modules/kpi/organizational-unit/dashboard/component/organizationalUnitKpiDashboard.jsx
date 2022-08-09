@@ -238,7 +238,6 @@ function OrganizationalUnitKpiDashboard(props) {
         day = '0' + day;
     let defaultDate = [monthDate, year].join('-');
 
-
     return (
         <React.Fragment>
             {childrenOrganizationalUnit
@@ -284,10 +283,6 @@ function OrganizationalUnitKpiDashboard(props) {
                                             />
                                         </span>
                                         <span style={{ marginLeft: 10, display: "flex", alignItems: "center" }} onClick={() => {
-                                            Swal.fire({
-                                                imageUrl: 'image/rules_planning_kpi.png',
-                                                imageAlt: 'Planning_kpi'
-                                            })
                                             Swal.fire({
                                                 html: `
                                                 <h4>Hệ thống tự động hoạch định mục tiêu KPI nhân viên dựa vào các thông số sau: </h4>

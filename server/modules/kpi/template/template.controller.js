@@ -85,8 +85,7 @@ exports.getKpiTemplate = async (req, res) => {
  */
 exports.createKpiTemplate = async (req, res) => {
     try {
-        // let data = await KpiTemplateService.createKpiTemplate(req.portal, req.body, req.user._id);
-        let data = await KpiTemplateService.createKpiTemplate(req.body);
+        let data = await KpiTemplateService.createKpiTemplate(req.portal, req.body);
         await Logger.info(req.user.email, 'create_kpi_template', req.portal);
         res.status(200).json({
             success: true,
