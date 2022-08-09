@@ -1,6 +1,3 @@
-import {
-    getStorage
-} from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const createKpiSetService = {
@@ -10,7 +7,7 @@ export const createKpiSetService = {
     updateEmployeeKpiSetStatus,
     deleteEmployeeKpiSet,
     getAllEmployeeKpiSetInOrganizationalUnitsByMonth,
-    
+
     deleteEmployeeKpi,
     createEmployeeKpi,
     editEmployeeKpi,
@@ -54,7 +51,7 @@ function getAllEmployeeKpiSetByMonth(organizationalUnitIds, userId, startDate, e
 }
 
 /** Lấy tát cả tập KPI của tất cả nhân viên trong 1 mảng đơn vị */
-function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds, startDate, endDate) {    
+function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds, startDate, endDate) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
@@ -66,7 +63,7 @@ function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds,
     }, false, false)
 }
 
-/** Khởi tạo KPI cá nhân */  
+/** Khởi tạo KPI cá nhân */
 function createEmployeeKpiSet(newKPI) {
     console.log(newKPI);
     return sendRequest({
@@ -75,6 +72,7 @@ function createEmployeeKpiSet(newKPI) {
         data: newKPI
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
+
 
 /** Tạo 1 mục tiêu KPI cá nhân mới */
 function createEmployeeKpi(newTarget) {
@@ -94,9 +92,9 @@ function editEmployeeKpiSet(id, newTarget) {
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
+
 /** Chỉnh sửa trạng thái của KPI cá nhân */
 function updateEmployeeKpiSetStatus(id, status) {
-    console.log("trang thai", id, status);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets/${id}/edit`,
         method: 'POST',
@@ -134,6 +132,8 @@ function editEmployeeKpi(id, newTarget) {
         data: newTarget
     }, true, true, 'kpi.evaluation')
 }
+
+
 
 /** Phê duyệt kpi cá nhân */
 function approveEmployeeKpiSet(id) {
@@ -205,7 +205,7 @@ function deleteChildComment(setKpiId, commentId, childCommentId) {
 /**
  * Delete file of comment
  */
-function deleteFileComment(fileId,commentId, setKpiId) {
+function deleteFileComment(fileId, commentId, setKpiId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}/files/${fileId}`,
         method: 'DELETE',

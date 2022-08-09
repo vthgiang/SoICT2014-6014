@@ -16,6 +16,16 @@ function CreateGoodPurchaseRequestForm(props) {
         listGoods: [],
         approvers: "",
         stock: "",
+        organizationalUnitValue: '',
+        worksValue: '',
+        dataApproverInManufacturing: [{
+            value: "",
+            text: "Chọn người phê duyệt "
+        }],
+        dataApproverInReceiveRequestUnit: [{
+            value: "",
+            text: "Chọn người phê duyệt"
+        }],
     });
 
     // Thời gian mong muốn 
@@ -60,13 +70,20 @@ function CreateGoodPurchaseRequestForm(props) {
                 props.getAllUserOfDepartment(listWorks[result].organizationalUnit);
             }
         }
-    }, [state.worksValue])
+        if (state.organizationalUnitValue) {
+            let listOrganizationUnit = getOrganizationalUnit();
+            let result = findIndex(listOrganizationUnit, state.organizationalUnitValue);
+            if (result !== -1) {
+                props.getAllUserOfDepartment(listOrganizationUnit[result].value);
+            }
+        }
+    }, [state.worksValue, state.organizationalUnitValue])
 
-    const getApprover = () => {
+    useEffect(() => {
         const { translate, user } = props;
         let listUsersArray = [{
             value: "",
-            text: translate('production.request_management.approver_in_factory')
+            text: "Chọn người phê duyệt"
         }];
 
         let { userdepartments } = user;
@@ -76,41 +93,46 @@ function CreateGoodPurchaseRequestForm(props) {
                 let managers = userdepartments.managers[Object.keys(userdepartments.managers)[0]].members;
                 if (managers.length) {
                     managers.map((member) => {
+                        console.log(member);
                         listUsersArray.push({
                             value: member._id,
-                            text: member.name
+                            text: member.name + " - " + userdepartments.managers[Object.keys(userdepartments.managers)[0]].name
                         });
                     });
                 }
 
             }
         }
+        if (state.organizationalUnitSelected == 'manufacturingWorks') {
+            setState({
+                ...state,
+                dataApproverInManufacturing: listUsersArray,
+            })
+        } else {
+            setState({
+                ...state,
+                dataApproverInReceiveRequestUnit: listUsersArray,
+            })
+        }
+    }, [state.organizationalUnitSelected, props.user])
 
-        return listUsersArray;
-    }
 
-    const handleApproverChange = (value) => {
-        let approver = value[0];
-        validateApprover(approver, true);
+    const handleApproverChange = (value, typeApprove) => {
+        validateApprover(value[0], typeApprove, true);
     };
 
-    const validateApprover = (value, willUpdateState = true) => {
+    const validateApprover = (value, typeApprove, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
             msg = translate("production.request_management.validate_approver_in_factory");
         }
+        let error = 'error' + typeApprove;
         if (willUpdateState) {
-            let approvers = [];
-            approvers.push({
-                approver: value,
-                approvedTime: null,
-            });
             setState({
                 ...state,
-                approver: value,
-                approvers: approvers,
-                errorApprover: msg,
+                [typeApprove]: value,
+                [error]: msg,
             });
         }
         return msg === undefined;
@@ -183,6 +205,7 @@ function CreateGoodPurchaseRequestForm(props) {
                 organizationalUnitError: msg,
                 organizationalUnitValue: value,
                 currentDepartment: currentDepartment,
+                organizationalUnitSelected: 'receiveRequestUnit'
             });
         }
         return msg === undefined;
@@ -241,7 +264,7 @@ function CreateGoodPurchaseRequestForm(props) {
                 ...state,
                 worksValue: value,
                 worksValueError: msg,
-                teamLeaderValue: ""
+                organizationalUnitSelected: 'manufacturingWorks',
             });
         }
         return msg === undefined;
@@ -258,8 +281,9 @@ function CreateGoodPurchaseRequestForm(props) {
     }
 
     const isFormValidated = () => {
-        let { approver, stock, worksValue, organizationalUnitValue, listGoods } = state;
-        let result = validateApprover(approver, false) &&
+        let { approverInManufacturing, stock, worksValue, organizationalUnitValue, listGoods } = state;
+        let result = 
+        // validateApprover(approverInManufacturing, false) &&
             validateStock(stock, false) &&
             validateOrganizationalUnitValue(organizationalUnitValue, false) &&
             validateManufacturingWorks(worksValue, false) &&
@@ -276,12 +300,30 @@ function CreateGoodPurchaseRequestForm(props) {
                     quantity: good.quantity
                 }
             })
+            let approvers = [];
+            let approversInManufacturing = [];
+            let approversInReceiveRequestUnit = [];
+            approversInManufacturing.push({
+                information: [{
+                    approver: state.approverInManufacturing,
+                    approvedTime: null,
+                }],
+                approveType: 1
+            });
+            approversInReceiveRequestUnit.push({
+                information: [{
+                    approver: state.approverInReceiveRequestUnit,
+                    approvedTime: null,
+                }],
+                approveType: 2
+            });
+            approvers = approversInManufacturing.concat(approversInReceiveRequestUnit);
             const data = {
                 code: state.code,
                 desiredTime: formatToTimeZoneDate(state.desiredTime),
                 description: state.description,
                 goods: goods,
-                approverInFactory: state.approvers,
+                approvers: approvers,
                 stock: state.stock,
                 requestType: 1,
                 type: 1,
@@ -289,6 +331,7 @@ function CreateGoodPurchaseRequestForm(props) {
                 manufacturingWork: state.worksValue,
                 orderUnit: state.organizationalUnitValue,
             }
+            console.log(data);
             props.createRequest(data);
         }
     }
@@ -301,9 +344,9 @@ function CreateGoodPurchaseRequestForm(props) {
     }
 
     const { translate, NotHaveCreateButton, bigModal } = props;
-    const { code, desiredTime, description, errorDescription, approver, errorApprover, errorStock,
-        stock, worksValueError, worksValue, organizationalUnitValue, organizationalUnitError } = state;
-    const dataApprover = getApprover();
+    const { code, desiredTime, description, approverInManufacturing, errorapproverInManufacturing, errorStock,
+        stock, worksValueError, worksValue, organizationalUnitValue, organizationalUnitError, dataApproverInReceiveRequestUnit,
+        dataApproverInManufacturing, approverInReceiveRequestUnit, errorapproverInReceiveRequestUnit } = state;
     const dataStock = getStock();
     const dataManufacturingWorks = getListWorks();
     const organizationalUnit = getOrganizationalUnit();
@@ -343,6 +386,63 @@ function CreateGoodPurchaseRequestForm(props) {
                                 />
                                 <ErrorLabel content={worksValueError} />
                             </div>
+                            <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
+                                <label>{translate('production.request_management.unit_receiving_request')}<span className="text-red"> * </span></label>
+                                <SelectBox
+                                    id={`select-department`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={organizationalUnitValue}
+                                    items={organizationalUnit}
+                                    onChange={handleOrganizationalUnitValueChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={organizationalUnitError} />
+                            </div>
+
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <label>{translate('production.request_management.desiredTime')}<span className="text-red">*</span></label>
+                                <DatePicker
+                                    id={`purchasing-request-create-desiredTime`}
+                                    value={desiredTime}
+                                    onChange={handleDesiredTimeChange}
+                                    disabled={false}
+                                />
+                            </div>
+                            <div className={`form-group ${!errorapproverInManufacturing ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("production.request_management.approver_in_factory")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-approver-in-factory`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={approverInManufacturing}
+                                    items={dataApproverInManufacturing}
+                                    onChange={(e) => handleApproverChange(e, 'approverInManufacturing')}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorapproverInManufacturing} />
+                            </div>
+                            <div className={`form-group ${!errorapproverInReceiveRequestUnit ? "" : "has-error"}`}>
+                                <label>
+                                    {"Người phê duyệt yêu cầu mua hàng"}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-approver-in-receive-request-unit`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={approverInReceiveRequestUnit}
+                                    items={dataApproverInReceiveRequestUnit}
+                                    onChange={(e) => handleApproverChange(e, 'approverInReceiveRequestUnit')}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorapproverInReceiveRequestUnit} />
+                            </div>
                             <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                 <label>
                                     {translate("production.request_management.stock")}
@@ -358,48 +458,6 @@ function CreateGoodPurchaseRequestForm(props) {
                                     multiple={false}
                                 />
                                 <ErrorLabel content={errorStock} />
-                            </div>
-
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group`}>
-                                <label>{translate('production.request_management.desiredTime')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`purchasing-request-create-desiredTime`}
-                                    value={desiredTime}
-                                    onChange={handleDesiredTimeChange}
-                                    disabled={false}
-                                />
-                            </div>
-
-                            <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("production.request_management.approver_in_factory")}
-                                    <span className="text-red"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-approver`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={approver}
-                                    items={dataApprover}
-                                    onChange={handleApproverChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={errorApprover} />
-                            </div>
-                            <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
-                                <label>{translate('production.request_management.unit_receiving_request')}<span className="text-red"> * </span></label>
-                                <SelectBox
-                                    id={`select-department`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={organizationalUnitValue}
-                                    items={organizationalUnit}
-                                    onChange={handleOrganizationalUnitValueChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={organizationalUnitError} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

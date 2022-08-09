@@ -317,6 +317,21 @@ const TaskSchema = new Schema(
                             type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
                             default: -1,
                         },
+                        valueDelivery: {
+                            // Giá trị mang lại của công việc và chi phí bỏ ra để thực hiện công việc
+                            value: { // Giá trị mang lại
+                                type: Number,
+                            },
+                            valueUnit: { // Đơn vị giá trị mang lại
+                                type: String,
+                            },
+                            cost: { // Chi phí bỏ ra
+                                type: Number,
+                            },
+                            costUnit: { // Đơn vị tính chi phí bỏ ra
+                                type: String,
+                            }
+                        }
                     },
                 ],
                 taskInformations: [
@@ -838,7 +853,7 @@ const TaskSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Project'
         },
-        //tên phase mà task thuộc về
+        // tên phase mà task thuộc về
         taskPhase: {
             type: Schema.Types.ObjectId,
             ref: 'ProjectPhase'
@@ -928,6 +943,147 @@ const TaskSchema = new Schema(
                 default: 1 / 3,
             },
         },
+        taskOutputs: [
+            {
+                title: {
+                    type: String
+                },
+                type: {
+                    type: Number
+                }, // có các kiểu 0:text, 1: document
+                description: {
+                    type: String
+                },
+                status: {
+                    type: String
+                },
+                isOutput: {
+                    type: Boolean,
+                },
+                accountableEmployees: [
+                    {
+                        accountableEmployee: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        action: {
+                            type: String
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        }
+                    }
+                ],
+                submissionResults:
+                {
+                    creator: {
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    description: {
+                        type: String,
+                    },
+                    createdAt: {
+                        type: Date,
+                        default: Date.now,
+                    },
+                    updatedAt: {
+                        type: Date,
+                        default: Date.now,
+                    },
+                    files: [
+                        {
+                            // Các file đi báo cáo kết quả giao nộp
+                            name: {
+                                type: String,
+                            },
+                            url: {
+                                type: String,
+                            },
+                        },
+                    ],
+                },
+                comments: [
+                    {
+                        // Comments của taskoutput
+                        creator: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        version: { // trường này cho biết comments tương ứng với từng version
+                            type: Number,
+                        },
+                        description: {
+                            type: String,
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        files: [
+                            {
+                                // Các file đi kèm comments
+                                name: {
+                                    type: String,
+                                },
+                                url: {
+                                    type: String,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                versions: [{
+                    creator: {
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    description: {
+                        type: String
+                    },
+                    status: {
+                        type: String,
+                    },
+                    accountableEmployees: [
+                        {
+                            accountableEmployee: {
+                                type: Schema.Types.ObjectId,
+                                ref: "User",
+                            },
+                            description: {
+                                type: String,
+                            }, // id của công việc cần xác nhận phê duyệt
+                            action: {
+                                type: String
+                            },
+                            updatedAt: {
+                                type: Date,
+                                default: Date.now,
+                            },
+                        }
+                    ],
+                    files: [
+                        {
+                            name: {
+                                type: String,
+                            },
+                            url: {
+                                type: String,
+                            },
+                        },
+                    ],
+                    createdAt: {
+                        type: Date,
+                        default: Date.now,
+                    }
+                }]
+            }
+        ],
         memberWeight: {
             // Số bé hơn 1
             timeWeight: {

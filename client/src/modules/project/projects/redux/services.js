@@ -1,15 +1,14 @@
 import { sendRequest } from "../../../../helpers/requestHelper";
 
 export const ProjectServices = {
-    getProjectsAPI,
-    createProjectAPI,
-    editProjectAPI,
-    deleteProjectAPI,
-
+    getProjects,
+    createProject,
+    editProject,
+    deleteProject,
     getSalaryMembersAPI,
 }
 
-function getProjectsAPI(params = undefined) {
+function getProjects(params = undefined) {
     // console.log('params project', params)
     return sendRequest(
         {
@@ -23,7 +22,7 @@ function getProjectsAPI(params = undefined) {
     );
 };
 
-function createProjectAPI(data) {
+function createProject(data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/projects/project`,
@@ -36,7 +35,7 @@ function createProjectAPI(data) {
     );
 };
 
-function editProjectAPI(id, data) {
+function editProject(id, data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/projects/project/${id}`,
@@ -50,7 +49,7 @@ function editProjectAPI(id, data) {
     );
 }
 
-function deleteProjectAPI(id) {
+function deleteProject(id) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/projects/project/${id}`,
@@ -73,3 +72,4 @@ function getSalaryMembersAPI(data) {
         data,
     }, false, true, 'project');
 }
+

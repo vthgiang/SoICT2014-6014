@@ -15,9 +15,12 @@ const { getDataOrganizationalUnitKpiSetLog, getDataEmployeeKpiSetLog } = require
 exports.copyKPI = async (req, res) => {
     if (req.query.type === 'copy-parent-kpi-to-employee') {
         copyParentKPIUnitToChildrenKPIEmployee(req, res);
-    } else if (req.query.datenew.length) {
+    } else if (typeof (req.query.type) !== 'string' && req.query.datenew.length > 0) {
         this.copyKPIForRange(req, res)
-    } else {
+    } else if (req.query.type === 'use-template') {
+        this.copyUseTemplateKpi(req, res)
+    }
+    else {
         try {
             let query = {
                 ...req.query,
@@ -130,6 +133,59 @@ exports.copyKPIForRange = async (req, res) => {
         let messages = error && error.messages === 'organizatinal_unit_kpi_set_exist'
             ? ['organizatinal_unit_kpi_set_exist']
             : ['copy_kpi_unit_failure'];
+
+        Logger.error(req.user.email, ' copy kpi unit ', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: messages,
+            content: error
+        })
+    }
+}
+/**
+ * Copy KPI đơn vị từ một tháng cũ sang tháng mới
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.copyUseTemplateKpi = async (req, res) => {
+    try {
+        let query = {
+            ...req.query,
+            creator: req.user._id
+        }
+        let data = await managerService.copyUseTemplateKpi(req.portal, req.params.id, query);
+
+        // Thêm log
+        let log = getDataOrganizationalUnitKpiSetLog({
+            type: "use-template",
+            creator: req.user._id,
+            organizationalUnit: data?.kpiunit?.organizationalUnit,
+            month: data?.kpiunit?.date,
+            newData: data?.kpiunit,
+            copyKpi: data?.copyKpi
+        })
+        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+            ...log,
+            organizationalUnitKpiSetId: data?.kpiunit?._id
+        })
+
+        // Thêm newsfeed
+        // await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+        //     ...log,
+        //     organizationalUnit: data?.kpiunit?.organizationalUnit,
+        //     organizationalUnitKpiSetId: data?.kpiunit?._id
+        // })
+
+        Logger.info(req.user.email, ' copy kpi unit ', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['copy_kpi_template_unit_success'],
+            content: data?.kpiunit
+        });
+    } catch (error) {
+        let messages = error && error.messages === 'organizatinal_unit_kpi_set_exist'
+            ? ['organizatinal_unit_kpi_set_exist']
+            : ['copy_kpi_template_unit_failure'];
 
         Logger.error(req.user.email, ' copy kpi unit ', req.portal)
         res.status(400).json({

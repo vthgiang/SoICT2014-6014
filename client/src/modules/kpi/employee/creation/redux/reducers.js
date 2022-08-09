@@ -1,7 +1,7 @@
-import { createKpiSetConstants } from "./constants";
 import { managerConstants } from "../../../organizational-unit/management/redux/constants";
+import { createKpiSetConstants } from "./constants";
 
-export function createEmployeeKpiSet(state = {}, action) {
+export function createEmployeeKpiSet(state = { reload: false }, action) {
     switch (action.type) {
         case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST:
             return {
@@ -202,6 +202,7 @@ export function createEmployeeKpiSet(state = {}, action) {
                 isLoading: false
             };
 
+
         case createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_REQUEST:
             return {
                 ...state,
@@ -221,6 +222,7 @@ export function createEmployeeKpiSet(state = {}, action) {
                 error: action.payload,
                 isLoading: false
             };
+
         case createKpiSetConstants.CREATE_COMMENT_REQUEST:
             return {
                 ...state,
@@ -383,7 +385,7 @@ export function createEmployeeKpiSet(state = {}, action) {
                     currentKPI: action.payload,
                     isLoading: false
                 };
-            } 
+            }
         case managerConstants.COPY_KPIUNIT_FAILURE:
             if (action.typeService === 'copy-parent-kpi-to-employee') {
                 return {

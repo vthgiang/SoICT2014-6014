@@ -12,6 +12,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { getStorage } from '../../../../config';
 import ValidationHelper from '../../../../helpers/validationHelper';
+
 import parse from 'html-react-parser';
 
 function AddTaskTemplate(props) {
@@ -157,26 +158,27 @@ function AddTaskTemplate(props) {
 
     const validateTaskTemplateUnit = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
+        let newData = { // update lại unit, và reset các selection phía sau
+            ...state.newTemplate,
+            organizationalUnit: value,
+            collaboratedWithOrganizationalUnits: [],
+            errorOnUnit: message,
+            readByEmployees: [],
+            responsibleEmployees: [],
+            accountableEmployees: [],
+            consultedEmployees: [],
+            informedEmployees: [],
+        }
 
         if (willUpdateState) {
             setState(state => {
                 return {
                     ...state,
-                    newTemplate: { // update lại unit, và reset các selection phía sau
-                        ...state.newTemplate,
-                        organizationalUnit: value,
-                        collaboratedWithOrganizationalUnits: [],
-                        errorOnUnit: message,
-                        readByEmployees: [],
-                        responsibleEmployees: [],
-                        accountableEmployees: [],
-                        consultedEmployees: [],
-                        informedEmployees: [],
-                    }
+                    newTemplate: newData
                 };
             });
+            props.onChangeTemplateData(newData);
         }
-        props.onChangeTemplateData(state.newTemplate);
         return message === undefined;
     }
 
@@ -269,12 +271,23 @@ function AddTaskTemplate(props) {
         // dùng cho chức năng tạo task process
         if (props.isProcess && props.id !== state.id) {
             let { info, listOrganizationalUnit } = props;
+            
+            let defaultUnit;
+            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+                item.manager === state.currentRole
+                || item.deputyManager === state.currentRole
+                || item.employee === state.currentRole);
+            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = user.organizationalUnitsOfUser[0]
+            }
+
             setState(state => {
                 return {
                     ...state,
                     id: props.id,
                     newTemplate: {
-                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : "",
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : defaultUnit?._id,
                         collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits : [],
                         name: (info && info.name) ? info.name : '',
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
@@ -293,22 +306,8 @@ function AddTaskTemplate(props) {
                     showMore: props.isProcess ? false : true,
                 }
             })
-
-            // props.getDepartment(); // => user.organizationalUnitsOfUser
-
-            // let { user } = props;
-            let defaultUnit;
-            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.manager === state.currentRole
-                || item.deputyManager === state.currentRole
-                || item.employee === state.currentRole);
-            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
-                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = user.organizationalUnitsOfUser[0]
-            }
-            // props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id); // => user.usersOfChildrenOrganizationalUnit
         }
-    }, [props.id, state.newTemplate])
+    }, [props.id]) // JSON.stringify(state.newTemplate)
 
     //dùng cho chức năng lưu task thành template
     useEffect(() => {
@@ -371,7 +370,7 @@ function AddTaskTemplate(props) {
         }
 
         // Khi truy vấn lấy các đơn vị mà user là manager đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
-        if (newTemplate.organizationalUnit === "" && user?.organizationalUnitsOfUser) {
+        if (!props.isProcess && newTemplate.organizationalUnit === "" && user?.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = user.organizationalUnitsOfUser.find(item =>
                 item.managers.includes(state.currentRole)
@@ -393,7 +392,7 @@ function AddTaskTemplate(props) {
                 // Sẽ cập nhật lại state nên không cần render
             }
         }
-    }, [props.savedTaskId, state.newTemplate, props?.user.isLoading])
+    }, [props.savedTaskId, props?.user.isLoading, props.isProcess]) // JSON.stringify(state.newTemplate) , props?.user.isLoading
 
     const clickShowMore = () => {
         setState(state => {

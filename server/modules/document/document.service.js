@@ -6,13 +6,13 @@ const {
     UserRole,
     OrganizationalUnit,
     Document,
-} = require('../../models');
+} = require("../../models");
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
 const ObjectId = require("mongoose").Types.ObjectId;
-const { connect, } = require(`../../helpers/dbHelper`);
+const { connect } = require(`../../helpers/dbHelper`);
 const { dateParse } = require(`../../helpers/functionHelper`);
-const exec = require('child_process').exec;
+const exec = require("child_process").exec;
 
 /**
  * Lấy danh sách tất cả các tài liệu văn bản
@@ -26,8 +26,8 @@ exports.getDocuments = async (
 ) => {
     const og = currentRole
         ? await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
-            managers: currentRole,
-        })
+              managers: currentRole,
+          })
         : null;
     let { by, page, limit } = query;
     if (!(page || limit)) {
@@ -52,8 +52,8 @@ exports.getDocuments = async (
         let option =
             by === "organizational-unit" && og
                 ? {
-                    archivedRecordPlaceOrganizationalUnit: og._id,
-                }
+                      archivedRecordPlaceOrganizationalUnit: og._id,
+                  }
                 : {};
 
         if (query.category) {
@@ -63,7 +63,8 @@ exports.getDocuments = async (
             option.issuingBody = new RegExp(query.issuingBody, "i");
         }
         if (query.organizationUnit && query.organizationUnit.length) {
-            option.archivedRecordPlaceOrganizationalUnit = query.organizationUnit[0];
+            option.archivedRecordPlaceOrganizationalUnit =
+                query.organizationUnit[0];
         }
 
         if (query.domains && query.domains.length) {
@@ -90,20 +91,23 @@ exports.getDocuments = async (
         if (query.name) {
             option.name = new RegExp(query.name, "i");
         }
-       
-        let allDocs = await Document(connect(DB_CONNECTION, portal)).find(option).populate([
-            { path: "category", select: "name id" },
-            { path: "domains", select: "name id" },
-            { path: "archives", select: "name id path" },
-            { path: "userCanView", select: "_id name email avatar" },
-            { path: "views.viewer", select: "name id" },
-            { path: "downloads.downloader", select: "name id" },
-            {
-                path: "archivedRecordPlaceOrganizationalUnit",
-                select: "name id",
-            },
-            { path: "logs.creator", select: "name id" },
-            { path: "relationshipDocuments", select: "name id" }]);
+
+        let allDocs = await Document(connect(DB_CONNECTION, portal))
+            .find(option)
+            .populate([
+                { path: "category", select: "name id" },
+                { path: "domains", select: "name id" },
+                { path: "archives", select: "name id path" },
+                { path: "userCanView", select: "_id name email avatar" },
+                { path: "views.viewer", select: "name id" },
+                { path: "downloads.downloader", select: "name id" },
+                {
+                    path: "archivedRecordPlaceOrganizationalUnit",
+                    select: "name id",
+                },
+                { path: "logs.creator", select: "name id" },
+                { path: "relationshipDocuments", select: "name id" },
+            ]);
 
         page = parseInt(page);
         let totalDocs = allDocs.length;
@@ -114,14 +118,23 @@ exports.getDocuments = async (
         let prevPage = page > 1 ? page - 1 : null;
         let nextPage = totalDocs > page * limit ? page + 1 : null;
         allDocs.sort((a, b) => {
-            let tmpA = a.versions.length && a.versions[a.versions.length - 1].issuingDate ?
-                a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
-            let tmpB = b.versions.length && b.versions[b.versions.length - 1].issuingDate ?
-                b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+            let tmpA =
+                a.versions.length &&
+                a.versions[a.versions.length - 1].issuingDate
+                    ? a.versions[a.versions.length - 1].issuingDate
+                    : new Date(1900, 1, 1, 0, 3, 3, 0);
+            let tmpB =
+                b.versions.length &&
+                b.versions[b.versions.length - 1].issuingDate
+                    ? b.versions[b.versions.length - 1].issuingDate
+                    : new Date(1900, 1, 1, 0, 3, 3, 0);
 
             return new Date(tmpB) - new Date(tmpA);
         });
-        let doc = allDocs.slice((page - 1) * limit, page * limit > allDocs.length ? allDocs.length : page * limit);
+        let doc = allDocs.slice(
+            (page - 1) * limit,
+            page * limit > allDocs.length ? allDocs.length : page * limit
+        );
         //list.docs = doc;
 
         let res = {
@@ -224,7 +237,8 @@ exports.createDocument = async (portal, data, company) => {
         userCanView: data.userCanView,
         roles: data.roles,
         relationshipDescription: data.relationshipDescription,
-        archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
+        archivedRecordPlaceOrganizationalUnit:
+            data.archivedRecordPlaceOrganizationalUnit,
     };
     let versions = [];
     if (data.versionName) {
@@ -236,9 +250,15 @@ exports.createDocument = async (portal, data, company) => {
                     issuingDate: dateParse(data.issuingDate),
                     effectiveDate: dateParse(data.effectiveDate),
                     expiredDate: dateParse(data.expiredDate),
-                    file: data.files && Array.isArray(data.files) ? data.files[0] : data.files,
-                    scannedFileOfSignedDocument: data.scannedFileOfSignedDocument && Array.isArray(data.scannedFileOfSignedDocument) ?
-                        data.scannedFileOfSignedDocument[0] : data.scannedFileOfSignedDocument,
+                    file:
+                        data.files && Array.isArray(data.files)
+                            ? data.files[0]
+                            : data.files,
+                    scannedFileOfSignedDocument:
+                        data.scannedFileOfSignedDocument &&
+                        Array.isArray(data.scannedFileOfSignedDocument)
+                            ? data.scannedFileOfSignedDocument[0]
+                            : data.scannedFileOfSignedDocument,
                 },
             ];
         } else {
@@ -254,7 +274,7 @@ exports.createDocument = async (portal, data, company) => {
                             : "",
                     scannedFileOfSignedDocument:
                         data.numberFileScan[i] == 1 &&
-                            data.scannedFileOfSignedDocument
+                        data.scannedFileOfSignedDocument
                             ? data.scannedFileOfSignedDocument[numberFileScan++]
                             : "",
                 };
@@ -403,7 +423,6 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
         if (data.archivedRecordPlaceManagerd)
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager;
 
-
         await doc.save();
         return doc;
     }
@@ -478,30 +497,35 @@ async function downloadFile(doc, downloaderId) {
 }
 
 exports.downloadAllFileOfDocument = async (query, portal) => {
-
     let { data } = query;
-    data = data.map(x => JSON.parse(x));
+    data = data.map((x) => JSON.parse(x));
 
     const rootPath = `${SERVER_BACKUP_DIR}/download/document`;
     if (data?.length) {
-        for (let i = 0; i < data.length; i++){
+        for (let i = 0; i < data.length; i++) {
             // tạo thư mục cha
-            const parentPath = `${rootPath}/${data[i]?.folderName?.replace(/\s+/g, '_')?.trim()}`;
+            const parentPath = `${rootPath}/${data[i]?.folderName
+                ?.replace(/\s+/g, "_")
+                ?.trim()}`;
             if (!fs.existsSync(parentPath)) {
                 fs.mkdirSync(parentPath, {
-                    recursive: true
+                    recursive: true,
                 });
-            };
+            }
 
             //tạo xong cha thì tạo thư mục con
             if (fs.existsSync(parentPath) && data[i]?.versions?.length) {
-                for (let j = 0; j < data[i].versions.length; j++){
-                    const versionPath = `${rootPath}/${data[i]?.folderName?.replace(/\s+/g, '_')?.trim()}/${data[i]?.versions[j]?.childFolder?.replace(/\s+/g, '_')?.trim()}`;
+                for (let j = 0; j < data[i].versions.length; j++) {
+                    const versionPath = `${rootPath}/${data[i]?.folderName
+                        ?.replace(/\s+/g, "_")
+                        ?.trim()}/${data[i]?.versions[j]?.childFolder
+                        ?.replace(/\s+/g, "_")
+                        ?.trim()}`;
                     if (!fs.existsSync(versionPath)) {
                         fs.mkdirSync(versionPath, {
-                            recursive: true
+                            recursive: true,
                         });
-                    };
+                    }
                     //copy file upload vào thư mục download
                     if (data[i]?.versions[j]?.file) {
                         let filePath = data[i].versions[j].file;
@@ -509,31 +533,38 @@ exports.downloadAllFileOfDocument = async (query, portal) => {
                             filePath = filePath.substring(1);
                         }
 
-                        const commandGetFile = `cp ${SERVER_DIR + filePath} ${versionPath}`;
+                        const commandGetFile = `cp ${
+                            SERVER_DIR + filePath
+                        } ${versionPath}`;
                         await exec(commandGetFile, (error, stdout, stderr) => {
-                            if(error) console.log(error);
+                            if (error) console.log(error);
                         });
                     }
 
                     //copy file scan vào thư mục download
                     if (data[i]?.versions[j]?.scannedFileOfSignedDocument) {
-                        let fileScanPath = data[i].versions[j].scannedFileOfSignedDocument;
+                        let fileScanPath =
+                            data[i].versions[j].scannedFileOfSignedDocument;
                         if (fileScanPath.indexOf(".") === 0) {
                             fileScanPath = fileScanPath.substring(1);
                         }
 
-                        const commandGetFileScan = `cp ${SERVER_DIR + fileScanPath} ${versionPath}`;
-                        await exec(commandGetFileScan, (error, stdout, stderr) => {
-                            if(error) console.log(error);
-                        });
+                        const commandGetFileScan = `cp ${
+                            SERVER_DIR + fileScanPath
+                        } ${versionPath}`;
+                        await exec(
+                            commandGetFileScan,
+                            (error, stdout, stderr) => {
+                                if (error) console.log(error);
+                            }
+                        );
                     }
                 }
             }
         }
     }
-    if (fs.existsSync(rootPath)) 
-        return rootPath;
-}
+    if (fs.existsSync(rootPath)) return rootPath;
+};
 
 exports.importDocument = async (portal, data, company) => {
     for (let i in data) {
@@ -617,7 +648,6 @@ exports.importDocument = async (portal, data, company) => {
         if (data[i].roles && data[i].roles.length && data[i].roles[0]) {
             let roles = [];
             for (let j in data[i].roles) {
-
                 const role = await Role(connect(DB_CONNECTION, portal)).findOne(
                     {
                         name: data[i].roles[j],
@@ -666,13 +696,14 @@ exports.getDocumentCategories = async (portal, query, company) => {
         const option =
             query.key && query.value
                 ? Object.assign(
-                    { company },
-                    { [`${query.key}`]: new RegExp(query.value, "i") }
-                )
+                      { company },
+                      { [`${query.key}`]: new RegExp(query.value, "i") }
+                  )
                 : { company };
-        return await DocumentCategory(
-            connect(DB_CONNECTION, portal)
-        ).paginate(option, { page, limit, sort: { createdAt: -1 } });
+        return await DocumentCategory(connect(DB_CONNECTION, portal)).paginate(
+            option,
+            { page, limit, sort: { createdAt: -1 } }
+        );
     }
 };
 
@@ -798,18 +829,15 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
 
         if (query.roleId && id) {
             option = {
-                $or: [
-                    { roles: { $in: roleArr } },
-                    { userCanView: id }
-                ]
-            }
+                $or: [{ roles: { $in: roleArr } }, { userCanView: id }],
+            };
         }
 
         if (!query.roleId && id) {
             option = {
                 ...option,
-                userCanView: id
-            }
+                userCanView: id,
+            };
         }
 
         if (query.category) {
@@ -819,7 +847,8 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
             option.issuingBody = new RegExp(query.issuingBody, "i");
         }
         if (query.organizationUnit && query.organizationUnit.length) {
-            option.archivedRecordPlaceOrganizationalUnit = query.organizationUnit[0];
+            option.archivedRecordPlaceOrganizationalUnit =
+                query.organizationUnit[0];
         }
         if (query.domains && query.domains.length) {
             option.domains = { $in: query.domains };
@@ -845,21 +874,24 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
             option.name = new RegExp(query.name, "i");
         }
 
-        let allDocs = await Document(connect(DB_CONNECTION, portal)).find(option).populate([
-            { path: "category", select: "name id" },
-            { path: "domains", select: "name id" },
-            { path: "archives", select: "name id path" },
-            { path: "userCanView", select: "_id name email avatar" },
-            { path: "views.viewer", select: "name id" },
-            { path: "downloads.downloader", select: "name id" },
-            {
-                path: "archivedRecordPlaceOrganizationalUnit",
-                select: "name id",
-            },
-            { path: "logs.creator", select: "name id" },
-            { path: "relationshipDocuments", select: "name id" }]);
+        let allDocs = await Document(connect(DB_CONNECTION, portal))
+            .find(option)
+            .populate([
+                { path: "category", select: "name id" },
+                { path: "domains", select: "name id" },
+                { path: "archives", select: "name id path" },
+                { path: "userCanView", select: "_id name email avatar" },
+                { path: "views.viewer", select: "name id" },
+                { path: "downloads.downloader", select: "name id" },
+                {
+                    path: "archivedRecordPlaceOrganizationalUnit",
+                    select: "name id",
+                },
+                { path: "logs.creator", select: "name id" },
+                { path: "relationshipDocuments", select: "name id" },
+            ]);
 
-            page = parseInt(page);
+        page = parseInt(page);
         let totalDocs = allDocs.length;
         let totalPage = Math.ceil(totalDocs / limit);
         let pagingCounter = (page - 1) * limit + 1;
@@ -868,14 +900,23 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
         let prevPage = page > 1 ? page - 1 : null;
         let nextPage = totalDocs > page * limit ? page + 1 : null;
         allDocs.sort((a, b) => {
-            let tmpA = a.versions.length && a.versions[a.versions.length - 1].issuingDate ?
-                a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
+            let tmpA =
+                a.versions.length &&
+                a.versions[a.versions.length - 1].issuingDate
+                    ? a.versions[a.versions.length - 1].issuingDate
+                    : new Date(1900, 1, 1, 0, 3, 3, 0);
 
-            let tmpB = b.versions.length && b.versions[b.versions.length - 1].issuingDate ?
-                b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+            let tmpB =
+                b.versions.length &&
+                b.versions[b.versions.length - 1].issuingDate
+                    ? b.versions[b.versions.length - 1].issuingDate
+                    : new Date(1900, 1, 1, 0, 3, 3, 0);
             return new Date(tmpB) - new Date(tmpA);
         });
-        let doc = allDocs.slice((page - 1) * limit, page * limit > allDocs.length ? allDocs.length : page * limit);
+        let doc = allDocs.slice(
+            (page - 1) * limit,
+            page * limit > allDocs.length ? allDocs.length : page * limit
+        );
         //list.docs = doc;
 
         let res = {
@@ -913,10 +954,7 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
         userRole = userRole.concat(roles[i].roleId.parents);
     }
     condition = {
-        $or: [
-            { roles: { $in: userRole } },
-            { userCanView: userId }
-        ]
+        $or: [{ roles: { $in: userRole } }, { userCanView: userId }],
     };
     if (query.category) {
         condition.category = query.category;
@@ -928,7 +966,8 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
         condition.issuingBody = new RegExp(query.issuingBody, "i");
     }
     if (query.organizationUnit && query.organizationUnit.length) {
-        option.archivedRecordPlaceOrganizationalUnit = query.organizationUnit[0];
+        option.archivedRecordPlaceOrganizationalUnit =
+            query.organizationUnit[0];
     }
     if (query.archives && query.archives.length) {
         let allArchive = [];
@@ -955,18 +994,21 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
         case "downloaded": //những tài liệu văn bản mà người dùng đã tải xuống
             condition = { ...condition, "downloads.downloader": userId };
 
-            let allDocsDown = await Document(connect(DB_CONNECTION, portal)).find(condition).populate([
-                { path: "category", select: "name id" },
-                { path: "domains", select: "name id" },
-                { path: "archives", select: "name id path" },
-                { path: "views.viewer", select: "name id" },
-                { path: "downloads.downloader", select: "name id" },
-                {
-                    path: "archivedRecordPlaceOrganizationalUnit",
-                    select: "name id",
-                },
-                { path: "logs.creator", select: "name id" },
-                { path: "relationshipDocuments", select: "name id" }]);
+            let allDocsDown = await Document(connect(DB_CONNECTION, portal))
+                .find(condition)
+                .populate([
+                    { path: "category", select: "name id" },
+                    { path: "domains", select: "name id" },
+                    { path: "archives", select: "name id path" },
+                    { path: "views.viewer", select: "name id" },
+                    { path: "downloads.downloader", select: "name id" },
+                    {
+                        path: "archivedRecordPlaceOrganizationalUnit",
+                        select: "name id",
+                    },
+                    { path: "logs.creator", select: "name id" },
+                    { path: "relationshipDocuments", select: "name id" },
+                ]);
             page = parseInt(page);
             let totalDocsDown = allDocsDown.length;
             let totalPageDown = Math.ceil(totalDocsDown / limit);
@@ -976,15 +1018,25 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             let prevPageDown = page > 1 ? page - 1 : null;
             let nextPageDown = totalDocsDown > page * limit ? page + 1 : null;
             allDocsDown.sort((a, b) => {
-                let tmpA = a.versions.length && a.versions[a.versions.length - 1].issuingDate ?
-                    a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
+                let tmpA =
+                    a.versions.length &&
+                    a.versions[a.versions.length - 1].issuingDate
+                        ? a.versions[a.versions.length - 1].issuingDate
+                        : new Date(1900, 1, 1, 0, 3, 3, 0);
 
-                let tmpB = b.versions.length && b.versions[b.versions.length - 1].issuingDate ?
-                    b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+                let tmpB =
+                    b.versions.length &&
+                    b.versions[b.versions.length - 1].issuingDate
+                        ? b.versions[b.versions.length - 1].issuingDate
+                        : new Date(1900, 1, 1, 0, 3, 3, 0);
                 return new Date(tmpB) - new Date(tmpA);
             });
-            let doc = allDocsDown.slice((page - 1) * limit, page * limit > allDocsDown.length ? allDocsDown.length : page * limit);
-
+            let doc = allDocsDown.slice(
+                (page - 1) * limit,
+                page * limit > allDocsDown.length
+                    ? allDocsDown.length
+                    : page * limit
+            );
 
             let listDownload = {
                 docs: doc,
@@ -1000,11 +1052,9 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             };
             return listDownload;
         case "common": //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
-            condition = {$or: [
-                { roles: { $in: roleArr } },
-                { userCanView: userId }
-                ]
-             };
+            condition = {
+                $or: [{ roles: { $in: roleArr } }, { userCanView: userId }],
+            };
             let listCommon = await Document(
                 connect(DB_CONNECTION, portal)
             ).paginate(condition, {
@@ -1033,11 +1083,7 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             return listCommon;
         case "latest": //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             condition = {
-                $or: [
-                { roles: { $in: roleArr } },
-                { userCanView: userId }
-                ]
-             ,
+                $or: [{ roles: { $in: roleArr } }, { userCanView: userId }],
                 "views.viewer": { $ne: userId },
             };
             // condition = {$or: [
@@ -1046,18 +1092,21 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             //     ]
             //  };
 
-            let allDocsLast = await Document(connect(DB_CONNECTION, portal)).find(condition).populate([
-                { path: "category", select: "name id" },
-                { path: "domains", select: "name id" },
-                { path: "archives", select: "name id path" },
-                { path: "views.viewer", select: "name id" },
-                { path: "downloads.downloader", select: "name id" },
-                {
-                    path: "archivedRecordPlaceOrganizationalUnit",
-                    select: "name id",
-                },
-                { path: "logs.creator", select: "name id" },
-                { path: "relationshipDocuments", select: "name id" }]);
+            let allDocsLast = await Document(connect(DB_CONNECTION, portal))
+                .find(condition)
+                .populate([
+                    { path: "category", select: "name id" },
+                    { path: "domains", select: "name id" },
+                    { path: "archives", select: "name id path" },
+                    { path: "views.viewer", select: "name id" },
+                    { path: "downloads.downloader", select: "name id" },
+                    {
+                        path: "archivedRecordPlaceOrganizationalUnit",
+                        select: "name id",
+                    },
+                    { path: "logs.creator", select: "name id" },
+                    { path: "relationshipDocuments", select: "name id" },
+                ]);
             page = parseInt(page);
             let totalDocsLast = allDocsLast.length;
             let totalPageLast = Math.ceil(totalDocsLast / limit);
@@ -1068,15 +1117,26 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             let nextPageLast = totalDocsLast > page * limit ? page + 1 : null;
 
             allDocsLast.sort((a, b) => {
-                let tmpA = a.versions.length && a.versions[a.versions.length - 1].issuingDate ?
-                    a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
+                let tmpA =
+                    a.versions.length &&
+                    a.versions[a.versions.length - 1].issuingDate
+                        ? a.versions[a.versions.length - 1].issuingDate
+                        : new Date(1900, 1, 1, 0, 3, 3, 0);
 
-                let tmpB = b.versions.length && b.versions[b.versions.length - 1].issuingDate ?
-                    b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+                let tmpB =
+                    b.versions.length &&
+                    b.versions[b.versions.length - 1].issuingDate
+                        ? b.versions[b.versions.length - 1].issuingDate
+                        : new Date(1900, 1, 1, 0, 3, 3, 0);
 
                 return new Date(tmpB) - new Date(tmpA);
             });
-            let docLast = allDocsLast.slice((page - 1) * limit, page * limit > allDocsLast.length ? allDocsLast.length : page * limit);
+            let docLast = allDocsLast.slice(
+                (page - 1) * limit,
+                page * limit > allDocsLast.length
+                    ? allDocsLast.length
+                    : page * limit
+            );
 
             let listLast = {
                 docs: docLast,
@@ -1186,9 +1246,9 @@ exports.createDocumentArchive = async (portal, data, company) => {
         query.parent = data.parent;
     }
     query.path = await findPath(data, portal);
-    const check = await DocumentArchive(
-        connect(DB_CONNECTION, portal)
-    ).findOne({ name: data.name });
+    const check = await DocumentArchive(connect(DB_CONNECTION, portal)).findOne(
+        { name: data.name }
+    );
     if (check) throw ["name_exist"];
     await DocumentArchive(connect(DB_CONNECTION, portal)).create(query);
     return await this.getDocumentArchives(portal, company);
@@ -1290,13 +1350,11 @@ exports.importDocumentArchive = async (portal, data, company) => {
             description: data[i].description,
         };
         if (data[i].pathParent) {
-            let path = data[i].pathParent
-                .split("-")
-                .map((x) => {
-                    return x.trim();
-                })
-            path.pop()
-            path=path.join(" - ");
+            let path = data[i].pathParent.split("-").map((x) => {
+                return x.trim();
+            });
+            path.pop();
+            path = path.join(" - ");
             const parentArchive = await DocumentArchive(
                 connect(DB_CONNECTION, portal)
             ).findOne({ path: path });
@@ -1310,23 +1368,31 @@ exports.importDocumentArchive = async (portal, data, company) => {
 };
 
 // lấy dữ liệu cho bản đồ document - category
-exports.chartDataDocument = async (portal,company,listChart) => {
-    let document = await Document(connect(DB_CONNECTION, portal)).find({}).select("category numberOfView numberOfDownload archives domains")
-    let result = {document:document}
-    if (listChart[0]==="all" || listChart.indexOf("documentByCategory") !== -1 || listChart.indexOf("documentByViewAndDownload") !== -1){
-        let categorys = await DocumentCategory(connect(DB_CONNECTION, portal)).find({
+exports.chartDataDocument = async (portal, company, listChart) => {
+    let document = await Document(connect(DB_CONNECTION, portal))
+        .find({})
+        .select("category numberOfView numberOfDownload archives domains");
+    let result = { document: document };
+    if (
+        listChart[0] === "all" ||
+        listChart.indexOf("documentByCategory") !== -1 ||
+        listChart.indexOf("documentByViewAndDownload") !== -1
+    ) {
+        let categorys = await DocumentCategory(
+            connect(DB_CONNECTION, portal)
+        ).find({
             company,
         });
-        result = {...result, categorys:categorys}
+        result = { ...result, categorys: categorys };
     }
-    if (listChart[0] === "all" || listChart.indexOf("documentByArchive")){
-        let archives = await this.getDocumentArchives(portal, company)
-        result = {...result, archives:archives}
+    if (listChart[0] === "all" || listChart.indexOf("documentByArchive")) {
+        let archives = await this.getDocumentArchives(portal, company);
+        result = { ...result, archives: archives };
     }
-    if (listChart[0] === "all" || listChart.indexOf("documentByDomain")){
-        let domains = await this.getDocumentDomains(portal, company)
-        result = {...result, domains:domains}
+    if (listChart[0] === "all" || listChart.indexOf("documentByDomain")) {
+        let domains = await this.getDocumentDomains(portal, company);
+        result = { ...result, domains: domains };
     }
-    
-    return {result}
-}
+
+    return { result };
+};

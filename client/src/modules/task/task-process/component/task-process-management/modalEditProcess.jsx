@@ -127,7 +127,7 @@ function ModalEditProcess(props) {
                         var outgoing = element1.outgoing;
                         outgoing.forEach(x => {
                             // console.log(x.businessObject.targetRef.id)
-                            if (infos[x.businessObject.targetRef.id].status === "inprocess") {
+                            if (infos[x.businessObject.targetRef.id]?.status === "inprocess") {
                                 var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
                                 modeling.setColor(outgoingEdge, {

@@ -3,19 +3,20 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { DatePicker, ExportExcel, LazyLoadComponent, SelectBox } from '../../../../../common-components/index';
+import { DatePicker, ExportExcel, LazyLoadComponent, SelectBox } from '../../../../../common-components';
 import { showListInSwal } from '../../../../../helpers/showListInSwal';
+import { EmployeeBalanceKpiModal } from '../../../employee/creation/component/employeeBalanceKpiModal';
+import { EmployeeCreateKpiAutoModal } from '../../../employee/creation/component/employeeCreateKpiAutoModal';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { ChildOfOrganizationalUnitKpi } from './childOfOrganizationalUnitKPI';
 import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrganizationalUnitKpiChart';
+import OrganizationalUnitKPITarget from './organizationalUnitKPITarget';
 import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizationalUnitKpiChart';
 import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUnitKpiChart';
 import StatisticsKpiUnits from './statisticsKpiUnits';
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
 import { TrendsInChildrenOrganizationalUnitKpiChart } from './trendsInChildrenOrganizationalUnitKpiChart';
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
-
-
 
 function OrganizationalUnitKpiDashboard(props) {
     const today = new Date();
@@ -35,6 +36,7 @@ function OrganizationalUnitKpiDashboard(props) {
         },
 
         childUnitChart: 1,
+        employeeKpiSet: null
     });
 
     useEffect(() => {
@@ -125,6 +127,13 @@ function OrganizationalUnitKpiDashboard(props) {
         })
     };
 
+    const handleChangeEmployeeKpiTarget = (data) => {
+        setState({
+            ...state,
+            employeeKpiSet: data
+        })
+    };
+
     const showDistributionOfOrganizationalUnitKpiDoc = () => {
         Swal.fire({
             icon: "question",
@@ -140,7 +149,8 @@ function OrganizationalUnitKpiDashboard(props) {
         })
     }
 
-    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, translate } = props;
+
+    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit, translate } = props;
     const { childUnitChart, organizationalUnitId,
         month, date, resultsOfOrganizationalUnitKpiChartData,
         resultsOfAllOrganizationalUnitsKpiChartData,
@@ -217,9 +227,6 @@ function OrganizationalUnitKpiDashboard(props) {
         organizationalUnitNotInitialKpi = organizationalUnitSelectBox
     }
 
-
-
-
     let d = new Date(),
         monthDate = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -230,6 +237,7 @@ function OrganizationalUnitKpiDashboard(props) {
     if (day.length < 2)
         day = '0' + day;
     let defaultDate = [monthDate, year].join('-');
+
 
     return (
         <React.Fragment>
@@ -263,6 +271,83 @@ function OrganizationalUnitKpiDashboard(props) {
                             </div>
 
                             <button type="button" className="btn btn-success" onClick={() => handleSearchData()}>{translate('kpi.evaluation.dashboard.analyze')}</button>
+                            {
+                                createKpiUnit.currentKPI?.status && state.employeeKpiSet?.length === 0 ?
+                                    <span style={{ display: "inline-flex" }}>
+                                        <span style={{ marginLeft: 5, 'cursor': "pointer" }}>
+                                            <a className='btn btn-primary text-dark' data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                                <i className="fa fa-gears" style={{ fontSize: "16px" }} /> Khởi tạo KPI nhân viên tự động
+                                            </a>
+                                            <EmployeeCreateKpiAutoModal
+                                                organizationalUnitId={infoSearch?.organizationalUnitId}
+                                                month={month}
+                                            />
+                                        </span>
+                                        <span style={{ marginLeft: 10, display: "flex", alignItems: "center" }} onClick={() => {
+                                            Swal.fire({
+                                                imageUrl: 'image/rules_planning_kpi.png',
+                                                imageAlt: 'Planning_kpi'
+                                            })
+                                            Swal.fire({
+                                                html: `
+                                                <h4>Hệ thống tự động hoạch định mục tiêu KPI nhân viên dựa vào các thông số sau: </h4>
+                                                <div style="text-align:left; font-size: 14">
+                                                
+                                                </br>
+                                                <strong>Điểm đánh giá nhân viên:</strong> Mô hình đánh giá nhân viên với các thông tin đầu vào như bằng cấp, chứng chỉ, … Cụ thể:
+                                                
+                                                </br>
+                                                - Trạng thái làm việc: Điểm chỉ được tính cho các nhân viên có trạng thái: Làm chính thức hoặc đang thử việc (10 điểm)
+                                                
+                                                </br>
+                                                - Trình độ học vấn: Điểm từ 5-15 được tính dựa vào loại trình độ
+                                                
+                                                </br>
+                                                - Bằng cấp: Điểm từ 0-20 được tính dựa vào xếp loại của bằng cấp
+                                               
+                                                </br>
+                                                - Chứng chỉ: Với mỗi chứng chỉ, nhân viên sẽ được cộng 20 điểm. 
+                                                
+                                                </br>
+                                                - Kinh nghiệm làm việc: Với mỗi kinh nghiệm làm việc, nhân viên sẽ được cộng 20 điểm. 
+                                                </br>
+                                                - Dự án từng tham gia: Với mỗi dự án tham gia, nhân viên sẽ được cộng 20 điểm. 
+                                                
+                                                </br>
+                                                <strong>Điểm quá trình:</strong> Trong quá trình thực hiện các mục tiêu KPI sẽ có điểm đánh giá hoàn thành. Điểm quá trình làm việc là trung bình điểm đánh giá của các mục tiêu trong KPI 3 tháng gần nhất. Trường hợp nhân viên không có điểm đánh giá trong 1 tháng nào đó thì mặc định điểm của tháng đó là 80.
+                                                
+                                                </br>
+                                                <strong>Điểm kết quả:</strong> Khi KPI kết thúc sẽ có điểm đánh giá kết quả vào cuối tháng. Điểm kết quả là trung bình kết quả điểm KPI trong 3 tháng gần nhất. Trường hợp nhân viên không có điểm kết quả trong 1 tháng nào đó thì mặc định điểm của tháng đó là 80.
+                                               
+                                                </br>
+                                                <strong>Tỉ lệ hoàn thành KPI:</strong> Là thông số để hệ thống dựa vào để hoạch định số lượng mục tiêu và chỉ tiêu trong KPI của nhân viên. Công thức tính thông số này có thể được tùy chỉnh trong form khởi tạo. 
+                                                
+                                                </div>
+                                                </div>
+                                                `,
+                                                width: 600
+                                            })
+                                        }}>
+                                            <i className="material-icons" style={{ "font-size": 22, color: "rgb(76, 76, 76)", cursor: "pointer" }}>help_outline</i>
+                                        </span>
+
+                                    </span>
+                                    : null
+                            }
+                            {
+                                createKpiUnit.currentKPI?.status && state.employeeKpiSet?.length !== 0 ? <span style={{ marginLeft: 5, 'cursor': "pointer" }}>
+                                    <a className='btn btn-primary text-dark' data-toggle="modal" data-target="#employee-balance-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                        Cân bằng KPI nhân viên
+                                    </a>
+                                    <EmployeeBalanceKpiModal
+                                        organizationalUnitId={infoSearch?.organizationalUnitId}
+                                        month={month}
+                                        employeeKpiSet={state.employeeKpiSet}
+                                    />
+                                </span> : null
+
+                                // <button type="button" className="btn btn-primary" onClick={() => handleAdjustKpiEmployee()}>Cân bằng KPI nhân viên</button>
+                            }
                         </div>
                     </div>
 
@@ -335,6 +420,16 @@ function OrganizationalUnitKpiDashboard(props) {
                             </div>
                         </div>
                     </div>
+
+                    {
+                        <OrganizationalUnitKPITarget
+                            organizationalUnitId={organizationalUnitId}
+                            organizationalUnitIds={organizationalUnitIds}
+                            month={month}
+                            onChangeData={handleChangeEmployeeKpiTarget}
+                        />
+                    }
+
 
                     <div className="row">
                         <div className="col-md-12">
@@ -531,8 +626,8 @@ function OrganizationalUnitKpiDashboard(props) {
 }
 
 function mapState(state) {
-    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit } = state;
-    return { dashboardEvaluationEmployeeKpiSet, managerKpiUnit };
+    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit } = state;
+    return { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, createKpiUnit };
 }
 
 const actionCreators = {

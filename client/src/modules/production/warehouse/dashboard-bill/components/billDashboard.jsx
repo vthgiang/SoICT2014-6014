@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import BillDashboardHeader from './billDashboardHeader';
@@ -10,102 +10,86 @@ import SupplierDashboard from './supplierDashboard';
 import CustomerDashboard from './customerDashboard';
 import SupplierNumberDashboard from './supplierNumberDashboard';
 import CustomerNumberDashboard from './customerNumberDashboard';
+import { StockActions } from '../../stock-management/redux/actions';
+import { CrmCustomerActions } from '../../../../crm/customer/redux/actions';
+import { BillActions } from '../../bill-management/redux/actions';
 
 function DashBoardBills(props) {
-    const [state, setState] = useState({
-        stock: null,
-        actionSearch: true,
-    })
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    function formatDate(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    };
-
-    /**
-     * Bắt sự kiện thay đổi tháng
-     * @param {*} value : Giá trị tháng chart nhân sự theo dải lương và chart top lương cao nhất
-     */
-    const handleMonthChange = async (value) => {
-        await setState({
-            ...state,
-            month: value
-        })
+    
+    let today = new Date(),
+        month = today.getMonth() + 1,
+        year = today.getFullYear();
+    let endMonth;
+    if (month < 10) {
+        endMonth = '0' + month;
+    } else {
+        endMonth = month;
     }
 
-    /**
-     * Bắt sự kiện thay đổi đơn vị
-     * @param {*} value 
-     */
-    const handleSelectOrganizationalUnit = async (value) => {
-        await setState({
-            ...state,
-            organizationalUnits: value,
-            actionSearch: state.actionSearch,
-        })
+    const INFO_SEARCH = {
+        startMonth: year + '-01',
+        endMonth: [year, endMonth].join('-'),
+        type: '1',
+        numberTop: '1',
+        numberTopAtLeast: '1',
     };
+    const [state, setState] = useState({
+        stock: null,
+        currentRole: localStorage.getItem("currentRole"),
+        startMonth: INFO_SEARCH.startMonth,
+        endMonth: INFO_SEARCH.endMonth,
+    })
 
-    const { stock, actionSearch } = state;
+    useEffect(() => {
+        props.getAllStocks({ managementLocation: state.currentRole });
+        props.getCustomers();
+        props.getNumberBills({ managementLocation: state.currentRole, startMonth: state.startMonth, endMonth: state.endMonth, chart: undefined });
+    }, [])
 
+    const { bills } = props;
+    const { numberBills } = bills;
+    console.log(numberBills);
     return (
         <div className="qlcv">
-            <BillDashboardHeader handleSelectOrganizationalUnit={handleSelectOrganizationalUnit} handleMonthChange={handleMonthChange} />
+            <BillDashboardHeader />
             <div className="row">
                 <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                    <GoodIssueReceiptByGood actionSearch={actionSearch} />
+                    <GoodIssueReceiptByGood />
                 </div>
                 <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                     <GoodIssueReceiptByTime />
                 </div>
 
                 <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                    <TopIssueReceipt handleMonthChange={handleMonthChange} />
+                    <TopIssueReceipt dataChart={numberBills ? numberBills.dataTopIssueReceipt : ''} />
                 </div>
                 <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                    <TopIssueReceiptLeast handleMonthChange={handleMonthChange} />
+                    <TopIssueReceiptLeast dataChart={numberBills ? numberBills.dataTopAtLeastIssueReceipt : ''}/>
                 </div>
 
                 <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                    <CustomerDashboard handleMonthChange={handleMonthChange} />
+                    <CustomerDashboard dataChart={numberBills ? numberBills.dataBillsIssuedForCustomerByTime : ''}/>
                 </div>
                 <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                    <SupplierDashboard actionSearch={actionSearch} />
+                    <SupplierDashboard dataChart={numberBills ? numberBills.dataBillsReceiptedFromSupplierByTime : ''}/>
                 </div>
                 <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                    <CustomerNumberDashboard handleMonthChange={handleMonthChange} />
+                    <CustomerNumberDashboard dataChart={numberBills ? numberBills.dataBillsIssuedForCustomerByTime : ''}/>
                 </div>
                 <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                    <SupplierNumberDashboard actionSearch={actionSearch} />
+                    <SupplierNumberDashboard dataChart={numberBills ? numberBills.dataBillsReceiptedFromSupplierByTime : ''}/>
                 </div>
-
-                {/* <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <HumanResourceIncreaseAndDecreaseChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameChart={'Tình hình tăng giảm nhân sự'} />
-                    </div>
-                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép của nhân viên'} />
-                    </div> */}
             </div>
         </div>
     );
 }
 
-export default connect(null, null)(withTranslate(DashBoardBills));
+const mapStateToProps = state => state;
+
+const mapDispatchToProps = {
+    getAllStocks: StockActions.getAllStocks,
+    getCustomers: CrmCustomerActions.getCustomers,
+    getNumberBills: BillActions.getNumberBills,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(DashBoardBills));

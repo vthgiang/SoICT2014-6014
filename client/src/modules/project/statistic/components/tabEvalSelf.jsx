@@ -94,7 +94,7 @@ const TabEvalSelf = (props) => {
         <React.Fragment>
             <div className="box-body qlcv">
                 <h4><strong>Điểm số thành viên {processedSelfData?.name} trong tháng</strong></h4>
-                {/* Chọn tháng để lọc đánh giâ */}
+                {/* Chọn tháng để lọc đánh giá */}
                 <div className="form-group">
                     <label style={{ marginRight: 20 }}>Chọn tháng</label>
                     <DatePicker
@@ -108,7 +108,7 @@ const TabEvalSelf = (props) => {
                 {
                     isLoading
                         ? <div>Đang tải dữ liệu</div>
-                        : <table id="eval-project-members-statistical-table" className="table table-bordered table-hover">
+                        : <table id="eval-self-statistical-table" className="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Họ và tên</th>
@@ -125,49 +125,49 @@ const TabEvalSelf = (props) => {
                                     <th>Điểm số thành viên</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {processedSelfData &&
-                                    processedSelfData?.tasksWithPointAndRoleAndEVM?.map((memberTaskItem, memberTaskIndex) => {
-                                        if (memberTaskIndex === processedSelfData?.tasksWithPointAndRoleAndEVM.length - 1) {
-                                            return (
-                                                <>
-                                                    <tr key={`${userId}-${memberTaskIndex}-0`}>
-                                                        <td><strong>{memberTaskIndex === 0 ? processedSelfData?.name : ''}</strong></td>
-                                                        <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
-                                                        <td style={{ color: '#385898' }}>{memberTaskItem?.tasksWithMemberItem.name}</td>
-                                                        <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                        <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                        <td>{memberTaskItem?.tasksWithMemberItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
-                                                            && moment(memberTaskItem?.tasksWithMemberItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                        <td>{numberWithCommas(memberTaskItem?.estDuration)}</td>
-                                                        <td>{memberTaskItem?.realDuration && numberWithCommas(memberTaskItem?.realDuration)}</td>
-                                                        <td>{numberWithCommas(memberTaskItem?.estCost)}</td>
-                                                        <td>{numberWithCommas(memberTaskItem?.realCost)}</td>
-                                                        <td>{memberTaskItem.currentRole}</td>
-                                                        <td>{numberWithCommas(memberTaskItem.currentMemberCurrentTaskPoint)} / 100</td>
-                                                    </tr>
-                                                    {
-                                                        processedSelfData.tasksWithPointAndRoleAndEVM.length > 1
-                                                        &&
-                                                        <tr key={`${userId}-${memberTaskIndex}-1`}>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalEstCost)}</td>
-                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalRealCost)}</td>
-                                                            <td></td>
-                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.averagePoint)} / 100</td>
-                                                        </tr>
-                                                    }
-                                                </>
-                                            )
-                                        }
+                            {processedSelfData &&
+                                processedSelfData?.tasksWithPointAndRoleAndEVM?.map((memberTaskItem, memberTaskIndex) => {
+                                    if (memberTaskIndex === processedSelfData?.tasksWithPointAndRoleAndEVM.length - 1) {
                                         return (
+                                            <tbody key={`self-summary-${memberTaskItem._id}`}>
+                                                <tr key={`${userId}-${memberTaskIndex}-0`}>
+                                                    <td><strong>{memberTaskIndex === 0 ? processedSelfData?.name : ''}</strong></td>
+                                                    <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
+                                                    <td style={{ color: '#385898' }}>{memberTaskItem?.tasksWithMemberItem.name}</td>
+                                                    <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                    <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                    <td>{memberTaskItem?.tasksWithMemberItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
+                                                        && moment(memberTaskItem?.tasksWithMemberItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                    <td>{numberWithCommas(memberTaskItem?.estDuration)}</td>
+                                                    <td>{memberTaskItem?.realDuration && numberWithCommas(memberTaskItem?.realDuration)}</td>
+                                                    <td>{numberWithCommas(memberTaskItem?.estCost)}</td>
+                                                    <td>{numberWithCommas(memberTaskItem?.realCost)}</td>
+                                                    <td>{memberTaskItem.currentRole}</td>
+                                                    <td>{numberWithCommas(memberTaskItem.currentMemberCurrentTaskPoint)} / 100</td>
+                                                </tr>
+                                                {
+                                                    processedSelfData.tasksWithPointAndRoleAndEVM.length > 1
+                                                    &&
+                                                    <tr key={`${userId}-${memberTaskIndex}-1`}>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalEstCost)}</td>
+                                                        <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalRealCost)}</td>
+                                                        <td></td>
+                                                        <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.averagePoint)} / 100</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        )
+                                    }
+                                    return (
+                                        <tbody key={`normal-self-${memberTaskItem._id}`}>
                                             <tr key={`${userId}-${memberTaskIndex}-2`}>
                                                 <td><strong>{memberTaskIndex === 0 ? processedSelfData?.name : ''}</strong></td>
                                                 <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
@@ -183,10 +183,10 @@ const TabEvalSelf = (props) => {
                                                 <td>{memberTaskItem.currentRole}</td>
                                                 <td>{numberWithCommas(memberTaskItem.currentMemberCurrentTaskPoint)} / 100</td>
                                             </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
+                                        </tbody>
+                                    )
+                                })
+                            }
                         </table>
                 }
                 {!processedSelfData && 'Không có công việc nào trong tháng này'}

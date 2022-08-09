@@ -15,6 +15,8 @@ import { AddProcessTemplate } from "./addProcessTemplateChild";
 import { ViewProcessTemplateChild } from "./viewProcessTemplateChild";
 import { ModalViewBpmnProcessTemplateChild } from "./viewBpmnProcessTemplateChild";
 import { TaskProcessService } from "../../redux/services";
+import { ReportProcessTemplate } from "./report/reportProcessTemplate";
+import { ReportHumanProcessTemplate } from "./report/reportHumanProcessTemplate";
 var zlevel = 1;
 function areEqual(prevProps, nextProps) {
     if (prevProps.idProcess === nextProps.idProcess ){
@@ -93,6 +95,7 @@ function ModalViewTaskProcess2(props) {
         eventBus.on('shape.move.start', 100000, () => { return false });
         modeler.on('element.click', 1000, (e) => interactPopup(e));
     }, [])
+    console.log(props.data);
     useEffect(() => {
         if(props.idProcess&&props.idProcess != state.idProcess){
             let info = {};
@@ -262,6 +265,8 @@ function ModalViewTaskProcess2(props) {
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#info-view" onClick={() => handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
                     <li><a href="#process-view" onClick={() => handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
+                    <li><a href="#report-view" onClick={() => handleChangeContent("report")} data-toggle="tab">Báo cáo</a></li>
+                    <li><a href="#report-human-view" onClick={() => handleChangeContent("human")} data-toggle="tab">Báo cáo nhân sự</a></li>
                 </ul>
                 <div className="tab-content">
                     <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
@@ -297,8 +302,6 @@ function ModalViewTaskProcess2(props) {
                         </div>
                     </div>
                 </div>
-
-
                 <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                     <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
                         <div className="">
@@ -364,6 +367,16 @@ function ModalViewTaskProcess2(props) {
                                 }
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div>
+                    <div className={selectedView === "report" ? "active tab-pane" : "tab-pane"} id="report-view">
+                        {selectedView === "report" && <ReportProcessTemplate info={props.data.tasks} idProcess={props.idProcess}/>}
+                    </div>
+                </div>
+                <div>
+                    <div className={selectedView === "human" ? "active tab-pane" : "tab-pane"} id="report-human-view">
+                        {selectedView === "human" && <ReportHumanProcessTemplate info={props.data.tasks} idProcess={props.idProcess}/>}
                     </div>
                 </div>
             </div>

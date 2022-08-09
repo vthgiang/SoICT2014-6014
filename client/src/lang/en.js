@@ -77,7 +77,8 @@ export default {
             detail: "Detail",
             select_all: "Select all",
             add_import: "Add data from file",
-            delegation_role: "Delegation from"
+            delegation_role: "Delegation from",
+            filter: "Filter",
         },
 
         dashboard_unit: {
@@ -97,6 +98,7 @@ export default {
             manage_configuration: "Configuration",
             manage_system: "Backup and Restore",
             manage_company: "Manage Company",
+            manage_system_admin_page: "Manage System-Admin's page",
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
             manage_attribute: "Manage Attributes",
@@ -133,6 +135,7 @@ export default {
             },
 
             task_template: "Task Template",
+            administrative_document_process_dashboard: "Dashboard Administrative Document Process",
             cocautochuc: "Organizational Structure",
             taskmanagement: "Task Management",
             manageDocument: "Manage Document",
@@ -145,6 +148,7 @@ export default {
             annual_leave_personal: "Annual Leave",
             manage_unit: "Manage Units",
             manage_work_plan: "Manage Work Plan",
+            manage_major: "Manage Major",
             add_employee: "Add New Staffs",
             list_employee: "Manage Staffs Information",
             detail_employee: "Personal Information",
@@ -164,7 +168,17 @@ export default {
             training_plan_employee: "Training Courses",
             list_major: "Manage majors",
             list_career_position: "Manage career position",
+            list_certificate: "Manage bidding certificates",
+
+            // đấu thầu
+            manage_bidding: "Manage bidding",
+            list_bidding_contract: "Manage bidding contracts",
+            bidding_project_template_list: "Project template",
+            manage_tag: "Manage tags",
             list_search_for_package: "Search employee for package",
+            bidding_dashboard: "Bidding dashboard",
+            list_bidding_package: "Manage bidding packages",
+            detail_bidding_package: "Detail bidding packages",
 
             manage_warehouse: "Manage warehouses",
             dashboard_material: "Dashboad manage materials",
@@ -175,6 +189,7 @@ export default {
             kpi_unit_create_for_admin: "Create unit KPI in company",
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
+            kpi_unit_sales_dashboard: "Sale KPI dashboard",
             kpi_unit_dashboard: "Dashboard unit KPI",
             kpi_unit_statistic: "Ananyze the rationality of unit KPI",
             kpi_unit_manager: "Manage organizational unit KPI",
@@ -186,6 +201,7 @@ export default {
             kpi_personal_dashboard: "DashBoard personal KPI",
             kpi_personal_manager: "Manager personal KPI",
             kpi_member_detail: "Details of personal KPI",
+            kpi_unit_template: "KPI template",
 
             notifications: "Notifications",
 
@@ -299,6 +315,8 @@ export default {
             manage_project: "Manage Project",
             projects_list: 'Projects list',
             project_details: 'Projects details',
+            project_template_list: "Project template",
+            project_template_details: 'Project detail',
             tasks_list: 'Tasks list',
             phases_list: 'Phases list',
             issues_list: 'Issues list',
@@ -722,6 +740,18 @@ export default {
                 //Thông điệp trả về từ server
                 get_system_page_apis_success: 'Get system page APIs successfully',
                 get_system_page_api_failure: 'Can not get system page APIs',
+
+                add_title: 'Add a new URL',
+                add_success: "Add URL successfully!",
+                add_fail: "Add URL fail!",
+                URL: "URL address",
+                page_description: "Page description",
+                add: "Thêm ví dụ",
+                search: "Search",
+                index: "Index",
+                description: "Description",
+                detail_info_page: "Detail infomation of page",
+                delete: "Delete this page",
             },
 
             privilege_system_api: {
@@ -2237,8 +2267,42 @@ export default {
                 },
             },
 
+            certificate: {
+                get_certificate_success: "Get list certificates success",
+                get_certificate_failure: "Get list certificates fail",
+                create_certificate_success: "Create certificate success",
+                create_certificate_failure: "Create certificate fail",
+                edit_certificate_success: "Update certificate success",
+                edit_certificate_failure: "Update certificate fail",
+                delete_certificate_success: "Delete certificate success",
+                delete_certificate_failure: "Delete certificate fail",
+            },
+
+            career_position: {
+                get_career_position_success: "Get list career positions success",
+                get_career_position_failure: "Get list career positions fail",
+                create_career_position_success: "Create career positions success",
+                create_career_position_failure: "Create career positions fail",
+                update_career_position_success: "Update career positions success",
+                update_career_position_failure: "Update career positions fail",
+                delete_career_position_success: "Delete career positions success",
+                delete_career_position_failure: "Delete career positions fail",
+            },
+
             // Quản lý thông tin nhân viên
             profile: {
+
+                // Quản lý gói thầu
+                certificate: {
+                    get_bidding_package_success: "Get list bidding packages success",
+                    get_bidding_package_failure: "Get list bidding packages fail",
+                    create_bidding_package_success: "Create bidding package success",
+                    create_bidding_package_failure: "Create bidding package fail",
+                    update_bidding_package_success: "Update bidding package success",
+                    update_bidding_package_failure: "Update bidding package fail",
+                    delete_bidding_package_success: "Delete bidding package success",
+                    delete_bidding_package_failure: "Delete bidding package fail",
+                },
                 // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
                 tab_name: {
                     menu_basic_infor: "Basic information",
@@ -2371,6 +2435,11 @@ export default {
                 phd: "Ph.D",
                 unavailable: "Other",
                 work_experience: "Work experience",
+                project_experience: "Project experience",
+                project_end_date: "Project expiration date",
+                project_participation_status: "Project participation status",
+                project_employee_position: "Working Position",
+                project_professional_or_managerment: "Professional and managerment experience in project",
                 working_process: "Working process",
                 job_description: 'Job description',
                 reference_information: "Reference information",
@@ -2381,12 +2450,13 @@ export default {
                 add_experience: "Add work experience",
                 edit_working_process: "Edit working process",
                 add_working_process: "Add working process",
-                position_in_task: "position",
+                position_in_task: "Position",
                 customer: 'Customer',
                 project: 'Project',
 
                 diploma: "Degrees",
                 certificate: "Certificate",
+                bidding_package: "Bidding Package",
                 name_diploma: "Name of degree",
                 name_certificate: "Name of certificate",
                 diploma_issued_by: "Issued by",
@@ -2653,7 +2723,26 @@ export default {
                     tax_representative_required: "Tax representative required",
                     tax_authority_required: "Tax authority required",
                 },
+
+                bidding_package_management: {
+                    type: {
+                        1: "Advise",
+                        2: "Non-consulation",
+                        3: "Goods",
+                        4: "Build",
+                        5: "Mixture"
+                    },
+                    status: {
+                        1: "Active",
+                        0: "Inactive",
+                        2: "Waiting",
+                        3: "Working",
+                        4: "Finish"
+                    }
+                }
             },
+
+
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {
@@ -2834,6 +2923,23 @@ export default {
 
                 // Nhóm action
                 create_annual_leave: "Apply leave",
+            },
+
+            // Chuyên ngành
+            major: {
+                add: "Add",
+                add_title: "Add new major",
+                description: "Description",
+                info: "Major information",
+                name: "Major name",
+                parents: "Extends of",
+                users: "Users has major",
+                edit: "Edit major information",
+                delete: "Delete major",
+                add_success: "Add new major successfully",
+                add_faile: "Add new major failed",
+                edit_success: "Edit major successfully",
+                edit_faile: "Edit major failed",
             },
         },
 
@@ -4000,6 +4106,10 @@ export default {
                 approval_close_task_failure: "Can not approve request to close task",
                 decline_close_task_failure: "Can not decline request to close task",
 
+                // đề xuất nhân sự phù hợp
+                proposal_personnel_success: "Get the list of suitable personnel successfully",
+                proposal_personnel_fail: "Get the list of suitable personnel failed",
+
                 // Mở lại công việc
                 open_task_again_success: 'Open task again successfully',
                 open_task_again_failure: 'Can not open task again',
@@ -4216,6 +4326,28 @@ export default {
 
                 // swal
                 confirm: "Confirm",
+
+                // danh sách kết quả giao nộp
+                get_task_outputs_success: "Get the list of task outputs successfully",
+                get_task_outputs_failure: "Get the list of task outputs failed",
+
+                approve_task_outputs_success: "Approving successful submission results",
+                approve_task_outputs_failure: "Approve failed submission results",
+
+                edit_submission_results_success: "Edit successful submission results",
+                edit_submission_results_failure: "Edit failed submission results",
+
+                delete_submission_results_success: "Delete successful submission results",
+                delete_submission_results_failure: "Delete failed submission results",
+
+                delete_file_of_task_outputs_success: "Delete file of successful submission report",
+                delete_file_of_task_outputs_failure: "Delete file of failed submission report",
+
+                create_comment_of_task_outputs_success: "Add a comment on successful submission results",
+                create_comment_of_task_outputs_failure: "Add a comment on failed submission results",
+
+                edit_comment_of_task_outputs_success: "Edit a comment on successful submission results",
+                edit_comment_of_task_outputs_failure: "Edit a comment on successful submission results",
 
                 // modal approve task
                 modal_approve_task: {
@@ -5082,6 +5214,11 @@ export default {
                 calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
                 calculate_kpi_unit_failure: "Can not calculate organizational unit KPI"
             },
+            kpi_template: {
+                create_kpi_template_success: "Create KPI template Success",
+                delete_kpi_template_success: "Delete KPI template Success",
+                edit: "Edit KPI template Success",
+            }
         },
 
         manage_warehouse: {
@@ -5353,21 +5490,29 @@ export default {
             },
             bill_management: {
                 text: "Consignment have not been writen",
-                billType: {
-                    1: "Import materials",
-                    2: "Import finished product",
-                    3: "Import equipment",
-                    4: "Import waste",
-                    5: "Export materials",
-                    6: "Export finished product",
-                    7: "Export equipment",
-                    8: "Export waste",
-                    9: "Periodic inventory",
-                    10: "Regular inventory",
-                    11: "Return of self-produced goods that do not pass quality inspection",
-                    12: "Return goods imported from suppliers that do not pass quality inspection",
-                    13: "return goods that have been shipped",
-                    14: "commodity rotation",
+                goodReceiptBillType: {
+                    1: "Receipt from manufacturing works",
+                    2: "Receipt from supplier",
+                    3: "Receipt from other stock",
+                },
+                goodRIssueBillType: {
+                    1: "Issue passed good to manufacturing works",
+                    2: "Issue passed good to supplier",
+                    3: "Issue unpassed good to manufacturing works",
+                    4: "Issue unpassed good to supplier",
+                    5: "Issue good to other stock",
+                },
+                goodReturnBillType: {
+                    1: "Return good from manufacturing works",
+                    2: "Return good from supplier",
+                },
+                goodTakeBillType: {
+                    1: "Regular inventory",
+                    2: "Periodic inventory",
+                    3: "Inventory based on good receipt request",
+                    4: "Inventory based on good issue request",
+                    5: "Inventory based on good return request",
+                    6: "Inventory based on good rotate request",
                 },
                 1: {
                     status: "Waiting for approval",
@@ -5395,12 +5540,9 @@ export default {
                     7: "red",
                 },
                 bill_status: {
-                    1: "Waiting for approval",
-                    2: "Approvaled",
-                    3: "Processing",
-                    4: "Completed quality control",
-                    5: "Completed",
-                    7: "Canceled",
+                    1: "Processing",
+                    2: "Completed",
+                    3: "Canceled",
                 },
                 bill_receipt_status: {
                     1: "Waiting for approval",
@@ -5986,6 +6128,15 @@ export default {
                     4: { content: "Đã hoàn thành nhập kho", color: "blue" },
                     5: { content: "Đã hủy", color: "red" },
                 },
+                stock_rotate_request: {
+                    1: { content: "waiting for approval", color: "orange" },
+                    2: { content: "Approved", color: "green" },
+                    3: { content: "Good Receipt in Processing", color: "blue" },
+                    4: { content: "Good Receipt completed", color: "blue" },
+                    5: { content: "Good issue in processing", color: "blue" },
+                    6: { content: "Good issue completed", color: "blue" },
+                    7: { content: "Cancelled", color: "red" },
+                },
                 search: "Search",
                 select_status: "Select status",
                 add_request_button: "Add request",
@@ -6041,6 +6192,7 @@ export default {
                 validate_manufacturing_works: "Manufacturing works is required",
                 base_infomation: "Base infomation",
                 approved_true: 'Approve request',
+                source_request: 'Source request',
             },
         },
 
@@ -6100,6 +6252,7 @@ export default {
             description: "Description",
             add_title: "Add new project",
             detail_title: "Project details",
+            change_request: 'Request to change project',
             edit_title: "Project edit",
             add_btn_from_excel: "Choose from excel file",
             add_btn_new: "Add new project",
@@ -6122,6 +6275,10 @@ export default {
             add_err_empty_end_date: "End date should not be empty",
             col_start_time: "Start time",
             col_expected_end_time: "Expected end time",
+            calculate: "Caculate",
+            time_to_reduce: "Time to reduce",
+            desire_end_time: "The time at which you want the project to end",
+            err_early_end_date: "The selected date cannot be earlier than the earliest end date",
 
             // Thông báo trả về từ server
             get_task_project_success: 'Get project success',
@@ -6130,6 +6287,8 @@ export default {
             show_task_project_fail: 'Show project fail',
             create_task_project_success: 'Create project success',
             create_task_project_fail: 'Create project fail',
+            create_tasks_list_excel_cpm_success: 'Create tasks from file successfully',
+            create_tasks_list_excel_cpm_fail: 'Fail to create tasks from file',
             edit_task_project_success: 'Edit project success',
             edit_task_project_fail: 'Edit project fail',
             delete_task_project_success: 'Delete project success',
@@ -6148,12 +6307,23 @@ export default {
             update_status_project_change_request_fail: 'Update status of change request fail',
             update_list_project_change_requests_success: 'Update list of change requests success',
             update_list_project_change_requests_fail: 'Update list of change requests fail',
+            total: 'Total',
 
+            // Quản lý công việc trong dự án
             task_management: {
+                add_task: "Add new task",
+                add_phase: "Add new phase",
+                add_milestone: "Add new milestone",
+                type: "Type of task",
+                phase: "Phase",
+                task: "Task",
+                milestone: "Milestone",
+                milestone_info: "Milestone detail",
+                select_type: "Select task type",
+                select_all_type: "Select all type",
                 estimate: "Estimating",
                 add_err_time_cost: "Time & Cost must be numeric and greater or equal than 0",
                 end_date: "Estimated end date",
-
                 // unit time and cost
                 timeAndCost: "Time & Cost for Project scheduling",
                 estimatedTime: "Estimated time",
@@ -6165,13 +6335,17 @@ export default {
                 estimatedCostMaximum: "Maximum",
                 add_err_optimistic_time: "Optimistic time can't be greater than estimated time",
                 preceedingTask: "Preceeding task",
+                search_by_name_code: "Search by name or code of task",
+                code: "Task code",
             },
 
+            // Đơn vị thời gian
             unit: {
                 days: 'Ngày',
                 hours: 'Giờ',
             },
 
+            // Lập lịch
             schedule: {
                 taskCode: 'Task code',
                 taskName: 'Task name',
@@ -6190,6 +6364,23 @@ export default {
                 calculateRecommend: 'Calculate recommendation',
                 percentFinishTask: 'Percentage of finishing project in',
             },
+
+            // Yêu cầu thay đổi
+            request: {
+                name: 'Request name',
+                creator: 'Request creator',
+                create_time: 'Time of request creation',
+                description: 'Description of the request',
+                affect_task: 'Affected tasks',
+                status: 'Status',
+                create_request: 'Create a change request',
+                refused: 'Refused',
+                approved: 'Approved',
+                wait_for_approval: 'Waiting for approval',
+                not_request: 'Not request',
+            },
+
+            // Đánh giá
             eval: {
                 undefined: 'Nếu costPerformanceIndex không tính được (mẫu số actualCost = 0 HOẶC costPerformanceIndex = Infinity): Điểm = Chưa tính được',
                 level1: 'Nếu realDuration = 0 HOẶC costPerformanceIndex < 0.5: Điểm = 0',
@@ -6200,17 +6391,31 @@ export default {
                 level6: 'Nếu 1.5 <= costPerformanceIndex: Điểm = 100',
             },
 
+            // Báo cáo
             report: {
-                title: 'Detailed project report'
+                title: 'Detail project report'
             }
         },
         phase: {
             projectCodeName: 'Project codename',
             fullName: 'Phase name',
-            progress: 'Progress',
-            listTasks: 'List of tasks',
+            description: 'Phase description',
+            startDate: 'Start date of phase',
+            endDate: 'End date of phase',
+            startTime: 'Start time of phase',
+            endTime: 'End time of phase',
+            progress: 'progress',
+            status: 'Status',
+            listTasks: 'Task in phase',
             duration: 'Duration',
             add_btn_new: "Add new phase",
+            report: {
+                title: 'Detail phase report'
+            },
+            milestone: {
+                name: 'Milestone name',
+                date: 'date'
+            }
         },
     },
 };

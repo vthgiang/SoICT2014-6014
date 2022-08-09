@@ -19,11 +19,23 @@ module.exports = {
     Timesheet: require('./human-resource/timesheet.model'),
     Field: require('./human-resource/field.model'),
 
+    Tag: require('./bidding/tag.model'),
+    Major: require('./human-resource/major.model'),
+    Certificate: require('./human-resource/certificate.model'),
+    CareerPosition: require('./human-resource/careerPosition.model'),
+    CareerField: require('./human-resource/careerField.model'),
+    CareerAction: require('./human-resource/careerAction.model'),
+    BiddingPackage: require('./bidding/biddingPackage.model'),
+
+    BiddingContract: require('./bidding/biddingContract.model'),
+
 
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
     OrganizationalUnitKpi: require('./kpi/organizationalUnitKpi.model'),
     OrganizationalUnitKpiSet: require('./kpi/organizationalUnitKpiSet.model'),
+    OrganizationalUnitKpiSetTemplate: require('./kpi/organizationalUnitKpiSetTemplate.model'),
+    OrganizationalUnitKpiTemplate: require('./kpi/organizationalUnitKpiTemplate.model'),
 
     Notification: require('./notification/notification.model'),
     ManualNotification: require('./notification/manualNotification.model'),
@@ -76,7 +88,7 @@ module.exports = {
     Lot: require('./production/common-production/lot.model'),
     Category: require('./production/common-production/category.model'),
     Bill: require('./production/warehouse/bill.model'),
-    RequestManagement: require('./production/common-production/requestManagement.model'),
+    ProductRequestManagement: require('./production/common-production/productRequestManagement.model'),
 
     // Customer Management
     Customer: require('./customer-care/customer.model'),
@@ -132,7 +144,10 @@ module.exports = {
 
     // project
     Project: require('./project/project.model'),
+    ProjectTemplate: require('./project/projectTemplate.model'),
     ProjectChangeRequest: require('./project/projectChangeRequest.model'),
+    ProjectPhase: require('./project/projectPhase.model'),
+    ProjectMilestone: require('./project/projectMilestone.model'),
 
     // news feed
     NewsFeed: require('./news-feed/newsFeed.model')

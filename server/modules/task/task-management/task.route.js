@@ -8,6 +8,7 @@ router.get('/tasks/:taskId/sub-tasks', auth, TaskManagementController.getSubTask
 router.post('/tasks', auth, uploadFile([{ name: 'files', path: '/files/task-description' }], 'array'), TaskManagementController.createTask);
 router.post('/tasks/project-tasks', auth, TaskManagementController.createProjectTask);
 router.post('/tasks/project-tasks/cpm', auth, TaskManagementController.createProjectTasksFromCPM);
+router.post('/tasks/proposal-personnel', auth, TaskManagementController.proposalPersonnel);
 router.delete('/tasks/:taskId', auth, TaskManagementController.deleteTask);
 
 

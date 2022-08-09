@@ -25,6 +25,7 @@ import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 
 import { ProjectActions } from "../../../project/projects/redux/actions";
+import { ProjectPhaseActions } from "../../../project/project-phase/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from 'dayjs';
 import { RequestToCloseProjectTaskModal } from './requestToCloseProjectTaskModal';
@@ -163,7 +164,9 @@ class DetailProjectTaskTab extends Component {
         console.log('this.props.task', this.props.task)
         // this.props.getProjectsDispatch({ calledId: "" });
         this.props.showInfoRole(currentRole);
-        this.props.getTasksByProject(this.props.task?.taskProject);
+        this.props.getAllTasksByProject(this.props.task?.taskProject);
+        this.props.getAllPhaseByProject(this.props.task?.taskProject);
+
         this.props.getProjectsDispatch({ calledId: "user_all", userId: getStorage('userId') });
     }
 
@@ -733,7 +736,7 @@ class DetailProjectTaskTab extends Component {
     }
 
     render() {
-        const { tasks, performtasks, user, translate, role, project } = this.props;
+        const { tasks, performtasks, user, translate, role, project, projectPhase } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
         const { currentUser, roles, currentRole, collapseInfo,
             showEdit, showEndTask, showEvaluate, showRequestClose,
@@ -741,7 +744,8 @@ class DetailProjectTaskTab extends Component {
         } = this.state;
 
         let task;
-        const currentProjectTasks = this.props.tasks && this.props.tasks.tasksbyproject;
+        const currentProjectTasks = this.props.tasks && this.props.tasks.tasksByProject;
+        const currentProjectPhase = this.props.projectPhase && this.props.projectPhase.phases;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
         // Các biến dùng trong phần Nhắc Nhở
         let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
@@ -1404,6 +1408,7 @@ class DetailProjectTaskTab extends Component {
                         id={id}
                         task={task && task}
                         currentProjectTasks={currentProjectTasks && currentProjectTasks}
+                        currentProjectPhase={currentProjectPhase && currentProjectPhase}
                         projectDetail={projectDetail && projectDetail}
                     />
                 }
@@ -1465,8 +1470,8 @@ class DetailProjectTaskTab extends Component {
 
 
 function mapStateToProps(state) {
-    const { tasks, performtasks, user, role, project } = state;
-    return { tasks, performtasks, user, role, project };
+    const { tasks, performtasks, user, role, project, projectPhase } = state;
+    return { tasks, performtasks, user, role, project, projectPhase };
 
 }
 
@@ -1483,7 +1488,8 @@ const actionGetState = { //dispatchActionToProps
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     openTaskAgain: performTaskAction.openTaskAgain,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
+    getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
 
     showInfoRole: RoleActions.show,
 }

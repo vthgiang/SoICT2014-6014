@@ -107,22 +107,22 @@ export function performtasks(state = {}, action) {
                 ...state,
                 loading: true
             };
-            
-         case performTaskConstants.STOP_TIMER_ALL_DEVICES_SUCCESS:
+
+        case performTaskConstants.STOP_TIMER_ALL_DEVICES_SUCCESS:
             return { ...state, currentTimer: null };
-        
+
         case performTaskConstants.STOP_TIMER_SUCCESS:
             return (state.task && action.payload && state.task._id && action.payload._id && state.task._id === action.payload._id)
-            ? {
-                ...state,
-                task: action.payload,
-                logtimer: action.payload.timesheetLogs,
-                currentTimer: null
-            }
-            :{ ...state, currentTimer: null };
+                ? {
+                    ...state,
+                    task: action.payload,
+                    logtimer: action.payload.timesheetLogs,
+                    currentTimer: null
+                }
+                : { ...state, currentTimer: null };
 
-       
-        
+
+
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {
                 ...state,
@@ -1008,7 +1008,7 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.error
             };
-        
+
         case performTaskConstants.REFRESH_DATA_TASK:
             return {
                 ...state,
@@ -1033,30 +1033,183 @@ export function performtasks(state = {}, action) {
                 logtimer: action.payload.timesheetLogs,
                 task: action.payload,
                 tasks: Array.isArray(state.tasks) ? state.tasks.map(t => {
-                    if(action.payload && t._id === action.payload._id){
+                    if (action.payload && t._id === action.payload._id) {
                         return action.payload
                     } else return t;
                 }) : state.tasks
             }
-        
+
         case performTaskConstants.EVALUATION_ALL_ACTION_REQUEST:
             return {
                 ...state,
                 evaluating: true
             }
-        
+
         case performTaskConstants.EVALUATION_ALL_ACTION_SUCCESS:
             var taskActions = { ...state.task, taskActions: action.payload.data.content }
             return {
                 ...state,
                 task: taskActions
             }
-        
+
         case performTaskConstants.EVALUATION_ALL_ACTION_FAILURE:
             return {
                 ...state,
                 error: action.error
             }
+        case performTaskConstants.CREATE_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.CREATE_TASK_OUTPUT_SUCCESS:
+            var task = {
+                ...state.task,
+                taskOutputs: action.payload.data.content.taskOutputs,
+                taskActions: action.payload.data.content.taskActions
+            }
+
+            return {
+                ...state,
+                task: task,
+            }
+        case performTaskConstants.CREATE_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.GET_TASK_OUTPUTS_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.GET_TASK_OUTPUTS_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+
+            return {
+                ...state,
+                task: task,
+            }
+        case performTaskConstants.GET_TASK_OUTPUTS_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.APPROVE_TASK_OUTPUTS_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.APPROVE_TASK_OUTPUTS_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.APPROVE_TASK_OUTPUTS_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.EDIT_SUBMISSION_RESULTS_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.EDIT_SUBMISSION_RESULTS_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.EDIT_SUBMISSION_RESULTS_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.DELETE_SUBMISSION_RESULTS_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.DELETE_SUBMISSION_RESULTS_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.DELETE_SUBMISSION_RESULTS_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.EDIT_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.EDIT_TASK_OUTPUT_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+
+            return {
+                ...state,
+                task: task,
+            }
+        case performTaskConstants.EDIT_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+
+        case performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.DELETE_FILE_OF_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+
         default:
             return state
     }

@@ -30,6 +30,8 @@ function HumanResourceConfiguration(props) {
                     humanResourceConfig: props.modelConfiguration.humanResourceConfig
                 }
             });
+            props.setDataReq(props.modelConfiguration.humanResourceConfig
+            )
             return false;
         }
 
@@ -54,6 +56,7 @@ function HumanResourceConfiguration(props) {
             ...state,
             humanResourceConfig: props.modelConfiguration.humanResourceConfig,
         })
+        props.setDataReq(props.modelConfiguration.humanResourceConfig)
     }
 
     /**
@@ -69,6 +72,8 @@ function HumanResourceConfiguration(props) {
             ...state,
             humanResourceConfig: props.modelConfiguration.humanResourceConfig,
         })
+        props.setDataReq(props.modelConfiguration.humanResourceConfig
+        )
     }
 
     /** Function thay đổi giờ của các ca làm việc */
@@ -80,13 +85,14 @@ function HumanResourceConfiguration(props) {
             ...state,
             humanResourceConfig: props.modelConfiguration.humanResourceConfig,
         })
+        props.setDataReq(props.modelConfiguration.humanResourceConfig)
     }
 
-    const save = () => {
-        const { humanResourceConfig } = state;
-        console.log(humanResourceConfig);
-        props.editConfiguration({ humanResource: humanResourceConfig });
-    }
+    // const save = () => {
+    //     const { humanResourceConfig } = state;
+    //     console.log(humanResourceConfig);
+    //     props.editConfiguration({ humanResource: humanResourceConfig });
+    // }
 
     const { translate } = props;
 
@@ -101,7 +107,7 @@ function HumanResourceConfiguration(props) {
 
     return (
         <div id={id} className="tab-pane active">
-            <div className="row box-body">
+            <div className="row">
 
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                     <fieldset className="scheduler-border">
@@ -161,9 +167,6 @@ function HumanResourceConfiguration(props) {
                             <input type="number" min='0' step='1' value={contractNoticeTime} className="form-control" name="contractNoticeTimes" onChange={handleContractNoticeTimeChange} placeholder={translate('module_configuration.contract_notice_time_title')} />
                         </div>
                     </fieldset>
-                </div>
-                <div className=" col-md-12">
-                    <button type="button" className="btn pull-right btn-success" onClick={() => save()} >{translate('human_resource.work_plan.save_as')}</button>
                 </div>
             </div>
         </div>

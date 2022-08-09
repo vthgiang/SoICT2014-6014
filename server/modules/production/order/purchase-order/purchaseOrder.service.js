@@ -1,5 +1,5 @@
 const {
-    PurchaseOrder, RequestManagement
+    PurchaseOrder, ProductRequestManagement
 } = require(`../../../../models`);
 
 const {
@@ -37,7 +37,7 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
 
     // Cập nhật trạng thái cho đơn đề nghị
     if (data.purchasingRequest) {
-        let purchasingRequest = await RequestManagement(connect(DB_CONNECTION, portal)).findById({ _id: data.purchasingRequest })
+        let purchasingRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal)).findById({ _id: data.purchasingRequest })
         purchasingRequest.status = 4;
         await purchasingRequest.save()
     }

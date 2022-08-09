@@ -86,12 +86,12 @@ getKpisByMonth = async (req, res) => {
 exports.approveAllKpis = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.approveAllKpis(req.portal, req.params.id, req.user.company._id);
-        
+
         // Thêm log
         let log = getDataEmployeeKpiSetLog({
             type: "approval_all",
             creator: req.user._id,
-            organizationalUnit: kpimembers?.organizationalUnit, 
+            organizationalUnit: kpimembers?.organizationalUnit,
             employee: kpimembers?.creator,
             month: kpimembers?.date,
             newData: kpimembers
@@ -132,12 +132,12 @@ exports.editKpi = async (req, res) => {
     else {
         try {
             const data = await KPIMemberService.editKpi(req.portal, req.params.id, req.body);
-           
+
             // Thêm logs
             let log = getDataEmployeeKpiSetLog({
                 type: "edit_kpi",
                 creator: req.user._id,
-                organizationalUnit: data?.employeeKpiSet?.organizationalUnit, 
+                organizationalUnit: data?.employeeKpiSet?.organizationalUnit,
                 employee: data?.employeeKpiSet?.creator,
                 month: data?.employeeKpiSet?.date,
                 newData: data?.target
@@ -146,7 +146,7 @@ exports.editKpi = async (req, res) => {
                 ...log,
                 employeeKpiSetId: data?.employeeKpiSet?._id
             })
-           
+
             // THêm newsfeed
             await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
                 ...log,
@@ -177,12 +177,12 @@ exports.editKpi = async (req, res) => {
 exports.editStatusKpi = async (req, res) => {
     try {
         const data = await KPIMemberService.editStatusKpi(req.portal, req.params, req.query, req.user.company._id);
-        
+
         // Thêm log
         let log = getDataEmployeeKpiSetLog({
             type: "edit_status_kpi",
             creator: req.user._id,
-            organizationalUnit: data?.kpimembers?.organizationalUnit, 
+            organizationalUnit: data?.kpimembers?.organizationalUnit,
             employee: data?.kpimembers?.creator,
             month: data?.kpimembers?.date,
             newData: data?.target
@@ -241,7 +241,7 @@ exports.getTasksByKpiId = async (req, res) => {
 getTasksByListKpiSet = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.getTasksByListKpis(req.portal, req.query.listkpis);
-        
+
         await Logger.info(req.user.email, `Get task by kpi set`, req.portal);
         res.status(200).json({
             success: true,
@@ -263,12 +263,12 @@ getTasksByListKpiSet = async (req, res) => {
 exports.setTaskImportanceLevel = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.portal, req.params.id, req.query.kpiType, req.body);
-       
+
         // Thêm log
         let log = getDataEmployeeKpiSetLog({
             type: "set_point_kpi",
             creator: req.user._id,
-            organizationalUnit: kpimembers?.updateKpiSet?.organizationalUnit, 
+            organizationalUnit: kpimembers?.updateKpiSet?.organizationalUnit,
             employee: kpimembers?.updateKpiSet?.creator,
             month: kpimembers?.updateKpiSet?.date,
             newData: kpimembers?.result
@@ -307,12 +307,12 @@ exports.setTaskImportanceLevel = async (req, res) => {
 exports.setPointAllKpi = async (req, res) => {
     try {
         const kpi = await KPIMemberService.setPointAllKpi(req.portal, req.params.id, req.query.id, req.body);
-        
+
         // Thêm log
         let log = getDataEmployeeKpiSetLog({
             type: "set_point_all",
             creator: req.user._id,
-            organizationalUnit: kpi?.organizationalUnit, 
+            organizationalUnit: kpi?.organizationalUnit,
             employee: kpi?.creator,
             month: kpi?.date,
             newData: kpi
@@ -328,7 +328,7 @@ exports.setPointAllKpi = async (req, res) => {
             organizationalUnit: kpi?.organizationalUnit,
             employeeKpiSet: kpi
         });
-        
+
         await Logger.info(req.user.email, `Set point kpi`, req.portal);
         res.status(200).json({
             success: true,
@@ -340,6 +340,32 @@ exports.setPointAllKpi = async (req, res) => {
         res.status(400).json({
             messages: ['set_point_kpi_fail'],
             message: error
+        });
+    }
+}
+
+
+/** Tinh diem hieu suat thuc hien kpi */
+exports.getEmployeeKpiPerformance = async (req, res) => {
+    try {
+        let employeeKpiPerformance = []
+        for (let id of req.query.ids) {
+            const data = await KPIMemberService.getEmployeeKpiPerformance(req.portal, id);
+            employeeKpiPerformance.push(data.performance);
+        }
+
+        await Logger.info(req.user.email, ` get all employee kpi set by month `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['Get all employee kpi set by month successfully'],
+            content: employeeKpiPerformance
+        });
+    } catch (error) {
+        await Logger.error(req.user.email, ` get all employee kpi set by month `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['Get all employee kpi set by month unsuccessfully'],
+            content: error
         });
     }
 }

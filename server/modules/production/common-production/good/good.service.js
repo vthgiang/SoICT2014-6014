@@ -74,13 +74,23 @@ exports.createGoodByType = async (company, data, portal) => {
         type: data.type,
         sourceType: data.sourceType,
         baseUnit: data.baseUnit,
-        // packingRule: data.packingRule,
+        packingRule: data.packingRule,
         numberExpirationDate: data.numberExpirationDate,
+        width: data.width ? data.width : 0,
+        height: data.height ? data.height : 0,
+        depth: data.depth ? data.depth : 0,
+        weight: data.weight ? data.weight : 0,
+        volume: data.volume ? data.volume : 0,
         units: data.units.map(item => {
             return {
                 name: item.name,
                 conversionRate: item.conversionRate,
-                description: item.description
+                description: item.description,
+                width: item.width,
+                height: item.height,
+                depth: item.depth,
+                weight: item.weight,
+                volume: item.volume
             }
         }),
         materials: data?.materials ? data.materials.map(item => {
@@ -134,7 +144,12 @@ exports.editGood = async (id, data, portal) => {
         good.type = data.type,
         good.sourceType = data.sourceType,
         good.baseUnit = data.baseUnit,
-        // good.packingRule = data.packingRule,
+        good.packingRule = data.packingRule,
+        good.width = data.width ? data.width : good.width,
+        good.height = data.height ? data.height : good.height,
+        good.depth = data.depth ? data.depth : good.depth,
+        good.weight = data.weight ? data.weight : good.weight,
+        good.volume = data.volume ? data.volume : good.volume,
         good.numberExpirationDate = data.numberExpirationDate,
         good.manufacturingMills = data.manufacturingMills.map(item => {
             return {
@@ -147,7 +162,12 @@ exports.editGood = async (id, data, portal) => {
             return {
                 name: item.name,
                 conversionRate: item.conversionRate,
-                description: item.description
+                description: item.description,
+                width: item.width,
+                height: item.height,
+                depth: item.depth,
+                weight: item.weight,
+                volume: item.volume
             }
         }),
         good.materials = data.materials.map(item => {

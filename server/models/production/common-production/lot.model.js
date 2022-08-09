@@ -12,6 +12,11 @@ const LotSchema = new Schema({
         ref: 'Good'
     },
 
+    passedQualityControl: {
+        type: Number,
+        default: 0
+    },
+    
     type: {
         type: String,
         enum: ["product", "material", "equipment", "waste"],
@@ -77,6 +82,9 @@ const LotSchema = new Schema({
         },
 
         quantity: {
+            type: Number
+        },
+        inventory: {
             type: Number
         },
 

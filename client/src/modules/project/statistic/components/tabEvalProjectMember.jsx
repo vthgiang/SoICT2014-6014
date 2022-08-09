@@ -94,7 +94,7 @@ const TabEvalProjectMember = (props) => {
         <React.Fragment>
             <div className="box-body qlcv">
                 <h4><strong>Điểm số thành viên dự án trong tháng</strong></h4>
-                {/* Chọn tháng để lọc đánh giâ */}
+                {/* Chọn tháng để lọc đánh giá */}
                 <div className="form-group">
                     <label style={{ marginRight: 20 }}>Chọn tháng</label>
                     <DatePicker
@@ -125,51 +125,51 @@ const TabEvalProjectMember = (props) => {
                                     <th>Điểm số thành viên</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {(processedMemberData.length !== 0) &&
-                                    processedMemberData.map((memberItem, memberIndex) => {
-                                        return memberItem?.tasksWithPointAndRoleAndEVM?.map((memberTaskItem, memberTaskIndex) => {
-                                            console.log(memberItem?.name, memberTaskItem?.tasksWithMemberItem.name, memberTaskItem?.tasksWithMemberItem.status)
-                                            if (memberTaskIndex === memberItem?.tasksWithPointAndRoleAndEVM.length - 1) {
-                                                return (
-                                                    <>
-                                                        <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-0`}>
-                                                            <td><strong>{memberTaskIndex === 0 ? memberItem?.name : ''}</strong></td>
-                                                            <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
-                                                            <td style={{ color: '#385898' }}>{memberTaskItem?.tasksWithMemberItem.name}</td>
-                                                            <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                            <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                            <td>{memberTaskItem?.tasksWithMemberItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
-                                                                && moment(memberTaskItem?.tasksWithMemberItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                            <td>{numberWithCommas(memberTaskItem?.estDuration)}</td>
-                                                            <td>{memberTaskItem?.realDuration && numberWithCommas(memberTaskItem?.realDuration)}</td>
-                                                            <td>{numberWithCommas(memberTaskItem?.estCost)}</td>
-                                                            <td>{numberWithCommas(memberTaskItem?.realCost)}</td>
-                                                            <td>{memberTaskItem.currentRole}</td>
-                                                            <td>{numberWithCommas(memberTaskItem.currentMemberCurrentTaskPoint)} / 100</td>
-                                                        </tr>
-                                                        {
-                                                            memberItem.tasksWithPointAndRoleAndEVM.length > 1
-                                                            &&
-                                                            <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-1`}>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td style={{ fontWeight: 'bold' }}>{numberWithCommas(memberItem?.totalEstCost)}</td>
-                                                                <td style={{ fontWeight: 'bold' }}>{numberWithCommas(memberItem?.totalRealCost)}</td>
-                                                                <td></td>
-                                                                <td style={{ fontWeight: 'bold' }}>{numberWithCommas(memberItem?.averagePoint)} / 100</td>
-                                                            </tr>
-                                                        }
-                                                    </>
-                                                )
-                                            }
+
+                            {(processedMemberData.length !== 0) &&
+                                processedMemberData.map((memberItem, memberIndex) => {
+                                    return memberItem?.tasksWithPointAndRoleAndEVM?.map((memberTaskItem, memberTaskIndex) => {
+                                        if (memberTaskIndex === memberItem?.tasksWithPointAndRoleAndEVM.length - 1) {
                                             return (
+                                                <tbody key={`member-summary-${memberItem.id}`}>
+                                                    <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-0`}>
+                                                        <td><strong>{memberTaskIndex === 0 ? memberItem?.name : ''}</strong></td>
+                                                        <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
+                                                        <td style={{ color: '#385898' }}>{memberTaskItem?.tasksWithMemberItem.name}</td>
+                                                        <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                        <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                        <td>{memberTaskItem?.tasksWithMemberItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
+                                                            && moment(memberTaskItem?.tasksWithMemberItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                        <td>{numberWithCommas(memberTaskItem?.estDuration)}</td>
+                                                        <td>{memberTaskItem?.realDuration && numberWithCommas(memberTaskItem?.realDuration)}</td>
+                                                        <td>{numberWithCommas(memberTaskItem?.estCost)}</td>
+                                                        <td>{numberWithCommas(memberTaskItem?.realCost)}</td>
+                                                        <td>{memberTaskItem.currentRole}</td>
+                                                        <td>{numberWithCommas(memberTaskItem.currentMemberCurrentTaskPoint)} / 100</td>
+                                                    </tr>
+                                                    {
+                                                        memberItem.tasksWithPointAndRoleAndEVM.length > 1
+                                                        &&
+                                                        <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-1`}>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(memberItem?.totalEstCost)}</td>
+                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(memberItem?.totalRealCost)}</td>
+                                                            <td></td>
+                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(memberItem?.averagePoint)} / 100</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            )
+                                        }
+                                        return (
+                                            <tbody key={`normal-member-${memberItem.id}`}>
                                                 <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-2`}>
                                                     <td><strong>{memberTaskIndex === 0 ? memberItem?.name : ''}</strong></td>
                                                     <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
@@ -185,15 +185,15 @@ const TabEvalProjectMember = (props) => {
                                                     <td>{memberTaskItem.currentRole}</td>
                                                     <td>{numberWithCommas(memberTaskItem.currentMemberCurrentTaskPoint)} / 100</td>
                                                 </tr>
-                                            )
-                                        })
+                                            </tbody>
+                                        )
                                     })
-                                }
-                            </tbody>
+                                })
+                            }
                         </table>
                 }
             </div>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
 

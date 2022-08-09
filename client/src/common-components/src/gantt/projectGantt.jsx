@@ -16,7 +16,7 @@ function ProjectGantt(props) {
     const [dataProcessor, setDataProcessor] = useState(null);
     const [lang, setLang] = useState(getStorage('lang'))
     const [gantt, setGantt] = useState(window.initializationGantt());
-
+    
     const draw_planned = (task) => {
         if (task.planned_start && task.planned_end) {
             var sizes = gantt.getTaskPosition(task, task.planned_start, task.planned_end);
@@ -28,6 +28,18 @@ function ProjectGantt(props) {
             return el;
         }
         return false;
+    }
+
+    const renderTaskName = (task) => {
+        if (task.type === 'task') {
+            return "<div class='text-primary'>" + task.taskName + "</div>";
+        }
+        if (task.type === 'milestone') {
+            return "<div class='text-warning'>" + task.taskName + "</div>";
+        }
+        if (task.type === 'project') {
+            return "<div style='font-weight: bold;'>" + task.taskName + "</div>";
+        }
     }
 
     useEffect(() => {
@@ -45,8 +57,10 @@ function ProjectGantt(props) {
                 {
                     name: 'taskName',
                     label: 'Tên công việc',
+                    tree: true,
                     resize: true,
                     width: '*',
+                    template: renderTaskName,
                 },
                 // {
                 //     name: 'responsible',
@@ -79,6 +93,17 @@ function ProjectGantt(props) {
                     type: "duration_optional"
                 }
             ];
+            gantt.config.lightbox.project_sections= [
+                {name: "description", height: 70, map_to: "text", type: "textarea", focus: true},
+                { name: "time", map_to: "auto", type: "duration" },
+                {
+                    name: "baseline",
+                    map_to: { start_date: "planned_start", end_date: "planned_end" },
+                    button: true,
+                    type: "duration_optional"
+                }
+            ];
+            
             gantt.locale.labels.section_baseline = "Planned";
             // Adding baseline display
             gantt.addTaskLayer(task => draw_planned(task));
@@ -89,6 +114,9 @@ function ProjectGantt(props) {
                     var classes = ['has-baseline'];
                     if (end.getTime() > task.planned_end.getTime()) {
                         classes.push('overdue');
+                    }
+                    if (end.getTime() == start.getTime()) {
+                        classes.push('notStart');
                     }
                     switch (task.process) {
                         case -1:
@@ -118,9 +146,12 @@ function ProjectGantt(props) {
                 // critical_path: true,
             });
             gantt.templates.tooltip_text = function (start, end, task) {
-                return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.taskName}
+                return `${task.type === 'task'
+                        ? `<b>${translate('task.task_dashboard.task_name')}:</b>`: task.type === 'project' 
+                        ? `<b>${translate('project.task_management.phase')}:</b>`: task.type === 'milestone'
+                        ? `<b>${translate('project.task_management.milestone')}:</b>`: ''}</b> ${task.taskName}</b>
                         <br/>
-                        <b>Thời điểm bắt đầu dự kiến:</b> ${moment(task.start_date).format("DD-MM-YYYY hh:mm A")} 
+                        <b>Thời điểm bắt đầu dự kiến:</b> ${moment(task.planned_start).format("DD-MM-YYYY hh:mm A")} 
                         <br/>
                         <b>Thời điểm kết thúc dự kiến:</b> ${moment(task.planned_end).format("DD-MM-YYYY hh:mm A")}
                         <br/>
@@ -130,20 +161,28 @@ function ProjectGantt(props) {
                         ? `<b>Thời điểm kết thúc thực tế:</b> ${moment(task.end_date).format("DD-MM-YYYY hh:mm A")}
                         <br/>`
                         : ``}
-                        <b>Trạng thái công việc:</b> ${task.status}
+                        <b>Trạng thái :</b> ${task.status}
                         <br/>
                         <b>Tiến độ:</b> ${numberWithCommas(Number(task.progress) * 100)}%`;
             };
 
             // Hiển thị text quá hạn bao nhiêu ngày
             gantt.templates.rightside_text = function (start, end, task) {
-                if (task.planned_end) {
+                if (task.planned_end && task.type !== "milestone") {
                     if (end.getTime() > task.planned_end.getTime()) {
                         var overdue = Math.ceil(Math.abs((end.getTime() - task.planned_end.getTime()) / (24 * 60 * 60 * 1000)));
                         var text = "<b>Quá hạn: " + overdue + " ngày</b>";
                         return text;
                     }
                 }
+                // console.log(Date.parse(task.actualEndDate));
+                else if (task.planned_end && task.type === "milestone") {
+                    if (Date.parse(task.actualEndDate) > task.planned_end.getTime()) {
+                        var overdue = Math.ceil(Math.abs((Date.parse(task.actualEndDate) - task.planned_end.getTime()) / (24 * 60 * 60 * 1000)));
+                        var text = "<b>Quá hạn: " + overdue + " ngày</b>";
+                        return text;
+                    }
+                } 
             };
 
             gantt.attachEvent("onTaskLoading", function (task) {
@@ -152,9 +191,14 @@ function ProjectGantt(props) {
                 return true;
             });
 
-            gantt.attachEvent("onTaskDblClick", (id, mode) => {
+            gantt.attachEvent("onTaskDblClick", (id, e) => {
                 props.attachEvent(id);
+                console.log(e)
             });
+            gantt.eachTask(function(task){
+                task.$open = true;
+            });
+            gantt.render();
         }
 
         return () => {
@@ -182,6 +226,11 @@ function ProjectGantt(props) {
                 title: dateToStr(new Date())
             });
             gantt.getMarker(markerId);
+            gantt.eachTask(function(task){
+                task.$open = true;
+            });
+            gantt.render();
+            
         }
 
         // Focus vào ngày hiện tại
@@ -199,7 +248,9 @@ function ProjectGantt(props) {
                 name: 'taskName',
                 label: 'Tên công việc',
                 resize: true,
+                tree: true,
                 width: '*',
+                template: renderTaskName,
             },
             // {
             //     name: 'responsible',
@@ -215,6 +266,10 @@ function ProjectGantt(props) {
                 width: '*',
             }
         ]
+        gantt.eachTask(function(task){
+            task.$open = true;
+        });
+        gantt.render();
     }, [zoom])
 
     const initZoom = (gantt) => {

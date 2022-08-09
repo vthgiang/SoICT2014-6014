@@ -4,14 +4,16 @@ import { withTranslate } from 'react-redux-multilingual';
 import GoodReceiptRequestManagementTable from './good-receipt-request/index';
 import GoodIssueRequestManagementTable from './good-issue-request/index';
 import GoodReturnRequestManagementTable from './good-return-request/index';
-import GoodTakeRequestManagementTable from './good-take-request/index';
+import GoodRotateRequestManagementTable from './good-rotate-request/index';
 import { RequestActions } from '../../../common-production/request-management/redux/actions';
-import { GoodActions } from '../../../common-production/good-management/redux/actions';
+// import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { LazyLoadComponent } from '../../../../../common-components/index';
+import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { worksActions } from '../../../manufacturing/manufacturing-works/redux/actions';
 
 function RequestManagement(props) {
 
@@ -29,11 +31,12 @@ function RequestManagement(props) {
     });
 
     useEffect(() => {
-        props.getAllRequestByCondition(state);
-        props.getAllGoodsByType({ type: 'material' });
+        props.getAllRequestByCondition({type: state.type, requestType: state.requestType, requestFrom: state.requestFrom});
         props.getUser();
         props.getAllStocks();
         props.getAllDepartments();
+        props.getCustomers();
+        props.getAllManufacturingWorks();
     }, []);
 
     const handleCodeChange = (e) => {
@@ -71,6 +74,13 @@ function RequestManagement(props) {
         })
     }
 
+    const handleChangeSourceRequest = (value) => {
+        setState({
+            ...state,
+            sourceRequest: value
+        })
+    }
+
     const handleSubmitSearch = () => {
         setState({
             ...state,
@@ -82,25 +92,34 @@ function RequestManagement(props) {
             createdAt: state.createdAt,
             desiredTime: state.desiredTime,
             code: state.code,
-            status: state.status
+            status: state.status,
+            requestFrom: 'stock',
+            type: state.type,
+            sourceRequest: state.sourceRequest
         }
         props.getAllRequestByCondition(data);
     }
 
     const checkRoleApprover = (request) => {
-        const { approverInWarehouse } = request;
-        const userId = localStorage.getItem("userId");
-        let approverIds = approverInWarehouse.map(x => x.approver._id);
-        if (approverIds.includes(userId) && approverInWarehouse[approverIds.indexOf(userId)].approvedTime === null) {
-            return true;
-        }
-        return false
+        const { approvers } = request;
+        let count = 0;
+        approvers.forEach(approver => {
+            if (approver.approveType == 4) {
+                const userId = localStorage.getItem("userId");
+                let approverIds = approver.information.map(x => x.approver._id);
+                if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
+                    count++;
+                }
+            }
+        })
+        return count > 0;
     }
 
     const handleFinishedApproval = (request) => {
         const userId = localStorage.getItem("userId");
         const data = {
-            approverIdInWarehouse: userId
+            approvedUser: userId,
+            approveType: 4
         }
         props.editRequest(request._id, data);
     }
@@ -191,7 +210,7 @@ function RequestManagement(props) {
                 <li className="active"><a href="#good-receipt-request" data-toggle="tab" onClick={() => handleGoodReceiptRequest()}>{translate('production.request_management.receipt_request')}</a></li>
                 <li><a href="#good-issue-request" data-toggle="tab" onClick={() => handleGoodIssueRequest()}>{translate('production.request_management.issue_request')}</a></li>
                 <li><a href="#good-return-request" data-toggle="tab" onClick={() => handleGoodReturnRequest()}>{translate('production.request_management.good_return_request')}</a></li>
-                <li><a href="#good-take-request" data-toggle="tab" onClick={() => handleGoodTakeRequest()}>{translate('production.request_management.good_take_request')}</a></li>
+                <li><a href="#good-rotate-request" data-toggle="tab" onClick={() => handleGoodTakeRequest()}>{translate('production.request_management.good_take_request')}</a></li>
             </ul>
             <div className="tab-content">
                 <div className="tab-pane active" id="good-receipt-request">
@@ -209,6 +228,7 @@ function RequestManagement(props) {
                                 handleStatusChange={handleStatusChange}
                                 handleSubmitSearch={handleSubmitSearch}
                                 stockRequestType={type}
+                                handleChangeSourceRequest={handleChangeSourceRequest}
                             />
                         </LazyLoadComponent>
                     }
@@ -228,6 +248,7 @@ function RequestManagement(props) {
                                 handleStatusChange={handleStatusChange}
                                 handleSubmitSearch={handleSubmitSearch}
                                 stockRequestType={type}
+                                handleChangeSourceRequest={handleChangeSourceRequest}
                             />
                         </LazyLoadComponent>
                     }
@@ -251,10 +272,10 @@ function RequestManagement(props) {
                         </LazyLoadComponent>
                     }
                 </div>
-                <div className="tab-pane" id="good-take-request">
+                <div className="tab-pane" id="good-rotate-request">
                     {requestType === 3 && type === 4 &&
                         <LazyLoadComponent>
-                            <GoodTakeRequestManagementTable
+                            <GoodRotateRequestManagementTable
                                 setPage={setPage}
                                 setLimit={setLimit}
                                 checkRoleApprover={checkRoleApprover}
@@ -278,13 +299,14 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getAllRequestByCondition: RequestActions.getAllRequestByCondition,
-    getAllGoodsByType: GoodActions.getAllGoodsByType,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     editRequest: RequestActions.editRequest,
     getUser: UserActions.get,
     getAllStocks: StockActions.getAllStocks,
     editRequest: RequestActions.editRequest,
     getAllDepartments: DepartmentActions.get,
+    getCustomers: CrmCustomerActions.getCustomers,
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RequestManagement));

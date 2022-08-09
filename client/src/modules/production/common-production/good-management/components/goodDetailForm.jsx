@@ -73,7 +73,7 @@ function GoodDetailForm(props) {
                 title={translate(`manage_warehouse.good_management.info.${type}`)}
                 msg_success={translate("manage_warehouse.good_management.add_success")}
                 msg_failure={translate("manage_warehouse.good_management.add_faile")}
-                size={50}
+                size={75}
                 hasSaveButton={false}
                 hasNote={false}
             >

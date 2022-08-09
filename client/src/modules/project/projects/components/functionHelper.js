@@ -1,9 +1,13 @@
 import { isArraysEqual } from "@fullcalendar/common";
 import dayjs from "dayjs";
-import moment from "moment";
 import React from 'react';
+import GLPK from 'glpk.js/dist/index.js';
 import { getStorage } from "../../../../config";
 import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task/task-management/component/functionHelpers";
+import weekday from 'dayjs/plugin/weekday';
+
+dayjs.extend(weekday);
+
 
 export const MILISECS_TO_DAYS = 86400000;
 export const MILISECS_TO_HOURS = 3600000;
@@ -41,6 +45,10 @@ export const getListDepartments = (usersInUnitsOfCompany) => {
 }
 
 // Lấy tên của phòng ban/ đơn vị
+export const convertDepartmentIdToNameV2 = (usersInUnitsOfCompany, departmentId) => {
+    return usersInUnitsOfCompany.find(item => String(item.value) === String(departmentId))?.text;
+}
+
 export const convertDepartmentIdToDepartmentName = (usersInUnitsOfCompany, departmentId) => {
     if (!usersInUnitsOfCompany) return [];
     const result = usersInUnitsOfCompany.filter(item => item.id === departmentId)?.[0]?.department;
@@ -79,16 +87,16 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
     const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
     let duration = 0
     if (timeMode === 'hours') {
-        duration = Math.ceil((moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8);
+        duration = (dayjs(endDate).diff(dayjs(startDate), `millisecond`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
         // return theo don vi giờ - hours
         return duration;
     }
     if (timeMode === 'milliseconds') {
-        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
+        duration = (dayjs(endDate).diff(dayjs(startDate), `millisecond`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
         // return theo don vi milliseconds
         return duration * MILISECS_TO_DAYS;
     }
-    duration = Math.ceil(moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
+    duration = dayjs(endDate).diff(dayjs(startDate), `millisecond`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
     // return theo don vi ngày - days
     return duration;
 }
@@ -125,7 +133,7 @@ export const getNearestIntegerNumber = (value) => {
 export const getEstimateHumanCostFromParams = (projectDetail, duration, currentResponsibleEmployees, currentAccountableEmployees, timeMode, currentResWeightArr, currentAccWeightArr) => {
     // trọng số default người thực hiện là 0.8, người phê duyệt là 0.2
     let cost = 0;
-    const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
+    const currentMonthWorkDays = getAmountOfWeekDaysInMonth(dayjs());
     for (let resItem of currentResponsibleEmployees) {
         const resWeightNotInDecimal = currentResWeightArr?.find(resWeightItem => String(resWeightItem.userId) === String(resItem))?.weight
         cost += (resWeightNotInDecimal ? (resWeightNotInDecimal / 100) : (0.8 / currentResponsibleEmployees.length))
@@ -142,7 +150,7 @@ export const getEstimateHumanCostFromParams = (projectDetail, duration, currentR
 }
 
 export const getEstimateMemberCost = (projectDetail, userId, duration, timeMode, weight) => {
-    const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
+    const currentMonthWorkDays = getAmountOfWeekDaysInMonth(dayjs());
     let cost = 0;
     cost = (weight / 100)
         * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, userId) / currentMonthWorkDays * (timeMode === 'days' ? 1 : 8)
@@ -193,6 +201,44 @@ export const getProjectParticipants = (projectDetail, hasManagerAndCreator = fal
     return projectParticipants;
 }
 
+// dùng khi tạo task project cho project by contract 
+export const getProjectParticipantsByArrId = (projectDetail, listUsers, hasManagerAndCreator = false) => {
+    let projectParticipants = [];
+    if (hasManagerAndCreator) {
+        const formattedManagerArr = projectDetail?.projectManager?.map(item => {
+            return ({
+                text: convertUserIdToUserName(listUsers, item),
+                value: item
+            })
+        })
+        let formattedEmployeeArr = [];
+        if (Array.isArray(projectDetail?.responsibleEmployees)) {
+            for (let item of projectDetail?.responsibleEmployees) {
+                if (!projectDetail?.projectManager.find(managerItem => managerItem === item)) {
+                    formattedEmployeeArr.push({
+                        text: convertUserIdToUserName(listUsers, item),
+                        value: item
+                    })
+                }
+            }
+        }
+
+        if (!projectParticipants || !formattedManagerArr || !formattedEmployeeArr) {
+            return []
+        }
+        projectParticipants = formattedManagerArr.concat(formattedEmployeeArr)
+
+        return projectParticipants;
+    }
+    projectParticipants = projectDetail?.responsibleEmployees?.map(item => {
+        return ({
+            text: convertUserIdToUserName(listUsers, item),
+            value: item
+        })
+    });
+    return projectParticipants;
+}
+
 export const getEmailMembers = (projectDetail) => {
     let resultArr = [];
     // if (!projectDetail) return [];
@@ -204,7 +250,10 @@ export const getEmailMembers = (projectDetail) => {
     // }
     for (let employeeItem of projectDetail?.responsibleEmployees) {
         if (!resultArr.includes(employeeItem?.email)) {
-            resultArr.push(employeeItem?.email)
+            resultArr.push({
+                email: employeeItem?.email,
+                name: employeeItem?.name
+            })
         }
     }
     return resultArr;
@@ -214,14 +263,14 @@ export const getMaxMinDateInArr = (dateArr, mode = 'max') => {
     let result = dateArr[0];
     if (mode === 'max') {
         for (let dateItem of dateArr) {
-            if (moment(dateItem).isAfter(moment(result))) {
+            if (dayjs(dateItem).isAfter(dayjs(result))) {
                 result = dateItem;
             }
         }
         return result;
     }
     for (let dateItem of dateArr) {
-        if (moment(dateItem).isBefore(moment(result))) {
+        if (dayjs(dateItem).isBefore(dayjs(result))) {
             result = dateItem;
         }
     }
@@ -230,32 +279,33 @@ export const getMaxMinDateInArr = (dateArr, mode = 'max') => {
 
 // Xử lý phần cộng thêm estimateNormalTime cho task hiện tại
 export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
+    let estimateTime = taskItem.estimateNormalTime;
     // Nếu unitTime = 'days'
     if (projectDetail?.unitTime === 'days') {
         // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
         let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
-        if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
-        if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
+        if (dayOfStartDate === 6) taskItem.startDate = dayjs(taskItem.startDate).add(2, 'day').format();
+        if (dayOfStartDate === 0) taskItem.startDate = dayjs(taskItem.startDate).add(1, 'day').format();
         // Tách phần integer và phần decimal của estimateNormalTime
-        const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
-        const integerPart = Number(estimateNormalTimeArr[0]);
-        const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+        const integerPart = Math.floor(estimateTime);
+        const decimalPart = estimateTime - integerPart;
+        let decimalPartToMillisecond = decimalPart * MILISECS_TO_DAYS;
         let tempEndDate = '';
         // Cộng phần nguyên
         for (let i = 0; i < integerPart; i++) {
             // Tính tempEndDate = + 1 ngày trước để kiểm tra
             if (i === 0) {
-                tempEndDate = moment(taskItem.startDate).add(1, 'days').format();
+                tempEndDate = dayjs(taskItem.startDate).add(1, 'day').format();
             } else {
-                tempEndDate = moment(taskItem.endDate).add(1, 'days').format();
+                tempEndDate = dayjs(taskItem.endDate).add(1, 'day').format();
             }
             // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
             if ((new Date(tempEndDate)).getDay() === 6) {
-                taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
+                taskItem.endDate = dayjs(tempEndDate).add(2, 'day').format();
             }
             // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
             else if ((new Date(tempEndDate)).getDay() === 0) {
-                taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
+                taskItem.endDate = dayjs(tempEndDate).add(1, 'day').format();
             }
             // Còn không thì không cộng gì
             else {
@@ -265,65 +315,62 @@ export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
         // Cộng phần thập phân (nếu có)
         if (decimalPart) {
             if (!taskItem.endDate) {
-                taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'days').format();
+                taskItem.endDate = dayjs(taskItem.startDate).add(decimalPartToMillisecond, 'millisecond').format();
             } else {
-                taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'days').format();
+                console.log(taskItem.endDate)
+                taskItem.endDate = dayjs(taskItem.endDate).add(decimalPartToMillisecond, 'millisecond').format();
+                console.log(taskItem.endDate, tempEndDate);
             }
             // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
             dayOfStartDate = (new Date(taskItem.endDate)).getDay();
-            if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
-            if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
+            if (dayOfStartDate === 6) taskItem.endDate = dayjs(taskItem.endDate).add(2, 'day').format();
+            if (dayOfStartDate === 0) taskItem.endDate = dayjs(taskItem.endDate).add(1, 'day').format();
         }
         return taskItem;
     }
 
     // Nếu unitTime = 'hours'
-    const dailyMorningStartTime = moment('08:00', 'HH:mm');
-    const dailyMorningEndTime = moment('12:00', 'HH:mm');
-    const dailyAfternoonStartTime = moment('13:30', 'HH:mm');
-    const dailyAfternoonEndTime = moment('17:30', 'HH:mm');
+    const dailyMorningStartTime = dayjs('08:00', 'HH:mm');
+    const dailyMorningEndTime = dayjs('12:00', 'HH:mm');
+    const dailyAfternoonStartTime = dayjs('13:30', 'HH:mm');
+    const dailyAfternoonEndTime = dayjs('17:30', 'HH:mm');
     // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
     let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
-    if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
-    if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
+    if (dayOfStartDate === 6) taskItem.startDate = dayjs(taskItem.startDate).add(2, 'day').format();
+    if (dayOfStartDate === 0) taskItem.startDate = dayjs(taskItem.startDate).add(1, 'day').format();
     // Tách phần integer và phần decimal của estimateNormalTime
-    const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
-    const integerPart = Number(estimateNormalTimeArr[0]);
-    const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+    const integerPart = Math.floor(estimateTime);
+    const decimalPart = estimateTime - integerPart;
+    let decimalPartToMillisecond = decimalPart * MILISECS_TO_HOURS;
+
     let tempEndDate = '';
     // Cộng phần nguyên
     for (let i = 0; i < integerPart; i++) {
         // Tính tempEndDate = + 1 tiêng trước để kiểm tra
         if (i === 0) {
-            tempEndDate = moment(taskItem.startDate).add(1, 'hours').format();
+            tempEndDate = dayjs(taskItem.startDate).add(1, 'hour').format();
         } else {
-            tempEndDate = moment(taskItem.endDate).add(1, 'hours').format();
+            tempEndDate = dayjs(taskItem.endDate).add(1, 'hour').format();
         }
-        const currentEndDateInMomentHourMinutes = moment(moment(tempEndDate).format('HH:mm'), 'HH:mm');
+        const currentEndDateInMomentHourMinutes = dayjs(dayjs(tempEndDate).format('HH:mm'), 'HH:mm');
         // Nếu đang ở giờ nghỉ trưa
         if (currentEndDateInMomentHourMinutes.isAfter(dailyMorningEndTime) && currentEndDateInMomentHourMinutes.isBefore(dailyAfternoonStartTime)) {
-            tempEndDate = moment(tempEndDate).set({
-                hour: 13,
-                minute: 30,
-            });
-            tempEndDate = moment(tempEndDate).add(1, 'hours').format();
+            tempEndDate = dayjs(tempEndDate).set('hour', 13).set('minute', 30)
+            tempEndDate = dayjs(tempEndDate).add(1, 'hour').format();
         }
         // Nếu quá 17:30
         else if (currentEndDateInMomentHourMinutes.isAfter(dailyAfternoonEndTime)) {
-            tempEndDate = moment(tempEndDate).set({
-                hour: 8,
-                minute: 0,
-            });
-            tempEndDate = moment(tempEndDate).add(1, 'hours').format();
-            tempEndDate = moment(tempEndDate).add(1, 'days').format();
+            tempEndDate = dayjs(tempEndDate).set('hour', 8).set('minute', 0)
+            tempEndDate = dayjs(tempEndDate).add(1, 'hour').format();
+            tempEndDate = dayjs(tempEndDate).add(1, 'day').format();
         }
         // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
         if ((new Date(tempEndDate)).getDay() === 6) {
-            taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
+            taskItem.endDate = dayjs(tempEndDate).add(2, 'day').format();
         }
         // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
         else if ((new Date(tempEndDate)).getDay() === 0) {
-            taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
+            taskItem.endDate = dayjs(tempEndDate).add(1, 'day').format();
         }
         // Còn không thì không cộng gì
         else {
@@ -333,14 +380,14 @@ export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
     // Cộng phần thập phân (nếu có)
     if (decimalPart) {
         if (!taskItem.endDate) {
-            taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'hours').format();
+            taskItem.endDate = dayjs(taskItem.startDate).add(decimalPartToMillisecond, 'millisecond').format();
         } else {
-            taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'hours').format();
+            taskItem.endDate = dayjs(taskItem.endDate).add(decimalPartToMillisecond, 'millisecond').format();
         }
         // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
         dayOfStartDate = (new Date(taskItem.endDate)).getDay();
-        if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
-        if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
+        if (dayOfStartDate === 6) taskItem.endDate = dayjs(taskItem.endDate).add(2, 'day').format();
+        if (dayOfStartDate === 0) taskItem.endDate = dayjs(taskItem.endDate).add(1, 'day').format();
     }
     return taskItem;
 }
@@ -352,7 +399,7 @@ export const processDataTasksStartEnd = (projectDetail, currentTasksData, curren
     // console.log('tempTasksData', tempTasksData)
     // Lặp mảng tasks
     for (let taskItem of tempTasksData) {
-        console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
+        // console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
         if (taskItem.estimateNormalTime > 20) {
             console.error('Estimate normal time đang quá lớn: ', taskItem.estimateNormalTime);
         }
@@ -378,8 +425,8 @@ export const processDataTasksStartEnd = (projectDetail, currentTasksData, curren
                 }));
                 if (currentPreceedingTaskItem && (
                     !taskItem.startDate ||
-                    moment(taskItem.startDate)
-                        .isBefore(moment(currentPreceedingTaskItem.endDate))
+                    dayjs(taskItem.startDate)
+                        .isBefore(dayjs(currentPreceedingTaskItem.endDate))
                 )) {
                     taskItem.startDate = currentPreceedingTaskItem.endDate;
                 }
@@ -387,8 +434,18 @@ export const processDataTasksStartEnd = (projectDetail, currentTasksData, curren
             }
         }
     }
-    console.log('tempTasksData 33333333', tempTasksData);
-    return tempTasksData;
+    // console.log('tempTasksData 33333333', tempTasksData);
+    return tempTasksData.sort((firstTask, secondTask) => {
+        if (dayjs(firstTask.startDate).isBefore(dayjs(secondTask.startDate))) {
+            return -1;
+        }
+        else if (dayjs(firstTask.startDate).isAfter(dayjs(secondTask.startDate))) {
+            return 1;
+        }
+        else if (dayjs(firstTask.startDate).isSame(dayjs(secondTask.startDate))) {
+            return 0;
+        }
+    });
 }
 
 // render item ở phần thông tin
@@ -408,16 +465,15 @@ export const renderItemLabelContent = (label, content, containerWidth = 6, label
 }
 
 export const processAffectedTasksChangeRequest = (projectDetail, tasksList, currentTask) => {
-    console.log('currentTask', currentTask)
-    console.log('tasksList', tasksList)
+    // console.log('currentTask', currentTask)
+    // console.log('tasksList', tasksList)
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
-    // Làm tròn thời gian
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
         return {
             ...taskItem,
-            estimateNormalTime: Math.ceil(Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
-            estimateOptimisticTime: Math.ceil(Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
+            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
             preceedingTasks: taskItem.preceedingTasks,
             code: taskItem._id,
         }
@@ -438,11 +494,11 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
             endDate: '',
         }
     });
-    console.log('tempTasksList', tempTasksList)
-    console.log('currentTask?.task', currentTask?.task, 'currentTask?._id', currentTask?._id)
+    // console.log('tempTasksList', tempTasksList)
+    // console.log('currentTask?.task', currentTask?.task, 'currentTask?._id', currentTask?._id)
 
     const newTasksList = processDataTasksStartEnd(projectDetail, tempTasksList);
-    console.log('newTasksList -----', newTasksList)
+    // console.log('newTasksList -----', newTasksList)
     let affectedTasks = [];
     for (let i = 0; i < newTasksList.length; i++) {
         if (!initTasksList[i]) {
@@ -459,18 +515,18 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
             isArraysEqual(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks) && newTasksList[i].estimateNormalTime === initTasksList[i].estimateNormalTime
             && newTasksList[i].estimateOptimisticTime === initTasksList[i].estimateOptimisticTime
             && newTasksList[i].estimateNormalCost === initTasksList[i].estimateNormalCost && newTasksList[i].estimateMaxCost === initTasksList[i].estimateMaxCost
-            && moment(newTasksList[i].startDate).isSame(moment(initTasksList[i].startDate)) && moment(newTasksList[i].endDate).isSame(moment(initTasksList[i].endDate))
+            && dayjs(newTasksList[i].startDate).isSame(dayjs(initTasksList[i].startDate)) && dayjs(newTasksList[i].endDate).isSame(dayjs(initTasksList[i].endDate))
             && isArraysEqual(newTasksList[i].responsibleEmployees, initTasksList[i].responsibleEmployees)
             && isArraysEqual(newTasksList[i].accountableEmployees, initTasksList[i].accountableEmployees)
         )) {
-            console.log(newTasksList[i].name, initTasksList[i].name)
-            console.log(newTasksList[i].estimateNormalTime, initTasksList[i].estimateNormalTime, newTasksList[i].estimateNormalTime === initTasksList[i].estimateNormalTime);
-            console.log(newTasksList[i].estimateOptimisticTime, initTasksList[i].estimateOptimisticTime, newTasksList[i].estimateOptimisticTime === initTasksList[i].estimateOptimisticTime);
-            console.log(newTasksList[i].estimateNormalCost, initTasksList[i].estimateNormalCost, newTasksList[i].estimateNormalCost === initTasksList[i].estimateNormalCost);
-            console.log(newTasksList[i].estimateMaxCost, initTasksList[i].estimateMaxCost, newTasksList[i].estimateMaxCost === initTasksList[i].estimateMaxCost);
-            console.log(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks, isArraysEqual(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks));
-            console.log(newTasksList[i].startDate, initTasksList[i].startDate, moment(newTasksList[i].startDate).isSame(moment(initTasksList[i].startDate)));
-            console.log(newTasksList[i].endDate, initTasksList[i].endDate, moment(newTasksList[i].endDate).isSame(moment(initTasksList[i].endDate)));
+            // console.log(newTasksList[i].name, initTasksList[i].name)
+            // console.log(newTasksList[i].estimateNormalTime, initTasksList[i].estimateNormalTime, newTasksList[i].estimateNormalTime === initTasksList[i].estimateNormalTime);
+            // console.log(newTasksList[i].estimateOptimisticTime, initTasksList[i].estimateOptimisticTime, newTasksList[i].estimateOptimisticTime === initTasksList[i].estimateOptimisticTime);
+            // console.log(newTasksList[i].estimateNormalCost, initTasksList[i].estimateNormalCost, newTasksList[i].estimateNormalCost === initTasksList[i].estimateNormalCost);
+            // console.log(newTasksList[i].estimateMaxCost, initTasksList[i].estimateMaxCost, newTasksList[i].estimateMaxCost === initTasksList[i].estimateMaxCost);
+            // console.log(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks, isArraysEqual(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks));
+            // console.log(newTasksList[i].startDate, initTasksList[i].startDate, moment(newTasksList[i].startDate).isSame(moment(initTasksList[i].startDate)));
+            // console.log(newTasksList[i].endDate, initTasksList[i].endDate, moment(newTasksList[i].endDate).isSame(moment(initTasksList[i].endDate)));
             affectedTasks.push({
                 task: newTasksList[i]?._id || newTasksList[i]?.task,
                 taskProject: newTasksList[i].taskProject,
@@ -485,7 +541,7 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
         // console.log('----------------------------------------');
     }
 
-    console.log('affectedTasks', affectedTasks);
+    // console.log('affectedTasks', affectedTasks);
     return {
         affectedTasks,
         newTasksList,
@@ -495,12 +551,11 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
 export const getNewTasksListAfterCR = (projectDetail, tasksList, currentTask) => {
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
-    // Ta cần làm tròn kết quả
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
         return {
             ...taskItem,
-            estimateNormalTime: Math.ceil(Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
-            estimateOptimisticTime: Math.ceil(Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
+            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
             preceedingTasks: taskItem.preceedingTasks.map((preItem) => preItem.task),
             code: taskItem._id,
         }
@@ -534,11 +589,11 @@ export const getEndDateOfProject = (currentProjectTasks, needCustomFormat = true
     if (!currentProjectTasks || currentProjectTasks.length === 0) return undefined;
     let currentEndDate = currentProjectTasks[0].endDate;
     for (let taskItem of currentProjectTasks) {
-        if (moment(taskItem.endDate).isAfter(moment(currentEndDate))) {
+        if (dayjs(taskItem.endDate).isAfter(dayjs(currentEndDate))) {
             currentEndDate = taskItem.endDate;
         }
     }
-    return needCustomFormat ? moment(currentEndDate).format('HH:mm DD/MM/YYYY') : moment(currentEndDate).format();
+    return needCustomFormat ? dayjs(currentEndDate).format('HH:mm DD/MM/YYYY') : dayjs(currentEndDate).format();
 }
 
 export const getEstimateCostOfProject = (currentProjectTasks) => {
@@ -557,7 +612,7 @@ export const getEstimateMemberCostOfTask = (task, projectDetail, userId) => {
         return String(actorSalaryItem.userId) === String(userId)
     });
     if (currentEmployee) {
-        estimateNormalMemberCost = Number(currentEmployee.salary) / getAmountOfWeekDaysInMonth(moment()) * Number(currentEmployee.weight / 100) * task.estimateNormalTime
+        estimateNormalMemberCost = Number(currentEmployee.salary) / getAmountOfWeekDaysInMonth(dayjs()) * Number(currentEmployee.weight / 100) * task.estimateNormalTime
             / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
     }
     return estimateNormalMemberCost;
@@ -620,6 +675,41 @@ export const getRecursiveRelevantTasks = (tasksList, currentTask) => {
     return allTasksNodeRelationArr;
 }
 
+// Hàm hỗ trợ hiển thị màu cho độ ưu tiên công việc
+export const convertPriorityData = (priority, translate) => {
+    let priorityColor = "";
+    switch (priority) {
+        case 5:
+            priorityColor = "#ff0707";
+            break;
+        case 4:
+            priorityColor = "#ff5707";
+            break;
+        case 3:
+            priorityColor = "#28A745";
+            break;
+        case 2:
+            priorityColor = "#ffa707";
+            break;
+        default:
+            priorityColor = "#808080"
+    }
+    return (
+        <div >
+            <span style={{ color: priorityColor }}> {formatPriority(translate, priority)}</span>
+        </div>
+    )
+}
+
+export const formatPriority = (translate, data) => {
+    if (data === 1) return translate('task.task_management.low');
+    if (data === 2) return translate('task.task_management.average');
+    if (data === 3) return translate('task.task_management.standard');
+    if (data === 4) return translate('task.task_management.high');
+    if (data === 5) return translate('task.task_management.urgent');
+}
+
+// Hàm hỗ trợ hiển thị trạng thái công việc
 export const formatTaskStatus = (translate, status) => {
     switch (status) {
         case "inprocess":
@@ -634,6 +724,8 @@ export const formatTaskStatus = (translate, status) => {
             return translate('task.task_management.canceled');
         case "requested_to_close":
             return translate('task.task_management.requested_to_close');
+        default:
+            return translate('task.task_management.inprocess');
     }
 }
 
@@ -660,9 +752,9 @@ export const renderStatusColor = (task) => {
 
 export const renderProgressBar = (progress = 0, task) => {
     const { startDate, endDate, status } = task
-    let now = moment(new Date());
-    let end = moment(endDate);
-    let start = moment(startDate);
+    let now = dayjs(new Date());
+    let end = dayjs(endDate);
+    let start = dayjs(startDate);
     let period = end.diff(start);
     let upToNow = now.diff(start);
     let barColor = "";
@@ -683,4 +775,145 @@ export const renderCompare2Item = (valueToBeCompared, valueToColor, funcCompareT
         return funcCompareToGood ? goodResultColor : badResultColor;
     }
     return valueToColor <= valueToBeCompared ? goodResultColor : badResultColor;
+}
+
+// Hàm hỗ trợ tìm mọi đường đi giữa điểm bắt đầu và kết thúc
+// list là 1 map với các phần tử có key là đỉnh của đồ thị
+// và value gồm 1 hoặc nhiều thuộc tính, trong đó thuộc tính
+// successor là mảng gồm những đỉnh mà đỉnh đó có thể đi tới
+function* findPath(list, start, end, visited=new Set() ) {
+    if (start === end) return yield [...visited, end];
+    visited.add(start);
+    // Ta không cần kiểm tra sự tồn tại của chu trình nếu file đầu vào đã chuẩn
+    for (let neighbor of list.get(start).successor) {
+        if (!visited.has(neighbor)) {
+            yield* findPath(list, neighbor, end, visited);
+        }
+    }
+    visited.delete(start);
+}
+
+// Hàm hỗ trợ tính giải pháp giảm thời gian thực hiện dự án
+export const calculateRecommendation = async (taskData, aimTime) => {
+    // Tạo 1 mảng để lưu kết quả
+    let ans = [];
+    const glpk = await GLPK();
+    // Tạo 1 map để lưu các cạnh và đỉnh phục vụ cho việc tìm các đường đi
+    // Khởi tạo với 2 đỉnh ảo là '__start' và '__end'
+    // Ở mỗi task, cần có thêm thông tin về thời gian tối đa và ngắn nhất để thực hiện công việc
+    // Ta chuyển sang dạng number
+
+    let list = new Map([['__start', { successor: new Set(), normalTime: 0, minTime: 0, cost: 0, name: 'start' }],['__end', { successor: new Set(), normalTime: 0, minTime: 0, cost: 0, name: 'end' }]]);
+    for (let task of taskData) {
+        let cost = 0;
+        if (task.estimateNormalTime > task.estimateOptimisticTime) {
+            cost = ( Number(task.estimateMaxCost.replace(/,/g, '')) - Number(task.estimateNormalCost.replace(/,/g, '')) ) / (task.estimateNormalTime - task.estimateOptimisticTime);
+        }
+        list.set(task.code, { successor: new Set(), normalTime: Number(task.estimateNormalTime), minTime: Number(task.estimateOptimisticTime), cost: cost, name: task.name });
+    }
+
+    for (let task of taskData) {
+        if (task.preceedingTasks.length === 0 || !task.preceedingTasks ) {
+            list.get('__start').successor.add(task.code);
+        }
+
+        else {
+            for (let item of task.preceedingTasks) {
+                list.get(item).successor.add(task.code);
+            }    
+        }
+    }
+
+    list.forEach((value,key) => {
+        if (value.successor.size === 0) list.get(key).successor.add('__end');
+    })
+
+    let listPath = findPath(list, '__start', '__end');
+    listPath = [...listPath];
+
+    const options = {
+        tmlim: 10,
+        msglev: glpk.GLP_MSG_OFF,
+        presol: true,
+    };
+
+    // Tạo danh sách các biến ứng với hệ số trong hàm mục tiêu
+    let varWithCoef = [];
+    list.forEach((value,key) => {
+        // Ta bỏ qua 2 đỉnh ảo là '__start' và '__end'
+        if (key !== '__start' && key !== '__end') {
+            varWithCoef.push({ name: key, coef: value.cost })
+        }
+    })
+
+    // Tạo danh sách các constraint
+    let constraint = [];
+    // Các constraint về giới hạn của biến
+    list.forEach((value,key) => {
+        // Ta bỏ qua 2 đỉnh ảo là '__start' và '__end'
+        if (key !== '__start' && key !== '__end') {
+            constraint.push({ 
+                name: 'var' + key, 
+                vars: [{ name: key, coef: 1 }],
+                bnds: { type: glpk.GLP_DB, ub: value.normalTime - value.minTime, lb: 0 }
+            })
+        }
+    })
+
+
+    // Các constraint về thời gian thực hiện trên từng đường đi
+    listPath.forEach((path, index) => {
+        let totalTime = 0;
+        let varWithPath = [];
+        for (let key of path) {
+            // Bỏ qua 2 đỉnh giả là '__start' và '__end'
+            if (key !== '__start' && key !== '__end' ) {
+                totalTime += list.get(key).normalTime
+            }
+        }
+
+        if (totalTime > aimTime) {
+            for (let item of path) {
+                if (item !== '__start' && item !== '__end' ) varWithPath.push({ name: item, coef: 1 })
+            }
+
+            constraint.push({ 
+                name: 'path' + index, 
+                vars: varWithPath,
+                bnds: { type: glpk.GLP_LO, ub: 0, lb: totalTime - aimTime }
+            })
+        }
+    })
+
+    const solution = await glpk.solve({
+        name: 'LP',
+        objective: {
+            direction: glpk.GLP_MIN,
+            name: 'obj',
+            vars: varWithCoef
+        },
+        subjectTo: constraint
+    }, options);
+
+
+    // Lấy kết quả trong trường hợp tìm được nghiệm tối ưu
+    if (solution.result.status == glpk.GLP_OPT) {
+        // Chỉ lọc ra những công việc có thời gian bị giảm lớn hơn 0
+        list.forEach((value,key) => {
+            // Ta bỏ qua 2 đỉnh ảo là '__start' và '__end'
+            if (key !== '__start' && key !== '__end') {
+                if (solution.result.vars[key] > 0) {
+                    ans.push({
+                        taskCode: key,
+                        taskName: value.name,
+                        timeToDecrease: Math.round(solution.result.vars[key] * 100) / 100,
+                        costToIncrease: Math.round(solution.result.vars[key] * 100) / 100 * value.cost,
+                    })
+                }
+            }
+        })   
+    }
+
+    // Trả về kết quả cuối cùng
+    return ans;
 }

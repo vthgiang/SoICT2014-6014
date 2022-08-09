@@ -25,7 +25,7 @@ function WorkSchedule(props) {
                     >
                         <WorkerScheduleList />
                     </LazyLoadComponent>
-                </div>
+                </div> 
             </div>
         </div>
     )

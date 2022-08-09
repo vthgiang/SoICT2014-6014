@@ -121,7 +121,7 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
 }
 
 export const getTotalTimeSheetLogs = (timesheetLogs) => {
-    let totalTime = timesheetLogs.reduce(function (tong, cur) {
+    let totalTime = timesheetLogs?.reduce(function (tong, cur) {
         if (cur.stoppedAt && cur.acceptLog) return tong + cur.duration;
         else return tong;
     }, 0);
@@ -172,6 +172,7 @@ export const formatStatusCode = (translate, data) => {
 }
 
 export const getSalaryFromUserId = (responsibleEmployeesWithUnit, userId) => {
+    // console.log(responsibleEmployeesWithUnit, userId);
     if (responsibleEmployeesWithUnit)
         for (let unitItem of responsibleEmployeesWithUnit) {
             for (let userItem of unitItem.listUsers) {

@@ -15,7 +15,6 @@ exports.getRoles = async (portal, query) => {
     var roleId = query.roleId;
     var type = query.type;
 
-
     if (!page && !limit && !roleId) {
         return await Role(connect(DB_CONNECTION, portal))
             .find()

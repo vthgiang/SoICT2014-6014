@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -7,6 +7,8 @@ import { DegreeAddModal, CertificateAddModal, DegreeEditModal, CertificateEditMo
 import { AuthActions } from '../../../../auth/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
 import dayjs from 'dayjs';
+import { MajorActions } from '../../../major/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
 
 function CertificateTab(props) {
     const [state, setState] = useState({
@@ -15,6 +17,8 @@ function CertificateTab(props) {
 
     useEffect(() => {
         props.getListFields();
+        props.getListMajor({ name: '', page: 0, limit: 1000 });
+        props.getListCertificate({ name: '', page: 0, limit: 1000 });
     }, [])
 
     useEffect(() => {
@@ -28,13 +32,14 @@ function CertificateTab(props) {
         })
     }, [props.id, props.employee?.degrees, props.employee?.certificates])
 
-    const { translate, field } = props;
+    const { translate, field, listMajors, listCertificates, listPositions } = props;
+
+    // console.log("xxxxxxxxxxxxxxxxx", listMajors)
 
     const { id } = props;
 
     const { degrees, certificates, currentRow, currentRowCertificates } = state;
     let listFields = field.listFields;
-    // console.log('listFields', listFields)
 
     /**
      *  Function format dữ liệu Date thành string
@@ -72,7 +77,6 @@ function CertificateTab(props) {
                 currentRow: { ...value, index: index }
             }
         });
-        console.log(state.degrees)
         window.$(`#modal-edit-certificate-editCertificate${index}`).modal('show');
     }
 
@@ -212,6 +216,19 @@ function CertificateTab(props) {
         props.downloadFile(path, fileName)
     }
 
+    let professionalSkillArr = [
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
+        { value: 5, text: "Kỹ sư" },
+        { value: 6, text: "Thạc sĩ" },
+        { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
+        { value: 0, text: "Không có" },
+    ];
+
     return (
         <div id={id} className="tab-pane">
             <div className="box-body">
@@ -225,7 +242,9 @@ function CertificateTab(props) {
                                 <th>{translate('human_resource.profile.name_diploma')}</th>
                                 <th>{translate('human_resource.profile.diploma_issued_by')}</th>
                                 <th>{translate('human_resource.profile.career_fields')}</th>
+                                <th>Chuyên ngành</th>
                                 <th>{translate('human_resource.profile.graduation_year')}</th>
+                                <th>Trình độ chuyên môn</th>
                                 <th>{translate('human_resource.profile.ranking_learning')}</th>
                                 <th>{translate('human_resource.profile.attached_files')}</th>
                                 <th style={{ width: '120px' }}>{translate('general.action')}</th>
@@ -243,12 +262,32 @@ function CertificateTab(props) {
                                             field = 'DELETED'
                                         }
                                     }
+                                    let major = '';
+                                    if (x.major) {
+                                        major = listMajors?.find(y => y._id.toString() === x.major.toString());
+                                        if (major) {
+                                            major = major.name
+                                        } else {
+                                            major = 'DELETED'
+                                        }
+                                    }
+                                    let degreeQualification = '';
+                                    if (x.degreeQualification) {
+                                        degreeQualification = professionalSkillArr.find(y => y.value === x.degreeQualification);
+                                        if (degreeQualification) {
+                                            degreeQualification = degreeQualification.text
+                                        } else {
+                                            degreeQualification = 'DELETED'
+                                        }
+                                    }
                                     return (
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
                                             <td>{field}</td>
+                                            <td>{major}</td>
                                             <td>{x?.year ? x?.year?.length > 10 ? dayjs(x.year).format("DD-MM-YYYY") : x?.year : null}</td>
+                                            <td>{degreeQualification}</td>
                                             <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
                                             <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
@@ -275,7 +314,10 @@ function CertificateTab(props) {
                 {/* Danh sách chứng chỉ */}
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.certificate')}</h4></legend>
-                    <CertificateAddModal handleChange={handleAddCertificate} id={`addCertificateShort${id}`} />
+                    <CertificateAddModal 
+                        handleChange={handleAddCertificate} 
+                        id={`addCertificateShort${id}`}
+                    />
                     <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                         <thead>
                             <tr>
@@ -289,9 +331,19 @@ function CertificateTab(props) {
                         </thead>
                         <tbody>
                             {certificates && certificates.length !== 0 &&
-                                certificates.map((x, index) => (
+                                certificates.map((x, index) => {
+                                    let certificate = '';
+                                    if (x.certificate) {
+                                        certificate = listCertificates?.find(y => y._id.toString() === x.certificate.toString());
+                                        if (certificate) {
+                                            certificate = certificate.name
+                                        } else {
+                                            certificate = 'DELETED'
+                                        }
+                                    }
+                                    return (
                                     <tr key={index}>
-                                        <td>{x.name}</td>
+                                        <td>{certificate}</td>
                                         <td>{x.issuedBy}</td>
                                         <td>{formatDate(x.startDate)}</td>
                                         <td>{formatDate(x.endDate)}</td>
@@ -307,7 +359,8 @@ function CertificateTab(props) {
                                             <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => handleDeleteCertificate(index)}><i className="material-icons"></i></a>
                                         </td>
                                     </tr>
-                                ))}
+                                )}
+                            )}
                         </tbody>
                     </table>
                     {
@@ -329,6 +382,10 @@ function CertificateTab(props) {
                     file={currentRow.file}
                     urlFile={currentRow.urlFile}
                     fileUpload={currentRow.fileUpload}
+                    major={currentRow.major}
+                    degreeQualification={currentRow.degreeQualification}
+                    listMajors={listMajors}
+                    listCertificates={listCertificates}
                     handleChange={handleEditDegree}
                 />
             }
@@ -342,9 +399,12 @@ function CertificateTab(props) {
                     issuedBy={currentRowCertificates.issuedBy}
                     startDate={formatDate(currentRowCertificates.startDate)}
                     endDate={formatDate(currentRowCertificates.endDate)}
+                    certificate={currentRowCertificates.certificate}
                     file={currentRowCertificates.file}
                     urlFile={currentRowCertificates.urlFile}
                     fileUpload={currentRowCertificates.fileUpload}
+                    listMajors={listMajors}
+                    listCertificates={listCertificates}
                     handleChange={handleEditCertificate}
                 />
             }
@@ -360,6 +420,8 @@ function mapState(state) {
 const actionCreators = {
     downloadFile: AuthActions.downloadFile,
     getListFields: FieldsActions.getListFields,
+    getListMajor: MajorActions.getListMajor,
+    getListCertificate: CertificateActions.getListCertificate,
 };
 
 const certificateTab = connect(mapState, actionCreators)(withTranslate(CertificateTab));

@@ -125,6 +125,8 @@ function RoleInfoForm(props) {
     const { role, user, translate } = props;
     const { roleId, roleType, roleName, roleParents, roleUsers, roleNameError, roleAttributes } = state;
 
+    console.log('roleParents', roleParents);
+
     return (
         <React.Fragment>
             <DialogModal

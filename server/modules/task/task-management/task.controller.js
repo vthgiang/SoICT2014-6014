@@ -3,7 +3,7 @@ const NotificationServices = require(`../../notification/notification.service`);
 const NewsFeed = require('../../news-feed/newsFeed.service');
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const Logger = require(`../../../logs`);
-const { Task, Project } = require('../../../models');
+const { Task, Project, ProjectPhase } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const moment = require('moment')
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
@@ -59,6 +59,9 @@ exports.getTasks = async (req, res) => {
     }
     else if (req.query.type === "project") {
         getTasksByProject(req, res)
+    }
+    else if (req.query.type === "task_has_evaluation") {
+        getAllTasksThatHasEvaluation(req, res)
     }
 }
 
@@ -597,12 +600,12 @@ exports.createProjectTask = async (req, res) => {
 exports.createProjectTasksFromCPM = async (req, res) => {
     try {
         let totalProjectBudget = 0;
-        let endDateOfProject = req.body[0]?.endDate;
-        for (let currentTask of req.body) {
+        let endDateOfProject = req.body.tasksList[0]?.endDate;
+        for (let currentTask of req.body.tasksList) {
             if (currentTask.preceedingTasks.length > 0) {
                 let currentNewPreceedingTasks = [];
                 for (let currentPreceedingItem of currentTask.preceedingTasks) {
-                    const localPreceedingItem = req.body.find(item => item.code === currentPreceedingItem.task);
+                    const localPreceedingItem = req.body.tasksList.find(item => item.code === currentPreceedingItem.task);
                     const remotePreceedingItem = await Task(connect(DB_CONNECTION, req.portal)).findOne({
                         taskProject: currentTask.taskProject,
                         name: localPreceedingItem.name
@@ -618,8 +621,19 @@ exports.createProjectTasksFromCPM = async (req, res) => {
                     preceedingTasks: currentNewPreceedingTasks,
                 }
             }
+            if (currentTask.taskPhase) {
+                let phase = await ProjectPhase(connect(DB_CONNECTION, req.portal)).findOne({
+                    project: currentTask.taskProject,
+                    name: currentTask.taskPhase,
+                });
+                currentTask = {
+                    ...currentTask,
+                    taskPhase: phase?._id || ''
+                }
+            }
             var tasks = await TaskManagementService.createProjectTask(req.portal, currentTask);
             var task = tasks.task;
+            console.log(task);
             var user = tasks.user.filter(user => user !== req.user._id); // Lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
 
             // Gửi mail cho nhân viện tham gia công việc
@@ -661,7 +675,7 @@ exports.createProjectTasksFromCPM = async (req, res) => {
             }
         }
 
-        await Project(connect(DB_CONNECTION, req.portal)).findByIdAndUpdate(req.body[0].taskProject, {
+        await Project(connect(DB_CONNECTION, req.portal)).findByIdAndUpdate(req.body.tasksList[0].taskProject, {
             $set: {
                 budget: totalProjectBudget,
                 endDate: endDateOfProject,
@@ -896,6 +910,30 @@ getTasksByUser = async (req, res) => {
     }
 }
 
+/**
+ * lấy các công việc đã được đánh giá trong tháng
+ */
+getAllTasksThatHasEvaluation = async (req, res) => {
+    try {
+        const tasks = await TaskManagementService.getAllTasksThatHasEvaluation(req.portal, req.query);
+
+        await Logger.info(req.user.email, 'get_task_that_has_evaluation', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_that_has_evaluation_success'],
+            content: tasks
+        });
+    }
+    catch (error) {
+        await Logger.error(req.user.email, 'get_task_that_has_evaluation', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_that_has_evaluation_fail'],
+            content: error
+        });
+    }
+}
+
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
@@ -1042,10 +1080,7 @@ exports.getUserTimeSheet = async (req, res) => {
 
 getTasksByProject = async (req, res) => {
     try {
-        let portal = req.portal;
-        let { projectId, page, perPage } = req.query;
-        let tasksResult = await TaskManagementService.getTasksByProject(portal, projectId, page, perPage);
-
+        let tasksResult = await TaskManagementService.getTasksByProject(req.portal, req.query);
         await Logger.info(req.user.email, 'get_tasks_by_project_success', req.portal)
         res.status(200).json({
             success: true,
@@ -1307,6 +1342,25 @@ exports.confirmTaskDelegation = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['confirm_task_delegation_faile'],
+        });
+    }
+}
+
+exports.proposalPersonnel = async (req, res) => {
+    try {
+        var task = await TaskManagementService.proposalPersonnel(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, `Proposal Personnel`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['proposal_personnel_success'],
+            content: task
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `Propasal Personnel`, req.portal);
+        console.log(error)
+        res.status(400).json({
+            success: false,
+            messages: ['proposal_personnel_fail'],
             content: error
         });
     }

@@ -98,9 +98,6 @@ function mapState(state) {
 const actions = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
-
-
-
 }
 
 const connectedCategoryProject = connect(mapState, actions)(withTranslate(CategoryProject));

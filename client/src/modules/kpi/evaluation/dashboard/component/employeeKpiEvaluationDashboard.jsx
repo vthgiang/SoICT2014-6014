@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import { kpiMemberActions } from '../../employee-evaluation/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
-import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 
-import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetChart';
 import { ResultsOfAllEmployeeKpiSetChart } from './resultsOfAllEmployeeKpiSetChart';
+import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetChart';
 
-import { SelectBox, SelectMulti, ExportExcel, DatePicker } from '../../../../../common-components';
+import { DatePicker, ExportExcel, SelectBox, SelectMulti } from '../../../../../common-components';
 import { showListInSwal } from '../../../../../helpers/showListInSwal';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+import { PerformanceKpiOfEmployeeChart } from './performanceKpiOfEmployeeChart';
 
 function EmployeeKpiEvaluationDashboard(props) {
     let currentDate = new Date();
@@ -578,6 +579,52 @@ function EmployeeKpiEvaluationDashboard(props) {
                         </div>
                     </div>
 
+
+                    {/* Dashboard trang thai khoi tao kpi nhan vien */}
+                    {/* <div className="row">
+                        <div className="col-md-12">
+                            <div className="box">
+                                <div className="box-header with-border" style={{ 'display': 'flex' }}>
+                                    <h3 className="box-title">KPI nhân viên </h3>
+                                    <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
+                                        <a className="" data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                            <i className="fa fa-gears" style={{ fontSize: "16px" }} /> Khởi tạo KPI nhân viên tự động
+                                        </a>
+                                        <EmployeeCreateKpiAutoModal
+                                            childrenOrganizationalUnit={dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit}
+                                            organizationalUnitId={organizationalUnitIds}
+                                        />
+                                    </span>
+                                </div>
+                                <div className="box-body qlcv">
+                                    <EmployeeCreateKpiDashboard />
+                                </div>
+                            </div>
+                        </div>
+                    </div> */}
+
+                    {/* Thống kê kết quả KPI của nhân viên */}
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box">
+                                <div className="box-header with-border">
+                                    <h3 className="box-title">Điểm đánh giá thực hiện KPI nhân viên</h3>
+
+                                </div>
+
+                                <div className="box-body qlcv" id="statisticsOfEmployeeKpiSetChart">
+
+
+                                    <div className="col-sm-12 col-xs-12">
+                                        <div className="qlcv">
+                                            <PerformanceKpiOfEmployeeChart />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* Thống kê kết quả KPI của nhân viên */}
                     <div className="row">

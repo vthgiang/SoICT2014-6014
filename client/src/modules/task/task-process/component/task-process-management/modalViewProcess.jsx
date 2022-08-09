@@ -1,10 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { DialogModal } from "../../../../../common-components";
 import { ViewProcess } from "./viewProcess";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { performTaskAction } from "../../../task-perform/redux/actions";
+import { ViewTaskOutputs } from "./viewTaskOutputs";
 
 function ModalViewProcess(props) {
     const { translate, role, user } = props;
@@ -29,6 +30,7 @@ function ModalViewProcess(props) {
                     processDescription={processDescription}
                     infoTask={infoTask}
                     creator={creator}
+                    checkManager={props.checkManager}
                 />
             </DialogModal>
         </React.Fragment>

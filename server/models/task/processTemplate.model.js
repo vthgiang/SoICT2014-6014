@@ -29,6 +29,20 @@ const ProcessTemplateSchema = new Schema({
     },
     tasks: [
         {
+            fastest: {
+                task:{
+                    type: Schema.Types.ObjectId,
+                    ref: "Task",
+                },
+                time : { type: String,}
+            },
+            slowest: {
+                task:{
+                    type: Schema.Types.ObjectId,
+                    ref: "Task",
+                },
+                time : { type: String,}
+            },
             code: {
                 type: String,
             },
@@ -222,6 +236,9 @@ const ProcessTemplateSchema = new Schema({
             ref: "TaskProcess",
         }
     ]
+},
+{
+    timestamps: true,
 });
 
 module.exports = (db) => {

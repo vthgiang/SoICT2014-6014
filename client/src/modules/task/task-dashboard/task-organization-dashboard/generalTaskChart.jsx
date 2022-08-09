@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import _cloneDeep from 'lodash/cloneDeep';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
-import dayjs from 'dayjs'
-import { SlimScroll, DataTableSetting, TreeTable } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+import { SlimScroll, TreeTable } from '../../../../common-components';
 import './generalTaskChart.css';
 import ViewAllGeneralTask from './viewAllGeneralTask';
-import _cloneDeep from 'lodash/cloneDeep';
 // import useDeepCompareEffect from 'use-deep-compare-effect'
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 
 
@@ -216,7 +215,7 @@ const GeneralTaskChart = (props) => {
         let bold = dataTemp[i].parent && dataTemp[i].parent !== true ? "normal" : "bold";
         data[i] = {
             ...dataTemp[i],
-            rawData:dataTemp[i],
+            rawData: dataTemp[i],
             name: bindTextToEvent("name", dataTemp[i].name, dataTemp[i], bold),
             totalTask: bindTextToEvent("totalTask", dataTemp[i].totalTask.length, dataTemp[i].totalTask, dataTemp[i].name, i, bold),
             taskInprocess: bindTextToEvent("taskInprocess", dataTemp[i].taskInprocess.length, dataTemp[i].taskInprocess, dataTemp[i].name, i, bold),
@@ -230,7 +229,7 @@ const GeneralTaskChart = (props) => {
             _id: dataTemp[i]._id ? dataTemp[i]._id : -1
         }
     }
-
+    console.log(223, data)
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />

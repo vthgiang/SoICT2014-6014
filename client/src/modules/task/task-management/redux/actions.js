@@ -9,6 +9,7 @@ export const taskManagementActions = {
     getPaginateTasksByUser,
     getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
+    getAllTasksThatHasEvaluation,
 
     addTask,
     editTask,
@@ -26,6 +27,7 @@ export const taskManagementActions = {
 
     addProjectTask,
     getTasksByProject,
+    getAllTasksByProject,
 
     importTasks,
 
@@ -37,7 +39,10 @@ export const taskManagementActions = {
     revokeTaskDelegation,
     confirmTaskDelegation,
     rejectTaskDelegation,
-    editTaskDelegation
+    editTaskDelegation,
+
+    proposalPersonnel,
+
 };
 
 
@@ -214,6 +219,34 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
             .catch(error => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+/**
+ * lấy công việc có đánh giá của đơn vị
+ * @param {*} unit đơn vị
+ * @param {*} month tháng
+ */
+
+function getAllTasksThatHasEvaluation(unit, startDate, endDate) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GET_TASK_HAS_EVALUATION_REQUEST
+        });
+
+        taskManagementService.getAllTasksThatHasEvaluation(unit, startDate, endDate)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_HAS_EVALUATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_HAS_EVALUATION_FAILURE,
                     error
                 })
             })
@@ -572,31 +605,15 @@ function addProjectTask(task) {
 }
 
 /**
- * get task by user and projectId
+ * get task by query
  */
-function getTasksByProject(projectId, page = undefined, perPage = undefined) {
-    if (!page && !perPage) {
-        return dispatch => {
-            dispatch({
-                type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST,
-            });
-            taskManagementService.getTasksByProject(projectId)
-                .then(res => {
-                    dispatch({
-                        type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
-                        payload: res.data.content
-                    });
-                })
-                .catch(error => {
-                    dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_FAILURE, error });
-                });
-        };
-    }
+function getTasksByProject(data) {
+
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_REQUEST,
         });
-        taskManagementService.getTasksByProject(projectId, page, perPage)
+        taskManagementService.getTasksByProject(data)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_SUCCESS,
@@ -605,6 +622,28 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_FAILURE, error });
+            });
+    };
+}
+
+/**
+ * get task by projectId
+ */
+function getAllTasksByProject(projectId) {
+
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST,
+        });
+        taskManagementService.getTasksByProject({ projectId: projectId, calledId: 'get_all' })
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_FAILURE, error });
             });
     };
 }
@@ -814,5 +853,27 @@ function rejectTaskDelegation(taskId, data) {
                     error
                 });
             });
+    }
+}
+
+function proposalPersonnel(data) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.PROPOSAL_PERSONNEL_REQUEST
+        });
+
+        taskManagementService.proposalPersonnel(data)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.PROPOSAL_PERSONNEL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: taskManagementConstants.PROPOSAL_PERSONNEL_FAILURE,
+                    error: err?.response?.data?.content
+                });
+            })
     }
 }

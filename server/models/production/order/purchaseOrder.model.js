@@ -66,7 +66,7 @@ const PurchaseOrderShema = new Schema({
     },
     purchasingRequest: {
         type: Schema.Types.ObjectId,
-        ref: 'RequestManagement',
+        ref: 'ProductRequestManagement',
     },
     bill: {//Phiếu đề nghị nhập kho nguyên vật liệu
         type: Schema.Types.ObjectId,

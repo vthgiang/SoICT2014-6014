@@ -6,12 +6,14 @@ import { ProjectActions } from "../../projects/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
 import ModalDetailReport from "./modalDetailReport";
-import { taskManagementActions } from "../../../task/task-management/redux/actions";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import { renderLongList, renderProjectTypeText } from "../../projects/components/functionHelper";
 import _cloneDeep from 'lodash/cloneDeep';
 
 function ListProjectReport(props) {
     const tableId = 'project-reports-table';
+    const defaultConfig = { limit: 5, hiddenColumns: [] }
+    const limit = getTableConfiguration(tableId, defaultConfig).limit;
     // Khởi tạo state
     const [state, setState] = useState({
         projectName: "",
@@ -20,7 +22,7 @@ function ListProjectReport(props) {
         creatorEmployee: null,
         responsibleEmployees: null,
         projectManager: null,
-        perPage: 5,
+        perPage: limit,
         currentRow: null,
         projectDetail: null,
         data: [],
@@ -75,25 +77,48 @@ function ListProjectReport(props) {
     }
 
     const setPage = (pageNumber) => {
+        let data = {
+            calledId: 'paginate',
+            projectName: projectName,
+            projectType: projectType,
+            page: parseInt(pageNumber),
+            perPage: perPage,
+            creatorEmployee: creatorEmployee,
+            responsibleEmployees: responsibleEmployees,
+            projectManager: projectManager,
+            userId: userId
+        }
+
         setState({
             ...state,
             page: parseInt(pageNumber)
         });
 
-        props.getProjectsDispatch({ calledId: "paginate", page: parseInt(pageNumber), perPage, userId, projectName });
+        props.getProjectsDispatch(data);
     }
 
     const setLimit = (number) => {
+        let data = {
+            calledId: 'paginate',
+            projectName: projectName,
+            projectType: projectType,
+            page: 1,
+            perPage: parseInt(number),
+            creatorEmployee: creatorEmployee,
+            responsibleEmployees: responsibleEmployees,
+            projectManager: projectManager,
+            userId: userId
+        }
+
         setState({
             ...state,
             perPage: parseInt(number),
             page: 1
         });
-        props.getProjectsDispatch({ calledId: "paginate", page: 1, perPage: parseInt(number), userId, projectName });
+        props.getProjectsDispatch(data);
     }
 
     const handleShowDetailInfo = (id) => {
-        console.log(id,123);
         setState({
             ...state,
             projectDetail: project.data.paginate.find(p => p?._id === id)
@@ -148,7 +173,7 @@ function ListProjectReport(props) {
             })
 
         }
-    }, [user?.isLoading, project?.isLoading])
+    }, [user?.isLoading, project?.isLoading, JSON.stringify(project.data.paginate)])
 
     let column = [
         { name: translate('project.name'), key: "name" },
@@ -173,7 +198,7 @@ function ListProjectReport(props) {
                     <div style={{ height: "40px", display: 'flex', justifyContent: 'space-between' }}>
                         {/* Lọc */}
                         <div>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#projects-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#projects-filter').slideToggle() }}><i className="fa fa-filter"></i> {translate('general.filter')} </button>
                         </div>
                     </div>
 
@@ -229,7 +254,7 @@ function ListProjectReport(props) {
                         <TreeTable
                             behaviour="show-children"
                             tableSetting={true}
-                            tableId='list-project-report-table'
+                            tableId={tableId}
                             onSetNumberOfRowsPerPage={setLimit}
                             column={column}
                             viewWhenClickName={true}

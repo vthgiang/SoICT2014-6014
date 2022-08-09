@@ -327,6 +327,11 @@ function GoodManagement(props) {
                         numberExpirationDate={state.currentRow.numberExpirationDate}
                         sourceType={state.currentRow.sourceType}
                         excludingGoods={state.currentRow.excludingGoods}
+                        width={state.currentRow.width}
+                        height={state.currentRow.height}
+                        depth={state.currentRow.depth}
+                        weight={state.currentRow.weight}
+                        volume={state.currentRow.volume}
                     />
                 )}
 
@@ -348,6 +353,11 @@ function GoodManagement(props) {
                         numberExpirationDate={state.currentRow.numberExpirationDate}
                         sourceType={state.currentRow.sourceType}
                         excludingGoods={state.currentRow.excludingGoods}
+                        width={state.currentRow.width}
+                        height={state.currentRow.height}
+                        depth={state.currentRow.depth}
+                        weight={state.currentRow.weight}
+                        volume={state.currentRow.volume}
                     />
                 )}
                 <div className="form-inline">
@@ -462,6 +472,7 @@ function GoodManagement(props) {
                                             : "category is deleted"}
                                     </td>
                                     <td>{x.baseUnit}</td>
+                                    {/* <td>{x.packingRule ? x.packingRule : ''}</td> */}
                                     {
                                         type === "product" &&
                                         <td>{

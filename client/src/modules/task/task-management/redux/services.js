@@ -12,6 +12,7 @@ export const taskManagementService = {
     getPaginateTasksByUser,
     getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
+    getAllTasksThatHasEvaluation,
 
     addNewTask,
     editTask,
@@ -32,13 +33,16 @@ export const taskManagementService = {
     importTasks,
 
     getOrganizationTaskDashboardChart,
+
     saveTaskAttributes,
     addTaskDelegation,
     revokeTaskDelegation,
     deleteTaskDelegation,
     confirmTaskDelegation,
     rejectTaskDelegation,
-    editTaskDelegation
+    editTaskDelegation,
+
+    proposalPersonnel,
 };
 
 
@@ -265,6 +269,27 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
             aPeriodOfTime: aPeriodOfTime
+        }
+    }, false, true, 'task.task_management');
+}
+
+/**
+ * lấy công việc có đánh giá của đơn vị
+ * @param {*} unit đơn vị
+ * @param {*} month tháng
+ */
+
+function getAllTasksThatHasEvaluation(unit, startDate, endDate) {
+    var user = getStorage("userId");
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
+        method: 'GET',
+        params: {
+            type: 'task_has_evaluation',
+            unit: unit,
+            user: user,
+            startDate,
+            endDate
         }
     }, false, true, 'task.task_management');
 }
@@ -500,12 +525,30 @@ function addNewProjectTask(newTask) {
     }, true, true, 'task.task_management');
 }
 
-function getTasksByProject(projectId, page = undefined, perPage = undefined) {
+/**
+ * lấy dữ liệu các công việc
+ * @param {*} data dữ liệu về công việc cần tìm
+ * @param {*} status trạng thái thực hiện
+ * @param {*} name tên công việc
+ * @param {*} priority độ ưu tiên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate ngày kết thúc
+ * @param {*} responsibleEmployees nhân viên thực hiện
+ * @param {*} accountableEmployees nhận viên phê duyệt
+ * @param {*} creatorEmployees người tạo công việc
+ * @param {*} preceedingTasks công việc tiền nhiệm
+ * @param {*} projectId id của dự án
+ * @param {*} page số trang
+ * @param {*} perPage số bản ghi trên trang
+ * @param {*} callId có lấy tất cả các công việc thuộc dự án hay không
+ */
+
+function getTasksByProject(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
-        params: { type: 'project', projectId, page, perPage }
-    }, false, true, 'task.task_management');
+        params: { ...data, type: 'project' }
+    }, false, true, 'project');
 }
 
 function importTasks(data) {
@@ -625,4 +668,12 @@ function confirmTaskDelegation(taskId, data) {
         true,
         "task.task_management"
     )
+}
+
+function proposalPersonnel(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/proposal-personnel`,
+        method: 'POST',
+        data: data
+    }, false, false, 'task.task_management');
 }

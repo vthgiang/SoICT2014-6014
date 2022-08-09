@@ -116,6 +116,22 @@ function downloadDocumentFile(id, numberVersion) {
     );
 }
 
+function downloadEmployeeDocumentFile(id, numberVersion, path) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}/download-file`,
+            method: "GET",
+            responseType: "blob",
+            params: {
+                numberVersion: numberVersion,
+            },
+        },
+        false,
+        true,
+        "document"
+    );
+}
+
 function downloadAllFileOfDocument(data) {
     return sendRequest(
         {

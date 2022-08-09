@@ -19,14 +19,14 @@ const ModalProjectEvaluation = (props) => {
     const { projectDetailId, projectDetail, translate, project, tasks, user, projectStatistic } = props;
     const userId = getStorage("userId");
     const [currentProjectId, setCurrentProjectId] = useState('');
-    const currentTasks = tasks?.tasksbyproject;
+    const currentTasks = tasks?.tasksByProject;
     const [currentMonth, setCurrentMonth] = useState(moment().startOf('month'));
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
-        props.getTasksByProject(projectDetailId || projectDetail?._id)
+        props.getAllTasksByProject( projectDetailId || projectDetail?._id )
         props.getListTasksEvalDispatch(currentProjectId, currentMonth.format());
         setTimeout(() => {
             setIsLoading(false);
@@ -135,7 +135,7 @@ const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
     getListTasksEvalDispatch: StatisticActions.getListTasksEvalDispatch,
 }
 

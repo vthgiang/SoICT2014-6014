@@ -357,6 +357,7 @@ exports.links = [
             // Task-management
             { path: '/task/tasks', method: 'GET' },
             { path: '/task/tasks', method: 'POST' },
+            { path: '/task/tasks/proposal-presonnel', method: 'POST' },
             { path: '/task/tasks/:taskId', method: 'DELETE' },
             { path: '/task/tasks/:taskId/sub-tasks', method: 'GET' },
             { path: '/task/task-evaluations', method: 'GET' },
@@ -414,7 +415,16 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-comments/:commentId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/files/:fileId', method: 'PATCH' },
 
+            // task outputs
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/task-outputs', method: 'PATCH' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', method: 'DELETE' },
+            { path: '/performtask/tasks/:taskId/task-outputs', method: 'GET' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/documents/:fileId', method: 'PATCH' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/approve', method: 'PATCH' },
 
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/comments', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/comments/:commentId', method: 'PATCH' },
 
             //comment of task comment
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST' },
@@ -625,9 +635,9 @@ exports.links = [
             { path: '/bills/:id', method: 'PATCH' },
             { path: '/bills/get-detail-bill/:id', method: 'GET' },
 
-            { path: '/request-management/stock', method: 'GET' },
-            { path: '/request-management/manufacturing', method: 'GET' },
-            { path: '/request-management/order', method: 'GET' },
+            { path: '/product-request-management/stock', method: 'GET' },
+            { path: '/product-request-management/manufacturing', method: 'GET' },
+            { path: '/product-request-management/order', method: 'GET' },
 
             //order
             { path: "/orders", method: "GET" },
@@ -686,15 +696,17 @@ exports.links = [
 
             //project
             { path: "/projects/project", method: "GET" },
+            { path: "/projects/project/:id", method: "GET" },
             { path: "/projects/project", method: "POST" },
-            { path: "/projects/project/:id", method: "DELETE" },
             { path: "/projects/project/:id", method: "PATCH" },
-
-            // router.get('/project', auth, ProjectController.get);
-            // router.get('/project/:id', auth, ProjectController.show);
-            // router.post('/project', auth, ProjectController.create);
-            // router.patch('/project/:id', auth, ProjectController.edit);
-            // router.delete('/project/:id', auth, ProjectController.delete);
+            { path: "/projects/project/:id", method: "DELETE" },
+            { path: "/projects/project/:id/getListTasksEval/:evalMonth", method: "GET" },
+            { path: "/projects/project/salary-members", method: "POST" },
+            { path: "/projects/project/change-requests", method: "POST" },
+            { path: "/projects/project/change-requests/:projectId", method: "GET" },
+            { path: "/projects/project/change-requests/update-lists", method: "PATCH" },
+            { path: "/projects/project/change-requests/:id/:status", method: "PATCH" },
+            { path: "/projects/project/project-phase", method: "POST" },
 
         ]
     }, {
@@ -708,6 +720,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/system/apis-default-management',
+        apis: ['@all']
+    }, {
+        url: '/system/manage-system-admin-page',
         apis: ['@all']
     }, {
         url: '/system/privilege-api-management',
@@ -849,6 +864,53 @@ exports.links = [
     //     url: '/hr-search-for-package',
     //     apis: ['@all']
     // },
+
+    {
+        url: '/hr-list-major',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-bidding-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding/bidding-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-certificate',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-career-position',
+        apis: ['@all']
+    }, {
+        url: '/hr-search-for-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-management-package',
+        apis: ['@all']
+    },
+    {
+        url: '/bidding-dashboard',
+        apis: ['@all']
+    },
+    {
+        url: '/bidding-list-contract',
+        apis: ['@all']
+    }, {
+        url: '/bidding-search-for-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-management-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-list-package',
+        apis: ['@all']
+    }, {
+        url: '/bidding-project-template',
+        apis: ['@all']
+    }, {
+        url: '/tags-management',
+        apis: ['@all']
+    },
+
     {
         url: '/kpi-units/create-for-admin',
         apis: ['@all']
@@ -858,6 +920,10 @@ exports.links = [
     }, {
         url: '/kpi-units/dashboard',
         apis: ['@all']
+    }, {
+        url: '/template-kpi-unit',
+        apis: ['@all']
+    }, {
     }, {
         url: '/kpi-units/manager',
         apis: ['@all']
@@ -908,6 +974,10 @@ exports.links = [
         url: '/task-organization-management-dashboard',
         apis: ['@all']
     }, {
+        url: '/administrative-document-process-dashboard',
+        apis: ['@all']
+    },
+    {
         url: '/task',
         apis: ['@all']
     }, {
@@ -1131,13 +1201,13 @@ exports.links = [
         url: '/manage-manufacturing-lot',
         apis: ['@all']
     }, {
-        url: '/request-management/stock',
+        url: '/product-request-management/stock',
         apis: ['@all']
     }, {
-        url: '/request-management/manufacturing',
+        url: '/product-request-management/manufacturing',
         apis: ['@all']
     }, {
-        url: '/request-management/order',
+        url: '/product-request-management/order',
         apis: ['@all']
     }, {
         url: '/hr-manage-field',
@@ -1154,6 +1224,14 @@ exports.links = [
     },
     {
         url: '/project/project-details',
+        apis: ['@all']
+    },
+    {
+        url: '/project/projects-template-list',
+        apis: ['@all']
+    },
+    {
+        url: '/project/project-template-details',
         apis: ['@all']
     },
     {
@@ -1227,6 +1305,10 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/employees-infomation',
+        apis: ['@all']
+    },
+    {
+        url: '/majors',
         apis: ['@all']
     }
 ];

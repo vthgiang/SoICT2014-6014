@@ -19,7 +19,7 @@
     "init-sample-company": "node seed/initSampleCompanyDB.js",
     "init-sample-organizational-unit-kpi": "node seed/initOrganizationalUnitKPIData.js",
     "init-human-resource-data": "node seed/initHumanResourceData.js",
-    "init": "node seed/initDB.js&& node seed/initSampleCompanyDB.js&& node seed/initOrganizationalUnitKPIData.js&& node seed/initHumanResourceData.js",
+    "init": "node seed/initDB.js && node seed/initSampleCompanyDB.js && node seed/initOrganizationalUnitKPIData.js && node seed/initHumanResourceData.js",
     "y-init": "yarn db && yarn sc",
     "y-init-full": "yarn db && yarn sc && yarn sp && yarn shr",
     "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js"
@@ -79,6 +79,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "eslint": "^8.6.0",
     "raw-loader": "^4.0.2",
     "source-map-loader": "^1.1.2",
     "webpack-cli": "^4.2.0",

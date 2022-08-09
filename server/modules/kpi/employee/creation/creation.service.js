@@ -7,6 +7,10 @@ const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSe
 
 const NotificationServices = require(`../../../notification/notification.service`)
 const NewsFeedService = require('../../../news-feed/newsFeed.service')
+const EmployeeEvaluationService = require('../../../kpi/evaluation/employee-evaluation/employeeEvaluation.service');
+const { getPaginatedTasksThatUserHasResponsibleRole } = require('../../../task/task-management/task.service');
+const { listeners } = require('process');
+
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
 /* Lấy tập KPI cá nhân hiện tại theo người dùng */
@@ -55,7 +59,7 @@ exports.getEmployeeKpiSet = async (portal, data) => {
         .findOne({ creator: data.userId, organizationalUnit: department._id, status: { $ne: 3 }, date: { $lt: nextMonth, $gte: month } })
         .populate("organizationalUnit")
         .populate({ path: 'creator', select: '_id name email avatar' })
-        .populate({path: 'approver', select: '_id name email avatar'})
+        .populate({ path: 'approver', select: '_id name email avatar' })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -69,7 +73,7 @@ exports.getEmployeeKpiSet = async (portal, data) => {
 /* Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, userId, startDate, endDate) => {
     endDate = new Date(endDate)
-    endDate.setMonth(endDate.getMonth() + 1)    
+    endDate.setMonth(endDate.getMonth() + 1)
 
     let keySearch = {
         creator: new mongoose.Types.ObjectId(userId),
@@ -80,7 +84,7 @@ exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, user
     if (organizationalUnitIds) {
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .find({ _id: { $in: organizationalUnitIds.map(item => mongoose.Types.ObjectId(item)) } })
-        
+
         if (unit?.length > 0) {
             keySearch = {
                 ...keySearch,
@@ -100,7 +104,7 @@ exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, user
                 organizationalUnit: { $in: unit.map(item => item?._id) }
             }
         }
-    } 
+    }
 
     let employeeKpiSetByMonth = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find(keySearch)
@@ -169,6 +173,16 @@ exports.createEmployeeKpiSet = async (portal, data) => {
     nextMonthSearch = new Date(month);
     nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
 
+    // Kiem tra ton tai kpi
+    let check = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: organizationalUnit,
+        creator: creator,
+        approver: approver,
+        date: new Date(month)
+    })
+    if (check) {
+        return null;
+    }
 
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -180,7 +194,7 @@ exports.createEmployeeKpiSet = async (portal, data) => {
             }
         })
         .populate("kpis");//status = 1 là kpi đã đc phê duyệt
-    
+
     if (organizationalUnitKpiSet) {
         // Tạo thông tin chung cho KPI cá nhân
         let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -216,8 +230,8 @@ exports.createEmployeeKpiSet = async (portal, data) => {
 
         employeeKpiSet = employeeKpiSet && await employeeKpiSet
             .populate("organizationalUnit")
-            .populate({path: "creator", select :"_id name email avatar"})
-            .populate({path: "approver", select :"_id name email avatar"})
+            .populate({ path: "creator", select: "_id name email avatar" })
+            .populate({ path: "approver", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .execPopulate();
 
@@ -245,13 +259,238 @@ exports.createEmployeeKpi = async (portal, data) => {
     employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(employeeKpiSetId)
         .populate('organizationalUnit')
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
+
+    return employeeKpiSet;
+}
+
+/* Tao kpi tu dong cho cá nhân */
+exports.createEmployeeKpiSetAuto = async (portal, data) => {
+    let { organizationalUnit, month, employees, approver, employee, formula } = data;
+    let m = month.split("-")[1];
+    if (m < 10) {
+        month = `${month.split("-")[0]}-0${m}`
+    }
+
+    // Config month tìm kiếm
+    let monthSearch, nextMonthSearch;
+
+    monthSearch = new Date(month);
+    nextMonthSearch = new Date(month);
+    nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
+
+    // Kiem tra ton tai kpi duoc tao tu dong chua
+    let check = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).find({
+        type: 'auto',
+        organizationalUnit: organizationalUnit,
+        creator: employee,
+        date: new Date(month)
+    })
+    if (check.length > 0) {
+        return null;
+    }
+    // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
+    let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({
+            organizationalUnit: organizationalUnit,
+            // status: 1,
+            date: {
+                $gte: monthSearch, $lt: nextMonthSearch
+            }
+        })
+        .populate("kpis");//status = 1 là kpi đã đc phê duyệt
+
+    if (organizationalUnitKpiSet) {
+        // Tạo thông tin chung cho KPI cá nhân
+        let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+            .create({
+                type: 'auto',
+                organizationalUnit: organizationalUnit,
+                creator: employee,
+                approver: approver,
+                date: new Date(month),
+                kpis: []
+            });
+        let defaultOrganizationalUnitKpi;
+        if (organizationalUnitKpiSet?.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
+
+        //  Them cac muc tieu mac dinh cua kpi
+        if (defaultOrganizationalUnitKpi) {
+            let defaultEmployeeKpi = await Promise.all(defaultOrganizationalUnitKpi.map(async (item) => {
+                let defaultT = await EmployeeKpi(connect(DB_CONNECTION, portal)).create({
+                    name: item.name,
+                    parent: item._id,
+                    weight: 5,
+                    criteria: item.criteria,
+                    status: null,
+                    type: item.type
+                })
+                return defaultT._id;
+            }));
+            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
+                )
+        }
+        let totalRatio = 0;
+        let completeRatio = {};
+
+        for (let i = 0; i < employees.length; i++) {
+
+            let ratio = await EmployeeEvaluationService.getEmployeeKpiPerformance(portal, employees[i], formula);
+            completeRatio[employees[i]] = {};
+            totalRatio += ratio.completeRatio;
+            completeRatio[employees[i]].ratio = ratio.completeRatio;
+
+        }
+        const avg = totalRatio / employees.length;
+        const { employeeImportances } = organizationalUnitKpiSet;
+
+        for (let key in completeRatio) {
+            let importance;
+            completeRatio[key].ratio = completeRatio[key].ratio / avg;
+
+            for (let j = 0; j < employeeImportances.length; j++) {
+                if (key === employeeImportances[j].employee) {
+                    importance = employeeImportances[j].importance;
+                } else {
+                    importance = 100;
+                }
+            }
+            completeRatio[key] = { ...completeRatio[key], importance }
+        }
+        // Phan chia cac muc tieu kpi cho nhan vien
+        //Lay danh sach muc tieu kpi don vi theo trong so giam dan
+        let otherKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .aggregate([
+                { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
+                { $match: { date: { $gte: monthSearch, $lt: nextMonthSearch } } },
+                // { $match: { status: 1 } },
+                {
+                    $lookup: {
+                        from: "organizationalunitkpis",
+                        localField: "kpis",
+                        foreignField: "_id",
+                        as: "kpis"
+                    }
+                },
+
+                { $unwind: '$kpis' },
+                {
+                    $match: {
+                        'kpis.type': 0
+                    }
+                },
+                {
+                    $sort: {
+                        'kpis.weight': -1
+                    }
+                }
+            ])
+
+        // Gan kpi cho nhan vien
+        let kpiEmployee = []
+        let numOfKpis = Math.round(completeRatio[employee].ratio * otherKpis.length);
+        if (numOfKpis > otherKpis.length) {
+            numOfKpis = otherKpis.length;
+        }
+        // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
+        if (otherKpis.length > 0 && completeRatio[employee].importance < 90) {
+            let weightOver = 0;
+            for (let k = 0; k < otherKpis.length - numOfKpis; k++) {
+                weightOver += otherKpis[k].kpis.weight;
+            }
+            for (let i = otherKpis.length - numOfKpis; i < otherKpis.length; i++) {
+                let calcWeight = otherKpis[i].kpis.weight + weightOver;
+                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employees.length * completeRatio[employee].ratio) : null;
+                kpiEmployee.push({
+                    name: otherKpis[i].kpis.name,
+                    parent: otherKpis[i].kpis.parent,
+                    weight: calcWeight,
+                    criteria: otherKpis[i].kpis.criteria,
+                    target: target,
+                    unit: otherKpis[i].kpis.unit,
+                })
+                weightOver = 0;
+            }
+        } else if (otherKpis.length > 0 && completeRatio[employee].importance >= 90) {
+            let weightOver = 0;
+            if (numOfKpis < otherKpis.length) {
+                for (let k = numOfKpis; k < otherKpis.length; k++) {
+                    weightOver += otherKpis[k].kpis.weight;
+                }
+            }
+
+            for (let i = 0; i < numOfKpis; i++) {
+                let calcWeight = otherKpis[i].kpis.weight + weightOver;
+                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employees.length * completeRatio[employee].ratio) : null;
+                kpiEmployee.push({
+                    name: otherKpis[i].kpis.name,
+                    parent: otherKpis[i].kpis.parent,
+                    weight: calcWeight,
+                    criteria: otherKpis[i].kpis.criteria,
+                    target: target,
+                    unit: otherKpis[i].kpis.unit,
+                })
+                weightOver = 0
+            }
+        }
+
+        if (kpiEmployee) {
+            let otherKpiEmployee = await Promise.all(kpiEmployee.map(async (item) => {
+                let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).create(item)
+                return kpi._id;
+            }));
+
+            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    employeeKpiSet, { $push: { kpis: { $each: otherKpiEmployee } } }, { new: true }
+                )
+        }
+
+        employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+            .findById(employeeKpiSet._id)
+            .populate('organizationalUnit')
+            .populate({ path: "creator", select: "_id name email avatar" })
+            .populate({ path: "approver", select: "_id name email avatar" })
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate([
+                { path: 'comments.creator', select: 'name email avatar ' },
+                { path: 'comments.comments.creator', select: 'name email avatar' }
+            ])
+
+        return employeeKpiSet;
+    }
+}
+
+exports.balanceEmployeeKpisAuto = async (portal, kpiSet) => {
+    for (let i = 0; i < kpiSet.kpis.length; i++) {
+        let kpis = kpiSet.kpis[i];
+
+        let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpis._id);
+        if (kpi && typeof (kpi?.target) === 'number') {
+            let kpiBalance = await EmployeeKpi(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(kpi._id, { $set: { "target": kpis.target } });
+        }
+    }
+    let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .findById(kpiSet)
+    employeeKpiSet = employeeKpiSet && await employeeKpiSet
+        .populate("organizationalUnit ")
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
+        .execPopulate();
 
     return employeeKpiSet;
 }
@@ -266,8 +505,8 @@ exports.deleteEmployeeKpi = async (portal, id, employeeKpiSetId) => {
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit")
-        .populate({path: "creator", select :"_id name email avatar"})
-            .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -289,8 +528,8 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId, companyId) => 
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit")
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -322,8 +561,8 @@ exports.editEmployeeKpiSet = async (portal, approver, id) => {
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit ")
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -663,8 +902,8 @@ exports.createNewsFeedForEmployeeKpiSet = async (portal, data) => {
     const { creator, title, description, employeeKpiSet, organizationalUnit } = data
 
     let managers = await UserRole(connect(DB_CONNECTION, portal))
-        .find({ roleId: { $in: [...organizationalUnit?.managers] }})
-    
+        .find({ roleId: { $in: [...organizationalUnit?.managers] } })
+
     // Thêm trưởng phòng các đơn vị
     let relatedUsers = []
     relatedUsers = managers?.map(item => item?.userId?.toString())
@@ -682,7 +921,7 @@ exports.createNewsFeedForEmployeeKpiSet = async (portal, data) => {
         title: title,
         description: description,
         creator: creator,
-        associatedDataObject: { 
+        associatedDataObject: {
             dataType: 2,
             value: employeeKpiSet?._id
         },

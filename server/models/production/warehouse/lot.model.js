@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const LotSchema = new Schema ({
+const LotSchema = new Schema({
 
     name: {
         type: String,
@@ -18,7 +18,15 @@ const LotSchema = new Schema ({
         type: String,
         enum: ["product", "material", "equipment", "waste"],
     },
-
+    rfid: {
+        rfidCode: [{
+            type: String,
+        }],
+        quantity: {
+            type: Number,
+            default: 0
+        }
+    },
     stocks: [{
         stock: {
             type: Schema.Types.ObjectId,
@@ -132,7 +140,7 @@ const LotSchema = new Schema ({
 LotSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.Lot)
+    if (!db.models.Lot)
         return db.model('Lot', LotSchema);
     return db.models.Lot;
 }

@@ -102,7 +102,6 @@ function ModalSelectIssueBill(props) {
                                     <th>{translate('manage_warehouse.bill_management.code')}</th>
                                     <th>{translate('manage_warehouse.bill_management.type')}</th>
                                     <th>{translate('manage_warehouse.bill_management.creator')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.approved')}</th>
                                     <th>{translate('manage_warehouse.bill_management.date')}</th>
                                     <th>{translate('manage_warehouse.bill_management.stock')}</th>
                                     <th>{translate('manage_warehouse.bill_management.customer')}</th>
@@ -117,9 +116,8 @@ function ModalSelectIssueBill(props) {
                                                 <input type='checkbox' defaultChecked={false} checked={checkedId == x._id} onChange={() => handleSelectBill(x)}></input>
                                             </td>
                                             <td>{x.code}</td>
-                                            <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
+                                            <td>{translate(`manage_warehouse.bill_management.goodRIssueBillType.${x.type}`)}</td>
                                             <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                            <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                             <td>{formatDate(x.updatedAt)}</td>
                                             <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                             <td>{x.customer ? x.customer.name : 'Partner is deleted'}</td>

@@ -305,7 +305,6 @@ function PurchaseOrderTable(props) {
                         listGoods={listGoods}
                         stock={purchasingRequest.stock}
                         status={purchasingRequest.status}
-                        approver={purchasingRequest.approverInFactory[0].approver}
                         organizationalUnitValue={purchasingRequest.orderUnit}
                     />
                 }

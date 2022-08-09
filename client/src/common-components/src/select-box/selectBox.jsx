@@ -105,6 +105,9 @@ class SelectBox extends Component {
         if (!items1 || !items2) {
             return false;
         }
+        if (JSON.stringify(items1) !== JSON.stringify(items2)) {
+            return false;
+        }
         if (items1.length !== items2.length) {
             return false;
         }
@@ -217,6 +220,7 @@ class SelectBox extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
+
         if (nextState.searching) {
             if (SelectBox.isEqual(nextProps.items, nextState.items)) {
                 return false;

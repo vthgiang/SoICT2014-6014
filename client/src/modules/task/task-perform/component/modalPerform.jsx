@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
@@ -34,6 +34,6 @@ function mapState(state) {
 const actionDispatch = {}
 
 const modalPerform = connect(mapState, actionDispatch)(withTranslate(ModalPerform));
-export { modalPerform as ModalPerform }
+export { modalPerform as ModalPerform };
 
 

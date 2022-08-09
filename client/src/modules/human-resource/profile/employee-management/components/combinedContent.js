@@ -5,3 +5,4 @@ export * from './employeeManagement';
 export * from './employeeImportForm';
 export * from './employeeImportTab';
 export * from './employeeViewForm';
+export * from './searchEmployeeByCareerPositionTab';

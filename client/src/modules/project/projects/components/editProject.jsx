@@ -547,7 +547,6 @@ const ProjectEditForm = (props) => {
                 unitCost,
                 unitTime,
                 estimatedCost,
-                creator: userId,
                 responsibleEmployeesWithUnit: currentSalaryMembers,
             });
 

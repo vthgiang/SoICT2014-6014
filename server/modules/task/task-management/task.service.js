@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const dayjs = require("dayjs");
-const { Task, TaskTemplate, OrganizationalUnit, User, Company, UserRole, Role, Delegation } = require('../../../models');
+
+const { Task, TaskTemplate, OrganizationalUnit, EmployeeKpiSet, User, Company, UserRole, Role, Delegation } = require('../../../models');
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
+const EmployeeKpiService = require('../../kpi/employee/management/management.service')
 const overviewService = require(`../../kpi/employee/management/management.service`);
 const UserService = require(`../../super-admin/user/user.service`)
 const DelegationService = require(`../../delegation/delegation.service`)
@@ -11,6 +13,7 @@ const cloneDeep = require('lodash/cloneDeep');
 const isSameOrAfter = require('dayjs/plugin/isSameOrAfter')
 const isSameOrBefore = require('dayjs/plugin/isSameOrBefore')
 const { isToday, compareDate } = require('../../../helpers/functionHelper');
+const { result } = require("lodash");
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
 
@@ -1987,7 +1990,6 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
         `<h3>Nội dung công việc</h3>` +
-        // `<p>Tên công việc : <strong>${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
@@ -2010,7 +2012,73 @@ exports.sendEmailForCreateTask = async (portal, task) => {
             }).join('')}
                     </ul>` : ""}`
         ;
-    var html = `<p>Bạn có công việc mới: ` + body;
+    let html = `<html>
+          <head>
+              <style>
+                  .wrapper {
+                      width: 100%;
+                      min-width: 580px;
+                      background-color: #FAFAFA;
+                      padding: 10px 0;
+                  }
+                  .userName {
+                    font-weight: 700;
+                    color: #385898;
+                    cursor: pointer;
+                  }
+          
+                  .info {
+                      list-style-type: none;
+                  }
+          
+                  @media screen and (max-width: 900px) {
+                      .form {
+                          border: solid 1px #dddddd;
+                          padding: 50px 30px;
+                          border-radius: 3px;
+                          margin: 0px 5%;
+                          background-color: #FFFFFF;
+                      }
+                  }
+          
+                  .form {
+                      border: solid 1px #dddddd;
+                      padding: 50px 30px;
+                      border-radius: 3px;
+                      margin: 0px 25%;
+                      background-color: #FFFFFF;
+                  }
+          
+                  .title {
+                      text-align: center;
+                  }
+          
+                  .footer {
+                      margin: 0px 25%;
+                      text-align: center;
+          
+                  }
+              </style>
+          </head>
+          
+          <body>
+              <div class="wrapper">
+                  <div class="title">
+                      <h1>${process.env.WEB_NAME}</h1>
+                  </div>
+                  <div class="form">
+                    <p>Bạn có công việc mới:  ${body};
+                  </div>
+                  <div class="footer">
+                      <p>Copyright by
+                          <i>Công ty Cổ phần Công nghệ
+                              <br />
+                              An toàn thông tin và Truyền thông Việt Nam</i>
+                      </p>
+                  </div>
+              </div>
+          </body>
+        </html>`;
     collaboratedHtml = `<p>Đơn vị bạn được phối hợp thực hiện công việc mới: ` + body;
 
 
@@ -2105,6 +2173,21 @@ exports.createTask = async (portal, task) => {
         taskInformations = taskTemplate ? taskTemplate.taskInformations : [];
     }
 
+    const accountableEmployeesTaskOutputs = task.accountableEmployees.map((item) => {
+        return {
+            accountableEmployee: item,
+            status: "waiting_approval"
+        }
+    });
+    console.log('task', task)
+    const taskOutputs = task.taskOutputs.map((item) => {
+        return {
+            ...item,
+            status: "unfinished",
+            accountableEmployees: accountableEmployeesTaskOutputs
+        }
+    })
+
     const newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
@@ -2126,7 +2209,8 @@ exports.createTask = async (portal, task) => {
         informedEmployees: task.informedEmployees,
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
         taskProject: taskProject,
-        tags: task.tags
+        tags: task.tags,
+        taskOutputs: taskOutputs
     });
 
     if (newTask.taskTemplate !== null) {
@@ -2165,7 +2249,6 @@ exports.createProjectTask = async (portal, task) => {
     //     var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
     //     if (parent) level = parent.level + 1;
     // }
-
     var startDate, endDate;
     if (Date.parse(task.startDate)) startDate = new Date(task.startDate);
     else {
@@ -2208,6 +2291,7 @@ exports.createProjectTask = async (portal, task) => {
         return mongoose.Types.ObjectId.isValid(value) ? value : undefined;
     }
     let taskProject = (taskTemplate && taskTemplate.taskProject) ? getValidObjectId(taskTemplate.taskProject) : getValidObjectId(task.taskProject);
+    let taskPhase = (taskTemplate && taskTemplate.taskPhase) ? getValidObjectId(taskTemplate.taskPhase) : getValidObjectId(task.taskPhase);
 
     let taskActions = [];
     if (task.taskActions) {
@@ -2257,8 +2341,9 @@ exports.createProjectTask = async (portal, task) => {
         accountableEmployees: task.accountableEmployees,
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
-        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
+        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? [task.creator] : [],
         taskProject,
+        taskPhase,
         estimateNormalTime: task.estimateNormalTime,
         estimateOptimisticTime: task.estimateOptimisticTime,
         estimateNormalCost: task.estimateNormalCost,
@@ -2399,6 +2484,45 @@ exports.getTasksByUser = async (portal, data) => {
     }
     return tasksbyuser;
 }
+
+/**
+ * Lấy các công việc có đánh giá trong tháng
+ * @param {*} data 
+ */
+exports.getAllTasksThatHasEvaluation = async (portal, data) => {
+    let startDate = new Date(data.startDate);
+    let endDate = new Date(data.endDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+    // Lấy danh sách các công việc gắn với KPI đơn vị
+    let tasks = await Task(connect(DB_CONNECTION, portal))
+        .find({
+            $and: [
+                { "organizationalUnit": data.unit },
+                {
+                    "evaluations": {
+                        $elemMatch: {
+                            $and: [
+                                { "evaluatingMonth": { $lte: new Date(endDate), $gte: new Date(startDate) } },
+                                // {
+                                //     "results": {
+                                //         $elemMatch: {
+                                //             "organizationalUnit": mongoose.Types.ObjectId(data.unit)
+                                //         }
+                                //     }
+                                // }
+                            ]
+                        }
+                    }
+                }
+            ]
+        })
+    // .select("name evaluations responsibleEmployees");
+    console.log("2499", tasks)
+
+
+    return tasks;
+}
+
 
 /**
  * Lấy tất cả task của organizationalUnit theo tháng 
@@ -3139,12 +3263,226 @@ exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, tim
     return listEmployee;
 }
 
-exports.getTasksByProject = async (portal, projectId, page, perPage) => {
+
+/**
+ * Lấy công việc theo dự án
+ * @param {*} data 
+ */
+
+exports.getTasksByProject = async (portal, data) => {
+    let { perPage, page, status, priority, name, preceedingTasks, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, calledId } = data;
     let tasks;
-    let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
-    if (page && perPage) {
-        tasks = await Task(connect(DB_CONNECTION, portal))
-            .find({ taskProject: projectId }).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+
+    let keySearch = {};
+    let keySeachDateTime = {};
+
+    // Tìm kiếm công việc theo dự án
+    if (projectId) {
+        keySearch = {
+            ...keySearch,
+            taskProject: projectId,
+        }
+    }
+
+    // Tìm kiếm công việc theo trạng thái
+    if (status) {
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status,
+            }
+        };
+    }
+
+    // Tìm kiếm công việc theo độ ưu tiên
+    if (priority) {
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority,
+            }
+        };
+    }
+
+    // Tìm kiếm công việc theo tên
+    if (name) {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    // Tìm kiếm công việc theo tên công việc tiền nhiệm
+    if (preceedingTasks) {
+        const predecessor = await Task(connect(DB_CONNECTION, portal)).find({
+            name: {
+                $regex: preceedingTasks,
+                $options: "i",
+            }
+        })
+
+        const getIdPredecessor = predecessor && predecessor.length > 0 ? predecessor.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            "preceedingTasks.task": {
+                $in: getIdPredecessor
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thực hiện
+    if (responsibleEmployees) {
+        const responsible = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            responsibleEmployees: {
+                $in: getIdResponsible
+            }
+        }
+    }
+
+    // Tìm kiếm theo người phê duyệt
+    if (accountableEmployees) {
+        const accountable = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
+        keySearch = {
+            ...keySearch,
+            accountableEmployees: {
+                $in: getIdAccountable
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thiết lập
+    if (creatorEmployees) {
+        const creator = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            creator: {
+                $in: getIdCreator
+            }
+        }
+    }
+
+    // Tìm kiếm theo ngày bắt đầu, kết thúc
+    if (startDate && endDate) {
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        keySeachDateTime = {
+            ...keySeachDateTime,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    }
+
+    else if (startDate) {
+        startDate = new Date(startDate);
+
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    else if (endDate) {
+        endDate = new Date(endDate);
+
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    let optionQuery = {
+        $and: [
+            keySearch,
+            keySeachDateTime,
+        ]
+    }
+
+    let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
+
+    // Nếu calledId là 'get_all' thì bỏ qua page và perPage
+    if (calledId === 'get_all') {
+        tasks = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ createdAt: -1 })
             .populate({ path: "responsibleEmployees", select: "_id name" })
             .populate({ path: "accountableEmployees", select: "_id name" })
             .populate({ path: "consultedEmployees", select: "_id name" })
@@ -3153,22 +3491,26 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
             .populate({ path: "preceedingTasks", select: "_id name" })
             .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
             .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
-        return {
-            docs: tasks,
-            totalDocs: totalList,
-        }
     }
-    tasks = await Task(connect(DB_CONNECTION, portal))
-        .find({ taskProject: projectId })
-        .populate({ path: "responsibleEmployees", select: "_id name" })
-        .populate({ path: "accountableEmployees", select: "_id name" })
-        .populate({ path: "consultedEmployees", select: "_id name" })
-        .populate({ path: "informedEmployees", select: "_id name" })
-        .populate({ path: "creator", select: "_id name" })
-        .populate({ path: "preceedingTasks", select: "_id name" })
-        .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
-        .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
-    return tasks;
+
+    else {
+        tasks = await Task(connect(DB_CONNECTION, portal))
+            .find(optionQuery).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+            .populate({ path: "preceedingTasks", select: "_id name" })
+            .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+            .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
+    }
+
+    return {
+        docs: tasks,
+        totalDocs: totalList,
+    }
+
 }
 
 
@@ -5080,3 +5422,85 @@ exports.confirmTaskDelegation = async (portal, taskId, data) => {
     return updateTask;
 };
 
+
+exports.proposalPersonnel = async (portal, params, body) => {
+    let formula = body.formula;
+    const organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
+        _id: {
+            $in: body.unitIds
+        }
+    })
+
+    let users = []
+    const usersOfDepartments = await UserService._getAllUsersInOrganizationalUnits(portal, organizationalUnits);
+    const departments = usersOfDepartments.map((department) => {
+        for (let i in department.managers) {
+            users = [...users, ...department.managers[i].members]
+        }
+        for (let i in department.deputyManagers) {
+            users = [...users, ...department.deputyManagers[i].members]
+        }
+        for (let i in department.employees) {
+            users = [...users, ...department.employees[i].members]
+        }
+    })
+    let tasksOfUser = [];
+    for (let i in users) {
+        let roleArr = [
+            { responsibleEmployees: { $in: [users[i]._id] } },
+            { accountableEmployees: { $in: [users[i]._id] } },
+            { consultedEmployees: { $in: [users[i]._id] } },
+            { informedEmployees: { $in: [users[i]._id] } },
+            { creator: { $in: [users[i]._id] } },
+        ]
+        let tasks = await Task(connect(DB_CONNECTION, portal)).find({
+            $or: roleArr
+        })
+        // Lấy công việc đang làm và công việc kết thúc
+        let taskInProcess = tasks?.filter((item) => item.status === "inprocess");
+        let taskFinished = tasks?.filter((item) => item.status === "finished");
+
+        let numberOfTaskInprocess = taskInProcess.length;
+
+        let numberOfTaskEvaluated = 0;
+        let sumPoint = 0;
+        let averagePoint = 0;
+
+        const averageRating = taskFinished?.map((task) => {
+            if (task.evaluations.length > 0) {
+                const evaluations = task.evaluations;
+                numberOfTaskEvaluated = numberOfTaskEvaluated + 1;
+                let sumPointOfEvaluations = 0
+                for (let i in evaluations) {
+                    const results = evaluations[i].results.filter((item) => {
+                        return String(item.employee) === String(users[i]._id)
+                    });
+                    let averagePointOfResult = 0;
+
+                    if (results.length > 0) {
+                        let sumPoint = 0;
+                        results?.map((item) => {
+                            let point = (item.approvedPoint + item.employeePoint + item.approvedPoint) / 3;
+                            sumPoint = sumPoint + point;
+                        })
+                        averagePointOfResult = sumPoint / results.length;
+                    }
+                    sumPointOfEvaluations = sumPointOfEvaluations + averagePointOfResult;
+                }
+                sumPoint = sumPoint + sumPointOfEvaluations / evaluations.length;
+            };
+        })
+        let numberOfTaskNotEvaluated = taskFinished?.length - numberOfTaskEvaluated;
+        averagePoint = numberOfTaskEvaluated ? sumPoint / numberOfTaskEvaluated : averagePoint;
+        let user = {
+            user: users[i],
+            point: eval(formula)
+        }
+
+        tasksOfUser.push(user)
+    }
+
+    tasksOfUser = tasksOfUser.sort((a, b) => (a.point < b.point) ? 1 : -1)
+
+    return tasksOfUser;
+}

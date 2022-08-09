@@ -39,6 +39,10 @@ const EmployeeKpiSetSchema = new Schema({
         type: Number,
         default: null
     },
+    type: {
+        type: String,
+        default: null
+    },
     weeklyEvaluations: [{
         title: {    // week1 (1-7/month), week2 (8-14/month), week3 (15-21/month), week4 (21-28,29,30,31/month)
             type: String
@@ -75,7 +79,7 @@ const EmployeeKpiSetSchema = new Schema({
             default: Date.now
         },
         updatedAt: {
-            type : Date,
+            type: Date,
             default: Date.now
         },
         files: [{ // Các file đi kèm comments
@@ -101,7 +105,7 @@ const EmployeeKpiSetSchema = new Schema({
                 default: Date.now
             },
             updatedAt: {
-                type : Date,
+                type: Date,
                 default: Date.now
             },
             files: [{ // Các file đi kèm comments
@@ -115,7 +119,7 @@ const EmployeeKpiSetSchema = new Schema({
             }],
         }],
     }],
-    
+
     logs: [
         {
             createdAt: {
@@ -139,7 +143,7 @@ const EmployeeKpiSetSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.EmployeeKpiSet)
+    if (!db.models.EmployeeKpiSet)
         return db.model('EmployeeKpiSet', EmployeeKpiSetSchema);
     return db.models.EmployeeKpiSet;
 }

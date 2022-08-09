@@ -16,12 +16,13 @@ import { TaskProjectAddModal } from '../../../task/task-project/component/taskPr
 import TabProjectInfo from './tabProjectInfo';
 import TabChangeRequestProject from './tabChangeRequestProject';
 import { ChangeRequestActions } from '../../change-requests/redux/actions';
+import { ProjectPhaseActions } from '../../project-phase/redux/actions';
 import { TaskAddModal } from '../../../task/task-management/component/taskAddModal';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import TabProjectTasksList from './tabProjectTasksList';
 
 const ProjectDetailPage = (props) => {
-    const { translate, project, user, tasks } = props;
+    const { translate, project, user, tasks, projectPhase } = props;
     const userId = getStorage("userId");
     // const [projectDetail, setProjectDetail] = useState(getCurrentProjectDetails(project));
     let projectDetail = getCurrentProjectDetails(project);
@@ -33,27 +34,32 @@ const ProjectDetailPage = (props) => {
         props.getAllDepartment();
         props.getDepartment();
         props.getAllUserInAllUnitsOfCompany();
-        props.getTasksByProject(currentProjectId);
-        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
-    }, [])
+        props.getAllTasksByProject(currentProjectId);
+        props.getAllPhaseByProject(currentProjectId);
+        props.getAllMilestoneByProject(currentProjectId);
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'get_all' });
+    }, [currentProjectId]);
 
-    const currentProjectTasks = tasks?.tasksbyproject;
+    const currentProjectTasks = tasks?.tasksByProject;
+    const currentProjectPhase = projectPhase.phases;
+    const currentProjectMilestone = projectPhase?.milestones;
     
     // Hàm lấy lại thông tin sau khi dự án sau khi tạo dự án mới
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
-        await props.getTasksByProject(currentProjectId);
-        await props.getTasksByProject(currentProjectId, 1, 6);
+        await props.getAllTasksByProject(currentProjectId);
+        await props.getAllPhaseByProject(currentProjectId);
+        await props.getAllMilestoneByProject(currentProjectId);
         projectDetail = getCurrentProjectDetails(project);
-        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
+        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId : 'get_all' });
     }
 
     return (
         <div className="box">
             <ul className="nav nav-tabs">
-                <li className="active"><a href="#project-details-info" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thông tin dự án</a></li>
-                <li><a href="#project-tasks-list" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Danh sách công việc dự án</a></li>
-                <li><a href="#project-details-change-request" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Yêu cầu thay đổi phát sinh dự án</a></li>
+                <li className="active"><a href="#project-details-info" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.detail_title')}</a></li>
+                <li><a href="#project-tasks-list" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.list_tasks')}</a></li>
+                <li><a href="#project-details-change-request" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('project.change_request')}</a></li>
             </ul>
             <div className="tab-content">
                 {/** Thông tin dự án */}
@@ -65,6 +71,8 @@ const ProjectDetailPage = (props) => {
                             currentProjectId={currentProjectId}
                             projectDetail={projectDetail}
                             currentProjectTasks={currentProjectTasks}
+                            currentProjectPhase={currentProjectPhase}
+                            currentProjectMilestone={currentProjectMilestone}
                             handleAfterCreateProject={handleAfterCreateProject}
                         />
                     </LazyLoadComponent>
@@ -75,7 +83,12 @@ const ProjectDetailPage = (props) => {
                     <LazyLoadComponent
                         key="TabProjectTasksList"
                     >
-                        <TabProjectTasksList projectDetail={projectDetail} currentProjectTasks={currentProjectTasks} />
+                        <TabProjectTasksList 
+                            projectDetail={projectDetail} 
+                            currentProjectTasks={currentProjectTasks} 
+                            currentProjectPhase={currentProjectPhase}
+                            currentProjectMilestone={currentProjectMilestone}
+                        />
                     </LazyLoadComponent>
                 </div>
 
@@ -84,7 +97,11 @@ const ProjectDetailPage = (props) => {
                     <LazyLoadComponent
                         key="TabChangeRequestProject"
                     >
-                        <TabChangeRequestProject currentProjectTasks={currentProjectTasks} />
+                        <TabChangeRequestProject 
+                            currentProjectTasks={currentProjectTasks}  
+                            currentProjectPhase={currentProjectPhase}
+                            currentProjectMilestone={currentProjectMilestone}
+                        />
                     </LazyLoadComponent>
                 </div>
             </div>
@@ -93,8 +110,8 @@ const ProjectDetailPage = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user, tasks } = state;
-    return { project, user, tasks }
+    const { project, user, tasks, projectPhase } = state;
+    return { project, user, tasks, projectPhase }
 }
 
 const mapDispatchToProps = {
@@ -102,7 +119,9 @@ const mapDispatchToProps = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllTasksByProject: taskManagementActions.getAllTasksByProject,
+    getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getAllMilestoneByProject:ProjectPhaseActions.getAllMilestoneByProject,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
 }

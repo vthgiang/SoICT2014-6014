@@ -78,7 +78,8 @@ export default {
             detail: "Chi tiết",
             select_all: "Chọn tất cả",
             add_import: "Thêm dữ liệu từ file",
-            delegation_role: "Ủy quyền từ"
+            delegation_role: "Ủy quyền từ",
+            filter: "Lọc",
         },
 
         dashboard_unit: {
@@ -98,6 +99,7 @@ export default {
             manage_configuration: "Cấu hình hệ thống",
             manage_system: "Sao lưu phục hồi",
             manage_company: "Doanh nghiệp",
+            manage_system_admin_page: "Quản lý trang quản trị hệ thống",
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
             manage_attribute: "Quản lý thuộc tính",
@@ -135,6 +137,7 @@ export default {
             },
 
             task_template: "Mẫu Công Việc",
+            administrative_document_process_dashboard: "Dashboard quy trình văn bản",
             taskmanagement: "Quản Lý Công Việc",
             task_management_unit: "Công việc đơn vị",
             manageDocument: "Quản lý văn bản",
@@ -167,6 +170,16 @@ export default {
             training_plan_employee: "Thông tin đào tạo",
             list_major: "Danh sách chuyên ngành",
             list_career_position: "Danh sách vị trí công việc",
+            list_certificate: "Bằng cấp - chứng chỉ",
+
+            // đấu thầu
+            manage_bidding: "Quản lý đấu thầu",
+            bidding_project_template_list: "Mẫu dự án",
+            manage_tag: "Quản lý danh mục tag",
+            list_bidding_contract: "Hợp đồng thầu",
+            bidding_dashboard: "Thống kê thực hiện gói thầu",
+            list_bidding_package: "Danh sách gói thầu",
+            detail_bidding_package: "Chi tiết gói thầu",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
 
             employee_unit: "Nhân sự đơn vị",
@@ -190,6 +203,7 @@ export default {
             kpi_unit_create_for_admin: "Khởi tạo KPI toàn công ty",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
+            kpi_unit_sales_dashboard: "Dashboard KPI phòng kinh doanh",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
             kpi_unit_statistic: "Phân tích tính hợp lý trong thiết lập KPI đơn vị",
             kpi_unit_manager: "Quản lý KPI đơn vị",
@@ -201,6 +215,7 @@ export default {
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
             kpi_member_detail: "Chi tiết KPI cá nhân",
+            kpi_unit_template: "Mẫu KPI",
 
             notifications: "Thông báo",
 
@@ -316,7 +331,9 @@ export default {
             // Quản lý dự án
             manage_project: "Quản lý dự án",
             projects_list: 'Danh sách dự án',
+            project_template_list: "Mẫu dự án",
             project_details: 'Chi tiết dự án',
+            project_template_details: 'Chi tiết mẫu dự án',
             tasks_list: 'Danh sách công việc',
             phases_list: 'Danh sách giai đoạn',
             issues_list: 'Danh sách vấn đề',
@@ -779,6 +796,18 @@ export default {
                 //Thông điệp trả về từ server
                 get_system_page_apis_success: 'Lấy system page API thành công',
                 get_system_page_api_failure: 'Lấy system page API thất bại',
+
+                add_title: 'Thêm mới URL',
+                add_success: "Thêm mới URL thành công!",
+                add_fail: "Thêm URL thất bại!",
+                URL: "Đường dẫn",
+                page_description: "Mô tả trang",
+                add: "Thêm trang mới",
+                search: "Tìm kiếm",
+                index: "STT",
+                description: "Mô tả",
+                detail_info_page: "Thông tin chi tiết trang",
+                delete: "Xóa URL",
             },
 
             privilege_system_api: {
@@ -2350,8 +2379,42 @@ export default {
                 },
             },
 
+            certificate: {
+                get_certificate_success: "Lấy danh sách chứng chỉ thành công",
+                get_certificate_failure: "Lấy danh sách chứng chỉ thất bại",
+                create_certificate_success: "Tạo chứng chỉ thành công",
+                create_certificate_failure: "Tạo chứng chỉ thất bại",
+                edit_certificate_success: "Cập nhật chứng chỉ thành công",
+                edit_certificate_failure: "Cập nhật chứng chỉ thất bại",
+                delete_certificate_success: "Xóa chứng chỉ thành công",
+                delete_certificate_failure: "Xóa chứng chỉ thất bại",
+            },
+
+            career_position: {
+                get_career_position_success: "Lấy danh sách vị trí công việc thành công",
+                get_career_position_failure: "Lấy danh sách vị trí công việc thất bại",
+                create_career_position_success: "Tạo vị trí công việc thành công",
+                create_career_position_failure: "Tạo vị trí công việc thất bại",
+                update_career_position_success: "Cập nhật vị trí công việc thành công",
+                update_career_position_failure: "Cập nhật vị trí công việc thất bại",
+                delete_career_position_success: "Xóa vị trí công việc thành công",
+                delete_career_position_failure: "Xóa vị trí công việc thất bại",
+            },
+
             // Quản lý thông tin nhân viên
             profile: {
+                // Quản lý gói thầu
+                bidding_package: {
+                    get_bidding_package_success: "Lấy danh sách gói thầu thành công",
+                    get_bidding_package_failure: "Lấy danh sách gói thầu thất bại",
+                    create_bidding_package_success: "Tạo gói thầu thành công",
+                    create_bidding_package_failure: "Tạo gói thầu thất bại",
+                    update_bidding_package_success: "Cập nhật gói thầu thành công",
+                    update_bidding_package_failure: "Cập nhật gói thầu thất bại",
+                    delete_bidding_package_success: "Xóa gói thầu thành công",
+                    delete_bidding_package_failure: "Xóa gói thầu thất bại",
+                },
+
                 // Nhóm dùng chung cho chức năng quản lý tông tin nhân viên
                 tab_name: {
                     menu_basic_infor: "Thông tin cơ bản",
@@ -2486,6 +2549,11 @@ export default {
                 phd: "Tiến sỹ",
                 unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
+                project_experience: "Dự án từng tham gia",
+                project_end_date: "Ngày kết thúc dự án",
+                project_participation_status: "Trạng thài tham gia dự án",
+                project_employee_position: "Vị trí công việc",
+                project_professional_or_managerment: "Kinh nghiệm chuyên môn và quản lý có liên quan",
                 Working_process: "Quá trình công tác",
                 job_description: "Công việc đã làm",
                 reference_information: "Thông tin tham chiếu",
@@ -2727,6 +2795,7 @@ export default {
                     update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
+
                     get_list_employee_success:
                         "Lấy danh sách nhân viên thành công",
                     get_list_employee_faile: "Lấy danh sách nhân viên thất bại",
@@ -2778,7 +2847,26 @@ export default {
                     temporary_residence_required:
                         "Nơi ở hiện tại không được để trống",
                 },
+
+                bidding_package_management: {
+                    type: {
+                        1: "Tư vấn",
+                        2: "Phi tư vấn",
+                        3: "Hàng hóa",
+                        4: "Xây dựng",
+                        5: "Hỗn hợp"
+                    },
+                    status: {
+                        1: "Hoạt động",
+                        0: "Đã đóng thầu",
+                        2: "Chờ kết quả dự thầu",
+                        3: "Đang thực hiện",
+                        4: "Hoàn thành"
+                    },
+                }
             },
+
+
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {
@@ -4227,6 +4315,10 @@ export default {
                 approval_close_task_failure: "Phê duyệt yêu cầu kết thúc công việc thất bại",
                 decline_close_task_failure: "Từ chối yêu cầu kết thúc công việc thất bại",
 
+                // Đề xuất nhân sự công việc
+                proposal_personnel_success: "Lấy danh sách nhân sự phù hợp thành công",
+                proposal_personnel_fail: "Lấy danh sách nhân sự phù hợp thất bại",
+
                 // Mở lại công việc
                 open_task_again_success: 'Kích hoạt lại công việc thành công',
                 open_task_again_failure: 'Kích hoạt lại công việc thất bại',
@@ -4459,6 +4551,28 @@ export default {
                 log_edit_kpi_new: "Liên kết KPI mới",
                 log_edit_eval_info: "Chỉnh sửa thông tin đánh giá công việc",
                 log_edit_progress: "Mức độ hoàn thành công việc mới",
+
+                // danh sách kết quả giao nộp
+                get_task_outputs_success: "Lấy danh sách kết quả giao nộp thành công",
+                get_task_outputs_failure: "Lấy danh sách kết quả giao nộp thất bại",
+
+                approve_task_outputs_success: "Phê duyệt kết quả giao nộp thành công",
+                approve_task_outputs_failure: "Phê duyệt kết quả giao nộp thất bại",
+
+                edit_submission_results_success: "Chỉnh sửa báo cáo kết quả giao nộp thành công",
+                edit_submission_results_failure: "Chỉnh sửa báo cáo kết quả giao nộp thất bại",
+
+                delete_submission_results_success: "Xóa báo cáo kết quả giao nộp thành công",
+                delete_submission_results_failure: "Xóa báo cáo kết quả giao nộp thất bại",
+
+                delete_file_of_task_outputs_success: "Xóa tập tin của báo cáo kết quả giao nộp thành công",
+                delete_file_of_task_outputs_failure: "Xóa tập tin của báo cáo kết quả giao nộp thất bại",
+
+                create_comment_of_task_outputs_success: "Thêm bình luận kết quả giao nộp thành công",
+                create_comment_of_task_outputs_failure: "Thêm bình luận kết quả giao nộp thất bại",
+
+                edit_comment_of_task_outputs_success: "Chỉnh sửa bình luận kết quả giao nộp thành công",
+                edit_comment_of_task_outputs_failure: "Chỉnh sửa bình luận kết quả giao nộp thất bại",
 
                 // modal approve task
                 modal_approve_task: {
@@ -4837,6 +4951,11 @@ export default {
                             "Thêm mục tiêu KPI thành công",
                         create_employee_kpi_failure:
                             "Thêm mục tiêu KPI thất bại",
+
+                        balance_employee_kpi_set_success:
+                            "Cân bằng mục tiêu KPI thành công",
+                        balance_employee_kpi_set_failure:
+                            "Cân bằng mục tiêu KPI thất bại",
 
                         edit_employee_kpi_set_success:
                             "Chỉnh sửa tập KPI nhân viên thành công",
@@ -5318,6 +5437,8 @@ export default {
                     "Cập nhật điểm đánh giá KPI đơn vị lỗi",
                 copy_kpi_unit_success: "Sao chép KPI đơn vị thành công",
                 copy_kpi_unit_failure: "Sao chép KPI đơn vị thất bại",
+                copy_kpi_template_unit_success: "Sử dụng mẫu KPI đơn vị thành công",
+                copy_kpi_template_unit_failure: "Sử dụng mẫu KPI đơn vị thất bại",
                 copy_employee_kpi_success: "Sao chép KPI cá nhân thành công",
                 copy_employee_kpi_failure: "Sao chép KPI cá nhân thất bại",
                 organizatinal_unit_kpi_set_exist: "KPI đơn vị đã tồn tại",
@@ -5325,6 +5446,11 @@ export default {
                 calculate_kpi_unit_success: "Tính điểm KPI thành công",
                 calculate_kpi_unit_failure: "Tính điểm KPI thất bại"
             },
+            kpi_template: {
+                create_kpi_template_success: "Tạo mới mẫu KPI thành công",
+                delete_kpi_template_success: "Xóa mẫu KPI thành công",
+                edit_kpi_template_success: "Chỉnh sửa mẫu KPI thành công",
+            }
         },
 
         manage_warehouse: {
@@ -5597,21 +5723,29 @@ export default {
             bill_management: {
                 text: "Chưa đánh lô cho hàng hóa",
 
-                billType: {
-                    1: "Nhập nguyên vật liệu",
-                    2: "Nhập thành phẩm",
-                    3: "Nhập công cụ, dụng cụ",
-                    4: "Nhập phế phẩm",
-                    5: "Xuất nguyên vật liệu",
-                    6: "Xuất thành phẩm",
-                    7: "Xuất công cụ, dụng cụ",
-                    8: "Xuất phế phẩm",
-                    9: "Kiểm kê định kỳ",
-                    10: "Kiểm kê thường xuyên",
-                    11: "Trả hàng hóa tự sản xuất không đạt kiểm định",
-                    12: "Trả hàng hóa nhập từ nhà cung cấp không đạt kiểm định",
-                    13: "Trả hàng hóa đã xuất kho",
-                    14: "Luân chuyển",
+                goodReceiptBillType: {
+                    1: "Nhập hàng từ nhà máy sản xuất",
+                    2: "Nhập hàng từ nhà cung cấp",
+                    3: "Nhập hàng hóa luân chuyển kho",
+                },
+                goodRIssueBillType: {
+                    1: "Xuất hàng đạt kiểm định đến nhà máy",
+                    2: "Xuất hàng đạt kiểm định đến khách hàng",
+                    3: "Xuất hàng không đạt kiểm định đến nhà máy",
+                    4: "Xuất hàng không đạt kiểm định đến khách hàng",
+                    5: "Xuất hàng luân chuyển kho",
+                },
+                goodReturnBillType: {
+                    1: "Trả hàng từ nhà máy sản xuất",
+                    2: "Trả hàng từ nhà cung cấp",
+                },
+                goodTakeBillType: {
+                    1: "Kiểm kê thường xuyên",
+                    2: "Kiểm kê định kỳ",
+                    3: "kiểm kê dựa trên yêu cầu nhập kho",
+                    4: "kiểm kê dựa trên yêu cầu xuất kho",
+                    5: "kiểm kê dựa trên yêu cầu trả hàng",
+                    6: "kiểm kê dựa trên yêu cầu luân chuyển"
                 },
                 1: {
                     status: "Chờ phê duyệt",
@@ -5630,21 +5764,18 @@ export default {
                     color: "red",
                 },
                 bill_color: {
-                    1: "green",
-                    2: "green",
-                    3: "violet",
+                    1: "orange",
+                    2: "blue",
+                    3: "red",
                     4: "green",
                     5: "blue",
                     6: "violet",
                     7: "red",
                 },
                 bill_status: {
-                    1: "Chờ phê duyệt",
-                    2: "Đã phê duyệt",
-                    3: "Đang thực hiện",
-                    4: "Đã kiểm định chất lượng xong",
-                    5: "Đã hoàn thành",
-                    7: "Đã hủy",
+                    1: "Đang thực hiện công việc",
+                    2: "Đã hoàn thành",
+                    3: "Đã hủy",
                 },
                 bill_receipt_status: {
                     1: "Chờ phê duyệt",
@@ -6711,7 +6842,7 @@ export default {
                 add_lot: "Tạo lô sản xuất",
                 base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                conversion_rate: "Trọng số chuyển đổi",
+                conversion_rate: "Trọng số chuyển đổi sang đơn vị tính cơ bản",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
                 quantity_base_unit: "Số lượng cần sản xuất",
                 product_lot_code: "Mã lô thành phẩm",
@@ -6838,6 +6969,24 @@ export default {
                     9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
                     10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
                 },
+                purchasing_request_in_order: {
+                    2: { content: "Chờ phê duyệt", color: "orange" },
+                    3: { content: "Đã phê duyệt", color: "violet" },
+                    4: { content: "Đã tạo đơn mua hàng", color: "blue" },
+                    5: { content: "Hàng hóa đã được mua về, đang chờ phê duyệt gửi yêu cầu nhập kho", color: "orange" },
+                    6: { content: "Đã gửi yêu cầu nhập kho", color: "blue" },
+                    7: { content: "Đã phê duyệt yêu cầu nhập kho", color: "green" },
+                    8: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
+                    10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
+                },
+                purchasing_request_in_stock: {
+                    6: { content: "Chờ phê duyệt", color: "blue" },
+                    7: { content: "Đã phê duyệt", color: "green" },
+                    8: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
+                    10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
+                },
                 receipt_request_from_order: {
                     1: { content: "Chờ phê duyệt", color: "orange" },
                     2: { content: "Đã phê duyệt, yêu cầu đã được gửi đến kho", color: "green" },
@@ -6858,6 +7007,21 @@ export default {
                     3: { content: "Đã gửi phê duyệt yêu cầu xuất kho", color: "green" },
                     4: { content: "Đã hoàn thành xuất kho", color: "blue" },
                     5: { content: "Đã hủy", color: "red" },
+                },
+                request_create_in_stock: {
+                    1: { content: "Chờ phê duyệt", color: "orange" },
+                    2: { content: "Đã phê duyệt", color: "green" },
+                    3: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    4: { content: "Đã hủy", color: "red" },
+                },
+                stock_rotate_request: {
+                    1: { content: "Chờ phê duyệt", color: "orange" },
+                    2: { content: "Đã phê duyệt", color: "green" },
+                    3: { content: "Đang tiến hành xuất kho", color: "blue" },
+                    4: { content: "Đã hoàn thành xuất kho, chờ nhập kho", color: "blue" },
+                    5: { content: "Đang tiến hành nhập kho", color: "blue" },
+                    6: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    7: { content: "Đã hủy", color: "red" },
                 },
                 search: "Tìm kiếm",
                 select_status: "Chọn trạng thái",
@@ -6914,7 +7078,8 @@ export default {
                 choose_manufacturing_works: "---Chọn nhà máy---",
                 validate_manufacturing_works: "Bạn cần chọn nhà máy",
                 base_infomation: "Thông tin cơ bản",
-                approved_true: 'Phê duyệt yêu cầu'
+                approved_true: 'Phê duyệt yêu cầu',
+                source_request: 'Nguồn đề nghị',
             },
         },
 
@@ -6938,6 +7103,7 @@ export default {
             description: "Mô tả dự án",
             add_title: "Thêm mới dự án",
             detail_title: "Thông tin chi tiết dự án",
+            change_request: 'Yêu cầu thay đổi phát sinh dự án',
             edit_title: "Chỉnh sửa dự án",
             add_btn_from_excel: "Thêm từ file excel",
             add_btn_new: "Thêm dự án mới",
@@ -6955,11 +7121,15 @@ export default {
             select_all_type: 'Chọn tất cả hình thức',
             search_by_employees: 'Nhập tên hoặc email',
             search: 'Tìm kiếm',
-            add_err_end_date: 'Ngày kết thúc dự án phải sau ngày bắt đầu',
+            add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
             add_err_empty_start_date: "Hãy chọn ngày bắt đầu",
             add_err_empty_end_date: "Hãy chọn ngày kết thúc",
             col_start_time: "Thời điểm bắt đầu",
             col_expected_end_time: "Thời điểm kết thúc dự kiến",
+            calculate: "Tính toán",
+            time_to_reduce: "Thời gian thực hiện dự án cần giảm",
+            desire_end_time: "Thời điểm mà bạn muốn dự án kết thúc",
+            err_early_end_date: "Ngày được chọn không được sớm hơn ngày kết thúc sớm nhất",
 
             // Thông điệp trả về từ server 
             get_task_project_success: 'Lấy thông tin dự án thành công',
@@ -6968,6 +7138,8 @@ export default {
             show_task_project_fail: 'Hiển thị thông tin dự án thất bại',
             create_task_project_success: 'Tạo dự án mới thành công',
             create_task_project_fail: 'Không thể tạo mới dự án',
+            create_tasks_list_excel_cpm_success: 'Tạo công việc từ file thành công',
+            create_tasks_list_excel_cpm_fail: 'Tạo công việc từ file thất bại',
             edit_task_project_success: 'Chỉnh sửa thông tin dự án thành công',
             edit_task_project_fail: 'Không thể chỉnh sửa thông tin dự án',
             delete_task_project_success: 'Xoá dự án thành công',
@@ -6986,8 +7158,20 @@ export default {
             update_status_project_change_request_fail: 'Cập nhật trạng thái của yêu cầu thất bại',
             update_list_project_change_requests_success: 'Cập nhật danh sách yêu cầu thành công',
             update_list_project_change_requests_fail: 'Cập nhật danh sách yêu cầu thất bại',
+            total: 'Tổng',
 
+            // Quản lý công việc trong dự án
             task_management: {
+                add_task: "Thêm công việc mới",
+                add_phase: "Thêm giai đoạn mới",
+                add_milestone: "Thêm cột mốc mới",
+                type: "Loại công việc",
+                phase: "Giai đoạn",
+                task: "Công việc",
+                milestone: "Cột mốc",
+                milestone_info: "Thông tin cột mốc",
+                select_type: "Chọn loại công việc",
+                select_all_type: "Chọn tất cả loại công việc",
                 add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
                 end_date: "Ngày dự kiến kết thúc",
 
@@ -7003,12 +7187,17 @@ export default {
                 estimatedCostMaximum: "Tối đa",
                 add_err_optimistic_time: "Thời gian thoả hiệp không được lớn hơn thời gian ước lượng",
                 preceedingTask: "Công việc tiền nhiệm",
+                search_by_name_code: "Tìm kiếm theo tên hoặc mã công việc",
+                code: "Mã công việc",
             },
 
+            // Đơn vị thời gian
             unit: {
                 days: 'Ngày',
                 hours: 'Giờ',
             },
+
+            // Lập lịch
             schedule: {
                 taskCode: 'Mã công việc',
                 taskName: 'Tên công việc',
@@ -7027,6 +7216,23 @@ export default {
                 calculateRecommend: 'Tính toán đề xuất thoả hiệp dự án',
                 percentFinishTask: 'Xác suất hoàn thành dự án trong',
             },
+
+            // Yêu cầu thay đổi
+            request: {
+                name: 'Tên yêu cầu',
+                creator: 'Người tạo yêu cầu',
+                create_time: 'Thời điểm tạo yêu cầu',
+                description: 'Mô tả',
+                affect_task: 'Công việc bị ảnh hưởng',
+                status: 'Trạng thái',
+                create_request: 'Tạo yêu cầu thay đổi',
+                refused: 'Bị từ chối',
+                approved: 'Đã chấp thuận',
+                wait_for_approval: 'Chờ phê duyệt',
+                not_request: 'Chưa yêu cầu',
+            },
+
+            // Đánh giá
             eval: {
                 undefined: 'Nếu performanceIndex không tính được (mẫu số actualCost = 0 HOẶC performanceIndex = Infinity): Điểm = Chưa tính được',
                 level1: 'Nếu realDuration = 0 HOẶC performanceIndex < 0.5: Điểm = 0',
@@ -7036,6 +7242,8 @@ export default {
                 level5: 'Nếu 1.25 <= performanceIndex < 1.5: Điểm = 90',
                 level6: 'Nếu 1.5 <= performanceIndex: Điểm = 100',
             },
+
+            // Báo cáo
             report: {
                 title: 'Báo cáo chi tiết dự án'
             }
@@ -7043,10 +7251,23 @@ export default {
         phase: {
             projectCodeName: 'Mã dự án',
             fullName: 'Tên giai đoạn',
+            description: 'Mô tả giai đoạn',
+            startDate: 'Ngày bắt đầu giai đoạn',
+            endDate: 'Ngày kết thúc giai đoạn',
+            startTime: 'Thời gian bắt đầu giai đoạn',
+            endTime: 'Thời gian kết thúc giai đoạn',
             progress: 'Tiến độ',
-            listTasks: 'Công việc liên quan',
+            status: 'Trạng thái',
+            listTasks: 'Công việc thuộc giai đoạn',
             duration: 'Thời lượng',
             add_btn_new: "Thêm giai đoạn mới",
+            report: {
+                title: 'Báo cáo chi tiết giai đoạn'
+            },
+            milestone: {
+                name: 'Tên cột mốc',
+                date: 'Thời điểm'
+            }
         },
     },
 };

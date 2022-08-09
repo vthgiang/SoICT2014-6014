@@ -1,4 +1,4 @@
-import React, { Component, useEffect,useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from '../../../../../config';
@@ -12,7 +12,8 @@ import { ModalEditProcessNoInit } from './modalEditProcessNoInit';
 import { forwardRef } from 'react';
 import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-
+import Swal from 'sweetalert2';
+import parse from 'html-react-parser';
 function TaskProcessManagement(props) {
 	const TableId = "table-task-process-template";
 	const defaultConfig = { limit: 5 }
@@ -26,7 +27,7 @@ function TaskProcessManagement(props) {
 		tableId: TableId,
 	})
 	const { translate, taskProcess, department } = props
-	const { currentRow, currentRole, currentUser, tableId ,showmodalCreateTaskByProcess} = state
+	const { currentRow, currentRole, currentUser, tableId, showmodalCreateTaskByProcess } = state
 	let listTaskProcess = [];
 	if (taskProcess && taskProcess.listTaskProcess) {
 		listTaskProcess = taskProcess.listTaskProcess
@@ -64,7 +65,7 @@ function TaskProcessManagement(props) {
 	}
 
 	const deleteTaskProcess = async (taskProcessId) => {
-		
+
 		props.deleteTaskProcess(taskProcessId, state.pageNumber, state.noResultsPerPage, "");
 	}
 
@@ -77,6 +78,17 @@ function TaskProcessManagement(props) {
 			}
 		});
 		window.$(`#modal-view-process-task-list`).modal("show");
+	}
+
+	const viewTaskOutputs = async (item) => {
+		// console.log(item)
+		setState(state => {
+			return {
+				...state,
+				currentRow: item,
+			}
+		});
+		window.$(`#modal-view-task-output`).modal("show");
 	}
 
 	const showModalCreateTaskByProcess = async () => {
@@ -114,7 +126,28 @@ function TaskProcessManagement(props) {
 			props.getAllTaskProcess(1, pageTotal, "");
 		}
 	}
-	const handleUpdateData = ()=>{
+	const formatDate = (date, monthYear = false) => {
+		if (!date) return null;
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		if (month.length < 2) {
+			month = '0' + month;
+		}
+
+		if (day.length < 2) {
+			day = '0' + day;
+		}
+
+		if (monthYear === true) {
+			return [month, year].join('-');
+		} else {
+			return [day, month, year].join('-');
+		}
+	}
+	const handleUpdateData = () => {
 
 	}
 
@@ -132,8 +165,69 @@ function TaskProcessManagement(props) {
 		return check;
 	}
 
-	//console.log(listTaskProcess);
+	const handleFinished = async (item) => {
+		const { tasks, translate } = props;
+		console.log(item);
+		let listTask = item.tasks
+		let length = 0, lengthProcess = 0;
+		let listProcess = item.processChilds
+		listTask.forEach(value => {
+			if (value.status !== "finished") length = length + 1;
+		});
+		listProcess.forEach(value => {
+			if (value.status !== "finished") lengthProcess = lengthProcess + 1;
+		});
+		let message = length !== 0 ? `Còn ${length} công việc chưa hoàn thành` : ""
+		message = lengthProcess == 0 ? message : length == 0 ? `Còn ${lengthProcess} quy trình chưa hoàn thành` : `${message} và ${lengthProcess} quy trình chưa hoàn thành`
+		if (message) {
+			Swal.fire({
+				title: `${message}`,
+				icon: 'warning',
+				showCancelButton: true,
+				showConfirmButton: false,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				cancelButtonText: translate('general.close'),
+			}).then(async (result) => {
+				if (result.value) {
+					// await props.deleteTaskById(id);
+					// await setUpdateDelete(updateDelete + 1)
+				}
+			})
+		} else {
+			Swal.fire({
+				title: `Bạn có chắc chắn kết thúc quy trình "${item.processName}"?`,
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				cancelButtonText: translate('general.no'),
+				confirmButtonText: translate('general.yes'),
+			}).then(async (result) => {
+				if (result.value) {
+					await props.editProcessInfo(item._id, { finished: true, id: item._id });
+				}
+			})
+		}
 
+
+	}
+
+	//console.log(listTaskProcess);
+	const convertStatus = (status) => {
+		switch (status) {
+			case "inprocess":
+				return parse('<p style="color:blue;">Đang thực hiện</p>')
+			case "not_initialized":
+				return parse('<p style="color:red;">Chưa khởi tạo</p>')
+			case "delayed":
+				return "Trễ hạn"
+			case "finished":
+				return parse('<p style="color:green;">Đã hoàn thành</p>')
+			default:
+			// code block
+		}
+	}
 	return (
 		<div className="box">
 			<div className="box-body qlcv">
@@ -149,6 +243,7 @@ function TaskProcessManagement(props) {
 						processDescription={currentRow.processDescription}
 						infoTask={currentRow.taskList}
 						creator={currentRow.creator}
+						checkManager={isManager(currentRow)}
 					/>
 				}
 				{
@@ -212,6 +307,8 @@ function TaskProcessManagement(props) {
 						<tr>
 							<th title={translate("task.task_process.process_name")}>{translate("task.task_process.process_name")}</th>
 							<th title={translate('task_template.description')}>{translate('task_template.description')}</th>
+							<th title="Quy trình cha">Quy trình cha</th>
+							<th title={translate('task_template.status')}>{translate('task_template.status')}</th>
 							<th title={translate('task.task_process.manager')}>{translate('task.task_process.manager')}</th>
 							<th title={translate("task.task_process.creator")}>{translate("task.task_process.creator")}</th>
 							<th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
@@ -220,17 +317,19 @@ function TaskProcessManagement(props) {
 					<tbody className="task-table">
 						{
 							(listTaskProcess && listTaskProcess.length !== 0) ? listTaskProcess.map((item, key) => {
-								if (item.status !=="not_initialized")
+
 								return <tr key={key} >
 									<td>{item.processName}</td>
 									<td>{item.processDescription}</td>
+									<td>{item.processParent?.processName}</td>
+									<td>{convertStatus(item.status)}</td>
 									<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name).join(', ')}</td>
 									<td>{item.creator?.name}</td>
 									<td>
 										<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
 											<i className="material-icons">view_list</i>
 										</a>
-										{isManager(item) &&
+										{isManager(item) && item.status !== "finished" &&
 											<React.Fragment>
 												<a className="edit" onClick={() => { showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
 													<i className="material-icons">edit</i>
@@ -238,53 +337,10 @@ function TaskProcessManagement(props) {
 												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
 													<i className="material-icons"></i>
 												</a>
-											</React.Fragment>
-										}
+												<a className="doneP" onClick={() => { handleFinished(item) }} title={translate('task_template.delete_this_task_template')}>
+													<i class="material-icons">check_circle</i>
+												</a>
 
-										{/* <a className="delete" onClick={() => { deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
-												<i className="material-icons"></i>
-											</a>
-											<a className="" style={{ color: "#28A745" }} onClick={() => { showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
-												<i className="material-icons">add_box</i>
-											</a> */}
-									</td>
-								</tr>
-							}) : null
-						}
-					</tbody>
-				</table>
-				<p>Các quy trình cần khởi tạo</p>
-				<table className="table table-bordered table-striped table-hover" id={tableId}>
-					<thead>
-						<tr>
-							<th title={translate("task.task_process.process_name")}>{translate("task.task_process.process_name")}</th>
-							<th title="Quy trình cha">Quy trình cha</th>
-							<th title={translate("task.task_process.start_date")}>{translate("task.task_process.start_date")}</th>
-							<th title={translate("task.task_process.end_date")}>{translate("task.task_process.end_date")}</th>
-							<th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-						</tr>
-					</thead>
-					<tbody className="task-table">
-						{
-							(listTaskProcess && listTaskProcess.length !== 0) ? listTaskProcess.map((item, key) => {
-								if (item.status ==="not_initialized")
-								return <tr key={key} >
-									<td>{item.processName}</td>
-									<td>{item.processParent.processName}</td>
-									<td>{item.startDate}</td>
-									<td>{item.endDate}</td>
-									<td>
-										<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
-											<i className="material-icons">view_list</i>
-										</a>
-										{isManager(item) &&
-											<React.Fragment>
-												<a className="edit" onClick={() => { showEditProcessNoInit(item) }} title={translate('task_template.edit_this_task_template')}>
-													<i className="material-icons">edit</i>
-												</a>
-												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
-													<i className="material-icons"></i>
-												</a>
 											</React.Fragment>
 										}
 
@@ -317,6 +373,7 @@ function mapState(state) {
 const actionCreators = {
 	getAllTaskProcess: TaskProcessActions.getAllTaskProcess,
 	deleteXmlDiagram: TaskProcessActions.deleteXmlDiagram,
-	deleteTaskProcess: TaskProcessActions.deleteTaskProcess
+	deleteTaskProcess: TaskProcessActions.deleteTaskProcess,
+	editProcessInfo: TaskProcessActions.editProcessInfo,
 };
 export default connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));

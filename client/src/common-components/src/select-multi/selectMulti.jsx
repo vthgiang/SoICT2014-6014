@@ -31,8 +31,6 @@ class SelectMulti extends Component {
         options = {
             ...options,
             includeSelectAllOption: includeSelectAllOption,
-            enableFiltering: options.enableFilter,
-            filterPlaceholder: translate('general.search'),
             selectAllText: translate('general.select_all'),
             maxHeight: 200,
         }
@@ -109,8 +107,8 @@ class SelectMulti extends Component {
                         </select>) : (<select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id}
                             multiple="multiple" value={value} onChange={() => { }}>
                             <option value='' disabled={true}>Empty</option>
-                            })}
-                        </select>)}
+                        </select>)
+                }
                 </div>
             </React.Fragment>
         );

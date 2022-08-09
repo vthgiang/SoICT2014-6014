@@ -11,9 +11,22 @@ import { PurchaseOrderActions } from "../../../purchase-order/redux/actions";
 
 function CreateFromPurchaseOrderForm(props) {
 
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
+
     const [state, setState] = useState({
         code: generateCode("PDN"),
-        desiredTime: "",
+        desiredTime: formatDate((new Date()).toISOString()),
         description: "",
         stock: "",
     });
@@ -26,7 +39,7 @@ function CreateFromPurchaseOrderForm(props) {
         }
         setState({
             ...state,
-            desiredTime: formatToTimeZoneDate(value)
+            desiredTime: value
         })
     }
 
@@ -74,9 +87,14 @@ function CreateFromPurchaseOrderForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 3
             });
             setState({
                 ...state,
@@ -203,14 +221,15 @@ function CreateFromPurchaseOrderForm(props) {
             })
             const data = {
                 code: state.code,
-                desiredTime: formatToTimeZoneDate(state.desiredTime),
+                desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
                 stock: state.stock,
                 requestType: 2,
                 type: 1,
                 status: 1,
-                approverReceiptRequestInOrder: state.approvers,
+                approvers: state.approvers,
+                purchaseOrder: state.purchaseOrder,
             }
             props.createRequest(data);
             props.updatePurchaseOrder(purchaseOrder, {status: 3});

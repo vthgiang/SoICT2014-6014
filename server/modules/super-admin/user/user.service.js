@@ -1041,7 +1041,7 @@ module.exports._getAllUsersInOrganizationalUnits = _getAllUsersInOrganizationalU
                 })
                 .populate({
                     path: "userId",
-                    select: "name",
+                    select: "name email",
                 });
 
             var tmp = await Role(connect(DB_CONNECTION, portal)).find(

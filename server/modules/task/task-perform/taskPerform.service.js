@@ -3,6 +3,7 @@ const fs = require("fs");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 const sumBy = require('lodash/sumBy');
+const { sendEmail } = require(`../../../helpers/emailHelper`);
 
 const { Task, User, UserRole, Role, OrganizationalUnit, OrganizationalUnitKpi, EmployeeKpi } = require(`../../../models`);
 
@@ -80,7 +81,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       { path: "hoursSpentOnTask.contributions.employee", select: "name" },
       {
         path: "process",
-        populate: {
+        populate: [{
           path: "tasks",
           populate: [
             { path: "parent", select: "name" },
@@ -138,7 +139,8 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
               select: "name email avatar",
             },
           ],
-        },
+        }, { path: 'processTemplate' },
+        { path: 'processTemplate', populate: { path: 'processTemplates.process' } }],
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
@@ -1653,7 +1655,6 @@ exports.deleteTaskAction = async (portal, params) => {
   for (i = 0; i < files.length; i++) {
     fs.unlinkSync(files[i].url);
   }
-
   return action.taskActions;
 };
 
@@ -1666,6 +1667,10 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
     description: body.description,
     files: files,
   };
+
+  console.log("-------params", params);
+  console.log("-------comment", body);
+  console.log("-------user", user);
   const taskComment = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
     params.taskId,
     {
@@ -1798,14 +1803,19 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
     ]);
 
-  const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => o._id);
-  const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => o._id);
+  console.log("---------taskComment", taskComment);
+  const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => { return { _id: o._id, email: o.email } });
+  const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => { return { _id: o._id, email: o.email } });
 
-  const userReceive = [...resEmployees, ...accEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
+  const userReceive = [...resEmployees, ...accEmployees].map(o => o._id).filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
+  const emailReceive = [...resEmployees, ...accEmployees].map(o => o.email).filter(obj => JSON.stringify(obj) !== JSON.stringify(user.email))
   const associatedData = {
     dataType: "realtime_tasks",
     value: taskComment
   }
+  console.log("---------user", user);
+  console.log("---------userReceive", userReceive);
+  console.log("---------emailRecive", emailReceive);
 
   const data = {
     organizationalUnits: taskComment.organizationalUnit && taskComment.organizationalUnit._id,
@@ -1820,9 +1830,89 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
       description: `<p><strong>${taskComment.name}:</strong> ${user.name} đã thêm một bình luận mới trong mục trao đổi.</p>`
     }
   };
+  let emailContent = `<html>
+          <head>
+              <style>
+                  .wrapper {
+                      width: 100%;
+                      min-width: 580px;
+                      background-color: #FAFAFA;
+                      padding: 10px 0;
+                  }
+                  .userName {
+                    font-weight: 700;
+                    color: #385898;
+                    cursor: pointer;
+                  }
+          
+                  .info {
+                      list-style-type: none;
+                  }
+          
+                  @media screen and (max-width: 900px) {
+                      .form {
+                          border: solid 1px #dddddd;
+                          padding: 50px 30px;
+                          border-radius: 3px;
+                          margin: 0px 5%;
+                          background-color: #FFFFFF;
+                      }
+                  }
+          
+                  .form {
+                      border: solid 1px #dddddd;
+                      padding: 50px 30px;
+                      border-radius: 3px;
+                      margin: 0px 25%;
+                      background-color: #FFFFFF;
+                  }
+          
+                  .title {
+                      text-align: center;
+                  }
+          
+                  .footer {
+                      margin: 0px 25%;
+                      text-align: center;
+          
+                  }
+              </style>
+          </head>
+          
+          <body>
+              <div class="wrapper">
+                  <div class="title">
+                      <h1>${process.env.WEB_NAME}</h1>
+                  </div>
+                  <div class="form">
+                      <p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${taskComment.name}</a></p>
+                      <br>
+                      <a class="userName">${user.name}</a>
+                      ${body.description}
+                  </div>
+                  <div class="footer">
+                      <p>Copyright by
+                          <i>Công ty Cổ phần Công nghệ
+                              <br />
+                              An toàn thông tin và Truyền thông Việt Nam</i>
+                      </p>
+                  </div>
+              </div>
+          </body>
+        </html>`;
 
-  if (userReceive && userReceive.length > 0)
-    NotificationServices.createNotification(portal, user.company._id, data)
+  //console.log("-----------------emailContent", emailContent, emailReceive, taskComment.name);
+  if (userReceive && userReceive.length > 0) {
+    NotificationServices.createNotification(portal, user.company._id, data);
+  }
+  if (emailReceive && emailReceive.length > 0) {
+    sendEmail(
+      emailReceive,
+      taskComment.name,
+      '',
+      emailContent,
+    )
+  }
 
   return taskComment.taskComments;
 };
@@ -3135,7 +3225,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     collaboratedWithOrganizationalUnits,
     listInfo,
     taskProject,
-    tags
+    tags,
+    taskOutputs
   } = data;
 
   // Chuẩn hóa parent
@@ -3162,9 +3253,20 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       }
     }
   }
-
   let taskItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
+  const accountableEmployeesTaskOutputs = taskItem.accountableEmployees.map((item) => {
+    return {
+      accountableEmployee: item._id,
+      status: "waiting_approval"
+    }
+  });
+  const taskOutputsChange = taskOutputs.map((item) => {
+    return {
+      ...item,
+      accountableEmployees: accountableEmployeesTaskOutputs,
+      status: "unfinished"
+    }
+  })
   // update collaboratedWithOrganizationalUnits
   let newCollab = [];
   let oldCollab = taskItem.collaboratedWithOrganizationalUnits.map(e => { return e.organizationalUnit });
@@ -3185,12 +3287,34 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       })
     }
   }
-
+  let statusActualStartDate = false;
+  if (taskItem.status === "wait_for_approval" && status[0] === "inprocess") statusActualStartDate = true;
   // cập nhật thông tin cơ bản
   await Task(connect(DB_CONNECTION, portal)).updateOne(
     { _id: taskId },
     {
-      $set: status ? {
+      $set: status ? statusActualStartDate ? {
+        name: name,
+        description: description,
+        progress: progress,
+        priority: parseInt(priority[0]),
+        status: status[0],
+        formula: formula,
+        parent: parent,
+        taskProject: taskProject ?? undefined,
+        tags: tags,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        actualStartDate: new Date(),
+        collaboratedWithOrganizationalUnits: newCollab,
+
+        responsibleEmployees: responsibleEmployees,
+        consultedEmployees: consultedEmployees,
+        accountableEmployees: accountableEmployees,
+        informedEmployees: informedEmployees,
+
+        inactiveEmployees: inactiveEmployees,
+      } : {
         name: name,
         description: description,
         progress: progress,
@@ -3211,6 +3335,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees: informedEmployees,
 
         inactiveEmployees: inactiveEmployees,
+        taskOutputs: taskOutputsChange,
       } : {
         name: name,
         description: description,
@@ -3231,6 +3356,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees: informedEmployees,
 
         inactiveEmployees: inactiveEmployees,
+        taskOutputs: taskOutputsChange,
       },
     },
     { $new: true }
@@ -3671,7 +3797,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       { path: "hoursSpentOnTask.contributions.employee", select: "name" },
       {
         path: "process",
-        populate: {
+        populate: [{
           path: "tasks",
           populate: [
             { path: "parent", select: "name" },
@@ -3728,8 +3854,9 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
               path: "commentsInProcess.comments.creator",
               select: "name email avatar",
             },
-          ],
-        },
+          ]
+        }, { path: 'processTemplate' },
+        { path: 'processTemplate', populate: { path: 'processTemplates.process' } }]
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
@@ -5160,6 +5287,8 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     ]);
   newTask.evaluations.reverse();
 
+  console.log("--------newTask", newTask.evaluations[0].results);
+
   return newTask;
 };
 
@@ -5929,7 +6058,9 @@ exports.confirmTask = async (portal, taskId, userId) => {
 /** Yêu cầu kết thúc công việc */
 exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   const { userId, taskStatus, description, type, role } = data;
-  let task = await this.getTaskById(portal, taskId, userId);
+  let task = await this.getTaskById(portal, taskId, userId).populate([
+    { path: 'process', populate: [{ path: "tasks" }, { path: "processChilds" }] },
+  ]);
   const requestStatusNumber = type === 'request' ? 1
     : type === 'cancel_request' ? 2
       : type === 'approval' ? 3
@@ -6006,7 +6137,47 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   //         "status": 'inprocess'
   //     }
   // }
-
+  if (type === 'approval' && task.codeInProcess) {
+    let folTask = task.followingTasks;
+    if (!folTask) {
+      let listProcessChild = task.process?.processChilds
+      let listTaskProcess = task.process?.tasks
+      let status = true
+      if (listTaskProcess) {
+        listTaskProcess.forEach(value => {
+          if (!value.followingTasks) {
+            if (value.status !== "finished") {
+              status = false
+            }
+          }
+        })
+      }
+      if (listProcessChild) {
+        listProcessChild.forEach(value => {
+          if (!value.followingTasks) {
+            if (value.status !== "finished") {
+              status = false
+            }
+          }
+        })
+      }
+      if (status) {
+        const dataNotification = {
+          organizationalUnits: [],
+          title: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc`,
+          level: "emergency",
+          content: `Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc , <a href="${process.env.WEBSITE}process?processId=${newTaskProcess1._id}" target="blank>Xem ngay</a></p>`,
+          sender: `${task.process.creator}`,
+          users: task.process.manager,
+          associatedDataObject: {
+            dataType: 6,
+            description: `<p><strong>Quy trình ${task.process.processName} đã hoàn thành, cần kết thúc công việc.</p>`
+          }
+        };
+        NotificationServices.createNotification(portal, portal, dataNotification)
+      }
+    }
+  }
   await Task(connect(DB_CONNECTION, portal))
     .findByIdAndUpdate(taskId, {
       ...keyUpdate,
@@ -7164,6 +7335,22 @@ exports.getAllPreceedingTasks = async (portal, params) => {
             path: "commentsInProcess.comments.creator",
             select: "name email avatar",
           },
+          {
+            path: "taskOutputs.submissionResults.creator",
+            select: "name email avatar",
+          },
+          {
+            path: "taskOutputs.submissionResults.creator",
+            select: "name email avatar",
+          },
+          {
+            path: "taskOutputs.comments.creator",
+            select: "name email avatar",
+          },
+          {
+            path: "taskOutputs.accountableEmployees.accountableEmployee",
+            select: "name email avatar",
+          }
         ],
       },
     ]);
@@ -7888,3 +8075,627 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
 
   return newTask;
 };
+
+exports.createSubmissionResults = async (portal, params, body, files) => {
+  const newTask = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      { _id: params.taskId, "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId) },
+      {
+        $push: {
+          "taskOutputs.$.submissionResults.files": files,
+        },
+        $set: {
+          "taskOutputs.$.submissionResults.description": body.description,
+          "taskOutputs.$.status": "inprogess",
+          "taskOutputs.$.submissionResults.creator": mongoose.Types.ObjectId(body.creator)
+        },
+      },
+      { new: true })
+
+  const taskOutput = newTask.taskOutputs.find((item) => item._id == params.taskOutputId);
+  const taskAction = {
+    creator: mongoose.Types.ObjectId(body.creator),
+    description: body.description,
+    name: `Giao nộp kết quả ${taskOutput ? taskOutput.title : ""} lần ${taskOutput?.versions.length + 1}`,
+    files: taskOutput?.submissionResults?.files,
+  };
+
+  const taskActions = await Task(connect(DB_CONNECTION, portal))
+    .findByIdAndUpdate(
+      params.taskId,
+      {
+        $push: {
+          taskActions: taskAction,
+        },
+      }, { new: true });
+
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+
+  return { taskOutputs: task.taskOutputs, taskActions: task.taskActions };
+}
+
+exports.getTaskOutputs = async (portal, params) => {
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+  return task.taskOutputs;
+}
+
+exports.approveTaskOutputs = async (portal, params, body) => {
+  const currentTask = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId });
+  let taskOutput = currentTask?.taskOutputs.find((item) => item._id == params.taskOutputId)
+  let status = taskOutput?.status;
+  let checkStatus = taskOutput?.accountableEmployees.length;
+  // Thay đổi hành động của người phê duyệt với kết quả giao nộp
+  let accountableEmployees = taskOutput?.accountableEmployees.map((item) => {
+    let action = item.action;
+    let updatedAt = item.updatedAt;
+    if (item.accountableEmployee == body.creator) {
+      action = body.action;
+      updatedAt = Date.now();
+    }
+    if (action === "reject") {
+      status = "rejected";
+    }
+    if (action !== "approve") {
+      checkStatus = checkStatus - 1;
+    }
+
+    return {
+      action: action,
+      accountableEmployee: item.accountableEmployee,
+      updatedAt: updatedAt,
+    }
+  })
+  if (body.action === "waiting_for_approval") {
+    status = "waiting_for_approval";
+  }
+  if (checkStatus === taskOutput?.accountableEmployees.length) {
+    status = "approved";
+  };
+
+  // Lưu lại version khi được phê duyệt
+  if (status === "approved") {
+    const version = {
+      creator: taskOutput.submissionResults.creator,
+      description: taskOutput.submissionResults.description,
+      status: status,
+      files: taskOutput.submissionResults.files,
+      accountableEmployees: accountableEmployees,
+    }
+
+    const comments = taskOutput.comments?.map((comment) => {
+      let commentOfVersion = comment?.version || -1;
+      if (!comment?.version) {
+        commentOfVersion = taskOutput.versions.length + 1;
+      }
+      return {
+        _id: comment._id,
+        createdAt: comment.createdAt,
+        creator: comment.creator,
+        description: comment.description,
+        updatedAt: comment.updatedAt,
+        files: comment.files,
+        version: commentOfVersion,
+      }
+    })
+
+    const newVersion = await Task(connect(DB_CONNECTION, portal))
+      .findOneAndUpdate(
+        {
+          _id: params.taskId,
+          "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+        },
+        {
+          $push: {
+            "taskOutputs.$.versions": version
+          },
+          $set: {
+            "taskOutputs.$.comments": comments
+          }
+        },
+        { new: true });
+  }
+  const taskIsChanged = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+      },
+      {
+        $set: {
+          "taskOutputs.$.accountableEmployees": accountableEmployees,
+          "taskOutputs.$.status": status,
+        },
+      },
+      { new: true })
+
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+  return task.taskOutputs;
+}
+
+
+exports.editSubmissionResults = async (portal, params, body, files) => {
+  const currentTask = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId });
+  let taskOutput = currentTask?.taskOutputs.find((item) => item._id == params.taskOutputId);
+  // Khi bị từ chối, chỉnh sửa sẽ chuyển trạng thái về waiting_for_approval và lưu lại version trc đó
+  if (taskOutput && taskOutput.status === "rejected") {
+    let version = {
+      creator: taskOutput.submissionResults.creator,
+      description: taskOutput.submissionResults.description,
+      status: taskOutput.status,
+      files: taskOutput.submissionResults.files,
+      accountableEmployees: taskOutput.accountableEmployees,
+    }
+
+    const comments = taskOutput.comments?.map((comment) => {
+      let commentOfVersion = comment.version;
+      if (!comment?.version) {
+        commentOfVersion = taskOutput.versions.length + 1;
+      }
+      return {
+        _id: comment._id,
+        createdAt: comment.createdAt,
+        creator: comment.creator,
+        description: comment.description,
+        updatedAt: comment.updatedAt,
+        files: comment.files,
+        version: commentOfVersion
+      }
+    })
+
+    let accountableEmployees = taskOutput.accountableEmployees.map((item) => {
+      return {
+        _id: item._id,
+        updatedAt: item.updatedAt,
+        accountableEmployee: item.accountableEmployee,
+        action: undefined
+      }
+    })
+
+    const newVersion = await Task(connect(DB_CONNECTION, portal))
+      .findOneAndUpdate(
+        {
+          _id: params.taskId,
+          "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+        },
+        {
+          $push: {
+            "taskOutputs.$.versions": version
+          },
+          $set: {
+            "taskOutputs.$.status": "waiting_for_approval",
+            "taskOutputs.$.comments": comments,
+            "taskOutputs.$.accountableEmployees": accountableEmployees,
+          }
+        },
+        { new: true });
+  }
+
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      { _id: params.taskId, "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId) },
+      {
+        $push: {
+          "taskOutputs.$.submissionResults.files": files,
+        },
+        $set: {
+          "taskOutputs.$.submissionResults.description": body.description,
+          "taskOutputs.$.submissionResults.updatedAt": Date.now(),
+        },
+      },
+      { new: true })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      },
+    ])
+
+  return task.taskOutputs;
+}
+
+exports.deleteSubmissionResults = async (portal, params) => {
+  const currentTask = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId });
+  const taskOutput = currentTask.taskOutputs.find((item) => item._id == params.taskOutputId);
+  if (taskOutput && taskOutput.status !== "approved") {
+    if (taskOutput.status === "rejected") {
+      let version = {
+        creator: taskOutput.submissionResults.creator,
+        description: taskOutput.submissionResults.description,
+        status: taskOutput.status,
+        files: taskOutput.submissionResults.files,
+        accountableEmployees: taskOutput.accountableEmployees,
+      }
+      const newVersion = await Task(connect(DB_CONNECTION, portal))
+        .findOneAndUpdate(
+          {
+            _id: params.taskId,
+            "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+          },
+          {
+            $push: {
+              "taskOutputs.$.versions": version
+            },
+            $set: {
+              "taskOutputs.$.status": "unfinised"
+            }
+          },
+          { new: true });
+    }
+  }
+
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+      },
+      {
+        $set: {
+          "taskOutputs.$.submissionResults.description": "",
+          "taskOutputs.$.submissionResults.files": [],
+        },
+      },
+      { new: true })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+
+  return task.taskOutputs;
+}
+
+exports.editTaskOutputs = async (portal, params, body) => {
+  for (item of body) {
+    const newTaskEdit = await Task(connect(DB_CONNECTION, portal))
+      .findOneAndUpdate(
+        {
+          _id: params.taskId,
+          "taskOutputs._id": mongoose.Types.ObjectId(item._id)
+        },
+        {
+          $set: {
+            "taskOutputs.$.isOutput": item.isOutput,
+          },
+        },
+        { new: true })
+  }
+
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+  return task.taskOutputs;
+}
+
+exports.deleteFileOfTaskOutput = async (portal, params) => {
+  const currentTask = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+
+  const taskOutput = currentTask?.taskOutputs.find((item) => item._id == params.taskOutputId);
+  const files = taskOutput?.submissionResults?.files.filter((item) => item._id != params.fileId);
+  const file = taskOutput?.submissionResults?.files.find((item) => item._id == params.fileId);
+
+  if (taskOutput.status == "unfinished") {
+    fs.unlinkSync(file.url);
+  }
+  const newEditTask = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId)
+      },
+      {
+        $set: {
+          "taskOutputs.$.submissionResults.files": files,
+          "updateAt": Date.now(),
+        }
+      })
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+  return task.taskOutputs;
+}
+
+exports.createCommentOfTaskOutput = async (portal, params, body, files) => {
+  const currentTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId });
+  const taskOutput = currentTask.taskOutputs.find((item) => item._id == params.taskOutputId);
+  const comment = {
+    creator: mongoose.Types.ObjectId(body.creator),
+    description: body.description,
+    files: files,
+    version: taskOutput?.versions?.length || 0,
+  }
+  const taskIsChanged = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId)
+      },
+      {
+        $push: {
+          "taskOutputs.$.comments": comment,
+        },
+      },
+      { new: true })
+
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+  return task.taskOutputs;
+}
+
+exports.editCommentOfTaskOutput = async (portal, params, body, files) => {
+  const currentTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId })
+  const taskOutput = currentTask.taskOutputs.find((item) => item._id == params.taskOutputId);
+  const comments = taskOutput.comments.map((item) => {
+    let files = item.files;
+    let description = item.description;
+    let updateAt = item.updatedAt
+    if (item._id == params.commentId) {
+      files = [...item.files, ...files]
+      description = body.description;
+      updateAt = Date.now()
+    }
+    return {
+      _id: item._id,
+      creator: item.creator,
+      description: description,
+      files: files,
+      createdAt: item.createdAt,
+      updatedAt: updateAt
+    }
+  })
+  const newEditTask = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+      },
+      {
+        $set: {
+          "taskOutputs.$.comments": comments,
+        },
+      },
+      { new: true })
+  const task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.versions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+
+  return task.taskOutputs;
+}
