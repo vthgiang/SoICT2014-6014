@@ -35,7 +35,6 @@ function ExpectedResults(props) {
         type: 0,
     })
     const [expectedResults, setExpectedResults] = useState(initValue)
-
     const handleChangeDescription = async (value, imgs) => {
         setNewExpectedResult({
             ...newExpectedResult,
@@ -144,7 +143,13 @@ function ExpectedResults(props) {
                             onClick={(event) => {
                                 event.preventDefault();
                                 event.stopPropagation();
-                                const newList = [...expectedResults, newExpectedResult]
+                                let newList = [];
+                                if (expectedResults) {
+                                    for (let i in expectedResults) {
+                                        newList.push(expectedResults[i])
+                                    }
+                                }
+                                newList.push(newExpectedResult);
                                 setExpectedResults(newList);
                                 setNewExpectedResult({
                                     title: '',

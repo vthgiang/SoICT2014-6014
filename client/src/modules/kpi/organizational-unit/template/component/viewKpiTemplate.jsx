@@ -1,7 +1,7 @@
+import parse from 'html-react-parser';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { QuillEditor } from '../../../../../common-components';
 import { kpiTemplateActions } from '../redux/actions';
 
 const ViewKpiTemplate = (props) => {
@@ -16,8 +16,8 @@ const ViewKpiTemplate = (props) => {
                     <legend className="scheduler-border">Thông tin chung</legend>
                     <div className="row">
                         {/**Tên mẫu KPI */}
-                        <div className={` col-sm-6 form-group`} >
-                            <label className="control-label">Tên mẫu KPI</label>
+                        <div className={` col-sm-6 form-inline`} >
+                            <label className="control-label">Tên mẫu KPI: </label>
                             <span style={{ marginLeft: 10 }}>
                                 {kpiTemplate?.name}
                             </span>
@@ -25,16 +25,26 @@ const ViewKpiTemplate = (props) => {
 
                         {/**Đơn vị(phòng ban) của Kpi template*/}
                         <div className={`col-sm-6 form-group`} style={{ marginLeft: 0, marginRight: 0 }}>
-                            <label className="control-label">Đơn vị quản lý</label>
+                            <label className="control-label">Đơn vị quản lý: </label>
                             <span style={{ marginLeft: 10 }}>
                                 {kpiTemplate?.organizationalUnit?.name}
                             </span>
                         </div>
                     </div>
 
+                    <div className="row">
+                        {/**Mô tả **/}
+                        <div className={`col-sm-6 form-group`} style={{ marginLeft: 0, marginRight: 0 }}>
+                            <label className="control-label">Mô tả: </label>
+                            <span style={{ marginLeft: 10, display: "inline-block" }}>
+                                {parse(kpiTemplate?.description ?? "")}
+                            </span>
+                        </div>
+                    </div>
+
 
                     {/* Mô tả kpi */}
-                    <div >
+                    {/* <div >
                         <div className={`form-group`}>
                             <label className="control-label" style={{ marginRight: 10 }}>Mô tả</label>
                             <QuillEditor
@@ -47,7 +57,7 @@ const ViewKpiTemplate = (props) => {
                                 placeholder={"Mô tả"}
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </fieldset>
             </div>
 
@@ -74,7 +84,7 @@ const ViewKpiTemplate = (props) => {
                                     <td >{index + 1}</td>
                                     <td>{item?.name}</td>
                                     <td>{item?.weight}</td>
-                                    <td>{`${item?.target} (${item?.unit})`}</td>
+                                    <td>{item?.target ? `${item?.target} (${item?.unit})` : "N/A"}</td>
                                     <td>{item?.criteria}</td>
                                 </tr>
                             )}

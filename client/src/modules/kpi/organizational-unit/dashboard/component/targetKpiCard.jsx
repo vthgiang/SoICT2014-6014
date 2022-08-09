@@ -1,5 +1,6 @@
 import c3 from 'c3';
 import 'c3/c3.css';
+import parse from 'html-react-parser';
 import React, { useEffect } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
@@ -143,9 +144,9 @@ const TargetKpiCard = (props) => {
                             <div className="col-sm-6" style={{ padding: '10px 20px' }}>
                                 <div className='' style={{ textAlign: "center" }}>
                                     <div>Tiêu chí</div>
-                                    <span className='text-primary' style={{ fontSize: 20, fontWeight: 600 }}>{
-                                        data?.criteria
-                                    }</span>
+                                    <span className='text-primary' style={{ fontSize: 20, fontWeight: 600 }}>
+                                        {parse(data?.criteria)}
+                                    </span>
 
                                 </div>
                             </div>

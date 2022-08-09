@@ -340,15 +340,15 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         }
         let totalRatio = 0;
         let completeRatio = {};
-
         for (let i = 0; i < employees.length; i++) {
-
             let ratio = await EmployeeEvaluationService.getEmployeeKpiPerformance(portal, employees[i], formula);
+
             completeRatio[employees[i]] = {};
             totalRatio += ratio.completeRatio;
             completeRatio[employees[i]].ratio = ratio.completeRatio;
 
         }
+
         const avg = totalRatio / employees.length;
         const { employeeImportances } = organizationalUnitKpiSet;
 
@@ -366,8 +366,28 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
             completeRatio[key] = { ...completeRatio[key], importance }
         }
         // Phan chia cac muc tieu kpi cho nhan vien
+        // 1.Gan cac muc tieu khong co chi tieu (muc tieu dinh tinh)
+        let qualitativeKpis = organizationalUnitKpiSet.kpis.filter(item => item.type === 0 && !item.target);
+
+        if (qualitativeKpis) {
+            let qualitativeEmployeeKpis = await Promise.all(qualitativeKpis.map(async (item) => {
+                let qualitativeKpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).create({
+                    name: item.name,
+                    parent: item.parent,
+                    weight: item.weight,
+                    criteria: item.criteria,
+                    type: item.type
+                })
+                return qualitativeKpi._id;
+            }));
+            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    employeeKpiSet, { kpis: qualitativeEmployeeKpis }, { new: true }
+                )
+        }
+
         //Lay danh sach muc tieu kpi don vi theo trong so giam dan
-        let otherKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        let descWeightKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .aggregate([
                 { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
                 { $match: { date: { $gte: monthSearch, $lt: nextMonthSearch } } },
@@ -394,49 +414,50 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 }
             ])
 
-        // Gan kpi cho nhan vien
+        // 2.Gan cac muc tieu co chi tieu (muc tieu dinh luong)
+        let quantitativeKpis = descWeightKpis.filter((item) => item.kpis.target !== null);
         let kpiEmployee = []
-        let numOfKpis = Math.round(completeRatio[employee].ratio * otherKpis.length);
-        if (numOfKpis > otherKpis.length) {
-            numOfKpis = otherKpis.length;
+        let numOfKpis = Math.round(completeRatio[employee].ratio * quantitativeKpis.length);
+        if (numOfKpis > quantitativeKpis.length) {
+            numOfKpis = quantitativeKpis.length;
         }
         // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
-        if (otherKpis.length > 0 && completeRatio[employee].importance < 90) {
+        if (quantitativeKpis.length > 0 && completeRatio[employee].importance < 90) {
             let weightOver = 0;
-            for (let k = 0; k < otherKpis.length - numOfKpis; k++) {
-                weightOver += otherKpis[k].kpis.weight;
+            for (let k = 0; k < quantitativeKpis.length - numOfKpis; k++) {
+                weightOver += quantitativeKpis[k].kpis.weight;
             }
-            for (let i = otherKpis.length - numOfKpis; i < otherKpis.length; i++) {
-                let calcWeight = otherKpis[i].kpis.weight + weightOver;
-                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employees.length * completeRatio[employee].ratio) : null;
+            for (let i = quantitativeKpis.length - numOfKpis; i < quantitativeKpis.length; i++) {
+                let calcWeight = quantitativeKpis[i].kpis.weight + weightOver;
+                let target = quantitativeKpis[i].kpis.target ? Math.ceil(quantitativeKpis[i].kpis.target / employees.length * completeRatio[employee].ratio) : null;
                 kpiEmployee.push({
-                    name: otherKpis[i].kpis.name,
-                    parent: otherKpis[i].kpis.parent,
+                    name: quantitativeKpis[i].kpis.name,
+                    parent: quantitativeKpis[i].kpis.parent,
                     weight: calcWeight,
-                    criteria: otherKpis[i].kpis.criteria,
+                    criteria: quantitativeKpis[i].kpis.criteria,
                     target: target,
-                    unit: otherKpis[i].kpis.unit,
+                    unit: quantitativeKpis[i].kpis.unit,
                 })
                 weightOver = 0;
             }
-        } else if (otherKpis.length > 0 && completeRatio[employee].importance >= 90) {
+        } else if (quantitativeKpis.length > 0 && completeRatio[employee].importance >= 90) {
             let weightOver = 0;
-            if (numOfKpis < otherKpis.length) {
-                for (let k = numOfKpis; k < otherKpis.length; k++) {
-                    weightOver += otherKpis[k].kpis.weight;
+            if (numOfKpis < quantitativeKpis.length) {
+                for (let k = numOfKpis; k < quantitativeKpis.length; k++) {
+                    weightOver += quantitativeKpis[k].kpis.weight;
                 }
             }
 
             for (let i = 0; i < numOfKpis; i++) {
-                let calcWeight = otherKpis[i].kpis.weight + weightOver;
-                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employees.length * completeRatio[employee].ratio) : null;
+                let calcWeight = quantitativeKpis[i].kpis.weight + weightOver;
+                let target = quantitativeKpis[i].kpis.target ? Math.ceil(quantitativeKpis[i].kpis.target / employees.length * completeRatio[employee].ratio) : null;
                 kpiEmployee.push({
-                    name: otherKpis[i].kpis.name,
-                    parent: otherKpis[i].kpis.parent,
+                    name: quantitativeKpis[i].kpis.name,
+                    parent: quantitativeKpis[i].kpis.parent,
                     weight: calcWeight,
-                    criteria: otherKpis[i].kpis.criteria,
+                    criteria: quantitativeKpis[i].kpis.criteria,
                     target: target,
-                    unit: otherKpis[i].kpis.unit,
+                    unit: quantitativeKpis[i].kpis.unit,
                 })
                 weightOver = 0
             }

@@ -1053,7 +1053,8 @@ exports.getEmployeeKpiPerformance = async (portal, userId, formula) => {
     let numOfKpis = 0;
     let now = new Date();
     let before = new Date();
-    before.setMonth(now.getMonth() - 3);
+    now.setMonth(now.getMonth() - 1);
+    before.setMonth(now.getMonth() - 4);
 
     let kpiRecently = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find({

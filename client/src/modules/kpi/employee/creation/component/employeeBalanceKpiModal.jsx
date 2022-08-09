@@ -32,6 +32,8 @@ const convertMMYYtoYYMM = (value) => {
 const getProgress = (kpis) => {
     let progress = 0;
     let count = 0;
+    let res = 0;
+
     if (kpis) {
         for (let kpi of kpis) {
             if (typeof (kpi.target) === 'number') {
@@ -41,7 +43,7 @@ const getProgress = (kpis) => {
             }
         }
     }
-    let res = 0;
+
     if (count > 0) {
         res = progress / count;
     }

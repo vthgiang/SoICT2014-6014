@@ -280,7 +280,7 @@ function KpisForm(props) {
                                     <td >{index + 1}</td>
                                     <td>{item?.name}</td>
                                     <td>{item?.weight}</td>
-                                    <td>{`${item?.target} (${item?.unit})`}</td>
+                                    <td>{item?.target ? `${item?.target} (${item?.unit})` : "N/A"}</td>
                                     <td>{item?.criteria}</td>
                                     {/* <td>{item?.formula}</td> */}
                                     {/**các button sửa, xóa 1 hoạt động */}

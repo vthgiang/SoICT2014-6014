@@ -2503,22 +2503,12 @@ exports.getAllTasksThatHasEvaluation = async (portal, data) => {
                         $elemMatch: {
                             $and: [
                                 { "evaluatingMonth": { $lte: new Date(endDate), $gte: new Date(startDate) } },
-                                // {
-                                //     "results": {
-                                //         $elemMatch: {
-                                //             "organizationalUnit": mongoose.Types.ObjectId(data.unit)
-                                //         }
-                                //     }
-                                // }
                             ]
                         }
                     }
                 }
             ]
         })
-    // .select("name evaluations responsibleEmployees");
-    console.log("2499", tasks)
-
 
     return tasks;
 }
@@ -5461,12 +5451,28 @@ exports.proposalPersonnel = async (portal, params, body) => {
         let taskFinished = tasks?.filter((item) => item.status === "finished");
 
         let numberOfTaskInprocess = taskInProcess.length;
-
         let numberOfTaskEvaluated = 0;
-        let sumPoint = 0;
+        let numberOfRelatedTask = 0;
+        let sumPoint = 0, sumPointOfRelatedTask = 0;
         let averagePoint = 0;
+        let avgPointOfRelatedTask = 0;
+
 
         const averageRating = taskFinished?.map((task) => {
+            let checkRelatedTask = false;
+            if (task.tags && task.tags.length && body.tags && body.tags.length) {
+                const tags = task.tags;
+                for (let i in tags) {
+                    for (let j in body.tags) {
+                        if (body.tags[j].indexOf(tags[i]) || tags[i].indexOf(body.tags[j])) {
+                            checkRelatedTask = true;
+                        }
+                    }
+                }
+                if (checkRelatedTask) {
+                    numberOfRelatedTask = numberOfRelatedTask + 1;
+                }
+            }
             if (task.evaluations.length > 0) {
                 const evaluations = task.evaluations;
                 numberOfTaskEvaluated = numberOfTaskEvaluated + 1;
@@ -5488,10 +5494,14 @@ exports.proposalPersonnel = async (portal, params, body) => {
                     sumPointOfEvaluations = sumPointOfEvaluations + averagePointOfResult;
                 }
                 sumPoint = sumPoint + sumPointOfEvaluations / evaluations.length;
+                if (checkRelatedTask) {
+                    sumPointOfRelatedTask = sumPointOfRelatedTask + sumPointOfEvaluations / evaluations.length;
+                }
             };
         })
         let numberOfTaskNotEvaluated = taskFinished?.length - numberOfTaskEvaluated;
         averagePoint = numberOfTaskEvaluated ? sumPoint / numberOfTaskEvaluated : averagePoint;
+        avgPointOfRelatedTask = numberOfRelatedTask ? sumPointOfRelatedTask / numberOfRelatedTask : avgPointOfRelatedTask;
         let user = {
             user: users[i],
             point: eval(formula)

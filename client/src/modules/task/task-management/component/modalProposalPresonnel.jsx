@@ -8,7 +8,7 @@ import { TaskFormValidator } from './taskFormValidator';
 function ModalProposalPresonnel(props) {
     const [formula, setFormula] = useState("40 + averagePoint*0.3 + (100 - 5* numberOfTaskInprocess)*0.3");
     const { newTask } = props
-    const { organizationalUnit, collaboratedWithOrganizationalUnits, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = newTask;
+    const { organizationalUnit, collaboratedWithOrganizationalUnits, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, tags } = newTask;
     const { tasks } = props;
     const [state, setState] = useState({
         errorOnFormula: undefined,
@@ -58,7 +58,8 @@ function ModalProposalPresonnel(props) {
     useEffect(() => {
         props.proposalPersonnel({
             unitIds: [organizationalUnit, ...collaboratedWithOrganizationalUnits],
-            formula: formula
+            formula: formula,
+            tags: tags,
         })
     }, [organizationalUnit, collaboratedWithOrganizationalUnits])
 
@@ -83,7 +84,8 @@ function ModalProposalPresonnel(props) {
                             e.preventDefault();
                             props.proposalPersonnel({
                                 unitIds: [organizationalUnit, ...collaboratedWithOrganizationalUnits],
-                                formula: formula
+                                formula: formula,
+                                tags: tags
                             })
                         }}>Thay đổi</button>
                     </div>
@@ -93,8 +95,10 @@ function ModalProposalPresonnel(props) {
                     <div><span style={{ fontWeight: 800 }}>Ví dụ 2: </span>averagePoint/numberOfTaskNotEvaluated - 5 * numberOfTaskInprocess</div>
                     <br />
                     <div><span style={{ fontWeight: 600 }}>averagePoint</span> - Điểm trung bình các công việc kết thúc đã được đánh giá</div>
-                    <div><span style={{ fontWeight: 600 }}>numberOfTaskInprocess</span> - Số lượng công việc đang tham gia</div>
+                    <div><span style={{ fontWeight: 600 }}>avgPointOfRelatedTask</span> - Điểm trung bình các công việc liên quan</div>
                     <div><span style={{ fontWeight: 600 }}>numberOfTaskNotEvaluated</span> - Công việc kết thúc chưa được đánh giá</div>
+                    <div><span style={{ fontWeight: 600 }}>numberOfTaskInprocess</span> - Số lượng công việc đang tham gia</div>
+                    <div><span style={{ fontWeight: 600 }}>numberOfRelatedTask</span> - Số lượng công việc có liên quan đã tham gia</div>
                 </div>
                 <div>
                     <table id="proposal-table" className="table table-striped table-bordered table-hover">
