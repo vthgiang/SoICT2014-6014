@@ -113,7 +113,8 @@ function validateFormula(value) {
         formula = formula.replace(/averagePoint/g, `(1)`);
         formula = formula.replace(/numberOfTaskInprocess/g, `(1)`);
         formula = formula.replace(/numberOfTaskNotEvaluated/g, `(1)`);
-
+        formula = formula.replace(/avgPointOfRelatedTask/g, `(1)`);
+        formula = formula.replace(/numberOfRelatedTask/g, `(1)`);
         // thay tất cả các biến có dạng p0, p1, p2,... 1
         for (let i = 0; i < 100; i++) {
             let stringToGoIntoTheRegex = 'p' + i;
