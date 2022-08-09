@@ -5415,9 +5415,21 @@ exports.confirmTaskDelegation = async (portal, taskId, data) => {
 
 exports.proposalPersonnel = async (portal, params, body) => {
     let formula = body.formula;
+    let unitIds = [];
+
+    if (body.unitIds && body.unitIds.length) {
+        for (let i in body.unitIds) {
+            if (body.unitIds[i]?.organizationalUnit) {
+                unitIds.push(body.unitIds[i].organizationalUnit)
+            } else {
+                unitIds.push(body.unitIds[i])
+            }
+        }
+    }
+
     const organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
         _id: {
-            $in: body.unitIds
+            $in: unitIds
         }
     })
 
