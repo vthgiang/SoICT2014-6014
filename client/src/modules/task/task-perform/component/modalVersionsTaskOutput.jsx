@@ -104,7 +104,6 @@ function ModalVersionsTaskOutput(props) {
                 title={`Các phiên bản thay đổi của ${taskOutput?.title}`}
                 formID={`detail-output`}
                 size={75}
-                maxWidth={600}
                 hasSaveButton={false}
                 hasNote={false}
             >
