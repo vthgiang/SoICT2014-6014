@@ -355,7 +355,7 @@ function EmployeeKpiApproveModal(props) {
                                                     <td>{item.parent ? item.parent.name : ""}</td>
                                                     <td>{item ? parse(item.criteria) : ""}</td>
                                                     <td>{item.weight}</td>
-                                                    <td>{`${Math.ceil(item.target)} (${item.unit})`}</td>
+                                                    <td>{item.target ? `${Math.ceil(item.target)} (${item.unit})` : 'N/A'}</td>
                                                     <td>{item ? item.approvedPoint : ""}</td>
                                                 </tr>
                                             ) : <tr><td colSpan={6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
@@ -413,7 +413,7 @@ function EmployeeKpiApproveModal(props) {
                                             <td>{item.parent ? item.parent.name : ""}</td>
                                             <td>{item ? parse(item.criteria) : ""}</td>
                                             <td>{item.weight}</td>
-                                            <td>{`${Math.ceil(item.target)} (${item.unit})`}</td>
+                                            <td>{item.target ? `${Math.ceil(item.target)} (${item.unit})` : 'N/A'}</td>
                                             <td>{handleCheckEmployeeKpiStatus(item.status)}</td>
                                             <td>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
                                             <td>
@@ -483,7 +483,7 @@ function EmployeeKpiApproveModal(props) {
                                                 <td>{item.parent ? item.parent.name : ""}</td>
                                                 <td>{item ? parse(item.criteria) : ""}</td>
                                                 <td>{item.weight}</td>
-                                                <td>{`${Math.ceil(item.target)} (${item.unit})`}</td>
+                                                <td>{item.target ? `${Math.ceil(item.target)} (${item.unit})` : 'N/A'}</td>
                                                 <td>{handleCheckEmployeeKpiStatus(item.status)}</td>
                                                 <td>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
                                                 <td>

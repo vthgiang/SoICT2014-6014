@@ -662,7 +662,7 @@ function CreateEmployeeKpiSet(props) {
                                                                 <td title={item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}>{item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</td>
                                                                 <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                                                 <td title={item.weight}>{item.weight}</td>
-                                                                <td>{`${Math.ceil(item.target)} (${item.unit})`}</td>
+                                                                <td>{item.target ? `${Math.ceil(item.target)} (${item.unit})` : 'N/A'}</td>
                                                                 <td title={handleCheckEmployeeKpiStatus(item.status)}>{handleCheckEmployeeKpiStatus(item.status)}</td>
                                                                 <td>
                                                                     <a

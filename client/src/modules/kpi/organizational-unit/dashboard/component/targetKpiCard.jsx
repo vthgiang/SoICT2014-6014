@@ -125,8 +125,8 @@ const TargetKpiCard = (props) => {
     return <React.Fragment>
         <div>
             {data.itemType === 0
-                ? <div>
-                    <div className="box box-primary">
+                ? <div >
+                    <div className="box box-primary" style={{ minHeight: 421 }}>
                         <div className="box-header with-border">
                             <div className="box-title">{data?.name}</div>
                         </div>

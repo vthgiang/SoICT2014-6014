@@ -279,6 +279,7 @@ function OrganizationalUnitKpiCreate(props) {
 
         setState({
             ...state,
+            organizationalUnitId: value[0],
             infoSearch: {
                 ...state.infoSearch,
                 organizationalUnitId: value[0],
