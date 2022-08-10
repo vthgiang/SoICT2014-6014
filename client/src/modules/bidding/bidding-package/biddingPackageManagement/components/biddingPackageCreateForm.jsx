@@ -210,7 +210,7 @@ const BiddingPackageCreateForm = (props) => {
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-create-bidding-package"> */}
-                <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
+                <div className="nav-tabs-custom row" style={{ marginTop: '-15px', overflowX: "hidden", marginBottom: "-15px"}} >
                     <ul className="nav nav-tabs">
                         <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href="#general-create">{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                         <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href="#key-people-require-create">Yêu cầu nhân sự chủ chốt</a></li>

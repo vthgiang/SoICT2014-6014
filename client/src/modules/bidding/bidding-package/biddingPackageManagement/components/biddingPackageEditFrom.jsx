@@ -210,7 +210,7 @@ const BiddingPackageEditFrom = (props) => {
             >
                 {/* <form className="form-group" id="form-edit-biddingPackage"> */}
                 {biddingPackage &&
-                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }}>
+                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px', overflowX: "hidden", marginBottom: "-15px"}} >
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                             <li><a title="Yêu cầu nhân sự chủ chốt" data-toggle="tab" href={`#edit_contact_bidding_package${_id}`}>Yêu cầu nhân sự chủ chốt</a></li>
