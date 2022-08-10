@@ -93,7 +93,10 @@ function TemplateKpi(props) {
             ...state,
             currentRow: kpiTemplate,
         });
-        window.$('#modal-view-used-log-kpi-template').modal('show');
+        setTimeout(() => {
+            window.$('#modal-view-used-log-kpi-template').modal('show');
+        }, [300])
+
     }
 
     /**Mở modal chỉnh sửa 1 mẫu kpi */
@@ -105,7 +108,7 @@ function TemplateKpi(props) {
         });
         setTimeout(() => {
             window.$(`#modal-edit-kpi-template${kpiTemplate._id}`).modal('show');
-        }, [500])
+        }, [300])
     }
 
     /**Mở modal chỉnh sửa 1 mẫu kpi */
@@ -114,7 +117,9 @@ function TemplateKpi(props) {
             ...state,
             currentViewRow: kpiTemplate,
         });
-        window.$('#modal-use-kpi-template').modal('show');
+        setTimeout(() => {
+            window.$('#modal-use-kpi-template').modal('show');
+        }, [300])
     }
 
     const handleView = (kpiTemplate) => {
@@ -122,7 +127,9 @@ function TemplateKpi(props) {
             ...state,
             currentViewRow: kpiTemplate
         });
-        window.$('#modal-view-kpi-template').modal('show');
+        setTimeout(() => {
+            window.$('#modal-view-kpi-template').modal('show');
+        }, [300])
     }
 
     useEffect(() => {

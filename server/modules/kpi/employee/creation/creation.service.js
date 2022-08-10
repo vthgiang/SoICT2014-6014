@@ -323,6 +323,8 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         //  Them cac muc tieu mac dinh cua kpi
         if (defaultOrganizationalUnitKpi) {
             let defaultEmployeeKpi = await Promise.all(defaultOrganizationalUnitKpi.map(async (item) => {
+
+
                 let defaultT = await EmployeeKpi(connect(DB_CONNECTION, portal)).create({
                     name: item.name,
                     parent: item._id,
@@ -333,6 +335,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 })
                 return defaultT._id;
             }));
+
             employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
                 .findByIdAndUpdate(
                     employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
@@ -382,7 +385,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
             }));
             employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
                 .findByIdAndUpdate(
-                    employeeKpiSet, { kpis: qualitativeEmployeeKpis }, { new: true }
+                    employeeKpiSet, { $push: { kpis: qualitativeEmployeeKpis } }, { new: true }
                 )
         }
 
