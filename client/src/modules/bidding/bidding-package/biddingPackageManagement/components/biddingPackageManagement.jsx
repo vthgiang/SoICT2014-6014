@@ -126,8 +126,8 @@ const BiddingPackageManagement = (props) => {
      * Bắt sự kiện click chỉnh sửa thông tin nhân viên
      * @param {*} value : Thông tin nhân viên muốn chỉnh sửa
      */
-    const handleEdit = (value) => {
-        setState(state => {
+    const handleEdit = async(value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: value
@@ -142,8 +142,8 @@ const BiddingPackageManagement = (props) => {
      * Bắt sự kiện click chỉnh sửa thông tin nhân viên
      * @param {*} value : Thông tin nhân viên muốn chỉnh sửa
      */
-    const handleCreateContract = (value) => {
-        setState(state => {
+    const handleCreateContract = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: value
