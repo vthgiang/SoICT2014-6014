@@ -133,9 +133,9 @@ const BiddingPackageManagement = (props) => {
                 currentRow: value
             }
         });
-        setTimeout(() => {
+        // setTimeout(() => {
             window.$(`#modal-edit-bidding-package${value._id}`).modal('show');
-        }, 500);
+        // }, 500);
     }
 
     /**

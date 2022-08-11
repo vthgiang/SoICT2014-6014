@@ -26,7 +26,8 @@ export const BiddingPackageManagerActions = {
 function getAllBiddingPackage(data) {
     return dispatch => {
         dispatch({
-            type: BiddingPackageConstants.GETALL_REQUEST
+            type: BiddingPackageConstants.GETALL_REQUEST,
+            callId: data.callId,
         });
         BiddingPackageService.getAll(data)
             .then(res => {
