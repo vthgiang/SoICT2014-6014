@@ -4036,6 +4036,9 @@ export default {
                 edit_comment_of_task_outputs_success: "Chỉnh sửa bình luận kết quả giao nộp thành công",
                 edit_comment_of_task_outputs_failure: "Chỉnh sửa bình luận kết quả giao nộp thất bại",
 
+                edit_task_outputs_success: "Chỉnh sửa trạng thái kết quả giao nộp thành công",
+                edit_task_outputs_failure: "Chỉnh sửa trạng thái kết quả giao nộp thất bại",
+
                 // modal approve task
                 modal_approve_task: {
                     title: "Yêu cầu kết thúc công việc",

@@ -3804,6 +3804,8 @@ export default {
                 edit_comment_of_task_outputs_success: "Edit a comment on successful submission results",
                 edit_comment_of_task_outputs_failure: "Edit a comment on successful submission results",
 
+                edit_task_outputs_success: "Edit sucessful task outputs",
+                edit_task_outputs_failure: "Edit failed task outputs",
                 // modal approve task
                 modal_approve_task: {
                     title: "Request to finish task",
