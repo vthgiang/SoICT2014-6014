@@ -33,6 +33,18 @@ export function biddingPackagesManager(state = initState, action) {
     let indexAll = -1;
     switch (action.type) {
         case BiddingPackageConstants.GETALL_REQUEST:
+            if (!action.callId) {
+                return {
+                    ...state,
+                    isLoading: true,
+                    exportData: [],
+                };
+            }
+            else if (action.callId === "contract") {
+                return {
+                    ...state,
+                };
+            }
         case BiddingPackageConstants.GET_DETAIL_REQUEST:
         case BiddingPackageConstants.ADD_BIDDING_PACKAGE_REQUEST:
         case BiddingPackageConstants.UPDATE_INFOR_BIDDING_PACKAGE_REQUEST:

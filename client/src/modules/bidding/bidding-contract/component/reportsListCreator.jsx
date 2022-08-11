@@ -658,7 +658,7 @@ const renderHeaderTitle = (contract) => {
                             new Paragraph({
                                 children: [
                                     new TextRun({
-                                        text: `${contract?.companyA}`,
+                                        text: `${contract?.companyB}`,
                                         bold: true,
                                         size: 26,
                                         allCaps: true,

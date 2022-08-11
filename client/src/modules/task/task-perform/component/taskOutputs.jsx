@@ -502,8 +502,8 @@ function TaskOutputsTab(props) {
                                             <div>
                                                 <span style={{ fontWeight: 600 }}>{taskOutput.submissionResults?.description ? `Kết quả giao nộp lần ${taskOutput.status === "approved" ? taskOutput.versions.length : taskOutput.versions.length + 1}` : "Chưa giao nộp kết quả"}</span>
                                                 {role === "responsible" && taskOutput.status === "rejected" && <span className='text-sm' style={{ marginLeft: "3px" }}>(Bị từ chối)</span>}
-                                                {getActionAccountable(idUser, taskOutput.accountableEmployees) == "approve" && <span className='text-sm' style={{ marginLeft: "3px" }}>(Đã phê duyệt)</span>}
-                                                {getActionAccountable(idUser, taskOutput.accountableEmployees) == "reject" && <span className='text-sm' style={{ marginLeft: "3px" }}>(Đã từ chối)</span>}
+                                                {role === "accountable" && getActionAccountable(idUser, taskOutput.accountableEmployees) == "approve" && <span className='text-sm' style={{ marginLeft: "3px" }}>(Đã phê duyệt)</span>}
+                                                {role === "accountable" && getActionAccountable(idUser, taskOutput.accountableEmployees) == "reject" && <span className='text-sm' style={{ marginLeft: "3px" }}>(Đã từ chối)</span>}
                                                 {
                                                     taskOutput.status === "inprogess" && role === "responsible" &&
                                                     <a style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => { handleApprove("waiting_for_approval", taskOutput._id) }}>Yêu cầu phê duyệt</a>
@@ -512,7 +512,7 @@ function TaskOutputsTab(props) {
                                             <div style={{ display: "flex" }}>
 
                                                 {
-                                                    checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected" || taskOutput.status === "approved") &&
+                                                    role === "accountable" && checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected" || taskOutput.status === "approved") &&
                                                     <div style={{ display: "flex" }}>
                                                         {getActionAccountable(idUser, taskOutput.accountableEmployees) !== "approve" && <a style={{ cursor: "pointer" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>}
                                                         {getActionAccountable(idUser, taskOutput.accountableEmployees) !== "reject" && <a style={{ cursor: "pointer", paddingLeft: "15px" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>}

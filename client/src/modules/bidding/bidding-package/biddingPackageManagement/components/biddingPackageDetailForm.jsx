@@ -68,12 +68,12 @@ const BiddingPackageDetailForm = (props) => {
                 hasSaveButton={false}
                 hasNote={false}
             >
-                <form className="form-group" id={`form-detail-biddingPackage${_id}`} style={{ marginTop: "-15px" }}>
+                <form className="form-group" id={`form-detail-biddingPackage${_id}`} style={{ marginTop: '-15px', overflowX: "hidden"}} >
                     {/* <CreateBiddingContract
                         id={_id ? _id : ''}
                     /> */}
                     {biddingPackageDetail && (
-                        <div className="nav-tabs-custom row">
+                        <div className="nav-tabs-custom row" style={{marginBottom: 0}}>
                             <ul className="nav nav-tabs">
                                 <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#view_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                                 <li><a title="Yêu cầu nhân sự chủ chốt" data-toggle="tab" href={`#view_contact${_id}`}>Yêu cầu nhân sự chủ chốt</a></li>

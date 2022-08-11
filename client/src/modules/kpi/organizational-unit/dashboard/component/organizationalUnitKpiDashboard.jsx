@@ -275,7 +275,7 @@ function OrganizationalUnitKpiDashboard(props) {
                                     <span style={{ display: "inline-flex" }}>
                                         <span style={{ marginLeft: 5, 'cursor': "pointer" }}>
                                             <a className='btn btn-primary text-dark' data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
-                                                <i className="fa fa-gears" style={{ fontSize: "16px" }} /> Khởi tạo KPI nhân viên tự động
+                                                Khởi tạo KPI nhân viên tự động
                                             </a>
                                             <EmployeeCreateKpiAutoModal
                                                 organizationalUnitId={infoSearch?.organizationalUnitId}

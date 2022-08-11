@@ -148,7 +148,7 @@ export const genStepAuto = (bid, contracts) => {
                 },
                 {
                     label: "Tạo HSDT",
-                    active: false,
+                    active: true,
                 },
                 {
                     label: "Tạo hợp đồng",
