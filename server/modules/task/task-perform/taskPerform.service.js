@@ -3264,7 +3264,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     return {
       ...item,
       accountableEmployees: accountableEmployeesTaskOutputs,
-      status: "unfinished"
+      status: item.status ? item.status : "unfinished",
     }
   })
   // update collaboratedWithOrganizationalUnits
