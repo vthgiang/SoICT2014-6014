@@ -165,6 +165,7 @@ const OrganizationalUnitKPITarget = (props) => {
                 const evaluations = {};
                 for (let item of evaluatedTask) {
                     for (let eva of item.evaluations) {
+                        if (eva.evaluatingMonth.slice(0, 7) !== getCurrentDate(month)) break;
 
                         const responsibleResult = eva?.results?.filter(x => x.role = "responsible");
                         for (let res of responsibleResult) {

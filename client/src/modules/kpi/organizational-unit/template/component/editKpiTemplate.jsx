@@ -40,7 +40,7 @@ function EditKpiTemplate(props) {
                 kpis: kpiTemplate?.kpis,
             }
         })
-    }, [kpiTemplate])
+    }, [kpiTemplateId])
 
     const { templateData } = state;
 
@@ -82,7 +82,7 @@ function EditKpiTemplate(props) {
         props.onChangeTemplateData(state.templateData);
     }
 
-    const handleChangeDescription = (value, imgs) => {
+    const handleChangeDescription = (value) => {
         state.templateData.description = value;
         setState(
             { ...state }
@@ -157,7 +157,7 @@ function EditKpiTemplate(props) {
                                 id={`kpi-template-edit-modal-quill`}
                                 table={false}
                                 embeds={false}
-                                getTextData={() => handleChangeDescription()}
+                                getTextData={handleChangeDescription}
                                 maxHeight={80}
                                 quillValueDefault={templateData.descriptionDefault}
                                 placeholder={"Mô tả"}
