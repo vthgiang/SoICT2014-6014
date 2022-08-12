@@ -10,6 +10,7 @@ import { AuthActions } from '../../../auth/redux/actions';
 import Swal from 'sweetalert2';
 import { ModalVersionsTaskOutput } from './modalVersionsTaskOutput';
 import "./taskOutput.css"
+import FilePreview from './FilePreview';
 
 const formatTypeInfo = (value) => {
     switch (value) {
@@ -452,6 +453,12 @@ function TaskOutputsTab(props) {
     return (
         <div>
             <ModalVersionsTaskOutput taskOutput={taskOutput} />
+            {
+                state.currentFilepri &&
+                <FilePreview
+                    file={state.currentFilepri}
+                />
+            }
             <div>
                 {/* Kết quả */}
                 {performtasks.task.taskOutputs.map((taskOutput, index) => {

@@ -2132,7 +2132,7 @@ exports.createSubmissionResults = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            messages: ['evaluate_task_success'],
+            messages: ['create_submission_result_success'],
             content: taskOutputs
         })
     } catch (error) {

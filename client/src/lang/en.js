@@ -4331,6 +4331,9 @@ export default {
                 get_task_outputs_success: "Get the list of task outputs successfully",
                 get_task_outputs_failure: "Get the list of task outputs failed",
 
+                create_submission_result_success: "Create successfull submission result",
+                create_submission_result_failure: "Create failed submission result",
+
                 approve_task_outputs_success: "Approving successful submission results",
                 approve_task_outputs_failure: "Approve failed submission results",
 

@@ -4556,8 +4556,11 @@ export default {
                 get_task_outputs_success: "Lấy danh sách kết quả giao nộp thành công",
                 get_task_outputs_failure: "Lấy danh sách kết quả giao nộp thất bại",
 
-                approve_task_outputs_success: "Phê duyệt kết quả giao nộp thành công",
-                approve_task_outputs_failure: "Phê duyệt kết quả giao nộp thất bại",
+                create_submission_result_success: "Báo cáo kết quả giao nộp thành công",
+                create_submission_result_failure: "Báo cáo kết quả giao nộp thất bại",
+
+                approve_task_outputs_success: "Thay đổi trạng thái kết quả giao nộp thành công",
+                approve_task_outputs_failure: "Thay đổi trạng thái quả giao nộp thất bại",
 
                 edit_submission_results_success: "Chỉnh sửa báo cáo kết quả giao nộp thành công",
                 edit_submission_results_failure: "Chỉnh sửa báo cáo kết quả giao nộp thất bại",

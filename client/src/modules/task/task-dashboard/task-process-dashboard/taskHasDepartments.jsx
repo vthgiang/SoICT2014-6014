@@ -75,7 +75,9 @@ function TaskHasDepartments(props) {
                 columns: dataChart,
                 type: 'pie',
             },
-
+            // color: {
+            //     pattern: ['red', 'black', 'gray']
+            // },
             // Căn lề biểu đồ
             padding: {
                 top: 20,

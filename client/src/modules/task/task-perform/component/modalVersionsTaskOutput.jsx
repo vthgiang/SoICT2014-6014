@@ -5,6 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import { checkIfHasCommonItems } from '../../task-management/component/functionHelpers';
 import { getStorage } from '../../../../config';
+import { AuthActions } from '../../../auth/redux/actions';
+import FilePreview from './FilePreview';
 
 const isImage = (src) => {
     let string = src.toLowerCase().split(".");
@@ -107,6 +109,12 @@ function ModalVersionsTaskOutput(props) {
                 hasSaveButton={false}
                 hasNote={false}
             >
+                {
+                    state.currentFilepri &&
+                    <FilePreview
+                        file={state.currentFilepri}
+                    />
+                }
                 <div className="col-xs-12 col-sm-4">
                     <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
                         <div className="box-header with-border">
@@ -255,6 +263,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
 };
 
 const connectedTaskOutputs = connect(mapState, actionCreators)(withTranslate(ModalVersionsTaskOutput));
