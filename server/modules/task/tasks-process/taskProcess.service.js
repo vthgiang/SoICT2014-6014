@@ -805,7 +805,7 @@ exports.getAllTaskProcess = async (portal, query) => {
             processName: { $regex: name, $options: 'i' },
             endDate: { $gte: new Date(startDate), $lte: new Date(endTime) },
             startDate: { $gte: new Date(startDate), $lte: new Date(endTime) },
-            processTemplate: processTemplate,
+            // processTemplate: processTemplate,
             $or: [
                 { viewer: { $in: [userId] } },
                 { manager: { $in: [userId] } },
@@ -814,6 +814,21 @@ exports.getAllTaskProcess = async (portal, query) => {
             ]
         }
     }
+
+    if (startDate && endDate) {
+        filter = {
+            processName: { $regex: name, $options: 'i' },
+            endDate: { $gte: new Date(startDate), $lte: new Date(endTime) },
+            startDate: { $gte: new Date(startDate), $lte: new Date(endTime) },
+            $or: [
+                { viewer: { $in: [userId] } },
+                { manager: { $in: [userId] } },
+                { viewer: { $in: [currentRole] } },
+                { manager: { $in: [currentRole] } },
+            ]
+        }
+    }
+
     let data = await TaskProcess(connect(DB_CONNECTION, portal)).find(filter).skip(noResultsPerPage * (pageNumber - 1)).limit(noResultsPerPage)
         .populate([
             { path: 'creator', select: 'name' },

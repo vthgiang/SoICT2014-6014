@@ -47,10 +47,10 @@ function getAllXmlDiagram(pageNumber, noResultsPerPage, name = '') {
  * @param {*} noResultsPerPage số bản ghi trả về
  * @param {*} name tên quy trình công việc cần tìm kiếm
  */
-function getAllTaskProcess(pageNumber, noResultsPerPage, name = '') {
+function getAllTaskProcess(pageNumber, noResultsPerPage, name = '', startDate, endDate) {
     return dispatch => {
         dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_REQUEST });
-        TaskProcessService.getAllTaskProcess(pageNumber, noResultsPerPage, name)
+        TaskProcessService.getAllTaskProcess(pageNumber, noResultsPerPage, name, startDate, endDate)
             .then(
                 res => dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_SUCCESS, payload: res.data }),
                 error => dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_FAIL })
@@ -77,7 +77,7 @@ function getXmlDiagramById(diagramId) {
  * Lấy  quy trình theo id
  * @param {*} processId id mẫu quy trình
  */
- function getProcessById(processId) {
+function getProcessById(processId) {
     return dispatch => {
         dispatch({ type: TaskProcessConstants.GET_XML_PROCESS_BY_ID_REQUEST });
         TaskProcessService.getProcessById(processId)
@@ -156,10 +156,11 @@ function deleteTaskProcess(taslProcessId, pageNumber, noResultsPerPage, name = "
         dispatch({ type: TaskProcessConstants.DELETE_TASK_PROCESS_REQUEST });
         TaskProcessService.deleteTaskProcess(taslProcessId, pageNumber, noResultsPerPage, name)
             .then(
-                res => {dispatch({ type: TaskProcessConstants.DELETE_TASK_PROCESS_SUCCESS, payload: res.data })
-                console.log("object",res.data);
-            
-            },
+                res => {
+                    dispatch({ type: TaskProcessConstants.DELETE_TASK_PROCESS_SUCCESS, payload: res.data })
+                    console.log("object", res.data);
+
+                },
                 error => dispatch({ type: TaskProcessConstants.DELETE_TASK_PROCESS_FAIL })
             );
     };
@@ -171,7 +172,7 @@ function deleteTaskProcess(taslProcessId, pageNumber, noResultsPerPage, name = "
  * @param {*} diagramId id của quy trình
  */
 function createTaskByProcess(data, diagramId, template) {
-    if(template) {
+    if (template) {
         return dispatch => {
             dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_REQUEST });
             TaskProcessService.createTaskByProcess(data, diagramId)
@@ -180,7 +181,7 @@ function createTaskByProcess(data, diagramId, template) {
                     error => dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_FAIL })
                 );
         };
-    }else {
+    } else {
         return dispatch => {
             dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_REQUEST });
             TaskProcessService.createTaskByProcess(data, diagramId)
@@ -226,8 +227,9 @@ function editProcessInfo(processId, data) {
         dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_REQUEST });
         TaskProcessService.editProcessInfo(processId, data)
             .then(
-                res => {dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS, payload: res.data, processId: processId })
-            },
+                res => {
+                    dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS, payload: res.data, processId: processId })
+                },
                 error => dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_FAIL })
             );
     };
