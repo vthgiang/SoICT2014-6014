@@ -139,10 +139,10 @@ function TaskProcessDashboard(props) {
         })
     }
 
-    let { startMonthTitle, endMonthTitle } = infoSearch;
+    let { startMonthTitle, endMonthTitle, startMonth, endMonth } = infoSearch;
 
     useEffect(() => {
-        props.getAllTaskProcess()
+        props.getAllTaskProcess(undefined, undefined, undefined, startMonth, endMonth)
     }, [])
 
     return (
@@ -175,7 +175,7 @@ function TaskProcessDashboard(props) {
 
                     {/**button tìm kiếm data để vẽ biểu đồ */}
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" onClick={() => { }}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                        <button type="button" className="btn btn-success" onClick={() => { props.getAllTaskProcess(undefined, undefined, undefined, startMonth, endMonth) }}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </div>
                 </div>
                 <div className="row statistical-wrapper" style={{ marginTop: '5px' }}>
