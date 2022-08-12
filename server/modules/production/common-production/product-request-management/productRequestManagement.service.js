@@ -68,6 +68,7 @@ exports.createRequest = async (user, data, portal) => {
         requestType: data.requestType ? data.requestType : 1,
         type: data.type ? data.type : 1,
         supplier: data.supplier ? data.supplier : null,
+        customer: data.customer ? data.customer : null,
         purchaseOrder: data.purchaseOrder ? data.purchaseOrder : null,
         saleOrder: data.saleOrder ? data.saleOrder : null,
         bill: data.bill ? data.bill : null,
@@ -152,6 +153,7 @@ exports.createRequest = async (user, data, portal) => {
             { path: "requestingDepartment" },
             { path: "manufacturingWork", select: "name" },
             { path: "supplier", select: "name" },
+            { path: "customer", select: "name" },
             { path: "orderUnit", select: "name" },
         ]);
     return { request }
@@ -236,7 +238,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
             '$lte': getArrayTimeFromString(query.desiredTime)[1]
         }
     }
-    if (query.requestFrom !== 'stock' || (query.requestType == 3 && query.type != 1 && query.type != 2)) {
+    if (query.requestFrom !== 'stock' || (query.requestType == 3 && query.type != 1 && query.type != 2) || (query.requestType == 4)) {
         if (query.requestType) {
             option.requestType = query.requestType;
         }
@@ -283,6 +285,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 { path: "requestingDepartment" },
                 { path: "manufacturingWork", select: "name" },
                 { path: "supplier", select: "name" },
+                { path: "customer", select: "name" },
                 { path: "orderUnit", select: "name" },
             ]);
         let requests = {};
@@ -306,6 +309,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 { path: "requestingDepartment" },
                 { path: "manufacturingWork", select: "name" },
                 { path: "supplier", select: "name" },
+                { path: "customer", select: "name" },
                 { path: "orderUnit", select: "name" },
                 ],
                 sort: {
@@ -335,6 +339,7 @@ exports.getRequestById = async (id, portal) => {
         { path: "requestingDepartment" },
         { path: "manufacturingWork", select: "name" },
         { path: "supplier", select: "name" },
+        { path: "customer", select: "name" },
         { path: "orderUnit", select: "name" },
         ]);
     if (!request) {
@@ -399,7 +404,7 @@ exports.editRequest = async (user, id, data, portal) => {
                     break;
                 case 4:
                     if (oldRequest.type !== 4) {
-                        oldRequest.status = oldRequest.status == 6 ? 7 : 2;
+                        oldRequest.status = oldRequest.status == 6 ? 7 : (oldRequest.status == 2 ? 3 : 2);
                     } else {
                         let index1 = findIndexOfRole(oldRequest.approvers, 5);
                         let check = 0;
@@ -441,6 +446,7 @@ exports.editRequest = async (user, id, data, portal) => {
         }
     }) : oldRequest.goods;
     oldRequest.supplier = data.supplier ? data.supplier : oldRequest.supplier;
+    oldRequest.customer = data.customer ? data.customer : oldRequest.customer;
     oldRequest.purchaseOrder = data.purchaseOrder ? data.purchaseOrder : oldRequest.purchaseOrder;
     oldRequest.saleOrder = data.saleOrder ? data.saleOrder : oldRequest.saleOrder;
     oldRequest.bill = data.bill ? data.bill : oldRequest.bill;
@@ -582,6 +588,7 @@ exports.editRequest = async (user, id, data, portal) => {
             { path: "requestingDepartment" },
             { path: "manufacturingWork", select: "name" },
             { path: "supplier", select: "name" },
+            { path: "customer", select: "name" },
             { path: "orderUnit", select: "name" },
         ]);
 

@@ -244,7 +244,7 @@ function CreateForm(props) {
         if (list) {
             mapOptions = [{
                 value: "title", //Title không được chọn
-                text: "---Chọn nhà cung cấp---",
+                text: props.stockRequestType === 1 ?  "---Chọn nhà cung cấp---" : "---Chọn nhà khách hàng---",
             }];
             list.map((item) => {
                 mapOptions.push({
@@ -306,6 +306,7 @@ function CreateForm(props) {
                     quantity: good.quantity
                 }
             })
+            let customerOrSupplier = props.stockRequestType === 1 ? 'supplier' : 'customer';
             const data = {
                 code: state.code,
                 desiredTime: state.desiredTime,
@@ -317,7 +318,7 @@ function CreateForm(props) {
                 type: props.stockRequestType,
                 requestType: 3,
                 manufacturingWork: state.worksValue,
-                supplier: state.supplier,
+                [customerOrSupplier]: state.supplier,
             }
             props.createRequest(data);
         }
@@ -448,7 +449,7 @@ function CreateForm(props) {
                             {sourceType === "2" ?
                                 (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
                                     <label>
-                                        {translate("manage_warehouse.bill_management.supplier")}
+                                        {props.stockRequestType === 1 ? translate("manage_warehouse.bill_management.supplier") : translate("manage_warehouse.bill_management.customer")}
                                         <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox

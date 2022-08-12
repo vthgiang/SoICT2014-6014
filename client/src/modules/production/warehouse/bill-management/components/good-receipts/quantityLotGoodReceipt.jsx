@@ -385,12 +385,12 @@ function QuantityLotGoodReceipt(props) {
                         <p type="button" className="btn btn-primary" style={{ marginLeft: "10px" }} disabled={!isRfidCodeValidate()} onClick={handleGenerateRfid}>{translate('manage_warehouse.bill_management.create_rfid_code')}</p>
                         {state.editInfo ?
                             <React.Fragment>
-                                <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                <button className="btn btn-success" disabled={!isLotsValidated()} onClick={handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                <p type="button" className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</p>
+                                <p type="button" className="btn btn-success" disabled={!isLotsValidated()} onClick={handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</p>
                             </React.Fragment> :
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isLotsValidated()} onClick={handleAddLot}>{translate('task_template.add')}</button>
+                            <p type="button" className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isLotsValidated()} onClick={handleAddLot}>{translate('task_template.add')}</p>
                         }
-                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearLot}>{translate('task_template.delete')}</button>
+                        <p type="button" className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearLot}>{translate('task_template.delete')}</p>
                     </div>
 
                     <table className="table table-bordered">
@@ -427,6 +427,9 @@ function QuantityLotGoodReceipt(props) {
                             }
                         </tbody>
                     </table>
+                    <div className="pull-right" style={{ marginTop: "10px" }}>
+                        <p type="button" className="btn btn-info" style={{ marginLeft: "10px" }}><i className="material-icons">print</i>{" In mã RFID"}</p>
+                    </div>
                 </fieldset>
             </DialogModal>
         </React.Fragment>

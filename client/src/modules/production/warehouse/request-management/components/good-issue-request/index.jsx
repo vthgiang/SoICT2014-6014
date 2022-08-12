@@ -63,12 +63,12 @@ function GoodIssueRequestManagementTable(props) {
 
     const getSourceRequest = (requestType, type) => {
         if (requestType == 2 && type == 2) {
-            return "Yêu cầu gửi từ bộ phận đơn hàng";
+            return "Đề nghị gửi từ bộ phận đơn hàng";
         }
         if (requestType == 1 && type == 3)
-            return "Yêu cầu gửi từ nhà máy";
+            return "Đề nghị gửi từ nhà máy";
         if (requestType == 3 && type == 2)
-            return "Yêu cầu tạo từ trong kho";
+            return "Đề nghị tạo từ trong kho";
     }
 
     const getListStatus = (request) => {

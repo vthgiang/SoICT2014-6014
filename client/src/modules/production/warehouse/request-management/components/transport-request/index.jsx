@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { formatDate } from '../../../../../../helpers/formatDate';
 import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../../common-components";
 import DetailForm from '../common-components/detailForm';
-import EditForm from './editForm';
-import CreateForm from './createForm';
+import EditForm from '../common-components/editForm';
+import CreateForm from '../common-components/createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import ApproveForm from '../common-components/approveForm';
-import GoodReturnCreateFormModal from '../../../bill-management/components/good-returns/goodReturnCreateFormModal';
+import GoodReceiptCreateFormModal from '../../../bill-management/components/good-receipts/goodReceiptCreateFormModal';
 import { dataListStatus } from "../common-components/config"
 
-function GoodReturnRequestManagementTable(props) {
+function TransportRequestManagementTable(props) {
 
     const [state, setState] = useState({
         createdAt: formatDate((new Date()).toISOString()),
@@ -44,6 +44,16 @@ function GoodReturnRequestManagementTable(props) {
         window.$('#modal-edit-request').modal('show');
     }
 
+    const getSourceRequest = (requestType, type) => {
+        if ((requestType == 1 && type == 1) || (requestType == 2 && type == 1)) {
+            return "Yêu cầu gửi từ bộ phận đơn hàng";
+        }
+        if (requestType == 1 && type == 2)
+            return "Yêu cầu gửi từ nhà máy";
+        if (requestType == 3 && type == 1)
+            return "Yêu cầu tạo từ trong kho";
+    }
+
     const handleShowApprove = async (request) => {
         await setState({
             ...state,
@@ -52,25 +62,24 @@ function GoodReturnRequestManagementTable(props) {
         window.$("#modal-approve-form").modal("show");
     };
 
-    const handleCreateReturnBill = async (request) => {
+    const getListStatus = (request) => {
+        let listStatus = [];
+        if (request.requestType == 1 && request.type == 1) {
+            listStatus = dataListStatus.listStatusReceipt1();
+        } else if ((request.requestType == 2 && request.type == 1) || (request.requestType == 1 && request.type == 2)) {
+            listStatus = dataListStatus.listStatusReceipt2();
+        } else if (request.requestType == 3 && request.type == 1) {
+            listStatus = dataListStatus.listStatusReceipt3();
+        }
+        return listStatus;
+    }
+
+    const handleCreateReceiptBill = async (request) => {
         await setState({
             ...state,
             request: request,
         });
-        window.$("#modal-create-new-return-bill").modal("show");
-    }
-
-    const getSourceRequest = (requestType, type) => {
-        if (requestType == 3 && type == 3)
-            return "Đề nghị tạo từ trong kho";
-    }
-
-    const getListStatus = (request) => {
-        let listStatus = [];
-        if (request.requestType == 3 && request.type == 3) {
-            listStatus = dataListStatus.listStatusReturn();
-        }
-        return listStatus;
+        window.$("#modal-create-new-receipt-bill").modal("show");
     }
 
     const { translate, requestManagements } = props;
@@ -79,22 +88,11 @@ function GoodReturnRequestManagementTable(props) {
         listRequests = requestManagements.listRequests
     }
     const { totalPages, page } = requestManagements;
-    const { code, createdAt, planCode, desiredTime } = state;
+    const { code, createdAt, desiredTime } = state;
 
     return (
         <React.Fragment>
             {<DetailForm requestDetail={state.requestDetail} />}
-            <ApproveForm
-                requestId={state.requestApprove ? state.requestApprove._id : ''}
-                requestApprove={state.requestApprove}
-                fromStock={true}
-                createGoodTakesType={4}
-            />
-            <GoodReturnCreateFormModal
-                createType={3} // 3: create from request in request screen
-                requestId={state.request ? state.request._id : ''}
-                request={state.request}
-            />
             {
                 state.currentRow && state.listGoods &&
                 <EditForm
@@ -105,11 +103,18 @@ function GoodReturnRequestManagementTable(props) {
                     listGoods={state.listGoods}
                     stock={state.currentRow.stock._id}
                     status={state.currentRow.status}
-                    worksValue={state.currentRow.manufacturingWork._id}
+                    worksValue={state.currentRow.manufacturingWork ? state.currentRow.manufacturingWork._id : ""}
+                    supplier={state.currentRow.supplier ? state.currentRow.supplier._id : ""}
                     approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 4) : []}
                     stockRequestType={props.stockRequestType}
                 />
             }
+            <ApproveForm
+                requestId={state.requestApprove ? state.requestApprove._id : ''}
+                requestApprove={state.requestApprove}
+                fromStock={true}
+                createGoodTakesType={2}
+            />
             <div className="box-body qlcv">
                 <CreateForm stockRequestType={props.stockRequestType} />
                 <div className="form-inline">
@@ -129,19 +134,19 @@ function GoodReturnRequestManagementTable(props) {
                 </div>
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('production.request_management.status')}</label>
+                        <label>{"Chọn nguồn đề nghị"}</label>
                         <SelectMulti
-                            id={`select-status-purchasing-request`}
+                            id={`select-source-request`}
                             className="form-control select2"
                             multiple="multiple"
-                            options={{ nonSelectedText: translate('production.request_management.select_status'), allSelectedText: translate('production.request_management.select_all') }}
+                            options={{ nonSelectedText: "Chọn nguồn đề nghị", allSelectedText: translate('production.request_management.select_all') }}
                             style={{ width: "100%" }}
                             items={[
-                                { value: 1, text: translate('production.request_management.receipt_request_from_order.1.content') },
-                                { value: 2, text: translate('production.request_management.receipt_request_from_order.2.content') },
-                                { value: 5, text: translate('production.request_management.receipt_request_from_order.5.content') },
+                                { value: '1', text: "Từ bộ phận sản xuất" },
+                                { value: '2', text: 'Từ bộ phận đơn hàng' },
+                                { value: '3', text: "Từ bộ phận kho" },
                             ]}
-                            onChange={props.handleStatusChange}
+                            onChange={props.handleChangeSourceRequest}
                         />
                     </div>
                     <div className="form-group">
@@ -227,9 +232,8 @@ function GoodReturnRequestManagementTable(props) {
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('production.request_management.request_edit')} onClick={() => handleEditRequest(request)}><i className="material-icons">edit</i></a>
                                         }
                                         {/*Phê duyệt yêu cầu*/}
-                                        {/*Phê duyệt yêu cầu*/}
                                         {
-                                            props.checkRoleApprover(request) &&
+                                            props.checkRoleApprover(request) && request.status == 1 &&
                                             <a
                                                 onClick={() => handleShowApprove(request)}
                                                 className="add text-success"
@@ -237,17 +241,6 @@ function GoodReturnRequestManagementTable(props) {
                                                 title="Phê duyệt đơn"
                                             >
                                                 <i className="material-icons">check_circle_outline</i>
-                                            </a>
-                                        }
-                                        {
-                                            // props.checkRoleApprover(request) && request.status == 2 &&
-                                            <a
-                                                onClick={() => handleCreateReturnBill(request)}
-                                                className="add text-success"
-                                                style={{ width: "5px" }}
-                                                title="Tạo phiếu trả hàng"
-                                            >
-                                                <i className="material-icons">add</i>
                                             </a>
                                         }
                                         {
@@ -283,4 +276,4 @@ const mapDispatchToProps = {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReturnRequestManagementTable));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TransportRequestManagementTable));

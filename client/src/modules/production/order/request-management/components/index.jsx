@@ -214,6 +214,7 @@ function RequestManagement(props) {
                 <li className="active"><a href="#good-purchasing-request" data-toggle="tab" onClick={() => handlePurchasingRequest()}>{translate('production.request_management.purchase_request')}</a></li>
                 <li><a href="#good-receipt-request" data-toggle="tab" onClick={() => handleReceiptRequest()}>{translate('production.request_management.receipt_request')}</a></li>
                 <li><a href="#good-issue-request" data-toggle="tab" onClick={() => handleIssueRequest()}>{translate('production.request_management.issue_request')}</a></li>
+                <li><a href="#transport-request" data-toggle="tab" onClick={() => handleIssueRequest()}>{translate('production.request_management.transport_request')}</a></li>
             </ul>
             <div className="tab-content">
                 <div className="tab-pane active" id="good-purchasing-request">

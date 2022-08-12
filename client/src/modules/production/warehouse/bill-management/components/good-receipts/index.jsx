@@ -84,7 +84,7 @@ function ReceiptManagement(props) {
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow, actionAddLots, createType, billInfor } = state;
     const dataPartner = props.getPartner();
-
+    console.log(listPaginate);
     return (
         <div id="bill-good-receipts">
             <div className="box-body qlcv">
@@ -280,10 +280,12 @@ function ReceiptManagement(props) {
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        {/*show detail */}
-                                        <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                        {/*show detail */}{
+                                            props.checkRoleCanViewDetail(x) &&
+                                            <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                        }
                                         {/*Thực hiện công việc */}
-                                        {x.status === '1' &&
+                                        {x.status === '1' && props.checkRolePerformWork(x) &&
                                             <a
                                                 className="text-violet"
                                                 title={translate('manage_warehouse.inventory_management.add_lot')}

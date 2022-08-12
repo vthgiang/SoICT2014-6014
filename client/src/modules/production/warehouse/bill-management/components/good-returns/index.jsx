@@ -256,9 +256,12 @@ function ReturnManagement(props) {
                                     <td>{x.manufacturingMill ? x.manufacturingMill.name : (x.type === "12" ? translate(`manage_warehouse.bill_management.goods_returned_to_the_supplier`) : translate(`manage_warehouse.bill_management.goods_returned_to_the_stock`))}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
-                                        <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                        {
+                                            props.checkRoleCanViewDetail(x) &&
+                                            <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                        }
                                         {/*Thực hiện công việc*/}
-                                        { x.status === '1' &&
+                                        {x.status === '1' && props.checkRolePerformWork(x) &&
                                             <a
                                                 className="text-violet"
                                                 title={translate('manage_warehouse.inventory_management.add_lot')}
