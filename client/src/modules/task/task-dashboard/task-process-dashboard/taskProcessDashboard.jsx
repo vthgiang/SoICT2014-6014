@@ -128,6 +128,7 @@ function TaskProcessDashboard(props) {
         setInfoSearch({
             ...infoSearch,
             startMonth: month,
+            startMonthTitle: formatMonth(month)
         })
     }
 
@@ -136,6 +137,7 @@ function TaskProcessDashboard(props) {
         setInfoSearch({
             ...infoSearch,
             endMonth: month,
+            endMonthTitle: formatMonth(month)
         })
     }
 
