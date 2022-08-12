@@ -100,6 +100,10 @@ const ProductRequestManagementSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Customer'
     },
+    customer: { //Khách hàng
+        type: Schema.Types.ObjectId,
+        ref: 'Customer'
+    },
     // 1: trong sản xuất
     // 2: trong đơn hàng
     // 3: Trong kho

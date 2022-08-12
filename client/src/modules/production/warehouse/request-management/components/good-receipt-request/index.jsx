@@ -46,12 +46,12 @@ function GoodReceiptRequestManagementTable(props) {
 
     const getSourceRequest = (requestType, type) => {
         if ((requestType == 1 && type == 1) || (requestType == 2 && type == 1)) {
-            return "Yêu cầu gửi từ bộ phận đơn hàng";
+            return "Đề nghị gửi từ bộ phận đơn hàng";
         }
         if (requestType == 1 && type == 2)
-            return "Yêu cầu gửi từ nhà máy";
+            return "Đề nghị gửi từ nhà máy";
         if (requestType == 3 && type == 1)
-            return "Yêu cầu tạo từ trong kho";
+            return "Đề nghị tạo từ trong kho";
     }
 
     const handleShowApprove = async (request) => {
@@ -89,7 +89,6 @@ function GoodReceiptRequestManagementTable(props) {
     }
     const { totalPages, page } = requestManagements;
     const { code, createdAt, desiredTime } = state;
-
     return (
         <React.Fragment>
             {<DetailForm requestDetail={state.requestDetail} />}
@@ -217,7 +216,7 @@ function GoodReceiptRequestManagementTable(props) {
                                                 <div className="timeline-progress" style={{ width: (parseInt(request.status) - 1) / (getListStatus(request).length - 1) * 100 + "%" }}></div>
                                                 <div className="timeline-items">
                                                     {getListStatus(request).map((status, index) => (
-                                                        <div className={`tooltip-abc${status.value > request.status ? "" : "-completed"}`}>
+                                                        <div key={index} className={`tooltip-abc${status.value > request.status ? "" : "-completed"}`}>
                                                             <div className={`timeline-item ${status.value > request.status ? "" : "active"}`}>
                                                             </div>
                                                             <span className={`tooltiptext${status.value > request.status ? "" : "-completed"}`}><p style={{ color: "white" }}>{status.value > request.status ? status.wait : status.completed}</p></span>
@@ -237,7 +236,10 @@ function GoodReceiptRequestManagementTable(props) {
                                         }
                                         {/*Phê duyệt yêu cầu*/}
                                         {
-                                            props.checkRoleApprover(request) && request.status == 1 &&
+                                            props.checkRoleApprover(request) && 
+                                            ((request.status == 1 && request.requestType == 3) || 
+                                            (request.status == 2 && (request.requestType == 2 || request.requestType == 1)) ||
+                                            (request.status == 6 && request.requestType == 1)) &&
                                             <a
                                                 onClick={() => handleShowApprove(request)}
                                                 className="add text-success"
@@ -260,6 +262,9 @@ function GoodReceiptRequestManagementTable(props) {
                                         }
                                         {
                                             // props.checkRoleApprover(request) && request.status == 2 &&
+                                            ((request.status == 2 && request.requestType == 3) || 
+                                            (request.status == 3 && (request.requestType == 2 || request.requestType == 1)) ||
+                                            (request.status == 7 && request.requestType == 1)) &&
                                             <a
                                                 onClick={() => handleCreateReceiptBill(request)}
                                                 className="add text-success"

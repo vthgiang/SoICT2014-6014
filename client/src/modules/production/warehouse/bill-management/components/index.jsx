@@ -302,18 +302,18 @@ function BillManagement(props) {
         await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
-    const handleStockRotate = async () => {
-        const page = 1;
-        const group = '5';
-        const { limit } = state;
-        await setState({
-            ...state,
-            group: group,
-            page: page
-        })
-        await props.getAllBillsByGroup({ group, managementLocation: state.currentRole });
-        await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
-    }
+    // const handleStockRotate = async () => {
+    //     const page = 1;
+    //     const group = '5';
+    //     const { limit } = state;
+    //     await setState({
+    //         ...state,
+    //         group: group,
+    //         page: page
+    //     })
+    //     await props.getAllBillsByGroup({ group, managementLocation: state.currentRole });
+    //     await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
+    // }
 
     const getPartner = () => {
         const { crm } = props;
@@ -347,6 +347,28 @@ function BillManagement(props) {
         props.editBill(bill._id, data);
     }
 
+    const checkRolePerformWork = (bill) => {
+        const { stockWorkAssignment } = bill;
+        const userId = localStorage.getItem("userId");
+        let performWorkPeople = stockWorkAssignment[0].workAssignmentStaffs.map(x => x._id);
+        if (performWorkPeople.includes(userId)) {
+            return true;
+        }
+        return false
+    }
+
+    const checkRoleCanViewDetail = (bill) => {
+        const { stockWorkAssignment } = bill;
+        const userId = localStorage.getItem("userId");
+        let peopleIncharge = stockWorkAssignment[0].workAssignmentStaffs.map(x => x._id);
+        let accountables = stockWorkAssignment[1].workAssignmentStaffs.map(x => x._id);
+        let accountants = stockWorkAssignment[2].workAssignmentStaffs.map(x => x._id);
+        let peopleCanViewDetail = [...peopleIncharge, ...accountables, ...accountants];
+        if (peopleCanViewDetail.includes(userId)) {
+            return true;
+        }
+        return false
+    }
     const handleInProcessingStatus = (bill) => {
         const data = {
             status: '3',
@@ -515,6 +537,8 @@ function BillManagement(props) {
                         handleCancelBill={handleCancelBill}
                         handleCompleteBill={handleCompleteBill}
                         handleSearchByStatus={handleSearchByStatus}
+                        checkRolePerformWork={checkRolePerformWork}
+                        checkRoleCanViewDetail={checkRoleCanViewDetail}
                     />
                 }
 
@@ -544,7 +568,8 @@ function BillManagement(props) {
                         handleCancelBill={handleCancelBill}
                         handleCompleteBill={handleCompleteBill}
                         handleSearchByStatus={handleSearchByStatus}
-
+                        checkRolePerformWork={checkRolePerformWork}
+                        checkRoleCanViewDetail = {checkRoleCanViewDetail}
                     />
                 }
 
@@ -574,7 +599,8 @@ function BillManagement(props) {
                         handleCancelBill={handleCancelBill}
                         handleCompleteBill={handleCompleteBill}
                         handleSearchByStatus={handleSearchByStatus}
-
+                        checkRolePerformWork={checkRolePerformWork}
+                        checkRoleCanViewDetail={checkRoleCanViewDetail}
                     />
                 }
 
@@ -604,7 +630,8 @@ function BillManagement(props) {
                         handleCancelBill={handleCancelBill}
                         handleCompleteBill={handleCompleteBill}
                         handleSearchByStatus={handleSearchByStatus}
-
+                        checkRolePerformWork={checkRolePerformWork}
+                        checkRoleCanViewDetail={checkRoleCanViewDetail}
                     />
                 }
 

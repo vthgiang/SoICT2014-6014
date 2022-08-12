@@ -97,7 +97,7 @@ function GoodRotateRequestManagementTable(props) {
 
     const getSourceRequest = (requestType, type) => {
         if (requestType == 3 && type == 3)
-            return "Yêu cầu tạo từ trong kho";
+            return "Đề nghị tạo từ trong kho";
     }
 
     const getListStatus = (request) => {

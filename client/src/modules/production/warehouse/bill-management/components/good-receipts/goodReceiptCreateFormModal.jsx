@@ -169,6 +169,7 @@ function GoodReceiptCreateFormModal(props) {
                 address: state.address,
                 phone: state.phone,
                 priority: state.priority,
+                request: state.requestId ? state.requestId : "",
             }
             await props.createBill(data);
         }

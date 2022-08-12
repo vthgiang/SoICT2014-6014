@@ -149,25 +149,25 @@ function BaseInformationComponent(props) {
 
     // Nhà cung cấp 
 
-    const getSupplier = () => {
+    const getCustomer = () => {
         const { crm, translate } = props;
-        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_supplier") }];
+        let customerArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_customer") }];
 
         crm.customers.list.map((item) => {
-            supplierArr.push({
+            customerArr.push({
                 value: item._id,
                 text: item.name,
             });
         });
-        return supplierArr;
+        return customerArr;
     };
 
-    const handleSupplierChange = (value) => {
-        let supplier = value[0];
-        validateSupplier(supplier, true);
+    const handleCustomerChange = (value) => {
+        let customer = value[0];
+        validateCustomer(customer, true);
     };
 
-    const validateSupplier = (value, willUpdateState = true) => {
+    const validateCustomer = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
@@ -176,8 +176,8 @@ function BaseInformationComponent(props) {
         if (willUpdateState) {
             setState({
                 ...state,
-                supplier: value,
-                errorSuppler: msg,
+                customer: value,
+                errorCustomer: msg,
             });
         }
         return msg === undefined;
@@ -223,7 +223,7 @@ function BaseInformationComponent(props) {
                 worksValue: value,
                 worksValueError: msg,
                 teamLeaderValue: "",
-                supplier: "",
+                customer: "",
             });
         }
         return msg === undefined;
@@ -266,7 +266,7 @@ function BaseInformationComponent(props) {
                 fromStock: request.stock._id,
                 toStock: request.toStock ? request.toStock._id : "",
                 worksValue: request.manufacturingWork ? request.manufacturingWork._id : "",
-                supplier: request.supplier ? request.supplier._id : "",
+                customer: request.customer ? request.customer._id : "",
                 requestId: request._id,
             });
         }
@@ -294,7 +294,7 @@ function BaseInformationComponent(props) {
             listGood: props.listGood,
             worksValue: props.manufacturingWork,
             requestValue: props.requestValue,
-            supplier: props.supplier,
+            customer: props.customer,
             description: props.description,
             isHaveDataStep1: props.isHaveDataStep1,
         });
@@ -311,12 +311,12 @@ function BaseInformationComponent(props) {
                 listGood: state.listGood,
                 manufacturingWork: state.worksValue,
                 requestValue: state.requestValue,
-                supplier: state.supplier,
+                customer: state.customer,
                 description: state.description,
             }
             props.onDataChange(data);
         }
-    }, [state.fromStock, state.worksValue, state.type, state.supplier, state.listGood, state.description, state.requestValue, state.toStock]);
+    }, [state.fromStock, state.worksValue, state.type, state.customer, state.listGood, state.description, state.requestValue, state.toStock]);
 
     useEffect(() => {
         if (state.type !== "5")
@@ -331,18 +331,18 @@ function BaseInformationComponent(props) {
             validateStock(fromStock, false) &&
             validateBillTypeProduct(state.type, false) &&
             (validateManufacturingWorks(state.worksValue, false) ||
-                validateSupplier(state.supplier, false) || validateToStock(state.toStock, false)) &&
+                validateCustomer(state.customer, false) || validateToStock(state.toStock, false)) &&
             listGood.length > 0
         return result;
     };
 
     const { translate, createType } = props;
     const {
-        listGood, good, code, supplier, worksValue, fromStock, errorFromStock, errorToStock, errorType, errorSupplier, worksValueError,
+        listGood, good, code, customer, worksValue, fromStock, errorFromStock, errorToStock, errorType, errorCustomer, worksValueError,
         errorOnBillType, type, description, requestValue, errorOnRequest, isHaveDataStep1, toStock } = state;
     const dataBillType = datasBillType.goodIssueBillType();
 
-    const dataCustomer = getSupplier();
+    const dataCustomer = getCustomer();
     const dataManufacturingWorks = getListWorks();
     const dataFromStock = getFromStock();
     const dataToStock = getToStock();
@@ -407,7 +407,7 @@ function BaseInformationComponent(props) {
                             </div>
                         }
                         {(type === "2" || type === "4") ?
-                            (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
+                            (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                 <label>
                                     {"Chọn khách hàng"}
                                     <span className="text-red"> * </span>
@@ -416,13 +416,13 @@ function BaseInformationComponent(props) {
                                     id={`select-customer-issue-create`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    value={supplier}
+                                    value={customer}
                                     items={dataCustomer}
-                                    onChange={handleSupplierChange}
+                                    onChange={handleCustomerChange}
                                     multiple={false}
                                     disabled={createType === 2 || createType === 3}
                                 />
-                                <ErrorLabel content={errorSupplier} />
+                                <ErrorLabel content={errorCustomer} />
                             </div>)
                             : null}
                         {(type === "1" || type === "3") ?

@@ -20,7 +20,7 @@ function GoodIssueCreateFormModal(props) {
         type: "",
         listGood: "",
         manufacturingWork: "",
-        supplier: "",
+        customer: "",
         description: "",
         step: 0,
         isHaveDataStep1: 0,
@@ -85,7 +85,7 @@ function GoodIssueCreateFormModal(props) {
             listGood: data.listGood,
             manufacturingWork: data.manufacturingWork,
             requestValue: data.requestValue,
-            supplier: data.supplier,
+            customer: data.customer,
             code: data.code,
             description: data.description,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
@@ -172,7 +172,7 @@ function GoodIssueCreateFormModal(props) {
             fromStock: props.request.stock._id,
             toStock: props.request.toStock ?  props.request.toStock._id : "",
             manufacturingWork: props.request.manufacturingWork ? props.request.manufacturingWork._id : "",
-            supplier: props.request.supplier ? props.request.supplier._id : "",
+            customer: props.request.supplier ? props.request.supplier._id : "",
             type: type,
             requestId: props.requestId,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
@@ -189,7 +189,7 @@ function GoodIssueCreateFormModal(props) {
                 type: state.type,
                 goods: state.listGood,
                 manufacturingWork: state.manufacturingWork,
-                supplier: state.supplier,
+                customer: state.customer,
                 code: state.code,
                 description: state.description,
                 dataStockWorkAssignment: state.dataStockWorkAssignment,
@@ -198,12 +198,13 @@ function GoodIssueCreateFormModal(props) {
                 address: state.address,
                 phone: state.phone,
                 priority: state.priority,
+                request: state.requestId ? state.requestId : "",
             }
             await props.createBill(data);
         }
     }
 
-    const { step, steps, fromStock, toStock, code, type, listGood, manufacturingWork, supplier, description, isHaveDataStep1, isHaveDataStep2, requestValue,
+    const { step, steps, fromStock, toStock, code, type, listGood, manufacturingWork, customer, description, isHaveDataStep1, isHaveDataStep2, requestValue,
         peopleInCharge, accountables, accountants, startTime, endTime, startDate, endDate, workAssignment, name, email, address, phone, group } = state;
     const { translate, createType } = props;
     return (
@@ -247,7 +248,7 @@ function GoodIssueCreateFormModal(props) {
                                 type={type}
                                 listGood={listGood}
                                 manufacturingWork={manufacturingWork}
-                                supplier={supplier}
+                                customer={customer}
                                 description={description}
                                 createType={createType}
                                 requestValue={requestValue}

@@ -1,4 +1,4 @@
-const { Bill, Lot, Stock, SalesOrder, PurchaseOrder, BinLocation } = require(`../../../../models`);
+const { Bill, Lot, Stock, SalesOrder, PurchaseOrder, BinLocation, ProductRequestManagement } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const CustomerService = require('../../../crm/customer/customer.service');
 const { updateCrmActionsTaskInfo, updateSearchingCustomerTaskInfo } = require('../../../crm/crmTask/crmTask.service');
@@ -296,6 +296,7 @@ exports.createBill = async (user, data, portal) => {
         fromStock: data.fromStock,
         group: data.group,
         bill: data.bill,
+        request: data.request ? data.request : "",
         toStock: data.toStock ? data.toStock : null,
         code: data.code,
         type: data.type,
@@ -351,20 +352,20 @@ exports.createBill = async (user, data, portal) => {
     const bill = await Bill(connect(DB_CONNECTION, portal)).create(query);
 
     //Thêm vào đơn bán hàng trường bill xuất bán sản phẩm
-    if (data.salesOrderId) {
-        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.salesOrderId });
-        salesOrder.bill = bill._id; //Gắn bill vào đơn hàng
-        salesOrder.status = 5; //Thay đổi trạng thái đơn là yêu cầu xuất kho
-        salesOrder.save();
-    }
+    // if (data.salesOrderId) {
+    //     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.salesOrderId });
+    //     salesOrder.bill = bill._id; //Gắn bill vào đơn hàng
+    //     salesOrder.status = 5; //Thay đổi trạng thái đơn là yêu cầu xuất kho
+    //     salesOrder.save();
+    // }
 
     //Thêm vào đơn mua nguyên vật liệu trường bill nhập kho nguyên vật liệu
-    if (data.purchaseOrderId) {
-        let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.purchaseOrderId });
-        purchaseOrder.bill = bill._id; //Gắn bill vào đơn hàng
-        purchaseOrder.status = 3; //Thay đổi trạng thái đơn là yêu cầu nhập kho
-        purchaseOrder.save();
-    }
+    // if (data.purchaseOrderId) {
+    //     let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.purchaseOrderId });
+    //     purchaseOrder.bill = bill._id; //Gắn bill vào đơn hàng
+    //     purchaseOrder.status = 3; //Thay đổi trạng thái đơn là yêu cầu nhập kho
+    //     purchaseOrder.save();
+    // }
 
     // Phần phục vụ cho việc tạo mới công việc cho nhân viên kho khi tạo phiếu
     if (data.dataStockWorkAssignment) {
@@ -424,6 +425,27 @@ exports.createBill = async (user, data, portal) => {
             }
             await TaskManagementService.createTask(portal, body);
         }
+
+        // cập nhật trạng thái của đề nghị sau khi tạo xong phiếu
+        if (data.request) {
+            let request = await ProductRequestManagement(connect(DB_CONNECTION, portal))
+                .findById(data.request)
+            let requestUpdate = 0;
+            switch (request.status) {
+                case 2:
+                    requestUpdate = 3;
+                    break;
+                case 7:
+                    requestUpdate = 8;
+                    break;
+                case 3:
+                    requestUpdate = 4;
+                    break;
+            }
+            request.status = requestUpdate;
+            request.save();
+        }
+
         // Gửi thông báo đến những người được assign công việc
         data.dataStockWorkAssignment.forEach(item => {
             const dataNotification = {
@@ -777,6 +799,25 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
         }
     }
     await bill.save();
+    // cập nhật trạng thái của đề nghị sau khi hoàn thành công việc trong phiếu
+    if (data.statusAll && data.statusAll == 2) {
+        let request = await ProductRequestManagement(connect(DB_CONNECTION, portal))
+            .findById(bill.request);
+        let requestUpdate = 0;
+        switch (request.status) {
+            case 3:
+                requestUpdate = 4;
+                break;
+            case 8:
+                requestUpdate = 9;
+                break;
+            case 4:
+                requestUpdate = 5;
+                break;
+        }
+        request.status = requestUpdate;
+        request.save();
+    }
     //--------------------PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG------------------------
     if (parseInt(bill.status) === 5) {//Nếu bill đã hoàn thành
         let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findOne({ bill: bill._id.toString() })
@@ -1283,7 +1324,7 @@ async function getDataBillsReceiptedFromSupplierByTime(options, portal, arrayCus
             }
         })
     }
-    
+
     return dataBillsReceiptedFromSupplierByTime;
 }
 

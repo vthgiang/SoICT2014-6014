@@ -6188,6 +6188,7 @@ export default {
                 unit_receiving_request: "Unit receiving request",
                 good_return_request: "Good return request",
                 good_take_request: "Good take request",
+                transport_request: "Transport request",
                 choose_stock: "---choose stock ---",
                 validate_stock: "Stock is required",
                 choose_unit: "---choose unit ---",

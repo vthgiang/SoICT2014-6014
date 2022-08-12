@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { formatDate} from '../../../../../../helpers/formatDate';
-import { DialogModal} from '../../../../../../common-components';
+import { formatDate } from '../../../../../../helpers/formatDate';
+import { DialogModal, ExportExcel } from '../../../../../../common-components';
 import { taskManagementActions } from '../../../../../task/task-management/redux/actions';
 import { Gantt } from '../../../../../../common-components';
 
@@ -172,9 +172,106 @@ function BillDetailForm(props) {
         }
     }, [props.bills.billDetail._id])
 
+    // export data kế toán
+    const convertDataToExportData = (bill) => {
+        console.log('convertDataToExportData', bill);
+        let fileName = "File export thông tin phiếu";
+        let length = 0;
+        let exportThongTinPhieu = [];
+
+        if (bill && bill.goods && bill.goods.length > 0) {
+            bill.goods.forEach((x, index) => {
+                let totalRealQuantity = 0;
+                let totalQuantity = 0;
+                if (bill.group === '1') {
+                    x.lots && x.lots.length > 0 && x.lots.forEach((y, index) => {
+                        totalRealQuantity = totalRealQuantity + y.quantity;
+                    });
+                    totalQuantity = totalRealQuantity;
+                    x.unpassed_quality_control_lots && x.unpassed_quality_control_lots.length > 0 && x.unpassed_quality_control_lots.forEach((y, index) => {
+                        totalQuantity = totalQuantity + y.quantity;
+                    });
+                } else {
+                    totalRealQuantity =  x.quantity;
+                    totalQuantity = x.quantity;
+                }
+
+                let goodName = x.good.name;
+                let goodCode = x.good.code;
+                let goodBaseUnit = x.good.baseUnit;
+                let accordingToDocuments = totalQuantity;
+                let realQuantity = totalRealQuantity;
+                let pricePerBaseUnit = x.good.pricePerBaseUnit ? x.good.pricePerBaseUnit : 0;
+                let price = x.price;
+
+                exportThongTinPhieu = [...exportThongTinPhieu, {
+                    index: index + 1,
+                    goodName,
+                    goodCode,
+                    goodBaseUnit,
+                    accordingToDocuments,
+                    realQuantity,
+                    pricePerBaseUnit,
+                    price,
+                }];
+                if (length > 1) {
+                    for (let i = 1; i < length; i++) {
+                        exportThongTinPhieu = [...exportThongTinPhieu, {
+                            index: "",
+                            goodName: "",
+                            goodCode: "",
+                            goodBaseUnit: "",
+                            accordingToDocuments: "",
+                            realQuantity: "",
+                            pricePerBaseUnit: "",
+                            price: "",
+                        }];
+                    }
+                }
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                // 1. Sheet thông tin sử dụng
+                {
+                    sheetName: "Thông tin phiếu",
+                    sheetTitle: 'Thông tin phiếu',
+                    sheetTitleWidth: 8,
+                    tables: [
+                        {
+                            merges: [{
+                                key: "detailInfo",
+                                columnName: "Số lượng",
+                                keyMerge: 'accordingToDocuments',
+                                colspan: 2
+                            }],
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "goodName", value: "Tên hàng hóa" },
+                                { key: "goodCode", value: "Mã hàng hóa" },
+                                { key: "goodBaseUnit", value: "Đơn vị tính" },
+                                { key: "accordingToDocuments", value: bill.group === '1' ? 'Theo chứng từ' : 'Yêu cầu' },
+                                { key: "realQuantity", value: bill.group === '1' ? "Thực nhập" : "Thực xuất" },
+                                { key: "pricePerBaseUnit", value: "Đơn giá" },
+                                { key: "price", value: "Thành tiền" },
+                            ],
+                            data: exportThongTinPhieu
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;
+    }
+
     const { translate, bills } = props;
     const { billDetail } = bills;
     const { quantityDetail, dataCalendar, currentZoom, infoSearch } = state;
+    const exportData = convertDataToExportData(billDetail);
+    console.log("exportData", exportData);
     return (
         <React.Fragment>
             <DialogModal
@@ -387,7 +484,11 @@ function BillDetailForm(props) {
                                 </table>
                             </fieldset>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleViewVersion}>{translate('manage_warehouse.bill_management.view_version')}</button>
+                                <p type="button" className="btn btn-success" style={{ marginRight: "10px" }} onClick={handleViewVersion}>{translate('manage_warehouse.bill_management.view_version')}</p>
+                                {
+                                    (billDetail.group === '1' || billDetail.group === '2') && billDetail.status === '2' && exportData &&
+                                    <ExportExcel id="export-bill-info" exportData={exportData} style={{ marginRight: 10 }} />
+                                }
                             </div>
                         </div>
                     </div>

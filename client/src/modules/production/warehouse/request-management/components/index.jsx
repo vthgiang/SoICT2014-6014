@@ -5,6 +5,7 @@ import GoodReceiptRequestManagementTable from './good-receipt-request/index';
 import GoodIssueRequestManagementTable from './good-issue-request/index';
 import GoodReturnRequestManagementTable from './good-return-request/index';
 import GoodRotateRequestManagementTable from './good-rotate-request/index';
+import TransportRequestManagementTable from './transport-request/index';
 import { RequestActions } from '../../../common-production/request-management/redux/actions';
 // import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
@@ -201,6 +202,16 @@ function RequestManagement(props) {
         await props.getAllRequestByCondition({ type, requestType, requestFrom });
     };
 
+    const handleTransportRequest = async () => {
+        const requestType = 4;
+        const requestFrom = 'stock';
+        await setState({
+            ...state,
+            requestType: requestType
+        })
+        await props.getAllRequestByCondition({ requestType, requestFrom });
+    }
+
     const { translate } = props;
     const { requestType, type } = state;
 
@@ -211,6 +222,7 @@ function RequestManagement(props) {
                 <li><a href="#good-issue-request" data-toggle="tab" onClick={() => handleGoodIssueRequest()}>{translate('production.request_management.issue_request')}</a></li>
                 <li><a href="#good-return-request" data-toggle="tab" onClick={() => handleGoodReturnRequest()}>{translate('production.request_management.good_return_request')}</a></li>
                 <li><a href="#good-rotate-request" data-toggle="tab" onClick={() => handleGoodTakeRequest()}>{translate('production.request_management.good_take_request')}</a></li>
+                <li><a href="#transport-request" data-toggle="tab" onClick={() => handleTransportRequest()}>{translate('production.request_management.transport_request')}</a></li>
             </ul>
             <div className="tab-content">
                 <div className="tab-pane active" id="good-receipt-request">
@@ -276,6 +288,25 @@ function RequestManagement(props) {
                     {requestType === 3 && type === 4 &&
                         <LazyLoadComponent>
                             <GoodRotateRequestManagementTable
+                                setPage={setPage}
+                                setLimit={setLimit}
+                                checkRoleApprover={checkRoleApprover}
+                                handleFinishedApproval={handleFinishedApproval}
+                                handleCancelRequest={handleCancelRequest}
+                                handleCodeChange={handleCodeChange}
+                                handleCreatedAtChange={handleCreatedAtChange}
+                                handleDesiredTimeChange={handleDesiredTimeChange}
+                                handleStatusChange={handleStatusChange}
+                                handleSubmitSearch={handleSubmitSearch}
+                                stockRequestType={type}
+                            />
+                        </LazyLoadComponent>
+                    }
+                </div>
+                <div className="tab-pane" id="transport-request">
+                    {requestType === 4 &&
+                        <LazyLoadComponent>
+                            <TransportRequestManagementTable
                                 setPage={setPage}
                                 setLimit={setLimit}
                                 checkRoleApprover={checkRoleApprover}
