@@ -106,8 +106,8 @@ const ContractBidProjectRelation = (props) => {
                             {/* From tạo dự án theo hợp đồng */}
                             {
                                 <CreateProjectByContractModal
-                                    id={currentRowContract ? currentRowContract._id : null}
-                                    data={currentRowContract ? currentRowContract : null}
+                                    id={currentRowContract ? currentRowContract._id : ""}
+                                    data={currentRowContract ? currentRowContract : ""}
                                 />
                             }
                             {

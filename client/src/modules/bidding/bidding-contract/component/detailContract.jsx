@@ -138,8 +138,6 @@ const ViewBiddingContract = (props) => {
 		}
 	}, [props.id, JSON.stringify(props.data?.project?._id)])
 
-	console.log(129, "____", state);
-
 	// Function format dữ liệu Date thành string
 	const formatDate = (date, monthYear = false) => {
 		if (!date) return null;

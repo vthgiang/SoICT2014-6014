@@ -353,7 +353,7 @@ const CreateProjectByContractModal = (props) => {
                     <div className="tab-content">
                         <div id={`project-general-${id}`} className="active tab-pane">
                             <ProjectCreateFormData
-                                id={`project-general-${id}`}
+                                id={`contract-create-project-general-${id}`}
                                 type={TYPE.CREATE_BY_CONTRACT}
                                 handleStartTime={setStartTime}
                                 handleEndTime={setEndTime}
@@ -366,7 +366,7 @@ const CreateProjectByContractModal = (props) => {
                         <div id={`project-task-${id}`} className="tab-pane">
                             <AddTaskSchedule
                                 type={TYPE.CREATE_BY_CONTRACT}
-                                id={`project-task-${id}`}
+                                id={`contract-create-project-task-${id}`}
                                 projectTask={projectTask}
                                 projectData={{
                                     ...projectInfoForTaskProps,

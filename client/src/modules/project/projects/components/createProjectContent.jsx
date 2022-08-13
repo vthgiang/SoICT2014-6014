@@ -50,6 +50,10 @@ const ProjectCreateFormData = (props) => {
 
     const [startTime, setStartTime] = useState('08:00 AM');
     const [endTime, setEndTime] = useState('05:30 PM');
+	const [id, setId] = useState(props.id);
+    useEffect(() => {
+		setId(props.id)
+    }, [props.id])
 
     const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState({
         list: [],
@@ -333,7 +337,7 @@ const ProjectCreateFormData = (props) => {
                             <div className={`form-group col-md-6 col-xs-6`}>
                                 <label>Hình thức quản lý dự án<span className="text-red">*</span></label>
                                 <SelectBox
-                                    id={`select-project-type`}
+                                    id={`select-project-type-${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={fakeProjectTypeList}
@@ -348,7 +352,7 @@ const ProjectCreateFormData = (props) => {
                             <div className="form-group col-md-6">
                                 <label>{translate('project.startDate')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`create-project-start-date`}
+                                    id={`create-project-start-date-${id}`}
                                     value={startDate}
                                     onChange={(e) => handleChangeForm(e, 'startDate')}
                                     dateFormat="day-month-year"
@@ -358,7 +362,7 @@ const ProjectCreateFormData = (props) => {
                             <div className="form-group col-md-6">
                                 <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
                                 <TimePicker
-                                    id={`create-project-start-time`}
+                                    id={`create-project-start-time--${id}`}
                                     value={startTime}
                                     onChange={(e) => setStartTime(e)}
                                     disabled={false}
@@ -370,7 +374,7 @@ const ProjectCreateFormData = (props) => {
                             <div className="form-group col-md-6">
                                 <label>{translate('project.endDate')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`create-project-end-date`}
+                                    id={`create-project-end-date-${id}`}
                                     value={endDate}
                                     onChange={(e) => handleChangeForm(e, 'endDate')}
                                     dateFormat="day-month-year"
@@ -391,7 +395,7 @@ const ProjectCreateFormData = (props) => {
                         <div className="form-group">
                             <label>{translate('project.unitTime')}</label>
                             <SelectBox
-                                id={`select-project-unitTime`}
+                                id={`select-project-unitTime-${id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={fakeUnitTimeList}
@@ -418,7 +422,7 @@ const ProjectCreateFormData = (props) => {
                             <label>{translate('project.manager')}<span className="text-red">*</span></label>
                             {listUsers &&
                                 <SelectBox
-                                    id={`select-project-manager`}
+                                    id={`select-project-manager-${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={listUsers}
@@ -463,7 +467,7 @@ const ProjectCreateFormData = (props) => {
                                             <div className={`form-group`}>
                                                 {listDepartments && listDepartments.length > 0 &&
                                                     <SelectBox
-                                                        id={`create-project-${responsibleEmployeesWithUnit.list.length}`}
+                                                        id={`create-project-${responsibleEmployeesWithUnit.list.length}-${id}`}
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
                                                         items={listDepartments}
@@ -484,7 +488,7 @@ const ProjectCreateFormData = (props) => {
                                             <div className={`form-group`}>
                                                 {listDepartments && listDepartments.length > 0 &&
                                                     <SelectBox
-                                                        id={`select-project-members`}
+                                                        id={`select-project-members-${id}`}
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
                                                         items={listUsers.filter(item =>
