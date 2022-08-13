@@ -45,6 +45,21 @@ const BiddingPriceAndProjectBudgetDashboard = (props) => {
         }
     };
 
+    // var cat_colors = ['#FF0000','#00FF00', '#0000FF']
+
+    // var chart = c3.generate({
+    //     data: {
+    //         columns: [
+    //             ['data1', 30, 20, 50],
+    //         ],
+    //         type: 'bar',
+    //         color: function (color, d) {
+    //             return cat_colors[d.x];
+
+    //         }
+    //     }
+    // })
+
     const renderChart = () => {
         removePreviousChart();
         const { translate } = props;

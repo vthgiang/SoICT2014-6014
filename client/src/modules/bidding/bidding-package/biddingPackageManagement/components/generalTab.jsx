@@ -10,6 +10,7 @@ import "./addBiddingPackage.css";
 function GeneralTab(props) {
 
     const [state, setState] = useState({ });
+    const [idProps, setIdProps] = useState("");
 
     const { translate } = props;
     
@@ -52,6 +53,10 @@ function GeneralTab(props) {
                 }
             });
         }
+    }, [props.id])
+
+    useEffect(() => {
+        setIdProps(props.id)
     }, [props.id])
 
     /**
@@ -289,7 +294,7 @@ function GeneralTab(props) {
     }
 
     return (
-        <div id={id} className="tab-pane active">
+        <div id={idProps} className="tab-pane active">
             <div className="row box-body">
 
                 <div className="pull-right col-lg-12 col-md-12 col-sm-12">
@@ -312,7 +317,7 @@ function GeneralTab(props) {
                         <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 `}>
                             <label >Thời gian bắt đầu</label>
                             <DatePicker
-                                id={`startDate${id}`}
+                                id={`${props.type}-startDate${idProps}`}
                                 value={startDate}
                                 onChange={handleStartDateChange}
                             />
@@ -321,7 +326,7 @@ function GeneralTab(props) {
                         <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 `}>
                             <label >Thời gian kết thúc</label>
                             <DatePicker
-                                id={`endDate${id}`}
+                                id={`${props.type}-endDate${idProps}`}
                                 value={endDate}
                                 onChange={handleEndDateChange}
                             />
@@ -332,7 +337,7 @@ function GeneralTab(props) {
                         <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
                             <label>Loại gói thầu</label>
                             <SelectBox
-                                id={`type${id}`}
+                                id={`${props.type}-type${idProps}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={type}
@@ -350,7 +355,7 @@ function GeneralTab(props) {
                         <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
                             <label>Trạng thái</label>
                             <SelectBox
-                                id={`status${id}`}
+                                id={`${props.type}-status${idProps}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={status}

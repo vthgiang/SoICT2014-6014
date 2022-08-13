@@ -221,6 +221,7 @@ const BiddingPackageEditFrom = (props) => {
                             {/* Tab thông tin chung */
                                 <GeneralTab
                                     id={`edit_general${_id}`}
+                                    type="edit"
                                     handleChange={handleChange}
                                     handleUpload={handleUpload}
                                     biddingPackage={biddingPackage}

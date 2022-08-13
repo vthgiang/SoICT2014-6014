@@ -222,6 +222,7 @@ const BiddingPackageCreateForm = (props) => {
                         {/* Tab thông tin chung */}
                         <GeneralTab
                             id="general-create"
+                            type="create"
                             handleChange={handleChange}
                             biddingPackage={biddingPackage}
                         />
