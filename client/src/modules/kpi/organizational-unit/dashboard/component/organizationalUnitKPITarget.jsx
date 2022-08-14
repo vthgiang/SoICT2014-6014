@@ -1,3 +1,4 @@
+import parse from "html-react-parser";
 import React, { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -113,7 +114,6 @@ const OrganizationalUnitKPITarget = (props) => {
                 }
             }
 
-
             const dataKpis = createKpiUnit?.currentKPI?.kpis.map((item) => {
                 if (!item.target) {
                     //Mục tiêu không định lượng
@@ -123,14 +123,19 @@ const OrganizationalUnitKPITarget = (props) => {
                     }
                 }
 
+                let crit = item?.criteria;
+                if (typeof (parse(item?.criteria)) === 'object') {
+                    crit = parse(item?.criteria)?.props.children;
+                }
+
                 return {
                     name: item.name,
                     target: item.target,
                     unit: item.unit,
-                    current: evaluations[currentMonth] ? evaluations[currentMonth][item?.criteria] : 0,
+                    current: evaluations[currentMonth] ? evaluations[currentMonth][crit] : 0,
                     resultByMonth: monthArr.map(x => {
-                        if (evaluations[x] && evaluations[x][item?.criteria]) {
-                            return evaluations[x][item?.criteria]
+                        if (evaluations[x] && evaluations[x][crit]) {
+                            return evaluations[x][crit]
                         } else return 0;
                     })
                 }
@@ -142,7 +147,7 @@ const OrganizationalUnitKPITarget = (props) => {
             let carousel = [];
 
             for (let i = 0; i < dataKpis.length; i++) {
-                if (i !== 0 && i % 4 === 0) {
+                if (i !== 0 && i % 2 === 0) {
                     dataCarousel.push(carousel);
                     carousel = [];
                 } if (i === (dataKpis.length - 1)) {
@@ -194,13 +199,18 @@ const OrganizationalUnitKPITarget = (props) => {
 
                     if (organizationalUnitId && organizationalUnitId === item.organizationalUnit._id) {
                         const employeeKpis = item.kpis?.map(kpis => {
+
                             if (!kpis.target) {
                                 //Mục tiêu không định lượng
                                 kpis.current = 'Đang thực hiện';
                                 kpis.itemType = 0;
                             }
                             else if (evaluations[employeeId]) {
-                                kpis.current = evaluations[employeeId][kpis?.criteria] || 0
+                                let crit = kpis?.criteria;
+                                if (typeof (parse(kpis?.criteria)) === 'object') {
+                                    crit = parse(kpis?.criteria)?.props.children;
+                                }
+                                kpis.current = evaluations[employeeId][crit] || 0
                             }
                             else {
                                 kpis.current = 0;
