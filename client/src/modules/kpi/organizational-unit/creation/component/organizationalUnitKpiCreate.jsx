@@ -769,6 +769,13 @@ function OrganizationalUnitKpiCreate(props) {
                                                 </a>
                                             </span>
                                         }
+
+                                        {/* Sử dụng mẫu KPI */}
+                                        <span>
+                                            <a className="btn btn-app" href='/template-kpi-unit'>
+                                                <i className="fa fa-sticky-note-o" style={{ fontSize: "16px" }}></i>Sử dụng mẫu KPI
+                                            </a>
+                                        </span>
                                     </div>
                                 </div>
                                 <h4 style={{ display: "inline-block", fontWeight: "600" }}>KPI {organizationalUnit && organizationalUnit.name}</h4>

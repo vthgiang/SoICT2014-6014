@@ -31,7 +31,7 @@ class SelectMulti extends Component {
         options = {
             ...options,
             includeSelectAllOption: includeSelectAllOption,
-            enableFiltering: options.enableFilter,
+            enableFiltering: options?.enableFilter,
             filterPlaceholder: translate('general.search'),
             selectAllText: translate('general.select_all'),
             maxHeight: 200,

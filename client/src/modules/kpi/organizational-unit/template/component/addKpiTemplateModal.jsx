@@ -22,7 +22,7 @@ function ModalAddKpiTemplate(props) {
 
 
     /**Submit new template in data */
-    const handleSubmit = async (event) => {
+    const handleSubmit = () => {
         let { templateData } = state;
         props.addNewTemplate(templateData);
         props.getKpiTemplates(null, null, 1, props.limit);

@@ -79,7 +79,11 @@ function EditKpiTemplate(props) {
             { ...state }
         );
 
-        props.onChangeTemplateData(state.templateData);
+        props.onChangeTemplateData(
+            {
+                ...state.templateData,
+                organizationalUnit: value
+            });
     }
 
     const handleChangeDescription = (value) => {
