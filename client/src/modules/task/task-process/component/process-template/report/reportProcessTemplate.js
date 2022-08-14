@@ -210,7 +210,7 @@ function ReportProcessTemplate(props) {
         <React.Fragment>
             <div className="form-inline" >
                 <div className="form-group">
-                    <label style={{ width: "auto" }}>Từ ngày</label>
+                    <label style={{ width: "auto" }}>Từ</label>
                     <DatePicker
                         id="form-month-annual-leave"
                         dateFormat="month-year"
@@ -220,7 +220,7 @@ function ReportProcessTemplate(props) {
                     />
                 </div>
                 <div className='form-group'>
-                    <label style={{ width: "auto" }}>Đến ngày</label>
+                    <label style={{ width: "auto" }}>Đến</label>
                     <DatePicker
                         id="to-month-annual-leave"
                         dateFormat="month-year"

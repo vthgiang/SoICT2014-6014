@@ -78,6 +78,7 @@ function FormCreateTaskByProcess(props) {
                         taskInformations: (info && info.taskInformations) ? info.taskInformations : [],
                         followingTasks: (info && info.followingTasks) ? info.followingTasks : [],
                         preceedingTasks: (info && info.preceedingTasks) ? info.preceedingTasks : [],
+                        fastest: (info && info.fastest) ? info.fastest : null
                     },
                     showMore: props.isProcess ? false : true,
                     showActionForm: true,
@@ -410,6 +411,15 @@ function FormCreateTaskByProcess(props) {
         });
     }
 
+    const showResponsibleEmployees = (data) =>{
+        let str="";
+        data.map((value,index)=>{
+            str=str+value.name
+            if (index !== data.length-1 ) str = str +", "
+        })
+        return str
+    }
+
     const { department, user, translate } = props;
     const { isProcess } = props;
     // console.log(state);
@@ -569,8 +579,16 @@ function FormCreateTaskByProcess(props) {
                     <small><i>{taskItem.numberOfDaysTaken + " ngày )"}</i></small> :
                     <small><i>Không có dữ liệu. )</i></small>
                 }
+                
             </div>
-
+            <div className="form-group">
+            <small><i>(Thời gian hoàn thành nhanh nhất: </i></small>
+                {taskItem.fastest ?
+                    <small><i>{taskItem.fastest.time + " giờ )"}</i></small> :
+                    <small><i>Không có dữ liệu. )</i></small>
+                }
+            </div>
+            
             <div className="row">
                 <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                     <div className='form-group' >
@@ -588,6 +606,13 @@ function FormCreateTaskByProcess(props) {
                                 multiple={true}
                                 options={{ placeholder: `${translate('task_template.performer')}` }}
                             />
+                        }
+                    </div>
+                    <div className="form-group">
+                        <small><i>(Người hoàn thành nhanh nhất: </i></small>
+                        {taskItem.fastest ?
+                            <small><i>{showResponsibleEmployees(taskItem.fastest.task.responsibleEmployees)+ " )"}</i></small> :
+                            <small><i>Không có dữ liệu. )</i></small>
                         }
                     </div>
                     <div className='form-group' >

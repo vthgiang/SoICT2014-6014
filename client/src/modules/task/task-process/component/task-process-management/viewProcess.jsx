@@ -167,7 +167,55 @@ function ViewProcess(props) {
                         }
                     }
                 }
+                let infoProcess = props.data.processChilds
+                let processChilds = state.processChilds;
 
+                if (infoProcess) {
+                    for (let i in infoProcess) {
+                        console.log(infoProcess)
+                        let manager = []
+                        let viewer = []
+                        infoProcess[i].manager.forEach(x => {
+                            manager.push(x.name)
+                        })
+                        infoProcess[i].viewer.forEach(x => {
+                            viewer.push(x.name)
+                        })
+                        let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoProcess[i].codeInProcess);
+                        element1 && modeling.updateProperties(element1, {
+                            progress: infoProcess[i].progress,
+                            shapeName: infoProcess[i].processName,
+                            viewerName: viewer,
+                            managerName: manager
+                        });
+                        if (infoProcess[i].status === "finished") {
+                            element1 && modeling.setColor(element1, {
+                                fill: '#f9f9f9',
+                                stroke: '#c4c4c7'
+                            });
+
+                            var outgoing = element1.outgoing;
+                            outgoing.forEach(x => {
+                                if (processChilds?.[x?.businessObject?.targetRef?.id]?.status === "inprocess") {
+                                    var outgoingEdge = modeler.get('elementRegistry').get(x.id);
+
+                                    modeling.setColor(outgoingEdge, {
+                                        stroke: '#c4c4c7',
+                                        width: '5px'
+                                    })
+                                }
+                            })
+                        }
+                        if (infoProcess[i].status === "inprocess") {
+                            element1 && modeling.setColor(element1, {
+                                fill: '#84ffb8',
+                                stroke: '#14984c', //E02001
+                                width: '5px'
+                            });
+
+                        }
+                    }
+                }
             });
         }
     }, [props.idProcess])

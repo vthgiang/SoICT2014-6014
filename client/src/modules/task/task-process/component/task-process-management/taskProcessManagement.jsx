@@ -166,8 +166,8 @@ function TaskProcessManagement(props) {
 	}
 
 	const handleFinished = async (item) => {
-		const { tasks, translate } = props;
-		console.log(item);
+        const { tasks, translate } = props;
+		// console.log(item);
 		let listTask = item.tasks
 		let length = 0, lengthProcess = 0;
 		let listProcess = item.processChilds
@@ -189,6 +189,8 @@ function TaskProcessManagement(props) {
 				cancelButtonColor: '#d33',
 				cancelButtonText: translate('general.close'),
 			}).then(async (result) => {
+				
+
 				if (result.value) {
 					// await props.deleteTaskById(id);
 					// await setUpdateDelete(updateDelete + 1)
@@ -197,6 +199,7 @@ function TaskProcessManagement(props) {
 		} else {
 			Swal.fire({
 				title: `Bạn có chắc chắn kết thúc quy trình "${item.processName}"?`,
+				html:'<input type="datetime-local" id="birthdaytime" name="birthdaytime">',
 				icon: 'warning',
 				showCancelButton: true,
 				confirmButtonColor: '#3085d6',
@@ -204,8 +207,60 @@ function TaskProcessManagement(props) {
 				cancelButtonText: translate('general.no'),
 				confirmButtonText: translate('general.yes'),
 			}).then(async (result) => {
+				let abc= Swal.getHtmlContainer().querySelector('input')
 				if (result.value) {
-					await props.editProcessInfo(item._id, { finished: true, id: item._id });
+					await props.editProcessInfo(item._id,{finished:true,id:item._id,endTime:abc.value});
+					await props.getAllTaskProcess(state.pageNumber, state.noResultsPerPage, "");
+				}
+			})
+		}
+        
+
+    }
+	const handleStart = async (item) => {
+		// console.log(item);
+        const { tasks, translate } = props;
+		let listTask = item.tasks
+		let length = 0, lengthProcess=0;
+		let listProcess = item.processChilds
+		if (item.preceedingTasks.length!==0){
+			item.preceedingTasks.forEach(value => {
+				if (value.status!=="finished") length=length+1;
+			});
+		}
+		
+		let message = length!==0? `Còn ${length} công việc tiền nhiệm chưa hoàn thành`:""
+		message = lengthProcess==0? message : length==0?`Còn ${lengthProcess} quy trình chưa hoàn thành`: `${message} và ${lengthProcess} quy trình chưa hoàn thành`
+		if (message){
+			Swal.fire({
+				title: `${message}`,
+				icon: 'warning',
+				showCancelButton: true,
+				showConfirmButton:false,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				cancelButtonText: translate('general.close'),
+			}).then(async (result) => {
+				if (result.value) {
+					// await props.deleteTaskById(id);
+					// await setUpdateDelete(updateDelete + 1)
+				}
+			})
+		} else {
+			Swal.fire({
+				title: `Bạn có chắc chắn bắt đầu quy trình "${item.processName}"?`,
+				html:'<input type="datetime-local" id="birthdaytime" name="birthdaytime">',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				cancelButtonText: translate('general.no'),
+				confirmButtonText: translate('general.yes'),
+			}).then(async (result) => {
+				let abc= Swal.getHtmlContainer().querySelector('input')
+				if (result.value) {
+					await props.editProcessInfo(item._id,{start:true,id:item._id,startTime:abc.value});
+					await props.getAllTaskProcess(state.pageNumber, state.noResultsPerPage, "");
 				}
 			})
 		}
@@ -224,6 +279,8 @@ function TaskProcessManagement(props) {
 				return "Trễ hạn"
 			case "finished":
 				return parse('<p style="color:green;">Đã hoàn thành</p>')
+			case "wait_for_approval":
+				return parse('<p style="color:gray;">Chưa bắt đầu</p>')
 			default:
 			// code block
 		}
@@ -232,7 +289,7 @@ function TaskProcessManagement(props) {
 		<div className="box">
 			<div className="box-body qlcv">
 				{
-					state.currentRow !== undefined &&
+					state.currentRow !== undefined && state.currentRow?.status!=="not_initialized" &&
 					<ModalViewProcess
 						title={translate("task.task_process.view_task_process_modal")}
 						listOrganizationalUnit={listOrganizationalUnit}
@@ -308,7 +365,7 @@ function TaskProcessManagement(props) {
 							<th title={translate("task.task_process.process_name")}>{translate("task.task_process.process_name")}</th>
 							<th title={translate('task_template.description')}>{translate('task_template.description')}</th>
 							<th title="Quy trình cha">Quy trình cha</th>
-							<th title={translate('task_template.status')}>{translate('task_template.status')}</th>
+							<th title={translate('task_template.status')}>Trạng thái</th>
 							<th title={translate('task.task_process.manager')}>{translate('task.task_process.manager')}</th>
 							<th title={translate("task.task_process.creator")}>{translate("task.task_process.creator")}</th>
 							<th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
@@ -331,16 +388,30 @@ function TaskProcessManagement(props) {
 										</a>
 										{isManager(item) && item.status !== "finished" &&
 											<React.Fragment>
-												<a className="edit" onClick={() => { showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
-													<i className="material-icons">edit</i>
-												</a>
+												{item.status !== "not_initialized" &&
+													<a className="edit" onClick={() => { showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
+														<i className="material-icons">edit</i>
+													</a>
+												}
+												{item.status === "not_initialized" &&
+													<a className="edit" onClick={() => { showEditProcessNoInit(item) }} title={"Khởi tạo công việc quy trình"}>
+														<i className="material-icons">edit</i>
+													</a>
+												}
+												
 												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
 													<i className="material-icons"></i>
 												</a>
-												<a className="doneP" onClick={() => { handleFinished(item) }} title={translate('task_template.delete_this_task_template')}>
-													<i class="material-icons">check_circle</i>
-												</a>
-
+												{item.status !== "wait_for_approval" && item.status !== "not_initialized" &&
+													<a className="doneP" onClick={()=>{handleFinished(item)}}  title={"Kết thức quy trình"}>
+														<i class="material-icons">check_circle</i>
+													</a>
+												}
+												{item.status === "wait_for_approval" &&
+													<a className="doneP" onClick={()=>{handleStart(item)}}  title={"Bắt đầu quy trình"}>
+														<i class="material-icons">play_circle</i>
+													</a>
+												}
 											</React.Fragment>
 										}
 

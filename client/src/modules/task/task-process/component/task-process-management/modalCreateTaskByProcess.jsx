@@ -315,7 +315,7 @@ function ModalCreateTaskByProcess(props) {
             else {
                 return { ...state, showInfo: false, showInfoProcess: false, type: element.type, name: '', id: element.businessObject.id, }
             }
-        }, () => console.log(state.info))
+        })
 
     }
     const deleteElements = (event) => {

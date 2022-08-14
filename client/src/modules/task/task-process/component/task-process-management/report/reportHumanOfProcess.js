@@ -203,6 +203,7 @@ function ReportHumanOfProcess(props) {
     const preprocessOverdueScheduleChartData = () => {
         let columns = [], categories = [];
         let overdue = ['Công việc chậm tiến độ'], total = ['Tổng số công việc được giao'];
+        let max =0;
         if (!membersData) {
             return {
                 columns,
@@ -210,6 +211,7 @@ function ReportHumanOfProcess(props) {
             }
         }
         for (let memberItem of getMembersAlwaysBehindSchedule(membersData)) {
+            max = max <memberItem.totalNumber? memberItem.totalNumber : max
             overdue.push(memberItem.behindNumber);
             total.push(memberItem.totalNumber)
             categories.push(memberItem.name);
@@ -218,10 +220,15 @@ function ReportHumanOfProcess(props) {
         return {
             columns,
             categories,
+            max,
         }
+    }
+    const maxLength = (data)=>{
+
     }
     const renderOverdueScheduleChart = () => {
         const currentChartOverdueSchedule = chartOverdueScheduleRef.current;
+        console.log(preprocessOverdueScheduleChartData().columns);
         while (currentChartOverdueSchedule.hasChildNodes()) {
             currentChartOverdueSchedule.removeChild(currentChartOverdueSchedule.lastChild);
         }
@@ -236,6 +243,7 @@ function ReportHumanOfProcess(props) {
                 x: {
                     type: 'category',
                     categories: preprocessOverdueScheduleChartData().categories,
+                    
                 },
                 // rotated: true,
             },
@@ -250,7 +258,7 @@ function ReportHumanOfProcess(props) {
                 enabled: false,
             },
             size: {
-                height: (preprocessOverdueScheduleChartData().columns?.[0].length - 2) * 100,
+                height: (preprocessOverdueScheduleChartData().max - 2) * 100,
             },
         });
     }
