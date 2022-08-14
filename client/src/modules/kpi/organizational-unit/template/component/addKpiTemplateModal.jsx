@@ -25,7 +25,7 @@ function ModalAddKpiTemplate(props) {
     const handleSubmit = () => {
         let { templateData } = state;
         props.addNewTemplate(templateData);
-        props.getKpiTemplates(null, null, 1, props.limit);
+        // props.getKpiTemplates(null, null, 1, props.limit);
     }
 
     /**
