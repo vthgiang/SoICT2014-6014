@@ -457,7 +457,6 @@ function CreateForm(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
-                maxWidth={500}
             >
                 <ModalSelectIssueBill listBills={bills.listBillByStatus} onDataChange={handleBillIssueChange} />
                 <form id="form-create-purchasing-request">

@@ -129,7 +129,6 @@ function GoodReceiptWorkFlowModal(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
-                maxWidth={500}
             >
                 <form id="good-receipt-work-flow-modal">
                     <div className="timeline">

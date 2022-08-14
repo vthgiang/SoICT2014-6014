@@ -257,11 +257,12 @@ function ReturnManagement(props) {
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         {
-                                            props.checkRoleCanViewDetail(x) &&
+                                            // props.checkRoleCanViewDetail(x) &&
                                             <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
                                         }
                                         {/*Thực hiện công việc*/}
-                                        {x.status === '1' && props.checkRolePerformWork(x) &&
+                                        {x.status === '1' && 
+                                        // props.checkRolePerformWork(x) &&
                                             <a
                                                 className="text-violet"
                                                 title={translate('manage_warehouse.inventory_management.add_lot')}

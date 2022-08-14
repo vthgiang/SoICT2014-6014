@@ -633,6 +633,7 @@ function StockWorkAssignment(props) {
             ]
             props.onDataChange(data, state, state.priority);
             const newArray = data.concat(state.workAssignment);
+            console.log(newArray);
             setState({
                 ...state,
                 dataCalendar: newArray,

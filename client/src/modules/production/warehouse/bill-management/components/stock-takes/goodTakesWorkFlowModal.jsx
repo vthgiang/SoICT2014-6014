@@ -453,7 +453,6 @@ function GoodTakesWorkFlowModal(props) {
                 disableSubmit={!validateStatus(status, false)}
                 func={save}
                 size={75}
-                maxWidth={500}
             >
                 <form id="good-takes-work-flow-modal">
                     <React.Fragment>

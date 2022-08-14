@@ -188,7 +188,6 @@ function GoodTakesCreateFormModal(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
-                maxWidth={500}
             >
                 <form id="modal-create-new-takes-bill">
                     <div className="timeline">
