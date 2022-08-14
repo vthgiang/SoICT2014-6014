@@ -62,7 +62,11 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
         select: "name email avatar",
       },
       { path: "documents.creator", select: "name email avatar" },
-      { path: "followingTasks.task" },
+      { path: "followingTasks",populate: [
+        {
+          path: "task"
+        }
+      ], },
       {
         path: "preceedingTasks.task",
         populate: [
@@ -139,7 +143,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
               select: "name email avatar",
             },
           ],
-        }, { path: 'processTemplate' },
+        }, { path: 'processTemplate' }, {path:'processChilds'},
         { path: 'processTemplate', populate: { path: 'processTemplates.process' } }],
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
@@ -6058,9 +6062,7 @@ exports.confirmTask = async (portal, taskId, userId) => {
 /** Yêu cầu kết thúc công việc */
 exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   const { userId, taskStatus, description, type, role } = data;
-  let task = await this.getTaskById(portal, taskId, userId).populate([
-    { path: 'process', populate: [{ path: "tasks" }, { path: "processChilds" }] },
-  ]);
+  let task = await this.getTaskById(portal, taskId, userId)
   const requestStatusNumber = type === 'request' ? 1
     : type === 'cancel_request' ? 2
       : type === 'approval' ? 3
@@ -6139,6 +6141,8 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
   // }
   if (type === 'approval' && task.codeInProcess) {
     let folTask = task.followingTasks;
+    
+
     if (!folTask) {
       let listProcessChild = task.process?.processChilds
       let listTaskProcess = task.process?.tasks
@@ -6176,6 +6180,22 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
         };
         NotificationServices.createNotification(portal, portal, dataNotification)
       }
+    } else {
+      folTask.forEach( (value)=>{
+        const dataNotification = {
+          organizationalUnits: [],
+          title: `Công việc ${task.name} đã hoàn thành, cần bắt đầu công việc ${value.task.name} `,
+          level: "emergency",
+          content: `Công việc ${task.name} đã hoàn thành, cần bắt đầu công việc ${value.task.name} , <a href="${process.env.WEBSITE}/task?taskId=${value.task._id}" target="blank>Xem ngay</a></p>`,
+          sender: `${task.process.manager}`,
+          users: value.task.accountableEmployees,
+          associatedDataObject: {
+            dataType: 1,
+            description: `<p><strong>Công việc ${task.name} đã hoàn thành, cần bắt đầu công việc ${value.task.name}</p>`
+          }
+        };
+        NotificationServices.createNotification(portal, portal, dataNotification)
+      })
     }
   }
   await Task(connect(DB_CONNECTION, portal))

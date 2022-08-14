@@ -47,7 +47,6 @@ function TableReportTask(props) {
         return [min ? min : 0, max ? max : 0, avg ? avg : 0];
     }
 
-    console.log(props);
     const dataShow = []
     if (props.info && props.info.length !== 0) {
         for (let i in props.info) {
@@ -186,7 +185,7 @@ function TableReportTask(props) {
     let nameTask = ""
     return (
         <React.Fragment>
-            <p>Biểu Đồ thời gian công việc : </p>
+        <div class="box-header"><div class="box-title">Bảng phân tích thời gian thực hiện và điểm số công việc</div></div>
             <table id="listTaskProcess1" className="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>

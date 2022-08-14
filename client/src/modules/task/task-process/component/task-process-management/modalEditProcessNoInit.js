@@ -178,7 +178,6 @@ function ModalEditProcessNoInit(props) {
     }, [props.idProcess])
 
 
-
     // Các hàm  xử lý sự kiện của bpmn
 
     const interactPopup = (event) => {
@@ -764,7 +763,15 @@ function ModalEditProcessNoInit(props) {
         { value: "delayed", text: translate('task.task_management.delayed') },
         { value: "canceled", text: translate('task.task_management.canceled') }
     ];
-    // console.log(processChilds);
+    const formatStatus = (data) => {
+        const { translate } = props;
+        if (data === "inprocess") return translate('task.task_management.inprocess');
+        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
+        else if (data === "finished") return translate('task.task_management.finished');
+        else if (data === "delayed") return translate('task.task_management.delayed');
+        else if (data === "canceled") return translate('task.task_management.canceled');
+    }
+    // console.log("123");
     return (
         <React.Fragment>
             <DialogModal
@@ -781,8 +788,30 @@ function ModalEditProcessNoInit(props) {
                         } */}
 
                     <div className={'row'}>
+                        <div className="contain-border col-md-3">
+                            <h3>Thông tin quy trinh</h3>
+                            <div className='description-box without-border'>
+                                    {/* tên quy trình */}
+                                    <div>
+                                        <strong>{translate("task.task_process.process_name")}:</strong>
+                                        <span>{processName}</span>
+                                    </div>
+
+                                    {/* mô tả quy trình */}
+                                    <div>
+                                        <strong>{translate("task.task_process.process_description")}:</strong>
+                                        <span>{processDescription}</span>
+                                    </div>
+
+                                    {/* thời gian thực hiện quy trình */}
+                                    <div>
+                                        <strong>{translate("task.task_process.time_of_process")}:</strong>
+                                        <span>{startDate} <i className="fa fa-fw fa-caret-right"></i> {endDate}</span>
+                                    </div>
+                            </div>
+                        </div>
                         {/* Quy trình công việc */}
-                        <div className={`contain-border ${showInfo || showInfoProcess ? 'col-md-8' : 'col-md-12'}`}>
+                        <div className={`contain-border ${showInfo || showInfoProcess ? 'col-md-6' : 'col-md-9'}`}>
                             {/* Diagram */}
                             <div id={generateId}></div>
                             {/* Zoom button */}
@@ -810,7 +839,7 @@ function ModalEditProcessNoInit(props) {
                         </div>
 
                         {showInfo &&
-                            <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
+                            <div className={`right-content ${showInfo ? 'col-md-3' : undefined}`}>
                                 <AddTaskForm
                                     isProcess={true}
                                     id={id}
@@ -824,7 +853,7 @@ function ModalEditProcessNoInit(props) {
                         }
                         {
                             (showInfoProcess) &&
-                            <div className={`right-content ${showInfoProcess ? 'col-md-4' : undefined}`}>
+                            <div className={`right-content ${showInfoProcess ? 'col-md-3' : undefined}`}>
                                 <div>
                                     <h3>{translate("task.task_process.create_task_with_template")} {taskName}</h3>
                                 </div>

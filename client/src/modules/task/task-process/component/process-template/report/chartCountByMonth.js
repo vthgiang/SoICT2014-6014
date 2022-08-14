@@ -104,7 +104,7 @@ function ChartCountByMonth(props) {
     }
     return (
         <React.Fragment>
-            <p>Biểu đồ số lần sử dụng quy trình theo tháng</p>
+        <div class="box-header"><div class="box-title">Số lần thực hiện quy trình theo từng tháng</div></div>
             <div ref={CountColumnChart}></div>
         </React.Fragment>
     );
