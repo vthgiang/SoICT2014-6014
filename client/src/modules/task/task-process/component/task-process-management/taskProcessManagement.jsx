@@ -21,7 +21,7 @@ function TaskProcessManagement(props) {
 	const [state, setState] = useState({
 		currentRole: getStorage('currentRole'),
 		currentUser: getStorage("userId"),
-		// currentRow: {},
+		currentRow: {},
 		pageNumber: 1,
 		noResultsPerPage: Limit,
 		tableId: TableId,
@@ -210,6 +210,7 @@ function TaskProcessManagement(props) {
 				let abc= Swal.getHtmlContainer().querySelector('input')
 				if (result.value) {
 					await props.editProcessInfo(item._id,{finished:true,id:item._id,endTime:abc.value});
+					await props.getAllTaskProcess(state.pageNumber, state.noResultsPerPage, "");
 				}
 			})
 		}
@@ -259,6 +260,7 @@ function TaskProcessManagement(props) {
 				let abc= Swal.getHtmlContainer().querySelector('input')
 				if (result.value) {
 					await props.editProcessInfo(item._id,{start:true,id:item._id,startTime:abc.value});
+					await props.getAllTaskProcess(state.pageNumber, state.noResultsPerPage, "");
 				}
 			})
 		}
@@ -400,7 +402,7 @@ function TaskProcessManagement(props) {
 												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
 													<i className="material-icons"></i>
 												</a>
-												{item.status !== "wait_for_approval" &&
+												{item.status !== "wait_for_approval" && item.status !== "not_initialized" &&
 													<a className="doneP" onClick={()=>{handleFinished(item)}}  title={"Kết thức quy trình"}>
 														<i class="material-icons">check_circle</i>
 													</a>

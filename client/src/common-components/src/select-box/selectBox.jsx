@@ -173,6 +173,7 @@ class SelectBox extends Component {
     componentDidUpdate() {
         const { id, multiple, options = { minimumResultsForSearch: 1 }, items } = this.props;
         const { searching, previouslySelectedOptions, searchText } = this.state;
+        window.$("#" + id).select2(options);
         window.$("#" + id).on("change", () => {
             
             let optionsCollection = this.select?.current?.options

@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
-import { ProjectGantt } from '../../../../../../common-components/src/gantt/projectGantt';
+import { ProcessGantt } from '../../../../../../common-components/src/gantt/processGantt';
 import { getDurationWithoutSatSun } from '../../../../../project/projects/components/functionHelper';
 import { numberWithCommas } from "../../../../task-management/component/functionHelpers.js"
 import "./reportProcess.css"
@@ -226,7 +226,7 @@ function ReportGant(props) {
     const task = props.tasks && props.tasks.task;
     return (
         <React.Fragment>
-            <ProjectGantt
+            <ProcessGantt
                 ganttData={dataTask}
                 zoom={currentZoom}
                 status={taskStatus}

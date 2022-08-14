@@ -432,8 +432,10 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             }
         }
         let status = "wait_for_approval";
+        let actualStartDate =null
         if (isStartTask(data[i])) {
             status = "inprocess";
+            actualStartDate = new Date();
         }
         let formula = data[i].formula;
         if (data[i].formula === '') {
@@ -453,6 +455,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             description: data[i].description,
             startDate: startDate,
             endDate: endDate,
+            actualStartDate:actualStartDate?actualStartDate:null,
             formula: formula,
             priority: data[i].priority,
             taskTemplate: null,
