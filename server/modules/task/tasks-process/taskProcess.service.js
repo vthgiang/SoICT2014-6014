@@ -76,6 +76,7 @@ exports.getAllXmlDiagram = async (portal, query) => {
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'manager', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'viewer', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits" });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.fastest.task",populate:[{path:"responsibleEmployees"}] });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'processTemplates.process' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'listProcess', select: 'name startDate endDate' });
@@ -856,7 +857,10 @@ exports.getAllTaskProcess = async (portal, query) => {
             { path: 'processTemplate' },
             { path: 'processTemplate', populate: { path: 'processTemplates.process' } },
             { path: 'processParent', select: 'processName' },
-            { path: 'processChilds' }
+            { path: 'processChilds', populate: [
+                { path: 'creator', select: 'name' },
+                { path: 'viewer', select: 'name' },
+                { path: 'manager', select: 'name' }]}
         ]);
 
 

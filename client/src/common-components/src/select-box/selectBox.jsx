@@ -145,7 +145,6 @@ class SelectBox extends Component {
     componentDidMount = () => {
         const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple } = this.props;
         window.$("#" + id).select2(options);
-        console.log(id);
         window.$("#" + id).on("change", () => {
             
             let optionsCollection = this.select?.current?.options
@@ -174,6 +173,26 @@ class SelectBox extends Component {
     componentDidUpdate() {
         const { id, multiple, options = { minimumResultsForSearch: 1 }, items } = this.props;
         const { searching, previouslySelectedOptions, searchText } = this.state;
+        window.$("#" + id).on("change", () => {
+            
+            let optionsCollection = this.select?.current?.options
+            let value;
+            if (optionsCollection) {
+                value = [].filter.call(optionsCollection, o => o.selected).map(o => o.value);
+            } else {
+                value = []
+            }
+            this.setState(state => {
+                return {
+                    ...state,
+                    innerChange: true,
+                    value: multiple ? value : value[0],
+                }
+            });
+            if (this.props.onChange) {
+                this.props.onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
+            }
+        });
 
         if (!searching) {
             window.$("#" + id).select2(options);
