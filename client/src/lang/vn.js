@@ -3061,6 +3061,55 @@ export default {
                 // Nhóm action
                 create_annual_leave: "Xin nghỉ phép",
             },
+
+            // Danh mục tag
+            tag: {
+                get_tag_success: "Lấy danh sách tag thành công!",
+                get_tag_failure: "Lấy danh sách tag thất bại!",
+                create_tag_success: "Tạo tag mới thành công!",
+                create_tag_failure: "Tạo tag mới thất bại!",
+                edit_tag_success: "Chỉnh sửa tag thành công!",
+                edit_tag_failure: "Chỉnh sửa tag thất bại!",
+                delete_tag_success: "Xóa tag thành công!",
+                delete_tag_failure: "Xóa tag thất bại!",
+            }
+        },
+
+        // Quản lý đấu thầu
+        bidding: {
+            bidding_contract: {
+                get_contract_success: "Lấy danh sách hợp đồng thầu thành công!",
+                get_contract_failure: "Lấy danh sách hợp đồng thầu thất bại!",
+                create_contract_success: "Tạo hợp đồng thầu thành công!",
+                create_contract_failure: "Tạo hợp đồng thầu thất bại!",
+                edit_contract_success: "Chỉnh sửa hợp đồng thầu thành công!",
+                edit_contract_failure: "Chỉnh sửa hợp đồng thầu thất bại!",
+                delete_contract_success: "Xóa hợp đồng thầu thành công!",
+                delete_contract_failure: "Xóa hợp đồng thầu thất bại!",
+                upfile_contract_success: "Tải file hợp đồng thầu thành công!",
+                upfile_contract_faile: "Tải file hợp đồng thầu thất bại!",
+                create_project_by_contract_success: "Tạo dự án triển khai theo hợp đồng thành công!",
+                create_project_by_contract_fail: "Tạo dự án triển khai theo hợp đồng thất bại!",
+            },
+
+        },
+
+        // Mẫu dự án
+        project_template: {
+            get_project_template_success: "Lấy danh sách mẫu dự án thành công!",
+            get_project_template_fail: "Lấy danh sách mẫu dự án thất bại!",
+            show_project_template_success: "Lấy thông tin mẫu dự án thành công!",
+            show_project_template_fail: "Lấy thông tin mẫu dự án thất bại!",
+            create_project_template_success: "Tạo mẫu dự án thành công!",
+            create_project_template_fail: "Tạo mẫu dự án thất bại!",
+            edit_project_template_success: "Chỉnh sửa mẫu dự án thành công!",
+            edit_project_template_fail: "Chỉnh sửa mẫu dự án thất bại!",
+            delete_project_template_success: "Xóa mẫu dự án thành công!",
+            delete_project_template_fail: "Xóa mẫu dự án thất bại!",
+            create_project_by_template_success: "Tạo dự án theo mẫu thành công!",
+            create_project_by_template_fail: "Tạo dự án theo mẫu thất bại!",
+            get_salary_members_success: "Lấy lương nhân sự thành công!",
+            get_salary_members_fail: "Lấy lương nhân sự thất bại!",
         },
 
         // Modules quản lý đào tạo

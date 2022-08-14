@@ -2941,6 +2941,55 @@ export default {
                 edit_success: "Edit major successfully",
                 edit_faile: "Edit major failed",
             },
+            
+            // Danh mục tag
+            tag: {
+                get_tag_success: "Get tags success!",
+                get_tag_failure: "Get tags fail!",
+                create_tag_success: "Create tag success!",
+                create_tag_failure: "Create tag fail!",
+                edit_tag_success: "Edit tag success!",
+                edit_tag_failure: "Edit tag fail!",
+                delete_tag_success: "Delete tag success!",
+                delete_tag_failure: "Delete tag fail!",
+            }
+        },
+
+        // Quản lý đấu thầu
+        bidding: {
+            bidding_contract: {
+                get_contract_success: "Get bidding contract success!",
+                get_contract_failure: "Get bidding contract fail!",
+                create_contract_success: "Create bidding contract success!",
+                create_contract_failure: "Create bidding contract fail!",
+                edit_contract_success: "Edit bidding contract success!",
+                edit_contract_failure: "Edit bidding contract fail!",
+                delete_contract_success: "Delete bidding contract success!",
+                delete_contract_failure: "Delete bidding contract fail!",
+                upfile_contract_success: "Upload file bidding contract success!",
+                upfile_contract_faile: "Upload file bidding contract fail!",
+                create_project_by_contract_success: "Create project by bidding contract success!",
+                create_project_by_contract_fail: "Create project by bidding contract fail!",
+            },
+
+        },
+
+        // Mẫu dự án
+        project_template: {
+            get_project_template_success: "Get project template success!",
+            get_project_template_fail: "Get project template fail!",
+            show_project_template_success: "Get project template detail success!",
+            show_project_template_fail: "Get project template detail fail!",
+            create_project_template_success: "Create project template success!",
+            create_project_template_fail: "Create project template fail!",
+            edit_project_template_success: "Edit project template success!",
+            edit_project_template_fail: "Edit project template fail!",
+            delete_project_template_success: "Delete project template success!",
+            delete_project_template_fail: "Delete project template fail!",
+            create_project_by_template_success: "Create project by project template success!",
+            create_project_by_template_fail: "Create project by project template fail!",
+            get_salary_members_success: "Get salary members success!",
+            get_salary_members_fail: "Get salary members fail!",
         },
 
         // Modules quản lý đào tạo
