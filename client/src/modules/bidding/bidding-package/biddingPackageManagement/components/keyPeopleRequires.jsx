@@ -233,6 +233,7 @@ function KeyPeopleRequire(props) {
             return item;
         })
         setList(newList);
+        props.handleChange("keyPersonnelRequires", newList);
     }
 
     /** Function bắt sự kiện thay đổi điện thoại đi động 1 */
