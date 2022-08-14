@@ -185,7 +185,6 @@ function GoodReturnCreateFormModal(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
-                maxWidth={500}
             >
                 <form id="modal-create-new-return-bill">
                     <div className="timeline">

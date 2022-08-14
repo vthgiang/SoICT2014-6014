@@ -323,7 +323,6 @@ function CreateForm(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
-                maxWidth={500}
             >
                 <form id="form-create-purchasing-request">
                     <fieldset className="scheduler-border">

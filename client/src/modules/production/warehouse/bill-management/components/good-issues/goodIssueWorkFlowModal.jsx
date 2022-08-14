@@ -337,7 +337,6 @@ function GoodIssueWorkFlowModal(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
-                maxWidth={500}
             >
                 <form id="good-issue-work-flow-modal">
                     <React.Fragment>

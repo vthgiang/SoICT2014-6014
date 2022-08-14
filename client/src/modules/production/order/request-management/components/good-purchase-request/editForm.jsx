@@ -221,7 +221,6 @@ function EditForm(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}
-                maxWidth={500}
             >
                 <form id={`form-edit-request-${requestId}`}>
                     <fieldset className="scheduler-border">

@@ -285,6 +285,7 @@ function convertDateTime(date, time) {
 }
 
 exports.createBill = async (user, data, portal) => {
+    console.log("data", data);
     var logs = [];
     let log = {};
     log.creator = user._id;
@@ -296,7 +297,7 @@ exports.createBill = async (user, data, portal) => {
         fromStock: data.fromStock,
         group: data.group,
         bill: data.bill,
-        request: data.request ? data.request : "",
+        request: data.request ? data.request : null,
         toStock: data.toStock ? data.toStock : null,
         code: data.code,
         type: data.type,
@@ -336,7 +337,7 @@ exports.createBill = async (user, data, portal) => {
         manufacturingMill: data.manufacturingMill,
         manufacturingCommand: data.manufacturingCommand,
         manufacturingWork: data.manufacturingWork ? data.manufacturingWork : null,
-        stockWorkAssignment: data.dataStockWorkAssignment ? data.dataStockWorkAssignment.map(item => {
+        stockWorkAssignment: (data.dataStockWorkAssignment && data.dataStockWorkAssignment.length > 0) ? data.dataStockWorkAssignment.map(item => {
             return {
                 workAssignmentStaffs: item.workAssignmentStaffs,
                 nameField: item.nameField,

@@ -237,7 +237,6 @@ function CreateDirectlyForm(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={bigModal ? 75 : 50}
-                maxWidth={500}
             >
                 <form id="modal-create-directly-request">
                     <fieldset className="scheduler-border">

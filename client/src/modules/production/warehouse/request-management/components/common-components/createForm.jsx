@@ -377,8 +377,7 @@ function CreateForm(props) {
                 msg_failure={translate('production.request_management.create_failed')}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={75}
-                maxWidth={500}
+                size="75"
             >
                 <form id="form-create-purchasing-request">
                     <fieldset className="scheduler-border">

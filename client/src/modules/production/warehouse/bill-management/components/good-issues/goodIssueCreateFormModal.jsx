@@ -219,7 +219,6 @@ function GoodIssueCreateFormModal(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
-                maxWidth={500}
             >
                 <form id="modal-create-new-issue-bill">
                     <div className="timeline">
