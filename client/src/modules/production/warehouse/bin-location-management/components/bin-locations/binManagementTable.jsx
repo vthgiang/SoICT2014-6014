@@ -11,6 +11,7 @@ import { DepartmentActions } from '../../../../../super-admin/organizational-uni
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 import { GoodActions } from '../../../../common-production/good-management/redux/actions';
 import { StockActions } from '../../../../warehouse/stock-management/redux/actions';
+import ImportBinLocationModal from './importBinLocationModal';
 
 function BinManagementTable(props) {
     const [state, setState] = useState({
@@ -96,7 +97,7 @@ function BinManagementTable(props) {
     /**Mở modal import file excel */
     const handImportFile = (event) => {
         event.preventDefault();
-        window.$('#modal_import_file_archive').modal('show');
+        window.$('#import_bin_location').modal('show');
     }
 
     const deleteBins = async () => {
@@ -173,7 +174,8 @@ function BinManagementTable(props) {
                         disabled={binParent.length > 1 ? true : false}>{translate('manage_warehouse.bin_location_management.add')}</button>
                     <ul className="dropdown-menu pull-right">
                         <li><a href="#modal-create-bin-location" title="Add BinLocation" onClick={(event) => { handleAddBinLocation(event) }}>{translate('manage_warehouse.bin_location_management.add')}</a></li>
-                        {/* <li><a href="#modal_import_file_archive" title="ImportForm" onClick={(event) => { handImportFile(event) }}>ImportFile</a></li> */}
+                        <li><a href="#import_bin_location" title="ImportForm" onClick={(event) => { handImportFile(event) }}>ImportFile</a></li>
+                        <ImportBinLocationModal />
                     </ul>
                 </div>
             </div>

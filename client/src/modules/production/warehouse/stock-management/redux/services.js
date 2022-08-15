@@ -4,7 +4,8 @@ export const StockServices = {
     getStock,
     createStock,
     editStock,
-    deleteStock
+    deleteStock,
+    importStock,
 }
 
 function getAllStocks(params){
@@ -43,4 +44,12 @@ function deleteStock(id){
         url: `${ process.env.REACT_APP_SERVER }/stocks/${id}`,
         method: 'DELETE',
     }, true, true, 'manage_warehouse.stock_management')
+}
+
+function importStock(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/stocks/imports`,
+        method: 'POST',
+        data,
+    }, true, true, 'manage_warehouse.stock_management');
 }

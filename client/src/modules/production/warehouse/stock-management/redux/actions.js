@@ -6,7 +6,8 @@ export const StockActions = {
     getStock,
     createStock,
     editStock,
-    deleteStock
+    deleteStock,
+    importStock,
 }
 
 function getAllStocks(data){
@@ -133,5 +134,25 @@ function deleteStock(id){
                 error: err
             })
         })
+    }
+}
+
+function importStock(data) {
+    return dispatch => {
+        dispatch({
+            type: StockConstants.IMPORT_STOCK_REQUEST,
+        });
+        StockServices.importStock(data)
+            .then(res => {
+                dispatch({
+                    type: StockConstants.IMPORT_STOCK_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: StockConstants.IMPORT_STOCK_FAILURE,
+                });
+            })
     }
 }

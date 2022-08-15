@@ -12,6 +12,7 @@ router.patch('/:id', auth, GoodController.editGood);
 router.get('/:id', auth, GoodController.getGoodDetail);
 router.get('/by-category/:id', auth, GoodController.getAllGoodsByCategory);
 router.delete('/:id', auth, GoodController.deleteGood);
+router.post('/imports', auth, GoodController.importGoods);
 
 // Lấy tất cả sản phẩm theo id role Quản đốc truyền vào
 router.get('/by-manage-works-role/role/:id', auth, GoodController.getGoodByManageWorksRole)

@@ -267,3 +267,24 @@ exports.deleteManyBinLocations = async (array, portal) => {
 
     return await getBin(portal);
 }
+
+exports.importBinLocation = async (portal, data) => {
+    if (data?.length) {
+        const dataLength = data.length;
+        for (let i = 0; i < dataLength; i++) {
+            await BinLocation(connect(DB_CONNECTION, portal)).create({
+                code: data[i].code,
+                name: data[i].name,
+                department: data[i].department,
+                status: data[i].status,
+                capacity: data[i].capacity,
+                stock: data[i].stock,
+                parent: data[i].parent ? data[i].parent : null,
+                unit: data[i].unit,
+                users: [data[i].users],
+                description: data[i].description,
+            });
+        }
+    }
+    return await getBin(portal);
+}

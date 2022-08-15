@@ -7,7 +7,8 @@ export const BinLocationServices = {
     createBinLocation,
     editBinLocation,
     deleteBinLocation,
-    deleteManyBinLocation
+    deleteManyBinLocation,
+    importBinLocation,
 }
 
 function getBinLocations(params) {
@@ -62,4 +63,12 @@ function deleteManyBinLocation(array) {
         method: 'POST',
         data: { array }
     }, false, true, 'manage_warehouse.bin_location_management');
+}
+
+function importBinLocation(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/bin-locations/imports`,
+        method: 'POST',
+        data,
+    }, true, true, 'manage_warehouse.bin_location_management');
 }

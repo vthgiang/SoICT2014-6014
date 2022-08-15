@@ -52,6 +52,7 @@ export function goods(state = initState, action) {
         case GoodConstants.GETALL_GOOD_BY_CATEGORY_REQUEST:
         case GoodConstants.PAGINATE_GOOD_BY_TYPE_REQUEST:
         case GoodConstants.CREATE_GOOD_REQUEST:
+        case GoodConstants.IMPORT_GOOD_REQUEST:
         case GoodConstants.UPDATE_GOOD_REQUEST:
         case GoodConstants.GET_GOOD_DETAIL_REQUEST:
         case GoodConstants.DELETE_GOOD_REQUEST:
@@ -70,6 +71,7 @@ export function goods(state = initState, action) {
         case GoodConstants.GETALL_GOOD_BY_CATEGORY_FAILURE:
         case GoodConstants.PAGINATE_GOOD_BY_TYPE_FAILURE:
         case GoodConstants.CREATE_GOOD_FAILURE:
+        case GoodConstants.IMPORT_GOOD_FAILURE:
         case GoodConstants.UPDATE_GOOD_FAILURE:
         case GoodConstants.GET_GOOD_DETAIL_FAILURE:
         case GoodConstants.DELETE_GOOD_FAILURE:
@@ -127,6 +129,19 @@ export function goods(state = initState, action) {
             };
 
         case GoodConstants.CREATE_GOOD_SUCCESS:
+            return {
+                ...state,
+                listGoods: [
+                    ...state.listGoods,
+                    action.payload
+                ],
+                listPaginate: [
+                    ...state.listPaginate,
+                    action.payload
+                ],
+                isLoading: false
+            };
+        case GoodConstants.IMPORT_GOOD_SUCCESS:
             return {
                 ...state,
                 listGoods: [

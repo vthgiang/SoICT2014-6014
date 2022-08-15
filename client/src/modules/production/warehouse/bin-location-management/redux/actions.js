@@ -7,7 +7,8 @@ export const BinLocationActions = {
     getDetailBinLocation,
     createBinLocation,
     editBinLocation,
-    deleteBinLocations
+    deleteBinLocations,
+    importBinLocation,
 }
 
 function getBinLocations(data) {
@@ -199,5 +200,25 @@ function deleteBinLocations(data, type = "single") {
                 })
             })
         }
+    }
+}
+
+function importBinLocation(data) {
+    return dispatch => {
+        dispatch({
+            type: BinLocationConstants.IMPORT_BIN_LOCATION_REQUEST,
+        });
+        BinLocationServices.importBinLocation(data)
+            .then(res => {
+                dispatch({
+                    type: BinLocationConstants.IMPORT_BIN_LOCATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: BinLocationConstants.IMPORT_BIN_LOCATION_FAILURE,
+                });
+            })
     }
 }

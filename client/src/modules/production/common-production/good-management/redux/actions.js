@@ -14,7 +14,8 @@ export const GoodActions = {
     getItemsForGood,
     getGoodByManageWorkRole,
     getManufacturingWorksByProductId,
-    getNumberGoods
+    getNumberGoods,
+    importGood
 }
 
 function getGoodsByType(data = undefined) {
@@ -337,5 +338,26 @@ function getNumberGoods() {
                 error
             })
         })
+    }
+}
+
+
+function importGood(data) {
+    return dispatch => {
+        dispatch({
+            type: GoodConstants.IMPORT_GOOD_REQUEST,
+        });
+        GoodServices.importGood(data)
+            .then(res => {
+                dispatch({
+                    type: GoodConstants.IMPORT_GOOD_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: GoodConstants.IMPORT_GOOD_FAILURE,
+                });
+            })
     }
 }

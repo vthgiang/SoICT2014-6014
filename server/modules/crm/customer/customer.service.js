@@ -152,15 +152,15 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
 
 exports.importCustomers = async (portal, companyId, data, userId, role) => {
     // thêm đơn vị quản lý 
-    const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    if (!crmUnit) return {};
+    // const crmUnit = await getCrmUnitByRole(portal, companyId, role);
+    // if (!crmUnit) return {};
     //lấy công việc thêm khách hàng của nhân viên
-    const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
-    const params = { taskId: crmTask.task }
+    // const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
+    // const params = { taskId: crmTask.task }
     let getResult = [];
     for ([index, x] of data.entries()) {
         const code = await createCustomerCode(portal);
-        x.crmUnit = crmUnit._id;
+        // x.crmUnit = crmUnit._id;
         x.code = code;
         x.creator = userId;
         let owners = [];
@@ -193,15 +193,15 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
         }
         const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(x);
         //thêm hoạt động vaod công việc tìm kiếm khách hàng
-        const body = {
-            creator: userId,
-            description: `
-            <p>Thêm mới khách hàng<strong> ${x.name}</strong></p>
+        // const body = {
+        //     creator: userId,
+        //     description: `
+        //     <p>Thêm mới khách hàng<strong> ${x.name}</strong></p>
             
-            `,
-            index: '1'
-        }
-        createTaskAction(portal, params, body, []);
+        //     `,
+        //     index: '1'
+        // }
+        // createTaskAction(portal, params, body, []);
 
 
         const getCustomer = await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: newCustomer._id })
@@ -214,7 +214,7 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
 
     }
     // cập nhật lại thông tin công việc
-    await updateSearchingCustomerTaskInfo(portal, companyId, userId, role);
+    // await updateSearchingCustomerTaskInfo(portal, companyId, userId, role);
 
 
     return getResult;

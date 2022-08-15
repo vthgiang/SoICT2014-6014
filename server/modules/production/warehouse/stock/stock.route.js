@@ -8,5 +8,6 @@ router.post('/', auth, StockController.createStock);
 router.get('/stock-detail/:id', auth, StockController.getStock);
 router.patch('/:id', auth, StockController.editStock);
 router.delete('/:id', auth, StockController.deleteStock);
+router.post('/imports', auth, StockController.importStocks);
 
 module.exports = router;
