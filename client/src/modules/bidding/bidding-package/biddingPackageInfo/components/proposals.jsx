@@ -111,7 +111,7 @@ function Proposals(props) {
             <div style={{ display: 'flex', justifyContent: "flex-end" }}>
                 <div className="btn btn-success" onClick={() => generateProposalDocx(proposals)}>Tải file Đề xuất</div>
             </div>
-            {proposals?.executionTime && <div style={{ marginLeft: "20px" }}><strong>Thời gian thực hiện hợp đồng: </strong><span>{proposals.executionTime} ({arrUnitTimeList.find(x => x.value === proposals.unitOfTime)?.text})</span> kể từ thời điểm ký kết hợp đồng</div>}
+            {proposals?.executionTime && <div style={{ marginLeft: "20px" }}><strong>Thời gian thực hiện hợp đồng: </strong><span>{proposals?.executionTime} ({arrUnitTimeList.find(x => x.value === proposals?.unitOfTime)?.text})</span> kể từ thời điểm ký kết hợp đồng</div>}
 
             <br />
 
@@ -130,7 +130,7 @@ function Proposals(props) {
                         }
                         <div className="box-body qlcv">
                             {
-                                proposals.tasks.map((item, index) => {
+                                proposals?.tasks.map((item, index) => {
                                     return (
 
                                         <section className="col-lg-12 col-md-12" key={`section-${index}`}>
