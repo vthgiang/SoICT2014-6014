@@ -7,6 +7,7 @@ import { generateCode } from '../../../../../helpers/generateCode';
 import { useState } from 'react';
 import { formatDate } from '../../../../../helpers/formatDate';
 import dayjs from "dayjs";
+import ImportStockModal from './importStockModal';
 
 function StockCreateForm(props) {
     const EMPTY_GOOD = {
@@ -368,12 +369,14 @@ function StockCreateForm(props) {
         })
     }
 
-    const handleClickCreate = () => {
+    const handleClickCreate = (event) => {
         const value = generateCode("ST");
         setState({
             ...state,
             code: value
         });
+        event.preventDefault();
+        window.$('#modal-create-stock').modal('show');
     }
 
     const handleAddRole = async (e) => {
@@ -507,9 +510,18 @@ function StockCreateForm(props) {
 
     return (
         <React.Fragment>
-            {checkHasComponent('create-stock-button') &&
-                <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-stock`} button_name={translate('manage_warehouse.stock_management.add')} title={translate('manage_warehouse.stock_management.add_title')} />
-            }
+            <div className="dropdown pull-right">
+                {/* Xuất báo cáo */}
+                <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_warehouse.category_management.add')}
+                >{translate('manage_warehouse.category_management.add')}</button>
+                <ul className="dropdown-menu pull-right">
+                    {checkHasComponent('create-stock-button') &&
+                        <li><a href="#modal-create-stock" title="Add stock" onClick={(event) => { handleClickCreate(event) }}>{translate('manage_warehouse.category_management.add')}</a></li>
+                    }
+                    <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#import_stock').modal('show') }}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                </ul>
+                <ImportStockModal />
+            </div>
             <DialogModal
                 modalID={`modal-create-stock`} isLoading={stocks.isLoading}
                 formID={`form-create-stock`}

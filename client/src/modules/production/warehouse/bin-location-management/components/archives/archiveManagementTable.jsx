@@ -111,19 +111,23 @@ function ArchiveManagementTable(props) {
 
     const handleEnableGood = (enableGoods) => {
         enableGoods.sort((a, b) => b.contained - a.contained);
-        if (enableGoods[0].contained === 0) {
-            return null;
-        } else if (enableGoods.length > 3) {
-            return enableGoods.slice(0, 2);
-        } else {
-            return enableGoods.slice(0, 3);
+        if (enableGoods && enableGoods.length > 0) {
+            if (enableGoods[0].contained === 0) {
+                return null;
+            } else if (enableGoods.length > 3) {
+                return enableGoods.slice(0, 2);
+            } else {
+                return enableGoods.slice(0, 3);
+            }
         }
+        return null;
     }
 
     const { translate, binLocations, stocks } = props;
     const { listStocks } = stocks;
     const { listPaginate, totalPages, page } = binLocations;
     const { currentRow } = state;
+    console.log(listPaginate);
     return (
         <div className="box-body qlcv">
             <div className="form-inline">
@@ -215,7 +219,7 @@ function ArchiveManagementTable(props) {
                                 <td>{x.path}</td>
                                 <td style={{ color: translate(`manage_warehouse.bin_location_management.${x.status}.color`) }}>{translate(`manage_warehouse.bin_location_management.${x.status}.status`)}</td>
                                 <td>{x.capacity ? x.capacity : 0} {x.unit}</td>
-                                <td> 
+                                <td>
                                     {x.contained > 0 && (x.contained + ' ' + x.unit)}
                                     {x.contained <= 0 && translate('manage_warehouse.bin_location_management.empty_stock')}
                                 </td>

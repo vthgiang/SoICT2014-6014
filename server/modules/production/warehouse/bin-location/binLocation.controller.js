@@ -147,3 +147,24 @@ exports.deleteManyBinLocations = async (req, res) => {
         });
     }
 }
+
+exports.importBinLocations = async (req, res) => {
+    try {
+        const data = await BinLocationServices.importBinLocation(req.portal, req.body);
+         
+        await Logger.info(req.user.email, 'import_bin_location_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['import_bin_location_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log('eoror', error)
+        await Logger.error(req.user.email, 'import_bin_location_failure', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_bin_location_failure'],
+            content: error
+        });
+    }
+}

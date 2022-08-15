@@ -274,3 +274,29 @@ exports.numberGoods = async (portal) => {
     const totalMaterials = await Good(connect(DB_CONNECTION, portal)).find({ type: 'material' }).count();
     return { totalGoods, totalProducts, totalMaterials };
 }
+
+exports.importGood = async (portal, data) => {
+    if (data?.length) {
+        const dataLength = data.length;
+        for (let i = 0; i < dataLength; i++) {
+            await Good(connect(DB_CONNECTION, portal)).create({
+                code: data[i].code,
+                name: data[i].name,
+                category: data[i].category,
+                baseUnit: data[i].baseUnit,
+                description: data[i].description,
+                numberExpirationDate: data[i].numberExpirationDate,
+                pricePerBaseUnit: data[i].pricePerBaseUnit,
+                salesPriceVariance: data[i].salesPriceVariance,
+                sourceType: data[i].sourceType,
+                type: data[i].type
+            });
+        }
+    }
+    return await Good(connect(DB_CONNECTION, portal))
+    .populate([
+        { path: 'materials.good', select: 'id name' },
+        { path: 'excludingGoods.good' },
+        { path: 'manufacturingMills.manufacturingMill' }
+    ])
+}

@@ -12,6 +12,7 @@ import { generateCode } from "../../../../../helpers/generateCode";
 import Swal from "sweetalert2";
 import VariantCreateForm from "./variantCreateForm";
 import OptionalAttributeCreateForm from "./optionalAttributeCreateForm";
+import ImportGoodModal from "./importGoodModal";
 
 function GoodCreateForm(props) {
     const [state, setState] = useState({
@@ -68,11 +69,11 @@ function GoodCreateForm(props) {
                 pricePerBaseUnit: props.pricePerBaseUnit ? props.pricePerBaseUnit : "",
                 salesPriceVariance: props.salesPriceVariance ? props.salesPriceVariance : "",
                 numberExpirationDate: props.numberExpirationDate ? props.numberExpirationDate : "",
-                width : props.width ? props.width : "",
-                height : props.height ? props.height : "",
-                depth : props.depth ? props.depth : "",
-                weight : props.weight ? props.weight : "",
-                volume : props.volume ? props.volume : "",
+                width: props.width ? props.width : "",
+                height: props.height ? props.height : "",
+                depth: props.depth ? props.depth : "",
+                weight: props.weight ? props.weight : "",
+                volume: props.volume ? props.volume : "",
             });
         }
     }, [props.type]);
@@ -323,7 +324,7 @@ function GoodCreateForm(props) {
             validateCode(code, false) &&
             validateBaseUnit(baseUnit, false) &&
             validateCategory(category, false) &&
-            ((type && type === "product") && sourceType === "1") ? materials.length > 0 : true &&
+            // ((type && type === "product") && sourceType === "1") ? materials.length > 0 : true &&
             validateNumberExpirationDate(numberExpirationDate, false) &&
         validateSourceProduct(sourceType, false);
         return result;
@@ -372,12 +373,14 @@ function GoodCreateForm(props) {
         })
     }
 
-    const handleClickCreate = () => {
+    const handleClickCreate = (event, type) => {
         let code = generateCode("HH");
         setState({
             ...state,
             code: code,
         });
+        event.preventDefault();
+        window.$(`#modal-create-${type}`).modal('show');
     };
     let listUnit = [];
     let priceInfomation = [];
@@ -420,12 +423,15 @@ function GoodCreateForm(props) {
     let dataGoods = getDataGoods();
     return (
         <React.Fragment>
-            <ButtonModal
-                onButtonCallBack={handleClickCreate}
-                modalID={`modal-create-${type}`}
-                button_name={translate("manage_warehouse.good_management.add")}
-                title={translate("manage_warehouse.good_management.add_title")}
-            />
+            <div className="dropdown pull-right">
+                <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_warehouse.category_management.add')}
+                >{translate('manage_warehouse.category_management.add')}</button>
+                <ul className="dropdown-menu pull-right">
+                    <li><a href="#modal-create-good" title="Add goood" onClick={(event) => { handleClickCreate(event, type) }}>{translate('manage_warehouse.category_management.add')}</a></li>
+                    <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#import_good').modal('show') }}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                </ul>
+                <ImportGoodModal />
+            </div>
             <DialogModal
                 modalID={`modal-create-${type}`}
                 isLoading={goods.isLoading}

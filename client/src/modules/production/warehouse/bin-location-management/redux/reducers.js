@@ -46,6 +46,7 @@ export function binLocations(state = initState, action){
         case BinLocationConstants.GET_DETAIL_BIN_REQUEST:
         case BinLocationConstants.GET_BIN_LOCATION_CHILD_REQUEST:
         case BinLocationConstants.CREATE_BIN_LOCATION_REQUEST:
+        case BinLocationConstants.IMPORT_BIN_LOCATION_REQUEST:
         case BinLocationConstants.UPDATE_BIN_LOCATION_REQUEST:
         case BinLocationConstants.DELETE_BIN_LOCATION_REQUEST:
             return {
@@ -103,6 +104,12 @@ export function binLocations(state = initState, action){
                 binLocation: action.payload,
                 isLoading: false
             };
+        case BinLocationConstants.IMPORT_BIN_LOCATION_SUCCESS:
+            return {
+                ...state,
+                binLocation: action.payload,
+                isLoading: false
+            };
 
         case BinLocationConstants.UPDATE_BIN_LOCATION_SUCCESS:
             index = findIndex(state.binLocation.list, action.payload._id);
@@ -128,6 +135,7 @@ export function binLocations(state = initState, action){
         case BinLocationConstants.GET_DETAIL_BIN_FAILURE:
         case BinLocationConstants.GET_BIN_LOCATION_CHILD_FAILURE:
         case BinLocationConstants.CREATE_BIN_LOCATION_FAILURE:
+        case BinLocationConstants.IMPORT_BIN_LOCATION_FAILURE:
         case BinLocationConstants.UPDATE_BIN_LOCATION_FAILURE:
         case BinLocationConstants.DELETE_BIN_LOCATION_FAILURE:
             return {

@@ -222,3 +222,24 @@ exports.numberGoods = async (req, res) => {
         })
     }
 }
+
+exports.importGoods = async (req, res) => {
+    try {
+        const data = await GoodService.importGood(req.portal, req.body);
+         
+        await Logger.info(req.user.email, 'import_good_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['import_good_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log('eoror', error)
+        await Logger.error(req.user.email, 'import_good_failure', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_good_failure'],
+            content: error
+        });
+    }
+}

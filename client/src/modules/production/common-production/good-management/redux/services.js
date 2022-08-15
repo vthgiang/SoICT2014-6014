@@ -14,7 +14,8 @@ export const GoodServices = {
     getDiscountByGoodsId,
     getGoodByManageWorkRole,
     getManufacturingWorksByProductId,
-    getNumberGoods
+    getNumberGoods,
+    importGood
 }
 
 function getGoodsByType(params) {
@@ -144,4 +145,12 @@ function getNumberGoods() {
         url: `${process.env.REACT_APP_SERVER}/goods/get-number-good`,
         method: "GET"
     }, false, false, "manage_warehouse.good_management")
+}
+
+function importGood(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/goods/imports`,
+        method: 'POST',
+        data,
+    }, true, true, 'manage_warehouse.good_management');
 }

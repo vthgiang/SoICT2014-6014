@@ -104,3 +104,24 @@ exports.deleteStock = async (req, res) => {
         })
     }
 }
+
+exports.importStocks = async (req, res) => {
+    try {
+        const data = await StockService.importStocks(req.portal, req.body);
+         
+        await Logger.info(req.user.email, 'import_stock_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['import_stock_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log('eoror', error)
+        await Logger.error(req.user.email, 'import_stock_failure', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_stock_failure'],
+            content: error
+        });
+    }
+}
