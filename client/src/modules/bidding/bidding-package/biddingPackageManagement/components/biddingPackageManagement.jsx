@@ -146,7 +146,7 @@ const BiddingPackageManagement = (props) => {
         await setState(state => {
             return {
                 ...state,
-                currentRow: value
+                currentRowCreateContract: value
             }
         });
         setTimeout(() => {
@@ -250,7 +250,7 @@ const BiddingPackageManagement = (props) => {
 
     const { biddingPackagesManager, translate } = props;
 
-    const { limit, page, startDateSearch, endDateSearch, currentRow, currentRowView, status, type, isLoading } = state;
+    const { limit, page, startDateSearch, endDateSearch, currentRow, currentRowView, currentRowCreateContract, status, type, isLoading } = state;
 
     let listBiddingPackages = [];
     if (biddingPackagesManager.listBiddingPackages) {
@@ -410,7 +410,7 @@ const BiddingPackageManagement = (props) => {
             {/* From thêm mới hợp đồng */}
             <CreateBiddingContract
                 handleRefresh={handleSunmitSearch}
-                id={currentRow ? currentRow._id : ""}
+                id={currentRowCreateContract ? currentRowCreateContract._id : ""}
             />
 
 
