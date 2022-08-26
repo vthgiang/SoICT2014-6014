@@ -60,7 +60,9 @@ class GroupItem extends Component {
                                                     <Link
                                                         to={item.path}
                                                         onClick={() => {
-                                                            store.dispatch({ type: 'SWITCH_PAGE' });
+                                                            if (window.location.pathname !== item.path) {
+                                                                store.dispatch({ type: 'SWITCH_PAGE' });
+                                                            }
                                                         }}
                                                     >
                                                         <i className={item.icon} />
@@ -87,7 +89,9 @@ class GroupItem extends Component {
                                                                         <Link
                                                                             to={itemChild.path}
                                                                             onClick={() => {
-                                                                                store.dispatch({ type: 'SWITCH_PAGE' });
+                                                                                if (window.location.pathname !== item.path) {
+                                                                                    store.dispatch({ type: 'SWITCH_PAGE' });
+                                                                                }
                                                                             }}
                                                                         >
                                                                             <i className={itemChild.icon} />

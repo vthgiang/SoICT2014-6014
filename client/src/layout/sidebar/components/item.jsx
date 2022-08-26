@@ -24,17 +24,19 @@ class Item extends Component {
     }
 
     render() {
-        const { item, translate} = this.props;
+        const { item, translate } = this.props;
         const { links } = this.props.auth;
 
         return <React.Fragment>
             {
                 this.checkURL(item.path, links) &&
                 <li className={window.location.pathname === item.path ? "active" : ""}>
-                    <Link 
-                        to={item.path} 
-                        onClick={() => { 
-                            store.dispatch({ type: 'SWITCH_PAGE' });
+                    <Link
+                        to={item.path}
+                        onClick={() => {
+                            if (window.location.pathname !== item.path) {
+                                store.dispatch({ type: 'SWITCH_PAGE' });
+                            }
                         }}
                     >
                         <i className={item.icon} /> <span>{translate(item.name)}</span>

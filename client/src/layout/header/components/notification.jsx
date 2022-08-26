@@ -46,10 +46,6 @@ function Notification(props) {
             })
     }, [props?.notifications?.receivered?.list])
 
-    useEffect(() => {
-        props.getAllManualNotifications();
-        props.getAllNotifications();
-    }, [])
 
     useEffect(() => {
         props.socket.io.on('new notifications', data => {

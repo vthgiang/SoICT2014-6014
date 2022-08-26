@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 
 import { AuthRoute } from "./authRoute";
-import { PrivateRoute } from "./privateRoute";
+import PrivateRoute from "./privateRoute";
 
 import Layout from "../layout/layout";
 import Login from "../modules/auth/components/login";

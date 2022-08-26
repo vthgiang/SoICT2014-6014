@@ -44,27 +44,10 @@ class App extends Component {
 
     componentDidMount() {
         getFCToken();
-        const lang = localStorage.getItem('lang');
-        if(lang !== null){
-            switch(lang){
-                case 'en':
-                case 'vn':
-                    store.dispatch(IntlActions.setLocale(lang));
-                    break;
-                default:
-                    localStorage.setItem('lang', 'vn');
-                    store.dispatch(IntlActions.setLocale('vn'));
-                    break;
-            }
-        }else{
-            localStorage.setItem('lang', 'vn');
-            store.dispatch(IntlActions.setLocale('vn'));
-        }
-        
         const userId = getStorage('userId');
         if(userId){
             const {socket} = store.getState();
-            if(!socket.connected) store.dispatch({ type: SocketConstants.CONNECT_SOCKET_IO });                                                                                                     
+            if(!socket.connected) store.dispatch({ type: SocketConstants.CONNECT_SOCKET_IO });
         }
     }
 
@@ -73,7 +56,7 @@ class App extends Component {
             <React.Fragment>
                 <ServerDisconnectedAlert/>
                 <AuthAlert />
-                <ToastContainer 
+                <ToastContainer
                     enableMultiContainer={true}
                     closeOnClick={true}
                     draggable={false}
@@ -85,7 +68,7 @@ class App extends Component {
                 </Router>
                 <PinnedPanel>
                     <TaskTimesheetLog />
-                </PinnedPanel> 
+                </PinnedPanel>
             </React.Fragment>
         );
     }

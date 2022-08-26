@@ -187,32 +187,6 @@ class Header extends Component {
             });
         }
     }
-
-    getLinkId = (path, links) => {
-
-        var linkId;
-        for (let index = 0; index < links.length; index++) {
-            const element = links[index];
-            if (element.url === path) {
-                linkId = element._id;
-            }
-        }
-
-        return linkId;
-    }
-
-    componentDidMount() {
-        this.props.refresh();
-
-        const currentRole = getStorage("currentRole");
-        this.props.getLinksOfRole(currentRole)
-            .then(res => {
-                const links = res.data.content;
-                const path = window.location.pathname;
-                const linkId = this.getLinkId(path, links);
-                this.props.getComponentsOfUserInLink(currentRole, linkId);
-            })
-    }
 }
 
 const mapStateToProps = state => {

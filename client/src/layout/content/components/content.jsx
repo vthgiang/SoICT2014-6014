@@ -203,7 +203,7 @@ class Content extends Component {
             str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
             str = str.replace(/đ/g, "d");
             // Some system encode vietnamese combining accent as individual utf-8 characters
-            str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng 
+            str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng
             str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
             return str;
         }
@@ -362,7 +362,7 @@ class Content extends Component {
                             let value = input.value.toLowerCase();
                             let iconFilter = window.$(input).parent().parent().children()[0]
                             if (value.replace(/\s/g, "") !== "") { // value khác rỗng
-                                iconFilter.style.color = "black" // chuyển màu icon 
+                                iconFilter.style.color = "black" // chuyển màu icon
                                 rows.filter((a) => {
                                     let keyData = window.$(window.$(rows[a]).find("td:eq(" + index + ")")).text(); //value trong cột mình muốn filter
                                     let re = new RegExp(nonAccentVietnamese(value), "gi"); // bỏ dấu giá trị mình tìm kiếm
@@ -455,6 +455,9 @@ class Content extends Component {
     render() {
         let isLoading = false; // isLoading tổng
         const { translate, pageName, arrPage } = this.props;
+        if(!pageName) {
+            isLoading = true
+        }
         // loop qua tất cả các isLoading trong redux store, gặp isLoading nào là true thì để isLoading tổng là true
         for (const [key, value] of Object.entries(this.props)) {
             if (value?.isLoading === true) {

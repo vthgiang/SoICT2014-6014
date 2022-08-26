@@ -1,6 +1,4 @@
 import { AuthConstants } from "./constants";
-import { setStorage } from '../../../config';
-import statisticalAssetByType from "../../asset/admin/asset-dashboard/components/asset-by-type/statisticalAssetByType";
 
 export const CallApiStatus = {
     INITIALIZED: 0,
@@ -58,7 +56,7 @@ export function auth(state = initState, action) {
                 isLoading: false,
                 user: action.payload,
             }
-        
+
         case AuthConstants.LOGIN_SUCCESS:
             return {
                 ...state,
@@ -66,8 +64,8 @@ export function auth(state = initState, action) {
                 isLoading: false,
                 error: null
             };
-        
-        
+
+
         case AuthConstants.LOGIN_FAILE:
             return {
                 ...state,
@@ -179,14 +177,14 @@ export function auth(state = initState, action) {
                 ...state,
                 isLoading: false,
             };
-        
+
         case AuthConstants.CHECK_URL_RESET_PASSWORD_VALID_REQUEST: {
             return {
                 ...state,
                 isLoading: true,
             }
         }
-            
+
         case AuthConstants.CHECK_URL_RESET_PASSWORD_VALID_SUCCESS: {
             return {
                 ...state,
@@ -194,7 +192,7 @@ export function auth(state = initState, action) {
                 isLoading: false
             }
         }
-        
+
         case AuthConstants.CHECK_URL_RESET_PASSWORD_VALID_FAILE:
             return {
                 ...state,

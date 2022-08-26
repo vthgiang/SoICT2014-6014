@@ -82,7 +82,7 @@ import { recommendDistribute } from "../modules/asset/user/use-request/redux/red
 //asset lot
 import { assetLotManager } from "../modules/asset/admin/asset-lot/redux/reducers";
 
-//supplies 
+//supplies
 import { suppliesReducer } from "../modules/supplies/admin/supplies/redux/reducers";
 import { suppliesDashboardReducer } from "../modules/supplies/admin/supplies-dashboard/redux/reducers";
 import { purchaseInvoiceReducer } from "../modules/supplies/admin/purchase-invoice/redux/reducers";
@@ -90,7 +90,7 @@ import { allocationHistoryReducer } from "../modules/supplies/admin/allocation-h
 import { purchaseRequest } from "../modules/supplies/admin/purchase-request/redux/reducers";
 
 
-//report 
+//report
 import { reports } from "../modules/report/task-report/redux/reducers";
 
 //warehouse
@@ -348,7 +348,8 @@ const rootReducer = (state, action) => {
     } else if (action.type === 'SWITCH_PAGE') {
         state = {
             auth: state.auth,
-            socket: state.socket
+            socket: state.socket,
+            Intl: {locale: localStorage.getItem('lang')}
         }
     }
 
