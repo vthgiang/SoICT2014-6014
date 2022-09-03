@@ -155,6 +155,13 @@ exports.getDashboardSupplies = async (req, res) => {
 
 exports.getDashboardSuppliesForOrganization = async (req, res) => {
     try {
+        if (!req.query.supplyIds || !req.query.organizationId) {
+            res.status(200).json({
+                success: true,
+                messages: ["get_dashboard_supplies_for_organization_success"],
+                content: {}
+            });
+        }
         let result = await SuppliesService.getDashboardSuppliesForOrganization(req.portal, req.query);
         await Logger.info(req.user.email, 'GET_DASHBOARD_SUPPLIES', req.portal);
         res.status(200).json({

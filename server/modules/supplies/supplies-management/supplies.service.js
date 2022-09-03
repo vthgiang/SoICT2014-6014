@@ -235,20 +235,6 @@ exports.getSuppliesById = async (portal, id) => {
 };
 
 exports.getDashboardSupplies = async (portal, query) => {
-    let listSupplies = await Supplies(
-        connect(DB_CONNECTION, portal))
-        .find({});
-    let listInvoice = await PurchaseInvoice(
-        connect(DB_CONNECTION, portal))
-        .find({})
-        .sort({ 'createDate': 'desc' });
-    let listAllocation = await AllocationHistory(
-        connect(DB_CONNECTION, portal))
-        .find({})
-        .sort({ 'createDate': 'desc' });
-
-    // let result = { listSupplies, listInvoice, listAllocation }
-
     // new query
     let { time } = query;
     time = JSON.parse(time);
