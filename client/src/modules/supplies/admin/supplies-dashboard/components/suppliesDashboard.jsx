@@ -188,6 +188,12 @@ function SuppliesDashboard(props) {
 
         }
     }
+
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'VND',
+        minimumFractionDigits: 0
+    })
     return (
         <React.Fragment>
             <div className='qlcv'>
@@ -223,7 +229,7 @@ function SuppliesDashboard(props) {
                             <span className="info-box-icon bg-green"><i className="fa fa-check"></i></span>
                             <div className="info-box-content">
                                 <span className="info-box-text">{`Tổng số vật tư: ${numberData.supplies.totalSupplies}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${numberData.supplies.suppliesPrice}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị: ${formatter.format(numberData.supplies.suppliesPrice)}`}</span>
                                 <a href="/manage-info-asset?status=ready_to_use">{translate('asset.general_information.view_more')}
                                     <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -235,7 +241,7 @@ function SuppliesDashboard(props) {
                             <span className="info-box-icon bg-aqua"><i className="fa fa-play"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
                                 <span className="info-box-text">{`Tổng số hóa đơn: ${numberData.purchaseInvoice.totalPurchaseInvoice}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${numberData.purchaseInvoice.purchaseInvoicesPrice}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị: ${formatter.format(numberData.purchaseInvoice.purchaseInvoicesPrice)}`}</span>
                                 <a href="/manage-info-asset?status=in_use">{translate('asset.general_information.view_more')}
                                     <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -247,7 +253,7 @@ function SuppliesDashboard(props) {
                             <span className="info-box-icon bg-yellow"><i className="fa fa-warning"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
                                 <span className="info-box-text">{`Tổng số cấp phát: ${numberData.allocationHistory.allocationHistoryTotal}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${numberData.allocationHistory.allocationHistoryPrice}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị: ${formatter.format(numberData.allocationHistory.allocationHistoryPrice)}`}</span>
                                 <a href="/manage-info-asset?status=broken">{translate('asset.general_information.view_more')}
                                     <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
