@@ -228,8 +228,8 @@ function SuppliesDashboard(props) {
                         <div className="info-box">
                             <span className="info-box-icon bg-green"><i className="fa fa-check"></i></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">{`Tổng số vật tư: ${numberData.supplies.totalSupplies}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${formatter.format(numberData.supplies.suppliesPrice)}`}</span>
+                                <span className="info-box-text">{`Tổng số loại vật tư: ${numberData.supplies.totalSupplies}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị tham khảo: ${formatter.format(numberData.supplies.suppliesPrice)}`}</span>
                                 <a href="/manage-info-asset?status=ready_to_use">{translate('asset.general_information.view_more')}
                                     <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -240,8 +240,8 @@ function SuppliesDashboard(props) {
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-play"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
-                                <span className="info-box-text">{`Tổng số hóa đơn: ${numberData.purchaseInvoice.totalPurchaseInvoice}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${formatter.format(numberData.purchaseInvoice.purchaseInvoicesPrice)}`}</span>
+                                <span className="info-box-text">{`Tổng số hóa đơn mua: ${numberData.purchaseInvoice.totalPurchaseInvoice}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị tất cả hóa đơn: ${formatter.format(numberData.purchaseInvoice.purchaseInvoicesPrice)}`}</span>
                                 <a href="/manage-info-asset?status=in_use">{translate('asset.general_information.view_more')}
                                     <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -252,8 +252,8 @@ function SuppliesDashboard(props) {
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-warning"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
-                                <span className="info-box-text">{`Tổng số cấp phát: ${numberData.allocationHistory.allocationHistoryTotal}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${formatter.format(numberData.allocationHistory.allocationHistoryPrice)}`}</span>
+                                <span className="info-box-text">{`Tổng số lượng vật tư đã cấp phát: ${numberData.allocationHistory.allocationHistoryTotal}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị vật tư đã cấp phát: ${formatter.format(numberData.allocationHistory.allocationHistoryPrice)}`}</span>
                                 <a href="/manage-info-asset?status=broken">{translate('asset.general_information.view_more')}
                                     <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
@@ -264,9 +264,9 @@ function SuppliesDashboard(props) {
                         <div className="info-box">
                             <span className="info-box-icon bg-red"><i className="fa fa-calendar-times-o"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
-                                <span className="info-box-text">{`Tổng số yêu cầu chưa xử lý: ${numberData.purchaseRequest.waitingForApprovalTotal}`}</span>
-                                <span className="info-box-text">{`Tổng số yêu cầu đã chấp nhận: ${numberData.purchaseRequest.approvedTotal}`}</span>
-                                <span className="info-box-text">{`Tổng số yêu cầu đã từ chối: ${numberData.purchaseRequest.disapprovedTotal}`}</span>
+                                <span className="info-box-text">{`Tổng số yêu cầu vật tư chưa xử lý: ${numberData.purchaseRequest.waitingForApprovalTotal}`}</span>
+                                <span className="info-box-text">{`Tổng số yêu cầu vật tư đã chấp nhận: ${numberData.purchaseRequest.approvedTotal}`}</span>
+                                <span className="info-box-text">{`Tổng số yêu cầu vật tư     đã từ chối: ${numberData.purchaseRequest.disapprovedTotal}`}</span>
                                 <a href="/manage-info-asset?status=disposed">{translate('asset.general_information.view_more')}
                                     <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
@@ -303,7 +303,11 @@ function SuppliesDashboard(props) {
                     </div>
 
                 </div>
-                <div className="row">
+                {/* Biểu đồ thống kê số lượng và giá trị vật tư đã cấp phát từ xxx - xxx */}
+                <div className="row box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{`Thống kê số lượng và giá trị các vật tư đã cấp phát cho các đơn vị từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                    </div>
                     <div className="col-md-12">
                         {
                             (barChart.organizationUnitsPriceSupply.length > 0) &&
