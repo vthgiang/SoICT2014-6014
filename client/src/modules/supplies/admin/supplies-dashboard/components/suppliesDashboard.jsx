@@ -87,7 +87,7 @@ function SuppliesDashboard(props) {
    });
 
     useEffect(() => {
-        props.getSuppliesDashboard({endTime: state.defaultStartMonth, startTime: state.defaultEndMonth});
+        props.getSuppliesDashboard({endTime: state.purchaseDateBefore, startTime: state.purchaseDateAfter});
         props.searchSupplies({getAll: 'true'});
         props.getDepartment();
         props.getSuppliesOrganizationDashboard({
