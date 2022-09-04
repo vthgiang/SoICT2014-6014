@@ -13,6 +13,7 @@ class BoughtPieChart extends Component {
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { boughtSupplies } = this.props;
+        console.log('boughtSupplies: ', boughtSupplies)
         const { translate } = this.props;
 
         let numberOfSupplies = [];

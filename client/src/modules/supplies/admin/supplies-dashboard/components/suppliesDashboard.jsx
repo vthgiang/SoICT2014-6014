@@ -12,6 +12,8 @@ import ExistPieChart from "./pie-chart/ExistPieChart";
 import OrganizationUnitSupplyChart from "./bar-chart/OrganizationUnitSupplyChart";
 import {DepartmentActions} from "../../../../super-admin/organizational-unit/redux/actions";
 import SupplyOrganizationUnitChart from "./bar-chart/SuppliesOrganizationUnitChart";
+import BoughtBarChart from "./bar-chart/BoughtBarChart";
+import ExistBarChart from "./bar-chart/ExistBarChart";
 
 const formatTime = (value) => {
     return value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)))
@@ -287,13 +289,13 @@ function SuppliesDashboard(props) {
                 </div>
                 <div className="row" style={{marginTop: 10}}>
                     {/* Biểu đồ thống kê giá trị vật tư đã mua từ xxx - xxx */}
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className="box box-solid">
                             <div className="box-header">
                                 <div className="box-title">{`Thống kê giá trị các vật tư đã mua từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <BoughtPieChart
+                                <BoughtBarChart
                                     boughtSupplies={pieChart.boughtSupplies}
                                 />
                             </div>
@@ -301,13 +303,13 @@ function SuppliesDashboard(props) {
                     </div>
 
                     {/* Biểu đồ thống kê giá trị vật tư hiện có từ xxx - xxx */}
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className="box box-solid">
                             <div className="box-header">
                                 <div className="box-title">{`Thống kê giá trị các vật tư hiện có từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <ExistPieChart
+                                <ExistBarChart
                                     existSupplies={pieChart.existSupplies}
                                 />
                             </div>
@@ -315,6 +317,7 @@ function SuppliesDashboard(props) {
                     </div>
 
                 </div>
+
                 {/* Biểu đồ thống kê số lượng và giá trị vật tư đã cấp phát từ xxx - xxx */}
                 <div className="row box box-solid" style={{marginTop: 10, marginLeft: 1}}>
                     <div className="box-header">
