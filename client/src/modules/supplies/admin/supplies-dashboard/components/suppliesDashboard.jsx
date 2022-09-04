@@ -68,8 +68,8 @@ function SuppliesDashboard(props) {
         countAllocation: [],
         valueInvoice: [],
 
-        purchaseDateAfter: INFO_SEARCH.purchaseDateAfter,
-        purchaseDateBefore: INFO_SEARCH.purchaseDateBefore,
+        purchaseDateAfter: new Date(INFO_SEARCH.purchaseDateAfter),
+        purchaseDateBefore: new Date(INFO_SEARCH.purchaseDateBefore),
         defaultStartMonth: [startMonth, startYear].join('-'),
         defaultEndMonth: [endMonth, year].join('-'),
 
@@ -143,6 +143,11 @@ function SuppliesDashboard(props) {
             })
         } else {
             props.getSuppliesDashboard({endTime: purchaseDateBefore, startTime: purchaseDateAfter});
+            setState({
+                ...state,
+                purchaseDateBefore: new Date(purchaseDateBefore),
+                purchaseDateAfter: new Date(purchaseDateAfter)
+            });
             console.log("time: ", {
                 startTime: purchaseDateAfter,
                 endTime: purchaseDateBefore
@@ -292,7 +297,9 @@ function SuppliesDashboard(props) {
                     <div className="col-xs-12">
                         <div className="box box-solid">
                             <div className="box-header">
-                                <div className="box-title">{`Thống kê giá trị các vật tư đã mua từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                                <div className="box-title">{`Thống kê giá trị các vật tư đã mua từ 
+                                ${[state.purchaseDateAfter.getFullYear(), getMonth(state.purchaseDateAfter.getMonth() + 1)].join('-')} đến 
+                                ${[state.purchaseDateBefore.getFullYear(), getMonth(state.purchaseDateBefore.getMonth() + 1)].join('-')}`}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <BoughtBarChart
@@ -306,7 +313,9 @@ function SuppliesDashboard(props) {
                     <div className="col-xs-12">
                         <div className="box box-solid">
                             <div className="box-header">
-                                <div className="box-title">{`Thống kê giá trị các vật tư hiện có từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                                <div className="box-title">{`Thống kê giá trị các vật tư hiện có từ 
+                                ${[state.purchaseDateAfter.getFullYear(), getMonth(state.purchaseDateAfter.getMonth() + 1)].join('-')} đến 
+                                ${[state.purchaseDateBefore.getFullYear(), getMonth(state.purchaseDateBefore.getMonth() + 1)].join('-')}`}</div>
                             </div>
                             <div className="box-body qlcv">
                                 <ExistBarChart
@@ -321,7 +330,9 @@ function SuppliesDashboard(props) {
                 {/* Biểu đồ thống kê số lượng và giá trị vật tư đã cấp phát từ xxx - xxx */}
                 <div className="row box box-solid" style={{marginTop: 10, marginLeft: 1}}>
                     <div className="box-header">
-                        <div className="box-title">{`Thống kê số lượng và giá trị các vật tư đã cấp phát cho các đơn vị từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                        <div className="box-title">{`Thống kê số lượng và giá trị các vật tư đã cấp phát cho các đơn vị từ 
+                        ${[state.purchaseDateAfter.getFullYear(), getMonth(state.purchaseDateAfter.getMonth() + 1)].join('-')} đến 
+                        ${[state.purchaseDateBefore.getFullYear(), getMonth(state.purchaseDateBefore.getMonth() + 1)].join('-')}`}</div>
                     </div>
                     <div className="col-md-12">
                         {
