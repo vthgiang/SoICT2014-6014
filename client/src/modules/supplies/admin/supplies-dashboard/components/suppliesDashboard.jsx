@@ -70,6 +70,7 @@ function SuppliesDashboard(props) {
     });
 
    const searchOrganization = useRef({
+       organizationName: childOrganizationalUnit[0]?.name,
        supplyIds: listSupplies.map(item => { return item.id }),
        organizationId: childOrganizationalUnit[0]?.id,
        startTime: new Date(formatTime([startMonth, startYear].join('-'))),
@@ -161,9 +162,13 @@ function SuppliesDashboard(props) {
 
     const handleSelectOrganization = (value) => {
         console.log('DEBUG: organization ', value.toString());
+        const organizationNames = childOrganizationalUnit.filter((item) => {
+            return item.id == value.toString();
+        });
         searchOrganization.current = {
             ...searchOrganization.current,
-            organizationId: value.toString()
+            organizationId: value.toString(),
+            organizationName: organizationNames[0].name
         }
     }
 
@@ -362,7 +367,14 @@ function SuppliesDashboard(props) {
                     <button className="btn btn-success" style={{marginLeft: 12, marginRight: 10}}
                             onClick={handleSearchOrganData}>{translate('task.task_management.search')}</button>
                     </div>
-                <div className="row">
+                <div className="row box box-solid">
+                    {searchOrganization.current.organizationName && <div className="box-header">
+                        <div
+                            className="box-title">{`Thống kê số lượng và giá trị các vật tư đã cấp phát cho 
+                             ${searchOrganization.current.organizationName} từ 
+                             ${searchOrganization.current.startTime.toLocaleDateString("en-US")} đến 
+                             ${searchOrganization.current.endTime.toLocaleDateString("en-US")}`}</div>
+                    </div>}
                     <div className="col-md-12">
                         {
                             (suppliesPriceForOrganization.length > 0) &&
