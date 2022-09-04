@@ -44,7 +44,8 @@ function DistributionOfEmployee(props) {
                 pageTotal: Math.ceil(data?.totalEmployee / perPage),
                 page: 1,
                 display: nameEmployee.length
-            })
+            });
+            console.log('state: ', state);
         }
 
     }, [JSON.stringify(taskDashboardCharts?.["employee-distribution-chart"])])

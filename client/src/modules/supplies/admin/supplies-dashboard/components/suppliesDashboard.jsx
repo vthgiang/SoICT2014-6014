@@ -49,6 +49,13 @@ function SuppliesDashboard(props) {
         purchaseDateBefore: [year, endMonth].join('-'),
     }
 
+    const getMonth = (month) => {
+        if (month < 10) {
+            return month = '0' + month
+        }
+        return month;
+    }
+
     const defaultConfig = {limit: 10}
     const dashboardSuppliesId = "dashboard_supplies_by_type";
     const dashboardSupplies = getTableConfiguration(dashboardSuppliesId, defaultConfig).limit;
@@ -309,7 +316,7 @@ function SuppliesDashboard(props) {
 
                 </div>
                 {/* Biểu đồ thống kê số lượng và giá trị vật tư đã cấp phát từ xxx - xxx */}
-                <div className="row box box-solid">
+                <div className="row box box-solid" style={{marginTop: 10, marginLeft: 1}}>
                     <div className="box-header">
                         <div className="box-title">{`Thống kê số lượng và giá trị các vật tư đã cấp phát cho các đơn vị từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
                     </div>
@@ -367,15 +374,16 @@ function SuppliesDashboard(props) {
                     <button className="btn btn-success" style={{marginLeft: 12, marginRight: 10}}
                             onClick={handleSearchOrganData}>{translate('task.task_management.search')}</button>
                     </div>
-                <div className="row box box-solid">
-                    {searchOrganization.current.organizationName && <div className="box-header">
+                <div className="row box box-primary" style={{marginTop: 10, marginLeft: 1}}>
+                    {searchOrganization.current.organizationName &&
+                    <div className="box-header with-border">
                         <div
                             className="box-title">{`Thống kê số lượng và giá trị các vật tư đã cấp phát cho 
                              ${searchOrganization.current.organizationName} từ 
-                             ${searchOrganization.current.startTime.toLocaleDateString("en-US")} đến 
-                             ${searchOrganization.current.endTime.toLocaleDateString("en-US")}`}</div>
+                             ${[searchOrganization.current.startTime.getFullYear(), getMonth(searchOrganization.current.startTime.getMonth()+1)].join('-')} đến 
+                             ${[searchOrganization.current.endTime.getFullYear(), getMonth(searchOrganization.current.endTime.getMonth()+1)].join('-')}`}</div>
                     </div>}
-                    <div className="col-md-12">
+                    <div className="box-body qlcv">
                         {
                             (suppliesPriceForOrganization.length > 0) &&
                             <SupplyOrganizationUnitChart

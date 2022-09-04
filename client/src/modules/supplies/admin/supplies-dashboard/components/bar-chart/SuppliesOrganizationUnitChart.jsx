@@ -3,13 +3,29 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import c3 from 'c3';
 import 'c3/c3.css'
+import {DataTableSetting, PaginateBar} from "../../../../../../common-components";
+import {getTableConfiguration} from "../../../../../../helpers/tableConfiguration";
+import _deepClone from "lodash/cloneDeep";
 
 
 function SupplyOrganizationUnitChart(props) {
 
-    const [state, setState] = useState([]);
+    const [state, setState] = useState(() => initState())
+
+    const { perPage, nameSupplies, supplyCount, page, pageTotal, total, display } = state;
+    function initState() {
+        const defaultConfig = { limit: 10 }
+        const supplyOrganizationUnitChartId = "supplyOrganizationUnitChart";
+        const supplyOrganizationUnitChartPerPage = getTableConfiguration(supplyOrganizationUnitChartId, defaultConfig).limit;
+
+        return {
+            perPage: supplyOrganizationUnitChartPerPage,
+        }
+    }
+
     const { translate,supplyOrganizationUnitPrice } = props;
-    useEffect(() => {
+
+    const getDataChart = () => {
         let amountSupplies = [];
         let valueSupplies = [];
 
@@ -25,20 +41,101 @@ function SupplyOrganizationUnitChart(props) {
 
         const indices = { amount: 0, value: 1};
 
-        console.log('DEBUG amountOfAsset: ', amountSupplies);
         for (const [key, value] of amountSupplies) {
             lineBarChart[indices.amount].push(value);
         }
 
-        console.log('DEBUG amountOfAsset: ', valueSupplies);
         for (const [key, value] of valueSupplies) {
             lineBarChart[indices.value].push(value);
         }
-        barLineChart(lineBarChart);
-    }, [supplyOrganizationUnitPrice]);
 
-    const barLineChart = (data) => {
-        let { translate } = props;
+        return lineBarChart;
+    }
+
+    useEffect(() => {
+
+        let data = _deepClone(getDataChart());
+        let nameSupplies = supplyOrganizationUnitPrice?.map(item => item.name)?.slice(0, perPage);
+        let supplyCount = data;
+        for (let i in supplyCount) {
+            supplyCount[i] = supplyCount[i].slice(0, 1).concat(supplyCount[i].slice(1, perPage + 1))
+        }
+        setState({
+            ...state,
+            nameSupplies: nameSupplies,
+            supplyCount: supplyCount,
+            total: supplyOrganizationUnitPrice?.length,
+            pageTotal: Math.ceil(supplyOrganizationUnitPrice?.length / perPage),
+            page: 1,
+            display: nameSupplies.length
+        });
+        console.log('state: ', state);
+    }, [JSON.stringify(supplyOrganizationUnitPrice)]);
+
+    useEffect(() => {
+        if (state.nameSupplies && state.supplyCount) {
+            barLineChart();
+        }
+    }, [JSON.stringify(state.nameSupplies), JSON.stringify(state.supplyCount)]);
+
+    const handlePaginationDistributionOfEmployeeChart = (page) => {
+        let dataChart = getDataChart();
+        if (dataChart) {
+            let data = _deepClone(dataChart);
+            let begin = (Number(page) - 1) * perPage
+            let end = (Number(page) - 1) * perPage + perPage
+            let nameSupplies = supplyOrganizationUnitPrice?.map(item => item.name)?.slice(begin, end);
+            let supplyCount = data;
+            for (let i in supplyCount) {
+                supplyCount[i] = supplyCount[i].slice(0, 1).concat(supplyCount[i].slice(begin + 1, end + 1))
+            }
+
+            setState({
+                ...state,
+                nameSupplies: nameSupplies,
+                supplyCount: supplyCount,
+                page: page,
+                display: nameSupplies.length
+            });
+        }
+    }
+    const setLimitDistributionOfEmployeeChart = (limit) => {
+        const  dataChart = getDataChart();
+
+        if (dataChart) {
+            let data = _deepClone(dataChart);
+            let nameSupplies = supplyOrganizationUnitPrice?.map(item => item.name)?.slice(0, Number(limit));
+            let supplyCount = data;
+            for (let i in supplyCount) {
+                supplyCount[i] = supplyCount[i].slice(0, 1).concat(supplyCount[i].slice(1,  Number(limit) + 1))
+            }
+
+            setState({
+                ...state,
+                nameSupplies: nameSupplies,
+                supplyCount: supplyCount,
+                total: supplyOrganizationUnitPrice?.length,
+                pageTotal: Math.ceil(supplyOrganizationUnitPrice?.length / Number(limit)),
+                page: 1,
+                perPage: Number(limit),
+                display: nameSupplies.length
+            });
+        }
+    }
+    const removePreviousChart = () => {
+        const chart = document.getElementById("supplyOrganizationUnitChart");
+
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        }
+    }
+
+    const barLineChart = () => {
+        removePreviousChart();
+
+        let data = supplyCount;
         let amount = 'Số lượng';
         let value = 'Giá trị';
         const types = {
@@ -47,7 +144,7 @@ function SupplyOrganizationUnitChart(props) {
         }
         const groups = [[value]];
         // thay đổi bằng giá trị name trong phần supplyOrganizationUnitPrice
-        const category = supplyOrganizationUnitPrice?.map(item => item.name)
+        const category = nameSupplies ? nameSupplies : [];
 
         const customAxes = {
             [amount]: 'y2',
@@ -103,11 +200,26 @@ function SupplyOrganizationUnitChart(props) {
     }
 
     return (
-        <div className="box box-solid">
-            <div className="box-body qlcv">
-                <div id="supplyOrganizationUnitChart"/>
+        <>
+            <DataTableSetting
+                tableId={"supply-organization-chart"}
+                setLimit={setLimitDistributionOfEmployeeChart}
+            />
+
+            <div className="box box-solid" style={{marginTop: '30px'}}>
+                <div className="box-body qlcv">
+                    <div id="supplyOrganizationUnitChart"/>
+                </div>
+
+                <PaginateBar
+                    display={display}
+                    total={total}
+                    pageTotal={pageTotal}
+                    currentPage={page}
+                    func={handlePaginationDistributionOfEmployeeChart}
+                />
             </div>
-        </div>
+        </>
     )
 
 
