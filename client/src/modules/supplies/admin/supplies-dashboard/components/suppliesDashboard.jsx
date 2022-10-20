@@ -12,6 +12,8 @@ import ExistPieChart from "./pie-chart/ExistPieChart";
 import OrganizationUnitSupplyChart from "./bar-chart/OrganizationUnitSupplyChart";
 import {DepartmentActions} from "../../../../super-admin/organizational-unit/redux/actions";
 import SupplyOrganizationUnitChart from "./bar-chart/SuppliesOrganizationUnitChart";
+import BoughtBarChart from "./bar-chart/BoughtBarChart";
+import ExistBarChart from "./bar-chart/ExistBarChart";
 
 const formatTime = (value) => {
     return value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)))
@@ -49,6 +51,13 @@ function SuppliesDashboard(props) {
         purchaseDateBefore: [year, endMonth].join('-'),
     }
 
+    const getMonth = (month) => {
+        if (month < 10) {
+            return month = '0' + month
+        }
+        return month;
+    }
+
     const defaultConfig = {limit: 10}
     const dashboardSuppliesId = "dashboard_supplies_by_type";
     const dashboardSupplies = getTableConfiguration(dashboardSuppliesId, defaultConfig).limit;
@@ -59,8 +68,8 @@ function SuppliesDashboard(props) {
         countAllocation: [],
         valueInvoice: [],
 
-        purchaseDateAfter: INFO_SEARCH.purchaseDateAfter,
-        purchaseDateBefore: INFO_SEARCH.purchaseDateBefore,
+        purchaseDateAfter: new Date(INFO_SEARCH.purchaseDateAfter),
+        purchaseDateBefore: new Date(INFO_SEARCH.purchaseDateBefore),
         defaultStartMonth: [startMonth, startYear].join('-'),
         defaultEndMonth: [endMonth, year].join('-'),
 
@@ -70,6 +79,7 @@ function SuppliesDashboard(props) {
     });
 
    const searchOrganization = useRef({
+       organizationName: childOrganizationalUnit[0]?.name,
        supplyIds: listSupplies.map(item => { return item.id }),
        organizationId: childOrganizationalUnit[0]?.id,
        startTime: new Date(formatTime([startMonth, startYear].join('-'))),
@@ -77,7 +87,7 @@ function SuppliesDashboard(props) {
    });
 
     useEffect(() => {
-        props.getSuppliesDashboard({endTime: state.defaultStartMonth, startTime: state.defaultEndMonth});
+        props.getSuppliesDashboard({endTime: state.purchaseDateBefore, startTime: state.purchaseDateAfter});
         props.searchSupplies({getAll: 'true'});
         props.getDepartment();
         props.getSuppliesOrganizationDashboard({
@@ -133,6 +143,11 @@ function SuppliesDashboard(props) {
             })
         } else {
             props.getSuppliesDashboard({endTime: purchaseDateBefore, startTime: purchaseDateAfter});
+            setState({
+                ...state,
+                purchaseDateBefore: new Date(purchaseDateBefore),
+                purchaseDateAfter: new Date(purchaseDateAfter)
+            });
             console.log("time: ", {
                 startTime: purchaseDateAfter,
                 endTime: purchaseDateBefore
@@ -161,9 +176,13 @@ function SuppliesDashboard(props) {
 
     const handleSelectOrganization = (value) => {
         console.log('DEBUG: organization ', value.toString());
+        const organizationNames = childOrganizationalUnit.filter((item) => {
+            return item.id == value.toString();
+        });
         searchOrganization.current = {
             ...searchOrganization.current,
-            organizationId: value.toString()
+            organizationId: value.toString(),
+            organizationName: organizationNames[0].name
         }
     }
 
@@ -188,6 +207,12 @@ function SuppliesDashboard(props) {
 
         }
     }
+
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'VND',
+        minimumFractionDigits: 0
+    })
     return (
         <React.Fragment>
             <div className='qlcv'>
@@ -222,8 +247,8 @@ function SuppliesDashboard(props) {
                         <div className="info-box">
                             <span className="info-box-icon bg-green"><i className="fa fa-check"></i></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">{`Tổng số vật tư: ${numberData.supplies.totalSupplies}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${numberData.supplies.suppliesPrice}`}</span>
+                                <span className="info-box-text">{`Tổng số loại vật tư: ${numberData.supplies.totalSupplies}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị tham khảo: ${formatter.format(numberData.supplies.suppliesPrice)}`}</span>
                                 <a href="/manage-info-asset?status=ready_to_use">{translate('asset.general_information.view_more')}
                                     <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -234,8 +259,8 @@ function SuppliesDashboard(props) {
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-play"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
-                                <span className="info-box-text">{`Tổng số hóa đơn: ${numberData.purchaseInvoice.totalPurchaseInvoice}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${numberData.purchaseInvoice.purchaseInvoicesPrice}`}</span>
+                                <span className="info-box-text">{`Tổng số hóa đơn mua: ${numberData.purchaseInvoice.totalPurchaseInvoice}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị tất cả hóa đơn: ${formatter.format(numberData.purchaseInvoice.purchaseInvoicesPrice)}`}</span>
                                 <a href="/manage-info-asset?status=in_use">{translate('asset.general_information.view_more')}
                                     <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -246,8 +271,8 @@ function SuppliesDashboard(props) {
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-warning"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
-                                <span className="info-box-text">{`Tổng số cấp phát: ${numberData.allocationHistory.allocationHistoryTotal}`}</span>
-                                <span className="info-box-text">{`Tổng giá trị: ${numberData.allocationHistory.allocationHistoryPrice}`}</span>
+                                <span className="info-box-text">{`Tổng số lượng vật tư đã cấp phát: ${numberData.allocationHistory.allocationHistoryTotal}`}</span>
+                                <span className="info-box-text">{`Tổng giá trị vật tư đã cấp phát: ${formatter.format(numberData.allocationHistory.allocationHistoryPrice)}`}</span>
                                 <a href="/manage-info-asset?status=broken">{translate('asset.general_information.view_more')}
                                     <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
@@ -258,9 +283,9 @@ function SuppliesDashboard(props) {
                         <div className="info-box">
                             <span className="info-box-icon bg-red"><i className="fa fa-calendar-times-o"></i></span>
                             <div className="info-box-content" style={{paddingBottom: 0}}>
-                                <span className="info-box-text">{`Tổng số yêu cầu chưa xử lý: ${numberData.purchaseRequest.waitingForApprovalTotal}`}</span>
-                                <span className="info-box-text">{`Tổng số yêu cầu đã chấp nhận: ${numberData.purchaseRequest.approvedTotal}`}</span>
-                                <span className="info-box-text">{`Tổng số yêu cầu đã từ chối: ${numberData.purchaseRequest.disapprovedTotal}`}</span>
+                                <span className="info-box-text">{`Tổng số yêu cầu vật tư chưa xử lý: ${numberData.purchaseRequest.waitingForApprovalTotal}`}</span>
+                                <span className="info-box-text">{`Tổng số yêu cầu vật tư đã chấp nhận: ${numberData.purchaseRequest.approvedTotal}`}</span>
+                                <span className="info-box-text">{`Tổng số yêu cầu vật tư     đã từ chối: ${numberData.purchaseRequest.disapprovedTotal}`}</span>
                                 <a href="/manage-info-asset?status=disposed">{translate('asset.general_information.view_more')}
                                     <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
@@ -269,13 +294,15 @@ function SuppliesDashboard(props) {
                 </div>
                 <div className="row" style={{marginTop: 10}}>
                     {/* Biểu đồ thống kê giá trị vật tư đã mua từ xxx - xxx */}
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className="box box-solid">
                             <div className="box-header">
-                                <div className="box-title">{`Thống kê giá trị các vật tư đã mua từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                                <div className="box-title">{`Thống kê giá trị các vật tư đã mua từ 
+                                ${[state.purchaseDateAfter.getFullYear(), getMonth(state.purchaseDateAfter.getMonth() + 1)].join('-')} đến 
+                                ${[state.purchaseDateBefore.getFullYear(), getMonth(state.purchaseDateBefore.getMonth() + 1)].join('-')}`}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <BoughtPieChart
+                                <BoughtBarChart
                                     boughtSupplies={pieChart.boughtSupplies}
                                 />
                             </div>
@@ -283,13 +310,15 @@ function SuppliesDashboard(props) {
                     </div>
 
                     {/* Biểu đồ thống kê giá trị vật tư hiện có từ xxx - xxx */}
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className="box box-solid">
                             <div className="box-header">
-                                <div className="box-title">{`Thống kê giá trị các vật tư hiện có từ ${purchaseDateAfter} đến ${purchaseDateBefore}`}</div>
+                                <div className="box-title">{`Thống kê giá trị các vật tư hiện có từ 
+                                ${[state.purchaseDateAfter.getFullYear(), getMonth(state.purchaseDateAfter.getMonth() + 1)].join('-')} đến 
+                                ${[state.purchaseDateBefore.getFullYear(), getMonth(state.purchaseDateBefore.getMonth() + 1)].join('-')}`}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <ExistPieChart
+                                <ExistBarChart
                                     existSupplies={pieChart.existSupplies}
                                 />
                             </div>
@@ -297,7 +326,14 @@ function SuppliesDashboard(props) {
                     </div>
 
                 </div>
-                <div className="row">
+
+                {/* Biểu đồ thống kê số lượng và giá trị vật tư đã cấp phát từ xxx - xxx */}
+                <div className="row box box-solid" style={{marginTop: 10, marginLeft: 1}}>
+                    <div className="box-header">
+                        <div className="box-title">{`Thống kê số lượng và giá trị các vật tư đã cấp phát cho các đơn vị từ 
+                        ${[state.purchaseDateAfter.getFullYear(), getMonth(state.purchaseDateAfter.getMonth() + 1)].join('-')} đến 
+                        ${[state.purchaseDateBefore.getFullYear(), getMonth(state.purchaseDateBefore.getMonth() + 1)].join('-')}`}</div>
+                    </div>
                     <div className="col-md-12">
                         {
                             (barChart.organizationUnitsPriceSupply.length > 0) &&
@@ -352,8 +388,16 @@ function SuppliesDashboard(props) {
                     <button className="btn btn-success" style={{marginLeft: 12, marginRight: 10}}
                             onClick={handleSearchOrganData}>{translate('task.task_management.search')}</button>
                     </div>
-                <div className="row">
-                    <div className="col-md-12">
+                <div className="row box box-primary" style={{marginTop: 10, marginLeft: 1}}>
+                    {searchOrganization.current.organizationName &&
+                    <div className="box-header with-border">
+                        <div
+                            className="box-title">{`Thống kê số lượng và giá trị các vật tư đã cấp phát cho 
+                             ${searchOrganization.current.organizationName} từ 
+                             ${[searchOrganization.current.startTime.getFullYear(), getMonth(searchOrganization.current.startTime.getMonth()+1)].join('-')} đến 
+                             ${[searchOrganization.current.endTime.getFullYear(), getMonth(searchOrganization.current.endTime.getMonth()+1)].join('-')}`}</div>
+                    </div>}
+                    <div className="box-body qlcv">
                         {
                             (suppliesPriceForOrganization.length > 0) &&
                             <SupplyOrganizationUnitChart

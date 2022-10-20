@@ -235,20 +235,6 @@ exports.getSuppliesById = async (portal, id) => {
 };
 
 exports.getDashboardSupplies = async (portal, query) => {
-    let listSupplies = await Supplies(
-        connect(DB_CONNECTION, portal))
-        .find({});
-    let listInvoice = await PurchaseInvoice(
-        connect(DB_CONNECTION, portal))
-        .find({})
-        .sort({ 'createDate': 'desc' });
-    let listAllocation = await AllocationHistory(
-        connect(DB_CONNECTION, portal))
-        .find({})
-        .sort({ 'createDate': 'desc' });
-
-    // let result = { listSupplies, listInvoice, listAllocation }
-
     // new query
     let { time } = query;
     time = JSON.parse(time);
@@ -262,7 +248,6 @@ exports.getDashboardSupplies = async (portal, query) => {
         .populate('allocationHistories')
         .populate('purchaseInvoices')
         .exec();
-    console.log("supplies: ", supplies);
     let suppliesPurchaseRequest = await SuppliesPurchaseRequest(connect(DB_CONNECTION, portal))
         .find({})
         .populate('company')
@@ -312,13 +297,13 @@ exports.getDashboardSupplies = async (portal, query) => {
         //handle purchaseInvoice
         for(let j = 0; j < supply.purchaseInvoices.length; j++) {
             totalPurchaseInvoice++;
-            purchaseInvoicesPrice += Number(supply.purchaseInvoices[j].price) * Number(supply.purchaseInvoices[j].quantity);
+            purchaseInvoicesPrice += Number(supply.purchaseInvoices[j].price);
         }
 
         //handle allocationHistory
         for(let j = 0; j < supply.allocationHistories.length; j++) {
             allocationHistoryTotal++;
-            allocationHistoryPrice +=  Number(supply.price) * Number(supply.allocationHistories[j].quantity);
+            allocationHistoryPrice +=  Number(supply.price) * (Number(supply.allocationHistories[j].quantity) / supplies.length);
         }
 
         /** Handle pie chart */
@@ -433,11 +418,6 @@ exports.getDashboardSupplies = async (portal, query) => {
     data.barChart = {
         organizationUnitsPriceSupply
     }
-
-    console.log('data number data: ', data.numberData);
-    console.log('data pie chart - bought: ', data.pieChart.boughtSupplies);
-    console.log('data pie chart - exist: ', data.pieChart.existSupplies);
-    console.log('data bar chart - organization: ', data.barChart.organizationUnitsPriceSupply);
     return data;
 }
 

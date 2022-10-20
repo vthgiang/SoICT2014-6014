@@ -47,17 +47,14 @@ function OrganizationUnitSupplyChart(props) {
         }
         const groups = [[value]];
         // thay đổi bằng giá trị name trong phần organizationUnitsPriceSupply
-        const category = [
-            'Ban giám đốc',
-            'Bộ phận kinh doanh',
-            'Phòng Chăm sóc khách hàng',
-            'Phòng nhân sự',
-            'Nhà máy sản xuất thuốc bột',
-            'Nhà máy sản xuất thuốc nước',
-            'Nhà máy sản xuất thực phẩm chức năng',
-            'Phòng vận chuyển miền bắc',
-            'Phòng kế hoạch',
-        ]
+        const category = organizationUnitsPriceSupply.map((item) => {
+            let splitName = item.name.split(' ');
+            let name = '';
+            for(const e of splitName) {
+                name += e[0];
+            }
+            return name.toUpperCase();
+        });
 
         const customAxes = {
             [amount]: 'y2',

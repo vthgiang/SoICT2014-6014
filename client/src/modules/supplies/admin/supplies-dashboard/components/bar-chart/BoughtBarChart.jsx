@@ -8,42 +8,35 @@ import {getTableConfiguration} from "../../../../../../helpers/tableConfiguratio
 import _deepClone from "lodash/cloneDeep";
 
 
-function SupplyOrganizationUnitChart(props) {
+function BoughtBarChart(props) {
 
     const [state, setState] = useState(() => initState())
 
     const { perPage, nameSupplies, supplyCount, page, pageTotal, total, display } = state;
     function initState() {
         const defaultConfig = { limit: 10 }
-        const supplyOrganizationUnitChartId = "supplyOrganizationUnitChart";
-        const supplyOrganizationUnitChartPerPage = getTableConfiguration(supplyOrganizationUnitChartId, defaultConfig).limit;
+        const boughtSupplyId = "bought-bar-chart";
+        const boughtSupplyPerPage = getTableConfiguration(boughtSupplyId, defaultConfig).limit;
 
         return {
-            perPage: supplyOrganizationUnitChartPerPage,
+            perPage: boughtSupplyPerPage,
         }
     }
 
-    const { translate,supplyOrganizationUnitPrice } = props;
+    const { translate, boughtSupplies } = props;
 
     const getDataChart = () => {
-        let amountSupplies = [];
         let valueSupplies = [];
 
-        for(let i = 0; i < supplyOrganizationUnitPrice.length; i++) {
-            amountSupplies.push([supplyOrganizationUnitPrice[i].name, supplyOrganizationUnitPrice[i].quantity]);
-            valueSupplies.push([supplyOrganizationUnitPrice[i].name, supplyOrganizationUnitPrice[i].price]);
+        for(let i = 0; i < boughtSupplies.length; i++) {
+            valueSupplies.push([boughtSupplies[i].name, boughtSupplies[i].price]);
         }
 
         let lineBarChart = [
-            [translate('asset.dashboard.amount')],
             [translate('asset.dashboard.value')],
         ]
 
-        const indices = { amount: 0, value: 1};
-
-        for (const [key, value] of amountSupplies) {
-            lineBarChart[indices.amount].push(value);
-        }
+        const indices = { value: 0};
 
         for (const [key, value] of valueSupplies) {
             lineBarChart[indices.value].push(value);
@@ -55,7 +48,7 @@ function SupplyOrganizationUnitChart(props) {
     useEffect(() => {
 
         let data = _deepClone(getDataChart());
-        let nameSupplies = supplyOrganizationUnitPrice?.map(item => item.name)?.slice(0, perPage);
+        let nameSupplies = boughtSupplies?.map(item => item.supplyName)?.slice(0, perPage);
         let supplyCount = data;
         for (let i in supplyCount) {
             supplyCount[i] = supplyCount[i].slice(0, 1).concat(supplyCount[i].slice(1, perPage + 1))
@@ -64,13 +57,13 @@ function SupplyOrganizationUnitChart(props) {
             ...state,
             nameSupplies: nameSupplies,
             supplyCount: supplyCount,
-            total: supplyOrganizationUnitPrice?.length,
-            pageTotal: Math.ceil(supplyOrganizationUnitPrice?.length / perPage),
+            total: boughtSupplies?.length,
+            pageTotal: Math.ceil(boughtSupplies?.length / perPage),
             page: 1,
             display: nameSupplies.length
         });
         console.log('state: ', state);
-    }, [JSON.stringify(supplyOrganizationUnitPrice)]);
+    }, [JSON.stringify(boughtSupplies)]);
 
     useEffect(() => {
         if (state.nameSupplies && state.supplyCount) {
@@ -84,7 +77,7 @@ function SupplyOrganizationUnitChart(props) {
             let data = _deepClone(dataChart);
             let begin = (Number(page) - 1) * perPage
             let end = (Number(page) - 1) * perPage + perPage
-            let nameSupplies = supplyOrganizationUnitPrice?.map(item => item.name)?.slice(begin, end);
+            let nameSupplies = boughtSupplies?.map(item => item.supplyName)?.slice(begin, end);
             let supplyCount = data;
             for (let i in supplyCount) {
                 supplyCount[i] = supplyCount[i].slice(0, 1).concat(supplyCount[i].slice(begin + 1, end + 1))
@@ -104,7 +97,7 @@ function SupplyOrganizationUnitChart(props) {
 
         if (dataChart) {
             let data = _deepClone(dataChart);
-            let nameSupplies = supplyOrganizationUnitPrice?.map(item => item.name)?.slice(0, Number(limit));
+            let nameSupplies = boughtSupplies?.map(item => item.supplyName)?.slice(0, Number(limit));
             let supplyCount = data;
             for (let i in supplyCount) {
                 supplyCount[i] = supplyCount[i].slice(0, 1).concat(supplyCount[i].slice(1,  Number(limit) + 1))
@@ -114,8 +107,8 @@ function SupplyOrganizationUnitChart(props) {
                 ...state,
                 nameSupplies: nameSupplies,
                 supplyCount: supplyCount,
-                total: supplyOrganizationUnitPrice?.length,
-                pageTotal: Math.ceil(supplyOrganizationUnitPrice?.length / Number(limit)),
+                total: boughtSupplies?.length,
+                pageTotal: Math.ceil(boughtSupplies?.length / Number(limit)),
                 page: 1,
                 perPage: Number(limit),
                 display: nameSupplies.length
@@ -123,7 +116,7 @@ function SupplyOrganizationUnitChart(props) {
         }
     }
     const removePreviousChart = () => {
-        const chart = document.getElementById("supplyOrganizationUnitChart");
+        const chart = document.getElementById("bought-bar-chart");
 
         if (chart) {
             while (chart.hasChildNodes()) {
@@ -136,23 +129,20 @@ function SupplyOrganizationUnitChart(props) {
         removePreviousChart();
 
         let data = supplyCount;
-        let amount = 'Số lượng';
         let value = 'Giá trị';
         const types = {
-            [amount]: 'line',
             [value]: 'bar',
         }
         const groups = [[value]];
-        // thay đổi bằng giá trị name trong phần supplyOrganizationUnitPrice
+        // thay đổi bằng giá trị name trong phần boughtSupplies
         const category = nameSupplies ? nameSupplies : [];
 
         const customAxes = {
-            [amount]: 'y2',
             [value]: 'y',
         }
 
         c3.generate({
-            bindto: document.getElementById('supplyOrganizationUnitChart'),
+            bindto: document.getElementById('bought-bar-chart'),
 
             data: {
                 columns: data,
@@ -191,10 +181,6 @@ function SupplyOrganizationUnitChart(props) {
                         }
                     }
                 },
-                y2: {
-                    show: true,
-                    label: "Số lượng"
-                },
             },
         });
     }
@@ -202,13 +188,13 @@ function SupplyOrganizationUnitChart(props) {
     return (
         <>
             <DataTableSetting
-                tableId={"supply-organization-chart"}
+                tableId={"bought-bar-chart-table"}
                 setLimit={setLimitDistributionOfEmployeeChart}
             />
 
             <div className="box box-solid" style={{marginTop: '30px'}}>
                 <div className="box-body qlcv">
-                    <div id="supplyOrganizationUnitChart"/>
+                    <div id="bought-bar-chart"/>
                 </div>
 
                 <PaginateBar
@@ -225,4 +211,4 @@ function SupplyOrganizationUnitChart(props) {
 
 }
 
-export default connect(null, null)(withTranslate(SupplyOrganizationUnitChart));
+export default connect(null, null)(withTranslate(BoughtBarChart));
