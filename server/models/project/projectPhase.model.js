@@ -42,6 +42,47 @@ const ProjectPhaseSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         },
+        inactiveEmployees: [
+            {
+                // Những người từng tham gia nhưng không còn tham gia nữa
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        responsibleEmployees: [
+            {
+                //người thực hiện
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        accountableEmployees: [
+            {
+                //người phê duyệt
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        consultedEmployees: [
+            {
+                //người tư vấn
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        informedEmployees: [
+            {
+                //người quan sát
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        confirmedByEmployees: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
         progress: {
             type: Number,
             default: 0,
@@ -57,6 +98,14 @@ const ProjectPhaseSchema = new Schema(
                 "delayed",
                 "canceled",
             ],
+        },
+        // Độ ưu tiên
+        priority: {
+            //
+            // 1: Thấp, 2: Trung Bình, 3: Tiêu chuẩn, 4: Cao, 5: Khẩn cấp
+            // Low, Average, Standard, High, Urgent
+            type: Number,
+            default: 3,
         },
         // Ngân sách để chi cho giai đoạn
         budget: {

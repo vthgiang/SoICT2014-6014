@@ -391,15 +391,16 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
 
         let data = {
             listInfo: this.state.listInfo,
-
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
             description: this.state.taskDescription,
+            taskDescriptionImages: null, 
             user: this.state.userId,
             progress: this.state.progress,
-            // kpi: this.state.kpi ? this.state.kpi : [],
-            info: this.state.info,
+            info: this.state.info || [],
             taskProject: this.state.taskProjectName,
+            tags: this.state.tags,
+            imageDescriptions: this.state.imageDescriptions,
         }
 
         this.props.editTaskByResponsibleEmployees(data, taskId);

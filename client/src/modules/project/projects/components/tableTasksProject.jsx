@@ -127,10 +127,10 @@ const TableTasksProject = (props) => {
                     ...phases[m],
                     rawData: phases[m],
                     name: phases[m]?.name,
-                    priority: null,
+                    priority: convertPriorityData(phases[m].priority, translate),
                     preceedingTask: null,
-                    responsibleEmployees: null,
-                    accountableEmployees: null,
+                    responsibleEmployees: phases[m]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={phases[m]?.responsibleEmployees.map(o => o.name)} /> : null,
+                    accountableEmployees: phases[m]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={phases[m]?.accountableEmployees.map(o => o.name)} /> : null,
                     creatorEmployees: phases[m].creator ? phases[m].creator.name : null,
                     status: <div style={{ color: renderStatusColor(phases[m]) }}>{formatTaskStatus(translate, phases[m]?.status)}</div>,
                     startDate: moment(phases[m]?.startDate).format('HH:mm DD/MM/YYYY') || '',
@@ -140,10 +140,14 @@ const TableTasksProject = (props) => {
                     progress: renderProgressBar(phases[m]?.progress, phases[m]),
                     parent: null,
                     type: 'phase',
-                    action: ["view"],
+                    action: ["view"]
                 }
 
-                if(checkIfAbleToCRUDProject({ project, user, currentProjectId })) {
+                if (projectPhase.phases[m].responsibleEmployees && projectPhase.phases[m].responsibleEmployees.filter(o => o._id === userId).length > 0 || projectPhase.phases[m].consultedEmployees && projectPhase.phases[m].consultedEmployees.filter(o => o._id === userId).length > 0) {
+                    phases[m] = { ...phases[m], action: ["view", "edit"] }
+                }
+
+                if (checkIfAbleToCRUDProject({ project, user, currentProjectId }) || projectPhase.phases[m].accountableEmployees && projectPhase.phases[m].accountableEmployees.filter(o => o._id === userId).length > 0 || projectPhase.phases[m].creator && projectPhase.phases[m].creator._id === userId) {
                     phases[m] = { ...phases[m], action: ["view", "edit", "delete"] }
                 }
 
@@ -171,11 +175,11 @@ const TableTasksProject = (props) => {
                     action: ["view"],
                 }
 
-                if(checkIfAbleToCRUDProject({ project, user, currentProjectId })) {
+                if(checkIfAbleToCRUDProject({ project, user, currentProjectId }) || projectPhase.milestones[k]?.accountableEmployees && projectPhase.milestones[k]?.accountableEmployees?.filter(o => o._id === userId).length > 0 || projectPhase.milestones[k].creator && projectPhase.milestones[k].creator._id === userId) {
                     milestones[k] = { ...milestones[k], action: ["view", "edit", "delete"] }
                 }
 
-                else if (projectPhase.milestones[k]?.accountableEmployees && projectPhase.milestones[k]?.accountableEmployees?.filter(o => o._id === userId).length > 0) {
+                else if (projectPhase.milestones[k]?.responsibleEmployees && projectPhase.milestones[k]?.responsibleEmployees?.filter(o => o._id === userId).length > 0 || projectPhase.milestones[k]?.consultedEmployees && projectPhase.milestones[k]?.consultedEmployees?.filter(o => o._id === userId).length > 0) {
                     milestones[k] = { ...milestones[k], action: ["view", "edit"] }
                 }
 

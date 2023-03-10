@@ -314,6 +314,7 @@ exports.edit = async (portal, id, data) => {
             })
         }
     }
+    
     const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             // code: data.code,
@@ -662,20 +663,22 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
     }, { new: true });
 
     // Lấy id của các giai đoạn bị ảnh hưởng
-    let oldPhaseId = updateCRStatusResult.affectedTasksList.map(item => String(item.old.taskPhase));
-    let newPhaseId = updateCRStatusResult.affectedTasksList.map(item => String(item.new.taskPhase));
+    let oldPhaseId = updateCRStatusResult.affectedTasksList.filter(item => item.old.taskPhase).map(item => String(item.old.taskPhase));
+    let newPhaseId = updateCRStatusResult.affectedTasksList.filter(item => item.new.taskPhase).map(item => String(item.new.taskPhase));
     let updatePhaseId = [...oldPhaseId, ...newPhaseId];
     // Lọc phần tử thừa
     updatePhaseId = new Set(updatePhaseId);
     updatePhaseId = [...updatePhaseId];
+    let updateMilestoneList = [];
 
     // Lấy id của các cột mốc bị ảnh hưởng
-    let taskArrId = updateCRStatusResult.affectedTasksList.map(item => String(item.task));
-    let updateMilestoneList = await ProjectMilestone(connect(DB_CONNECTION, portal)).find({
-        "preceedingTasks.task": {
-            $in: taskArrId
+    let taskArrId = updateCRStatusResult.affectedTasksList.filter(item => item.task).map(item => String(item.task));
+    if (taskArrId && taskArrId.length > 0) {
+        updateMilestoneList = await ProjectMilestone(connect(DB_CONNECTION, portal)).find({
+            "preceedingTasks.task": {
+                $in: taskArrId
         }
-    })
+    })}
     let updateMilestoneId = updateMilestoneList.map(milestone => String(milestone._id));
 
     // Nếu requestStatus là đồng ý thì thực thi

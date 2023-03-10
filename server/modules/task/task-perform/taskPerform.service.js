@@ -3257,6 +3257,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       }
     }
   }
+
+
   let taskItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
   const accountableEmployeesTaskOutputs = taskItem.accountableEmployees.map((item) => {
     return {
@@ -3264,6 +3266,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       status: "waiting_approval"
     }
   });
+
   const taskOutputsChange = taskOutputs.map((item) => {
     return {
       ...item,
@@ -3271,6 +3274,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       status: item.status ? item.status : "unfinished",
     }
   })
+
   // update collaboratedWithOrganizationalUnits
   let newCollab = [];
   let oldCollab = taskItem.collaboratedWithOrganizationalUnits.map(e => { return e.organizationalUnit });

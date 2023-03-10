@@ -259,6 +259,7 @@ const MilestoneCreateForm = (props) => {
         return message === undefined;
     }
 
+    // Hàm bắt sự kiện thay đổi thời gian cột mốc
     const handleTimeChange = (value) => {
         let message = undefined;
         if (date && value) {
@@ -293,6 +294,7 @@ const MilestoneCreateForm = (props) => {
         });
     }
 
+    // Hàm bắt sự kiện thay đổi người thực hiện
     const handleChangeMilestoneResponsibleEmployees = (value) => {
         validateMilestoneResponsibleEmployees(value, true);
     }
@@ -314,6 +316,7 @@ const MilestoneCreateForm = (props) => {
         return message === undefined;
     }
 
+    // Hàm bắt sự kiện thay đổi người phê duyệt
     const handleChangeMilestoneAccountableEmployees = (value) => {
         validateMilestoneAccountableEmployees(value, true);
     }
@@ -333,6 +336,7 @@ const MilestoneCreateForm = (props) => {
         return message === undefined;
     }
 
+    // Hàm bắt sự kiện thay đổi người tư vấn
     const handleChangeMilestoneConsultedEmployees = (value) => {
         setState(state => {
             return {
@@ -345,6 +349,7 @@ const MilestoneCreateForm = (props) => {
         });
     }
 
+    // Hàm bắt sự kiện thay đổi người quan sát
     const handleChangeMilestoneInformedEmployees = (value) => {
         let currentNewMilestone = {
             ...state.newMilestone,
@@ -461,8 +466,7 @@ const MilestoneCreateForm = (props) => {
                 title={`${translate('project.edit_title')} - Thêm mới cột mốc trong dự án`}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={75}
-                maxWidth={750}
+                size={100}
             >
 
                 {/** Form chứa thông tin của cột mốc */}
@@ -482,6 +486,15 @@ const MilestoneCreateForm = (props) => {
                             </div>
 
                             <div className={'row'}>
+                                {/* Tên cột mốc */}
+                                <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorOnName === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('phase.milestone.name')}<span className="text-red">*</span></label>
+                                    <input type="Name" className="form-control" placeholder={translate('phase.milestone.name')} value={name} onChange={handleChangeMilestoneName} />
+                                    <ErrorLabel content={errorOnName} />
+                                </div>
+                            </div>
+
+                            <div className={'row'}>
                                 {/* Độ ưu tiên */}
                                 <div className="col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group">
                                     <label className="control-label">{translate('task.task_management.detail_priority')}<span className="text-red">*</span></label>
@@ -492,15 +505,6 @@ const MilestoneCreateForm = (props) => {
                                         <option value={2}>{translate('task.task_management.average')}</option>
                                         <option value={1}>{translate('task.task_management.low')}</option>
                                     </select>
-                                </div>
-                            </div>
-
-                            <div className={'row'}>
-                                {/* Tên cột mốc */}
-                                <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorOnName === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('phase.milestone.name')}<span className="text-red">*</span></label>
-                                    <input type="Name" className="form-control" placeholder={translate('phase.milestone.name')} value={name} onChange={handleChangeMilestoneName} />
-                                    <ErrorLabel content={errorOnName} />
                                 </div>
                             </div>
 
@@ -561,18 +565,18 @@ const MilestoneCreateForm = (props) => {
 
                             {/* Mô tả cột mốc */}
                             <div className={`form-group`}>
-                                <label>{translate('phase.description')}</label>
+                                <label>{translate('project.task_management.milestone_description')}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleChangeMilestoneDescription} />
                             </div>
                         </fieldset>
                     </div>
 
                     <div className={`col-sm-6 col-md-6 col-xs-12`} >
-                        {/* Phân định trách nhiệm công việc */}
+                        {/* Phân định trách nhiệm cột mốc */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
                             <div className="row form-group">
-                                {/* Những người thực hiện công việc */}
+                                {/* Những người thực hiện cột mốc */}
                                 <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 ${errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
                                     {getProjectParticipants(projectDetail) &&
@@ -591,7 +595,7 @@ const MilestoneCreateForm = (props) => {
                                 </div>
                             </div>
                             <div className="row form-group">
-                                {/* Những người quản lý/phê duyệt công việc */}
+                                {/* Những người quản lý/phê duyệt cột mốc */}
                                 <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 ${errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
                                     {getProjectParticipants(projectDetail) &&
@@ -611,7 +615,7 @@ const MilestoneCreateForm = (props) => {
                             </div>
 
                             <div className="row form-group">
-                                {/* Những người tư vấn công việc */}
+                                {/* Những người tư vấn cột mốc */}
                                 <div className='col-lg-12 col-md-12 col-ms-12 col-xs-12'>
                                     <label className="control-label">{translate('task.task_management.consulted')}</label>
                                     {getProjectParticipants(projectDetail) &&
@@ -629,7 +633,7 @@ const MilestoneCreateForm = (props) => {
                                 </div>
                             </div>
                             <div className="row form-group">
-                                {/* Những người quan sát công việc */}
+                                {/* Những người quan sát cột mốc */}
                                 <div className='col-lg-12 col-md-12 col-ms-12 col-xs-12 '>
                                     <label className="control-label">{translate('task.task_management.informed')}</label>
                                     {getProjectParticipants(projectDetail) &&

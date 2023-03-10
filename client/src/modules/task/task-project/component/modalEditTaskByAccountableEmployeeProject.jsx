@@ -239,7 +239,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
     handleChangeTextInfo = async (e) => {
         let value = e.target.value;
         let name = e.target.name;
-        console.log('name-val', name, value);
         await this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
@@ -254,7 +253,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
     }
 
     handleInfoDateChange = (value, code) => {
-        console.log('value', value);
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
@@ -798,7 +796,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                 parent: state.parentTask ? state.parentTask._id : "",
             }
         })
-        console.log('abpernt', this.state.parent);
     }
 
     handleSelectedPriority = (value) => {
@@ -887,14 +884,17 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
 
             name: this.state.taskName,
             description: this.state.taskDescription,
+            imageDescriptions: this.state.imageDescriptions,
             status: this.state.statusOptions,
             priority: this.state.priorityOptions,
+            formula: this.state.formula,
             formulaProjectTask: this.state.formulaProjectTask,
             formulaProjectMember: this.state.formulaProjectMember,
             parent: this.state.parent,
             user: this.state.userId,
             progress: this.state.progress,
             date: this.formatDate(Date.now()),
+            tags: this.state.tags,
 
             startDate: startDateTask,
             endDate: endDateTask,
@@ -906,7 +906,8 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             informedEmployees: this.state.informedEmployees,
             inactiveEmployees: inactiveEmployees,
             taskProject: this.state.taskProjectName,
-            info: this.state.info,
+            info: this.state.info || [],
+            taskOutputs: this.state.taskOutPuts || [] ,
         }
         this.props.editTaskByAccountableEmployees(data, taskId);
     }
@@ -968,7 +969,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
         let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
         let endDate = this.convertDateTime(this.state.endDate, value);
         let err;
-        console.log('startDate > endDate', startDate > endDate, startDate, endDate);
         if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }

@@ -28,9 +28,9 @@ exports.getProjectPhase = async (req, res) => {
 /** 
  *  Lấy thông tin của 1 giai đoạn
  */
- exports.get = async (req, res) => {
+ exports.getPhase = async (req, res) => {
     try {
-        let tp = await ProjectPhaseService.get(req.portal, req.params.id, req.user._id);
+        let tp = await ProjectPhaseService.getPhase(req.portal, req.params.id, req.user._id);
 
         await Logger.info(req.user.email, 'get_phase_success', req.portal)
         res.status(200).json({
@@ -52,9 +52,9 @@ exports.getProjectPhase = async (req, res) => {
 /** 
  *  Tạo giai đoạn mới
  */
-exports.create = async (req, res) => {
+exports.createPhase = async (req, res) => {
     try {
-        let tp = await ProjectPhaseService.create(req.portal, req.body);
+        let tp = await ProjectPhaseService.createPhase(req.portal, req.body);
 
         await Logger.info(req.user.email, 'create_phase_success', req.portal)
         res.status(200).json({

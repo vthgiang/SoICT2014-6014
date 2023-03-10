@@ -74,7 +74,7 @@ exports.createCPMProjectPhase = async (portal, data) => {
  * Tạo 1 giai đoạn mới trong dự án
  * @param {*} data dữ liệu về giai đoạn
  */
-exports.create = async (portal, data) => {
+exports.createPhase = async (portal, data) => {
     let phase = await ProjectPhase(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         description: data.description,
@@ -82,6 +82,12 @@ exports.create = async (portal, data) => {
         budget: data.estimateCost,
         startDate:data.startDate,
         creator: data.creator,
+        priority: data.priority,
+        responsibleEmployees: data.responsibleEmployees, 
+        accountableEmployees: data.accountableEmployees, 
+        consultedEmployees: data.consultedEmployees,
+        informedEmployees: data.informedEmployees,
+        confirmedByEmployees: data.responsibleEmployees.concat(data.accountableEmployees).concat(data.consultedEmployees).includes(data.creator) ? [data.creator] : [],
         endDate: data.endDate,
     })
 
@@ -91,11 +97,15 @@ exports.create = async (portal, data) => {
 
     phase = await ProjectPhase(connect(DB_CONNECTION, portal)).findById(phase._id)
         .populate({ path: "creator", select: "_id name email" })
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" });
     return phase;
 }
 
 /**
- * Tạo 1 giai cột mốc trong dự án
+ * Tạo 1 cột mốc trong dự án
  * @param {*} data dữ liệu của cột mốc
  */
 exports.createMilestone = async (portal, data) => {
@@ -108,7 +118,7 @@ exports.createMilestone = async (portal, data) => {
         responsibleEmployees: data.responsibleEmployees,
         accountableEmployees: data.accountableEmployees,
         consultedEmployees: data.consultedEmployees,
-        informedEmployees: data.informEmployees,
+        informedEmployees: data.informedEmployees,
         confirmedByEmployees: data.responsibleEmployees.concat(data.accountableEmployees).concat(data.consultedEmployees).includes(data.creator) ? [data.creator] : [],
         preceedingTasks: data.preceedingTasks,
         project: data.project,
@@ -134,6 +144,10 @@ exports.createMilestone = async (portal, data) => {
     let phases = await ProjectPhase(connect(DB_CONNECTION, portal)).find({
         project: id
     }).populate({ path: "creator", select: "_id name email" })
+    .populate({ path: "responsibleEmployees", select: "_id name" })
+    .populate({ path: "accountableEmployees", select: "_id name" })
+    .populate({ path: "consultedEmployees", select: "_id name" })
+    .populate({ path: "informedEmployees", select: "_id name" });
     return phases;
 
 }
@@ -143,8 +157,13 @@ exports.createMilestone = async (portal, data) => {
  * @param {*} id id của giai đoạn
  * @param {*} userId id của người sử dụng
  */
-exports.get = async (portal, id, userId) => {
-    let phase = await ProjectPhase(connect(DB_CONNECTION, portal)).findById(id).populate({ path: "creator", select: "_id name email" });
+exports.getPhase = async (portal, id, userId) => {
+    let phase = await ProjectPhase(connect(DB_CONNECTION, portal)).findById(id)
+    .populate({ path: "creator", select: "_id name email" })
+    .populate({ path: "responsibleEmployees", select: "_id name" })
+    .populate({ path: "accountableEmployees", select: "_id name" })
+    .populate({ path: "consultedEmployees", select: "_id name" })
+    .populate({ path: "informedEmployees", select: "_id name" });
     return phase;
 }
 
@@ -164,6 +183,12 @@ exports.editPhase = async (portal, id, data) => {
             name: data.name,
             startDate: data.startDate,
             endDate: data.endDate,
+            priority: data.priority,
+            responsibleEmployees: data.responsibleEmployees, 
+            accountableEmployees: data.accountableEmployees, 
+            consultedEmployees: data.consultedEmployees,
+            informedEmployees: data.informedEmployees,
+            confirmedByEmployees: data.responsibleEmployees.concat(data.accountableEmployees).concat(data.consultedEmployees).includes(data.creator) ? [data.creator] : [],
             actualEndDate: data.actualEndDate,
             description: data.description,
             progress: data.progress,
@@ -174,7 +199,11 @@ exports.editPhase = async (portal, id, data) => {
 
     // Cập nhật lại thông tin về giai đoạn của các task
     const phase = await ProjectPhase(connect(DB_CONNECTION, portal)).findOne({ _id: id })
-        .populate({ path: "creator", select: "_id name email" });
+        .populate({ path: "creator", select: "_id name email" })
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" });
     return phase;
 }
 

@@ -240,7 +240,6 @@ function editTimeSheetLog(taskId, timesheetlogId, data) {
 }
 
 function stopTimeAllDevices(data) {
-    console.log('STOP_TIMER_ALL_DEVICES_SUCCESS', data);
     return dispatch =>
         dispatch({ type: performTaskConstants.STOP_TIMER_ALL_DEVICES_SUCCESS, payload: data });
 }

@@ -7221,6 +7221,7 @@ export default {
                 add_task: "Thêm công việc mới",
                 add_phase: "Thêm giai đoạn mới",
                 add_milestone: "Thêm cột mốc mới",
+                milestone_description: "Mô tả",
                 type: "Loại công việc",
                 phase: "Giai đoạn",
                 task: "Công việc",

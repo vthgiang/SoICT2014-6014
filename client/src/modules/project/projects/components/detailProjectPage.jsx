@@ -41,7 +41,7 @@ const ProjectDetailPage = (props) => {
     }, [currentProjectId]);
 
     const currentProjectTasks = tasks?.tasksByProject;
-    const currentProjectPhase = projectPhase.phases;
+    const currentProjectPhase = projectPhase?.phases;
     const currentProjectMilestone = projectPhase?.milestones;
     
     // Hàm lấy lại thông tin sau khi dự án sau khi tạo dự án mới

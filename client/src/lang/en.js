@@ -6369,6 +6369,7 @@ export default {
                 add_task: "Add new task",
                 add_phase: "Add new phase",
                 add_milestone: "Add new milestone",
+                milestone_description: "Description",
                 type: "Type of task",
                 phase: "Phase",
                 task: "Task",
