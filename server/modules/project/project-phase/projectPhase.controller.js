@@ -28,7 +28,7 @@ exports.getProjectPhase = async (req, res) => {
 /** 
  *  Lấy thông tin của 1 giai đoạn
  */
- exports.getPhase = async (req, res) => {
+exports.getPhase = async (req, res) => {
     try {
         let tp = await ProjectPhaseService.getPhase(req.portal, req.params.id, req.user._id);
 
@@ -76,7 +76,7 @@ exports.createPhase = async (req, res) => {
 /** 
  *  Tạo cột mốc mới
  */
- exports.createMilestone = async (req, res) => {
+exports.createMilestone = async (req, res) => {
     try {
         let tp = await ProjectPhaseService.createMilestone(req.portal, req.body);
 
@@ -102,7 +102,7 @@ exports.createPhase = async (req, res) => {
  */
 exports.createCPMProjectPhase = async (req, res) => {
     try {
-        const projectPhase = await ProjectService.createCPMProjectPhase(req.portal, req.body);
+        const projectPhase = await ProjectPhaseService.createCPMProjectPhase(req.portal, req.body);
         await Logger.info(req.user.email, 'create_phase_project_success', req.portal)
         res.status(200).json({
             success: true,

@@ -118,6 +118,7 @@ exports.delete = async (req, res) => {
         })
     }
 }
+
 /**
  * Lấy điểm các thành viên 
  */

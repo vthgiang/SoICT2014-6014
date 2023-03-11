@@ -655,6 +655,7 @@ export function tasks(state = {
             return {
                 ...state,
                 tasks: state.tasks.map(t => (t._id === action.payload._id) ? action.payload : t),
+                tasksByProject: state?.tasksByProject?.map(t => (t._id === action.payload._id) ? action.payload : t) || [],
                 isLoading: false
             };
 

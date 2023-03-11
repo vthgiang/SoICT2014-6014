@@ -145,6 +145,8 @@ const ModalCalculateCPM = (props) => {
                 return {
                     ...phase,
                     creator: getStorage('userId'),
+                    responsibleEmployees: phase.currentResponsibleEmployees,
+                    accountableEmployees: phase.currentAccountableEmployees,
                     project: projectDetail?._id,
                     endDate: projectDetail.startDate,
                     startDate: projectDetail.startDate,
@@ -156,6 +158,8 @@ const ModalCalculateCPM = (props) => {
             else return {
                 ...phase,
                 creator: getStorage('userId'),
+                responsibleEmployees: phase.currentResponsibleEmployees,
+                accountableEmployees: phase.currentAccountableEmployees,
                 project: projectDetail?._id,
                 endDate,
                 startDate,
@@ -237,9 +241,7 @@ const ModalCalculateCPM = (props) => {
                     }
                 });
 
-                console.log('newTasksList', newTasksList);
                 if (props.handleTaskProjectList) {
-                    console.log("handleTaskProjectList");
                     props.handleTaskProjectList(newTasksList);
                 } else {
                     // console.log("props.createProjectTasksFromCPMDispatch");
@@ -393,6 +395,8 @@ const ModalCalculateCPM = (props) => {
                                         <th>Thời gian bắt đầu</th>
                                         <th>Thời gian dự kiến kết thúc (không tính T7, CN)</th>
                                         <th>Các công việc thuộc giai đoạn</th>
+                                        <th>Người thực hiện</th>
+                                        <th>Người phê duyệt</th>
                                         <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
                                         <th>{translate('project.schedule.estimatedCostMaximum')} (VND)</th>
                                     </tr>
@@ -406,6 +410,8 @@ const ModalCalculateCPM = (props) => {
                                                 <td>{moment(phaseItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                                 <td>{moment(phaseItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
                                                 <td>{phaseItem.listTask.join(',')}</td>
+                                                <td>{phaseItem?.currentResponsibleEmployees?.map(resItem => convertUserIdToUserName(listUsers, resItem)).join(', ')}</td>
+                                                <td>{phaseItem?.currentAccountableEmployees?.map(accItem => convertUserIdToUserName(listUsers, accItem)).join(', ')}</td>
                                                 <td>{numberWithCommas(phaseItem?.estimateNormalCost)}</td>
                                                 <td>{numberWithCommas(phaseItem?.estimateMaxCost)}</td>
                                             </tr>

@@ -91,7 +91,7 @@ const PhaseEditForm = (props) => {
                 }
             })
         }
-    }, [tasks?.isLoading, projectPhase?.isLoading, phaseEditId, JSON.stringify(tasks?.tasks)])
+    }, [tasks?.isLoading, projectPhase?.isLoading, phaseEditId, JSON.stringify(tasks?.tasks), JSON.stringify(phaseEdit)])
 
     // Hàm bắt sự kiện thay đổi tên giai đoạn
     const handleChangePhaseName = (event) => {

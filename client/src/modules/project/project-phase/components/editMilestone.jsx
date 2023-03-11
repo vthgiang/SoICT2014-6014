@@ -149,7 +149,7 @@ const MilestoneEditForm = (props) => {
                 }
             })
         }
-    }, [tasks?.isLoading, projectPhase?.isLoading, milestoneEditId, JSON.stringify(tasks?.tasks)])
+    }, [tasks?.isLoading, projectPhase?.isLoading, milestoneEditId, JSON.stringify(tasks?.tasks), JSON.stringify(milestoneEdit)])
 
     let usersInUnitsOfCompany;
     if (user && user.usersInUnitsOfCompany) {

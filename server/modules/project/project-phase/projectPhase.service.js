@@ -55,6 +55,10 @@ exports.createCPMProjectPhase = async (portal, data) => {
                 startDate: phase.startDate,
                 endDate: phase.endDate,
                 creator: phase.creator,
+                responsibleEmployees: phase.responsibleEmployees,
+                accountableEmployees: phase.accountableEmployees,
+                consultedEmployees: phase.consultedEmployees,
+                informedEmployees: phase.informedEmployees,
                 budget: phase.estimateCost,
             }
         })

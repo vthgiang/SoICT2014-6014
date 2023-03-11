@@ -132,27 +132,40 @@ const ModalExcelImport = (props) => {
                         columns: [
                             { key: "phaseCode", value: "Mã giai đoạn" },
                             { key: "phaseName", value: "Tên giai đoạn" },
+                            { key: 'emailResponsibleEmployees', value: 'Email thành viên thực hiện' },
+                            { key: 'emailAccountableEmployees', value: 'Email thành viên phê duyệt' },
                         ],
                         data: [
                             {
-                                phaseCode: 1,
+                                phaseCode: '1',
                                 phaseName: "Khởi động dự án",
+                                emailResponsibleEmployees: ['abc.vnist@gmail.com'],
+                                emailAccountableEmployees: ['xyz.vnist@gmail.com', 'xyz12.vnist@gmail.com'],
                             },
                             {
-                                phaseCode: 2,
+                                phaseCode: '2',
                                 phaseName: "Lên kế hoạch",
+                                emailResponsibleEmployees: ['abc.vnist@gmail.com', 'abc12.vnist@gmail.com'],
+                                emailAccountableEmployees: ['xyz.vnist@gmail.com'],
+
                             },
                             {
-                                phaseCode: 3,
+                                phaseCode: '3',
                                 phaseName: "Tiến hành dự án",
+                                emailResponsibleEmployees: ['abc.vnist@gmail.com', 'abc12.vnist@gmail.com'],
+                                emailAccountableEmployees: ['xyz.vnist@gmail.com', 'xyz12.vnist@gmail.com'],
                             },
                             {
-                                phaseCode: 4,
+                                phaseCode: '4',
                                 phaseName: "Báo cáo kết quả dự án",
+                                emailResponsibleEmployees: ['abc12.vnist@gmail.com'],
+                                emailAccountableEmployees: ['xyz12.vnist@gmail.com'],
                             },
                             {
-                                phaseCode: 5,
+                                phaseCode: '5',
                                 phaseName: "Đóng dự án",
+                                emailResponsibleEmployees: ['abc.vnist@gmail.com'],
+                                emailAccountableEmployees: ['xyz.vnist@gmail.com'],
                             },
                         ]
                     }
@@ -162,7 +175,8 @@ const ModalExcelImport = (props) => {
     }
 
     const convertDataCPMExport = (dataExport) => {
-        let datas = [];
+        // convert dữ liệu công việc
+        let taskData = [];
         let data = dataExport.dataSheets[0].tables[0].data;
         for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
             let currentTask = data[dataIndex];
@@ -183,7 +197,7 @@ const ModalExcelImport = (props) => {
                 emailResponsibleEmployees: currentTask.emailResponsibleEmployees[0],
                 emailAccountableEmployees: currentTask.emailAccountableEmployees[0],
             }
-            datas = [...datas, newTask];
+            taskData = [...taskData, newTask];
             if (currentNumOfRowsEachTask > 1) {
                 for (let i = 1; i < currentNumOfRowsEachTask; i++) {
                     newTask = {
@@ -195,35 +209,65 @@ const ModalExcelImport = (props) => {
                         emailResponsibleEmployees: currentTask.emailResponsibleEmployees[i],
                         emailAccountableEmployees: currentTask.emailAccountableEmployees[i],
                     };
-                    datas = [...datas, newTask];
+                    taskData = [...taskData, newTask];
                 }
             }
         }
-        dataExport.dataSheets[0].tables[0].data = datas;
+        dataExport.dataSheets[0].tables[0].data = taskData;
+
+        // convert dữ liệu giai đoạn
+        let phaseData = [];
+        data = dataExport.dataSheets[2]? dataExport.dataSheets[2].tables[0].data: [];
+        for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
+            let currentPhase = data[dataIndex];
+            // currentNumOfRowsEachPhase để xác định phase này chiếm bao nhiêu row trong file excel. Các yếu tố ảnh hưởng là emailResponsibleEmployees, emailAccountableEmployees
+            let currentNumOfRowsEachPhase = Math.max(currentPhase.emailResponsibleEmployees.length, currentPhase.emailAccountableEmployees.length);
+
+            let newPhase = {
+                ...currentPhase,
+                emailResponsibleEmployees: currentPhase.emailResponsibleEmployees[0],
+                emailAccountableEmployees: currentPhase.emailAccountableEmployees[0],
+            }
+
+            phaseData = [...phaseData, newPhase];
+            if (currentNumOfRowsEachPhase > 1) {
+                for (let i = 1; i < currentNumOfRowsEachPhase; i++) {
+                    newPhase = {
+                        phaseCode: '',
+                        phaseName: '',
+                        emailResponsibleEmployees: currentPhase.emailResponsibleEmployees[i],
+                        emailAccountableEmployees: currentPhase.emailAccountableEmployees[i],
+                    };
+                    phaseData = [...phaseData, newPhase];
+                }
+            }
+        }
+
+        dataExport.dataSheets[2].tables[0].data = phaseData;
+
         return dataExport;
     }
 
     const importCPM = () => {
-        let data = state.data; // mảng các công việc cpm tương ứng
+        let taskData = state.taskData; // mảng các công việc cpm tương ứng
         let phaseData = state.phaseData; // mảng các giai đoạn
-        data && data.length > 0 && props.importCPM(data, phaseData);
+        taskData && taskData.length > 0 && props.importCPM(taskData, phaseData);
     }
 
     const handleUploadFile = (files) => {
-        ImportFileExcel.importData(files[0], configImportCPMData, handleImport);
+        ImportFileExcel.importData(files[0], configImportCPMData, handleImportTaskData);
         ImportFileExcel.importData(files[0], configPhaseData, handleImportPhaseData);
     }
 
-    const handleImport = (value, checkFileImport) => {
-        let data = getDataImportCPM(value);
+    const handleImportTaskData = (value, checkFileImport) => {
+        let data = getTaskDataImportCPM(value);
         setIsFirstInitialRender(false);
         setState(state => {
             return {
                 ...state,
-                data: data
+                taskData: data
             } 
         });
-        console.log(state)
     }
 
     // Kiểm tra tính hợp lệ của file import
@@ -247,22 +291,24 @@ const ModalExcelImport = (props) => {
         for (let dataItem of data) {
 
             // Kiểm tra sự trùng lặp của mảng các công việc tiền nhiệm
-            for (let preItem of dataItem.preceedingTasks) {
-                if (dataItem.preceedingTasks.filter((dataItemPreceedingItem => preItem === dataItemPreceedingItem)).length > 1) {
-                    setCurrentMessageError(`Danh sách công việc tiền nhiệm của công việc ${dataItem.name} đang có sự trùng nhau: ${dataItem.preceedingTasks.join(', ')}`);
-                    return;
+            if (dataItem.preceedingTasks && dataItem.preceedingTasks.length >0) {
+                for (let preItem of dataItem.preceedingTasks) {
+                    if (dataItem?.preceedingTasks?.filter((dataItemPreceedingItem => preItem === dataItemPreceedingItem)).length > 1) {
+                        setCurrentMessageError(`Danh sách công việc tiền nhiệm của công việc ${dataItem.name} đang có sự trùng nhau: ${dataItem.preceedingTasks.join(', ')}`);
+                        return;
+                    }
                 }
             }
 
             // Kiểm tra sự trùng lặp của mảng các thành viên
             for (let resItem of dataItem.emailResponsibleEmployees) {
-                if (dataItem.emailResponsibleEmployees.filter((dataItemEmailResItem => resItem === dataItemEmailResItem)).length > 1) {
+                if (dataItem.emailResponsibleEmployees?.filter((dataItemEmailResItem => resItem === dataItemEmailResItem)).length > 1) {
                     setCurrentMessageError(`Danh sách email responsbile đang có sự trùng nhau: ${dataItem.emailResponsibleEmployees.join(', ')}`);
                     return;
                 }
             }
             for (let accItem of dataItem.emailAccountableEmployees) {
-                if (dataItem.emailAccountableEmployees.filter((dataItemEmailAccItem => accItem === dataItemEmailAccItem)).length > 1) {
+                if (dataItem.emailAccountableEmployees?.filter((dataItemEmailAccItem => accItem === dataItemEmailAccItem)).length > 1) {
                     setCurrentMessageError(`Danh sách email accountable đang có sự trùng nhau: ${dataItem.emailAccountableEmployees.join(', ')}`);
                     return;
                 }
@@ -281,7 +327,7 @@ const ModalExcelImport = (props) => {
             }
 
             // Kiểm tra tính hợp lệ của mã công việc tiền nhiệm 
-            let nonExistentCode = dataItem.preceedingTasks.filter(code => !codeArr.includes(code))
+            let nonExistentCode = dataItem.preceedingTasks ? dataItem.preceedingTasks?.filter(code => !codeArr.includes(code)) : [];
             if (nonExistentCode.length > 0) {
                 setCurrentMessageError(`Mã công việc tiền nhiệm của công việc ${dataItem.name} không hợp lệ : Không tồn tại (các) công việc với mã công việc : ${nonExistentCode.join(', ')}`);
                 return;
@@ -291,7 +337,8 @@ const ModalExcelImport = (props) => {
         setCurrentMessageError(``);
     }
 
-    const getDataImportCPM = (data) => {
+    // Xử lý data của sheet các công việc
+    const getTaskDataImportCPM = (data) => {
         let resultData = [];
         let formatPreceedingTasks = [], formatEmailResponsibleEmployees = [], formatEmailAccountableEmployees = [];
 
@@ -327,8 +374,8 @@ const ModalExcelImport = (props) => {
                 formatEmailResponsibleEmployees = emailResponsibleEmployees === null || emailResponsibleEmployees === '' || emailResponsibleEmployees === undefined ? [] : [emailResponsibleEmployees];
                 formatEmailAccountableEmployees = emailAccountableEmployees === null || emailAccountableEmployees === '' || emailAccountableEmployees === undefined ? [] : [emailAccountableEmployees];
                 resultData.push({
-                    code: code.trim(),
-                    name: name.trim(),
+                    code: code.toString().trim(),
+                    name: name.toString().trim(),
                     preceedingTasks: formatPreceedingTasks,
                     projectPhase,
                     estimateNormalTime,
@@ -345,15 +392,62 @@ const ModalExcelImport = (props) => {
         return resultData;
     }
 
+    // Xử lý data của sheet các giai đoạn
+    const getPhaseDataImportCPM = (data) => {
+        let resultData = [];
+        let formatEmailResponsibleEmployees = [], formatEmailAccountableEmployees = [];
+
+        let dataIndex = 0;
+        if (!data || data.length === 0) return [];
+        while (dataIndex < data.length) {
+            const { phaseCode, phaseName, emailResponsibleEmployees, emailAccountableEmployees } = data[dataIndex];
+            if (!phaseCode && !phaseName ) {
+                // dataIndex hiện tại sẽ làm bộ đếm để lưu lại index hiện tại của task mình đang xét
+                let dataAdditionRowIndex = dataIndex;
+                // Nếu các thành phần trên rỗng thì ta xét các dòng tiếp, nếu rỗng thì push tiếp, nếu không rỗng thì gán vào cái đã có
+                while (
+                    dataAdditionRowIndex < data.length
+                ) {
+                    // Nếu các thành phần trên rỗng thì mảng nào push mảng nấy
+                    if (data[dataAdditionRowIndex].phaseCode && data[dataAdditionRowIndex].phaseName) {
+                        break;
+                    }
+
+                    emailResponsibleEmployees && formatEmailResponsibleEmployees.push(emailResponsibleEmployees);
+                    emailAccountableEmployees && formatEmailAccountableEmployees.push(emailAccountableEmployees);
+                    dataAdditionRowIndex++;
+                }
+                // Sau khi đã đạt được đến item cuối của row rỗng, gán vào giá trị cuối cùng của mảng resultData đang xét
+                resultData[resultData.length - 1].emailResponsibleEmployees = formatEmailResponsibleEmployees;
+                resultData[resultData.length - 1].emailAccountableEmployees = formatEmailAccountableEmployees;
+                dataIndex = dataAdditionRowIndex;
+            } else {
+                // Reset lại 3 mảng này khi đã nhảy sang task mới
+                formatEmailResponsibleEmployees = emailResponsibleEmployees === null || emailResponsibleEmployees === '' || emailResponsibleEmployees === undefined ? [] : [emailResponsibleEmployees];
+                formatEmailAccountableEmployees = emailAccountableEmployees === null || emailAccountableEmployees === '' || emailAccountableEmployees === undefined ? [] : [emailAccountableEmployees];
+                resultData.push({
+                    code: phaseCode.toString().trim(),
+                    name: phaseName.toString().trim(),
+                    emailResponsibleEmployees: formatEmailResponsibleEmployees,
+                    emailAccountableEmployees: formatEmailAccountableEmployees,
+                })
+                dataIndex++;
+            }
+        }
+
+        handleCheckDataSuitable(resultData);
+        return resultData;
+    }
+
     const handleImportPhaseData = (value) => {
+        let data = getPhaseDataImportCPM(value);
         setIsFirstInitialRender(false);
         setState(state => {
             return {
                 ...state,
-                phaseData: value
+                phaseData: data
             } 
         });
-        console.log(state)
     }
 
     const handleResetModal = () => {
@@ -369,7 +463,7 @@ const ModalExcelImport = (props) => {
                 formID="form-import-cpm-data"
                 title={translate('manage_user.import_title')}
                 func={importCPM}
-                disableSubmit={!(state.data && state.data.length > 0 && !currentMessageError)}
+                disableSubmit={!(state.taskData && state.taskData.length > 0 && !currentMessageError)}
                 size={50}
                 saveText={`Nhập dữ liệu`}
                 resetOnClose={true}
@@ -392,7 +486,7 @@ const ModalExcelImport = (props) => {
                                 />
                             </div>
                             {
-                                !(state.data && state.data.length > 0 && !currentMessageError) && !isFirstInitialRender &&
+                                !(state.taskData && state.taskData.length > 0 && !currentMessageError) && !isFirstInitialRender &&
                                 <div style={{ color: 'red' }}>File Excel không hợp lệ!</div>
                             }
                         </div>

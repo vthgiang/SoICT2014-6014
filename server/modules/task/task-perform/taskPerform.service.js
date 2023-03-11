@@ -3215,6 +3215,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     priority,
     status,
     formula,
+    formulaProjectTask,
+    formulaProjectMember,
     parent,
     startDate,
     endDate,
@@ -3369,6 +3371,21 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     },
     { $new: true }
   );
+
+  if (formulaProjectTask && typeof formulaProjectTask !== "undefined" || formulaProjectMember && typeof formulaProjectMember !== "undefined" ) {
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+      { _id: taskId },
+      {
+        $set : {
+          formulaProjectTask: formulaProjectTask,
+          formulaProjectMember: formulaProjectMember
+        }
+      },
+      { $new: true }
+    );
+  }
+
+
   // Xóa ảnh trong description cũ trên server
   let imageUrls = filterImageUrlInString(taskItem?.description)
   if (imageUrls?.length > 0) {

@@ -292,9 +292,9 @@ const TableTasksProject = (props) => {
     // }
 
     const processPreceedingTasks = (preceedingTasks) => {
-        if (!currentProjectTasks || preceedingTasks?.length === 0) return '';
+        if (!currentProjectTasks || currentProjectTasks.length  === 0 || preceedingTasks?.length === 0) return '';
         const resultArr = preceedingTasks?.map(preceedingTaskItem => {
-            return currentProjectTasks.find(item => item._id === preceedingTaskItem.task)?.name;
+            return currentProjectTasks.find(item => item._id == preceedingTaskItem.task || item._id == preceedingTaskItem.task._id )?.name;
         })
         return <ToolTip dataTooltip={resultArr} />;
     }
