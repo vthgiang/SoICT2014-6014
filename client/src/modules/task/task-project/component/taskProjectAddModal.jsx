@@ -42,6 +42,7 @@ const TaskProjectAddModal = (props) => {
             estimateAssetCost: '1,000,000',
             estimateHumanCost: '',
             preceedingTasks: [],
+            preceedingMilestones: [],
             budget: '',
             estimateAssetCost: '',
             actorsWithSalary: [],
@@ -94,6 +95,7 @@ const TaskProjectAddModal = (props) => {
             estimateNormalCost: Number(newTask.estimateNormalCost.replace(/,/g, '')),
             estimateMaxCost: Number(newTask.estimateMaxCost.replace(/,/g, '')),
             preceedingTasks: newTask.preceedingTasks,
+            preceedingMilestones: newTask.preceedingMilestones,
             actorsWithSalary: newTask.actorsWithSalary,
             taskPhase: newTask.taskPhase !== "" ? newTask.taskPhase : null,
             estimateAssetCost: Number(newTask.estimateAssetCost.replace(/,/g, '')),
@@ -103,7 +105,7 @@ const TaskProjectAddModal = (props) => {
             description,
         }
 
-        console.log('newTaskFormatted', newTaskFormatted)
+        // console.log('newTaskFormatted', newTaskFormatted)
         // const { affectedTasks, newTasksList } = processAffectedTasksChangeRequest(projectDetail, currentProjectTasks, newTaskFormatted);
         const newAffectedTasksList = [
             {
@@ -124,12 +126,13 @@ const TaskProjectAddModal = (props) => {
                         task: item,
                         link: ''
                     })),
+                    preceedingMilestones: newTask.preceedingMilestones,
                     estimateNormalTime: Number(newTask.estimateNormalTime) * (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
                     estimateOptimisticTime: Number(newTask.estimateOptimisticTime) * (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
                 }
             }
         ]
-        console.log('newAffectedTasksList', newAffectedTasksList)
+        // console.log('newAffectedTasksList', newAffectedTasksList)
         const currentTask = {
             ...newTaskFormatted,
             preceedingTasks: newTaskFormatted.preceedingTasks.map((preItem) => {
@@ -172,7 +175,7 @@ const TaskProjectAddModal = (props) => {
 
     const isFormValidated = () => {
         const { newTask } = state;
-        return !checkIfHasCommonItems(newTask?.accountableEmployees, newTask?.responsibleEmployees) && newTask?.name?.trim()?.length > 0 && newTask?.estimateMaxCost?.trim()?.length > 0 && newTask?.startDate?.trim()?.length > 0
+        return newTask?.name?.trim()?.length > 0 && newTask?.estimateMaxCost?.trim()?.length > 0 && newTask?.startDate?.trim()?.length > 0
             && newTask?.endDate?.trim()?.length > 0 && newTask?.responsibleEmployees?.length > 0 && newTask?.accountableEmployees?.length > 0
             && newTask?.estimateAssetCost?.trim()?.length > 0
     }
@@ -197,6 +200,7 @@ const TaskProjectAddModal = (props) => {
                     parentTask={parentTask}
                     currentProjectTasks={currentProjectTasks}
                     currentProjectPhase={projectPhase?.phases}
+                    currentProjectMilestone={projectPhase?.milestones}
                 />
             </DialogModal>
         </React.Fragment>

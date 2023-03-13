@@ -87,6 +87,12 @@ const ProjectChangeRequestSchema = new Schema(
                     },
                 },
             ],
+            preceedingMilestones: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "ProjectMilestone"
+                },
+            ],
             startDate: {
                 type: Date,
             },
@@ -201,6 +207,12 @@ const ProjectChangeRequestSchema = new Schema(
                             },
                         },
                     ],
+                    preceedingMilestones: [
+                        {
+                            type: Schema.Types.ObjectId,
+                            ref: "ProjectMilestone"
+                        },
+                    ],
                     startDate: {
                         type: Date,
                     },
@@ -311,6 +323,12 @@ const ProjectChangeRequestSchema = new Schema(
                             link: {
                                 type: String,
                             },
+                        },
+                    ],
+                    preceedingMilestones: [
+                        {
+                            type: Schema.Types.ObjectId,
+                            ref: "ProjectMilestone"
                         },
                     ],
                     startDate: {

@@ -50,6 +50,13 @@ const ProjectMilestoneSchema = new Schema(
                 },
             },
         ],
+        // Cột mốc tiền nhiệm
+        preceedingMilestones: [
+            {
+                type: Schema.Types.ObjectId,
+                replies: this
+            },
+        ],
         // Người tạo
         creator: {
             type: Schema.Types.ObjectId,

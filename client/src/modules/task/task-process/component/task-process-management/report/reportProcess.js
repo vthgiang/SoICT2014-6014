@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
-import { DatePicker, TreeTable ,DataTableSetting} from "../../../../../../common-components";
+import { DatePicker, TreeTable ,DataTableSetting, ToolTip} from "../../../../../../common-components";
 import { formatPriority, getTotalTimeSheetLogs, formatStatus, } from "../../../../task-management/component/functionHelpers.js"
 import { formatTaskStatus, getCurrentProjectDetails, renderProgressBar, renderStatusColor } from '../../../../../project/projects/components/functionHelper';
 import { ReportGant } from "./reportGant";
@@ -23,13 +23,16 @@ function ReportProcess(props) {
     const handleDisplayType = (value) => {
         setNameTask(value)
     }
+
     const processPreceedingTasks = (preceedingTasks) => {
         if (!props.listTask || preceedingTasks.length === 0) return '';
         const resultArr = preceedingTasks.map(preceedingTaskItem => {
             return props.listTask.find(item => item._id === preceedingTaskItem.task)?.name;
         })
-        return resultArr.join(", ");
+        
+        return <ToolTip dataTooltip={resultArr} />;
     }
+
     const showData = (lists = [], nameTask) => {
         let list1=lists;
         let result = null

@@ -17,7 +17,7 @@ import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ChangeRequestActions } from '../../../project/change-requests/redux/actions';
 
 const ModalRequestEditProjectTaskEmployee = (props) => {
-    const { task, translate, progress, project, id, user, currentProjectTasks, currentProjectPhase, tasks ,projectPhase } = props;
+    const { task, translate, progress, project, id, user, currentProjectTasks, currentProjectPhase, tasks ,projectPhase, currentProjectMilestone } = props;
     const projectDetail = getCurrentProjectDetails(project, task.taskProject);
     const [state, setState] = useState({
         editTask: {
@@ -27,6 +27,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             responsibleEmployees: task?.responsibleEmployees?.map(resItem => resItem._id) || [],
             accountableEmployees: task?.accountableEmployees?.map(accItem => accItem._id) || [],
             preceedingTasks: task?.preceedingTasks?.map((preItem => preItem.task._id)) || [],
+            preceedingMilestones: task?.preceedingMilestones || [],
             estimateNormalTime: (Number(task?.estimateNormalTime) / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)) || '',
             estimateOptimisticTime: (Number(task?.estimateOptimisticTime) / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)) || '',
             taskPhase: task?.taskPhase || '',
@@ -84,15 +85,21 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         totalResWeight, totalAccWeight, currentResWeightArr, currentAccWeightArr, estimateHumanCost } = editTask;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const timePickerRef = useRef(null);
+
     const [currentTasksToChoose, setCurrentTasksToChoose] = useState({
         preceeding: [],
     })
+
     const [currentPhaseToChoose, setCurrentPhaseToChoose] = useState({
         phases: []
     })
 
+    const [currentMilestoneToChoose, setCurrentMilestoneToChoose] = useState({
+        milestones: []
+    })
+
     useEffect(() => {
-        let res = currentProjectTasks ? currentProjectTasks?.map(item => ({
+        let res = currentProjectTasks ? currentProjectTasks?.filter(item => item._id !== task._id).map(item => ({
             value: item._id,
             text: item.name
         })) : [];
@@ -100,7 +107,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         setCurrentTasksToChoose({
             preceeding: res
         })
-    }, [JSON.stringify(currentProjectTasks)])
+    }, [JSON.stringify(currentProjectTasks), task._id])
 
     useEffect(() => {
         let res = currentProjectPhase ? currentProjectPhase?.map(item => ({
@@ -112,6 +119,16 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             phases: res
         })
     }, [JSON.stringify(currentProjectPhase)])
+
+    useEffect(() => {
+        let res = currentProjectMilestone ? currentProjectMilestone?.map(item => ({
+                value: item._id,
+                text: item.name
+        })) : [];
+        setCurrentMilestoneToChoose({
+            milestones: res,
+        })
+    }, [JSON.stringify(currentProjectMilestone)])
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
@@ -191,9 +208,9 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
     const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { translate, project } = props;
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(value, editTask.accountableEmployees)) {
-            message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
-        }
+        // if (checkIfHasCommonItems(value, editTask.accountableEmployees)) {
+        //     message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
+        // }
 
         if (willUpdateState) {
             const responsiblesWithSalaryArr = value?.map(valueItem => {
@@ -230,9 +247,9 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
     const validateTaskAccountableEmployees = (value, willUpdateState = true) => {
         let { translate, project } = props;
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(value, editTask.responsibleEmployees)) {
-            message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
-        }
+        // if (checkIfHasCommonItems(value, editTask.responsibleEmployees)) {
+        //     message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
+        // }
 
         if (willUpdateState) {
             const accountablesWithSalaryArr = value?.map(valueItem => {
@@ -263,6 +280,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         return message === undefined;
     }
 
+    // Thay đổi công việc tiền nhiệm
     const handleChangePreceedingTask = (selected) => {
         let message;
         // if (checkIfHasCommonItems(selected, editTask.followingTasks)) {
@@ -279,6 +297,21 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         })
     }
 
+    // Thay đổi cột mốc tiền nhiệm
+    const handleChangePreceedingMilestone = (selected) => {
+        let message;
+        const currentNewTask = {
+            ...state.editTask,
+            preceedingMilestones: selected,
+            errorOnPreceedMilestones: message,
+        }
+        setState({
+            ...state,
+            editTask: currentNewTask
+        })
+    }
+
+    // Thay đổi giai đoạn
     const handleChangeTaskPhase = (selected) => {
         const currentNewTask = {
             ...state.editTask,
@@ -490,7 +523,10 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         const preceedingTasksEndDateArr = editTask.preceedingTasks.map((preceedingItem) => {
             return currentProjectTasks?.find(projectTaskItem => String(projectTaskItem._id) === String(preceedingItem)).endDate;
         })
-        // console.log('preceedingTasksEndDateArr', preceedingTasksEndDateArr)
+        let preceedingMilestonesEndDateArr = editTask?.preceedingMilestones?.map((preceedingItem) => {
+            return currentProjectMilestone?.find(projectMilestoneItem => String(projectMilestoneItem._id) === String(preceedingItem)).endDate;
+        }) || [];
+        preceedingTasksEndDateArr.push(...preceedingMilestonesEndDateArr);
         const latestStartDate = getMaxMinDateInArr(preceedingTasksEndDateArr, 'max');
         const curStartDate = moment(latestStartDate).format('DD-MM-YYYY');
         const curStartTime = moment(latestStartDate).format('h:mm A');
@@ -504,9 +540,9 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         const curEndTime = curEndDateTime ? moment(curEndDateTime).format('h:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
         // console.log('curStartDate', curStartDate)
         // console.log('curStartTime', curStartTime)
-        editTask.preceedingTasks.length > 0 && setStartTime(curStartTime);
-        editTask.preceedingTasks.length > 0 && setEndTime(curEndTime);
-        editTask.preceedingTasks.length > 0 && setState({
+        (editTask.preceedingTasks.length > 0 || editTask.preceedingMilestones.length > 0) && setStartTime(curStartTime);
+        (editTask.preceedingTasks.length > 0 || editTask.preceedingMilestones.length > 0) && setEndTime(curEndTime);
+        (editTask.preceedingTasks.length > 0 || editTask.preceedingMilestones.length > 0) && setState({
             ...state,
             editTask: {
                 ...state.editTask,
@@ -516,7 +552,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             },
 
         })
-    }, [editTask.preceedingTasks])
+    }, [editTask.preceedingTasks, editTask.preceedingMilestones])
 
     useEffect(() => {
         const { currentRole } = state;
@@ -535,7 +571,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                 ...state,
                 editTask: {
                     ...state.editTask,
-                    errorOnStartDate: `Thời điểm bắt đầu phải sau thời gian kết thúc của công việc tiền nhiệm: ${moment(editTask.currentLatestStartDate).format('HH:mm DD/MM/YYYY')}`
+                    errorOnStartDate: `Thời điểm bắt đầu phải sau thời gian kết thúc của công việc, cột mốc tiền nhiệm: ${moment(editTask.currentLatestStartDate).format('HH:mm DD/MM/YYYY')}`
                 }
             })
         } else {
@@ -670,7 +706,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
 
     const isFormValidated = () => {
         const { editTask } = state;
-        return !checkIfHasCommonItems(editTask?.accountableEmployees, editTask?.responsibleEmployees) && editTask?.estimateMaxCost && editTask?.startDate?.trim()?.length > 0
+        return editTask?.estimateMaxCost && editTask?.startDate?.trim()?.length > 0 && !editTask?.errorOnPreceedMilestones
             && editTask?.endDate?.trim()?.length > 0 && editTask?.responsibleEmployees?.length > 0 && editTask?.accountableEmployees?.length > 0
             && editTask?.estimateAssetCost && !editTask?.errorOnAccountableEmployees && !editTask?.errorOnAssetCode && !editTask?.errorOnBudget && !editTask?.errorOnEndDate && !editTask?.errorOnMaxTimeEst 
             && !editTask?.errorOnPreceedFollowTasks && !editTask?.errorOnResponsibleEmployees && !editTask?.errorOnStartDate && !editTask?.errorOnTimeEst && !editTask?.errorOnTotalWeight
@@ -712,8 +748,27 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                                                 <ErrorLabel content={editTask.errorOnPreceedFollowTasks} />
                                             </div>
                                         }
-
                                     </div>
+
+                                    <div className="row">
+                                        {/* Cột mốc tiền nhiệm */}
+                                        {currentMilestoneToChoose.milestones.length > 0 &&
+                                            <div className={`form-group col-md-12 col-xs-12`}>
+                                                <label>{translate('project.task_management.preceedingMilestone')}</label>
+                                                <SelectBox
+                                                    id={`select-project-preceeding-milestone-modal-request`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={currentMilestoneToChoose.milestones}   
+                                                    value={editTask.preceedingMilestones}
+                                                    multiple={true}
+                                                    onChange={handleChangePreceedingMilestone}
+                                                />
+                                                <ErrorLabel content={editTask.errorOnPreceedMilestone} />
+                                            </div>
+                                        }
+                                    </div>
+
                                     <div className='row'>
                                         {/* Giai đoạn trong dự án */}
                                         <div className={`form-group col-md-12 col-xs-12`}>

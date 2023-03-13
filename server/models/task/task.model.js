@@ -96,6 +96,7 @@ const TaskSchema = new Schema(
                 },
             },
         ],
+        // Công việc tiền nhiệm
         preceedingTasks: [
             {
                 task: {
@@ -105,6 +106,13 @@ const TaskSchema = new Schema(
                 link: {
                     type: String,
                 },
+            },
+        ],
+        // Cột mốc tiền nhiệm
+        preceedingMilestones: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "ProjectMilestone"
             },
         ],
         organizationalUnit: {

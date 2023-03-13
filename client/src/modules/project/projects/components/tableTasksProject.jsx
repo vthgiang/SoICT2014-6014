@@ -38,6 +38,7 @@ const TableTasksProject = (props) => {
         accountableEmployees: null,
         creatorEmployees: null,
         preceedingTasks: null,
+        preceedingMilestones: null,
         data: [],
         taskType: ['task', 'phase', 'milestone'],
         currentTaskId: '',
@@ -51,32 +52,36 @@ const TableTasksProject = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
     const { translate, currentProjectTasks, user, project, performtasks, tasks, projectPhase, currentProjectPhase,
-        currentProjectMilestone, projectDetail } = props;
+        currentProjectMilestone, projectDetail, schedulingProjects, changeRequest } = props;
     const { status, name, priority, startDate, endDate, responsibleEmployees, accountableEmployees, currentMilestone, currentMilestoneId,
-        creatorEmployees, taskType, preceedingTasks, data, currentTaskId, currentPhaseId, currentPhase } = state;
+        creatorEmployees, taskType, preceedingTasks, preceedingMilestones, data, currentTaskId, currentPhaseId, currentPhase } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
 
     const totalPage = tasks && Math.ceil(tasks.totalDocs / perPage);
 
+    // Lấy thông tin về các công việc khi tạo công việc từ file hoặc cập nhật thông tin công việc
     useEffect(() => {
-        let data = {
-            status: [],
-            name: null,
-            priority: null,
-            startDate: null,
-            endDate: null,
-            responsibleEmployees: null,
-            accountableEmployees: null,
-            creatorEmployees: null,
-            preceedingTasks: null,
-            projectId: currentProjectId,
-            page: 1,
-            perPage: perPage,
+        if (!schedulingProjects?.isLoading && !changeRequest?.isLoading) {
+            let data = {
+                status: [],
+                name: null,
+                priority: null,
+                startDate: null,
+                endDate: null,
+                responsibleEmployees: null,
+                accountableEmployees: null,
+                creatorEmployees: null,
+                preceedingTasks: null,
+                preceedingMilestones: null,
+                projectId: currentProjectId,
+                page: 1,
+                perPage: perPage,
+            }
+            props.getTasksByProject(data);
+            props.getAllUserInAllUnitsOfCompany();
         }
-        props.getTasksByProject(data);
-        props.getAllUserInAllUnitsOfCompany();
-    }, [])
+    }, [schedulingProjects?.isLoading, changeRequest?.isLoading])
 
     // useEffect(() => {
     //     window.$(`#modelPerformTask${currentTaskId}`).modal('show')
@@ -101,7 +106,8 @@ const TableTasksProject = (props) => {
                     rawData: currentTasks[n],
                     name: currentTasks[n]?.name,
                     priority: convertPriorityData(currentTasks[n].priority, translate),
-                    preceedingTask: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
+                    preceedingTasks: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
+                    preceedingMilestones: processPreceedingMilestones(currentTasks[n]?.preceedingMilestones),
                     responsibleEmployees: currentTasks[n]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.responsibleEmployees.map(o => o.name)} /> : null,
                     accountableEmployees: currentTasks[n]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.accountableEmployees.map(o => o.name)} /> : null,
                     creatorEmployees: currentTasks[n].creator ? currentTasks[n].creator.name : null,
@@ -128,7 +134,7 @@ const TableTasksProject = (props) => {
                     rawData: phases[m],
                     name: phases[m]?.name,
                     priority: convertPriorityData(phases[m].priority, translate),
-                    preceedingTask: null,
+                    preceedingTasks: null,
                     responsibleEmployees: phases[m]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={phases[m]?.responsibleEmployees.map(o => o.name)} /> : null,
                     accountableEmployees: phases[m]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={phases[m]?.accountableEmployees.map(o => o.name)} /> : null,
                     creatorEmployees: phases[m].creator ? phases[m].creator.name : null,
@@ -160,7 +166,8 @@ const TableTasksProject = (props) => {
                     rawData: milestones[k],
                     name: milestones[k]?.name,
                     priority: convertPriorityData(milestones[k].priority, translate),
-                    preceedingTask: processPreceedingTasks(milestones[k]?.preceedingTasks),
+                    preceedingTasks: processPreceedingTasks(milestones[k]?.preceedingTasks),
+                    preceedingMilestones: processPreceedingMilestones(milestones[k]?.preceedingMilestones),
                     responsibleEmployees: milestones[k]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={milestones[k]?.responsibleEmployees.map(o => o.name)} /> : null,
                     accountableEmployees: milestones[k]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={milestones[k]?.accountableEmployees.map(o => o.name)} /> : null,
                     creatorEmployees: milestones[k].creator ? milestones[k].creator.name : null,
@@ -191,9 +198,8 @@ const TableTasksProject = (props) => {
                 data: data
             })
         }
-    }, [performtasks?.isLoading, projectPhase?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasksByProjectPaginate),
-         JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phases), JSON.stringify(tasks?.tasks), taskType, JSON.stringify(projectPhase.milestones)]);
-
+    }, [performtasks?.isLoading, projectPhase?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasksByProjectPaginate), 
+        JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phases), JSON.stringify(tasks?.tasks), JSON.stringify(projectPhase.milestones)]);
     // Khi gọi hàm lấy toàn bộ công việc, cập nhật lại bảng
     // useEffect(() => {
     //     let data = [];
@@ -214,7 +220,7 @@ const TableTasksProject = (props) => {
     //                 rawData: currentTasks[n],
     //                 name: currentTasks[n]?.name,
     //                 priority: convertPriorityData(currentTasks[n].priority, translate),
-    //                 preceedingTask: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
+    //                 preceedingTasks: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
     //                 responsibleEmployees: currentTasks[n]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.responsibleEmployees.map(o => o.name)} /> : null,
     //                 accountableEmployees: currentTasks[n]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.accountableEmployees.map(o => o.name)} /> : null,
     //                 creatorEmployees: currentTasks[n].creator ? currentTasks[n].creator.name : null,
@@ -241,7 +247,7 @@ const TableTasksProject = (props) => {
     //                 rawData: phases[m],
     //                 name: phases[m]?.name,
     //                 priority: null,
-    //                 preceedingTask: null,
+    //                 preceedingTasks: null,
     //                 responsibleEmployees: null,
     //                 accountableEmployees: null,
     //                 creatorEmployees: phases[m].creator ? phases[m].creator.name : null,
@@ -299,6 +305,14 @@ const TableTasksProject = (props) => {
         return <ToolTip dataTooltip={resultArr} />;
     }
 
+    const processPreceedingMilestones = (preceedingMilestones) => {
+        if (!currentProjectMilestone || currentProjectMilestone.length  === 0 || preceedingMilestones?.length === 0) return '';
+        const resultArr = preceedingMilestones?.map(preceedingMilestoneItem => {
+            return currentProjectMilestone.find(item => item._id == preceedingMilestoneItem)?.name;
+        })
+        return <ToolTip dataTooltip={resultArr} />;
+    }
+
     // Kiểm tra những phase nào có ít nhất 1 công việc trong bảng
     const processProjectPhase = (taskList) => {
         let result = []
@@ -339,6 +353,18 @@ const TableTasksProject = (props) => {
         setState({
             ...state,
             preceedingTasks: preceedingTasksName
+        });
+    }
+
+    const handleChangePreceedingMilestones = (e) => {
+        let preceedingMilestonesName = e.target.value;
+        if (preceedingMilestonesName === '') {
+            preceedingMilestonesName = null;
+        }
+
+        setState({
+            ...state,
+            preceedingTasks: preceedingMilestonesName
         });
     }
 
@@ -682,7 +708,8 @@ const TableTasksProject = (props) => {
     let column = [
         { name: translate('task.task_management.col_name'), key: "name" },
         { name: translate('task.task_management.col_priority'), key: "priority" },
-        { name: translate('project.task_management.preceedingTask'), key: "preceedingTask" },
+        { name: translate('project.task_management.preceedingTask'), key: "preceedingTasks" },
+        { name: translate('project.task_management.preceedingMilestone'), key: "preceedingMilestones" },
         { name: translate('task.task_management.responsible'), key: "responsibleEmployees" },
         { name: translate('task.task_management.accountable'), key: "accountableEmployees" },
         { name: translate('task.task_management.creator'), key: "creatorEmployees" },
@@ -729,6 +756,7 @@ const TableTasksProject = (props) => {
                     milestoneEditId={currentMilestoneId}
                     currentProjectTasks={currentProjectTasks}
                     currentProjectPhase={currentProjectPhase}
+                    currentProjectMilestone={currentProjectMilestone}
                 />
             }
 
@@ -765,6 +793,12 @@ const TableTasksProject = (props) => {
                         <div className="form-group">
                             <label>{translate('project.task_management.preceedingTask')}</label>
                             <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => handleChangePreceedingTasks(e)} />
+                        </div>
+
+                        {/* Tên cột mốc tiền nhiệm */}
+                        <div className="form-group">
+                            <label>{translate('project.task_management.preceedingMilestone')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => handleChangePreceedingMilestones(e)} />
                         </div>
 
                         {/* Trạng thái công việc */}

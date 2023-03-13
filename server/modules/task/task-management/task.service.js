@@ -2243,6 +2243,7 @@ exports.createTask = async (portal, task) => {
  * Tạo công việc mới của dự án
  */
 exports.createProjectTask = async (portal, task) => {
+    console.log(task)
     // // Lấy thông tin công việc liên quan
     // var level = 1;
     // if (mongoose.Types.ObjectId.isValid(task.parent)) {
@@ -2349,6 +2350,7 @@ exports.createProjectTask = async (portal, task) => {
         estimateNormalCost: task.estimateNormalCost,
         estimateMaxCost: task.estimateMaxCost,
         preceedingTasks: task.preceedingTasks,
+        preceedingMilestones: task.preceedingMilestones,
         actorsWithSalary: task.actorsWithSalary,
         estimateAssetCost: task.estimateAssetCost,
         totalResWeight: task.totalResWeight,

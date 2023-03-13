@@ -6391,6 +6391,7 @@ export default {
                 estimatedCostMaximum: "Maximum",
                 add_err_optimistic_time: "Optimistic time can't be greater than estimated time",
                 preceedingTask: "Preceeding task",
+                preceedingMilestone: "Preceeding Milestone",
                 search_by_name_code: "Search by name or code of task",
                 code: "Task code",
             },

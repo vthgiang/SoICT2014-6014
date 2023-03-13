@@ -23,7 +23,7 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
 const MilestoneEditForm = (props) => {
-    const { user, translate, tasks, department, project, currentProjectTasks, currentProjectPhase, projectId, milestoneEditId, milestoneEdit } = props;
+    const { user, translate, tasks, department, project, currentProjectTasks, currentProjectPhase, projectId, milestoneEditId, milestoneEdit, currentProjectMilestone } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const [state, setState] = useState({
         newMilestone: {
@@ -39,8 +39,9 @@ const MilestoneEditForm = (props) => {
             consultedEmployees: [],
             informedEmployees: [],
             preceedingTasks: [],
+            preceedingMilestones: [],
             projectPhase: "",
-            currentLatestDate: projectDetail.endDateRequest,
+            currentLatestDate: "",
             currentEarliestDate: projectDetail.startDate,
             errorOnName: undefined,
             errorOnDate: undefined,
@@ -53,7 +54,7 @@ const MilestoneEditForm = (props) => {
 
     const { currentRole, newMilestone } = state;
     const { name, description, date, time, progress, status, priority, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, preceedingTasks, projectPhase, currentLatestDate,
-        currentEarliestDate, errorOnName, errorOnDate, errorOnAccountableEmployees, errorOnResponsibleEmployees, errorOnProgress } = newMilestone;
+        currentEarliestDate, errorOnName, errorOnDate, errorOnAccountableEmployees, errorOnResponsibleEmployees, errorOnProgress, preceedingMilestones } = newMilestone;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const [currentTasksToChoose, setCurrentTasksToChoose] = useState({
         preceeding: [],
@@ -63,6 +64,10 @@ const MilestoneEditForm = (props) => {
         phases: []
     })
     
+    const [currentMilestoneToChoose, setCurrentMilestoneToChoose] = useState({
+        milestones: []
+    })
+
     // Kiểm tra giá trị rỗng hoặc không xác định
     const checkNullUndefined = (x) => {
         if (x === null || x === undefined) {
@@ -84,17 +89,7 @@ const MilestoneEditForm = (props) => {
 
     useEffect(() => {
         let res = currentProjectTasks ? currentProjectTasks?.map(item => {
-            if (state.projectPhase) {
-                let phase = currentProjectPhase?.find(phaseItem => phaseItem._id === state.projectPhase);
-                if (dayjs(item.endDate).isSameOrBefore(phase.endDate)) {
-                    return {
-                        value: item._id,
-                        text: item.name
-                    }
-                }
-            }
-
-            else return {
+            return {
                 value: item._id,
                 text: item.name
             }
@@ -105,7 +100,17 @@ const MilestoneEditForm = (props) => {
         })
     }, [JSON.stringify(currentProjectTasks)])
 
-
+    useEffect(() => {
+        let res = currentProjectMilestone ? currentProjectMilestone?.filter(milestone => milestone._id !== milestoneEditId).map(item => {
+            return {
+                value: item._id,
+                text: item.name
+            }
+        }) : [];
+        setCurrentMilestoneToChoose({
+            milestones: res,
+        })
+    }, [JSON.stringify(currentProjectMilestone), milestoneEditId])
 
     useEffect(() => {
         const { currentRole } = state;
@@ -136,8 +141,9 @@ const MilestoneEditForm = (props) => {
                         consultedEmployees: milestoneEdit?.consultedEmployees?.map(employee => employee._id) || [],
                         informedEmployees: milestoneEdit?.informedEmployees?.map(employee => employee._id) || [],
                         preceedingTasks: milestoneEdit?.preceedingTasks?.map(taskItem => taskItem.task) || [],
+                        preceedingMilestones: milestoneEdit?.preceedingMilestones || [],
                         projectPhase: milestoneEdit?.projectPhase || "",
-                        currentLatestDate: milestoneEdit?.currentLatestDate || projectDetail.endDateRequest,
+                        currentLatestDate: milestoneEdit?.currentLatestDate || "",
                         currentEarliestDate: milestoneEdit?.currentEarliestDate || projectDetail.startDate,
                         errorOnName: undefined,
                         errorOnDate: undefined,
@@ -172,24 +178,24 @@ const MilestoneEditForm = (props) => {
         let currentNewMilestone = {
             ...state.newMilestone,
             projectPhase: selected[0],
-            preceedingTasks: selected[0] && selected[0] !== state.newMilestone.projectPhase ? [] : state.newMilestone.preceedingTasks,
-            currentLatestDate: phase?.endDate ? phase.endDate : projectDetail?.endDateRequest,
-            currentEarliestDate: selected[0] !== state.newMilestone.projectPhase ? phase?.startDate : state.newMilestone.currentEarliestDate,
+            currentLatestDate: ""
         }
 
         if (selected[0] !== state.newMilestone.projectPhase) {
             if (currentNewMilestone.time && currentNewMilestone.date) {
                 let curDateTime = convertDateTime(currentNewMilestone.date, currentNewMilestone.time);
-                if (dayjs(curDateTime).isSameOrAfter(dayjs(currentNewMilestone.currentLatestDate))) {
+
+                // if (dayjs(curDateTime).isSameOrAfter(dayjs(currentNewMilestone.currentLatestDate))) {
+                //     currentNewMilestone = {
+                //         ...currentNewMilestone,
+                //         errorOnDate: `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án : ${dayjs(currentNewMilestone.currentLatestDate).format('HH:mm DD/MM/YYYY')}`
+                //     }
+                // }
+
+                if (dayjs(curDateTime).isSameOrBefore(dayjs(currentNewMilestone.currentEarliestDate))) {
                     currentNewMilestone = {
                         ...currentNewMilestone,
-                        errorOnDate: `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án : ${dayjs(currentNewMilestone.currentLatestDate).format('HH:mm DD/MM/YYYY')}`
-                    }
-                }
-                else if (dayjs(curDateTime).isSameOrBefore(dayjs(currentNewMilestone.currentEarliestDate))) {
-                    currentNewMilestone = {
-                        ...currentNewMilestone,
-                        errorOnDate: `Thời điểm phải sau thời gian bắt đầu của giai đoạn và kết thúc của công việc tiền nhiệm: ${dayjs(currentNewMilestone.currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
+                        errorOnDate: `Thời điểm phải sau thời gian kết thúc của công việc, cột mốc tiền nhiệm: ${dayjs(currentNewMilestone.currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
                     }
                 }
                 else currentNewMilestone = {
@@ -203,25 +209,45 @@ const MilestoneEditForm = (props) => {
             ...state,
             newMilestone: currentNewMilestone
         })
-        let newTaskList = currentProjectTasks?.filter(task => dayjs(task.endDate).isSameOrBefore(dayjs(phase?.endDate)));
-        let res = newTaskList.map(taskItem => {
-            return {
-                value: taskItem._id,
-                text: taskItem.name
-            }
-        })
-        if (!phase) {
-            res = currentProjectTasks?.map(taskItem => {
-                return {
-                    value: taskItem._id,
-                    text: taskItem.name
-                }
-            })
-        }
-        setCurrentTasksToChoose({
-            preceeding: res,
-            following: []
-        })
+
+        // let newTaskList = currentProjectTasks?.filter(task => dayjs(task.endDate).isSameOrBefore(dayjs(phase?.endDate)));
+        // let res = newTaskList.map(taskItem => {
+        //     return {
+        //         value: taskItem._id,
+        //         text: taskItem.name
+        //     }
+        // })
+        // if (!phase) {
+        //     res = currentProjectTasks?.map(taskItem => {
+        //         return {
+        //             value: taskItem._id,
+        //             text: taskItem.name
+        //         }
+        //     })
+        // }
+        // setCurrentTasksToChoose({
+        //     preceeding: res,
+        //     following: []
+        // })
+
+        // let newMilestoneList = currentProjectMilestone?.filter(milestone => dayjs(milestone.endDate).isSameOrBefore(dayjs(phase?.endDate) && String(milestone._id) !== String(milestoneEditId) ));
+        // let ans = newMilestoneList.map(milestoneItem => {
+        //     return {
+        //         value: milestoneItem._id,
+        //         text: milestoneItem.name
+        //     }
+        // })
+        // if (!phase) {
+        //     ans = currentProjectMilestone?.filter(milestone => String(milestone._id) !== String(milestoneEditId)).map(milestoneItem => {
+        //         return {
+        //             value: milestoneItem._id,
+        //             text: milestoneItem.name
+        //         }
+        //     })
+        // }
+        // setCurrentMilestoneToChoose({
+        //     milestones: ans
+        // })
     }
 
     const validateChangeMilestoneName = (value, willUpdateState = true) => {
@@ -263,12 +289,13 @@ const MilestoneEditForm = (props) => {
         let message = undefined;
         if (value && time) {
             const curDateTime = convertDateTime(value, time);
-            if (dayjs(curDateTime).isSameOrAfter(dayjs(currentLatestDate))) {
-                message = `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án : ${dayjs(currentLatestDate).format('HH:mm DD/MM/YYYY')}`
-            }
 
-            else if (dayjs(curDateTime).isSameOrBefore(dayjs(currentEarliestDate))) {
-                message = `Thời điểm phải sau thời gian bắt đầu của giai đoạn và kết thúc của công việc tiền nhiệm: ${dayjs(currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
+            // if (dayjs(curDateTime).isSameOrAfter(dayjs(currentLatestDate))) {
+            //     message = `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án : ${dayjs(currentLatestDate).format('HH:mm DD/MM/YYYY')}`
+            // }
+
+            if (dayjs(curDateTime).isSameOrBefore(dayjs(currentEarliestDate))) {
+                message = `Thời điểm phải sau thời gian kết thúc của công việc, cột mốc tiền nhiệm: ${dayjs(currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
             }
         }
 
@@ -291,12 +318,12 @@ const MilestoneEditForm = (props) => {
         let message = undefined;
         if (date && value) {
             const curDateTime = convertDateTime(date, value);
-            if (dayjs(curDateTime).isSameOrAfter(dayjs(currentLatestDate))) {
-                message = `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án: ${dayjs(currentLatestDate).format('HH:mm DD/MM/YYYY')}`
-            }
+            // if (dayjs(curDateTime).isSameOrAfter(dayjs(currentLatestDate))) {
+            //     message = `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án: ${dayjs(currentLatestDate).format('HH:mm DD/MM/YYYY')}`
+            // }
 
-            else if (dayjs(curDateTime).isSameOrBefore(dayjs(currentEarliestDate))) {
-                message = `Thời điểm phải sau thời gian bắt đầu của giai đoạn và kết thúc của công việc tiền nhiệm: ${dayjs(currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
+            if (dayjs(curDateTime).isSameOrBefore(dayjs(currentEarliestDate))) {
+                message = `Thời điểm phải sau thời gian kết thúc của công việc, cột mốc tiền nhiệm: ${dayjs(currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
             }
         }
 
@@ -415,13 +442,13 @@ const MilestoneEditForm = (props) => {
             ...state.newMilestone,
             preceedingTasks: selected,
         }
+
         // Kiểm tra lại thời điểm sớm nhất có thể của cột mốc
         let newListTask = currentProjectTasks?.filter(taskItem => selected?.includes(taskItem._id));
+        let listMilestone = [];
+        listMilestone = newMilestone.preceedingMilestones && newMilestone.preceedingMilestones.length > 0 ? currentProjectMilestone?.filter(milestoneItem => newMilestone.preceedingMilestones.includes(milestoneItem._id)) : [];
+        newListTask.push(...listMilestone);
         let earliestDate = findLatestDate(newListTask);
-        if (currentNewMilestone.projectPhase) {
-            let phase = currentProjectPhase?.find(phaseItem => phaseItem._id === currentNewMilestone.projectPhase);
-            if (phase && dayjs(phase?.startDate).isSameOrAfter(dayjs(earliestDate))) earliestDate = phase.startDate;
-        }
 
         currentNewMilestone = {
             ...currentNewMilestone,
@@ -430,16 +457,59 @@ const MilestoneEditForm = (props) => {
 
         if (currentNewMilestone.time && currentNewMilestone.date) {
             let curDateTime = convertDateTime(currentNewMilestone.date, currentNewMilestone.time);
-            if (dayjs(curDateTime).isSameOrAfter(dayjs(currentNewMilestone.currentLatestDate))) {
+            // if (dayjs(curDateTime).isSameOrAfter(dayjs(currentNewMilestone.currentLatestDate))) {
+            //     currentNewMilestone = {
+            //         ...currentNewMilestone,
+            //         errorOnDate: `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án: ${dayjs(currentNewMilestone.currentLatestDate).format('HH:mm DD/MM/YYYY')}`
+            //     }
+            // }
+            if (dayjs(curDateTime).isSameOrBefore(dayjs(currentNewMilestone.currentEarliestDate))) {
                 currentNewMilestone = {
                     ...currentNewMilestone,
-                    errorOnDate: `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án: ${dayjs(currentNewMilestone.currentLatestDate).format('HH:mm DD/MM/YYYY')}`
+                    errorOnDate: `Thời điểm phải sau thời gian kết thúc của công việc, cột mốc tiền nhiệm: ${dayjs(currentNewMilestone.currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
                 }
             }
-            else if (dayjs(curDateTime).isSameOrBefore(dayjs(currentNewMilestone.currentEarliestDate))) {
+            else currentNewMilestone = {
+                ...currentNewMilestone,
+                errorOnDate: undefined
+            }
+        }
+
+        setState({
+            ...state,
+            newMilestone: currentNewMilestone,
+        })
+    }
+
+    // Thay đổi cột mốc tiền nhiệm
+    const handleChangePreceedingMilestone = (selected) => {
+        let currentNewMilestone = {
+            ...state.newMilestone,
+            preceedingMilestones: selected,
+        }
+        // Kiểm tra lại thời điểm sớm nhất có thể của cột mốc
+        let newListMilestone = currentProjectMilestone?.filter(milestoneItem => selected?.includes(milestoneItem._id));
+        let listTask = newMilestone.preceedingTasks && newMilestone.preceedingTasks.length > 0 ? currentProjectTasks.filter(taskItem => newMilestone.preceedingTasks.includes(taskItem._id)) : [];
+        newListMilestone.push(...listTask);
+        let earliestDate = findLatestDate(newListMilestone);
+
+        currentNewMilestone = {
+            ...currentNewMilestone,
+            currentEarliestDate: earliestDate
+        }
+
+        if (currentNewMilestone.time && currentNewMilestone.date) {
+            let curDateTime = convertDateTime(currentNewMilestone.date, currentNewMilestone.time);
+            // if (dayjs(curDateTime).isSameOrAfter(dayjs(currentNewMilestone.currentLatestDate))) {
+            //     currentNewMilestone = {
+            //         ...currentNewMilestone,
+            //         errorOnDate: `Thời điểm phải trước thời gian kết thúc của giai đoạn hoặc dự án: ${dayjs(currentNewMilestone.currentLatestDate).format('HH:mm DD/MM/YYYY')}`
+            //     }
+            // }
+            if (dayjs(curDateTime).isSameOrBefore(dayjs(currentNewMilestone.currentEarliestDate))) {
                 currentNewMilestone = {
                     ...currentNewMilestone,
-                    errorOnDate: `Thời điểm phải sau thời gian bắt đầu của giai đoạn và kết thúc của công việc tiền nhiệm: ${dayjs(currentNewMilestone.currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
+                    errorOnDate: `Thời điểm phải sau thời gian kết thúc của công việc, cột mốc tiền nhiệm: ${dayjs(currentNewMilestone.currentEarliestDate).format('HH:mm DD/MM/YYYY')}`
                 }
             }
             else currentNewMilestone = {
@@ -580,6 +650,24 @@ const MilestoneEditForm = (props) => {
                                             value={preceedingTasks}
                                             multiple={true}
                                             onChange={handleChangePreceedingTask}
+                                        />
+                                    </div>
+                                }
+                            </div>
+
+                            <div className="row">
+                                {/* Cột mốc tiền nhiệm */}
+                                {currentMilestoneToChoose.milestones.length > 0 &&
+                                    <div className={`form-group col-md-12 col-xs-12`}>
+                                        <label>{translate('project.task_management.preceedingMilestone')}</label>
+                                        <SelectBox
+                                            id={`select-edit-milestone-preceeding-milestone`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={currentMilestoneToChoose.milestones}
+                                            value={preceedingMilestones}
+                                            multiple={true}
+                                            onChange={handleChangePreceedingMilestone}
                                         />
                                     </div>
                                 }

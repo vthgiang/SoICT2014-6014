@@ -125,6 +125,7 @@ exports.createMilestone = async (portal, data) => {
         informedEmployees: data.informedEmployees,
         confirmedByEmployees: data.responsibleEmployees.concat(data.accountableEmployees).concat(data.consultedEmployees).includes(data.creator) ? [data.creator] : [],
         preceedingTasks: data.preceedingTasks,
+        preceedingMilestones: data.preceedingMilestones,
         project: data.project,
         startDate: data.startDate,
         creator: data.creator,
@@ -261,10 +262,11 @@ exports.editMilestone = async (portal, id, data) => {
             consultedEmployees: data.consultedEmployees,
             informedEmployees: data.informedEmployees,
             preceedingTasks: data.preceedingTasks,
+            preceedingMilestones: data.preceedingMilestones,
         }
     }, { new: true });
 
-    // Cập nhật lại thông tin về giai đoạn của các task
+    // Cập nhật lại thông tin về cột mốc
     const milestone = await ProjectMilestone(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: "creator", select: "_id name email" })
         .populate({ path: "responsibleEmployees", select: "_id name" })

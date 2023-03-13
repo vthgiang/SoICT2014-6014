@@ -314,7 +314,7 @@ exports.edit = async (portal, id, data) => {
             })
         }
     }
-    
+
     const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             // code: data.code,
@@ -702,6 +702,7 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
                     await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
                         $set: {
                             preceedingTasks: affectedItem.new.preceedingTasks,
+                            preceedingMilestones: affectedItem.new.preceedingMilestones,
                             startDate: affectedItem.new.startDate,
                             startDate: affectedItem.new.startDate,
                             endDate: affectedItem.new.endDate,

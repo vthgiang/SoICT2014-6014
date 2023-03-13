@@ -120,8 +120,8 @@ const TabProjectTasksList = (props) => {
                             currentProjectTasks && currentProjectTasks.length > 0 &&
                             <div>
                                 <PhaseCreateForm currentProjectTasks={currentProjectTasks} projectId={currentProjectId} />
-                                <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} currentProjectPhase={currentProjectPhase} parentTask={parentTask} />
-                                <MilestoneCreateForm currentProjectTasks={currentProjectTasks} projectId={currentProjectId} currentProjectPhase={currentProjectPhase} />
+                                <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} currentProjectPhase={currentProjectPhase} parentTask={parentTask} currentProjectMilestone={currentProjectMilestone} />
+                                <MilestoneCreateForm currentProjectTasks={currentProjectTasks} projectId={currentProjectId} currentProjectPhase={currentProjectPhase} currentProjectMilestone={currentProjectMilestone} />
                                 <div className="dropdown">
                                     <button type="button" style={{ display: 'flex', marginTop: 15, marginRight: 10 }} className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                                     {
