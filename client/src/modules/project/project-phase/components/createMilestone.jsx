@@ -22,7 +22,7 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
 const MilestoneCreateForm = (props) => {
-    const { user, translate, tasks, department, project, currentProjectTasks, currentProjectPhase, projectId, currentProjectMilestone } = props;
+    const { user, translate, tasks, department, project, currentProjectTasks, currentProjectPhase = [], projectId, currentProjectMilestone = []} = props;
     const projectDetail = getCurrentProjectDetails(project);
     const [state, setState] = useState({
         newMilestone: {

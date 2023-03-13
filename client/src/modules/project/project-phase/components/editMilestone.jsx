@@ -23,7 +23,7 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
 const MilestoneEditForm = (props) => {
-    const { user, translate, tasks, department, project, currentProjectTasks, currentProjectPhase, projectId, milestoneEditId, milestoneEdit, currentProjectMilestone } = props;
+    const { user, translate, tasks, department, project, currentProjectTasks, currentProjectPhase =[], projectId, milestoneEditId, milestoneEdit, currentProjectMilestone = [] } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const [state, setState] = useState({
         newMilestone: {
@@ -124,7 +124,7 @@ const MilestoneEditForm = (props) => {
     }, [milestoneEditId, JSON.stringify(tasks?.tasks)]);
 
     useEffect(() => {
-        if (!tasks?.isLoading && !projectPhase?.isLoading) {
+        if (!tasks?.isLoading && !projectPhase?.isPhaseLoading && !projectPhase?.isMilestoneLoading) {
             setState(state => {
                 return {
                     ...state,
@@ -155,7 +155,7 @@ const MilestoneEditForm = (props) => {
                 }
             })
         }
-    }, [tasks?.isLoading, projectPhase?.isLoading, milestoneEditId, JSON.stringify(tasks?.tasks), JSON.stringify(milestoneEdit)])
+    }, [tasks?.isLoading, projectPhase?.isPhaseLoading, projectPhase?.isMilestoneLoading, milestoneEditId, JSON.stringify(tasks?.tasks), JSON.stringify(milestoneEdit)])
 
     let usersInUnitsOfCompany;
     if (user && user.usersInUnitsOfCompany) {

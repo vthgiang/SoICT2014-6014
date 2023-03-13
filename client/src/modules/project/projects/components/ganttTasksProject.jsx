@@ -16,7 +16,7 @@ import { ModalDetailTask } from '../../../task/task-dashboard/task-personal-dash
 
 const GanttTasksProject = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
-    const { translate, currentProjectTasks, user, project, tasks, currentProjectPhase, currentProjectMilestone, projectPhase } = props;
+    const { translate, currentProjectTasks, user, project, tasks, currentProjectPhase = [], currentProjectMilestone = [], projectPhase } = props;
     const task = tasks && tasks.task;
     let projectDetail = {};
 

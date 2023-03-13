@@ -61,7 +61,7 @@ function PhaseComponent(props) {
         phase = projectPhase.performPhase;
     }
     
-    const check = props?.projectPhase.isLoading;
+    const check = props?.projectPhase.isPhaseLoading;
 
     return (
         <React.Fragment>

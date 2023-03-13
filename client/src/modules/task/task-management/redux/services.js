@@ -537,6 +537,7 @@ function addNewProjectTask(newTask) {
  * @param {*} accountableEmployees nhận viên phê duyệt
  * @param {*} creatorEmployees người tạo công việc
  * @param {*} preceedingTasks công việc tiền nhiệm
+ * @param {*} preceedingMilestones cột mốc tiền nhiệm
  * @param {*} projectId id của dự án
  * @param {*} page số trang
  * @param {*} perPage số bản ghi trên trang

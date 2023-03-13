@@ -57,7 +57,7 @@ const PhaseEditForm = (props) => {
     }, [phaseEditId, JSON.stringify(tasks?.tasks)]);
 
     useEffect(() => {
-        if (!tasks?.isLoading && !projectPhase?.isLoading) {
+        if (!tasks?.isLoading && !projectPhase?.isPhaseLoading && !projectPhase?.isMilestoneLoading) {
             let listTask = tasks?.tasksByProject?.filter(task => task.taskPhase === phaseEditId);
             let listMilestone = projectPhase?.milestones?.filter(milestone => milestone.projectPhase === phaseEditId);
             setState(state => {
@@ -91,7 +91,7 @@ const PhaseEditForm = (props) => {
                 }
             })
         }
-    }, [tasks?.isLoading, projectPhase?.isLoading, phaseEditId, JSON.stringify(tasks?.tasks), JSON.stringify(phaseEdit)])
+    }, [tasks?.isLoading, projectPhase?.isPhaseLoading, projectPhase?.isMilestoneLoading, phaseEditId, JSON.stringify(tasks?.tasks), JSON.stringify(phaseEdit)])
 
     // Hàm bắt sự kiện thay đổi tên giai đoạn
     const handleChangePhaseName = (event) => {

@@ -6,7 +6,7 @@ const Logger = require('../../../logs');
  */
 exports.getProjectPhase = async (req, res) => {
     try {
-        let tp = await ProjectPhaseService.getProjectPhase(req.portal, req.params.id);
+        let tp = await ProjectPhaseService.getProjectPhase(req.portal, req.query);
 
         await Logger.info(req.user.email, 'get_project_phase_success', req.portal)
         res.status(200).json({
@@ -172,7 +172,7 @@ exports.deletePhase = async (req, res) => {
  */
 exports.getProjectMilestone = async (req, res) => {
     try {
-        let tp = await ProjectPhaseService.getProjectMilestone(req.portal, req.params.id);
+        let tp = await ProjectPhaseService.getProjectMilestone(req.portal, req.query);
 
         await Logger.info(req.user.email, 'get_project_milestone_success', req.portal)
         res.status(200).json({

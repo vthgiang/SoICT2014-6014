@@ -142,19 +142,225 @@ exports.createMilestone = async (portal, data) => {
 }
 
 /**
- * Lấy thông tin toàn bộ giai đoạn trong 1 dự án
- * @param {*} id id của project
+ * Lấy thông tin giai đoạn trong 1 dự án
+ * @param {*} data id
  */
- exports.getProjectPhase = async (portal, id) => {
-    let phases = await ProjectPhase(connect(DB_CONNECTION, portal)).find({
-        project: id
-    }).populate({ path: "creator", select: "_id name email" })
-    .populate({ path: "responsibleEmployees", select: "_id name" })
-    .populate({ path: "accountableEmployees", select: "_id name" })
-    .populate({ path: "consultedEmployees", select: "_id name" })
-    .populate({ path: "informedEmployees", select: "_id name" });
-    return phases;
+ exports.getProjectPhase = async (portal, data) => {
+    let { perPage, page, status, priority, name, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, calledId } = data;
+    let phases;
 
+    let keySearch = {};
+    let keySearchDateTime = {};
+
+    // Tìm kiếm giai đoạn theo dự án
+    if (projectId) {
+        keySearch = {
+            ...keySearch,
+            project: projectId,
+        }
+    }
+
+    // Tìm kiếm giai đoạn theo trạng thái
+    if (status) {
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status,
+            }
+        };
+    }
+
+    // Tìm kiếm giai đoạn theo độ ưu tiên
+    if (priority) {
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority,
+            }
+        };
+    }
+
+    // Tìm kiếm giai đoạn theo tên
+    if (name) {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    // Tìm kiếm theo người thực hiện
+    if (responsibleEmployees) {
+        const responsible = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            responsibleEmployees: {
+                $in: getIdResponsible
+            }
+        }
+    }
+
+    // Tìm kiếm theo người phê duyệt
+    if (accountableEmployees) {
+        const accountable = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
+        keySearch = {
+            ...keySearch,
+            accountableEmployees: {
+                $in: getIdAccountable
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thiết lập
+    if (creatorEmployees) {
+        const creator = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            creator: {
+                $in: getIdCreator
+            }
+        }
+    }
+
+    // Tìm kiếm theo ngày bắt đầu, kết thúc
+    if (startDate && endDate) {
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        keySearchDateTime = {
+            ...keySearchDateTime,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    }
+
+    else if (startDate) {
+        startDate = new Date(startDate);
+
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    else if (endDate) {
+        endDate = new Date(endDate);
+
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    let optionQuery = {
+        $and: [
+            keySearch,
+            keySearchDateTime,
+        ]
+    }
+
+    let totalList = await ProjectPhase(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
+
+    // Nếu calledId là 'get_all' thì bỏ qua page và perPage
+    if (calledId === 'get_all') {
+        phases = await ProjectPhase(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ createdAt: -1 })
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+    }
+
+    else {
+        phases = await ProjectPhase(connect(DB_CONNECTION, portal))
+            .find(optionQuery).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+    }
+
+    return {
+        docs: phases,
+        totalDocs: totalList,
+    }
 }
 
 /**
@@ -222,18 +428,263 @@ exports.deletePhase = async (portal, id) => {
 }
 
 /**
- * Lấy thông tin toàn bộ cột mốc trong 1 dự án
- * @param {*} id id của project
+ * Lấy thông tin cột mốc trong 1 dự án
+ * @param {*} data
  */
-exports.getProjectMilestone = async (portal, id) => {
-    let milestones = await ProjectMilestone(connect(DB_CONNECTION, portal)).find({
-        project: id
-    }).populate({ path: "creator", select: "_id name email" })
-    .populate({ path: "responsibleEmployees", select: "_id name" })
-    .populate({ path: "accountableEmployees", select: "_id name" })
-    .populate({ path: "consultedEmployees", select: "_id name" })
-    .populate({ path: "informedEmployees", select: "_id name" });
-    return milestones;
+exports.getProjectMilestone = async (portal, data) => {
+    let { perPage, page, status, priority, name, preceedingTasks, preceedingMilestones, projectId, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, calledId } = data;
+    let milestones;
+
+    let keySearch = {};
+    let keySearchDateTime = {};
+
+    // Tìm kiếm cột mốc theo dự án
+    if (projectId) {
+        keySearch = {
+            ...keySearch,
+            project: projectId,
+        }
+    }
+
+    // Tìm kiếm cột mốc theo trạng thái
+    if (status) {
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status,
+            }
+        };
+    }
+
+    // Tìm kiếm cột mốc theo độ ưu tiên
+    if (priority) {
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority,
+            }
+        };
+    }
+
+    // Tìm kiếm cột mốc theo tên
+    if (name) {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    // Tìm kiếm cột mốc theo tên công việc tiền nhiệm
+    if (preceedingTasks) {
+        const predecessor = await Task(connect(DB_CONNECTION, portal)).find({
+            name: {
+                $regex: preceedingTasks,
+                $options: "i",
+            }
+        })
+
+        const getIdPredecessor = predecessor && predecessor.length > 0 ? predecessor.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            "preceedingTasks.task": {
+                $in: getIdPredecessor
+            }
+        }
+    }
+
+     // Tìm kiếm cột mốc theo tên cột mốc tiền nhiệm
+     if (preceedingMilestones) {
+        const predecessor = await ProjectMilestone(connect(DB_CONNECTION, portal)).find({
+            name: {
+                $regex: preceedingMilestones,
+                $options: "i",
+            }
+        })
+
+        const getIdPredecessor = predecessor && predecessor.length > 0 ? predecessor.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            preceedingMilestones: {
+                $in: getIdPredecessor
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thực hiện
+    if (responsibleEmployees) {
+        const responsible = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            responsibleEmployees: {
+                $in: getIdResponsible
+            }
+        }
+    }
+
+    // Tìm kiếm theo người phê duyệt
+    if (accountableEmployees) {
+        const accountable = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
+        keySearch = {
+            ...keySearch,
+            accountableEmployees: {
+                $in: getIdAccountable
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thiết lập
+    if (creatorEmployees) {
+        const creator = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
+
+        keySearch = {
+            ...keySearch,
+            creator: {
+                $in: getIdCreator
+            }
+        }
+    }
+
+    // Tìm kiếm theo ngày bắt đầu, kết thúc
+    if (startDate && endDate) {
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        keySearchDateTime = {
+            ...keySearchDateTime,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    }
+
+    else if (startDate) {
+        startDate = new Date(startDate);
+
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    else if (endDate) {
+        endDate = new Date(endDate);
+
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    let optionQuery = {
+        $and: [
+            keySearch,
+            keySearchDateTime,
+        ]
+    }
+
+    let totalList = await ProjectMilestone(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
+
+    // Nếu calledId là 'get_all' thì bỏ qua page và perPage
+    if (calledId === 'get_all') {
+        milestones = await ProjectMilestone(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ createdAt: -1 })
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+    }
+
+    else {
+        milestones = await ProjectMilestone(connect(DB_CONNECTION, portal))
+            .find(optionQuery).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+    }
+
+    return {
+        docs: milestones,
+        totalDocs: totalList,
+    }
 }
 
 /**

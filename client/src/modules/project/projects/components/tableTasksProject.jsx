@@ -51,14 +51,14 @@ const TableTasksProject = (props) => {
     const [perPage, setPerPage] = useState(limit || defaultConfig.limit);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
-    const { translate, currentProjectTasks, user, project, performtasks, tasks, projectPhase, currentProjectPhase,
-        currentProjectMilestone, projectDetail, schedulingProjects, changeRequest } = props;
+    const { translate, currentProjectTasks, user, project, performtasks, tasks, projectPhase, currentProjectPhase = [],
+        currentProjectMilestone = [], projectDetail, schedulingProjects, changeRequest } = props;
     const { status, name, priority, startDate, endDate, responsibleEmployees, accountableEmployees, currentMilestone, currentMilestoneId,
         creatorEmployees, taskType, preceedingTasks, preceedingMilestones, data, currentTaskId, currentPhaseId, currentPhase } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
 
-    const totalPage = tasks && Math.ceil(tasks.totalDocs / perPage);
+    const totalPage = tasks && Math.ceil(Math.max(tasks.totalDocs, projectPhase.totalMilestoneDocs, projectPhase.totalPhaseDocs) / perPage);
 
     // Lấy thông tin về các công việc khi tạo công việc từ file hoặc cập nhật thông tin công việc
     useEffect(() => {
@@ -79,6 +79,8 @@ const TableTasksProject = (props) => {
                 perPage: perPage,
             }
             props.getTasksByProject(data);
+            props.getMilestonesByProject(data);
+            props.getPhasesByProject(data);
             props.getAllUserInAllUnitsOfCompany();
         }
     }, [schedulingProjects?.isLoading, changeRequest?.isLoading])
@@ -91,14 +93,14 @@ const TableTasksProject = (props) => {
     useEffect(() => {
         let data = [];
         if (!tasks?.isLoading && !user?.isLoading && !performtasks?.isLoading && !tasks?.isProjectPaginateLoading 
-            && !projectPhase.isLoading) {
+            && !projectPhase?.isPhaseLoading && !projectPhase?.isMilestoneLoading) {
             let currentTasks = _cloneDeep(tasks.tasks); // Sao chép ra mảng mới
-            let phases = _cloneDeep(projectPhase?.phases);
-            let milestones = _cloneDeep(projectPhase?.milestones)
-            if (taskType.includes('task')) {
-                phases = processProjectPhase(currentTasks);
-                milestones = processProjectMilestone(currentTasks);
-            }
+            let phases = _cloneDeep(projectPhase?.phasesByProjectPaginate);
+            let milestones = _cloneDeep(projectPhase?.milestonesByProjectPaginate)
+            // if (taskType.includes('task')) {
+            //     phases = processProjectPhase(currentTasks);
+            //     milestones = processProjectMilestone(currentTasks);
+            // }
             for (let n in currentTasks) {
 
                 data[n] = {
@@ -198,8 +200,8 @@ const TableTasksProject = (props) => {
                 data: data
             })
         }
-    }, [performtasks?.isLoading, projectPhase?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasksByProjectPaginate), 
-        JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phases), JSON.stringify(tasks?.tasks), JSON.stringify(projectPhase.milestones)]);
+    }, [performtasks?.isLoading, projectPhase?.isPhaseLoading, projectPhase?.isMilestoneLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasksByProjectPaginate), 
+        JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phasesByProjectPaginate), JSON.stringify(tasks?.tasks), JSON.stringify(projectPhase?.milestonesByProjectPaginate)]);
     // Khi gọi hàm lấy toàn bộ công việc, cập nhật lại bảng
     // useEffect(() => {
     //     let data = [];
@@ -308,7 +310,7 @@ const TableTasksProject = (props) => {
     const processPreceedingMilestones = (preceedingMilestones) => {
         if (!currentProjectMilestone || currentProjectMilestone.length  === 0 || preceedingMilestones?.length === 0) return '';
         const resultArr = preceedingMilestones?.map(preceedingMilestoneItem => {
-            return currentProjectMilestone.find(item => item._id == preceedingMilestoneItem)?.name;
+            return currentProjectMilestone?.find(item => item._id == preceedingMilestoneItem)?.name;
         })
         return <ToolTip dataTooltip={resultArr} />;
     }
@@ -364,7 +366,7 @@ const TableTasksProject = (props) => {
 
         setState({
             ...state,
-            preceedingTasks: preceedingMilestonesName
+            preceedingMilestones: preceedingMilestonesName
         });
     }
 
@@ -456,6 +458,7 @@ const TableTasksProject = (props) => {
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
             preceedingTasks: preceedingTasks,
+            preceedingMilestones: preceedingMilestones,
             projectId: currentProjectId,
             page: parseInt(pageNumber),
             perPage: perPage,
@@ -463,6 +466,8 @@ const TableTasksProject = (props) => {
 
         setPage(parseInt(pageNumber));
         props.getTasksByProject(data);
+        props.getMilestonesByProject(data);
+        props.getPhasesByProject(data);
     }
 
     const setLimit = (number) => {
@@ -476,6 +481,7 @@ const TableTasksProject = (props) => {
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
             preceedingTasks: preceedingTasks,
+            preceedingMilestones: preceedingMilestones,
             projectId: currentProjectId,
             page: page,
             perPage: parseInt(number),
@@ -488,6 +494,8 @@ const TableTasksProject = (props) => {
         //     page: 1
         // });
         props.getTasksByProject(data);
+        props.getMilestonesByProject(data);
+        props.getPhasesByProject(data);
     }
 
     // Xem thông tin công việc
@@ -576,7 +584,7 @@ const TableTasksProject = (props) => {
             return {
                 ...state,
                 currentMilestoneId: id,
-                currentMilestone: currentProjectMilestone.find(milestone => milestone._id === id),
+                currentMilestone: currentProjectMilestone?.find(milestone => milestone._id === id),
             }
         })
 
@@ -592,7 +600,7 @@ const TableTasksProject = (props) => {
             return {
                 ...state,
                 currentMilestoneId: id,
-                currentMilestone: currentProjectMilestone.find(milestone => milestone._id === id),
+                currentMilestone: currentProjectMilestone?.find(milestone => milestone._id === id),
             }
         })
 
@@ -645,12 +653,15 @@ const TableTasksProject = (props) => {
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
                 preceedingTasks: preceedingTasks,
+                preceedingMilestones: preceedingMilestones,
                 projectId: currentProjectId,
                 page: page,
                 perPage: perPage,
             }
 
             props.getTasksByProject(data);
+            props.getMilestonesByProject(data);
+            props.getPhasesByProject(data);
         }
 
         setPage(1);
@@ -938,10 +949,9 @@ const TableTasksProject = (props) => {
                         pageTotal={totalPage ? totalPage : 0}
                         currentPage={page}
                         display={data && data.length !== 0 && data.length}
-                        total={tasks && tasks.totalDocs}
+                        total={tasks && (tasks.totalDocs + projectPhase.totalMilestoneDocs + projectPhase.totalPhaseDocs)}
                         func={setCurrentPage}
                     />
-
 
                 </div>
             </div>
@@ -961,6 +971,8 @@ const mapDispatchToProps = {
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
     getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getMilestonesByProject: ProjectPhaseActions.getMilestonesByProject,
+    getPhasesByProject: ProjectPhaseActions.getPhasesByProject,
     getTaskById: performTaskAction.getTaskById,
     deletePhaseById: ProjectPhaseActions.deletePhase,
     deleteMilestoneById: ProjectPhaseActions.deleteMilestone,

@@ -17,7 +17,7 @@ import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ChangeRequestActions } from '../../../project/change-requests/redux/actions';
 
 const ModalRequestEditProjectTaskEmployee = (props) => {
-    const { task, translate, progress, project, id, user, currentProjectTasks, currentProjectPhase, tasks ,projectPhase, currentProjectMilestone } = props;
+    const { task, translate, progress, project, id, user, currentProjectTasks, currentProjectPhase = [], tasks ,projectPhase, currentProjectMilestone = []} = props;
     const projectDetail = getCurrentProjectDetails(project, task.taskProject);
     const [state, setState] = useState({
         editTask: {
