@@ -335,7 +335,7 @@ function ActionTab(props) {
             })
         }
     }
-    console.log(performtasks)
+
     //Thêm mới hoạt động
     const submitAction = (taskId, index) => {
         let { newAction } = state;

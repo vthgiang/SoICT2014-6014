@@ -15,9 +15,15 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
-import { convertUserIdToUserName, getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams, getEstimateMemberCost, getMaxMinDateInArr, getNearestIntegerNumber, getProjectParticipants, handleWeekendAndWorkTime } from '../../../project/projects/components/functionHelper';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+
+import { convertUserIdToUserName, getCurrentProjectDetails, formatTime, getEstimateHumanCostFromParams, getEstimateMemberCost, getMaxMinDateInArr, getNearestIntegerNumber, getProjectParticipants, handleWeekendAndWorkTime } from '../../../project/projects/components/functionHelper';
 import moment from 'moment';
 import { checkIfHasCommonItems, getSalaryFromUserId, numberWithCommas } from '../../task-management/component/functionHelpers';
+
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 
 const AddProjectTaskForm = (props) => {
     const [state, setState] = useState({
@@ -36,6 +42,7 @@ const AddProjectTaskForm = (props) => {
             collaboratedWithOrganizationalUnits: [],
             taskTemplate: "",
             preceedingTasks: [],
+            preceedingMilestones: [],
             followingTasks: [],
             taskProject: "",
             taskPhase: "",
@@ -63,8 +70,8 @@ const AddProjectTaskForm = (props) => {
 
     const { id, newTask } = state;
     const { estimateNormalTime, estimateOptimisticTime, estimateNormalCost, estimateMaxCost, estimateAssetCost, responsibleEmployees, accountableEmployees,
-        totalResWeight, totalAccWeight, currentResWeightArr, currentAccWeightArr, estimateHumanCost } = newTask;
-    const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role, currentProjectTasks, currentProjectPhase } = props;
+        totalResWeight, totalAccWeight, currentResWeightArr, currentAccWeightArr, estimateHumanCost, preceedingMilestones } = newTask;
+    const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role, currentProjectTasks, currentProjectPhase = [], currentProjectMilestone = [] } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
 
@@ -77,11 +84,17 @@ const AddProjectTaskForm = (props) => {
         phases: []
     })
 
+    const [currentMilestoneToChoose, setCurrentMilestoneToChoose] = useState({
+        milestones: []
+    })
+
     useEffect(() => {
-        let res = currentProjectPhase ? currentProjectPhase?.map(item => ({
-            value: item._id,
-            text: item.name
-        })) : [];
+        let res = currentProjectPhase ? currentProjectPhase?.map(item => {
+            return {
+                value: item._id,
+                text: item.name
+            }
+        }) : [];
         res.unshift({ value: "", text: "--Chọn giai đoạn--" })
         setCurrentPhaseToChoose({
             phases: res
@@ -99,6 +112,40 @@ const AddProjectTaskForm = (props) => {
             following: []
         })
     }, [JSON.stringify(currentProjectTasks)])
+
+    useEffect(() => {
+        let res = currentProjectMilestone ? currentProjectMilestone?.map(item => {
+            return {
+                value: item._id,
+                text: item.name
+            }
+        }) : [];
+        setCurrentMilestoneToChoose({
+            milestones: res,
+        })
+    }, [JSON.stringify(currentProjectMilestone)])
+
+    // Đặt lại thời gian
+    const regenerateTime = () => {
+        let currentTime = formatTime(new Date())
+        setState(state => {
+            return {
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    time: currentTime
+                }
+            }
+        });
+    }
+
+    useEffect(() => {
+        //Đặt lại thời gian mặc định khi mở modal
+        window.$(`addNewProjectTask-${id}`).on('shown.bs.modal', regenerateTime);
+        return () => {
+            window.$(`addNewProjectTask-${id}`).unbind('shown.bs.modal', regenerateTime)
+        }
+    }, [])
 
     let listTaskTemplate;
     let taskTemplate;
@@ -304,9 +351,9 @@ const AddProjectTaskForm = (props) => {
         let { translate, project } = props;
         const projectDetail = getCurrentProjectDetails(project);
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-        if (checkIfHasCommonItems(value, newTask.responsibleEmployees)) {
-            message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
-        }
+        // if (checkIfHasCommonItems(value, newTask.responsibleEmployees)) {
+        //     message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
+        // }
 
         if (willUpdateState) {
             const accountablesWithSalaryArr = value?.map(valueItem => {
@@ -363,6 +410,7 @@ const AddProjectTaskForm = (props) => {
         }, 10);
     }
 
+    // Thay đổi công việc tiền nhiệm
     const handleChangePreceedingTask = (selected) => {
         let message;
         if (checkIfHasCommonItems(selected, newTask.followingTasks)) {
@@ -391,6 +439,23 @@ const AddProjectTaskForm = (props) => {
             ...state.newTask,
             followingTasks: selected,
             errorOnPreceedFollowTasks: message,
+        }
+        setState({
+            ...state,
+            newTask: currentNewTask
+        })
+        setTimeout(() => {
+            props.handleChangeTaskData(currentNewTask)
+        }, 10);
+    }
+
+    // Thay đổi cột mốc tiền nhiệm
+    const handleChangePreceedingMilestone = (selected) => {
+        let message;
+        const currentNewTask = {
+            ...state.newTask,
+            preceedingMilestones: selected,
+            errorOnPreceedMilestones: message,
         }
         setState({
             ...state,
@@ -648,14 +713,18 @@ const AddProjectTaskForm = (props) => {
         //     ...currentTasksToChoose,
         //     following: newFollowingTasksToChoose,
         // })
-        const preceedingTasksEndDateArr = newTask.preceedingTasks.map((preceedingItem) => {
+        let preceedingTasksEndDateArr = newTask.preceedingTasks.map((preceedingItem) => {
             return currentProjectTasks?.find(projectTaskItem => String(projectTaskItem._id) === String(preceedingItem)).endDate;
-        })
+        }) || [];
+        let preceedingMilestonesEndDateArr = newTask?.preceedingMilestones?.map((preceedingItem) => {
+            return currentProjectMilestone?.find(projectMilestoneItem => String(projectMilestoneItem._id) === String(preceedingItem)).endDate;
+        }) || [];
+        preceedingTasksEndDateArr.push(...preceedingMilestonesEndDateArr);
         const latestStartDate = getMaxMinDateInArr(preceedingTasksEndDateArr, 'max');
         const curStartDate = moment(latestStartDate).format('DD-MM-YYYY');
         const curStartTime = moment(latestStartDate).format('hh:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM');
-        newTask.preceedingTasks.length > 0 && setStartTime(curStartTime);
-        newTask.preceedingTasks.length > 0 && setState({
+        (newTask.preceedingTasks.length > 0 || newTask.preceedingMilestones.length > 0) && setStartTime(curStartTime);
+        (newTask.preceedingTasks.length > 0 || newTask.preceedingMilestones.length > 0) && setState({
             ...state,
             newTask: {
                 ...state.newTask,
@@ -664,7 +733,7 @@ const AddProjectTaskForm = (props) => {
             },
 
         })
-        if (newTask.preceedingTasks.length > 0) {
+        if (newTask.preceedingTasks.length > 0 || newTask.preceedingMilestones.length > 0) {
             props.handleChangeStartTime(curStartTime);
             props.handleChangeTaskData({
                 ...state.newTask,
@@ -680,7 +749,7 @@ const AddProjectTaskForm = (props) => {
         //         startDate: curStartDate,
         //     })
         // }, 10);
-    }, [newTask.preceedingTasks])
+    }, [newTask.preceedingTasks, newTask.preceedingMilestones])
 
     // Khi followingTasksList có sự thay đổi thì preceedingTasksList cũng phải thay đổi theo
     useEffect(() => {
@@ -721,7 +790,7 @@ const AddProjectTaskForm = (props) => {
                 ...state,
                 newTask: {
                     ...state.newTask,
-                    errorOnStartDate: `Thời điểm bắt đầu phải sau thời gian kết thúc của công việc tiền nhiệm: ${moment(newTask.currentLatestStartDate).format('HH:mm DD/MM/YYYY')}`
+                    errorOnStartDate: `Thời điểm bắt đầu phải sau thời gian kết thúc của công việc, cột mốc tiền nhiệm: ${moment(newTask.currentLatestStartDate).format('HH:mm DD/MM/YYYY')}`
                 }
             })
         } else {
@@ -800,7 +869,7 @@ const AddProjectTaskForm = (props) => {
                                         multiple={true}
                                         onChange={handleChangePreceedingTask}
                                     />
-                                    <ErrorLabel content={newTask.errorOnPreceedFollowTasks} />
+                                    <ErrorLabel content={newTask.errorOnPreceedFollowTask} />
                                 </div>
                             }
                             {/* Công việc kế nhiệm */}
@@ -819,6 +888,25 @@ const AddProjectTaskForm = (props) => {
                                     <ErrorLabel content={newTask.errorOnPreceedFollowTasks} />
                                 </div>
                             } */}
+                        </div>
+
+                        <div className="row">
+                            {/* Cột mốc tiền nhiệm */}
+                            {currentMilestoneToChoose.milestones.length > 0 &&
+                                <div className={`form-group col-md-12 col-xs-12`}>
+                                    <label>{translate('project.task_management.preceedingMilestone')}</label>
+                                    <SelectBox
+                                        id={`select-project-preceeding-milestone`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={currentMilestoneToChoose.milestones}
+                                        value={newTask.preceedingMilestones}
+                                        multiple={true}
+                                        onChange={handleChangePreceedingMilestone}
+                                    />
+                                    <ErrorLabel content={newTask.errorOnPreceedMilestone} />
+                                </div>
+                            }
                         </div>
 
                         <div className='row'>

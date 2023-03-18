@@ -6,7 +6,7 @@ const Logger = require('../../../logs');
  */
 exports.getProjectPhase = async (req, res) => {
     try {
-        let tp = await ProjectPhaseService.getProjectPhase(req.portal, req.params.id);
+        let tp = await ProjectPhaseService.getProjectPhase(req.portal, req.query);
 
         await Logger.info(req.user.email, 'get_project_phase_success', req.portal)
         res.status(200).json({
@@ -28,9 +28,9 @@ exports.getProjectPhase = async (req, res) => {
 /** 
  *  Lấy thông tin của 1 giai đoạn
  */
- exports.get = async (req, res) => {
+exports.getPhase = async (req, res) => {
     try {
-        let tp = await ProjectPhaseService.get(req.portal, req.params.id, req.user._id);
+        let tp = await ProjectPhaseService.getPhase(req.portal, req.params.id, req.user._id);
 
         await Logger.info(req.user.email, 'get_phase_success', req.portal)
         res.status(200).json({
@@ -52,9 +52,9 @@ exports.getProjectPhase = async (req, res) => {
 /** 
  *  Tạo giai đoạn mới
  */
-exports.create = async (req, res) => {
+exports.createPhase = async (req, res) => {
     try {
-        let tp = await ProjectPhaseService.create(req.portal, req.body);
+        let tp = await ProjectPhaseService.createPhase(req.portal, req.body);
 
         await Logger.info(req.user.email, 'create_phase_success', req.portal)
         res.status(200).json({
@@ -76,7 +76,7 @@ exports.create = async (req, res) => {
 /** 
  *  Tạo cột mốc mới
  */
- exports.createMilestone = async (req, res) => {
+exports.createMilestone = async (req, res) => {
     try {
         let tp = await ProjectPhaseService.createMilestone(req.portal, req.body);
 
@@ -102,7 +102,7 @@ exports.create = async (req, res) => {
  */
 exports.createCPMProjectPhase = async (req, res) => {
     try {
-        const projectPhase = await ProjectService.createCPMProjectPhase(req.portal, req.body);
+        const projectPhase = await ProjectPhaseService.createCPMProjectPhase(req.portal, req.body);
         await Logger.info(req.user.email, 'create_phase_project_success', req.portal)
         res.status(200).json({
             success: true,
@@ -172,7 +172,7 @@ exports.deletePhase = async (req, res) => {
  */
 exports.getProjectMilestone = async (req, res) => {
     try {
-        let tp = await ProjectPhaseService.getProjectMilestone(req.portal, req.params.id);
+        let tp = await ProjectPhaseService.getProjectMilestone(req.portal, req.query);
 
         await Logger.info(req.user.email, 'get_project_milestone_success', req.portal)
         res.status(200).json({

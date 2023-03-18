@@ -169,7 +169,7 @@ const TabEvalProjectMember = (props) => {
                                             )
                                         }
                                         return (
-                                            <tbody key={`normal-member-${memberItem.id}`}>
+                                            <tbody key={`normal-member-${memberItem.id}-${memberTaskIndex}`}>
                                                 <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-2`}>
                                                     <td><strong>{memberTaskIndex === 0 ? memberItem?.name : ''}</strong></td>
                                                     <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>

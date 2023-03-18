@@ -746,6 +746,7 @@ class DetailProjectTaskTab extends Component {
         let task;
         const currentProjectTasks = this.props.tasks && this.props.tasks.tasksByProject;
         const currentProjectPhase = this.props.projectPhase && this.props.projectPhase.phases;
+        const currentProjectMilestone = this.props.projectPhase && this.props.projectPhase.milestones;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
         // Các biến dùng trong phần Nhắc Nhở
         let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
@@ -1409,6 +1410,7 @@ class DetailProjectTaskTab extends Component {
                         task={task && task}
                         currentProjectTasks={currentProjectTasks && currentProjectTasks}
                         currentProjectPhase={currentProjectPhase && currentProjectPhase}
+                        currentProjectMilestone={currentProjectMilestone && currentProjectMilestone}
                         projectDetail={projectDetail && projectDetail}
                     />
                 }

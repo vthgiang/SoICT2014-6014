@@ -9,6 +9,7 @@ import { convertUserIdToUserName, getCurrentProjectDetails, getDurationWithoutSa
 import ModalCalculateCPM from './modalCalculateCPM';
 import ModalExcelImport from './modalExcelImport';
 import ModalEditRowCPMExcel from './modalEditRowCPMExcel';
+import ModalEditRowPhase from './modalEditRowPhase';
 import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import moment from 'moment';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
@@ -50,6 +51,9 @@ const ModalAddTaskSchedule = (props) => {
     })
     const [currentEditRowIndex, setCurrentEditRowIndex] = useState(undefined);
     const [currentRow, setCurrentRow] = useState(undefined);
+    const [currentEditPhaseIndex, setCurrentEditPhaseIndex] = useState(undefined);
+    const [currentPhase, setCurrentPhase] = useState(undefined);
+
     const [currentModeImport, setCurrentModeImport] = useState('EXCEL');
     const [estDurationEndProject, setEstDurationEndProject] = useState(
         numberWithCommas(
@@ -67,7 +71,7 @@ const ModalAddTaskSchedule = (props) => {
     }
     const { listTasks } = state;
 
-    const handleDelete = (index) => {
+    const handleDeleteTask = (index) => {
         if (listTasks && listTasks.length > 0) {
             // listTasks.splice(index, 1);
             listTasks.splice(listTasks.length - 1, 1);
@@ -86,10 +90,22 @@ const ModalAddTaskSchedule = (props) => {
         }
     }
 
-    const handleEditRow = async (index) => {
+    const handleDeletePhase = (index) => {
+
+    }
+
+    // chỉnh sửa dòng công việc
+    const handleEditTask = async (index) => {
         await setCurrentRow(state.listTasks[index]);
         await setCurrentEditRowIndex(index);
         await window.$(`#modal-edit-row-cpm-excel-${state.listTasks[index].code}`).modal('show');
+    }
+
+    // chỉnh sửa thông tin giai đoạn
+    const handleEditPhase = async (index) => {
+        await setCurrentPhase(state.listPhases[index]);
+        await setCurrentEditPhaseIndex(index);
+        await window.$(`#modal-edit-row-phase-${state.listPhases[index].code}`).modal('show');
     }
 
     const handleOpenExcelImport = () => {
@@ -98,8 +114,9 @@ const ModalAddTaskSchedule = (props) => {
         }, 10);
     }
 
-    const handleImportCPM = (data, phaseData = []) => {
-        const formattedData = data.map((dataItem) => {
+    // xử lý dữ liệu file import
+    const handleImportCPM = (taskData, phaseData = []) => {
+        const formattedData = taskData.map((dataItem) => {
             let currentResMemberIdArr = [], currentAccMemberIdArr = [];
             for (let empItem of projectDetail?.responsibleEmployees) {
                 for (let resEmailItem of dataItem.emailResponsibleEmployees) {
@@ -157,12 +174,28 @@ const ModalAddTaskSchedule = (props) => {
                 totalResWeight: Number(dataItem.totalResWeight),
             }
         })
-        console.log('formattedData', formattedData);
-        let formattedPhaseData = phaseData.map(phase => {
+
+        let formattedPhaseData = phaseData?.map(dataItem => {
+            let currentResMemberIdArr = [], currentAccMemberIdArr = [];
+            for (let empItem of projectDetail?.responsibleEmployees) {
+                for (let resEmailItem of dataItem.emailResponsibleEmployees) {
+                    if (String(empItem.email) === String(resEmailItem)) {
+                        // console.log('dataItem', dataItem.code, '(String(empItem.email)', (String(empItem.email)), 'String(resEmailItem)', String(resEmailItem))
+                        currentResMemberIdArr.push(empItem._id);
+                    }
+                }
+                for (let accEmailItem of dataItem.emailAccountableEmployees) {
+                    if (String(empItem.email) === String(accEmailItem)) {
+                        // console.log('dataItem', dataItem.code, '(String(empItem.email)', (String(empItem.email)), 'String(accEmailItem)', String(accEmailItem))
+                        currentAccMemberIdArr.push(empItem._id);
+                    }
+                }
+            }
+
             return {
-                ...phase,
-                name: phase.phaseName,
-                code: phase.phaseCode
+                ...dataItem,
+                currentResponsibleEmployees: currentResMemberIdArr,
+                currentAccountableEmployees: currentAccMemberIdArr,
             }
         })
 
@@ -190,11 +223,12 @@ const ModalAddTaskSchedule = (props) => {
                 endDate: '',
             },
             listTasks: [],
+            listPhases: [],
         })
     }
 
+    // Lưu dữ liệu công việc
     const handleSaveEditInfoRow = (newRowData, currentEditRowIndex) => {
-        console.log('newRowData', newRowData)
         const newListTasks = state.listTasks.map((taskItem, taskIndex) => {
             if (currentEditRowIndex === taskIndex) {
                 return {
@@ -209,10 +243,33 @@ const ModalAddTaskSchedule = (props) => {
                 endDate: '',
             }
         })
-        console.log('newListTasks', newListTasks)
+
         setState({
             ...state,
             listTasks: newListTasks,
+        })
+    }
+
+    // Lưu dữ liệu giai đoạn
+    const handleSaveEditInfoPhase = (newPhaseData, currentEditPhaseIndex) => {
+        const newListPhases = state.listPhases.map((phaseItem, phaseIndex) => {
+            if (currentEditPhaseIndex === phaseIndex) {
+                return {
+                    ...newPhaseData,
+                    startDate: '',
+                    endDate: '',
+                }
+            }
+            return {
+                ...phaseItem,
+                startDate: '',
+                endDate: '',
+            }
+        })
+
+        setState({
+            ...state,
+            listPhases: newListPhases,
         })
     }
 
@@ -307,6 +364,13 @@ const ModalAddTaskSchedule = (props) => {
                                     handleSave={handleSaveEditInfoRow} />
                             }
 
+                            {/* Phần edit row tu file excel */}
+                            {currentPhase && currentPhase.code &&
+                                <ModalEditRowPhase importCPM={handleImportCPM} currentPhase={currentPhase}
+                                    currentEditPhaseIndex={currentEditPhaseIndex}
+                                    handleSave={handleSaveEditInfoPhase} />
+                            }
+
                             {/* Button refresh form dữ liệu */}
                             <button className="form-group pull-right" title="Làm mới form"
                                 style={{ marginTop: 20, marginRight: 10 }}
@@ -369,7 +433,7 @@ const ModalAddTaskSchedule = (props) => {
                                                 {
                                                     (state.listTasks && state.listTasks.length !== 0) &&
                                                     state.listTasks.map((taskItem, index) => (
-                                                        <tr style={{ cursor: 'pointer' }} onClick={() => handleEditRow(index)} key={`task-${index}`}>
+                                                        <tr style={{ cursor: 'pointer' }} onClick={() => handleEditTask(index)} key={`task-${index}`}>
                                                             <td>{taskItem?.code}</td>
                                                             <td>{taskItem?.name}</td>
                                                             <td>{taskItem?.preceedingTasks?.join(', ')}</td>
@@ -396,7 +460,7 @@ const ModalAddTaskSchedule = (props) => {
                                                             <td>{checkIsNullUndefined(taskItem?.estimateMaxCost) ? 'Chưa tính được' : taskItem?.estimateMaxCost}</td>
                                                             {currentModeImport === 'HAND' &&
                                                                 <td>
-                                                                    <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
+                                                                    <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTask(index)}><i className="material-icons">delete</i></a>
                                                                 </td>
                                                             }
                                                             {currentModeImport === 'EXCEL' &&
@@ -411,28 +475,43 @@ const ModalAddTaskSchedule = (props) => {
                                         </table>
                                     </div>
 
-                                    {/* Bảng các giai đoạn trong dự án */}
-                                    <div id="import_phase_project" className="tab-pane">
+                                    < div id="import_phase_project" className="tab-pane">
+                                        {/* Bảng các giai đoạn trong dự án*/}
                                         <table id="phase-project-table" className="table table-striped table-bordered table-hover">
                                             <thead>
-                                                <tr>
+                                                <tr >
                                                     <th>Mã giai đoạn</th>
                                                     <th>Tên giai đoạn</th>
+                                                    <th>Người thực hiện</th>
+                                                    <th>Người phê duyệt</th>
+                                                    <th>{translate('task_template.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
                                                     (state.listPhases && state.listPhases.length !== 0) &&
                                                     state.listPhases.map((phaseItem, index) => (
-                                                        <tr style={{ cursor: 'pointer' }} key={`phase-${index}`}>
+                                                        <tr style={{ cursor: 'pointer' }} onClick={() => handleEditPhase(index)} key={`phase-${index}`}>
                                                             <td>{phaseItem?.code}</td>
                                                             <td>{phaseItem?.name}</td>
+                                                            <td>{phaseItem?.currentResponsibleEmployees?.map(resItem => convertUserIdToUserName(listUsers, resItem)).join(', ')}</td>
+                                                            <td>{phaseItem?.currentAccountableEmployees?.map(accItem => convertUserIdToUserName(listUsers, accItem)).join(', ')}</td>
+                                                            {currentModeImport === 'HAND' &&
+                                                                <td>
+                                                                    <a className="delete" title={translate('general.delete')} onClick={() => handleDeletePhase(index)}><i className="material-icons">delete</i></a>
+                                                                </td>
+                                                            }
+                                                            {currentModeImport === 'EXCEL' &&
+                                                                <td>
+                                                                    <a className="edit" title={translate('general.edit')}><i className="material-icons">edit</i></a>
+                                                                </td>
+                                                            }
                                                         </tr>
                                                     ))
                                                 }
                                             </tbody>
                                         </table>
-                                    </div>
+                                    </div> 
                                 </div>
                             </div>
                         </>

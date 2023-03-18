@@ -38,6 +38,7 @@ const TableTasksProject = (props) => {
         accountableEmployees: null,
         creatorEmployees: null,
         preceedingTasks: null,
+        preceedingMilestones: null,
         data: [],
         taskType: ['task', 'phase', 'milestone'],
         currentTaskId: '',
@@ -50,33 +51,39 @@ const TableTasksProject = (props) => {
     const [perPage, setPerPage] = useState(limit || defaultConfig.limit);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
-    const { translate, currentProjectTasks, user, project, performtasks, tasks, projectPhase, currentProjectPhase,
-        currentProjectMilestone, projectDetail } = props;
+    const { translate, currentProjectTasks, user, project, performtasks, tasks, projectPhase, currentProjectPhase = [],
+        currentProjectMilestone = [], projectDetail, schedulingProjects, changeRequest } = props;
     const { status, name, priority, startDate, endDate, responsibleEmployees, accountableEmployees, currentMilestone, currentMilestoneId,
-        creatorEmployees, taskType, preceedingTasks, data, currentTaskId, currentPhaseId, currentPhase } = state;
+        creatorEmployees, taskType, preceedingTasks, preceedingMilestones, data, currentTaskId, currentPhaseId, currentPhase } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
 
-    const totalPage = tasks && Math.ceil(tasks.totalDocs / perPage);
+    const totalPage = tasks && Math.ceil(Math.max(tasks.totalDocs, projectPhase.totalMilestoneDocs, projectPhase.totalPhaseDocs) / perPage);
 
+    // Lấy thông tin về các công việc khi tạo công việc từ file hoặc cập nhật thông tin công việc
     useEffect(() => {
-        let data = {
-            status: [],
-            name: null,
-            priority: null,
-            startDate: null,
-            endDate: null,
-            responsibleEmployees: null,
-            accountableEmployees: null,
-            creatorEmployees: null,
-            preceedingTasks: null,
-            projectId: currentProjectId,
-            page: 1,
-            perPage: perPage,
+        if (!schedulingProjects?.isPhaseLoading && !schedulingProjects?.isTaskLoading) {
+            let data = {
+                status: [],
+                name: null,
+                priority: null,
+                startDate: null,
+                endDate: null,
+                responsibleEmployees: null,
+                accountableEmployees: null,
+                creatorEmployees: null,
+                preceedingTasks: null,
+                preceedingMilestones: null,
+                projectId: currentProjectId,
+                page: 1,
+                perPage: perPage,
+            }
+            props.getTasksByProject(data);
+            props.getMilestonesByProject(data);
+            props.getPhasesByProject(data);
+            props.getAllUserInAllUnitsOfCompany();
         }
-        props.getTasksByProject(data);
-        props.getAllUserInAllUnitsOfCompany();
-    }, [])
+    }, [schedulingProjects?.isPhaseLoading, schedulingProjects?.isTaskLoading])
 
     // useEffect(() => {
     //     window.$(`#modelPerformTask${currentTaskId}`).modal('show')
@@ -86,14 +93,14 @@ const TableTasksProject = (props) => {
     useEffect(() => {
         let data = [];
         if (!tasks?.isLoading && !user?.isLoading && !performtasks?.isLoading && !tasks?.isProjectPaginateLoading 
-            && !projectPhase.isLoading) {
+            && !projectPhase?.isPhaseLoading && !projectPhase?.isMilestoneLoading) {
             let currentTasks = _cloneDeep(tasks.tasks); // Sao chép ra mảng mới
-            let phases = _cloneDeep(projectPhase?.phases);
-            let milestones = _cloneDeep(projectPhase?.milestones)
-            if (taskType.includes('task')) {
-                phases = processProjectPhase(currentTasks);
-                milestones = processProjectMilestone(currentTasks);
-            }
+            let phases = _cloneDeep(projectPhase?.phasesByProjectPaginate);
+            let milestones = _cloneDeep(projectPhase?.milestonesByProjectPaginate)
+            // if (taskType.includes('task')) {
+            //     phases = processProjectPhase(currentTasks);
+            //     milestones = processProjectMilestone(currentTasks);
+            // }
             for (let n in currentTasks) {
 
                 data[n] = {
@@ -101,7 +108,8 @@ const TableTasksProject = (props) => {
                     rawData: currentTasks[n],
                     name: currentTasks[n]?.name,
                     priority: convertPriorityData(currentTasks[n].priority, translate),
-                    preceedingTask: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
+                    preceedingTasks: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
+                    preceedingMilestones: processPreceedingMilestones(currentTasks[n]?.preceedingMilestones),
                     responsibleEmployees: currentTasks[n]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.responsibleEmployees.map(o => o.name)} /> : null,
                     accountableEmployees: currentTasks[n]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.accountableEmployees.map(o => o.name)} /> : null,
                     creatorEmployees: currentTasks[n].creator ? currentTasks[n].creator.name : null,
@@ -122,15 +130,15 @@ const TableTasksProject = (props) => {
                 }
             }
 
-            for (let m in phases) {
+            for (let m = phases.length - 1; m >= 0; m--) {
                 phases[m]= {
                     ...phases[m],
                     rawData: phases[m],
                     name: phases[m]?.name,
-                    priority: null,
-                    preceedingTask: null,
-                    responsibleEmployees: null,
-                    accountableEmployees: null,
+                    priority: convertPriorityData(phases[m].priority, translate),
+                    preceedingTasks: null,
+                    responsibleEmployees: phases[m]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={phases[m]?.responsibleEmployees.map(o => o.name)} /> : null,
+                    accountableEmployees: phases[m]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={phases[m]?.accountableEmployees.map(o => o.name)} /> : null,
                     creatorEmployees: phases[m].creator ? phases[m].creator.name : null,
                     status: <div style={{ color: renderStatusColor(phases[m]) }}>{formatTaskStatus(translate, phases[m]?.status)}</div>,
                     startDate: moment(phases[m]?.startDate).format('HH:mm DD/MM/YYYY') || '',
@@ -140,14 +148,18 @@ const TableTasksProject = (props) => {
                     progress: renderProgressBar(phases[m]?.progress, phases[m]),
                     parent: null,
                     type: 'phase',
-                    action: ["view"],
+                    action: ["view"]
                 }
 
-                if(checkIfAbleToCRUDProject({ project, user, currentProjectId })) {
+                if (projectPhase?.phases[m]?.responsibleEmployees && projectPhase?.phases[m]?.responsibleEmployees.filter(o => o._id === userId).length > 0 || projectPhase?.phases[m]?.consultedEmployees && projectPhase?.phases[m]?.consultedEmployees?.filter(o => o._id === userId).length > 0) {
+                    phases[m] = { ...phases[m], action: ["view", "edit"] }
+                }
+
+                if (checkIfAbleToCRUDProject({ project, user, currentProjectId }) || projectPhase?.phases[m]?.accountableEmployees && projectPhase?.phases[m]?.accountableEmployees?.filter(o => o._id === userId).length > 0 || projectPhase?.phases[m]?.creator && projectPhase?.phases[m]?.creator?._id === userId) {
                     phases[m] = { ...phases[m], action: ["view", "edit", "delete"] }
                 }
 
-                data.push(phases[m]);
+                data.unshift(phases[m]);
             }
 
             for (let k in milestones) {
@@ -156,7 +168,8 @@ const TableTasksProject = (props) => {
                     rawData: milestones[k],
                     name: milestones[k]?.name,
                     priority: convertPriorityData(milestones[k].priority, translate),
-                    preceedingTask: processPreceedingTasks(milestones[k]?.preceedingTasks),
+                    preceedingTasks: processPreceedingTasks(milestones[k]?.preceedingTasks),
+                    preceedingMilestones: processPreceedingMilestones(milestones[k]?.preceedingMilestones),
                     responsibleEmployees: milestones[k]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={milestones[k]?.responsibleEmployees.map(o => o.name)} /> : null,
                     accountableEmployees: milestones[k]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={milestones[k]?.accountableEmployees.map(o => o.name)} /> : null,
                     creatorEmployees: milestones[k].creator ? milestones[k].creator.name : null,
@@ -171,11 +184,11 @@ const TableTasksProject = (props) => {
                     action: ["view"],
                 }
 
-                if(checkIfAbleToCRUDProject({ project, user, currentProjectId })) {
+                if(checkIfAbleToCRUDProject({ project, user, currentProjectId }) || projectPhase?.milestones[k]?.accountableEmployees && projectPhase.milestones[k]?.accountableEmployees?.filter(o => o._id === userId).length > 0 || projectPhase?.milestones[k]?.creator && projectPhase?.milestones[k]?.creator?._id === userId) {
                     milestones[k] = { ...milestones[k], action: ["view", "edit", "delete"] }
                 }
 
-                else if (projectPhase.milestones[k]?.accountableEmployees && projectPhase.milestones[k]?.accountableEmployees?.filter(o => o._id === userId).length > 0) {
+                else if (projectPhase?.milestones[k]?.responsibleEmployees && projectPhase?.milestones[k]?.responsibleEmployees?.filter(o => o._id === userId).length > 0 || projectPhase?.milestones[k]?.consultedEmployees && projectPhase?.milestones[k]?.consultedEmployees?.filter(o => o._id === userId).length > 0) {
                     milestones[k] = { ...milestones[k], action: ["view", "edit"] }
                 }
 
@@ -187,9 +200,8 @@ const TableTasksProject = (props) => {
                 data: data
             })
         }
-    }, [performtasks?.isLoading, projectPhase?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasksByProjectPaginate),
-         JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phases), JSON.stringify(tasks?.tasks), taskType, JSON.stringify(projectPhase.milestones)]);
-
+    }, [performtasks?.isLoading, projectPhase?.isPhaseLoading, projectPhase?.isMilestoneLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading, JSON.stringify(props?.tasks?.tasksByProjectPaginate), 
+        JSON.stringify(props?.project?.data?.list), JSON.stringify(projectPhase?.phasesByProjectPaginate), JSON.stringify(tasks?.tasks), JSON.stringify(projectPhase?.milestonesByProjectPaginate)]);
     // Khi gọi hàm lấy toàn bộ công việc, cập nhật lại bảng
     // useEffect(() => {
     //     let data = [];
@@ -210,7 +222,7 @@ const TableTasksProject = (props) => {
     //                 rawData: currentTasks[n],
     //                 name: currentTasks[n]?.name,
     //                 priority: convertPriorityData(currentTasks[n].priority, translate),
-    //                 preceedingTask: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
+    //                 preceedingTasks: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
     //                 responsibleEmployees: currentTasks[n]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.responsibleEmployees.map(o => o.name)} /> : null,
     //                 accountableEmployees: currentTasks[n]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.accountableEmployees.map(o => o.name)} /> : null,
     //                 creatorEmployees: currentTasks[n].creator ? currentTasks[n].creator.name : null,
@@ -237,7 +249,7 @@ const TableTasksProject = (props) => {
     //                 rawData: phases[m],
     //                 name: phases[m]?.name,
     //                 priority: null,
-    //                 preceedingTask: null,
+    //                 preceedingTasks: null,
     //                 responsibleEmployees: null,
     //                 accountableEmployees: null,
     //                 creatorEmployees: phases[m].creator ? phases[m].creator.name : null,
@@ -288,9 +300,17 @@ const TableTasksProject = (props) => {
     // }
 
     const processPreceedingTasks = (preceedingTasks) => {
-        if (!currentProjectTasks || preceedingTasks?.length === 0) return '';
+        if (!currentProjectTasks || currentProjectTasks.length  === 0 || preceedingTasks?.length === 0) return '';
         const resultArr = preceedingTasks?.map(preceedingTaskItem => {
-            return currentProjectTasks.find(item => item._id === preceedingTaskItem.task)?.name;
+            return currentProjectTasks.find(item => item._id == preceedingTaskItem.task || item._id == preceedingTaskItem.task._id )?.name;
+        })
+        return <ToolTip dataTooltip={resultArr} />;
+    }
+
+    const processPreceedingMilestones = (preceedingMilestones) => {
+        if (!currentProjectMilestone || currentProjectMilestone.length  === 0 || preceedingMilestones?.length === 0) return '';
+        const resultArr = preceedingMilestones?.map(preceedingMilestoneItem => {
+            return currentProjectMilestone?.find(item => item._id == preceedingMilestoneItem)?.name;
         })
         return <ToolTip dataTooltip={resultArr} />;
     }
@@ -335,6 +355,18 @@ const TableTasksProject = (props) => {
         setState({
             ...state,
             preceedingTasks: preceedingTasksName
+        });
+    }
+
+    const handleChangePreceedingMilestones = (e) => {
+        let preceedingMilestonesName = e.target.value;
+        if (preceedingMilestonesName === '') {
+            preceedingMilestonesName = null;
+        }
+
+        setState({
+            ...state,
+            preceedingMilestones: preceedingMilestonesName
         });
     }
 
@@ -426,6 +458,7 @@ const TableTasksProject = (props) => {
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
             preceedingTasks: preceedingTasks,
+            preceedingMilestones: preceedingMilestones,
             projectId: currentProjectId,
             page: parseInt(pageNumber),
             perPage: perPage,
@@ -433,6 +466,8 @@ const TableTasksProject = (props) => {
 
         setPage(parseInt(pageNumber));
         props.getTasksByProject(data);
+        props.getMilestonesByProject(data);
+        props.getPhasesByProject(data);
     }
 
     const setLimit = (number) => {
@@ -446,6 +481,7 @@ const TableTasksProject = (props) => {
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
             preceedingTasks: preceedingTasks,
+            preceedingMilestones: preceedingMilestones,
             projectId: currentProjectId,
             page: page,
             perPage: parseInt(number),
@@ -458,6 +494,8 @@ const TableTasksProject = (props) => {
         //     page: 1
         // });
         props.getTasksByProject(data);
+        props.getMilestonesByProject(data);
+        props.getPhasesByProject(data);
     }
 
     // Xem thông tin công việc
@@ -546,7 +584,7 @@ const TableTasksProject = (props) => {
             return {
                 ...state,
                 currentMilestoneId: id,
-                currentMilestone: currentProjectMilestone.find(milestone => milestone._id === id),
+                currentMilestone: currentProjectMilestone?.find(milestone => milestone._id === id),
             }
         })
 
@@ -562,7 +600,7 @@ const TableTasksProject = (props) => {
             return {
                 ...state,
                 currentMilestoneId: id,
-                currentMilestone: currentProjectMilestone.find(milestone => milestone._id === id),
+                currentMilestone: currentProjectMilestone?.find(milestone => milestone._id === id),
             }
         })
 
@@ -615,12 +653,15 @@ const TableTasksProject = (props) => {
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
                 preceedingTasks: preceedingTasks,
+                preceedingMilestones: preceedingMilestones,
                 projectId: currentProjectId,
                 page: page,
                 perPage: perPage,
             }
 
             props.getTasksByProject(data);
+            props.getMilestonesByProject(data);
+            props.getPhasesByProject(data);
         }
 
         setPage(1);
@@ -678,7 +719,8 @@ const TableTasksProject = (props) => {
     let column = [
         { name: translate('task.task_management.col_name'), key: "name" },
         { name: translate('task.task_management.col_priority'), key: "priority" },
-        { name: translate('project.task_management.preceedingTask'), key: "preceedingTask" },
+        { name: translate('project.task_management.preceedingTask'), key: "preceedingTasks" },
+        { name: translate('project.task_management.preceedingMilestone'), key: "preceedingMilestones" },
         { name: translate('task.task_management.responsible'), key: "responsibleEmployees" },
         { name: translate('task.task_management.accountable'), key: "accountableEmployees" },
         { name: translate('task.task_management.creator'), key: "creatorEmployees" },
@@ -725,6 +767,7 @@ const TableTasksProject = (props) => {
                     milestoneEditId={currentMilestoneId}
                     currentProjectTasks={currentProjectTasks}
                     currentProjectPhase={currentProjectPhase}
+                    currentProjectMilestone={currentProjectMilestone}
                 />
             }
 
@@ -761,6 +804,12 @@ const TableTasksProject = (props) => {
                         <div className="form-group">
                             <label>{translate('project.task_management.preceedingTask')}</label>
                             <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => handleChangePreceedingTasks(e)} />
+                        </div>
+
+                        {/* Tên cột mốc tiền nhiệm */}
+                        <div className="form-group">
+                            <label>{translate('project.task_management.preceedingMilestone')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => handleChangePreceedingMilestones(e)} />
                         </div>
 
                         {/* Trạng thái công việc */}
@@ -900,10 +949,9 @@ const TableTasksProject = (props) => {
                         pageTotal={totalPage ? totalPage : 0}
                         currentPage={page}
                         display={data && data.length !== 0 && data.length}
-                        total={tasks && tasks.totalDocs}
+                        total={tasks && (tasks.totalDocs + projectPhase.totalMilestoneDocs + projectPhase.totalPhaseDocs)}
                         func={setCurrentPage}
                     />
-
 
                 </div>
             </div>
@@ -914,8 +962,8 @@ const TableTasksProject = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user, tasks, performtasks, projectPhase } = state;
-    return { project, user, tasks, performtasks, projectPhase }
+    const { project, user, tasks, performtasks, projectPhase, schedulingProjects, changeRequest } = state;
+    return { project, user, tasks, performtasks, projectPhase, schedulingProjects, changeRequest }
 }
 
 const mapDispatchToProps = {
@@ -923,6 +971,8 @@ const mapDispatchToProps = {
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
     getAllPhaseByProject: ProjectPhaseActions.getAllPhaseByProject,
+    getMilestonesByProject: ProjectPhaseActions.getMilestonesByProject,
+    getPhasesByProject: ProjectPhaseActions.getPhasesByProject,
     getTaskById: performTaskAction.getTaskById,
     deletePhaseById: ProjectPhaseActions.deletePhase,
     deleteMilestoneById: ProjectPhaseActions.deleteMilestone,

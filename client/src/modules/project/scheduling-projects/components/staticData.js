@@ -283,7 +283,7 @@ export const configMemberData = {
         columnName: 'Email',
         description: 'Email',
         value: 'Email',
-    },
+    }
 }
 
 export const configPhaseData = {
@@ -305,4 +305,14 @@ export const configPhaseData = {
         description: 'Tên giai đoạn',
         value: 'Tên giai đoạn',
     },
+    emailResponsibleEmployees: {
+        columnName: "Email thành viên thực hiện",
+        description: "Email thành viên thực hiện",
+        value: "Email thành viên thực hiện"
+    },
+    emailAccountableEmployees: {
+        columnName: 'Email thành viên phê duyệt',
+        description: 'Email thành viên phê duyệt',
+        value: 'Email thành viên phê duyệt'
+    }
 }

@@ -262,7 +262,6 @@ const ModalEditRowCPMExcel = (props) => {
     }
 
     const save = () => {
-        console.log('currentResWeightArr', currentResWeightArr, 'currentAccWeightArr', currentAccWeightArr)
         const newRowData = {
             code: currentRow?.code,
             name: currentRow?.name,
@@ -304,7 +303,6 @@ const ModalEditRowCPMExcel = (props) => {
 
     useEffect(() => {
         let result = 0;
-        console.log(266, projectData);
         const projectDetail = projectData ?? getCurrentProjectDetails(project);
 
         setCurrentResWeightArr(currentResponsibleEmployees.map((resItem, resIndex) => {
@@ -372,7 +370,7 @@ const ModalEditRowCPMExcel = (props) => {
             >
                 <div className="row">
                     {/* Thông tin công việc */}
-                    <div className="col-xs-12 col-ms-6 col-md-6">
+                    <div className="col-xs-12 col-sm-6 col-md-6">
                         <fieldset className="scheduler-border" style={{ lineHeight: 1.5 }}>
                             <legend className="scheduler-border">Thông tin công việc</legend>
                             {/* Dong 1 */}
@@ -427,7 +425,7 @@ const ModalEditRowCPMExcel = (props) => {
                                 </div>
 
                                 {/* Thời gian ước lượng */}
-                                <div className="col-md-6">
+                                <div className="col-md-12">
                                     <div className="form-horizontal">
                                         <div className={`form-group  ${error.errorOnNormalTime === undefined ? "" : 'has-error'}`}>
                                             <strong className="col-sm-4">Thời gian ước lượng ({translate(`project.unit.${projectDetail?.unitTime}`)})</strong>
@@ -445,7 +443,7 @@ const ModalEditRowCPMExcel = (props) => {
                                 </div>
 
                                 {/* Thời gian thoả hiệp */}
-                                <div className="col-md-6">
+                                <div className="col-md-12">
                                     <div className="form-horizontal">
                                         <div className={`form-group  ${error.errorOnOptimisticTime === undefined ? "" : 'has-error'}`}>
                                             <strong className="col-sm-4">Thời gian thoả hiệp ({translate(`project.unit.${projectDetail?.unitTime}`)})</strong>
@@ -509,7 +507,7 @@ const ModalEditRowCPMExcel = (props) => {
                                     <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
                                     {getProjectParticipants(projectDetail) &&
                                         <SelectBox
-                                            id={`accounatable-select-box-edit-row-cpm-excel-${currentRowCode}`}
+                                            id={`accountable-select-box-edit-row-cpm-excel-${currentRowCode}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={projectData ? getProjectParticipantsByArrId(projectDetail, listUsers) : getProjectParticipants(projectDetail)}
@@ -546,14 +544,14 @@ const ModalEditRowCPMExcel = (props) => {
                             {/* Dòng chi phí ước lượng */}
                             <div className="row">
                                 {/* Chi phí ước lượng nhân sự */}
-                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group`}>
+                                <div className={`col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group`}>
                                     <label className="control-label">Chi phí ước lượng nhân sự <span className="text-red">*</span> (VND)</label>
                                     <div className="form-control">
                                         {currentHumanCost}
                                     </div>
                                 </div>
                                 {/* Chi phí ước lượng tổng quan */}
-                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${Number(currentEstimateNormalCost.replace(/,/g, '')) > Number(currentEstimateMaxCost.replace(/,/g, '')) ? 'has-error' : ''}`}>
+                                <div className={`col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group ${Number(currentEstimateNormalCost.replace(/,/g, '')) > Number(currentEstimateMaxCost.replace(/,/g, '')) ? 'has-error' : ''}`}>
                                     <label className="control-label">Chi phí ước lượng tổng quan <span className="text-red">*</span> (VND)</label>
                                     <div className="form-control">
                                         {currentEstimateNormalCost}
@@ -579,7 +577,7 @@ const ModalEditRowCPMExcel = (props) => {
                         </fieldset>
                     </div>
                     {/* Trọng số thành viên công việc */}
-                    <div className="col-xs-12 col-ms-6 col-md-6">
+                    <div className="col-xs-12 col-sm-6 col-md-6">
                         <fieldset className="scheduler-border" style={{ lineHeight: 1.5 }}>
                             <legend className="scheduler-border">Trọng số thành viên công việc</legend>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>

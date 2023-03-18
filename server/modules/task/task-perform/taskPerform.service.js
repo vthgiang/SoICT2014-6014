@@ -3215,6 +3215,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     priority,
     status,
     formula,
+    formulaProjectTask,
+    formulaProjectMember,
     parent,
     startDate,
     endDate,
@@ -3257,6 +3259,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       }
     }
   }
+
+
   let taskItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
   const accountableEmployeesTaskOutputs = taskItem.accountableEmployees.map((item) => {
     return {
@@ -3264,6 +3268,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       status: "waiting_approval"
     }
   });
+
   const taskOutputsChange = taskOutputs.map((item) => {
     return {
       ...item,
@@ -3271,6 +3276,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       status: item.status ? item.status : "unfinished",
     }
   })
+
   // update collaboratedWithOrganizationalUnits
   let newCollab = [];
   let oldCollab = taskItem.collaboratedWithOrganizationalUnits.map(e => { return e.organizationalUnit });
@@ -3365,6 +3371,21 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     },
     { $new: true }
   );
+
+  if (formulaProjectTask && typeof formulaProjectTask !== "undefined" || formulaProjectMember && typeof formulaProjectMember !== "undefined" ) {
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+      { _id: taskId },
+      {
+        $set : {
+          formulaProjectTask: formulaProjectTask,
+          formulaProjectMember: formulaProjectMember
+        }
+      },
+      { $new: true }
+    );
+  }
+
+
   // Xóa ảnh trong description cũ trên server
   let imageUrls = filterImageUrlInString(taskItem?.description)
   if (imageUrls?.length > 0) {

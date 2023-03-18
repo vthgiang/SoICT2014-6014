@@ -16,7 +16,7 @@ import { ModalDetailTask } from '../../../task/task-dashboard/task-personal-dash
 
 const GanttTasksProject = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
-    const { translate, currentProjectTasks, user, project, tasks, currentProjectPhase, currentProjectMilestone, projectPhase } = props;
+    const { translate, currentProjectTasks, user, project, tasks, currentProjectPhase = [], currentProjectMilestone = [], projectPhase } = props;
     const task = tasks && tasks.task;
     let projectDetail = {};
 
@@ -185,12 +185,24 @@ const GanttTasksProject = (props) => {
                     type: 'task',
                 });
 
-                // Nếu task có các task tiền nhiệm thì tạo link
+                // Nếu task có các công việc, cột mốc tiền nhiệm thì tạo link
                 if (taskItem.preceedingTasks && taskItem.preceedingTasks.length > 0) {
                     for (let preceedingItem of taskItem.preceedingTasks) {
                         links.push({
                             id: linkId,
                             source: preceedingItem.task,
+                            target: taskItem._id,
+                            type: '0',
+                        })
+                        linkId++;
+                    }
+                }
+
+                if (taskItem.preceedingMilestones && taskItem.preceedingMilestones.length > 0) {
+                    for (let preceedingItem of taskItem.preceedingMilestones) {
+                        links.push({
+                            id: linkId,
+                            source: preceedingItem,
                             target: taskItem._id,
                             type: '0',
                         })
@@ -310,12 +322,24 @@ const GanttTasksProject = (props) => {
                         ? moment(milestoneItem.actualEndDate).format("YYYY-MM-DD HH:mm")
                         : (moment().isBefore(moment(milestoneItem.startDate).add(1, currentMode)) ? moment(milestoneItem.startDate).add(1, currentMode).format("YYYY-MM-DD HH:mm") : moment().format("YYYY-MM-DD HH:mm")),
                 });
-                // Nếu cột mốc có các công việc tiền nhiệm thì tạo link
+                // Nếu cột mốc có các công việc, cột mốc tiền nhiệm thì tạo link
                 if (milestoneItem.preceedingTasks && milestoneItem.preceedingTasks.length > 0) {
                     for (let preceedingItem of milestoneItem.preceedingTasks) {
                         links.push({
                             id: linkId,
                             source: preceedingItem.task,
+                            target: milestoneItem._id,
+                            type: '0',
+                        })
+                        linkId++;
+                    }
+                }
+
+                if (milestoneItem.preceedingMilestones && milestoneItem.preceedingMilestones.length > 0) {
+                    for (let preceedingItem of milestoneItem.preceedingMilestones) {
+                        links.push({
+                            id: linkId,
+                            source: preceedingItem,
                             target: milestoneItem._id,
                             type: '0',
                         })

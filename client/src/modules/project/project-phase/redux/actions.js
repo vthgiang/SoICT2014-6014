@@ -13,12 +13,14 @@ export const ProjectPhaseActions = {
     editMilestone,
     deleteMilestone,
     getAllMilestoneByProject,
+    getMilestonesByProject,
+    getPhasesByProject,
 }
 
-function getAllPhaseByProject(id) {
+function getAllPhaseByProject(projectId) {
     return (dispatch) => {
         dispatch({ type: ProjectPhaseConstants.GET_PROJECT_PHASE_REQUEST });
-        ProjectPhaseServices.getAllPhaseByProject(id)
+        ProjectPhaseServices.getPhasesByProject({ projectId: projectId, calledId: 'get_all' })
             .then((res) => {
                 dispatch({
                     type: ProjectPhaseConstants.GET_PROJECT_PHASE_SUCCESS,
@@ -143,10 +145,10 @@ function editMilestone(id, milestone) {
     }
 }
 
-function getAllMilestoneByProject(id) {
+function getAllMilestoneByProject(projectId) {
     return (dispatch) => {
         dispatch({ type: ProjectPhaseConstants.GET_PROJECT_MILESTONE_REQUEST });
-        ProjectPhaseServices.getAllMilestoneByProject(id)
+        ProjectPhaseServices.getMilestonesByProject({ projectId: projectId, calledId: 'get_all' })
             .then((res) => {
                 dispatch({
                     type: ProjectPhaseConstants.GET_PROJECT_MILESTONE_SUCCESS,
@@ -171,6 +173,48 @@ function deleteMilestone(id) {
             })
             .catch((err) => {
                 dispatch({ type: ProjectPhaseConstants.DELETE_MILESTONE_FAIL });
+            });
+    };
+}
+
+/**
+ * get milestone by query
+ */
+function getMilestonesByProject(data) {
+    return dispatch => {
+        dispatch({
+            type: ProjectPhaseConstants.GET_PROJECT_MILESTONE_PAGINATE_REQUEST,
+        });
+        ProjectPhaseServices.getMilestonesByProject(data)
+            .then(res => {
+                dispatch({
+                    type: ProjectPhaseConstants.GET_PROJECT_MILESTONE_PAGINATE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: ProjectPhaseConstants.GET_PROJECT_MILESTONE_PAGINATE_FAIL, error });
+            });
+    };
+}
+
+/**
+ * get phase by query
+ */
+function getPhasesByProject(data) {
+    return dispatch => {
+        dispatch({
+            type: ProjectPhaseConstants.GET_PROJECT_PHASE_PAGINATE_REQUEST,
+        });
+        ProjectPhaseServices.getPhasesByProject(data)
+            .then(res => {
+                dispatch({
+                    type: ProjectPhaseConstants.GET_PROJECT_PHASE_PAGINATE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: ProjectPhaseConstants.GET_PROJECT_PHASE_PAGINATE_FAIL, error });
             });
     };
 }

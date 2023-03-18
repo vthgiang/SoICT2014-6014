@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { TreeTable, PaginateBar, ToolTip, SelectMulti } from "../../../../common-components";
+import { TreeTable, PaginateBar, ToolTip, SelectMulti, DatePicker } from "../../../../common-components";
 import ProjectCreateForm from "./createProject";
 import ProjectEditForm from './editProject';
 import ProjectDetailForm from './detailProject';
@@ -14,6 +14,7 @@ import { taskManagementActions } from "../../../task/task-management/redux/actio
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import _cloneDeep from 'lodash/cloneDeep';
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 
 function ListProject(props) {
     const tableId = 'project-table';
@@ -23,6 +24,8 @@ function ListProject(props) {
     const [state, setState] = useState({
         projectName: "",
         projectType: "",
+        startDate: "",
+        endDate: "",
         page: 1,
         creatorEmployee: null,
         responsibleEmployees: null,
@@ -35,7 +38,7 @@ function ListProject(props) {
 
     const { project, translate, user, tasks, projectPhase } = props;
     const userId = getStorage("userId");
-    const { projectName, projectType, page, creatorEmployee, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state;
+    const { projectName, startDate, endDate, projectType, page, creatorEmployee, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state;
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId });
@@ -53,6 +56,8 @@ function ListProject(props) {
                     rawData:currentProjects[n],
                     name: currentProjects[n]?.name,
                     projectType: translate(renderProjectTypeText(currentProjects[n]?.projectType)),
+                    startDate: dayjs(currentProjects[n]?.startDate).format('HH:mm DD/MM/YYYY') || [],
+                    endDate: dayjs(currentProjects[n].endDate).format('HH:mm DD/MM/YYYY') || [],
                     creator: currentProjects[n]?.creator?.name,
                     manager: currentProjects[n]?.projectManager ? <ToolTip dataTooltip={currentProjects[n]?.projectManager.map(o => o.name)} /> : null,
                     member: currentProjects[n]?.responsibleEmployees ? <ToolTip dataTooltip={currentProjects[n]?.responsibleEmployees.map(o => o.name)} /> : null,
@@ -78,6 +83,8 @@ function ListProject(props) {
             calledId: 'paginate',
             projectName: projectName,
             projectType: projectType,
+            endDate: endDate,
+            startDate: startDate,
             page: page,
             perPage: perPage,
             creatorEmployee: creatorEmployee,
@@ -132,12 +139,46 @@ function ListProject(props) {
         })
     }
 
+    const handleChangeStartDate = (value) => {
+        let month;
+        if (value === '') {
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
+
+        setState(state => {
+            return {
+                ...state,
+                startDate: month
+            }
+        });
+    }
+
+    const handleChangeEndDate = (value) => {
+        let month;
+        if (value === '') {
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
+
+        setState(state => {
+            return {
+                ...state,
+                endDate: month
+            }
+        });
+    }
+
     const setPage = (pageNumber) => {
 
         let data = {
             calledId: 'paginate',
             projectName: projectName,
             projectType: projectType,
+            endDate: endDate,
+            startDate: startDate,
             page: pageNumber,
             perPage: perPage,
             creatorEmployee: creatorEmployee,
@@ -159,6 +200,8 @@ function ListProject(props) {
             calledId: 'paginate',
             projectName: projectName,
             projectType: projectType,
+            endDate: endDate,
+            startDate: startDate,
             page: 1,
             perPage: number,
             creatorEmployee: creatorEmployee,
@@ -206,6 +249,8 @@ function ListProject(props) {
             calledId: 'paginate',
             projectName: projectName,
             projectType: projectType,
+            endDate: endDate,
+            startDate: startDate,
             page: project && project.lists && project.lists.length === 1 ? page - 1 : page,
             perPage: perPage,
             creatorEmployee: creatorEmployee,
@@ -237,29 +282,50 @@ function ListProject(props) {
     }
 
     const handleUpdateData = () => {
-        let data = {
-            calledId: 'paginate',
-            projectName: projectName,
-            projectType: projectType,
-            page: 1,
-            perPage: perPage,
-            creatorEmployee: creatorEmployee,
-            responsibleEmployees: responsibleEmployees,
-            projectManager: projectManager,
-            userId: userId
+        let startMonth, endMonth;
+        if (startDate && endDate) {
+            startMonth = new Date(startDate);
+            endMonth = new Date(endDate);
         }
 
-        props.getProjectsDispatch(data);
-        setState({
-            ...state,
-            page: 1
-        })
+        if (startMonth && endMonth && startMonth.getTime() > endMonth.getTime()) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
+            })
+        }
+
+        else {
+            let data = {
+                calledId: 'paginate',
+                projectName: projectName,
+                endDate: endDate,
+                startDate: startDate,
+                projectType: projectType,
+                page: 1,
+                perPage: perPage,
+                creatorEmployee: creatorEmployee,
+                responsibleEmployees: responsibleEmployees,
+                projectManager: projectManager,
+                userId: userId
+            }
+    
+            props.getProjectsDispatch(data);
+            setState({
+                ...state,
+                page: 1
+            })
+        }
     }
 
     // Khởi tạo danh sách các cột
     let column = [
         { name: translate('project.name'), key: "name" },
         { name: translate('project.projectType'), key: "projectType" },
+        { name: translate('project.startDate'), key: "startDate" },
+        { name: translate('project.endDate'), key: "endDate" },
         { name: translate('project.creator'), key: "creator" },
         { name: translate('project.manager'), key: "manager" },
         { name: translate('project.member'), key: "member" },
@@ -347,6 +413,30 @@ function ListProject(props) {
                         <div className="form-group">
                             <label>{translate('project.creator')}</label>
                             <input className="form-control" type="text" placeholder={translate('project.search_by_employees')} name="name" onChange={(e) => handleChangeCreator(e)} />
+                        </div>
+
+                        {/* Ngày bắt đầu */}
+                        <div className="form-group">
+                            <label>{translate('project.col_start_time')}</label>
+                            <DatePicker
+                                id="start-date"
+                                dateFormat="month-year"
+                                value={""}
+                                onChange={handleChangeStartDate}
+                                disabled={false}
+                            />
+                        </div>
+
+                        {/* Ngày kết thúc */}
+                        <div className="form-group">
+                            <label>{translate('project.col_expected_end_time')}</label>
+                            <DatePicker
+                                id="end-date"
+                                dateFormat="month-year"
+                                value={""}
+                                onChange={handleChangeEndDate}
+                                disabled={false}
+                            />
                         </div>
 
                         <div className="form-group">

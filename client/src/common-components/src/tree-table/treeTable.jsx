@@ -457,7 +457,7 @@ function TreeTable(props) {
                                                                 {showActionColumn(y, rows._id)}
                                                             </React.Fragment>
                                                         ) :
-                                                            <div id={`actionTask2${rows._id}`}>
+                                                            <div id={`actionTask2${rows._id}`} key={`actionTask2${rows._id}-${index}`}>
                                                                 {
                                                                     y.map((z, index) => (
                                                                         <React.Fragment key={index}>
