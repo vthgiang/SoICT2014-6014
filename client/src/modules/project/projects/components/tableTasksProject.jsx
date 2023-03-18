@@ -62,7 +62,7 @@ const TableTasksProject = (props) => {
 
     // Lấy thông tin về các công việc khi tạo công việc từ file hoặc cập nhật thông tin công việc
     useEffect(() => {
-        if (!schedulingProjects?.isLoading && !changeRequest?.isLoading) {
+        if (!schedulingProjects?.isPhaseLoading && !schedulingProjects?.isTaskLoading) {
             let data = {
                 status: [],
                 name: null,
@@ -83,7 +83,7 @@ const TableTasksProject = (props) => {
             props.getPhasesByProject(data);
             props.getAllUserInAllUnitsOfCompany();
         }
-    }, [schedulingProjects?.isLoading, changeRequest?.isLoading])
+    }, [schedulingProjects?.isPhaseLoading, schedulingProjects?.isTaskLoading])
 
     // useEffect(() => {
     //     window.$(`#modelPerformTask${currentTaskId}`).modal('show')
@@ -130,7 +130,7 @@ const TableTasksProject = (props) => {
                 }
             }
 
-            for (let m in phases) {
+            for (let m = phases.length - 1; m >= 0; m--) {
                 phases[m]= {
                     ...phases[m],
                     rawData: phases[m],
@@ -151,15 +151,15 @@ const TableTasksProject = (props) => {
                     action: ["view"]
                 }
 
-                if (projectPhase.phases[m].responsibleEmployees && projectPhase.phases[m].responsibleEmployees.filter(o => o._id === userId).length > 0 || projectPhase.phases[m].consultedEmployees && projectPhase.phases[m].consultedEmployees.filter(o => o._id === userId).length > 0) {
+                if (projectPhase?.phases[m]?.responsibleEmployees && projectPhase?.phases[m]?.responsibleEmployees.filter(o => o._id === userId).length > 0 || projectPhase?.phases[m]?.consultedEmployees && projectPhase?.phases[m]?.consultedEmployees?.filter(o => o._id === userId).length > 0) {
                     phases[m] = { ...phases[m], action: ["view", "edit"] }
                 }
 
-                if (checkIfAbleToCRUDProject({ project, user, currentProjectId }) || projectPhase.phases[m].accountableEmployees && projectPhase.phases[m].accountableEmployees.filter(o => o._id === userId).length > 0 || projectPhase.phases[m].creator && projectPhase.phases[m].creator._id === userId) {
+                if (checkIfAbleToCRUDProject({ project, user, currentProjectId }) || projectPhase?.phases[m]?.accountableEmployees && projectPhase?.phases[m]?.accountableEmployees?.filter(o => o._id === userId).length > 0 || projectPhase?.phases[m]?.creator && projectPhase?.phases[m]?.creator?._id === userId) {
                     phases[m] = { ...phases[m], action: ["view", "edit", "delete"] }
                 }
 
-                data.push(phases[m]);
+                data.unshift(phases[m]);
             }
 
             for (let k in milestones) {
@@ -184,11 +184,11 @@ const TableTasksProject = (props) => {
                     action: ["view"],
                 }
 
-                if(checkIfAbleToCRUDProject({ project, user, currentProjectId }) || projectPhase.milestones[k]?.accountableEmployees && projectPhase.milestones[k]?.accountableEmployees?.filter(o => o._id === userId).length > 0 || projectPhase.milestones[k].creator && projectPhase.milestones[k].creator._id === userId) {
+                if(checkIfAbleToCRUDProject({ project, user, currentProjectId }) || projectPhase?.milestones[k]?.accountableEmployees && projectPhase.milestones[k]?.accountableEmployees?.filter(o => o._id === userId).length > 0 || projectPhase?.milestones[k]?.creator && projectPhase?.milestones[k]?.creator?._id === userId) {
                     milestones[k] = { ...milestones[k], action: ["view", "edit", "delete"] }
                 }
 
-                else if (projectPhase.milestones[k]?.responsibleEmployees && projectPhase.milestones[k]?.responsibleEmployees?.filter(o => o._id === userId).length > 0 || projectPhase.milestones[k]?.consultedEmployees && projectPhase.milestones[k]?.consultedEmployees?.filter(o => o._id === userId).length > 0) {
+                else if (projectPhase?.milestones[k]?.responsibleEmployees && projectPhase?.milestones[k]?.responsibleEmployees?.filter(o => o._id === userId).length > 0 || projectPhase?.milestones[k]?.consultedEmployees && projectPhase?.milestones[k]?.consultedEmployees?.filter(o => o._id === userId).length > 0) {
                     milestones[k] = { ...milestones[k], action: ["view", "edit"] }
                 }
 
@@ -962,8 +962,8 @@ const TableTasksProject = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user, tasks, performtasks, projectPhase } = state;
-    return { project, user, tasks, performtasks, projectPhase }
+    const { project, user, tasks, performtasks, projectPhase, schedulingProjects, changeRequest } = state;
+    return { project, user, tasks, performtasks, projectPhase, schedulingProjects, changeRequest }
 }
 
 const mapDispatchToProps = {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { TreeTable, SelectMulti, PaginateBar, ToolTip } from "../../../../common-components";
+import { TreeTable, SelectMulti, PaginateBar, ToolTip, DatePicker } from "../../../../common-components";
 import { ProjectActions } from "../../projects/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
@@ -10,6 +10,8 @@ import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
 import { renderLongList, renderProjectTypeText } from "../../projects/components/functionHelper";
 import _cloneDeep from 'lodash/cloneDeep';
+import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
 
 function ListProjectEvaluation(props) {
     const tableId = "project-statistical-table";
@@ -19,6 +21,8 @@ function ListProjectEvaluation(props) {
     const [state, setState] = useState({
         projectName: "",
         projectType: "",
+        startDate: "",
+        endDate: "",
         page: 1,
         creatorEmployee: null,
         responsibleEmployees: null,
@@ -30,7 +34,7 @@ function ListProjectEvaluation(props) {
     })
     const { project, translate, user } = props;
     const userId = getStorage("userId");
-    const { projectName, projectType, page, creatorEmployee, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state;
+    const { projectName, projectType, startDate, endDate, page, creatorEmployee, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state;
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId });
@@ -77,11 +81,45 @@ function ListProjectEvaluation(props) {
         })
     }
 
+    const handleChangeStartDate = (value) => {
+        let month;
+        if (value === '') {
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
+
+        setState(state => {
+            return {
+                ...state,
+                startDate: month
+            }
+        });
+    }
+
+    const handleChangeEndDate = (value) => {
+        let month;
+        if (value === '') {
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
+
+        setState(state => {
+            return {
+                ...state,
+                endDate: month
+            }
+        });
+    }
+
     const setPage = (pageNumber) => {
         let data = {
             calledId: 'paginate',
             projectName: projectName,
             projectType: projectType,
+            endDate: endDate,
+            startDate: startDate,
             page: parseInt(pageNumber),
             perPage: perPage,
             creatorEmployee: creatorEmployee,
@@ -103,6 +141,8 @@ function ListProjectEvaluation(props) {
             calledId: 'paginate',
             projectName: projectName,
             projectType: projectType,
+            endDate: endDate,
+            startDate: startDate,
             page: 1,
             perPage: parseInt(number),
             creatorEmployee: creatorEmployee,
@@ -132,23 +172,42 @@ function ListProjectEvaluation(props) {
     const totalPage = project && Math.ceil(project.data.totalDocs / perPage);
 
     const handleUpdateData = () => {
-        let data = {
-            calledId: 'paginate',
-            projectName: projectName,
-            projectType: projectType,
-            page: 1,
-            perPage: perPage,
-            creatorEmployee: creatorEmployee,
-            responsibleEmployees: responsibleEmployees,
-            projectManager: projectManager,
-            userId: userId
+        let startMonth, endMonth;
+        if (startDate && endDate) {
+            startMonth = new Date(startDate);
+            endMonth = new Date(endDate);
         }
 
-        props.getProjectsDispatch(data);
-        setState({
-            ...state,
-            page: 1
-        })
+        if (startMonth && endMonth && startMonth.getTime() > endMonth.getTime()) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
+            })
+        }
+
+        else {
+            let data = {
+                calledId: 'paginate',
+                projectName: projectName,
+                endDate: endDate,
+                startDate: startDate,
+                projectType: projectType,
+                page: 1,
+                perPage: perPage,
+                creatorEmployee: creatorEmployee,
+                responsibleEmployees: responsibleEmployees,
+                projectManager: projectManager,
+                userId: userId
+            }
+    
+            props.getProjectsDispatch(data);
+            setState({
+                ...state,
+                page: 1
+            })
+        }
     }
 
     useEffect(() => {
@@ -160,6 +219,8 @@ function ListProjectEvaluation(props) {
                     ...currentProjects[n],
                     rawData:currentProjects[n],
                     name: currentProjects[n]?.name,
+                    startDate: dayjs(currentProjects[n]?.startDate).format('HH:mm DD/MM/YYYY') || [],
+                    endDate: dayjs(currentProjects[n].endDate).format('HH:mm DD/MM/YYYY') || [],
                     projectType: translate(renderProjectTypeText(currentProjects[n]?.projectType)),
                     creator: currentProjects[n]?.creator?.name,
                     manager: currentProjects[n]?.projectManager ? <ToolTip dataTooltip={currentProjects[n]?.projectManager.map(o => o.name)} /> : null,
@@ -179,6 +240,8 @@ function ListProjectEvaluation(props) {
     let column = [
         { name: translate('project.name'), key: "name" },
         { name: translate('project.projectType'), key: "projectType" },
+        { name: translate('project.startDate'), key: "startDate" },
+        { name: translate('project.endDate'), key: "endDate" },
         { name: translate('project.creator'), key: "creator" },
         { name: translate('project.manager'), key: "manager" },
         { name: translate('project.member'), key: "member" },
@@ -247,6 +310,30 @@ function ListProjectEvaluation(props) {
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={() => handleUpdateData()}>{translate('project.search')}</button>
+                        </div>
+
+                        {/* Ngày bắt đầu */}
+                        <div className="form-group">
+                            <label>{translate('project.col_start_time')}</label>
+                            <DatePicker
+                                id="start-date"
+                                dateFormat="month-year"
+                                value={""}
+                                onChange={handleChangeStartDate}
+                                disabled={false}
+                            />
+                        </div>
+
+                        {/* Ngày kết thúc */}
+                        <div className="form-group">
+                            <label>{translate('project.col_expected_end_time')}</label>
+                            <DatePicker
+                                id="end-date"
+                                dateFormat="month-year"
+                                value={""}
+                                onChange={handleChangeEndDate}
+                                disabled={false}
+                            />
                         </div>
 
                     </div>

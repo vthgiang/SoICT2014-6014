@@ -8,7 +8,7 @@ export const SchedulingProjectsActions = {
 
 function createProjectTasksFromCPMDispatch(tasksList) {
     return (dispatch) => {
-        dispatch({ type: SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM });
+        dispatch({ type: SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM_REQUEST });
         ProjectServices.createProjectTasksFromCPM(tasksList)
             .then((res) => {
                 dispatch({
@@ -24,7 +24,7 @@ function createProjectTasksFromCPMDispatch(tasksList) {
 
 function createProjectPhaseFromCPMDispatch(phaseList) {
     return (dispatch) => {
-        dispatch({ type: SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM });
+        dispatch({ type: SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM_REQUEST });
         ProjectServices.createProjectPhaseFromCPM(phaseList)
             .then((res) => {
                 dispatch({

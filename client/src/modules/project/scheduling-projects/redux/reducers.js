@@ -1,34 +1,48 @@
 import { SchedulingProjectsConstants } from './constants';
 
 const initState = {
-    isLoading: false,
+    isTaskLoading: false,
+    isPhaseLoading: false,
 }
 
 export function schedulingProjects(state = initState, action) {
     switch (action.type) {
-        case SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM:
+        case SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM_REQUEST:
             return {
                 ...state,
-                isLoading: true,
+                isTaskLoading: true,
             }
 
         case SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM_FAIL:
             return {
                 ...state,
-                isLoading: false,
+                isTaskLoading: false,
             }
 
-        case SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM:
+        case SchedulingProjectsConstants.ADD_PROJECT_TASKS_CPM_SUCCESS:
             return {
                 ...state,
-                isLoading: true,
+                isTaskLoading: false,
+            }
+
+        case SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM_REQUEST:
+            return {
+                ...state,
+                isPhaseLoading: true,
             }
 
         case SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM_FAIL:
             return {
                 ...state,
-                isLoading: false,
+                isPhaseLoading: false,
             }
+
+        case SchedulingProjectsConstants.ADD_PROJECT_PHASE_CPM_SUCCESS:
+            return {
+                ...state,
+                isPhaseLoading: false,
+            }
+    
 
         default:
             return state;

@@ -40,8 +40,9 @@ const getAmountOfWeekDaysInMonth = (date) => {
  * @param {*} query 
  */
 exports.get = async (portal, query) => {
-    let { page, perPage, userId, projectName, projectType, creatorEmployee, projectManager, responsibleEmployees } = query;
+    let { page, perPage, userId, projectName, endDate, startDate, projectType, creatorEmployee, projectManager, responsibleEmployees } = query;
     let options = {};
+    let keySearchDateTime = {};
     // Tìm kiếm theo id người sử dụng
     options = userId ? {
         ...options,
@@ -154,6 +155,68 @@ exports.get = async (portal, query) => {
         };
     }
     let project;
+
+     // Tìm kiếm theo ngày bắt đầu, kết thúc
+     if (startDate && endDate) {
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        keySearchDateTime = {
+            ...keySearchDateTime,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    }
+
+    else if (startDate) {
+        startDate = new Date(startDate);
+
+        options = {
+            ...options,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    else if (endDate) {
+        endDate = new Date(endDate);
+
+        options = {
+            ...options,
+            "$and": [
+                {
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
+                    }
+                },
+                {
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
+                    }
+                }
+            ]
+        }
+    }
+
+    options = {
+        $and: [
+            options,
+            keySearchDateTime,
+        ]
+    }
 
     let totalList = await Project(connect(DB_CONNECTION, portal)).countDocuments(options);
     // Nếu calledId là 'paginate' thì thực hiện phân trang
