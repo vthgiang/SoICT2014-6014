@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "lint": "eslint **/*.{js,jsx} --quiet",
+    "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
