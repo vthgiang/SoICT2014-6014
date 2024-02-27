@@ -41,7 +41,7 @@ $ git log --oneline
 # Nếu có 2 commit trở lên tính từ pull request gần nhất thì gộp commit
 $ git rebase -i HEAD~<số lượng commit>
 # example: git rebase -i HEAD~2 (gộp 2 commit)
-# Trong file editor hiện ra, chọn pick ở commit cuối cùng, chọn squash ở các commit còn lại
+# Trong file editor hiện ra, chọn pick ở commit cuối cùng, chọn fix up ở các commit còn lại
 # Lưu lại file
 # Trong file editor tiếp theo hiện ra, nhập message cho commit
 # Lưu lại file
