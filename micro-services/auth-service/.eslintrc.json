@@ -11,7 +11,7 @@
   "rules": {
     "quotes": [
       "error",
-      "double",
+      "single",
       {
         "avoidEscape": true
       }
