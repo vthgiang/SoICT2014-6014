@@ -6,3 +6,5 @@
 /server/seed/initOrganizationalUnitKPIData.js
 yarn.lock
 /logs
+/**/.env
+.idea
