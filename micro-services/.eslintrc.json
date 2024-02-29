@@ -2,8 +2,14 @@
   "env": {
     "browser": true,
     "commonjs": true,
-    "es2021": true
+    "es2021": true,
+    "node": true
   },
+  "overrides": [
+    {
+      "files": ["*.*"]
+    }
+  ],
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": "latest"
@@ -15,6 +21,7 @@
       {
         "avoidEscape": true
       }
-    ]
+    ],
+    "eol-last": ["error", "always"]
   }
 }

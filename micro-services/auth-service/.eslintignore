@@ -1,1 +1,3 @@
 init-user-mongo.js
+docker-compose.yml
+package.json
