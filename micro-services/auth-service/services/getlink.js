@@ -1,22 +1,22 @@
 const DelegationService = require(`../delegation/delegation.service`);
+const RoleRepository = require('@/repositories/role.repo');
+const PrivilegeRepository = require('@/repositories/privillege.repo');
+const UserRoleRepository = require('@/repositories/userRole.repo');
 /**
  * Lấy ra các trang mà người dùng có quyền truy cập
  * @param {*} roleId : id role người dùng
  */
 const getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
-    const role = await Role.findById(roleId); //lay duoc role hien tai
-    let roles = [role._id, ...role.parents];
-    const privilege = await Privilege
-        .find({
-            roleId: { $in: roles },
-            resourceType: "Link",
-        })
-        .populate({ path: "resourceId" });
-    const userrole = await UserRole.findOne({ userId, roleId: role._id });
+    const role = await RoleRepository.findRoleById(roleId); //lay duoc role hien tai
+    const roles = [role._id, ...role.parents];
+
+    const privilege = await PrivilegeRepository.getPrivilegesByRoleAndResourceType(roles);
+
+    const userrole = await UserRoleRepository.findByRoleIdAndUserId(userId, role._id);
 
 
     // Lấy ds các link theo RBAC original và ko có policy
-    let links = await privilege
+    const links = await privilege
         .filter((pri) => pri.resourceId.deleteSoft === false && pri.policies.length == 0)
         .map((pri) => pri.resourceId);
 
