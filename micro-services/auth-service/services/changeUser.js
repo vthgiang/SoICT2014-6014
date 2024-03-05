@@ -1,19 +1,17 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
-const Models = require('../../models');
-const { Privilege, Role, User, Company, Employee, UserRole, Delegation } = Models;
 const fs = require("fs");
-const { connect, initModels } = require(`../../helpers/dbHelper`);
-const { sendEmail } = require("../../helpers/emailHelper");
-const { validateEmailValid } = require('../../helpers/validationHelper');
+const { connect} = require(`../helpers/dbHelper`);
+const { sendEmail } = require("../helpers/emailHelper");
+const { validateEmailValid } = require('../helpers/validationHelper');
 
 /**
  * Quên mật khẩu tài khoản người dùng
  * @email: email người dùng
  * @password2: mật khẩu cấp 2 dự phòng khi quên mật khẩu
  */
-exports.forgetPassword = async (portal, email, password2) => {
+const forgetPassword = async (portal, email, password2) => {
     if (!email)
         throw ['email_empty']
     if (!validateEmailValid(email))
@@ -78,7 +76,7 @@ exports.forgetPassword = async (portal, email, password2) => {
  * @param {*} email
  * @param {*} password
  */
-exports.resetPassword = async (data) => {
+const resetPassword = async (data) => {
     const { otp, token, password } = data;
     if (!token)
         throw ["token_empty"];
@@ -113,7 +111,7 @@ exports.resetPassword = async (data) => {
 };
 
 
-exports.checkLinkValid = async (query) => {
+const checkLinkValid = async (query) => {
     const { token } = query;
     const secret = jwt.verify(token, process.env.TOKEN_SECRET);
     if (!token)
@@ -135,7 +133,7 @@ exports.checkLinkValid = async (query) => {
  * @param {*} email
  * @param {*} avatar
  */
-exports.changeInformation = async (
+const changeInformation = async (
     portal,
     userId,
     name,
@@ -213,7 +211,7 @@ exports.changeInformation = async (
  * @param {*} password : mật khẩu cũ
  * @param {*} new_password : mật khẩu mới
  */
-exports.changePassword = async (portal, userId, password, new_password, confirmPassword, password2) => {
+const changePassword = async (portal, userId, password, new_password, confirmPassword, password2) => {
     if (!password)
         throw ['old_password_empty']
 
@@ -262,7 +260,7 @@ exports.changePassword = async (portal, userId, password, new_password, confirmP
 };
 
 
-exports.changePassword2 = async (portal, userId, body) => {
+const changePassword2 = async (portal, userId, body) => {
     const { oldPassword, oldPassword2, newPassword2, confirmNewPassword2 } = body;
     if (!oldPassword)
         throw ['old_password_empty']
@@ -314,8 +312,8 @@ exports.changePassword2 = async (portal, userId, body) => {
  * Lấy ra thông tn người dùng
  * @param {*} userId : id người dùng
  */
-exports.getProfile = async (portal, userId) => {
-    let user = await User(connect(DB_CONNECTION, portal))
+const getProfile = async (portal, userId) => {
+    let user = await User
         .findById(userId)
         .select("-password -status -deleteSoft -tokens")
         .populate([{ path: "roles", populate: [{ path: "roleId", populate: { path: "type" } }, { path: "delegation", select: "_id delegator", populate: { path: "delegator", select: "name" } }] }]).lean();
@@ -328,7 +326,7 @@ exports.getProfile = async (portal, userId) => {
     return user;
 };
 
-exports.createPassword2 = async (portal, userId, data) => {
+const createPassword2 = async (portal, userId, data) => {
     const { oldPassword, newPassword2, confirmNewPassword2 } = data;
 
     let user = await User(connect(DB_CONNECTION, portal)).findById(userId);
@@ -366,7 +364,7 @@ exports.createPassword2 = async (portal, userId, data) => {
     return user;
 }
 
-exports.deletePassword2 = async (portal, data, userId) => {
+const deletePassword2 = async (portal, data, userId) => {
     const { pwd2 } = data;
     if (!pwd2)
         throw ['password2_empty']
@@ -386,7 +384,7 @@ exports.deletePassword2 = async (portal, data, userId) => {
     return userUpdate;
 }
 
-exports.checkPassword2Exists = async (portal, userId) => {
+const checkPassword2Exists = async (portal, userId) => {
     const userToken = await User(
         connect(DB_CONNECTION, portal)
     ).findById(userId);
@@ -394,3 +392,16 @@ exports.checkPassword2Exists = async (portal, userId) => {
     // Kiểm tra người dùng đã có mật khẩu cấp 2 hay chưa?
     if (userToken && userToken.password2) throw ['auth_password2_found']
 }
+
+module.exports = {
+    forgetPassword,
+    resetPassword,
+    checkLinkValid,
+    changeInformation,
+    changePassword,
+    changePassword2,
+    getProfile,
+    createPassword2,
+    deletePassword2,
+    checkPassword2Exists
+};

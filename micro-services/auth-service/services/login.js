@@ -1,22 +1,18 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Models = require('../../models');
-const { Privilege, Role, User, Company, Employee, UserRole, Delegation } = Models;
-const { connect, initModels } = require(`../../../../server-refactor/helpers/dbHelper`);
+const { connect, initModels } = require(`../../helpers/dbHelper`);
 const DelegationService = require(`../delegation/delegation.service`);
 
 /**
  * Phương thức đăng nhập
  */
-exports.login = async (fingerprint, data) => {
+const login = async (fingerprint, data) => {
     // data bao gom email va password
     if (!data.portal) throw ["portal_invalid"];
 
     let company;
     if (data.portal !== process.env.DB_NAME) {
-        company = await Company(
-            connect(DB_CONNECTION, process.env.DB_NAME)
-        )
+        company = await Company
             .findOne({ shortName: data.portal })
             .select('_id name shortName active log');
         if (!company) throw ["portal_invalid"];
@@ -24,7 +20,7 @@ exports.login = async (fingerprint, data) => {
 
     await initModels(connect(DB_CONNECTION, data.portal), Models);
 
-    const user = await User(connect(DB_CONNECTION, data.portal))
+    const user = await User
         .findOne({ email: data.email })
         .populate([
             {
@@ -44,7 +40,7 @@ exports.login = async (fingerprint, data) => {
     await DelegationService.updateMissedDelegation(data.portal);
 
     // Lưu log login vào các ủy quyền có delegatee = userId
-    let delegations = await Delegation(connect(DB_CONNECTION, data.portal)).find({ delegatee: user._id });
+    let delegations = await Delegation.find({ delegatee: user._id });
     delegations.forEach(async delegation => {
         await DelegationService.saveLog(data.portal, delegation, delegation.delegatee, null, "login", new Date())
     })
@@ -134,14 +130,14 @@ exports.login = async (fingerprint, data) => {
  * @param {*} id : id người dùng
  * @param {*} token
  */
-exports.logout = async (portal, id, requestToken) => {
-    let user = await User(connect(DB_CONNECTION, portal)).findById(id);
+const logout = async (portal, id, requestToken) => {
+    let user = await User.findById(id);
 
     if (user?.tokens?.length) {
         user.tokens = user?.tokens.filter(currentElement => currentElement !== requestToken);
     }
 
-    let delegations = await Delegation(connect(DB_CONNECTION, portal)).find({ delegatee: id });
+    let delegations = await Delegation.find({ delegatee: id });
     delegations.forEach(async delegation => {
         await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
     })
@@ -154,16 +150,22 @@ exports.logout = async (portal, id, requestToken) => {
  * Đăng xuất tất cả tài khoản người dùng
  * @param {*} id : id người dùng
  */
-exports.logoutAllAccount = async (portal, id) => {
-    let user = await User(connect(DB_CONNECTION, portal)).findById(id);
+const logoutAllAccount = async (portal, id) => {
+    let user = await User.findById(id);
     user.tokens = [];
-    let delegations = await Delegation(connect(DB_CONNECTION, portal)).find({ delegatee: id });
+    let delegations = await Delegation.find({ delegatee: id });
     delegations.forEach(async delegation => {
         await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
     })
     await user.save();
 
     return user;
+};
+
+module.exports = {
+    login,
+    logout,
+    logoutAllAccount
 };
 
 
