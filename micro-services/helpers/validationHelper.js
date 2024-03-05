@@ -7,10 +7,13 @@ const REGEX = {
  * Kiểm tra email hợp lệ
  * @param {*} email email
  */
- exports.validateEmailValid = (email) => {
+ const validateEmailValid = (email) => {
      if (!REGEX.EMAIL.test(email)) {
          return false;
      } else {
          return true;
      }
 }
+module.exports = {
+    validateEmailValid
+};

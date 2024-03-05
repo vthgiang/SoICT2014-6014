@@ -9,7 +9,7 @@ const pass = process.env.SYSTEM_EMAIL_PASSWORD;
 // const mailHost = 'mail.vnist.vn';
 
 let length = 0;
-exports.sendEmail = (to, subject, text, html, inReplyToGmail, messageIdGmail) => {
+const sendEmail = (to, subject, text, html, inReplyToGmail, messageIdGmail) => {
     if (user && pass) {
         console.log('user', user, pass)
             var transporter = nodemailer.createTransport({
@@ -54,3 +54,6 @@ exports.sendEmail = (to, subject, text, html, inReplyToGmail, messageIdGmail) =>
     }
     
 }
+module.exports = {
+    sendEmail
+};

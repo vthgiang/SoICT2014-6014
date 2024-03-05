@@ -35,7 +35,7 @@ const checkDirectory = (path) => {
  * @param {*} db kết nối đang được sử dụng đến cơ sở dữ liệu
  * @param {*} portal db muốn chuyển
  */
-exports.connect = (db, portal) => {
+const connect = (db, portal) => {
     if (db.name !== portal) {
       const newDb = db.useDb(portal, { useCache: true });
       for (const [key, model] of Object.entries(models)) { model(newDb) }
@@ -51,7 +51,7 @@ exports.connect = (db, portal) => {
  * @param {*} db kết nối đến cơ sở dữ liệu nào đó
  * @param {*} models các models được khai báo trong thư mục models
  */
-exports.initModels = (db, models) => {
+const initModels = (db, models) => {
     for (const [key, model] of Object.entries(models)) {
         if (!db.models[key]) model(db)
     }
@@ -61,7 +61,7 @@ exports.initModels = (db, models) => {
  * Khôi phục dữ liệu
  * @param {*} options Tùy chọn khôi phục dữ liệu { host, port, db, version }
  */
-exports.restore = async (options) => {
+const restore = async (options) => {
     const commandRestoreDB = (options) => {
         if (!options.db) { // Restore DB cho cho toàn hệ thống
             return process.env.DB_AUTHENTICATION !== 'true' ?
@@ -138,7 +138,7 @@ exports.restore = async (options) => {
  * Sao lưu dữ liệu
  * @param options các option cho việc sao lưu { host, port, db, version }
  */
-exports.backup = async (options) => {
+const backup = async (options) => {
     let limit = options.db ? BACKUP[options.db].limit : BACKUP['all'].limit;
     const version = versionName();
     const dbBackupPath = (options) => {
@@ -259,3 +259,10 @@ exports.backup = async (options) => {
         createdAt: folderInfo.ctime
     }
 }
+
+module.exports = {
+    connect,
+    initModels,
+    restore,
+    backup
+};
