@@ -2,10 +2,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
 const fs = require("fs");
-const { connect} = require(`../helpers/dbHelper`);
 const { sendEmail } = require("../helpers/emailHelper");
 const { validateEmailValid } = require('../helpers/validationHelper');
-
+const UserRepository = require("@/repositories/user.repo")
 /**
  * Quên mật khẩu tài khoản người dùng
  * @email: email người dùng
@@ -17,7 +16,7 @@ const forgetPassword = async (portal, email, password2) => {
     if (!validateEmailValid(email))
         throw ['email_invalid']
 
-    var user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
+    var user = await UserRepository.findPortal({ conditions: [portal, email] });
     if (!user)
         throw ['email_not_found'];
     if (user.password2) {
@@ -35,10 +34,10 @@ const forgetPassword = async (portal, email, password2) => {
     console.log('token', `${process.env.WEBSITE}/reset-password?token=${token}`);
     console.log("=================================================")
     user.resetPasswordToken = code;
-    await user.save();
+    await UserRepository.saveInfoUser(user);
 
-    let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
-    let html = `
+    const subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
+    const html = `
                 <div style="
                     background-color:azure;
                     padding: 100px;
@@ -96,16 +95,13 @@ const resetPassword = async (data) => {
     if (secret.code !== otp)
         throw ["otp_invalid"];
 
-    var user = await User(connect(DB_CONNECTION, secret.portal)).findOne({
-        email: secret.email,
-        resetPasswordToken: otp,
-    });
+    var user = await  await UserRepository.findPortal({conditions: [secret.email, otp]});
     if (user === null) throw ["reset_password_invalid"];
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
     user.password = hash;
     user.resetPasswordToken = undefined;
-    await user.save();
+    await UserRepository.saveInfoUser(user)
 
     return user;
 };
@@ -117,10 +113,7 @@ const checkLinkValid = async (query) => {
     if (!token)
         throw ['token_reset_password_empty']; // token trống
 
-    const findUser = await User(connect(DB_CONNECTION, secret.portal)).findOne({
-        email: secret.email,
-        resetPasswordToken: secret.code,
-    });
+    const findUser = await  await UserRepository.findPortal({conditions: [secret.email, secret.code]});
     if (!findUser)
         throw ['link_reset_password_invalid']// link reset không hợp lệ
 }
@@ -158,14 +151,10 @@ const changeInformation = async (
     if (!password2)
         throw ['password2_empty']
 
-    let user = await User(connect(DB_CONNECTION, portal))
-        .findById(userId)
-        .select('-password')
-        .populate([{ path: "roles", populate: { path: "roleId" } }]);
-
+    const user = await UserRepository.findPortal(portal, userId);
     // Check nếu email mới trùng với 1 email nào đó có sẵn trong hệ thống thì không cho đổi
     if (email.toString() !== user.email.toString()) {
-        let checkEmailExist = await User(connect(DB_CONNECTION, portal)).findOne({ email: email });
+        const checkEmailExist = await UserRepository.findPortalByEmail(portal, email);
         if (checkEmailExist)
             throw ['email_exist']
     }
@@ -178,7 +167,7 @@ const changeInformation = async (
     }
 
     const oldEmail = user.email;
-    let deleteAvatar = "." + user.avatar;
+    const deleteAvatar = "." + user.avatar;
     user.email = email;
     user.name = name;
     if (avatar) {
@@ -189,18 +178,19 @@ const changeInformation = async (
             fs.unlinkSync(deleteAvatar);
         user.avatar = avatar;
     }
-    await user.save();
+    await UserRepository.saveInfoUser(user);
+
 
     user = user.toObject();
     const password2Exists = user.password2 ? true : false;
     user['password2Exists'] = password2Exists;
-    delete user['password2'];
+    await UserRepository.deleteUserByPassword(password2);
 
     // Tìm user trong bảng employees và cập nhật lại email
     // Trước khi cập nhật, kiểm tra email mới có trùng với nhân viên nào chưa
-    const employees = await Employee(connect(DB_CONNECTION, portal)).findOne({ emailInCompany: email });
-    if (!employees)
-        await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({ emailInCompany: oldEmail }, { $set: { emailInCompany: email } });
+    // const employees = await Employee(connect(DB_CONNECTION, portal)).findOne({ emailInCompany: email });
+    // if (!employees)
+    //     await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({ emailInCompany: oldEmail }, { $set: { emailInCompany: email } });
 
     return user;
 };
@@ -224,7 +214,7 @@ const changePassword = async (portal, userId, password, new_password, confirmPas
     if (new_password !== confirmPassword)
         throw ['confirm_password_invalid']
 
-    let user = await User(connect(DB_CONNECTION, portal))
+    const user = await User(connect(DB_CONNECTION, portal))
         .findById(userId)
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
 
@@ -248,7 +238,7 @@ const changePassword = async (portal, userId, password, new_password, confirmPas
         user.password2 = hashPassword2;
     }
 
-    await user.save();
+    await UserRepository.saveInfoUser(user);
 
     user = user.toObject();
     const password2Exists = user.password2 ? true : false;
@@ -276,9 +266,7 @@ const changePassword2 = async (portal, userId, body) => {
     if (newPassword2 !== confirmNewPassword2)
         throw ['confirm_password2_invalid']
 
-    let user = await User(connect(DB_CONNECTION, portal))
-        .findById(userId)
-        .populate([{ path: "roles", populate: { path: "roleId" } }]);
+    const user = await UserRepository.findPortalById(portal, userId);
 
     // Check mật khảu cũ
     const validPass = await bcrypt.compare(oldPassword, user.password);
@@ -313,10 +301,7 @@ const changePassword2 = async (portal, userId, body) => {
  * @param {*} userId : id người dùng
  */
 const getProfile = async (portal, userId) => {
-    let user = await User
-        .findById(userId)
-        .select("-password -status -deleteSoft -tokens")
-        .populate([{ path: "roles", populate: [{ path: "roleId", populate: { path: "type" } }, { path: "delegation", select: "_id delegator", populate: { path: "delegator", select: "name" } }] }]).lean();
+    const user = await UserRepository.getUserProfile(portal, userId);
     if (user === null) throw ["user_not_found"];
     // user = user.toObject();
     const password2Exists = user.password2 ? true : false;
@@ -329,7 +314,7 @@ const getProfile = async (portal, userId) => {
 const createPassword2 = async (portal, userId, data) => {
     const { oldPassword, newPassword2, confirmNewPassword2 } = data;
 
-    let user = await User(connect(DB_CONNECTION, portal)).findById(userId);
+    const user = await UserRepository.findUserByIdPortal(portal, userId);
     // check xem pass cấp 2 đã tồn tại hay chưa
     if (user.password2) throw ['pwd2_existed']
 
@@ -353,7 +338,7 @@ const createPassword2 = async (portal, userId, data) => {
     const hashPassword2 = await bcrypt.hashSync(newPassword2, salt);
     user.password2 = hashPassword2;
 
-    await user.save();
+    await UserRepository.saveInfoUser(user);
 
     user = user.toObject();
     const password2Exists = user.password2 ? true : false;
@@ -369,7 +354,7 @@ const deletePassword2 = async (portal, data, userId) => {
     if (!pwd2)
         throw ['password2_empty']
 
-    let user = await User(connect(DB_CONNECTION, portal))
+    const user = await User(connect(DB_CONNECTION, portal))
         .findById(userId)
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
 
@@ -378,16 +363,14 @@ const deletePassword2 = async (portal, data, userId) => {
         throw ['password2_invalid'];
     }
 
-    let userUpdate = await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: userId }, { $unset: { password2: "" } }, { new: true })
+    const userUpdate = await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: userId }, { $unset: { password2: "" } }, { new: true })
     userUpdate = userUpdate.toObject();
     userUpdate['password2Exists'] = false;
     return userUpdate;
 }
 
 const checkPassword2Exists = async (portal, userId) => {
-    const userToken = await User(
-        connect(DB_CONNECTION, portal)
-    ).findById(userId);
+    const userToken = await UserRepository.checkPasswordUser(portal, userId)
     if (userToken.numberDevice === 0) throw ["acc_log_out"];
     // Kiểm tra người dùng đã có mật khẩu cấp 2 hay chưa?
     if (userToken && userToken.password2) throw ['auth_password2_found']

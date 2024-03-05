@@ -2,48 +2,35 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { connect, initModels } = require(`../../helpers/dbHelper`);
 const DelegationService = require(`../delegation/delegation.service`);
-
+const { findUserByEmail } = require("@/repositories/user.repo");
+const UserRepository = require("@/repositories/user.repo")
 /**
  * Phương thức đăng nhập
  */
 const login = async (fingerprint, data) => {
     // data bao gom email va password
-    if (!data.portal) throw ["portal_invalid"];
+    // if (!data.portal) throw ["portal_invalifd"];
 
-    let company;
-    if (data.portal !== process.env.DB_NAME) {
-        company = await Company
-            .findOne({ shortName: data.portal })
-            .select('_id name shortName active log');
-        if (!company) throw ["portal_invalid"];
-    }
+    // let company;
+    // if (data.portal !== process.env.DB_NAME) {
+    //     company = await Company
+    //         .findOne({ shortName: data.portal })
+    //         .select('_id name shortName active log');
+    //     if (!company) throw ["portal_invalid"];
+    // }
 
-    await initModels(connect(DB_CONNECTION, data.portal), Models);
+    // await initModels(connect(DB_CONNECTION, data.portal), Models);
 
-    const user = await User
-        .findOne({ email: data.email })
-        .populate([
-            {
-                path: "roles",
-                populate: [{
-                    path: "roleId",
-                    populate: { path: "type" }
-                }, {
-                    path: "delegation",
-                    select: "_id delegator",
-                    populate: { path: "delegator", select: "_id name" }
-                }]
-            },
-        ]);
+    const user = await UserRepository.findUserByEmail(data.email);
 
     // Kích hoạt ủy quyền nếu startDate < now và chưa đến thời hạn thu hồi hoặc thu hồi nếu endDate < now  
-    await DelegationService.updateMissedDelegation(data.portal);
+    // await DelegationService.updateMissedDelegation(data.portal);
 
     // Lưu log login vào các ủy quyền có delegatee = userId
-    let delegations = await Delegation.find({ delegatee: user._id });
-    delegations.forEach(async delegation => {
-        await DelegationService.saveLog(data.portal, delegation, delegation.delegatee, null, "login", new Date())
-    })
+    // let delegations = await Delegation.find({ delegatee: user._id });
+    // delegations.forEach(async delegation => {
+    //     await DelegationService.saveLog(data.portal, delegation, delegation.delegatee, null, "login", new Date())
+    // })
 
 
     if (!user) throw ["email_password_invalid"];
@@ -103,7 +90,9 @@ const login = async (fingerprint, data) => {
         }
     }
 
-    user.save();
+    // user.save();
+
+    await UserRepository.saveInfoUser(user)
 
     return {
         token,
@@ -137,13 +126,13 @@ const logout = async (portal, id, requestToken) => {
         user.tokens = user?.tokens.filter(currentElement => currentElement !== requestToken);
     }
 
-    let delegations = await Delegation.find({ delegatee: id });
-    delegations.forEach(async delegation => {
-        await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
-    })
+    // let delegations = await Delegation.find({ delegatee: id });
+    // delegations.forEach(async delegation => {
+    //     await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
+    // })
 
-    await user.save();
-    return user;
+    // await user.save();
+    // return user;
 };
 
 /**
@@ -151,13 +140,13 @@ const logout = async (portal, id, requestToken) => {
  * @param {*} id : id người dùng
  */
 const logoutAllAccount = async (portal, id) => {
-    let user = await User.findById(id);
+    let user = await UserRepository.findUserById(id);
     user.tokens = [];
     let delegations = await Delegation.find({ delegatee: id });
     delegations.forEach(async delegation => {
         await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
     })
-    await user.save();
+    await UserRepository.saveInfoUser(user);
 
     return user;
 };
