@@ -8,36 +8,31 @@ const {
   Link,
   Policy,
   Task,
-} = require("../../models");                                        
-
+} = require("../../models");
+const DelegationRepository = require("@/reponsitories/delegation.repo");
 const { connect } = require(`../../helpers/dbHelper`);
-const mongoose = require("mongoose");
+
 const {
   isToday,
   compareDate,
   arrayEquals,
 } = require("../../helpers/functionHelper");
 const schedule = require("node-schedule");
-const PolicyService = require("../super-admin/policy/policy.service");                     //
-const NotificationServices = require(`../notification/notification.service`);             //
+const PolicyService = require("../super-admin/policy/policy.service"); //
+const NotificationServices = require(`../notification/notification.service`); //
 
 // Tạo ủy quyền mới
 const createDelegation = async (portal, data, logs = []) => {
   let newDelegation;
   const filterValidDelegationArray = async (array) => {
-    let resArray = [];
+    const resArray = [];
     if (array.length > 0) {
       for (let i = 0; i < array.length; i++) {
-        const checkDelegationCreated = await Delegation(        // Repo
-          connect(DB_CONNECTION, portal)
-        )
-          .findOne({ delegationName: array[i].delegationName })
-          .collation({
-            locale: "vi",
-            strength: 2,
-            alternate: "shifted",
-            maxVariable: "space",
-          });
+        const checkDelegationCreated =
+          await DelegationRepository.checkDelegationCreate(
+            portal,
+            array[i].delegationName
+          );
         if (
           checkDelegationCreated &&
           !array[i].notCheck &&
@@ -57,38 +52,33 @@ const createDelegation = async (portal, data, logs = []) => {
   const delArray = await filterValidDelegationArray(data);
   if (delArray && delArray.length !== 0) {
     for (let i = 0; i < delArray.length; i++) {
-      let delegateRole = await Role(connect(DB_CONNECTION, portal)).findById({    //Repo
+      let delegateRole = await Role(connect(DB_CONNECTION, portal)).findById({
+        //Repo
         _id: delArray[i].delegateRole,
       });
       let delegatePrivileges = delArray[i].allPrivileges
         ? null
-        : await Privilege(connect(DB_CONNECTION, portal)).find({                  //Repo
+        : await Privilege(connect(DB_CONNECTION, portal)).find({
+            //Repo
             roleId: {
               $in: [delArray[i].delegateRole].concat(delegateRole.parents),
             },
             resourceId: { $in: delArray[i].delegateLinks },
           });
       // console.log('delegatePrivileges', delegatePrivileges)
-      let checkDelegationExist = await Delegation(
-        connect(DB_CONNECTION, portal)                                            //Repo
-      ).find({
-        delegator: delArray[i].delegator,
-        // delegatee: delArray[i].delegatee,
-        delegateType: "Role",
-        delegateRole: delArray[i].delegateRole,
-        status: {
-          $in: [
-            "activated", // Đang hoạt động
-            "pending", // Chờ xác nhận
-          ],
-        },
-      });
+      let checkDelegationExist =
+        await DelegationRepository.checkDelegationExist(
+          portal,
+          delArray[i].delegator,
+          delArray[i].delegateRole
+        );
 
       if (checkDelegationExist.length > 0 && !delArray[i].notCheck) {
         throw ["delegation_role_exist"];
       }
 
-      let checkUserHaveRole = await UserRole(                                    //Repo
+      let checkUserHaveRole = await UserRole(
+        //Repo
         connect(DB_CONNECTION, portal)
       ).find({
         userId: delArray[i].delegatee,
@@ -130,28 +120,19 @@ const createDelegation = async (portal, data, logs = []) => {
             portal
           )
         ) {
-          newDelegation = await Delegation(                       // Repo
-            connect(DB_CONNECTION, portal)
-          ).create({
-            delegationName: delArray[i].delegationName,
-            description: delArray[i].description,
-            delegator: delArray[i].delegator,
-            delegatee: delArray[i].delegatee,
-            delegateType: "Role",
-            delegateRole: delArray[i].delegateRole,
-            allPrivileges: delArray[i].allPrivileges,
-            delegatePrivileges:
-              delegatePrivileges != null
-                ? delegatePrivileges.map((p) => p._id)
-                : null,
-            startDate: delArray[i].delegationStart,
-            endDate: delArray[i].delegationEnd,
-            status: isToday(new Date(delArray[i].delegationStart))
-              ? "activated"
-              : "pending",
-            delegatePolicy: delArray[i].delegatePolicy,
-            logs: logs,
-          });
+          newDelegation = await DelegationRepository.newDelegation(
+            delArray[i].delegationName,
+            delArray[i].description,
+            delArray[i].delegator,
+            delArray[i].delegatee,
+            delArray[i].delegateRole,
+            delArray[i].allPrivileges,
+            delegatePrivileges,
+            delArray[i].delegationStart,
+            delArray[i].delegationEnd,
+            delArray[i].delegatePolicy,
+            logs
+          );
         }
       }
 
@@ -175,41 +156,23 @@ const createDelegation = async (portal, data, logs = []) => {
     }
   }
 
-  let delegation = await Delegation(connect(DB_CONNECTION, portal))              //Repo
-    .findById({ _id: newDelegation._id })
-    .populate([
-      { path: "delegateRole", select: "_id name" },
-      { path: "delegateTask" },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-      {
-        path: "delegatePrivileges",
-        select: "_id resourceId resourceType",
-        populate: {
-          path: "resourceId",
-          select: "_id url category description",
-        },
-      },
-    ]);
+  const delegation = await DelegationRepository.delegationFindById(
+    portal,
+    newDelegation._id
+  );
 
   return delegation;
 };
 
-
 // Lấy thông tin về ủy quyền đã được tạo mới
 const getNewlyCreateDelegation = async (id, data, portal) => {
   let oldDelegation = await this.getDelegationById(portal, id);
-  const checkDelegationCreated = await Delegation(                           //Repo
-    connect(DB_CONNECTION, portal) 
-  )
-    .findOne({ delegationName: data.delegationName })
-    .collation({
-      locale: "vi",
-      strength: 2,
-      alternate: "shifted",
-      maxVariable: "space",
-    });
+  const checkDelegationCreated =
+    await DelegationRepository.checkDelegationCreate(
+      portal,
+      data.delegationName
+    );
+
   let updatedDelegation = -1;
   if (
     oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !==
@@ -315,7 +278,7 @@ const autoRevokeDelegation = async (delegation, portal) => {
   return job;
 };
 
-//Gán một ủy quyền 
+//Gán một ủy quyền
 const assignDelegation = async (newDelegation, portal) => {
   // Tách hàm để check delegationStart = currentTime chạy bấm giờ
   // add delegationId to selected Privileges
@@ -323,7 +286,8 @@ const assignDelegation = async (newDelegation, portal) => {
     newDelegation.delegatePrivileges == null ||
     newDelegation.delegatePrivileges.length == 0
       ? null
-      : await Privilege(connect(DB_CONNECTION, portal)).find({                         //Repo
+      : await Privilege(connect(DB_CONNECTION, portal)).find({
+          //Repo
           _id: { $in: newDelegation.delegatePrivileges },
         });
 
@@ -336,7 +300,8 @@ const assignDelegation = async (newDelegation, portal) => {
     });
   }
 
-  let newUserRole = await UserRole(connect(DB_CONNECTION, portal)).create({             //Repo
+  let newUserRole = await UserRole(connect(DB_CONNECTION, portal)).create({
+    //Repo
     userId: newDelegation.delegatee,
     roleId: newDelegation.delegateRole,
     delegation: newDelegation._id,
@@ -345,12 +310,10 @@ const assignDelegation = async (newDelegation, portal) => {
   newUserRole.save();
 };
 
-
+//-------------------------------------------------------------------------
 // Cập nhật thông tin về các ủy quyền đã bị bỏ qua hoặc bị thiếu sót
 const updateMissedDelegation = async (portal) => {
-  const allDelegations = await Delegation(connect(DB_CONNECTION, portal)).find({             //Repo
-    status: { $in: ["pending", "activated"] },
-  });
+  const allDelegations = DelegationRepository.allDelegations(portal);
   // Kích hoạt ủy quyền nếu startDate < now và chưa đến thời hạn thu hồi hoặc thu hồi nếu endDate < now
   allDelegations.forEach(async (delegation) => {
     if (
@@ -378,20 +341,12 @@ const updateMissedDelegation = async (portal) => {
         );
       }
 
-      await Delegation(connect(DB_CONNECTION, portal)).updateOne(               //Repo
-        { _id: delegation._id },
-        {
-          logs: [
-            ...delegation.logs,
-            {
-              createdAt: new Date(),
-              user: null,
-              content: delegation.delegationName,
-              time: new Date(delegation.endDate),
-              category: "revoke",
-            },
-          ],
-        }
+      await DelegationRepository.updatedDelegation(
+        portal,
+        delegation._id,
+        delegation.logs,
+        delegation.delegationName,
+        delegation.endDate
       );
     } else {
       if (
@@ -419,8 +374,6 @@ const updateMissedDelegation = async (portal) => {
   });
 };
 
-
-
 const checkDelegationPolicy = async (
   policyId,
   delegatorId,
@@ -429,7 +382,8 @@ const checkDelegationPolicy = async (
   delegateeId,
   portal
 ) => {
-  let policy = await Policy(connect(DB_CONNECTION, portal)).findById({             //Repo
+  let policy = await Policy(connect(DB_CONNECTION, portal)).findById({
+    //Repo
     _id: policyId,
   });
   let delegator = await User(connect(DB_CONNECTION, portal)).findById({
@@ -487,7 +441,8 @@ const checkDelegationPolicy = async (
     throw ["delegatee_invalid_policy"];
   }
   if (delegateLinksIds) {
-    let delegateLinks = await Link(connect(DB_CONNECTION, portal)).find({               //Repo
+    let delegateLinks = await Link(connect(DB_CONNECTION, portal)).find({
+      //Repo
       _id: { $in: delegateLinksIds },
     });
     delegateLinks = delegateLinks.filter(
@@ -508,7 +463,6 @@ const checkDelegationPolicy = async (
   return true;
 };
 
-
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
 const getDelegations = async (portal, data) => {
   console.log(schedule);
@@ -527,44 +481,17 @@ const getDelegations = async (portal, data) => {
   page = data?.page ? Number(data.page) : 1;
   perPage = data?.perPage ? Number(data.perPage) : 20;
 
-  let totalList = await Delegation(                                                       //Repo
-    connect(DB_CONNECTION, portal)
-  ).countDocuments(keySearch);
-  let delegations = await Delegation(connect(DB_CONNECTION, portal))                    //Repo
-    .find(keySearch)
-    .populate([
-      { path: "delegateRole", select: "_id name" },
-      {
-        path: "delegateTask",
-        select: "_id name taskActions logs timesheetLogs",
-        populate: [
-          { path: "taskActions.creator", select: "name email avatar" },
-          {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar ",
-          },
-          {
-            path: "taskActions.timesheetLogs.creator",
-            select: "_id name email avatar",
-          },
-          { path: "timesheetLogs.creator", select: "name avatar _id email" },
-          { path: "logs.creator", select: "_id name avatar email " },
-        ],
-      },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-      {
-        path: "delegatePrivileges",
-        select: "_id resourceId resourceType",
-        populate: {
-          path: "resourceId",
-          select: "_id url category description",
-        },
-      },
-    ])
-    .skip((page - 1) * perPage)
-    .limit(perPage);
+  const totalList = await DelegationRepository.totalListDelegation(
+    portal,
+    keySearch
+  );
+
+  const delegations = await DelegationRepository.delegations(
+    portal,
+    keySearch,
+    page,
+    perPage
+  );
 
   return {
     data: delegations,
@@ -589,29 +516,19 @@ const getDelegationsReceive = async (portal, data) => {
   page = data?.page ? Number(data.page) : 1;
   perPage = data?.perPage ? Number(data.perPage) : 20;
 
-  let totalList = await Delegation(                                   //Repo
-    connect(DB_CONNECTION, portal)
-  ).countDocuments(keySearch);
-  let delegations = await Delegation(connect(DB_CONNECTION, portal))
-    .find(keySearch)
-    .populate([
-      { path: "delegateRole", select: "_id name" },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-      {
-        path: "delegatePrivileges",
-        select: "_id resourceId resourceType",
-        populate: {
-          path: "resourceId",
-          select: "_id url category description",
-        },
-      },
-    ])
-    .skip((page - 1) * perPage)
-    .limit(perPage);
+  const totalList = await DelegationRepository.totalListDelegation(
+    portal,
+    keySearch
+  );
 
-  console.log(delegations);
+  const delegations = await DelegationRepository.delegations(
+    portal,
+    keySearch,
+    page,
+    perPage
+  );
+
+  // console.log(delegations);
   return {
     data: delegations,
     totalList,
@@ -635,35 +552,17 @@ const getDelegationsReceiveTask = async (portal, data) => {
   page = data?.page ? Number(data.page) : 1;
   perPage = data?.perPage ? Number(data.perPage) : 20;
 
-  let totalList = await Delegation(                                               //Repo
-    connect(DB_CONNECTION, portal)
-  ).countDocuments(keySearch);
-  let delegations = await Delegation(connect(DB_CONNECTION, portal))               //Repo
-    .find(keySearch)
-    .populate([
-      {
-        path: "delegateTask",
-        select: "_id name taskActions logs timesheetLogs",
-        populate: [
-          { path: "taskActions.creator", select: "name email avatar" },
-          {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar ",
-          },
-          {
-            path: "taskActions.timesheetLogs.creator",
-            select: "_id name email avatar",
-          },
-          { path: "timesheetLogs.creator", select: "name avatar _id email" },
-          { path: "logs.creator", select: "_id name avatar email " },
-        ],
-      },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-    ])
-    .skip((page - 1) * perPage)
-    .limit(perPage);
+  const totalList = await DelegationRepository.totalListDelegation(
+    portal,
+    keySearch
+  );
+
+  const delegations = await DelegationRepository.delegations(
+    portal,
+    keySearch,
+    page,
+    perPage
+  );
 
   return {
     dataTask: delegations,
@@ -687,13 +586,17 @@ const getOnlyDelegationName = async (portal, data) => {
   page = data?.page ? Number(data.page) : 1;
   perPage = data?.perPage ? Number(data.perPage) : 20;
 
-  let totalList = await Delegation(                                                //Repo
-    connect(DB_CONNECTION, portal)
-  ).countDocuments(keySearch);
-  let DelegationCollection = await Delegation(connect(DB_CONNECTION, portal))
-    .find(keySearch, { delegationName: 1 })
-    .skip((page - 1) * perPage)
-    .limit(perPage);
+  const totalList = await DelegationRepository.totalListDelegation(
+    portal,
+    keySearch
+  );
+
+  const DelegationCollection = await DelegationRepository.delegationCollection(
+    portal,
+    keySearch,
+    page,
+    perPage
+  );
 
   return {
     data: DelegationCollection,
@@ -703,39 +606,7 @@ const getOnlyDelegationName = async (portal, data) => {
 
 // Lấy ra Ví dụ theo id
 const getDelegationById = async (portal, id) => {
-  let delegation = await Delegation(connect(DB_CONNECTION, portal))                 //Repo
-    .findById({ _id: id })
-    .populate([
-      { path: "delegateRole", select: "_id name" },
-      {
-        path: "delegateTask",
-        select: "_id name taskActions logs timesheetLogs",
-        populate: [
-          { path: "taskActions.creator", select: "name email avatar" },
-          {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar ",
-          },
-          {
-            path: "taskActions.timesheetLogs.creator",
-            select: "_id name email avatar",
-          },
-          { path: "timesheetLogs.creator", select: "name avatar _id email" },
-          { path: "logs.creator", select: "_id name avatar email " },
-        ],
-      },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-      {
-        path: "delegatePrivileges",
-        select: "_id resourceId resourceType",
-        populate: {
-          path: "resourceId",
-          select: "_id url category description",
-        },
-      },
-    ]);
+  const delegation = await DelegationRepository.getDelegationById(portal, id);
   if (delegation) {
     return delegation;
   }
@@ -763,12 +634,10 @@ const deleteDelegations = async (portal, delegationIds) => {
     schedule.scheduledJobs["Activate_" + delegationIds[0]].cancel();
   }
 
-  let delegations = await Delegation(connect(DB_CONNECTION, portal)).deleteMany(         //Repo
-    { _id: { $in: delegationIds.map((item) => mongoose.Types.ObjectId(item)) } }
+  const delegations = await DelegationRepository.deleteDelegations(
+    portal,
+    delegationIds
   );
-  // delegationIds.forEach(async delegationId => {
-  //     await UserRole(connect(DB_CONNECTION, portal)).deleteOne({ delegation: delegationId });
-  // })
   return delegations;
 };
 
@@ -776,17 +645,20 @@ const revokeDelegation = async (portal, delegationIds, reason) => {
   // let delegations = await Delegation(connect(DB_CONNECTION, portal))
   //     .deleteMany({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
   delegationIds.forEach(async (delegationId) => {
-    await UserRole(connect(DB_CONNECTION, portal)).deleteMany({                          //Repo
+    await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
+      //Repo
       delegation: delegationId,
     });
   });
-                      
-  let delegation = await Delegation(connect(DB_CONNECTION, portal)).find({                  //Repo
-    _id: { $in: delegationIds.map((item) => mongoose.Types.ObjectId(item)) },
-  });
-  let result = delegation[0];
+
+  const delegation = await DelegationRepository.deleteDelegations(
+    portal,
+    delegationIds
+  );
+  const result = delegation[0];
   if (result.delegatePrivileges != null) {
-    let privileges = await Privilege(connect(DB_CONNECTION, portal)).find({                 //Repo
+    const privileges = await Privilege(connect(DB_CONNECTION, portal)).find({
+      //Repo
       _id: { $in: result.delegatePrivileges },
     });
     privileges.forEach(async (pri) => {
@@ -809,118 +681,45 @@ const revokeDelegation = async (portal, delegationIds, reason) => {
 
   await result.save();
 
-  let newDelegation = await Delegation(connect(DB_CONNECTION, portal))                   //Repo
-    .findOne({ _id: delegationIds[0] })
-    .populate([
-      { path: "delegateRole", select: "_id name" },
-      { path: "delegateTask" },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-      {
-        path: "delegatePrivileges",
-        select: "_id resourceId resourceType",
-        populate: {
-          path: "resourceId",
-          select: "_id url category description",
-        },
-      },
-    ]);
-
+  const newDelegation = await DelegationRepository.newRevokeDelegation(
+    portal,
+    delegationIds[0]
+  );
   return newDelegation;
 };
 
 const rejectDelegation = async (portal, delegationId, reason) => {
-  let delegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({                 //Repo
-    _id: delegationId,
-  });
-
+  const delegation = await DelegationRepository.newDelegation(
+    portal,
+    delegationId
+  );
   delegation.replyStatus = "declined";
   delegation.declineReason = !reason ? null : reason;
 
   await delegation.save();
 
-  let newDelegation = await Delegation(connect(DB_CONNECTION, portal))                      //Repo
-    .findOne({ _id: delegationId })
-    .populate([
-      { path: "delegateRole", select: "_id name" },
-      {
-        path: "delegateTask",
-        select: "_id name taskActions logs timesheetLogs",
-        populate: [
-          { path: "taskActions.creator", select: "name email avatar" },
-          {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar ",
-          },
-          {
-            path: "taskActions.timesheetLogs.creator",
-            select: "_id name email avatar",
-          },
-          { path: "timesheetLogs.creator", select: "name avatar _id email" },
-          { path: "logs.creator", select: "_id name avatar email " },
-        ],
-      },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-      {
-        path: "delegatePrivileges",
-        select: "_id resourceId resourceType",
-        populate: {
-          path: "resourceId",
-          select: "_id url category description",
-        },
-      },
-    ]);
-
+  const newDelegation = await DelegationRepository.getDelegationById(
+    portal,
+    delegationId
+  );
   return newDelegation;
 };
 
 const confirmDelegation = async (portal, delegationId) => {
-  let delegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({                  //Repo
-    _id: delegationId,
-  });
+  const delegation = await DelegationRepository.rejectDelegation(
+    portal,
+    delegationId
+  );
 
   delegation.replyStatus = "confirmed";
   delegation.declineReason = null;
 
   await delegation.save();
 
-  let newDelegation = await Delegation(connect(DB_CONNECTION, portal))                       //Repo
-    .findOne({ _id: delegationId })
-    .populate([
-      { path: "delegateRole", select: "_id name" },
-      {
-        path: "delegateTask",
-        select: "_id name taskActions logs timesheetLogs",
-        populate: [
-          { path: "taskActions.creator", select: "name email avatar" },
-          {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar ",
-          },
-          {
-            path: "taskActions.timesheetLogs.creator",
-            select: "_id name email avatar",
-          },
-          { path: "timesheetLogs.creator", select: "name avatar _id email" },
-          { path: "logs.creator", select: "_id name avatar email " },
-        ],
-      },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-      {
-        path: "delegatePrivileges",
-        select: "_id resourceId resourceType",
-        populate: {
-          path: "resourceId",
-          select: "_id url category description",
-        },
-      },
-    ]);
-
+  const newDelegation = await DelegationRepository.newConfirmDelegation(
+    portal,
+    delegationId
+  );
   return newDelegation;
 };
 
@@ -937,57 +736,22 @@ const saveLog = async (portal, delegation, userId, content, category, time) => {
         5) ||
     category == "logout"
   ) {
-    console.log("alo");
-    await Delegation(connect(DB_CONNECTION, portal)).updateOne(                             //Repo
-      { _id: delegation._id },
-      {
-        logs: [
-          ...delegation.logs,
-          {
-            createdAt: new Date(),
-            user: userId,
-            content: content,
-            time: new Date(time),
-            category: category,
-          },
-        ],
-      }
+    // console.log("alo");
+    await DelegationRepository.saveLogDelegation(
+      portal,
+      delegation._id,
+      delegation.logs,
+      userId,
+      content,
+      time,
+      category
     );
   }
 
-  let newDelegation = await Delegation(connect(DB_CONNECTION, portal))                     //Repo
-    .findOne({ _id: delegation._id })
-    .populate([
-      { path: "delegateRole", select: "_id name" },
-      {
-        path: "delegateTask",
-        select: "_id name taskActions logs timesheetLogs",
-        populate: [
-          { path: "taskActions.creator", select: "name email avatar" },
-          {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar ",
-          },
-          {
-            path: "taskActions.timesheetLogs.creator",
-            select: "_id name email avatar",
-          },
-          { path: "timesheetLogs.creator", select: "name avatar _id email" },
-          { path: "logs.creator", select: "_id name avatar email " },
-        ],
-      },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-      {
-        path: "delegatePrivileges",
-        select: "_id resourceId resourceType",
-        populate: {
-          path: "resourceId",
-          select: "_id url category description",
-        },
-      },
-    ]);
+  const newDelegation = await DelegationRepository.newConfirmDelegation(
+    portal,
+    delegation._id
+  );
 
   return newDelegation;
 };
@@ -998,16 +762,11 @@ const createTaskDelegation = async (portal, data, logs = []) => {
     let resArray = [];
     if (array.length > 0) {
       for (let i = 0; i < array.length; i++) {
-        const checkDelegationCreated = await Delegation(                             //Repo
-          connect(DB_CONNECTION, portal)
-        )
-          .findOne({ delegationName: array[i].delegationName })
-          .collation({
-            locale: "vi",
-            strength: 2,
-            alternate: "shifted",
-            maxVariable: "space",
-          });
+        const checkDelegationCreated =
+          await DelegationRepository.checkDelegationCreate(
+            portal,
+            array[i].delegationName
+          );
         if (
           checkDelegationCreated &&
           !array[i].notCheck &&
@@ -1027,24 +786,17 @@ const createTaskDelegation = async (portal, data, logs = []) => {
   const delArray = await filterValidDelegationArray(data);
   if (delArray && delArray.length !== 0) {
     for (let i = 0; i < delArray.length; i++) {
-      let checkDelegationExist = await Delegation(                              //Repo
-        connect(DB_CONNECTION, portal)
-      ).find({
-        delegator: delArray[i].delegator,
-        // delegatee: delArray[i].delegatee,
-        delegateType: "Task",
-        delegateTask: delArray[i].delegateTask,
-        status: {
-          $in: [
-            "activated", // Đang hoạt động
-            "pending", // Chờ xác nhận
-          ],
-        },
-      });
+      const checkDelegationExist =
+        DelegationRepository.checkDelegationExistValid(
+          portal,
+          delArray[i].delegator,
+          delArray[i].delegateTask
+        );
+
       // console.log('checkDelegationExist', checkDelegationExist)
 
       let count1 = 0;
-      let delegationToDelegatee = checkDelegationExist.filter(
+      const delegationToDelegatee = checkDelegationExist.filter(
         (e) => e.delegatee.toString() == delArray[i].delegatee.toString()
       );
       console.log(
@@ -1065,7 +817,7 @@ const createTaskDelegation = async (portal, data, logs = []) => {
         throw ["delegation_task_exist"]; // Đã tồn tại ủy quyền công việc với vai trò cho người nhận ủy quyền
       }
 
-      let delegateTaskRolesExist = checkDelegationExist
+      const delegateTaskRolesExist = checkDelegationExist
         .map((e) => e.delegateTaskRoles)
         .flat();
       // console.log('delegateTaskRolesExist', delegateTaskRolesExist)
@@ -1081,7 +833,7 @@ const createTaskDelegation = async (portal, data, logs = []) => {
         throw ["delegation_task_role_exist"]; // Đã tồn tại ủy quyền công việc với vai trò dã chọn
       }
 
-      let checkDelegateTask = await Task(connect(DB_CONNECTION, portal))                 //Repo
+      const checkDelegateTask = await Task(connect(DB_CONNECTION, portal)) //Repo
         .findOne({
           _id: delArray[i].delegateTask,
           // $or: [
@@ -1198,7 +950,7 @@ const createTaskDelegation = async (portal, data, logs = []) => {
           )
         ) {
           newDelegation = await Delegation(
-            connect(DB_CONNECTION, portal)                                   //Repo
+            connect(DB_CONNECTION, portal) //Repo
           ).create({
             delegationName: delArray[i].delegationName,
             description: delArray[i].description,
@@ -1232,10 +984,12 @@ const createTaskDelegation = async (portal, data, logs = []) => {
         await this.autoRevokeTaskDelegation(newDelegation, portal);
       }
 
-      let task = await Task(connect(DB_CONNECTION, portal)).findOne({                    //Repo
+      let task = await Task(connect(DB_CONNECTION, portal)).findOne({
+        //Repo
         _id: newDelegation.delegateTask,
       });
-      await Task(connect(DB_CONNECTION, portal)).updateOne(                             //Repo
+      await Task(connect(DB_CONNECTION, portal)).updateOne(
+        //Repo
         { _id: newDelegation.delegateTask },
         {
           delegations: [...task.delegations, newDelegation._id],
@@ -1244,46 +998,21 @@ const createTaskDelegation = async (portal, data, logs = []) => {
     }
   }
 
-  let delegation = await Delegation(connect(DB_CONNECTION, portal))                      //Repo
-    .findById({ _id: newDelegation._id })
-    .populate([
-      {
-        path: "delegateTask",
-        select: "_id name taskActions logs timesheetLogs",
-        populate: [
-          { path: "taskActions.creator", select: "name email avatar" },
-          {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar ",
-          },
-          {
-            path: "taskActions.timesheetLogs.creator",
-            select: "_id name email avatar",
-          },
-          { path: "timesheetLogs.creator", select: "name avatar _id email" },
-          { path: "logs.creator", select: "_id name avatar email " },
-        ],
-      },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-    ]);
+  const delegation = await DelegationRepository.delegationTaskFindById(
+    portal,
+    newDelegation._id
+  );
 
   return delegation;
 };
 
 const getNewlyCreateTaskDelegation = async (id, data, portal) => {
   let oldDelegation = await this.getDelegationById(portal, id);
-  const checkDelegationCreated = await Delegation(                                  //Repo
-    connect(DB_CONNECTION, portal)
-  )
-    .findOne({ delegationName: data.delegationName })
-    .collation({
-      locale: "vi",
-      strength: 2,
-      alternate: "shifted",
-      maxVariable: "space",
-    });
+  const checkDelegationCreated =
+    await DelegationRepository.checkDelegationCreate(
+      portal,
+      data.delegationName
+    );
   let updatedDelegation = -1;
   if (
     oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !==
@@ -1372,7 +1101,7 @@ const autoActivateTaskDelegation = async (delegation, portal) => {
 
 const assignTaskDelegation = async (newDelegation, portal) => {
   let delegateTaskRoles = newDelegation.delegateTaskRoles;
-  let delegateTask = await Task(connect(DB_CONNECTION, portal))                        //Repo
+  let delegateTask = await Task(connect(DB_CONNECTION, portal)) //Repo
     .findOne({ _id: newDelegation.delegateTask })
     .populate({
       path: "delegations",
@@ -1384,7 +1113,8 @@ const assignTaskDelegation = async (newDelegation, portal) => {
   // Thêm delegatee vào RACI tương ứng được ủy và remove delegator khỏi RACI đó trừ người quan sát
   delegateTaskRoles.forEach(async (r) => {
     if (r == "responsible") {
-      await Task(connect(DB_CONNECTION, portal)).updateOne(                           //Repo
+      await Task(connect(DB_CONNECTION, portal)).updateOne(
+        //Repo
         { _id: delegateTask._id },
         {
           responsibleEmployees: [
@@ -1397,7 +1127,8 @@ const assignTaskDelegation = async (newDelegation, portal) => {
       );
     }
     if (r == "accountable") {
-      await Task(connect(DB_CONNECTION, portal)).updateOne(                            //Repo
+      await Task(connect(DB_CONNECTION, portal)).updateOne(
+        //Repo
         { _id: delegateTask._id },
         {
           accountableEmployees: [
@@ -1410,7 +1141,8 @@ const assignTaskDelegation = async (newDelegation, portal) => {
       );
     }
     if (r == "consulted") {
-      await Task(connect(DB_CONNECTION, portal)).updateOne(                          //Repo
+      await Task(connect(DB_CONNECTION, portal)).updateOne(
+        //Repo
         { _id: delegateTask._id },
         {
           consultedEmployees: [
@@ -1423,7 +1155,8 @@ const assignTaskDelegation = async (newDelegation, portal) => {
       );
     }
     if (r == "informed") {
-      await Task(connect(DB_CONNECTION, portal)).updateOne(                         //Repo
+      await Task(connect(DB_CONNECTION, portal)).updateOne(
+        //Repo
         { _id: delegateTask._id },
         {
           informedEmployees: [...delegateTask.informedEmployees, delegatee],
@@ -1434,27 +1167,24 @@ const assignTaskDelegation = async (newDelegation, portal) => {
 
   // Chuyển delegator thành Người quan sát
   if (!delegateTask.informedEmployees.includes(delegator)) {
-    await Task(connect(DB_CONNECTION, portal)).updateOne(                          //Repo
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+      //Repo
       { _id: delegateTask._id },
       {
         informedEmployees: [...delegateTask.informedEmployees, delegator],
       }
     );
     // Flag xem delegator có inform role từ đầu hay không, chuyển trạng thái sang activate
-    await Delegation(connect(DB_CONNECTION, portal)).updateOne(                      //Repo
-      { _id: newDelegation._id },
-      {
-        delegatorHasInformed: false,
-        status: "activated",
-      }
+    await DelegationRepository.assignTaskDelegation(
+      portal,
+      newDelegation._id,
+      false
     );
   } else {
-    await Delegation(connect(DB_CONNECTION, portal)).updateOne(                       //Repo
-      { _id: newDelegation._id },
-      {
-        delegatorHasInformed: true,
-        status: "activated",
-      }
+    await DelegationRepository.assignTaskDelegation(
+      portal,
+      newDelegation._id,
+      true
     );
   }
 };
@@ -1473,20 +1203,12 @@ const autoRevokeTaskDelegation = async (delegation, portal) => {
       );
       await a.sendNotification(portal, revokedDelegation, "revoke", true);
 
-      await Delegation(connect(DB_CONNECTION, portal)).updateOne(                       //Repo
-        { _id: delegation._id },
-        {
-          logs: [
-            ...delegation.logs,
-            {
-              createdAt: new Date(),
-              user: null,
-              content: delegation.delegationName,
-              time: new Date(delegation.endDate),
-              category: "revoke",
-            },
-          ],
-        }
+      await DelegationRepository.updatedDelegation(
+        portal,
+        delegation._id,
+        delegation.logs,
+        delegation.delegationName,
+        delegation.endDate
       );
     }
   );
@@ -1495,13 +1217,15 @@ const autoRevokeTaskDelegation = async (delegation, portal) => {
 };
 
 const revokeTaskDelegation = async (portal, delegationIds, reason) => {
-  let delegation = await Delegation(connect(DB_CONNECTION, portal)).find({              //Repo
-    _id: { $in: delegationIds.map((item) => mongoose.Types.ObjectId(item)) },
-  });
+  const delegation = await DelegationRepository.revokeTaskDelegation(
+    portal,
+    delegationIds
+  );
+
   let result = delegation[0];
 
-  let delegateTaskRoles = result.delegateTaskRoles; 
-  let delegateTask = await Task(connect(DB_CONNECTION, portal))                         //Repo
+  let delegateTaskRoles = result.delegateTaskRoles;
+  let delegateTask = await Task(connect(DB_CONNECTION, portal)) //Repo
     .findOne({ _id: result.delegateTask })
     .populate({
       path: "delegations",
@@ -1514,7 +1238,8 @@ const revokeTaskDelegation = async (portal, delegationIds, reason) => {
   if (result.status == "activated") {
     delegateTaskRoles.forEach(async (r) => {
       if (r == "responsible") {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(                            //Repo
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+          //Repo
           { _id: delegateTask._id },
           {
             responsibleEmployees: [
@@ -1527,7 +1252,8 @@ const revokeTaskDelegation = async (portal, delegationIds, reason) => {
         );
       }
       if (r == "accountable") {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(                            //Repo
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+          //Repo
           { _id: delegateTask._id },
           {
             accountableEmployees: [
@@ -1540,7 +1266,8 @@ const revokeTaskDelegation = async (portal, delegationIds, reason) => {
         );
       }
       if (r == "consulted") {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(                          //Repo
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+          //Repo
           { _id: delegateTask._id },
           {
             consultedEmployees: [
@@ -1552,8 +1279,9 @@ const revokeTaskDelegation = async (portal, delegationIds, reason) => {
           }
         );
       }
-      if (r == "informed") { 
-        await Task(connect(DB_CONNECTION, portal)).updateOne(                            //Repo
+      if (r == "informed") {
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+          //Repo
           { _id: delegateTask._id },
           {
             informedEmployees: [
@@ -1578,7 +1306,8 @@ const revokeTaskDelegation = async (portal, delegationIds, reason) => {
         d._id.toString() !== result._id.toString() && d.status == "activated"
     ).length == 0
   ) {
-    await Task(connect(DB_CONNECTION, portal)).updateOne(                              //Repo
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+      //Repo
       { _id: delegateTask._id },
       {
         informedEmployees: [
@@ -1604,30 +1333,10 @@ const revokeTaskDelegation = async (portal, delegationIds, reason) => {
 
   await result.save();
 
-  let newDelegation = await Delegation(connect(DB_CONNECTION, portal))                   //Repo
-    .findOne({ _id: delegationIds[0] })
-    .populate([
-      {
-        path: "delegateTask",
-        select: "_id name taskActions logs timesheetLogs",
-        populate: [
-          { path: "taskActions.creator", select: "name email avatar" },
-          {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar ",
-          },
-          {
-            path: "taskActions.timesheetLogs.creator",
-            select: "_id name email avatar",
-          },
-          { path: "timesheetLogs.creator", select: "name avatar _id email" },
-          { path: "logs.creator", select: "_id name avatar email " },
-        ],
-      },
-      { path: "delegatee", select: "_id name" },
-      { path: "delegatePolicy", select: "_id policyName" },
-      { path: "delegator", select: "_id name company" },
-    ]);
+  const newDelegation = await DelegationRepository.revokeNewDelegation(
+    portal,
+    delegationIds[0]
+  );
 
   return newDelegation;
 };
@@ -1640,16 +1349,20 @@ const deleteTaskDelegation = async (portal, delegationIds) => {
   if (schedule.scheduledJobs["Activate_" + delegationIds[0]]) {
     schedule.scheduledJobs["Activate_" + delegationIds[0]].cancel();
   }
-  let delegation = await Delegation(connect(DB_CONNECTION, portal)).find({                   //Repo
-    _id: { $in: delegationIds.map((item) => mongoose.Types.ObjectId(item)) },
-  });
+  const delegation = await DelegationRepository.revokeTaskDelegation(
+    portal,
+    delegationIds
+  );
+
   let result = delegation[0];
 
-  let task = await Task(connect(DB_CONNECTION, portal)).findOne({                           //Repo
+  let task = await Task(connect(DB_CONNECTION, portal)).findOne({
+    //Repo
     _id: result.delegateTask,
   });
 
-  await Task(connect(DB_CONNECTION, portal)).updateOne(                                    //Repo
+  await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //Repo
     { _id: task._id },
     {
       delegations: task.delegations.filter(
@@ -1658,7 +1371,8 @@ const deleteTaskDelegation = async (portal, delegationIds) => {
     }
   );
   if (!result.delegatorHasInformed) {
-    await Delegation(connect(DB_CONNECTION, portal)).updateMany(                             //Repo
+    await Delegation(connect(DB_CONNECTION, portal)).updateMany(
+      //Repo
       { delegateTask: result.delegateTask, delegator: result.delegator },
       {
         delegatorHasInformed: false,
@@ -1667,14 +1381,15 @@ const deleteTaskDelegation = async (portal, delegationIds) => {
   }
 
   let delegationDelete = await Delegation(
-    connect(DB_CONNECTION, portal)                                                          //Repo
+    connect(DB_CONNECTION, portal) //Repo
   ).deleteOne({ _id: result._id });
 
   return delegationDelete;
 };
 
 const deleteTaskDelegationWhenTaskIsDeleted = async (portal, taskId) => {
-  let task = await Task(connect(DB_CONNECTION, portal)).findOne({                            //Repo
+  let task = await Task(connect(DB_CONNECTION, portal)).findOne({
+    //Repo
     _id: taskId,
   });
 
@@ -1689,9 +1404,7 @@ const deleteTaskDelegationWhenTaskIsDeleted = async (portal, taskId) => {
       }
     });
 
-    await Delegation(connect(DB_CONNECTION, portal)).deleteMany({                            //Repo
-      delegateTask: task._id,
-    });
+    await DelegationRepository.delegationDeleteTask(portal, task._id);
   }
 };
 
@@ -1699,43 +1412,11 @@ const handleDelegatorLosesRole = async (portal, users, roles) => {
   // Từ manage role
   if (Array.isArray(users)) {
     // Kiem tra ton tai uy quyen delegator khong nam trong user ma co uy quyen vai tro khong
-    let checkDelegationUser = await Delegation(connect(DB_CONNECTION, portal))                      //Repo
-      .find({
-        delegator: { $nin: users },
-        delegateRole: roles,
-        status: { $in: ["pending", "activated"] },
-      })
-      .populate([
-        { path: "delegateRole", select: "_id name" },
-        {
-          path: "delegateTask",
-          select: "_id name taskActions logs timesheetLogs",
-          populate: [
-            { path: "taskActions.creator", select: "name email avatar" },
-            {
-              path: "taskActions.evaluations.creator",
-              select: "name email avatar ",
-            },
-            {
-              path: "taskActions.timesheetLogs.creator",
-              select: "_id name email avatar",
-            },
-            { path: "timesheetLogs.creator", select: "name avatar _id email" },
-            { path: "logs.creator", select: "_id name avatar email " },
-          ],
-        },
-        { path: "delegatee", select: "_id name" },
-        { path: "delegatePolicy", select: "_id policyName" },
-        { path: "delegator", select: "_id name company" },
-        {
-          path: "delegatePrivileges",
-          select: "_id resourceId resourceType",
-          populate: {
-            path: "resourceId",
-            select: "_id url category description",
-          },
-        },
-      ]);
+    const checkDelegationUser = await DelegationRepository.checkDelegationRole(
+      portal,
+      users,
+      roles
+    );
     if (checkDelegationUser.length > 0) {
       checkDelegationUser.forEach(async (delegation) => {
         await this.revokeDelegation(
@@ -1752,43 +1433,11 @@ const handleDelegatorLosesRole = async (portal, users, roles) => {
   if (Array.isArray(roles)) {
     // Kiem tra ton tai uy quyen delegator = user va delegate role khong nam trong role cua user
 
-    let checkDelegationRole = await Delegation(connect(DB_CONNECTION, portal))                          //Repo
-      .find({
-        delegator: users,
-        delegateRole: { $nin: roles },
-        status: { $in: ["pending", "activated"] },
-      })
-      .populate([
-        { path: "delegateRole", select: "_id name" },
-        {
-          path: "delegateTask",
-          select: "_id name taskActions logs timesheetLogs",
-          populate: [
-            { path: "taskActions.creator", select: "name email avatar" },
-            {
-              path: "taskActions.evaluations.creator",
-              select: "name email avatar ",
-            },
-            {
-              path: "taskActions.timesheetLogs.creator",
-              select: "_id name email avatar",
-            },
-            { path: "timesheetLogs.creator", select: "name avatar _id email" },
-            { path: "logs.creator", select: "_id name avatar email " },
-          ],
-        },
-        { path: "delegatee", select: "_id name" },
-        { path: "delegatePolicy", select: "_id policyName" },
-        { path: "delegator", select: "_id name company" },
-        {
-          path: "delegatePrivileges",
-          select: "_id resourceId resourceType",
-          populate: {
-            path: "resourceId",
-            select: "_id url category description",
-          },
-        },
-      ]);
+    const checkDelegationRole = await DelegationRepository.checkDelegationRole(
+      portal,
+      users,
+      roles
+    );
     if (checkDelegationRole.length > 0) {
       checkDelegationRole.forEach(async (delegation) => {
         await this.revokeDelegation(
@@ -2024,5 +1673,5 @@ module.export = {
   deleteTaskDelegation,
   deleteTaskDelegationWhenTaskIsDeleted,
   handleDelegatorLosesRole,
-  sendNotification
+  sendNotification,
 };
