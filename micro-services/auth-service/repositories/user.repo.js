@@ -1,4 +1,4 @@
-const { connect} = require(`../helpers/dbHelper`);
+const { connect} = require('../helpers/dbHelper');
 const User = require('@/models/user.model');
 
 const findUserByEmail = async (email) => {
@@ -6,14 +6,14 @@ const findUserByEmail = async (email) => {
     .findOne({email})
     .populate([
         {
-            path: "roles",
+            path: 'roles',
             populate: [{
-                path: "roleId",
-                populate: { path: "type" }
+                path: 'roleId',
+                populate: { path: 'type' }
             }, {
-                path: "delegation",
-                select: "_id delegator",
-                populate: { path: "delegator", select: "_id name" }
+                path: 'delegation',
+                select: '_id delegator',
+                populate: { path: 'delegator', select: '_id name' }
             }]
         },
     ]);
@@ -27,8 +27,8 @@ const findUserById = async (id) => {
 const getUserProfile = async (portal, userId) => {
     return await User
     .findById(userId)
-    .select("-password -status -deleteSoft -tokens")
-    .populate([{ path: "roles", populate: [{ path: "roleId", populate: { path: "type" } }, { path: "delegation", select: "_id delegator", populate: { path: "delegator", select: "name" } }] }]).lean();
+    .select('-password -status -deleteSoft -tokens')
+    .populate([{ path: 'roles', populate: [{ path: 'roleId', populate: { path: 'type' } }, { path: 'delegation', select: '_id delegator', populate: { path: 'delegator', select: 'name' } }] }]).lean();
 }
 const saveInfoUser = async (userInfo) => {
     const user = new User(userInfo);
@@ -44,7 +44,7 @@ const findPortalByIdSelectPassword = async (portal, userId) => {
     return await User(connect(DB_CONNECTION, portal))
     .findById(userId)
     .select('-password')
-    .populate([{ path: "roles", populate: { path: "roleId" } }]);
+    .populate([{ path: 'roles', populate: { path: 'roleId' } }]);
 }
 
 const findUserByIdPortal = async (portal, userId) => {
@@ -54,7 +54,7 @@ const findUserByIdPortal = async (portal, userId) => {
 const findPortalById = async (portal, userId) => {
     await User(connect(DB_CONNECTION, portal))
         .findById(userId)
-        .populate([{ path: "roles", populate: { path: "roleId" } }]);
+        .populate([{ path: 'roles', populate: { path: 'roleId' } }]);
 }
 
 const findPortalByEmail = async (portal, email) => {

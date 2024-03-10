@@ -5,10 +5,10 @@ const connectDatabase = async (url) => {
   console.log(`Connecting to ${connect_url}`);
   mongoose.connect(connect_url).then(
     () => {
-      console.log(`Database connected...`);
+      console.log('Database connected...');
     },
     (err) => {
-      console.log(`Error when connecting`, err);
+      console.log('Error when connecting', err);
     }
   );
 };

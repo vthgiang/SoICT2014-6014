@@ -1,10 +1,10 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const generator = require("generate-password");
-const fs = require("fs");
-const { sendEmail } = require("../helpers/emailHelper");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const generator = require('generate-password');
+const fs = require('fs');
+const { sendEmail } = require('../helpers/emailHelper');
 const { validateEmailValid } = require('../helpers/validationHelper');
-const UserRepository = require("@/repositories/user.repo")
+const UserRepository = require('@/repositories/user.repo')
 /**
  * Quên mật khẩu tài khoản người dùng
  * @email: email người dùng
@@ -24,15 +24,15 @@ const forgetPassword = async (portal, email, password2) => {
         if (!password2)
             throw ['password2_empty'];
         const validPass = await bcrypt.compare(String(password2), user.password2);
-        if (!validPass) throw ["password2_invalid"];
+        if (!validPass) throw ['password2_invalid'];
     }
 
     var code = await generator.generate({ length: 10, numbers: true });
     const token = jwt.sign({ email: email, code: code, portal: portal }, process.env.TOKEN_SECRET, { expiresIn: '30m' })
 
-    console.log("=================================================")
+    console.log('=================================================')
     console.log('token', `${process.env.WEBSITE}/reset-password?token=${token}`);
-    console.log("=================================================")
+    console.log('=================================================')
     user.resetPasswordToken = code;
     await UserRepository.saveInfoUser(user);
 
@@ -78,9 +78,9 @@ const forgetPassword = async (portal, email, password2) => {
 const resetPassword = async (data) => {
     const { otp, token, password } = data;
     if (!token)
-        throw ["token_empty"];
+        throw ['token_empty'];
     if (!otp)
-        throw ["otp_empty"];
+        throw ['otp_empty'];
 
     // Giải mã token
     const secret = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -90,13 +90,13 @@ const resetPassword = async (data) => {
         throw ['portal_empty']
 
     if (!secret.email)
-        throw ["email_empty"];
+        throw ['email_empty'];
 
     if (secret.code !== otp)
-        throw ["otp_invalid"];
+        throw ['otp_invalid'];
 
     var user = await  await UserRepository.findPortal({conditions: [secret.email, otp]});
-    if (user === null) throw ["reset_password_invalid"];
+    if (user === null) throw ['reset_password_invalid'];
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
     user.password = hash;
@@ -167,12 +167,12 @@ const changeInformation = async (
     }
 
     const oldEmail = user.email;
-    const deleteAvatar = "." + user.avatar;
+    const deleteAvatar = '.' + user.avatar;
     user.email = email;
     user.name = name;
     if (avatar) {
         if (
-            deleteAvatar !== "./upload/avatars/user.png" &&
+            deleteAvatar !== './upload/avatars/user.png' &&
             fs.existsSync(deleteAvatar)
         )
             fs.unlinkSync(deleteAvatar);
@@ -216,11 +216,11 @@ const changePassword = async (portal, userId, password, new_password, confirmPas
 
     const user = await User(connect(DB_CONNECTION, portal))
         .findById(userId)
-        .populate([{ path: "roles", populate: { path: "roleId" } }]);
+        .populate([{ path: 'roles', populate: { path: 'roleId' } }]);
 
     const validPass = await bcrypt.compare(password, user.password);
     // Kiểm tra mật khẩu cũ nhập vào có đúng hay không
-    if (!validPass) throw ["password_invalid"];
+    if (!validPass) throw ['password_invalid'];
 
     // Lưu mật khẩu mới
     const salt = await bcrypt.genSaltSync(10);
@@ -302,7 +302,7 @@ const changePassword2 = async (portal, userId, body) => {
  */
 const getProfile = async (portal, userId) => {
     const user = await UserRepository.getUserProfile(portal, userId);
-    if (user === null) throw ["user_not_found"];
+    if (user === null) throw ['user_not_found'];
     // user = user.toObject();
     const password2Exists = user.password2 ? true : false;
     user['password2Exists'] = password2Exists;
@@ -356,14 +356,14 @@ const deletePassword2 = async (portal, data, userId) => {
 
     const user = await User(connect(DB_CONNECTION, portal))
         .findById(userId)
-        .populate([{ path: "roles", populate: { path: "roleId" } }]);
+        .populate([{ path: 'roles', populate: { path: 'roleId' } }]);
 
     const validPwd2 = await bcrypt.compare(pwd2, user.password2);
     if (!validPwd2) {
         throw ['password2_invalid'];
     }
 
-    const userUpdate = await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: userId }, { $unset: { password2: "" } }, { new: true })
+    const userUpdate = await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: userId }, { $unset: { password2: '' } }, { new: true })
     userUpdate = userUpdate.toObject();
     userUpdate['password2Exists'] = false;
     return userUpdate;
@@ -371,7 +371,7 @@ const deletePassword2 = async (portal, data, userId) => {
 
 const checkPassword2Exists = async (portal, userId) => {
     const userToken = await UserRepository.checkPasswordUser(portal, userId)
-    if (userToken.numberDevice === 0) throw ["acc_log_out"];
+    if (userToken.numberDevice === 0) throw ['acc_log_out'];
     // Kiểm tra người dùng đã có mật khẩu cấp 2 hay chưa?
     if (userToken && userToken.password2) throw ['auth_password2_found']
 }

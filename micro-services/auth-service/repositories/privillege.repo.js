@@ -4,9 +4,9 @@ const getPrivilegesByRoleAndResourceType = async (roles) => {
     return await Privilege
         .find({
             roleId: { $in: roles },
-            resourceType: "Link",
+            resourceType: 'Link',
         })
-        .populate({ path: "resourceId" });
+        .populate({ path: 'resourceId' });
 }
 
 module.exports = {
