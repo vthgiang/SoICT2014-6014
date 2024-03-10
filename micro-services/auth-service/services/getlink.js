@@ -1,4 +1,4 @@
-const DelegationService = require(`../delegation/delegation.service`);
+const DelegationService = require('../delegation/delegation.service');
 const RoleRepository = require('@/repositories/role.repo');
 const PrivilegeRepository = require('@/repositories/privillege.repo');
 const UserRoleRepository = require('@/repositories/userRole.repo');
@@ -48,7 +48,7 @@ const getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
         })
         // Lọc ra các link được phép truy cập theo tùy chọn trang trong cấu hình ủy quyền
         links = delegationAllowedLinks.length > 0 ? links.filter(link => delegationAllowedLinks.includes(link)) : links;
-        await DelegationService.saveLog(portal, delegateeDelegation, delegateeDelegation.delegatee, role.name, "switch_delegate_role", new Date())
+        await DelegationService.saveLog(portal, delegateeDelegation, delegateeDelegation.delegatee, role.name, 'switch_delegate_role', new Date())
 
     }
 

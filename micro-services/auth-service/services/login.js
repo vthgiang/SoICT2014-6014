@@ -1,9 +1,9 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { connect, initModels } = require(`../../helpers/dbHelper`);
-const DelegationService = require(`../delegation/delegation.service`);
-const { findUserByEmail } = require("@/repositories/user.repo");
-const UserRepository = require("@/repositories/user.repo")
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { connect, initModels } = require('../../helpers/dbHelper');
+const DelegationService = require('../delegation/delegation.service');
+const { findUserByEmail } = require('@/repositories/user.repo');
+const UserRepository = require('@/repositories/user.repo')
 /**
  * Phương thức đăng nhập
  */
@@ -33,16 +33,16 @@ const login = async (fingerprint, data) => {
     // })
 
 
-    if (!user) throw ["email_password_invalid"];
+    if (!user) throw ['email_password_invalid'];
     const validPass = await bcrypt.compare(data.password, user.password);
     if (!validPass) {
-        throw ["email_password_invalid"];
+        throw ['email_password_invalid'];
     }
-    if (user.roles.length < 1) throw ["acc_have_not_role"];
+    if (user.roles.length < 1) throw ['acc_have_not_role'];
 
-    if (user.roles[0].roleId.name !== "System Admin") {
-        if (!user.active) throw ["acc_blocked"];
-        if (!company.active) throw ["service_off"];
+    if (user.roles[0].roleId.name !== 'System Admin') {
+        if (!user.active) throw ['acc_blocked'];
+        if (!company.active) throw ['service_off'];
     }
 
     const password2Exists = user.password2 ? true : false;
@@ -53,11 +53,11 @@ const login = async (fingerprint, data) => {
             email: user.email,
             name: user.name,
             company:
-                user.roles[0].roleId.name !== "System Admin"
+                user.roles[0].roleId.name !== 'System Admin'
                     ? company
                     : undefined,
             portal:
-                user.roles[0].roleId.name !== "System Admin"
+                user.roles[0].roleId.name !== 'System Admin'
                     ? company.shortName
                     : process.env.DB_NAME,
             fingerprint: fingerprint,
@@ -102,11 +102,11 @@ const login = async (fingerprint, data) => {
             email: user.email,
             roles: user.roles,
             company:
-                user.roles[0].roleId.name !== "System Admin"
+                user.roles[0].roleId.name !== 'System Admin'
                     ? company
                     : undefined,
             portal:
-                user.roles[0].roleId.name !== "System Admin"
+                user.roles[0].roleId.name !== 'System Admin'
                     ? company.shortName
                     : process.env.DB_NAME,
             password2Exists,
@@ -144,7 +144,7 @@ const logoutAllAccount = async (portal, id) => {
     user.tokens = [];
     let delegations = await Delegation.find({ delegatee: id });
     delegations.forEach(async delegation => {
-        await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
+        await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, 'logout', new Date())
     })
     await UserRepository.saveInfoUser(user);
 
