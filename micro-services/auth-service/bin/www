@@ -21,6 +21,11 @@ app.set('port', port);
 
 const server = http.createServer(app);
 
+// socket
+// const { SOCKET_IO, buildSocketConnection } = require('../helpers/sockerHelper');
+// SOCKET_IO(server);
+// buildSocketConnection(server);
+
 /**
  * Listen on provided port, on all network interfaces.
  */

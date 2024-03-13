@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const AuthController = require('@/controllers/index');
-const { auth, authFunc, authTrueOwner, uploadFile, rateLimitRequest } = require('@/middlewares');
+const AuthController = require('../controllers');
+const { auth, authFunc, authTrueOwner, uploadFile, rateLimitRequest } = require('../middleware/index');
 
 router.post('/login', AuthController.login);
 router.get('/logout', auth, AuthController.logout);
