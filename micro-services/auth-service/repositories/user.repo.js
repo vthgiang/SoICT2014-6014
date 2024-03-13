@@ -37,33 +37,33 @@ const saveInfoUser = async (userInfo) => {
 }
 
 const findPortal = async (conditions) => {
-    return await User(connect(DB_CONNECTION, portal)).findOne(conditions );
+    return await User(connect(getDbConnection(), portal)).findOne(conditions );
 }
 
 const findPortalByIdSelectPassword = async (portal, userId) => {
-    return await User(connect(DB_CONNECTION, portal))
+    return await User(connect(getDbConnection(), portal))
     .findById(userId)
     .select('-password')
     .populate([{ path: 'roles', populate: { path: 'roleId' } }]);
 }
 
 const findUserByIdPortal = async (portal, userId) => {
-    return await User(connect(DB_CONNECTION, portal)).findById(userId);
+    return await User(connect(getDbConnection(), portal)).findById(userId);
 }
 
 const findPortalById = async (portal, userId) => {
-    await User(connect(DB_CONNECTION, portal))
+    await User(connect(getDbConnection(), portal))
         .findById(userId)
         .populate([{ path: 'roles', populate: { path: 'roleId' } }]);
 }
 
 const findPortalByEmail = async (portal, email) => {
-    await User(connect(DB_CONNECTION, portal)).findOne({ email: email });
+    await User(connect(getDbConnection(), portal)).findOne({ email: email });
 }
 
 const checkPasswordUser = async (portal, userId) => {
     return await User(
-        connect(DB_CONNECTION, portal)
+        connect(getDbConnection(), portal)
     ).findById(userId);
 }
 
