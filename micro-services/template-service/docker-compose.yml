@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  auth-service-db:
+    container_name: auth-service-db
+    image: mongo
+    restart: always
+    #    ports:
+    #      - "27017:27017"
+    env_file:
+      - .env
+    volumes:
+      - ./init-user-mongo.js:/docker-entrypoint-initdb.d/init-user-mongo.js:ro
+      - auth-service-db:/data/db
+      - auth-service-db:/data/configdb
+      - auth-service-db:/data/log
+  template-service:
+    container_name: template-service
+    image: node:alpine
+    restart: always
+    ports:
+      - "3001:3000"
+    depends_on:
+      - auth-service-db
+    env_file:
+      - .env
+    volumes:
+      - ./node_modules:/app/node_modules
+      - ./:/app
+    command: sh -c "cd /app && npm install && npm start"
+networks:
+  template-service-net:
+    driver: bridge
+volumes:
+    auth-service-db:
+        driver: local
