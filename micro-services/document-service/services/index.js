@@ -28,7 +28,7 @@ const getDocuments = async (
   currentRole = undefined
 ) => {
   const og = currentRole
-    ? await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
+    ? await OrganizationalUnit(connect(getDbConnection(), portal)).findOne({
       managers: currentRole,
     })
     : null;
@@ -36,7 +36,7 @@ const getDocuments = async (
   if (!(page || limit)) {
     if (by === 'organizational-unit' && currentRole) {
       if (og) {
-        return await Document(connect(DB_CONNECTION, portal))
+        return await Document(connect(getDbConnection(), portal))
           .find({
             archivedRecordPlaceOrganizationalUnit: og._id,
           })
@@ -45,7 +45,7 @@ const getDocuments = async (
           );
       }
     } else {
-      return await Document(connect(DB_CONNECTION, portal))
+      return await Document(connect(getDbConnection(), portal))
         .find({})
         .select(
           'id name archives category domains numberOfDownload numberOfView '
@@ -76,7 +76,7 @@ const getDocuments = async (
       let allArchive = [];
       for (let i in query.archives) {
         const archive = await DocumentArchive(
-          connect(DB_CONNECTION, portal)
+          connect(getDbConnection(), portal)
         ).find({ path: new RegExp('^' + query.archives[i]) });
         allArchive = allArchive.concat(archive);
       }
@@ -94,7 +94,7 @@ const getDocuments = async (
       option.name = new RegExp(query.name, 'i');
     }
 
-    let allDocs = await Document(connect(DB_CONNECTION, portal))
+    let allDocs = await Document(connect(getDbConnection(), portal))
       .find(option)
       .populate([
         { path: 'category', select: 'name id' },
@@ -158,7 +158,7 @@ const getDocuments = async (
  * Lấy thông tin về một tài liệu văn bản
  */
 const showDocument = async (id, viewer) => {
-  const doc = await Document(connect(DB_CONNECTION, portal))
+  const doc = await Document(connect(getDbConnection(), portal))
     .findById(id)
     .populate([
       { path: 'category', select: 'name id' },
@@ -185,7 +185,7 @@ const showDocument = async (id, viewer) => {
 };
 
 const increaseNumberView = async (id, viewer, portal) => {
-  const doc = await Document(connect(DB_CONNECTION, portal)).findById(id);
+  const doc = await Document(connect(getDbConnection(), portal)).findById(id);
   doc.numberOfView += 1;
   const getIndex = (array, value) => {
     let res = -1;
@@ -212,12 +212,12 @@ const increaseNumberView = async (id, viewer, portal) => {
 const createDocument = async (portal, data, company) => {
   let numberFile = 0,
     numberFileScan = 0;
-  const existedName = await Document(connect(DB_CONNECTION, portal)).findOne({
+  const existedName = await Document(connect(getDbConnection(), portal)).findOne({
     name: data.name,
   });
 
   if (existedName) throw ['document_exist'];
-  const existedNumber = await Document(connect(DB_CONNECTION, portal)).findOne({
+  const existedNumber = await Document(connect(getDbConnection(), portal)).findOne({
     officialNumber: data.officialNumber,
   });
   if (existedNumber) throw ['document_number_exist'];
@@ -282,9 +282,9 @@ const createDocument = async (portal, data, company) => {
 
   newDoc.versions = versions;
 
-  const doc = await Document(connect(DB_CONNECTION, portal)).create(newDoc);
+  const doc = await Document(connect(getDbConnection(), portal)).create(newDoc);
 
-  return await Document(connect(DB_CONNECTION, portal))
+  return await Document(connect(getDbConnection(), portal))
     .findById(doc._id)
     .populate([
       { path: 'category', select: 'name id' },
@@ -298,7 +298,7 @@ const createDocument = async (portal, data, company) => {
  */
 const editDocument = async (id, data, query = undefined, portal) => {
   if (data.officialNumber) {
-    const existed = await Document(connect(DB_CONNECTION, portal)).findOne({
+    const existed = await Document(connect(getDbConnection(), portal)).findOne({
       officialNumber: data.officialNumber,
     });
     if (existed) throw ['document_exist'];
@@ -313,7 +313,7 @@ const editDocument = async (id, data, query = undefined, portal) => {
   };
 
   let document = await Document(
-    connect(DB_CONNECTION, portal)
+    connect(getDbConnection(), portal)
   ).findByIdAndUpdate(
     id,
     {
@@ -323,7 +323,7 @@ const editDocument = async (id, data, query = undefined, portal) => {
   );
   // chỉnh sửa
   if (query !== undefined && Object.keys(query).length > 0) {
-    const doc = await Document(connect(DB_CONNECTION, portal)).findById(id);
+    const doc = await Document(connect(getDbConnection(), portal)).findById(id);
     switch (query.option) {
       case 'ADD_VERSION':
         doc.versions.push(data);
@@ -366,7 +366,7 @@ const editDocument = async (id, data, query = undefined, portal) => {
         return doc;
     }
   } else {
-    const doc = await Document(connect(DB_CONNECTION, portal)).findById(id);
+    const doc = await Document(connect(getDbConnection(), portal)).findById(id);
     if (doc.name !== data.name) {
       doc.name = data.name;
     }
@@ -422,7 +422,7 @@ const editDocument = async (id, data, query = undefined, portal) => {
 };
 
 const deleteDocument = async (id, portal) => {
-  const doc = await Document(connect(DB_CONNECTION, portal)).findById(id);
+  const doc = await Document(connect(getDbConnection(), portal)).findById(id);
 
   for (let i = 0; i < doc.versions.length; i++) {
     if (fs.existsSync(doc.versions[i].file))
@@ -430,7 +430,7 @@ const deleteDocument = async (id, portal) => {
     if (fs.existsSync(doc.versions[i].scannedFileOfSignedDocument))
       fs.unlinkSync(doc.versions[i].scannedFileOfSignedDocument);
   }
-  await Document(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
+  await Document(connect(getDbConnection(), portal)).deleteOne({ _id: id });
 
   return doc;
 };
@@ -441,7 +441,7 @@ const deleteDocument = async (id, portal) => {
  *
  */
 const downloadDocumentFile = async (data, portal) => {
-  const doc = await Document(connect(DB_CONNECTION, portal)).findById(data.id);
+  const doc = await Document(connect(getDbConnection(), portal)).findById(data.id);
   if (doc.versions.length < data.numberVersion)
     throw ['cannot_download_doc_file', 'version_not_found'];
   await downloadFile(doc, data.downloaderId);
@@ -454,7 +454,7 @@ const downloadDocumentFile = async (data, portal) => {
 };
 
 const downloadDocumentFileScan = async (data, portal) => {
-  const doc = await Document(connect(DB_CONNECTION, portal)).findById(data.id);
+  const doc = await Document(connect(getDbConnection(), portal)).findById(data.id);
   if (doc.versions.length < data.numberVersion)
     throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
   await downloadFile(doc, data.downloaderId);
@@ -566,7 +566,7 @@ const importDocument = async (portal, data, company) => {
     // find category
     if (data[i].category) {
       const category = await DocumentCategory(
-        connect(DB_CONNECTION, portal)
+        connect(getDbConnection(), portal)
       ).findOne({ name: data[i].category });
       if (category) {
         document.category = category.id;
@@ -576,7 +576,7 @@ const importDocument = async (portal, data, company) => {
     // find archivedRecordPlaceOrganizationalUnit
     if (data[i].organizationUnitManager) {
       const unit = await OrganizationalUnit(
-        connect(DB_CONNECTION, portal)
+        connect(getDbConnection(), portal)
       ).findOne({
         $and: [{ company: company }, { name: data[i].organizationUnitManager }],
       });
@@ -590,7 +590,7 @@ const importDocument = async (portal, data, company) => {
       let domains = [];
       for (let j in data[i].domains) {
         const domain = await DocumentDomain(
-          connect(DB_CONNECTION, portal)
+          connect(getDbConnection(), portal)
         ).findOne({ name: data[i].domains[j] });
         if (domain) {
           domains.push(domain.id);
@@ -610,7 +610,7 @@ const importDocument = async (portal, data, company) => {
           })
           .join(' - ');
         const Archive = await DocumentArchive(
-          connect(DB_CONNECTION, portal)
+          connect(getDbConnection(), portal)
         ).findOne({ path: path });
         if (Archive) {
           archives.push(Archive.id);
@@ -623,7 +623,7 @@ const importDocument = async (portal, data, company) => {
     if (data[i].roles && data[i].roles.length && data[i].roles[0]) {
       let roles = [];
       for (let j in data[i].roles) {
-        const role = await Role(connect(DB_CONNECTION, portal)).findOne({
+        const role = await Role(connect(getDbConnection(), portal)).findOne({
           name: data[i].roles[j],
         });
         if (role) {
@@ -640,7 +640,7 @@ const importDocument = async (portal, data, company) => {
     ) {
       let relationshipDocuments = [];
       for (let j in relationshipDocuments) {
-        let document = await Document(connect(DB_CONNECTION, portal)).findOne({
+        let document = await Document(connect(getDbConnection(), portal)).findOne({
           name: data[i].relationshipDocuments[j],
         });
         relationshipDocuments.push(document.id);
@@ -662,7 +662,7 @@ const getDocumentCategories = async (portal, query, company) => {
   let page = query.page;
   let limit = query.limit;
   if (page === undefined && limit === undefined) {
-    return await DocumentCategory(connect(DB_CONNECTION, portal)).find({
+    return await DocumentCategory(connect(getDbConnection(), portal)).find({
       company,
     });
   } else {
@@ -673,7 +673,7 @@ const getDocumentCategories = async (portal, query, company) => {
           { [`${query.key}`]: new RegExp(query.value, 'i') }
         )
         : { company };
-    return await DocumentCategory(connect(DB_CONNECTION, portal)).paginate(
+    return await DocumentCategory(connect(getDbConnection(), portal)).paginate(
       option,
       { page, limit, sort: { createdAt: -1 } }
     );
@@ -682,11 +682,11 @@ const getDocumentCategories = async (portal, query, company) => {
 
 const createDocumentCategory = async (portal, data, company) => {
   const existed = await DocumentCategory(
-    connect(DB_CONNECTION, portal)
+    connect(getDbConnection(), portal)
   ).findOne({ name: data.name });
   if (existed) throw ['category_name_exist'];
 
-  return await DocumentCategory(connect(DB_CONNECTION, portal)).create({
+  return await DocumentCategory(connect(getDbConnection(), portal)).create({
     company,
     name: data.name,
     description: data.description,
@@ -695,7 +695,7 @@ const createDocumentCategory = async (portal, data, company) => {
 
 const editDocumentCategory = async (id, data, portal) => {
   const category = await DocumentCategory(
-    connect(DB_CONNECTION, portal)
+    connect(getDbConnection(), portal)
   ).findById(id);
   category.name = data.name;
   category.description = data.description;
@@ -705,12 +705,12 @@ const editDocumentCategory = async (id, data, portal) => {
 };
 
 const deleteDocumentCategory = async (id, portal) => {
-  const docs = await Document(connect(DB_CONNECTION, portal)).find({
+  const docs = await Document(connect(getDbConnection(), portal)).find({
     category: id,
   });
   if (docs.length > 0)
     throw ['category_used_to_document', 'cannot_delete_category'];
-  await DocumentCategory(connect(DB_CONNECTION, portal)).deleteOne({
+  await DocumentCategory(connect(getDbConnection(), portal)).deleteOne({
     _id: id,
   });
 
@@ -744,7 +744,7 @@ const importDocumentCategory = async (portal, data, company) => {
  * Danh mục văn bản
  */
 const getDocumentDomains = async (portal, company) => {
-  const list = await DocumentDomain(connect(DB_CONNECTION, portal)).find();
+  const list = await DocumentDomain(connect(getDbConnection(), portal)).find();
   const dataConverted = list.map((domain) => {
     return {
       id: domain._id.toString(),
@@ -761,7 +761,7 @@ const getDocumentDomains = async (portal, company) => {
 };
 
 const createDocumentDomain = async (portal, data, company) => {
-  const existed = await DocumentDomain(connect(DB_CONNECTION, portal)).findOne({
+  const existed = await DocumentDomain(connect(getDbConnection(), portal)).findOne({
     name: data.name,
   });
   if (existed) {
@@ -777,7 +777,7 @@ const createDocumentDomain = async (portal, data, company) => {
     description: data.description,
     parent: data.parent,
   };
-  await DocumentDomain(connect(DB_CONNECTION, portal)).create(query);
+  await DocumentDomain(connect(getDbConnection(), portal)).create(query);
 
   return await this.getDocumentDomains(portal, company);
 };
@@ -785,11 +785,11 @@ const createDocumentDomain = async (portal, data, company) => {
 const getDocumentsThatRoleCanView = async (portal, query, id, company) => {
   let page = query.page;
   let limit = query.limit;
-  let role = await Role(connect(DB_CONNECTION, portal)).findById(query.roleId);
+  let role = await Role(connect(getDbConnection(), portal)).findById(query.roleId);
   let roleArr = [role._id].concat(role.parents);
 
   if (page === undefined && limit === undefined) {
-    return await Document(connect(DB_CONNECTION, portal))
+    return await Document(connect(getDbConnection(), portal))
       .find({ roles: { $in: roleArr } })
       .select(
         'id name archives category domains numberOfDownload numberOfView '
@@ -826,7 +826,7 @@ const getDocumentsThatRoleCanView = async (portal, query, id, company) => {
       let allArchive = [];
       for (let i in query.archives) {
         const archive = await DocumentArchive(
-          connect(DB_CONNECTION, portal)
+          connect(getDbConnection(), portal)
         ).find({ path: new RegExp('^' + query.archives[i]) });
         allArchive = allArchive.concat(archive);
       }
@@ -843,7 +843,7 @@ const getDocumentsThatRoleCanView = async (portal, query, id, company) => {
       option.name = new RegExp(query.name, 'i');
     }
 
-    let allDocs = await Document(connect(DB_CONNECTION, portal))
+    let allDocs = await Document(connect(getDbConnection(), portal))
       .find(option)
       .populate([
         { path: 'category', select: 'name id' },
@@ -903,9 +903,9 @@ const getDocumentsThatRoleCanView = async (portal, query, id, company) => {
 };
 
 const getDocumentsUserStatistical = async (userId, query, portal) => {
-  let role = await Role(connect(DB_CONNECTION, portal)).findById(query.roleId);
+  let role = await Role(connect(getDbConnection(), portal)).findById(query.roleId);
   let roleArr = [role._id].concat(role.parents);
-  const roles = await UserRole(connect(DB_CONNECTION, portal))
+  const roles = await UserRole(connect(getDbConnection(), portal))
     .find({ userId: userId })
     .populate({
       path: 'roleId',
@@ -937,7 +937,7 @@ const getDocumentsUserStatistical = async (userId, query, portal) => {
     let allArchive = [];
     for (let i in query.archives) {
       const archive = await DocumentArchive(
-        connect(DB_CONNECTION, portal)
+        connect(getDbConnection(), portal)
       ).find({ path: new RegExp('^' + query.archives[i]) });
       allArchive = allArchive.concat(archive);
     }
@@ -958,7 +958,7 @@ const getDocumentsUserStatistical = async (userId, query, portal) => {
     case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
       condition = { ...condition, 'downloads.downloader': userId };
 
-      let allDocsDown = await Document(connect(DB_CONNECTION, portal))
+      let allDocsDown = await Document(connect(getDbConnection(), portal))
         .find(condition)
         .populate([
           { path: 'category', select: 'name id' },
@@ -1015,7 +1015,7 @@ const getDocumentsUserStatistical = async (userId, query, portal) => {
       condition = {
         $or: [{ roles: { $in: roleArr } }, { userCanView: userId }],
       };
-      let listCommon = await Document(connect(DB_CONNECTION, portal)).paginate(
+      let listCommon = await Document(connect(getDbConnection(), portal)).paginate(
         condition,
         {
           page,
@@ -1053,7 +1053,7 @@ const getDocumentsUserStatistical = async (userId, query, portal) => {
       //     ]
       //  };
 
-      let allDocsLast = await Document(connect(DB_CONNECTION, portal))
+      let allDocsLast = await Document(connect(getDbConnection(), portal))
         .find(condition)
         .populate([
           { path: 'category', select: 'name id' },
@@ -1114,7 +1114,7 @@ const getDocumentsUserStatistical = async (userId, query, portal) => {
 };
 
 const editDocumentDomain = async (id, data, portal) => {
-  const domain = await DocumentDomain(connect(DB_CONNECTION, portal)).findById(
+  const domain = await DocumentDomain(connect(getDbConnection(), portal)).findById(
     id
   );
   (domain.name = data.name),
@@ -1126,17 +1126,17 @@ const editDocumentDomain = async (id, data, portal) => {
 };
 
 const deleteDocumentDomain = async (portal, id) => {
-  const domain = await DocumentDomain(connect(DB_CONNECTION, portal)).findById(
+  const domain = await DocumentDomain(connect(getDbConnection(), portal)).findById(
     id
   );
   if (domain === null) throw ['document_domain_not_found'];
-  await DocumentDomain(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
+  await DocumentDomain(connect(getDbConnection(), portal)).deleteOne({ _id: id });
 
   return await this.getDocumentDomains(portal);
 };
 
 const deleteManyDocumentDomain = async (array, portal, company) => {
-  await DocumentDomain(connect(DB_CONNECTION, portal)).deleteMany({
+  await DocumentDomain(connect(getDbConnection(), portal)).deleteMany({
     _id: { $in: array },
   });
 
@@ -1158,7 +1158,7 @@ const importDocumentDomain = async (portal, data, company) => {
     };
     if (data[i].parent) {
       const parentDomain = await DocumentDomain(
-        connect(DB_CONNECTION, portal)
+        connect(getDbConnection(), portal)
       ).findOne({ name: data[i].parent });
       if (parentDomain) {
         domain.parent = parentDomain.id;
@@ -1175,7 +1175,7 @@ const importDocumentDomain = async (portal, data, company) => {
  */
 
 const getDocumentArchives = async (portal, company) => {
-  const list = await DocumentArchive(connect(DB_CONNECTION, portal)).find();
+  const list = await DocumentArchive(connect(getDbConnection(), portal)).find();
 
   const dataConverted = list.map((archive) => {
     return {
@@ -1201,17 +1201,17 @@ const createDocumentArchive = async (portal, data, company) => {
     query.parent = data.parent;
   }
   query.path = await findPath(data, portal);
-  const check = await DocumentArchive(connect(DB_CONNECTION, portal)).findOne({
+  const check = await DocumentArchive(connect(getDbConnection(), portal)).findOne({
     name: data.name,
   });
   if (check) throw ['name_exist'];
-  await DocumentArchive(connect(DB_CONNECTION, portal)).create(query);
+  await DocumentArchive(connect(getDbConnection(), portal)).create(query);
   return await this.getDocumentArchives(portal, company);
 };
 
 const deleteDocumentArchive = async (portal, id) => {
   const archive = await DocumentArchive(
-    connect(DB_CONNECTION, portal)
+    connect(getDbConnection(), portal)
   ).findById(id);
   await deleteNode(id, portal);
   return await this.getDocumentArchives(portal, archive.company);
@@ -1227,7 +1227,7 @@ const deleteManyDocumentArchive = async (array, portal, company) => {
 
 const editDocumentArchive = async (id, data, portal, company) => {
   const archive = await DocumentArchive(
-    connect(DB_CONNECTION, portal)
+    connect(getDbConnection(), portal)
   ).findById(id);
   let array = data.array;
   archive.name = data.name;
@@ -1237,7 +1237,7 @@ const editDocumentArchive = async (id, data, portal, company) => {
   await archive.save();
   for (let i = 0; i < array.length; i++) {
     const archive = await DocumentArchive(
-      connect(DB_CONNECTION, portal)
+      connect(getDbConnection(), portal)
     ).findById(array[i]);
     archive.path = await findPath(archive, portal);
     await archive.save();
@@ -1256,7 +1256,7 @@ findPath = async (data, portal) => {
   if (data.parent && data.parent !== '#') {
     let parent = data.parent;
     while (parent) {
-      let tmp = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(
+      let tmp = await DocumentArchive(connect(getDbConnection(), portal)).findById(
         parent
       );
       arrayParent.push(tmp.name);
@@ -1272,11 +1272,11 @@ findPath = async (data, portal) => {
  */
 deleteNode = async (id, portal) => {
   const archive = await DocumentArchive(
-    connect(DB_CONNECTION, portal)
+    connect(getDbConnection(), portal)
   ).findById(id);
   if (!archive) throw ['document_archive_not_found'];
   let parent = archive.parent;
-  let archives = await DocumentArchive(connect(DB_CONNECTION, portal)).find({
+  let archives = await DocumentArchive(connect(getDbConnection(), portal)).find({
     parent: id,
   });
   if (archives.length) {
@@ -1286,7 +1286,7 @@ deleteNode = async (id, portal) => {
       await archives[i].save();
     }
   }
-  await DocumentArchive(connect(DB_CONNECTION, portal)).deleteOne({
+  await DocumentArchive(connect(getDbConnection(), portal)).deleteOne({
     _id: id,
   });
 };
@@ -1311,7 +1311,7 @@ const importDocumentArchive = async (portal, data, company) => {
       path.pop();
       path = path.join(' - ');
       const parentArchive = await DocumentArchive(
-        connect(DB_CONNECTION, portal)
+        connect(getDbConnection(), portal)
       ).findOne({ path: path });
       if (parentArchive) {
         archive.parent = parentArchive.id;
@@ -1324,7 +1324,7 @@ const importDocumentArchive = async (portal, data, company) => {
 
 // lấy dữ liệu cho bản đồ document - category
 const chartDataDocument = async (portal, company, listChart) => {
-  let document = await Document(connect(DB_CONNECTION, portal))
+  let document = await Document(connect(getDbConnection(), portal))
     .find({})
     .select('category numberOfView numberOfDownload archives domains');
   let result = { document: document };
@@ -1333,7 +1333,7 @@ const chartDataDocument = async (portal, company, listChart) => {
     listChart.indexOf('documentByCategory') !== -1 ||
     listChart.indexOf('documentByViewAndDownload') !== -1
   ) {
-    let categorys = await DocumentCategory(connect(DB_CONNECTION, portal)).find(
+    let categorys = await DocumentCategory(connect(getDbConnection(), portal)).find(
       {
         company,
       }
