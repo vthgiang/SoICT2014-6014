@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  super-admin-service-db:
+    container_name: super-admin-service-db
+    image: mongo
+    restart: always
+    #    ports:
+    #      - "27017:27017"
+    env_file:
+      - .env
+    volumes:
+      - ./init-user-mongo.js:/docker-entrypoint-initdb.d/init-user-mongo.js:ro
+      - super-admin-service-db:/data/db
+      - super-admin-service-db:/data/configdb
+      - super-admin-service-db:/data/log
+  super-admin-service:
+    container_name: super-admin-service
+    image: node:alpine
+    restart: always
+    ports:
+      - "3001:3000"
+    depends_on:
+      - super-admin-service-db
+    env_file:
+      - .env
+    volumes:
+      - ./node_modules:/app/node_modules
+      - ./:/app
+    command: sh -c "cd /app && npm install && npm start"
+networks:
+  template-service-net:
+    driver: bridge
+volumes:
+    super-admin-service-db:
+        driver: local
