@@ -23,5 +23,10 @@
       }
     ],
     "eol-last": ["error", "always"]
+  },
+  "globals": {
+    "DB_CONNECTION": "readonly",
+    "SERVER_BACKUP_DIR": "readonly",
+    "SERVER_DIR": "readonly"
   }
 }
