@@ -1,21 +1,26 @@
-import { sendRequest } from "../../../../helpers/requestHelper";
+import { sendRequest } from '../../../../helpers/requestHelper'
 
 export const ChangeRequestServices = {
-    createProjectChangeRequestAPI,
-    updateStatusProjectChangeRequestAPI,
-    getListProjectChangeRequestsAPI,
+  createProjectChangeRequestAPI,
+  updateStatusProjectChangeRequestAPI,
+  getListProjectChangeRequestsAPI
 }
 
 /**
  * tạo 1 change request cho project
- * @param {*} task công việc 
+ * @param {*} task công việc
  */
 function createProjectChangeRequestAPI(changeRequest) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests`,
-        method: 'POST',
-        data: changeRequest,
-    }, true, true, 'project');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests`,
+      method: 'POST',
+      data: changeRequest
+    },
+    true,
+    true,
+    'project'
+  )
 }
 
 /**
@@ -23,21 +28,31 @@ function createProjectChangeRequestAPI(changeRequest) {
  * @param {*} data
  */
 function updateStatusProjectChangeRequestAPI(data) {
-    if (!Array.isArray(data?.newChangeRequestsList)) {
-        return sendRequest({
-            url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests/${data.changeRequestId}/${data.requestStatus}`,
-            method: 'PATCH',
-            params: {
-                id: data.changeRequestId,
-                status: data.requestStatus,
-            },
-        }, false, true, 'project');
-    }
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests/update-lists`,
+  if (!Array.isArray(data?.newChangeRequestsList)) {
+    return sendRequest(
+      {
+        url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests/${data.changeRequestId}/${data.requestStatus}`,
         method: 'PATCH',
-        data,
-    }, true, true, 'project');
+        params: {
+          id: data.changeRequestId,
+          status: data.requestStatus
+        }
+      },
+      false,
+      true,
+      'project'
+    )
+  }
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests/update-lists`,
+      method: 'PATCH',
+      data
+    },
+    true,
+    true,
+    'project'
+  )
 }
 
 /**
@@ -54,9 +69,14 @@ function updateStatusProjectChangeRequestAPI(data) {
  * @param {*} callId có lấy tất cả các yêu cầu hay không
  */
 function getListProjectChangeRequestsAPI(data) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests/${data?.projectId}`,
-        method: 'GET',
-        params: data
-    }, false, true, 'project');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests/${data?.projectId}`,
+      method: 'GET',
+      params: data
+    },
+    false,
+    true,
+    'project'
+  )
 }

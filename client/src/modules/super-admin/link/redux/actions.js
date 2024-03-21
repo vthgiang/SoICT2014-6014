@@ -1,59 +1,56 @@
-import {
-    LinkServices
-} from "./services";
-import {
-    LinkConstants
-} from "./constants";
+import { LinkServices } from './services'
+import { LinkConstants } from './constants'
 
 export const LinkActions = {
-    get,
-    show,
-    edit,
-    destroy,
-    createLinkAttribute
-    // importLinkPrivilege
-};
+  get,
+  show,
+  edit,
+  destroy,
+  createLinkAttribute
+  // importLinkPrivilege
+}
 
 /**
  * Lấy danh sách tất cả các link của 1 công ty
  */
 function get(params) {
-    if (params.page !== undefined && params.limit !== undefined) {
-        return dispatch => {
-            dispatch({
-                type: LinkConstants.GET_LINKS_PAGINATE_REQUEST
-            });
-            LinkServices.get(params)
-                .then(res => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_PAGINATE_SUCCESS,
-                        payload: res.data.content
-                    })
-                }).catch(err => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_PAGINATE_FAILE,
-                    })
-                })
-        }
-    } else {
-        return dispatch => {
-            dispatch({
-                type: LinkConstants.GET_LINKS_REQUEST
-            });
-            LinkServices.get(params)
-                .then(res => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_SUCCESS,
-                        payload: res.data.content
-                    })
-                })
-                .catch(err => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_FAILE
-                    })
-                })
-        }
+  if (params.page !== undefined && params.limit !== undefined) {
+    return (dispatch) => {
+      dispatch({
+        type: LinkConstants.GET_LINKS_PAGINATE_REQUEST
+      })
+      LinkServices.get(params)
+        .then((res) => {
+          dispatch({
+            type: LinkConstants.GET_LINKS_PAGINATE_SUCCESS,
+            payload: res.data.content
+          })
+        })
+        .catch((err) => {
+          dispatch({
+            type: LinkConstants.GET_LINKS_PAGINATE_FAILE
+          })
+        })
     }
+  } else {
+    return (dispatch) => {
+      dispatch({
+        type: LinkConstants.GET_LINKS_REQUEST
+      })
+      LinkServices.get(params)
+        .then((res) => {
+          dispatch({
+            type: LinkConstants.GET_LINKS_SUCCESS,
+            payload: res.data.content
+          })
+        })
+        .catch((err) => {
+          dispatch({
+            type: LinkConstants.GET_LINKS_FAILE
+          })
+        })
+    }
+  }
 }
 
 /**
@@ -61,22 +58,23 @@ function get(params) {
  * @id id link
  */
 function show(id) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: LinkConstants.SHOW_LINK_REQUEST
+    })
+    LinkServices.show(id)
+      .then((res) => {
         dispatch({
-            type: LinkConstants.SHOW_LINK_REQUEST
-        });
-        LinkServices.show(id)
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.SHOW_LINK_SUCCESS,
-                    payload: res.data.content
-                })
-            }).catch(err => {
-                dispatch({
-                    type: LinkConstants.SHOW_LINK_FAILE
-                })
-            })
-    }
+          type: LinkConstants.SHOW_LINK_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: LinkConstants.SHOW_LINK_FAILE
+        })
+      })
+  }
 }
 
 /**
@@ -85,22 +83,23 @@ function show(id) {
  * @link dữ liệu về link
  */
 function edit(id, link) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: LinkConstants.EDIT_LINK_REQUEST
+    })
+    LinkServices.edit(id, link)
+      .then((res) => {
         dispatch({
-            type: LinkConstants.EDIT_LINK_REQUEST
-        });
-        LinkServices.edit(id, link)
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.EDIT_LINK_SUCCESS,
-                    payload: res.data.content
-                })
-            }).catch(err => {
-                dispatch({
-                    type: LinkConstants.EDIT_LINK_FAILE
-                })
-            })
-    }
+          type: LinkConstants.EDIT_LINK_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: LinkConstants.EDIT_LINK_FAILE
+        })
+      })
+  }
 }
 
 /**
@@ -108,43 +107,43 @@ function edit(id, link) {
  * @id id link
  */
 function destroy(id, link) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: LinkConstants.DELETE_LINK_REQUEST
+    })
+    LinkServices.destroy(id, link)
+      .then((res) => {
         dispatch({
-            type: LinkConstants.DELETE_LINK_REQUEST
-        });
-        LinkServices.destroy(id, link)
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.DELETE_LINK_SUCCESS,
-                    payload: id
-                })
-            }).catch(err => {
-                dispatch({
-                    type: LinkConstants.DELETE_LINK_FAILE
-                })
-            })
-    }
+          type: LinkConstants.DELETE_LINK_SUCCESS,
+          payload: id
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: LinkConstants.DELETE_LINK_FAILE
+        })
+      })
+  }
 }
 
 function createLinkAttribute(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: LinkConstants.CREATE_LINK_ATTRIBUTE_REQUEST
+    })
+    LinkServices.createLinkAttribute(data)
+      .then((res) => {
         dispatch({
-            type: LinkConstants.CREATE_LINK_ATTRIBUTE_REQUEST
-        });
-        LinkServices
-            .createLinkAttribute(data)
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.CREATE_LINK_ATTRIBUTE_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({
-                    type: LinkConstants.CREATE_LINK_ATTRIBUTE_FAILE
-                });
-            })
-    }
+          type: LinkConstants.CREATE_LINK_ATTRIBUTE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: LinkConstants.CREATE_LINK_ATTRIBUTE_FAILE
+        })
+      })
+  }
 }
 
 // function importLinkPrivilege(id, link) {

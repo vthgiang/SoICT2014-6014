@@ -1,91 +1,93 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { withTranslate } from "react-redux-multilingual";
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
 
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar } from '../../../../../common-components'
 
 // import { transportRequirementsActions } from "../redux/actions";
-import { getAllTransportDepartments, transportDepartmentActions } from "../../transport-department/redux/actions"
+import { getAllTransportDepartments, transportDepartmentActions } from '../../transport-department/redux/actions'
 
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 function TransportEmployee(props) {
-    const getTableId = "table-manage-transport-requirements-hooks";
-    const defaultConfig = { limit: 5 }
-    const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
+  const getTableId = 'table-manage-transport-requirements-hooks'
+  const defaultConfig = { limit: 5 }
+  const getLimit = getTableConfiguration(getTableId, defaultConfig).limit
 
-    const {transportDepartment} = props;
+  const { transportDepartment } = props
 
-    const [listCarriers, setListCarriers] = useState([]);
+  const [listCarriers, setListCarriers] = useState([])
 
+  useEffect(() => {
+    props.getAllTransportDepartments()
+  }, [])
 
-    useEffect(() => {
-        props.getAllTransportDepartments();
-    }, [])
-
-    useEffect(() => {
-        if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
-            let lists = transportDepartment.lists;
-            let carrierOrganizationalUnit = [];
-            carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
-            let carrier = [];
-            console.log(carrierOrganizationalUnit, " unit")
-            if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
-                carrierOrganizationalUnit.map(item =>{
-                    if (item.organizationalUnit){
-                        let organizationalUnit = item.organizationalUnit;
-                        organizationalUnit.employees && organizationalUnit.employees.length !==0
-                        && organizationalUnit.employees.map(employees => {
-                            employees.users && employees.users.length !== 0
-                            && employees.users.map(users => {
-                                if (users.userId){
-                                    if (users.userId.name){
-                                        carrier.push({
-                                            name: users.userId.name,
-                                            _id: users.userId._id,
-                                        })
-                                    }
-                                }
-                            })
+  useEffect(() => {
+    if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !== 0) {
+      let lists = transportDepartment.lists
+      let carrierOrganizationalUnit = []
+      carrierOrganizationalUnit = lists.filter((r) => r.role === 2) // role nhân viên vận chuyển
+      let carrier = []
+      console.log(carrierOrganizationalUnit, ' unit')
+      if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !== 0) {
+        carrierOrganizationalUnit.map((item) => {
+          if (item.organizationalUnit) {
+            let organizationalUnit = item.organizationalUnit
+            organizationalUnit.employees &&
+              organizationalUnit.employees.length !== 0 &&
+              organizationalUnit.employees.map((employees) => {
+                employees.users &&
+                  employees.users.length !== 0 &&
+                  employees.users.map((users) => {
+                    if (users.userId) {
+                      if (users.userId.name) {
+                        carrier.push({
+                          name: users.userId.name,
+                          _id: users.userId._id
                         })
+                      }
                     }
-                })
-            }
-            setListCarriers(carrier);
-        }
-    }, [transportDepartment])
+                  })
+              })
+          }
+        })
+      }
+      setListCarriers(carrier)
+    }
+  }, [transportDepartment])
 
-    useEffect(() => {
-        console.log(listCarriers, " list")
-    }, [listCarriers])
+  useEffect(() => {
+    console.log(listCarriers, ' list')
+  }, [listCarriers])
 
-    return (
-        <React.Fragment>
-            <div className="box-body qlcv">
-                <div className="form-inline">
-                <table id={"123"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Tên nhân viên"}</th>
-                            <th>{"Mã nhân viên"}</th>
-                            <th>{"Hành động"}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        (listCarriers && listCarriers.length!==0)
-                        && listCarriers.map((item, index) => (
-                            <tr key={index}>
-                                <td>{index+1}</td>
-                                <td>{item._id}</td>
-                                <td>{item.name}</td>
-                                <td>{123}</td>
-                            </tr>
-                        ))
-                    }
+  return (
+    <React.Fragment>
+      <div className='box-body qlcv'>
+        <div className='form-inline'>
+          <table id={'123'} className='table table-striped table-bordered table-hover'>
+            <thead>
+              <tr>
+                <th className='col-fixed' style={{ width: 60 }}>
+                  {'STT'}
+                </th>
+                <th>{'Tên nhân viên'}</th>
+                <th>{'Mã nhân viên'}</th>
+                <th>{'Hành động'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listCarriers &&
+                listCarriers.length !== 0 &&
+                listCarriers.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item._id}</td>
+                    <td>{item.name}</td>
+                    <td>{123}</td>
+                  </tr>
+                ))}
 
-                        {/* <tr key={"1"}>
+              {/* <tr key={"1"}>
                             <td>{1}</td>
                             <td>{"123"}</td>
                             <td>{"123"}</td>
@@ -105,7 +107,7 @@ function TransportEmployee(props) {
                                 />
                             </td>
                         </tr> */}
-                        {/* {(lists && lists.length !== 0) &&
+              {/* {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>
                                     <td>{index + 1 + (page - 1) * perPage}</td>
@@ -126,35 +128,35 @@ function TransportEmployee(props) {
                                 </tr>
                             ))
                         } */}
-                    </tbody>
-                </table>
+            </tbody>
+          </table>
 
-                {/* PaginateBar */}
-                {/* {example && example.isLoading ?
+          {/* PaginateBar */}
+          {/* {example && example.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 } */}
-                {/* <PaginateBar
+          {/* <PaginateBar
                     pageTotal={totalPage ? totalPage : 0}
                     currentPage={page}
                     display={lists && lists.length !== 0 && lists.length}
                     total={example && example.totalList}
                     func={setPage}
                 /> */}
-            </div>
-            </div>
-        </React.Fragment>
-    )
+        </div>
+      </div>
+    </React.Fragment>
+  )
 }
 
 function mapState(state) {
-    const {transportDepartment} = state;
-    return { transportDepartment }
+  const { transportDepartment } = state
+  return { transportDepartment }
 }
 
 const actions = {
-    getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments
+  getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments
 }
 
-const connectedTransportEmployee = connect(mapState, actions)(withTranslate(TransportEmployee));
-export { connectedTransportEmployee as TransportEmployee };
+const connectedTransportEmployee = connect(mapState, actions)(withTranslate(TransportEmployee))
+export { connectedTransportEmployee as TransportEmployee }

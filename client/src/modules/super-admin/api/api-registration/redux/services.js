@@ -1,5 +1,3 @@
-import { sendRequest } from '../../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../../helpers/requestHelper'
 
-export const ApiRegistrationServices = {
-};
-
+export const ApiRegistrationServices = {}

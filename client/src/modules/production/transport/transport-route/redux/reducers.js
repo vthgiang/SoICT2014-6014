@@ -28,7 +28,7 @@
 //                 ...state,
 //                 isLoading: true
 //             }
-		
+
 // 		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_FAILURE:
 //         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_FAILURE:
 //         case transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_FAILURE:

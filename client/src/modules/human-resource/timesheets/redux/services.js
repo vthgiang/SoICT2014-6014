@@ -1,12 +1,10 @@
-import {
-    sendRequest
-} from '../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../helpers/requestHelper'
 export const TimesheetsService = {
-    searchTimesheets,
-    createTimesheets,
-    deleteTimesheets,
-    updateTimesheets,
-    importTimesheets,
+  searchTimesheets,
+  createTimesheets,
+  deleteTimesheets,
+  updateTimesheets,
+  importTimesheets
 }
 
 /**
@@ -14,21 +12,26 @@ export const TimesheetsService = {
  * @data : Dữ liệu key tìm kiếm
  */
 function searchTimesheets(data) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets`,
-        method: 'GET',
-        params: {
-            employeeId: data.employeeId,
-            organizationalUnits: data.organizationalUnits,
-            employeeName: data.employeeName,
-            employeeNumber: data.employeeNumber,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            month: data.month,
-            page: data.page,
-            limit: data.limit
-        }
-    }, false, true, 'human_resource.timesheets');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/timesheet/timesheets`,
+      method: 'GET',
+      params: {
+        employeeId: data.employeeId,
+        organizationalUnits: data.organizationalUnits,
+        employeeName: data.employeeName,
+        employeeNumber: data.employeeNumber,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        month: data.month,
+        page: data.page,
+        limit: data.limit
+      }
+    },
+    false,
+    true,
+    'human_resource.timesheets'
+  )
 }
 
 /**
@@ -36,11 +39,16 @@ function searchTimesheets(data) {
  * @data : Dữ liệu chấm công mới
  */
 function createTimesheets(data) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets`,
-        method: 'POST',
-        data: data,
-    }, true, true, 'human_resource.timesheets');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/timesheet/timesheets`,
+      method: 'POST',
+      data: data
+    },
+    true,
+    true,
+    'human_resource.timesheets'
+  )
 }
 
 /**
@@ -48,10 +56,15 @@ function createTimesheets(data) {
  * @id : Id thông tin chấm công cần xoá
  */
 function deleteTimesheets(id) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets/${id}`,
-        method: 'DELETE',
-    }, true, true, 'human_resource.timesheets');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/timesheet/timesheets/${id}`,
+      method: 'DELETE'
+    },
+    true,
+    true,
+    'human_resource.timesheets'
+  )
 }
 
 /**
@@ -60,11 +73,16 @@ function deleteTimesheets(id) {
  * @data : Dữ liệu cập nhật chấm công
  */
 function updateTimesheets(id, data) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets/${id}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'human_resource.timesheets');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/timesheet/timesheets/${id}`,
+      method: 'PATCH',
+      data: data
+    },
+    true,
+    true,
+    'human_resource.timesheets'
+  )
 }
 
 /**
@@ -72,9 +90,14 @@ function updateTimesheets(id, data) {
  * @param {*} data : Array thông tin chấm công
  */
 function importTimesheets(data) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets/import`,
-        method: 'POST',
-        data: data,
-    }, true, false, 'human_resource.timesheets');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/timesheet/timesheets/import`,
+      method: 'POST',
+      data: data
+    },
+    true,
+    false,
+    'human_resource.timesheets'
+  )
 }

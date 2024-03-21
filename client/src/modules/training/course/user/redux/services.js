@@ -1,35 +1,38 @@
-import {
-    sendRequest
-} from '../../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../../helpers/requestHelper'
 
 export const CourseService = {
-    getListCourse,
-    createNewCourse,
-    deleteCourse,
-    updateCourse,
+  getListCourse,
+  createNewCourse,
+  deleteCourse,
+  updateCourse
 }
 /**
- * Lấy danh sách các khoá đào tạo 
+ * Lấy danh sách các khoá đào tạo
  * @data : dữ liệu key tìm kiếm
  */
 function getListCourse(data) {
-    const role = localStorage.getItem('currentRole');
-    const userId = localStorage.getItem('userId')
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/course/courses`,
-        method: 'GET',
-        params: {
-            courseId: data !== undefined ? data.courseId : data,
-            name: data !== undefined ? data.name : data,
-            type: data !== undefined ? data.type : data,
-            page: data !== undefined ? data.page : data,
-            limit: data !== undefined ? data.limit : data,
-            educationProgram: data !== undefined ? data.educationProgram : data,
-            organizationalUnits: data !== undefined ? data.organizationalUnits : data,
-            positions: role,
-            userId: userId
-        }
-    }, false, true, 'training.course');
+  const role = localStorage.getItem('currentRole')
+  const userId = localStorage.getItem('userId')
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/course/courses`,
+      method: 'GET',
+      params: {
+        courseId: data !== undefined ? data.courseId : data,
+        name: data !== undefined ? data.name : data,
+        type: data !== undefined ? data.type : data,
+        page: data !== undefined ? data.page : data,
+        limit: data !== undefined ? data.limit : data,
+        educationProgram: data !== undefined ? data.educationProgram : data,
+        organizationalUnits: data !== undefined ? data.organizationalUnits : data,
+        positions: role,
+        userId: userId
+      }
+    },
+    false,
+    true,
+    'training.course'
+  )
 }
 
 /**
@@ -37,11 +40,16 @@ function getListCourse(data) {
  * @data : Dữ liệu khoá đào tạo
  */
 function createNewCourse(data) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/course/courses`,
-        method: 'POST',
-        data: data,
-    }, true, true, 'training.course');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/course/courses`,
+      method: 'POST',
+      data: data
+    },
+    true,
+    true,
+    'training.course'
+  )
 }
 
 /**
@@ -49,10 +57,15 @@ function createNewCourse(data) {
  * @id : Id khoá đào tạo cần xoá
  */
 function deleteCourse(id) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/course/courses/${id}`,
-        method: 'DELETE',
-    }, true, true, 'training.course');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/course/courses/${id}`,
+      method: 'DELETE'
+    },
+    true,
+    true,
+    'training.course'
+  )
 }
 
 /**
@@ -61,9 +74,14 @@ function deleteCourse(id) {
  * @data : dữ liệu chỉnh sửa khoá đào tạo
  */
 function updateCourse(id, data) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/course/courses/${id}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'training.course');
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/course/courses/${id}`,
+      method: 'PATCH',
+      data: data
+    },
+    true,
+    true,
+    'training.course'
+  )
 }

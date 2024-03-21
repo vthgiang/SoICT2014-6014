@@ -1,4 +1,4 @@
-import { dashboardEmployeeKpiConstants } from "./constants";
+import { dashboardEmployeeKpiConstants } from './constants'
 
 export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, reload: false }, action) {
   switch (action.type) {
@@ -7,7 +7,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         ...state,
         loading: true,
         isLoading: true
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_SUCCESS:
       return {
@@ -15,21 +15,21 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         loading: false,
         employeeKpiSets: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_FAILURE:
       return {
         ...state,
         error: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_REQUEST:
       return {
         ...state,
         loading: true,
         isLoading: true
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_SUCCESS:
       return {
@@ -37,14 +37,14 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         loading: false,
         employeeKpiSets: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_FAILURE:
       return {
         ...state,
         error: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST:
       return {
@@ -53,7 +53,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         childrenOrganizationalUnit: null,
         loading: true,
         isLoading: true
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS:
       return {
@@ -62,7 +62,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         loading: false,
         childrenOrganizationalUnit: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_FAILURE:
       return {
@@ -70,7 +70,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         childrenOrganizationalUnitLoading: true,
         error: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_EMPLOYEE_KPI_PERFORMANCE_REQUEST:
       return {
@@ -79,7 +79,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         employeeKpiPerformance: null,
         loading: true,
         isLoading: true
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_EMPLOYEE_KPI_PERFORMANCE_SUCCESS:
       return {
@@ -88,7 +88,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         loading: false,
         employeeKpiPerformance: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.GET_EMPLOYEE_KPI_PERFORMANCE_FAILURE:
       return {
@@ -96,40 +96,40 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         employeeKpiPerformanceLoading: true,
         error: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_REQUEST:
       return {
         ...state,
         adding: true,
         isLoading: true
-      };
+      }
     case dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_SUCCESS:
       return {
         ...state,
         adding: false,
         employeeKpiSets: action.payload,
         isLoading: false
-      };
+      }
     case dashboardEmployeeKpiConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_FAILURE:
       return {
         ...state,
         error: action.payload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_REQUEST:
       return {
         ...state,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_SUCCESS:
-      const kpiSet = {};
-      const employeeKpiSets = state.employeeKpiSets;
+      const kpiSet = {}
+      const employeeKpiSets = state.employeeKpiSets
 
       for (let item of action.payload) {
-        kpiSet[item._id] = item.kpis;
+        kpiSet[item._id] = item.kpis
       }
 
       for (let item of employeeKpiSets) {
@@ -143,14 +143,14 @@ export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false, re
         employeeKpiSets: employeeKpiSets,
         reload: !state.reload,
         isLoading: false
-      };
+      }
 
     case dashboardEmployeeKpiConstants.BALANCE_EMPLOYEE_KPI_SET_AUTO_FAILURE:
       return {
         ...state,
         error: action.payload,
         isLoading: false
-      };
+      }
 
     default:
       return state

@@ -1,15 +1,15 @@
-import { sendRequest } from "../../../../helpers/requestHelper";
+import { sendRequest } from '../../../../helpers/requestHelper'
 
 export const ProjectPhaseServices = {
-    getPhaseById,
-    createPhase,
-    editPhase,
-    deletePhase,
-    createMilestone,
-    editMilestone,
-    deleteMilestone,
-    getMilestonesByProject,
-    getPhasesByProject,
+  getPhaseById,
+  createPhase,
+  editPhase,
+  deletePhase,
+  createMilestone,
+  editMilestone,
+  deleteMilestone,
+  getMilestonesByProject,
+  getPhasesByProject
 }
 
 /**
@@ -17,34 +17,33 @@ export const ProjectPhaseServices = {
  * @param {*} id id của giai đoạn
  */
 function getPhaseById(id) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-phase/${id}`,
-            method: "GET",
-        },
-        false,
-        true,
-        "project"
-    );
-};
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-phase/${id}`,
+      method: 'GET'
+    },
+    false,
+    true,
+    'project'
+  )
+}
 
 /**
  * thêm mới 1 giai đoạn
  * @param {*} data dữ liệu về giai đoạn
  */
 function createPhase(data) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-phase`,
-            method: "POST",
-            data: data,
-        },
-        true,
-        true,
-        "project"
-    );
-};
-
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-phase`,
+      method: 'POST',
+      data: data
+    },
+    true,
+    true,
+    'project'
+  )
+}
 
 /**
  * chỉnh sửa thông tin giai đoạn
@@ -52,32 +51,32 @@ function createPhase(data) {
  * @param {*} phase thông tin cần cập nhật
  */
 function editPhase(id, phase) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-phase/${id}`,
-            method: "PATCH",
-            data: phase,
-        },
-        true,
-        true,
-        "project"
-    );
-};
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-phase/${id}`,
+      method: 'PATCH',
+      data: phase
+    },
+    true,
+    true,
+    'project'
+  )
+}
 
 /**
  * xoá thông tin giai đoạn
  * @param {*} id id của giai đoạn
  */
 function deletePhase(id) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-phase/${id}`,
-            method: "DELETE",
-        },
-        true,
-        true,
-        "project"
-    );
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-phase/${id}`,
+      method: 'DELETE'
+    },
+    true,
+    true,
+    'project'
+  )
 }
 
 /**
@@ -85,17 +84,17 @@ function deletePhase(id) {
  * @param {*} data dữ liệu về cột mốc
  */
 function createMilestone(data) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-milestone`,
-            method: "POST",
-            data: data,
-        },
-        true,
-        true,
-        "project"
-    );
-};
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-milestone`,
+      method: 'POST',
+      data: data
+    },
+    true,
+    true,
+    'project'
+  )
+}
 
 /**
  * chỉnh sửa thông tin cột mốc
@@ -103,32 +102,32 @@ function createMilestone(data) {
  * @param {*} milestone thông tin cần cập nhật
  */
 function editMilestone(id, milestone) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-milestone/${id}`,
-            method: "PATCH",
-            data: milestone,
-        },
-        true,
-        true,
-        "project"
-    );
-};
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-milestone/${id}`,
+      method: 'PATCH',
+      data: milestone
+    },
+    true,
+    true,
+    'project'
+  )
+}
 
 /**
  * xoá thông tin cột mốc
  * @param {*} id id của cột mốc
  */
 function deleteMilestone(id) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-milestone/${id}`,
-            method: "DELETE",
-        },
-        true,
-        true,
-        "project"
-    );
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-milestone/${id}`,
+      method: 'DELETE'
+    },
+    true,
+    true,
+    'project'
+  )
 }
 
 /**
@@ -151,17 +150,17 @@ function deleteMilestone(id) {
  */
 
 function getMilestonesByProject(data) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-milestone`,
-            method: "GET",
-            params : data,
-        },
-        false,
-        true,
-        "project"
-    );
-};
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-milestone`,
+      method: 'GET',
+      params: data
+    },
+    false,
+    true,
+    'project'
+  )
+}
 
 /**
  * lấy dữ liệu các giai đoạn
@@ -181,14 +180,14 @@ function getMilestonesByProject(data) {
  */
 
 function getPhasesByProject(data) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/projects/project-phase`,
-            method: "GET",
-            params : data,
-        },
-        false,
-        true,
-        "project"
-    );
-};
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/projects/project-phase`,
+      method: 'GET',
+      params: data
+    },
+    false,
+    true,
+    'project'
+  )
+}

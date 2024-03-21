@@ -1,78 +1,78 @@
-import { transportProcessConstants } from './constants';
-import { transportProcessServices } from './services';
+import { transportProcessConstants } from './constants'
+import { transportProcessServices } from './services'
 
 export const transportProcessActions = {
-    startLocate,
-    sendCurrentLocate,
-    stopLocate
+  startLocate,
+  sendCurrentLocate,
+  stopLocate
 }
 
 function startLocate(queryData) {
-    return (dispatch) => {
-        dispatch({
-            type: transportProcessConstants.START_LOCATE_REQUEST
-        });
+  return (dispatch) => {
+    dispatch({
+      type: transportProcessConstants.START_LOCATE_REQUEST
+    })
 
-        transportProcessServices
-            .startLocate(queryData)
-            .then((res) => {
-                dispatch({
-                    type: transportProcessConstants.START_LOCATE_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch((error) => {
-                dispatch({
-                    type: transportProcessConstants.START_LOCATE_FAILURE,
-                    error
-                });
-            });
-    }
+    transportProcessServices
+      .startLocate(queryData)
+      .then((res) => {
+        dispatch({
+          type: transportProcessConstants.START_LOCATE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: transportProcessConstants.START_LOCATE_FAILURE,
+          error
+        })
+      })
+  }
 }
 
 function sendCurrentLocate(queryData) {
-    return (dispatch) => {
+  return (dispatch) => {
+    dispatch({
+      type: transportProcessConstants.SEND_CURRENT_LOCATE_REQUEST
+    })
+    transportProcessServices
+      .sendCurrentLocate(queryData)
+      .then((res) => {
         dispatch({
-            type: transportProcessConstants.SEND_CURRENT_LOCATE_REQUEST
-        });
-        transportProcessServices
-            .sendCurrentLocate(queryData)
-            .then((res) => {
-                dispatch({
-                    type: transportProcessConstants.SEND_CURRENT_LOCATE_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch((error) => {
-                dispatch({
-                    type: transportProcessConstants.SEND_CURRENT_LOCATE_FAILURE,
-                    error
-                });
-            });
-    }
+          type: transportProcessConstants.SEND_CURRENT_LOCATE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: transportProcessConstants.SEND_CURRENT_LOCATE_FAILURE,
+          error
+        })
+      })
+  }
 }
 
 function stopLocate(queryData) {
-    return (dispatch) => {
-        dispatch({
-            type: transportProcessConstants.STOP_LOCATE_REQUEST
-        });
+  return (dispatch) => {
+    dispatch({
+      type: transportProcessConstants.STOP_LOCATE_REQUEST
+    })
 
-        transportProcessServices
-            .stopLocate(queryData)
-            .then((res) => {
-                dispatch({
-                    type: transportProcessConstants.STOP_LOCATE_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch((error) => {
-                dispatch({
-                    type: transportProcessConstants.STOP_LOCATE_FAILURE,
-                    error
-                });
-            });
-    }
+    transportProcessServices
+      .stopLocate(queryData)
+      .then((res) => {
+        dispatch({
+          type: transportProcessConstants.STOP_LOCATE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: transportProcessConstants.STOP_LOCATE_FAILURE,
+          error
+        })
+      })
+  }
 }
 
 // function createTransportRequirement(data) {

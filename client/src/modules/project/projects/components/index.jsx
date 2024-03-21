@@ -1,21 +1,18 @@
-import React, { Component, useState } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+import React, { Component, useState } from 'react'
+import { connect } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
 
-import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components/index';
+import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components/index'
 
-
-import { ListProject } from './listProject';
-import { CategoryProject } from './categoryProject';
+import { ListProject } from './listProject'
+import { CategoryProject } from './categoryProject'
 
 function ManagementTableProject(props) {
-    return (
-       <ListProject />
-    )
+  return <ListProject />
 }
 function mapState(state) {
-    const { project, user } = state;
-    return { project, user }
+  const { project, user } = state
+  return { project, user }
 }
 
-export default connect(mapState, null)(withTranslate(ManagementTableProject));
+export default connect(mapState, null)(withTranslate(ManagementTableProject))

@@ -1,2 +1,1 @@
-export const dashboardEmployeeKpiSetService = {
-};
+export const dashboardEmployeeKpiSetService = {}

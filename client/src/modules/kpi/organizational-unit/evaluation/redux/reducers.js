@@ -1,7 +1,7 @@
-import { evaluateConstants } from "./constants";
+import { evaluateConstants } from './constants'
 
-export function evaluate (state = {}, action){
-    // switch (action.type) {
-    //     case evaluateConstants.
-    // }
+export function evaluate(state = {}, action) {
+  // switch (action.type) {
+  //     case evaluateConstants.
+  // }
 }

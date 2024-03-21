@@ -1,62 +1,57 @@
-import {
-    RoleServices
-} from "./services";
-import {
-    RoleConstants
-} from "./constants";
+import { RoleServices } from './services'
+import { RoleConstants } from './constants'
 
 export const RoleActions = {
-    get,
-    show,
-    edit,
-    create,
-    destroy,
-    importRoles,
-    createRoleAttribute
+  get,
+  show,
+  edit,
+  create,
+  destroy,
+  importRoles,
+  createRoleAttribute
 }
 
 /**
  * Lấy danh sách tất cả các role của 1 công ty
  */
 function get(data) {
-    if (data) {
-        return dispatch => {
-            dispatch({
-                type: RoleConstants.GET_ROLES_PAGINATE_REQUEST
-            });
-            RoleServices.get(data)
-                .then(res => {
-                    dispatch({
-                        type: RoleConstants.GET_ROLES_PAGINATE_SUCCESS,
-                        payload: res.data.content
-                    })
-                })
-                .catch(err => {
-                    dispatch({
-                        type: RoleConstants.GET_ROLES_PAGINATE_FAILE
-                    });
-                })
-        }
+  if (data) {
+    return (dispatch) => {
+      dispatch({
+        type: RoleConstants.GET_ROLES_PAGINATE_REQUEST
+      })
+      RoleServices.get(data)
+        .then((res) => {
+          dispatch({
+            type: RoleConstants.GET_ROLES_PAGINATE_SUCCESS,
+            payload: res.data.content
+          })
+        })
+        .catch((err) => {
+          dispatch({
+            type: RoleConstants.GET_ROLES_PAGINATE_FAILE
+          })
+        })
     }
+  }
 
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: RoleConstants.GET_ROLES_REQUEST
+    })
+    RoleServices.get()
+      .then((res) => {
         dispatch({
-            type: RoleConstants.GET_ROLES_REQUEST
-        });
-        RoleServices.get()
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.GET_ROLES_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-
-                dispatch({
-                    type: RoleConstants.GET_ROLES_FAILE
-                });
-            })
-    }
+          type: RoleConstants.GET_ROLES_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RoleConstants.GET_ROLES_FAILE
+        })
+      })
+  }
 }
 
 /**
@@ -64,24 +59,23 @@ function get(data) {
  * @id id role
  */
 function show(id) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: RoleConstants.SHOW_ROLE_REQUEST
+    })
+    RoleServices.show(id)
+      .then((res) => {
         dispatch({
-            type: RoleConstants.SHOW_ROLE_REQUEST
-        });
-        RoleServices.show(id)
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.SHOW_ROLE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: RoleConstants.SHOW_ROLE_FAILE
-                });
-
-            })
-    }
+          type: RoleConstants.SHOW_ROLE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RoleConstants.SHOW_ROLE_FAILE
+        })
+      })
+  }
 }
 
 /**
@@ -89,24 +83,23 @@ function show(id) {
  * @role dữ liệu tạo
  */
 function create(role) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: RoleConstants.CREATE_ROLE_REQUEST
+    })
+    RoleServices.create(role)
+      .then((res) => {
         dispatch({
-            type: RoleConstants.CREATE_ROLE_REQUEST
-        });
-        RoleServices
-            .create(role)
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.CREATE_ROLE_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({
-                    type: RoleConstants.CREATE_ROLE_FAILE
-                });
-            })
-    }
+          type: RoleConstants.CREATE_ROLE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RoleConstants.CREATE_ROLE_FAILE
+        })
+      })
+  }
 }
 
 /**
@@ -114,23 +107,23 @@ function create(role) {
  * @role dữ liệu chỉnh sửa
  */
 function edit(role) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: RoleConstants.EDIT_ROLE_REQUEST
+    })
+    RoleServices.edit(role)
+      .then((res) => {
         dispatch({
-            type: RoleConstants.EDIT_ROLE_REQUEST
-        });
-        RoleServices.edit(role)
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.EDIT_ROLE_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({
-                    type: RoleConstants.EDIT_ROLE_FAILE
-                });
-            })
-    }
+          type: RoleConstants.EDIT_ROLE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RoleConstants.EDIT_ROLE_FAILE
+        })
+      })
+  }
 }
 
 /**
@@ -138,64 +131,62 @@ function edit(role) {
  * @roleId id role
  */
 function destroy(roleId) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: RoleConstants.DELETE_ROLE_REQUEST
+    })
+    RoleServices.destroy(roleId)
+      .then((res) => {
         dispatch({
-            type: RoleConstants.DELETE_ROLE_REQUEST
-        });
-        RoleServices.destroy(roleId)
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.DELETE_ROLE_SUCCESS,
-                    payload: roleId
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: RoleConstants.DELETE_ROLE_FAILE
-                });
-            })
-    }
+          type: RoleConstants.DELETE_ROLE_SUCCESS,
+          payload: roleId
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RoleConstants.DELETE_ROLE_FAILE
+        })
+      })
+  }
 }
 
-
 function importRoles(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: RoleConstants.IMPORT_ROLE_REQUEST
+    })
+    RoleServices.importRoles(data)
+      .then((res) => {
         dispatch({
-            type: RoleConstants.IMPORT_ROLE_REQUEST
-        });
-        RoleServices.importRoles(data)
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.IMPORT_ROLE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: RoleConstants.IMPORT_ROLE_FAILE,
-                    error: err?.response?.data?.content
-                });
-            })
-    }
+          type: RoleConstants.IMPORT_ROLE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RoleConstants.IMPORT_ROLE_FAILE,
+          error: err?.response?.data?.content
+        })
+      })
+  }
 }
 
 function createRoleAttribute(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: RoleConstants.CREATE_ROLE_ATTRIBUTE_REQUEST
+    })
+    RoleServices.createRoleAttribute(data)
+      .then((res) => {
         dispatch({
-            type: RoleConstants.CREATE_ROLE_ATTRIBUTE_REQUEST
-        });
-        RoleServices
-            .createRoleAttribute(data)
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.CREATE_ROLE_ATTRIBUTE_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({
-                    type: RoleConstants.CREATE_ROLE_ATTRIBUTE_FAILE
-                });
-            })
-    }
+          type: RoleConstants.CREATE_ROLE_ATTRIBUTE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RoleConstants.CREATE_ROLE_ATTRIBUTE_FAILE
+        })
+      })
+  }
 }

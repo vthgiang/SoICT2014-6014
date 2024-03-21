@@ -1,6 +1,5 @@
-
-import CustomRenderer from './customRenderer';
+import CustomRenderer from './customRenderer'
 export default {
   __init__: ['customRenderer'],
-  customRenderer: ['type', CustomRenderer],
-};
+  customRenderer: ['type', CustomRenderer]
+}

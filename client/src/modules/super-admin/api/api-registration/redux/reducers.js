@@ -1,9 +1,8 @@
-import { ApiRegistrationConstants } from "./constants";
+import { ApiRegistrationConstants } from './constants'
 
-export function apiRegistration (state = {}, action) {
-    switch (action.type) {
-        
-        default:
-            return state;
-    }
+export function apiRegistration(state = {}, action) {
+  switch (action.type) {
+    default:
+      return state
+  }
 }

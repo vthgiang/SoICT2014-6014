@@ -1,5 +1,5 @@
 export const WorkPlanFormValidator = {
-    validateDescription,
+  validateDescription
 }
 
 /**
@@ -8,9 +8,9 @@ export const WorkPlanFormValidator = {
  * @param {*} translate : Props song ngữ
  */
 function validateDescription(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.work_plan.reason_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.work_plan.reason_required')
+  }
+  return msg
 }

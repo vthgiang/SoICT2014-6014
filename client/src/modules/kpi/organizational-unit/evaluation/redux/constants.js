@@ -1,3 +1,1 @@
-export const evaluateConstants = {
-    
-}
+export const evaluateConstants = {}

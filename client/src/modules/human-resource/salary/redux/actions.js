@@ -1,45 +1,41 @@
-import {
-    SalaryConstants
-} from "./constants";
+import { SalaryConstants } from './constants'
 
-import {
-    SalaryService
-} from "./services";
+import { SalaryService } from './services'
 
 export const SalaryActions = {
-    searchSalary,
-    createSalary,
-    deleteSalary,
-    updateSalary,
-    importSalary,
-    getAllSalaryChart
-};
+  searchSalary,
+  createSalary,
+  deleteSalary,
+  updateSalary,
+  importSalary,
+  getAllSalaryChart
+}
 
 /**
  * Lấy danh sách bảng lương
  * @data : dữ liệu key tìm kiếm
  */
 function searchSalary(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: SalaryConstants.GET_SALARY_REQUEST
+    })
+    SalaryService.searchSalary(data)
+      .then((res) => {
         dispatch({
-            type: SalaryConstants.GET_SALARY_REQUEST
-        });
-        SalaryService.searchSalary(data)
-            .then(res => {
-                dispatch({
-                    type: SalaryConstants.GET_SALARY_SUCCESS,
-                    payload: res.data.content,
-                    callApiDashboard: data.callApiDashboard,
-                    organizationalUnits: data.organizationalUnits,
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: SalaryConstants.GET_SALARY_FAILURE,
-                    error: err
-                });
-            })
-    }
+          type: SalaryConstants.GET_SALARY_SUCCESS,
+          payload: res.data.content,
+          callApiDashboard: data.callApiDashboard,
+          organizationalUnits: data.organizationalUnits
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: SalaryConstants.GET_SALARY_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -47,24 +43,24 @@ function searchSalary(data) {
  * @data : dữ liệu bảng lương mới
  */
 function createSalary(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: SalaryConstants.CREATE_SALARY_REQUEST
+    })
+    SalaryService.createSalary(data)
+      .then((res) => {
         dispatch({
-            type: SalaryConstants.CREATE_SALARY_REQUEST
-        });
-        SalaryService.createSalary(data)
-            .then(res => {
-                dispatch({
-                    type: SalaryConstants.CREATE_SALARY_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: SalaryConstants.CREATE_SALARY_FAILURE,
-                    error: err
-                });
-            })
-    }
+          type: SalaryConstants.CREATE_SALARY_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: SalaryConstants.CREATE_SALARY_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -72,93 +68,92 @@ function createSalary(data) {
  * @id : Id bảng lương cần xoá
  */
 function deleteSalary(id) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: SalaryConstants.DELETE_SALARY_REQUEST
+    })
+    SalaryService.deleteSalary(id)
+      .then((res) => {
         dispatch({
-            type: SalaryConstants.DELETE_SALARY_REQUEST
-        });
-        SalaryService.deleteSalary(id)
-            .then(res => {
-                dispatch({
-                    type: SalaryConstants.DELETE_SALARY_SUCCESS,
-                    payload: res.data.content
-                })
-                
-            })
-            .catch(err => {
-                dispatch({
-                    type: SalaryConstants.DELETE_SALARY_FAILURE,
-                    error: err
-                });
-            })
-    }
+          type: SalaryConstants.DELETE_SALARY_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: SalaryConstants.DELETE_SALARY_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
  * Cập nhật thông tin bảng lương
  * @id : Id bảng lương cần cập nhật
- * @data : Dữ liệu cập nhật bảng lương 
+ * @data : Dữ liệu cập nhật bảng lương
  */
 function updateSalary(id, data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: SalaryConstants.UPDATE_SALARY_REQUEST
+    })
+    SalaryService.updateSalary(id, data)
+      .then((res) => {
         dispatch({
-            type: SalaryConstants.UPDATE_SALARY_REQUEST
-        });
-        SalaryService.updateSalary(id, data)
-            .then(res => {
-                dispatch({
-                    type: SalaryConstants.UPDATE_SALARY_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: SalaryConstants.UPDATE_SALARY_FAILURE,
-                    error: err
-                });
-            })
-    }
+          type: SalaryConstants.UPDATE_SALARY_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: SalaryConstants.UPDATE_SALARY_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 // Import lương nhân viên
 function importSalary(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: SalaryConstants.IMPORT_SALARY_REQUEST
+    })
+    SalaryService.importSalary(data)
+      .then((res) => {
         dispatch({
-            type: SalaryConstants.IMPORT_SALARY_REQUEST
-        });
-        SalaryService.importSalary(data)
-            .then(res => {
-                dispatch({
-                    type: SalaryConstants.IMPORT_SALARY_SUCCESS,
-                    payload: res.data
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: SalaryConstants.IMPORT_SALARY_FAILURE,
-                    error: err.response.data.content
-                });
-            })
-    };
+          type: SalaryConstants.IMPORT_SALARY_SUCCESS,
+          payload: res.data
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: SalaryConstants.IMPORT_SALARY_FAILURE,
+          error: err.response.data.content
+        })
+      })
+  }
 }
 
 function getAllSalaryChart(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: SalaryConstants.GET_ALL_SALARY_CHART_REQUEST
+    })
+    SalaryService.getAllSalaryChart(data)
+      .then((res) => {
         dispatch({
-            type: SalaryConstants.GET_ALL_SALARY_CHART_REQUEST
-        });
-        SalaryService.getAllSalaryChart(data)
-            .then((res) => {
-                dispatch({
-                    type: SalaryConstants.GET_ALL_SALARY_CHART_SUCCESS,
-                    payload: res.data.content,
-                })
-                console.log("res.data.content",res.data.content)
-            })
-            .catch(err => {
-                dispatch({
-                    type: SalaryConstants.GET_ALL_SALARY_CHART_FAILURE,
-                    error: err
-                });
-            })
-    };
+          type: SalaryConstants.GET_ALL_SALARY_CHART_SUCCESS,
+          payload: res.data.content
+        })
+        console.log('res.data.content', res.data.content)
+      })
+      .catch((err) => {
+        dispatch({
+          type: SalaryConstants.GET_ALL_SALARY_CHART_FAILURE,
+          error: err
+        })
+      })
+  }
 }

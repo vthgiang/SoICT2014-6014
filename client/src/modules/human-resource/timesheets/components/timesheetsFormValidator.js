@@ -1,6 +1,6 @@
 export const TimesheetsFormValidator = {
-    validateEmployeeNumber,
-    validateMonth,
+  validateEmployeeNumber,
+  validateMonth
 }
 
 /**
@@ -9,11 +9,11 @@ export const TimesheetsFormValidator = {
  * @param {*} translate : Props song ngữ
  */
 function validateEmployeeNumber(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.employee_number_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.employee_number_required')
+  }
+  return msg
 }
 
 /**
@@ -22,9 +22,9 @@ function validateEmployeeNumber(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateMonth(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.timesheets.month_timesheets_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.timesheets.month_timesheets_required')
+  }
+  return msg
 }

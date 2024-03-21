@@ -1,10 +1,10 @@
 export const CommendationFromValidator = {
-    validateEmployeeNumber,
-    validateReason,
-    validateDecisionNumber,
-    validateOrganizationalUnit,
-    validateType,
-    validateStartDate
+  validateEmployeeNumber,
+  validateReason,
+  validateDecisionNumber,
+  validateOrganizationalUnit,
+  validateType,
+  validateStartDate
 }
 /**
  * Kiểm tra mã nhân viên nhập vào
@@ -12,11 +12,11 @@ export const CommendationFromValidator = {
  * @param {*} translate : Props song ngữ
  */
 function validateEmployeeNumber(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.commendation.employee_number_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.commendation.employee_number_required')
+  }
+  return msg
 }
 
 /**
@@ -25,11 +25,11 @@ function validateEmployeeNumber(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateDecisionNumber(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.commendation.number_decisions_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.commendation.number_decisions_required')
+  }
+  return msg
 }
 
 /**
@@ -38,11 +38,11 @@ function validateDecisionNumber(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateOrganizationalUnit(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.commendation.unit_decisions_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.commendation.unit_decisions_required')
+  }
+  return msg
 }
 
 /**
@@ -51,11 +51,11 @@ function validateOrganizationalUnit(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateType(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.commendation.type_commendations_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.commendation.type_commendations_required')
+  }
+  return msg
 }
 
 /**
@@ -64,11 +64,11 @@ function validateType(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateReason(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.commendation.reason_commendations_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.commendation.reason_commendations_required')
+  }
+  return msg
 }
 
 /**
@@ -77,9 +77,9 @@ function validateReason(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateStartDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.commendation.decisions_date_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.commendation.decisions_date_required')
+  }
+  return msg
 }

@@ -1,10 +1,8 @@
-import React from 'react';
-import Table from './table';
+import React from 'react'
+import Table from './table'
 
 function AdministrationDocumentCategories() {
-    return (
-        <Table />
-    );
+  return <Table />
 }
 
-export default AdministrationDocumentCategories;
+export default AdministrationDocumentCategories

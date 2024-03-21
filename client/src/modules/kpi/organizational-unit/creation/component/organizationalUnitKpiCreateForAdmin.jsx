@@ -1,42 +1,42 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual';
+import { withTranslate } from 'react-redux-multilingual'
 
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions'
 
-import OrganizationalUnitKpiCreate from './organizationalUnitKpiCreate';
+import OrganizationalUnitKpiCreate from './organizationalUnitKpiCreate'
 
-function OrganizationalUnitKpiCreateForAdmin (props) {
-    const { department } = props
+function OrganizationalUnitKpiCreateForAdmin(props) {
+  const { department } = props
 
-    useEffect(() => {
-        props.getAllUnit()
-    }, [])
+  useEffect(() => {
+    props.getAllUnit()
+  }, [])
 
-    let list
-    if (department?.list?.length > 0) {
-        list = department.list;
-    }
-    return (
-        <OrganizationalUnitKpiCreate
-            type="for-admin"
-            selectBoxAllUnit={list?.map(item => {
-                return {
-                    ...item,
-                    id: item?._id,
-                    parent_id: item?.parent
-                }
-            })}
-        />
-    )
+  let list
+  if (department?.list?.length > 0) {
+    list = department.list
+  }
+  return (
+    <OrganizationalUnitKpiCreate
+      type='for-admin'
+      selectBoxAllUnit={list?.map((item) => {
+        return {
+          ...item,
+          id: item?._id,
+          parent_id: item?.parent
+        }
+      })}
+    />
+  )
 }
 
 function mapState(state) {
-    const { department } = state;
-    return { department }
+  const { department } = state
+  return { department }
 }
 const actions = {
-    getAllUnit: DepartmentActions.get
+  getAllUnit: DepartmentActions.get
 }
 
 export default connect(mapState, actions)(withTranslate(OrganizationalUnitKpiCreateForAdmin))

@@ -1,158 +1,172 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
-import { CategoryActions } from '../redux/actions';
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
+import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../../common-components'
+import { CategoryActions } from '../redux/actions'
 
 function CategoryEditTree(props) {
-    const [state, setState] = useState({
+  const [state, setState] = useState({})
 
+  const handleCode = (e) => {
+    const value = e.target.value
+    setState({
+      ...state,
+      categoryCode: value
     })
+  }
 
-    const handleCode = (e) => {
-        const value = e.target.value;
-        setState({
-            ...state,
-            categoryCode: value
-        })
+  const handleName = (e) => {
+    const value = e.target.value
+    setState({
+      ...state,
+      categoryName: value
+    })
+  }
+
+  const handleDescription = (e) => {
+    const value = e.target.value
+    setState({
+      ...state,
+      categoryDescription: value
+    })
+  }
+
+  const handleParent = (value) => {
+    setState({
+      ...state,
+      categoryParent: value[0]
+    })
+  }
+
+  const validateName = (value, willUpdateState = true) => {
+    let msg = undefined
+    const { translate } = props
+    if (!value) {
+      msg = translate('document.no_blank_name')
+    }
+    if (willUpdateState) {
+      setState({
+        ...state,
+        categoryName: value,
+        errorName: msg
+      })
     }
 
-    const handleName = (e) => {
-        const value = e.target.value;
-        setState({
-            ...state,
-            categoryName: value
-        })
+    return msg === undefined
+  }
+
+  const validateCode = (value, willUpdateState = true) => {
+    let msg = undefined
+    const { translate } = props
+    if (!value) {
+      msg = translate('document.no_blank_code')
+    }
+    if (willUpdateState) {
+      setState({
+        ...state,
+        categoryCode: value,
+        errorCode: msg
+      })
     }
 
-    const handleDescription = (e) => {
-        const value = e.target.value;
-        setState({
-            ...state,
-            categoryDescription: value
-        })
-    }
+    return msg === undefined
+  }
 
-    const handleParent = (value) => {
-        setState({
-            ...state,
-            categoryParent: value[0]
-        });
-    };
+  const handleValidateName = (e) => {
+    const value = e.target.value
+    validateName(value, true)
+  }
 
-    const validateName = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('document.no_blank_name');
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                categoryName: value,
-                errorName: msg
-            })
-        }
+  const handleValidateCode = (e) => {
+    const value = e.target.value
+    validateCode(value, true)
+  }
 
-        return msg === undefined;
-    }
+  const isValidateForm = () => {
+    let result = validateName(state.categoryName, false) && validateCode(state.categoryCode, false)
+    return result
+  }
 
-    const validateCode = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('document.no_blank_code');
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                categoryCode: value,
-                errorCode: msg
-            })
-        }
+  const save = () => {
+    const { categoryId, categoryName, categoryDescription, categoryParent, categoryCode } = state
+    props.editCategory(categoryId, {
+      name: categoryName,
+      code: categoryCode,
+      description: categoryDescription,
+      parent: categoryParent
+    })
+  }
 
-        return msg === undefined;
-    }
+  if (props.categoryId !== state.categoryId) {
+    setState({
+      ...state,
+      categoryId: props.categoryId,
+      categoryName: props.categoryName,
+      categoryCode: props.categoryCode,
+      categoryDescription: props.categoryDescription,
+      categoryParent: props.categoryParent,
+      errorName: undefined,
+      errorCode: undefined
+    })
+  }
 
-    const handleValidateName = (e) => {
-        const value = e.target.value;
-        validateName(value, true);
-    }
+  const { translate, categories } = props
+  const { list } = categories.categoryToTree
+  const { categoryName, categoryDescription, categoryParent, categoryCode, errorName, errorCode } = state
 
-    const handleValidateCode = (e) => {
-        const value = e.target.value;
-        validateCode(value, true);
-    }
-
-    const isValidateForm = () => {
-        let result =
-            validateName(state.categoryName, false) &&
-            validateCode(state.categoryCode, false)
-        return result;
-    }
-
-
-    const save = () => {
-        const { categoryId, categoryName, categoryDescription, categoryParent, categoryCode } = state;
-        props.editCategory(categoryId, {
-            name: categoryName,
-            code: categoryCode,
-            description: categoryDescription,
-            parent: categoryParent
-        });
-    }
-
-    if (props.categoryId !== state.categoryId) {
-        setState({
-            ...state,
-            categoryId: props.categoryId,
-            categoryName: props.categoryName,
-            categoryCode: props.categoryCode,
-            categoryDescription: props.categoryDescription,
-            categoryParent: props.categoryParent,
-            errorName: undefined,
-            errorCode: undefined
-        })
-    }
-
-    const { translate, categories } = props;
-    const { list } = categories.categoryToTree;
-    const { categoryName, categoryDescription, categoryParent, categoryCode, errorName, errorCode } = state;
-
-    return (
-        <div id="edit-category-good">
-            <div className={`form-group ${errorCode === undefined ? "" : "has-error"}`}>
-                <label>{translate('manage_warehouse.category_management.code')}<span className="text-red">*</span></label>
-                <input type="text" className="form-control" onChange={handleValidateCode} value={categoryCode} />
-                <ErrorLabel content={errorCode} />
-            </div>
-            <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
-                <label>{translate('manage_warehouse.category_management.name')}<span className="text-red">*</span></label>
-                <input type="text" className="form-control" onChange={handleValidateName} value={categoryName} />
-                <ErrorLabel content={errorName} />
-            </div>
-            <div className="form-group">
-                <label>{translate('document.administration.archives.parent')}</label>
-                <TreeSelect data={list} value={[categoryParent]} handleChange={handleParent} mode="radioSelect" />
-            </div>
-            <div className="form-group">
-                <label>{translate('manage_warehouse.category_management.description')}</label>
-                <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={handleDescription} value={categoryDescription} />
-            </div>
-            <div className="form-group">
-                <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={!isValidateForm()} onClick={save}>{translate('form.save')}</button>
-                <button className="btn btn-danger" onClick={() => {
-                    window.$(`#edit-category-good`).slideUp()
-                }}>{translate('form.close')}</button>
-            </div>
-        </div>
-    );
+  return (
+    <div id='edit-category-good'>
+      <div className={`form-group ${errorCode === undefined ? '' : 'has-error'}`}>
+        <label>
+          {translate('manage_warehouse.category_management.code')}
+          <span className='text-red'>*</span>
+        </label>
+        <input type='text' className='form-control' onChange={handleValidateCode} value={categoryCode} />
+        <ErrorLabel content={errorCode} />
+      </div>
+      <div className={`form-group ${errorName === undefined ? '' : 'has-error'}`}>
+        <label>
+          {translate('manage_warehouse.category_management.name')}
+          <span className='text-red'>*</span>
+        </label>
+        <input type='text' className='form-control' onChange={handleValidateName} value={categoryName} />
+        <ErrorLabel content={errorName} />
+      </div>
+      <div className='form-group'>
+        <label>{translate('document.administration.archives.parent')}</label>
+        <TreeSelect data={list} value={[categoryParent]} handleChange={handleParent} mode='radioSelect' />
+      </div>
+      <div className='form-group'>
+        <label>{translate('manage_warehouse.category_management.description')}</label>
+        <textarea
+          style={{ minHeight: '120px' }}
+          type='text'
+          className='form-control'
+          onChange={handleDescription}
+          value={categoryDescription}
+        />
+      </div>
+      <div className='form-group'>
+        <button className='btn btn-success pull-right' style={{ marginLeft: '5px' }} disabled={!isValidateForm()} onClick={save}>
+          {translate('form.save')}
+        </button>
+        <button
+          className='btn btn-danger'
+          onClick={() => {
+            window.$(`#edit-category-good`).slideUp()
+          }}
+        >
+          {translate('form.close')}
+        </button>
+      </div>
+    </div>
+  )
 }
 
-const mapStateToProps = state => state;
+const mapStateToProps = (state) => state
 
 const mapDispatchToProps = {
-    editCategory: CategoryActions.editCategory
+  editCategory: CategoryActions.editCategory
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CategoryEditTree));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CategoryEditTree))

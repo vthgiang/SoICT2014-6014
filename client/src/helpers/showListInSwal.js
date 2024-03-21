@@ -1,17 +1,14 @@
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'
 
 export const showListInSwal = (lists, title) => {
-    if (lists?.length > 0) {
-        Swal.fire({
-            html: `<h3 style="color: red"><div>${title}</div> </h3>
+  if (lists?.length > 0) {
+    Swal.fire({
+      html: `<h3 style="color: red"><div>${title}</div> </h3>
                 <ol style="text-align:left;font-size: 16px;">
-                    ${lists.map(o => (
-                        `<li style="padding: 7px">${o}</li>`
-                        )).join('')
-                    }
+                    ${lists.map((o) => `<li style="padding: 7px">${o}</li>`).join('')}
                 </ol>
             `,
-            width: "40%"
-        })
-    }
+      width: '40%'
+    })
+  }
 }

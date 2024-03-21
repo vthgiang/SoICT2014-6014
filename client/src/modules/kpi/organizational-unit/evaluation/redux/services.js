@@ -1,5 +1,3 @@
-import {handleResponse} from '../../../../../helpers/handleResponse';
+import { handleResponse } from '../../../../../helpers/handleResponse'
 
-export const evaluateServices = {
-    
-}
+export const evaluateServices = {}

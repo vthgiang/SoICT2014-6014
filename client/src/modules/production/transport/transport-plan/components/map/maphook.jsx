@@ -1,6 +1,6 @@
-import React, {useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-function MapContainer(props){
+import React, { useState, useEffect } from 'react'
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
+function MapContainer(props) {
   // let locationsa = [
   //     {
   //         name: "Location 1",
@@ -10,21 +10,23 @@ function MapContainer(props){
   //         }
   //     }
   // ]
-  let { locations } = props;
-  const mapStyles = {        
-    height: "100vh",
-    width: "100%"};
-  
+  let { locations } = props
+  const mapStyles = {
+    height: '100vh',
+    width: '100%'
+  }
+
   // const defaultCenter = {
   //   lat: 21.078017641, lng: 105.70710958
   // }
   const [defaultCenter, setDefaultCenter] = useState({
-    lat: 21.078017641, lng: 105.70710958
+    lat: 21.078017641,
+    lng: 105.70710958
   })
   useEffect(() => {
-    if (locations){
-      if(locations[0]){
-        if (locations[0].lat && locations[0].lng){
+    if (locations) {
+      if (locations[0]) {
+        if (locations[0].lat && locations[0].lng) {
           setDefaultCenter({
             lat: locations[0].lat,
             lng: locations[0].lng
@@ -33,26 +35,18 @@ function MapContainer(props){
       }
     }
   }, [locations])
-  
+
   return (
     <LoadScript
-        // googleMapsApiKey='AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs'        
-        googleMapsApiKey={process.env.REACT_APP_API_KEY}
-        >
-          <GoogleMap
-            mapContainerStyle={mapStyles}
-            zoom={11}
-            center={defaultCenter}
-            >
-            {
-                locations.map(item => {
-                    return (
-                        <Marker key={item.name} position={item.location} icon={item.icon}/>
-                    )
-                })
-            }
-            </GoogleMap>
-      </LoadScript>
+      // googleMapsApiKey='AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs'
+      googleMapsApiKey={process.env.REACT_APP_API_KEY}
+    >
+      <GoogleMap mapContainerStyle={mapStyles} zoom={11} center={defaultCenter}>
+        {locations.map((item) => {
+          return <Marker key={item.name} position={item.location} icon={item.icon} />
+        })}
+      </GoogleMap>
+    </LoadScript>
   )
 }
-export {MapContainer};
+export { MapContainer }

@@ -1,41 +1,37 @@
-import {
-    WorkPlanConstants
-} from "./constants";
+import { WorkPlanConstants } from './constants'
 
-import {
-    WorkPlanService
-} from "./services";
+import { WorkPlanService } from './services'
 
 export const WorkPlanActions = {
-    getListWorkPlan,
-    createNewWorkPlan,
-    deleteWorkPlan,
-    updateWorkPlan,
-    importWorkPlan,
-};
+  getListWorkPlan,
+  createNewWorkPlan,
+  deleteWorkPlan,
+  updateWorkPlan,
+  importWorkPlan
+}
 
 /**
  * Lấy danh sách lịch làm việc
  */
 function getListWorkPlan(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: WorkPlanConstants.GET_WORK_PLAN_REQUEST
+    })
+    WorkPlanService.getListWorkPlan(data)
+      .then((res) => {
         dispatch({
-            type: WorkPlanConstants.GET_WORK_PLAN_REQUEST
-        });
-        WorkPlanService.getListWorkPlan(data)
-            .then(res => {
-                dispatch({
-                    type: WorkPlanConstants.GET_WORK_PLAN_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: WorkPlanConstants.GET_WORK_PLAN_FAILURE,
-                    error: err
-                });
-            })
-    }
+          type: WorkPlanConstants.GET_WORK_PLAN_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: WorkPlanConstants.GET_WORK_PLAN_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -43,24 +39,24 @@ function getListWorkPlan(data) {
  * @param {*} data : Dữ liệu thông tin lịch làm việc
  */
 function createNewWorkPlan(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: WorkPlanConstants.CREATE_WORK_PLAN_REQUEST
+    })
+    WorkPlanService.createNewWorkPlan(data)
+      .then((res) => {
         dispatch({
-            type: WorkPlanConstants.CREATE_WORK_PLAN_REQUEST
-        });
-        WorkPlanService.createNewWorkPlan(data)
-            .then(res => {
-                dispatch({
-                    type: WorkPlanConstants.CREATE_WORK_PLAN_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: WorkPlanConstants.CREATE_WORK_PLAN_FAILURE,
-                    error: err
-                });
-            })
-    }
+          type: WorkPlanConstants.CREATE_WORK_PLAN_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: WorkPlanConstants.CREATE_WORK_PLAN_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -68,25 +64,25 @@ function createNewWorkPlan(data) {
  * @param {*} id : Id thông tin lịch làm việc cần xoá
  */
 function deleteWorkPlan(id) {
-    return dispatch => {
-        dispatch({
-            type: WorkPlanConstants.DELETE_WORK_PLAN_REQUEST,
-        });
+  return (dispatch) => {
+    dispatch({
+      type: WorkPlanConstants.DELETE_WORK_PLAN_REQUEST
+    })
 
-        WorkPlanService.deleteWorkPlan(id)
-            .then(res => {
-                dispatch({
-                    type: WorkPlanConstants.DELETE_WORK_PLAN_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: WorkPlanConstants.DELETE_WORK_PLAN_FAILURE,
-                    error: err
-                });
-            })
-    }
+    WorkPlanService.deleteWorkPlan(id)
+      .then((res) => {
+        dispatch({
+          type: WorkPlanConstants.DELETE_WORK_PLAN_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: WorkPlanConstants.DELETE_WORK_PLAN_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -95,25 +91,25 @@ function deleteWorkPlan(id) {
  * @param {*} data : dữ liệu chỉnh sửa thông tin lịch làm việc
  */
 function updateWorkPlan(id, infoWorkPlan) {
-    return dispatch => {
-        dispatch({
-            type: WorkPlanConstants.UPDATE_WORK_PLAN_REQUEST,
-        });
+  return (dispatch) => {
+    dispatch({
+      type: WorkPlanConstants.UPDATE_WORK_PLAN_REQUEST
+    })
 
-        WorkPlanService.updateWorkPlan(id, infoWorkPlan)
-            .then(res => {
-                dispatch({
-                    type: WorkPlanConstants.UPDATE_WORK_PLAN_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: WorkPlanConstants.UPDATE_WORK_PLAN_FAILURE,
-                    error: err
-                });
-            })
-    }
+    WorkPlanService.updateWorkPlan(id, infoWorkPlan)
+      .then((res) => {
+        dispatch({
+          type: WorkPlanConstants.UPDATE_WORK_PLAN_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: WorkPlanConstants.UPDATE_WORK_PLAN_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -121,22 +117,22 @@ function updateWorkPlan(id, infoWorkPlan) {
  * @param {*} data : Array thông tin lịch làm việc
  */
 function importWorkPlan(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: WorkPlanConstants.IMPORT_WORK_PLAN_REQUEST
+    })
+    WorkPlanService.importWorkPlan(data)
+      .then((res) => {
         dispatch({
-            type: WorkPlanConstants.IMPORT_WORK_PLAN_REQUEST
-        });
-        WorkPlanService.importWorkPlan(data)
-            .then(res => {
-                dispatch({
-                    type: WorkPlanConstants.IMPORT_WORK_PLAN_SUCCESS,
-                    payload: res.data
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: WorkPlanConstants.IMPORT_WORK_PLAN_FAILURE,
-                    error: err.response.data.content
-                });
-            })
-    };
+          type: WorkPlanConstants.IMPORT_WORK_PLAN_SUCCESS,
+          payload: res.data
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: WorkPlanConstants.IMPORT_WORK_PLAN_FAILURE,
+          error: err.response.data.content
+        })
+      })
+  }
 }

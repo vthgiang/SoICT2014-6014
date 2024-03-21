@@ -1,40 +1,36 @@
-import {
-    FieldsConstants
-} from "./constants";
+import { FieldsConstants } from './constants'
 
-import {
-    FieldsService
-} from "./services";
+import { FieldsService } from './services'
 
 export const FieldsActions = {
-    getListFields,
-    createFields,
-    deleteFields,
-    updateFields,
-};
+  getListFields,
+  createFields,
+  deleteFields,
+  updateFields
+}
 
 /**
  * Lấy danh sách lĩnh vực/ngành nghề
  */
 function getListFields(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: FieldsConstants.GET_FIELDS_REQUEST
+    })
+    FieldsService.getListFields(data)
+      .then((res) => {
         dispatch({
-            type: FieldsConstants.GET_FIELDS_REQUEST
-        });
-        FieldsService.getListFields(data)
-            .then(res => {
-                dispatch({
-                    type: FieldsConstants.GET_FIELDS_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: FieldsConstants.GET_FIELDS_FAILURE,
-                    error: err
-                });
-            })
-    }
+          type: FieldsConstants.GET_FIELDS_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: FieldsConstants.GET_FIELDS_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -42,24 +38,24 @@ function getListFields(data) {
  * @param {*} data : Dữ liệu thông tin lĩnh vực/ngành nghề
  */
 function createFields(data) {
-    return dispatch => {
+  return (dispatch) => {
+    dispatch({
+      type: FieldsConstants.CREATE_FIELDS_REQUEST
+    })
+    FieldsService.createFields(data)
+      .then((res) => {
         dispatch({
-            type: FieldsConstants.CREATE_FIELDS_REQUEST
-        });
-        FieldsService.createFields(data)
-            .then(res => {
-                dispatch({
-                    type: FieldsConstants.CREATE_FIELDS_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: FieldsConstants.CREATE_FIELDS_FAILURE,
-                    error: err
-                });
-            })
-    }
+          type: FieldsConstants.CREATE_FIELDS_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: FieldsConstants.CREATE_FIELDS_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -67,25 +63,25 @@ function createFields(data) {
  * @param {*} id : Id thông tin lĩnh vực/ngành nghề cần xoá
  */
 function deleteFields(id) {
-    return dispatch => {
-        dispatch({
-            type: FieldsConstants.DELETE_FIELDS_REQUEST,
-        });
+  return (dispatch) => {
+    dispatch({
+      type: FieldsConstants.DELETE_FIELDS_REQUEST
+    })
 
-        FieldsService.deleteFields(id)
-            .then(res => {
-                dispatch({
-                    type: FieldsConstants.DELETE_FIELDS_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: FieldsConstants.DELETE_FIELDS_FAILURE,
-                    error: err
-                });
-            })
-    }
+    FieldsService.deleteFields(id)
+      .then((res) => {
+        dispatch({
+          type: FieldsConstants.DELETE_FIELDS_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: FieldsConstants.DELETE_FIELDS_FAILURE,
+          error: err
+        })
+      })
+  }
 }
 
 /**
@@ -94,23 +90,23 @@ function deleteFields(id) {
  * @param {*} data : dữ liệu chỉnh sửa thông tin lĩnh vực/ngành nghề
  */
 function updateFields(id, infoWorkPlan) {
-    return dispatch => {
-        dispatch({
-            type: FieldsConstants.UPDATE_FIELDS_REQUEST,
-        });
+  return (dispatch) => {
+    dispatch({
+      type: FieldsConstants.UPDATE_FIELDS_REQUEST
+    })
 
-        FieldsService.updateFields(id, infoWorkPlan)
-            .then(res => {
-                dispatch({
-                    type: FieldsConstants.UPDATE_FIELDS_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: FieldsConstants.UPDATE_FIELDS_FAILURE,
-                    error: err
-                });
-            })
-    }
+    FieldsService.updateFields(id, infoWorkPlan)
+      .then((res) => {
+        dispatch({
+          type: FieldsConstants.UPDATE_FIELDS_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: FieldsConstants.UPDATE_FIELDS_FAILURE,
+          error: err
+        })
+      })
+  }
 }

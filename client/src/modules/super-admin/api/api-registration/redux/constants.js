@@ -1,3 +1,1 @@
-export const ApiRegistrationConstants = {
-   
-}
+export const ApiRegistrationConstants = {}

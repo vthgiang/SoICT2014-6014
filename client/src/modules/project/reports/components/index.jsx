@@ -3,17 +3,11 @@ import { connect } from 'react-redux'
 import { ListProjectReport } from './listProjectReport'
 
 const index = (props) => {
-    return (
-        <ListProjectReport />
-    )
+  return <ListProjectReport />
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state) => ({})
 
-})
-
-const mapDispatchToProps = {
-
-}
+const mapDispatchToProps = {}
 
 export default connect(mapStateToProps, mapDispatchToProps)(index)

@@ -1,343 +1,361 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import GoodReceiptRequestManagementTable from './good-receipt-request/index';
-import GoodIssueRequestManagementTable from './good-issue-request/index';
-import GoodReturnRequestManagementTable from './good-return-request/index';
-import GoodRotateRequestManagementTable from './good-rotate-request/index';
-import TransportRequestManagementTable from './transport-request/index';
-import { RequestActions } from '../../../common-production/request-management/redux/actions';
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
+import GoodReceiptRequestManagementTable from './good-receipt-request/index'
+import GoodIssueRequestManagementTable from './good-issue-request/index'
+import GoodReturnRequestManagementTable from './good-return-request/index'
+import GoodRotateRequestManagementTable from './good-rotate-request/index'
+import TransportRequestManagementTable from './transport-request/index'
+import { RequestActions } from '../../../common-production/request-management/redux/actions'
 // import { GoodActions } from '../../../common-production/good-management/redux/actions';
-import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
-import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { StockActions } from "../../../warehouse/stock-management/redux/actions";
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import { LazyLoadComponent } from '../../../../../common-components/index';
-import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
-import { worksActions } from '../../../manufacturing/manufacturing-works/redux/actions';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions'
+import { UserActions } from '../../../../super-admin/user/redux/actions'
+import { StockActions } from '../../../warehouse/stock-management/redux/actions'
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions'
+import { LazyLoadComponent } from '../../../../../common-components/index'
+import { CrmCustomerActions } from '../../../../crm/customer/redux/actions'
+import { worksActions } from '../../../manufacturing/manufacturing-works/redux/actions'
 
 function RequestManagement(props) {
+  const [state, setState] = useState({
+    currentRole: localStorage.getItem('currentRole'),
+    page: 1,
+    limit: 5,
+    requestType: 3,
+    type: 1,
+    createdAt: '',
+    desiredTime: '',
+    code: '',
+    status: null,
+    requestFrom: 'stock'
+  })
 
-    const [state, setState] = useState({
-        currentRole: localStorage.getItem("currentRole"),
-        page: 1,
-        limit: 5,
-        requestType: 3,
-        type: 1,
-        createdAt: '',
-        desiredTime: '',
-        code: '',
-        status: null,
-        requestFrom: 'stock',
-    });
+  useEffect(() => {
+    props.getAllRequestByCondition({ type: state.type, requestType: state.requestType, requestFrom: state.requestFrom })
+    props.getUser()
+    props.getAllStocks()
+    props.getAllDepartments()
+    props.getCustomers()
+    props.getAllManufacturingWorks()
+  }, [])
 
-    useEffect(() => {
-        props.getAllRequestByCondition({type: state.type, requestType: state.requestType, requestFrom: state.requestFrom});
-        props.getUser();
-        props.getAllStocks();
-        props.getAllDepartments();
-        props.getCustomers();
-        props.getAllManufacturingWorks();
-    }, []);
+  const handleCodeChange = (e) => {
+    const { value } = e.target
+    setState({
+      ...state,
+      code: value
+    })
+  }
 
-    const handleCodeChange = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            code: value
-        });
+  const handleCreatedAtChange = (value) => {
+    setState({
+      ...state,
+      createdAt: value
+    })
+  }
+
+  const handleDesiredTimeChange = (value) => {
+    if (value === '') {
+      value = null
     }
+    setState({
+      ...state,
+      desiredTime: value
+    })
+  }
 
-    const handleCreatedAtChange = (value) => {
-        setState({
-            ...state,
-            createdAt: value
-        })
+  const handleStatusChange = (value) => {
+    if (value.length === 0) {
+      value = null
     }
+    setState({
+      ...state,
+      status: value
+    })
+  }
 
-    const handleDesiredTimeChange = (value) => {
-        if (value === '') {
-            value = null;
+  const handleChangeSourceRequest = (value) => {
+    setState({
+      ...state,
+      sourceRequest: value
+    })
+  }
+
+  const handleSubmitSearch = () => {
+    setState({
+      ...state,
+      page: 1
+    })
+    const data = {
+      limit: state.limit,
+      page: state.page,
+      createdAt: state.createdAt,
+      desiredTime: state.desiredTime,
+      code: state.code,
+      status: state.status,
+      requestFrom: 'stock',
+      type: state.type,
+      sourceRequest: state.sourceRequest
+    }
+    props.getAllRequestByCondition(data)
+  }
+
+  const checkRoleApprover = (request) => {
+    const { approvers } = request
+    let count = 0
+    approvers.forEach((approver) => {
+      if (approver.approveType == 4) {
+        const userId = localStorage.getItem('userId')
+        let approverIds = approver.information.map((x) => x.approver._id)
+        if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
+          count++
         }
-        setState({
-            ...state,
-            desiredTime: value
-        })
+      }
+    })
+    return count > 0
+  }
+
+  const handleFinishedApproval = (request) => {
+    const userId = localStorage.getItem('userId')
+    const data = {
+      approvedUser: userId,
+      approveType: 4
     }
+    props.editRequest(request._id, data)
+  }
 
-    const handleStatusChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        }
-        setState({
-            ...state,
-            status: value
-        })
+  const handleCancelRequest = (request) => {
+    const data = {
+      status: 5
     }
+    props.editRequest(request._id, data)
+  }
 
-    const handleChangeSourceRequest = (value) => {
-        setState({
-            ...state,
-            sourceRequest: value
-        })
-    }
+  const setLimit = async (limit) => {
+    await setState({
+      ...state,
+      limit: limit,
+      page: state.page
+    })
 
-    const handleSubmitSearch = () => {
-        setState({
-            ...state,
-            page: 1
-        });
-        const data = {
-            limit: state.limit,
-            page: state.page,
-            createdAt: state.createdAt,
-            desiredTime: state.desiredTime,
-            code: state.code,
-            status: state.status,
-            requestFrom: 'stock',
-            type: state.type,
-            sourceRequest: state.sourceRequest
-        }
-        props.getAllRequestByCondition(data);
-    }
+    let page = state.page
+    props.getAllRequestByCondition({ page, limit })
+  }
 
-    const checkRoleApprover = (request) => {
-        const { approvers } = request;
-        let count = 0;
-        approvers.forEach(approver => {
-            if (approver.approveType == 4) {
-                const userId = localStorage.getItem("userId");
-                let approverIds = approver.information.map(x => x.approver._id);
-                if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
-                    count++;
-                }
-            }
-        })
-        return count > 0;
-    }
+  const setPage = async (page) => {
+    await setState({
+      ...state,
+      limit: state.limit,
+      page: page
+    })
+    let limit = state.limit
+    props.getAllRequestByCondition({ page, limit })
+  }
 
-    const handleFinishedApproval = (request) => {
-        const userId = localStorage.getItem("userId");
-        const data = {
-            approvedUser: userId,
-            approveType: 4
-        }
-        props.editRequest(request._id, data);
-    }
+  const handleGoodReceiptRequest = async () => {
+    const requestType = 3
+    const type = 1
+    const requestFrom = 'stock'
+    await setState({
+      ...state,
+      type: type,
+      requestType: requestType
+    })
+    await props.getAllRequestByCondition({ type, requestType, requestFrom })
+  }
 
-    const handleCancelRequest = (request) => {
-        const data = {
-            status: 5
-        }
-        props.editRequest(request._id, data);
-    }
+  const handleGoodIssueRequest = async () => {
+    const requestType = 3
+    const type = 2
+    const requestFrom = 'stock'
+    await setState({
+      ...state,
+      type: type,
+      requestType: requestType
+    })
+    await props.getAllRequestByCondition({ type, requestType, requestFrom })
+  }
 
-    const setLimit = async (limit) => {
-        await setState({
-            ...state,
-            limit: limit,
-            page: state.page
-        });
+  const handleGoodReturnRequest = async () => {
+    const requestType = 3
+    const type = 3
+    const requestFrom = 'stock'
+    await setState({
+      ...state,
+      type: type,
+      requestType: requestType
+    })
+    await props.getAllRequestByCondition({ type, requestType, requestFrom })
+  }
 
-        let page = state.page;
-        props.getAllRequestByCondition({ page, limit })
-    }
+  const handleGoodTakeRequest = async () => {
+    const requestType = 3
+    const type = 4
+    const requestFrom = 'stock'
+    await setState({
+      ...state,
+      type: type,
+      requestType: requestType
+    })
+    await props.getAllRequestByCondition({ type, requestType, requestFrom })
+  }
 
-    const setPage = async (page) => {
-        await setState({
-            ...state,
-            limit: state.limit,
-            page: page
-        });
-        let limit = state.limit;
-        props.getAllRequestByCondition({ page, limit });
+  const handleTransportRequest = async () => {
+    const requestType = 4
+    const requestFrom = 'stock'
+    await setState({
+      ...state,
+      requestType: requestType
+    })
+    await props.getAllRequestByCondition({ requestType, requestFrom })
+  }
 
-    }
+  const { translate } = props
+  const { requestType, type } = state
 
-    const handleGoodReceiptRequest = async () => {
-        const requestType = 3;
-        const type = 1;
-        const requestFrom = 'stock';
-        await setState({
-            ...state,
-            type: type,
-            requestType: requestType,
-        })
-        await props.getAllRequestByCondition({ type, requestType, requestFrom });
-    };
-
-    const handleGoodIssueRequest = async () => {
-        const requestType = 3;
-        const type = 2;
-        const requestFrom = 'stock';
-        await setState({
-            ...state,
-            type: type,
-            requestType: requestType
-        })
-        await props.getAllRequestByCondition({ type, requestType, requestFrom });
-    };
-
-    const handleGoodReturnRequest = async () => {
-        const requestType = 3;
-        const type = 3;
-        const requestFrom = 'stock';
-        await setState({
-            ...state,
-            type: type,
-            requestType: requestType
-        })
-        await props.getAllRequestByCondition({ type, requestType, requestFrom });
-    };
-
-    const handleGoodTakeRequest = async () => {
-        const requestType = 3;
-        const type = 4;
-        const requestFrom = 'stock';
-        await setState({
-            ...state,
-            type: type,
-            requestType: requestType
-        })
-        await props.getAllRequestByCondition({ type, requestType, requestFrom });
-    };
-
-    const handleTransportRequest = async () => {
-        const requestType = 4;
-        const requestFrom = 'stock';
-        await setState({
-            ...state,
-            requestType: requestType
-        })
-        await props.getAllRequestByCondition({ requestType, requestFrom });
-    }
-
-    const { translate } = props;
-    const { requestType, type } = state;
-
-    return (
-        <div className="nav-tabs-custom">
-            <ul className="nav nav-tabs">
-                <li className="active"><a href="#good-receipt-request" data-toggle="tab" onClick={() => handleGoodReceiptRequest()}>{translate('production.request_management.receipt_request')}</a></li>
-                <li><a href="#good-issue-request" data-toggle="tab" onClick={() => handleGoodIssueRequest()}>{translate('production.request_management.issue_request')}</a></li>
-                <li><a href="#good-return-request" data-toggle="tab" onClick={() => handleGoodReturnRequest()}>{translate('production.request_management.good_return_request')}</a></li>
-                <li><a href="#good-rotate-request" data-toggle="tab" onClick={() => handleGoodTakeRequest()}>{translate('production.request_management.good_take_request')}</a></li>
-                <li><a href="#transport-request" data-toggle="tab" onClick={() => handleTransportRequest()}>{translate('production.request_management.transport_request')}</a></li>
-            </ul>
-            <div className="tab-content">
-                <div className="tab-pane active" id="good-receipt-request">
-                    {requestType === 3 && type === 1 &&
-                        <LazyLoadComponent>
-                            <GoodReceiptRequestManagementTable
-                                setPage={setPage}
-                                setLimit={setLimit}
-                                checkRoleApprover={checkRoleApprover}
-                                handleFinishedApproval={handleFinishedApproval}
-                                handleCancelRequest={handleCancelRequest}
-                                handleCodeChange={handleCodeChange}
-                                handleCreatedAtChange={handleCreatedAtChange}
-                                handleDesiredTimeChange={handleDesiredTimeChange}
-                                handleStatusChange={handleStatusChange}
-                                handleSubmitSearch={handleSubmitSearch}
-                                stockRequestType={type}
-                                handleChangeSourceRequest={handleChangeSourceRequest}
-                            />
-                        </LazyLoadComponent>
-                    }
-                </div>
-                <div className="tab-pane" id="good-issue-request">
-                    {requestType === 3 && type === 2 &&
-                        <LazyLoadComponent>
-                            <GoodIssueRequestManagementTable
-                                setPage={setPage}
-                                setLimit={setLimit}
-                                checkRoleApprover={checkRoleApprover}
-                                handleFinishedApproval={handleFinishedApproval}
-                                handleCancelRequest={handleCancelRequest}
-                                handleCodeChange={handleCodeChange}
-                                handleCreatedAtChange={handleCreatedAtChange}
-                                handleDesiredTimeChange={handleDesiredTimeChange}
-                                handleStatusChange={handleStatusChange}
-                                handleSubmitSearch={handleSubmitSearch}
-                                stockRequestType={type}
-                                handleChangeSourceRequest={handleChangeSourceRequest}
-                            />
-                        </LazyLoadComponent>
-                    }
-                </div>
-                <div className="tab-pane" id="good-return-request">
-                    {requestType === 3 && type === 3 &&
-                        <LazyLoadComponent>
-                            <GoodReturnRequestManagementTable
-                                setPage={setPage}
-                                setLimit={setLimit}
-                                checkRoleApprover={checkRoleApprover}
-                                handleFinishedApproval={handleFinishedApproval}
-                                handleCancelRequest={handleCancelRequest}
-                                handleCodeChange={handleCodeChange}
-                                handleCreatedAtChange={handleCreatedAtChange}
-                                handleDesiredTimeChange={handleDesiredTimeChange}
-                                handleStatusChange={handleStatusChange}
-                                handleSubmitSearch={handleSubmitSearch}
-                                stockRequestType={type}
-                            />
-                        </LazyLoadComponent>
-                    }
-                </div>
-                <div className="tab-pane" id="good-rotate-request">
-                    {requestType === 3 && type === 4 &&
-                        <LazyLoadComponent>
-                            <GoodRotateRequestManagementTable
-                                setPage={setPage}
-                                setLimit={setLimit}
-                                checkRoleApprover={checkRoleApprover}
-                                handleFinishedApproval={handleFinishedApproval}
-                                handleCancelRequest={handleCancelRequest}
-                                handleCodeChange={handleCodeChange}
-                                handleCreatedAtChange={handleCreatedAtChange}
-                                handleDesiredTimeChange={handleDesiredTimeChange}
-                                handleStatusChange={handleStatusChange}
-                                handleSubmitSearch={handleSubmitSearch}
-                                stockRequestType={type}
-                            />
-                        </LazyLoadComponent>
-                    }
-                </div>
-                <div className="tab-pane" id="transport-request">
-                    {requestType === 4 &&
-                        <LazyLoadComponent>
-                            <TransportRequestManagementTable
-                                setPage={setPage}
-                                setLimit={setLimit}
-                                checkRoleApprover={checkRoleApprover}
-                                handleFinishedApproval={handleFinishedApproval}
-                                handleCancelRequest={handleCancelRequest}
-                                handleCodeChange={handleCodeChange}
-                                handleCreatedAtChange={handleCreatedAtChange}
-                                handleDesiredTimeChange={handleDesiredTimeChange}
-                                handleStatusChange={handleStatusChange}
-                                handleSubmitSearch={handleSubmitSearch}
-                                stockRequestType={type}
-                            />
-                        </LazyLoadComponent>
-                    }
-                </div>
-            </div>
+  return (
+    <div className='nav-tabs-custom'>
+      <ul className='nav nav-tabs'>
+        <li className='active'>
+          <a href='#good-receipt-request' data-toggle='tab' onClick={() => handleGoodReceiptRequest()}>
+            {translate('production.request_management.receipt_request')}
+          </a>
+        </li>
+        <li>
+          <a href='#good-issue-request' data-toggle='tab' onClick={() => handleGoodIssueRequest()}>
+            {translate('production.request_management.issue_request')}
+          </a>
+        </li>
+        <li>
+          <a href='#good-return-request' data-toggle='tab' onClick={() => handleGoodReturnRequest()}>
+            {translate('production.request_management.good_return_request')}
+          </a>
+        </li>
+        <li>
+          <a href='#good-rotate-request' data-toggle='tab' onClick={() => handleGoodTakeRequest()}>
+            {translate('production.request_management.good_take_request')}
+          </a>
+        </li>
+        <li>
+          <a href='#transport-request' data-toggle='tab' onClick={() => handleTransportRequest()}>
+            {translate('production.request_management.transport_request')}
+          </a>
+        </li>
+      </ul>
+      <div className='tab-content'>
+        <div className='tab-pane active' id='good-receipt-request'>
+          {requestType === 3 && type === 1 && (
+            <LazyLoadComponent>
+              <GoodReceiptRequestManagementTable
+                setPage={setPage}
+                setLimit={setLimit}
+                checkRoleApprover={checkRoleApprover}
+                handleFinishedApproval={handleFinishedApproval}
+                handleCancelRequest={handleCancelRequest}
+                handleCodeChange={handleCodeChange}
+                handleCreatedAtChange={handleCreatedAtChange}
+                handleDesiredTimeChange={handleDesiredTimeChange}
+                handleStatusChange={handleStatusChange}
+                handleSubmitSearch={handleSubmitSearch}
+                stockRequestType={type}
+                handleChangeSourceRequest={handleChangeSourceRequest}
+              />
+            </LazyLoadComponent>
+          )}
         </div>
-    );
+        <div className='tab-pane' id='good-issue-request'>
+          {requestType === 3 && type === 2 && (
+            <LazyLoadComponent>
+              <GoodIssueRequestManagementTable
+                setPage={setPage}
+                setLimit={setLimit}
+                checkRoleApprover={checkRoleApprover}
+                handleFinishedApproval={handleFinishedApproval}
+                handleCancelRequest={handleCancelRequest}
+                handleCodeChange={handleCodeChange}
+                handleCreatedAtChange={handleCreatedAtChange}
+                handleDesiredTimeChange={handleDesiredTimeChange}
+                handleStatusChange={handleStatusChange}
+                handleSubmitSearch={handleSubmitSearch}
+                stockRequestType={type}
+                handleChangeSourceRequest={handleChangeSourceRequest}
+              />
+            </LazyLoadComponent>
+          )}
+        </div>
+        <div className='tab-pane' id='good-return-request'>
+          {requestType === 3 && type === 3 && (
+            <LazyLoadComponent>
+              <GoodReturnRequestManagementTable
+                setPage={setPage}
+                setLimit={setLimit}
+                checkRoleApprover={checkRoleApprover}
+                handleFinishedApproval={handleFinishedApproval}
+                handleCancelRequest={handleCancelRequest}
+                handleCodeChange={handleCodeChange}
+                handleCreatedAtChange={handleCreatedAtChange}
+                handleDesiredTimeChange={handleDesiredTimeChange}
+                handleStatusChange={handleStatusChange}
+                handleSubmitSearch={handleSubmitSearch}
+                stockRequestType={type}
+              />
+            </LazyLoadComponent>
+          )}
+        </div>
+        <div className='tab-pane' id='good-rotate-request'>
+          {requestType === 3 && type === 4 && (
+            <LazyLoadComponent>
+              <GoodRotateRequestManagementTable
+                setPage={setPage}
+                setLimit={setLimit}
+                checkRoleApprover={checkRoleApprover}
+                handleFinishedApproval={handleFinishedApproval}
+                handleCancelRequest={handleCancelRequest}
+                handleCodeChange={handleCodeChange}
+                handleCreatedAtChange={handleCreatedAtChange}
+                handleDesiredTimeChange={handleDesiredTimeChange}
+                handleStatusChange={handleStatusChange}
+                handleSubmitSearch={handleSubmitSearch}
+                stockRequestType={type}
+              />
+            </LazyLoadComponent>
+          )}
+        </div>
+        <div className='tab-pane' id='transport-request'>
+          {requestType === 4 && (
+            <LazyLoadComponent>
+              <TransportRequestManagementTable
+                setPage={setPage}
+                setLimit={setLimit}
+                checkRoleApprover={checkRoleApprover}
+                handleFinishedApproval={handleFinishedApproval}
+                handleCancelRequest={handleCancelRequest}
+                handleCodeChange={handleCodeChange}
+                handleCreatedAtChange={handleCreatedAtChange}
+                handleDesiredTimeChange={handleDesiredTimeChange}
+                handleStatusChange={handleStatusChange}
+                handleSubmitSearch={handleSubmitSearch}
+                stockRequestType={type}
+              />
+            </LazyLoadComponent>
+          )}
+        </div>
+      </div>
+    </div>
+  )
 }
-const mapStateToProps = state => state;
+const mapStateToProps = (state) => state
 
 const mapDispatchToProps = {
-    getAllRequestByCondition: RequestActions.getAllRequestByCondition,
-    getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
-    editRequest: RequestActions.editRequest,
-    getUser: UserActions.get,
-    getAllStocks: StockActions.getAllStocks,
-    editRequest: RequestActions.editRequest,
-    getAllDepartments: DepartmentActions.get,
-    getCustomers: CrmCustomerActions.getCustomers,
-    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
+  getAllRequestByCondition: RequestActions.getAllRequestByCondition,
+  getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
+  editRequest: RequestActions.editRequest,
+  getUser: UserActions.get,
+  getAllStocks: StockActions.getAllStocks,
+  editRequest: RequestActions.editRequest,
+  getAllDepartments: DepartmentActions.get,
+  getCustomers: CrmCustomerActions.getCustomers,
+  getAllManufacturingWorks: worksActions.getAllManufacturingWorks
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RequestManagement));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RequestManagement))

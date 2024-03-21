@@ -1,12 +1,9 @@
-import { evaluateConstants } from "./constants";
-import { evaluateServices } from "./services";
-
+import { evaluateConstants } from './constants'
+import { evaluateServices } from './services'
 
 export const evaluateActions = {
-    getAllTargetByUnitId
+  getAllTargetByUnitId
 }
 
 // lấy tất cả các KPI của đơn vị
-function getAllTargetByUnitId(id) {
-    
-}
+function getAllTargetByUnitId(id) {}

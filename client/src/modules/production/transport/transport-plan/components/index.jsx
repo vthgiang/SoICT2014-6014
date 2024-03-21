@@ -1,55 +1,54 @@
-import React, { Component } from "react";
-import { forceCheckOrVisible, formatDate, LazyLoadComponent } from '../../../../../common-components';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+import React, { Component } from 'react'
+import { forceCheckOrVisible, formatDate, LazyLoadComponent } from '../../../../../common-components'
+import { connect } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
 
-import { TransportPlanManagementTable } from './transportPlanManagementTable';
+import { TransportPlanManagementTable } from './transportPlanManagementTable'
 // import { TransportArrangePlan } from './transportArrangePlan';
-import { TransportVehicleManagementTable } from '../../transport-vehicle/components/transportVehicleManagementTable';
+import { TransportVehicleManagementTable } from '../../transport-vehicle/components/transportVehicleManagementTable'
 import { TransportVehicle } from '../../transport-vehicle/components/transportVehicle'
 import { TransportEmployee } from '../../transport-vehicle/components/transportEmployee'
-import "./transport-plan.css"
+import './transport-plan.css'
 class TransportPlan extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    render() {
-        return (
-            
-            <div className="box" style={{ minHeight: "450px" }}>
-                <div className="box-body">
-            {/* <div className="nav-tabs-custom">
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+  render() {
+    return (
+      <div className='box' style={{ minHeight: '450px' }}>
+        <div className='box-body'>
+          {/* <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs"> */}
-                    {/* <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li> */}
-                    {/* <li><a href="#list-arrange-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp kế hoạch vận chuyển"}</a></li>
+          {/* <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li> */}
+          {/* <li><a href="#list-arrange-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp kế hoạch vận chuyển"}</a></li>
                     <li><a href="#list-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Phương tiện và nhân viên vận chuyển"}</a></li> */}
-                {/* </ul>
+          {/* </ul>
                 <div className="tab-content">
                     <div className="tab-pane active" id="list-transport-plan">
                         <LazyLoadComponent
                         > */}
-                            <TransportPlanManagementTable />
-                        {/* </LazyLoadComponent>
+          <TransportPlanManagementTable />
+          {/* </LazyLoadComponent>
                     </div>
                     <div className="tab-pane" id="list-arrange-plan">
                         <LazyLoadComponent
                         > */}
-                            {/* <TransportArrangePlan /> */}
-                        {/* </LazyLoadComponent>
+          {/* <TransportArrangePlan /> */}
+          {/* </LazyLoadComponent>
                     </div>
                     <div className="tab-pane" id="list-vehicle-carrier">
                         <LazyLoadComponent
                         > */}
-                            {/* <TransportEmployee />
+          {/* <TransportEmployee />
                             <TransportVehicle/> */}
-                        {/* </LazyLoadComponent>
+          {/* </LazyLoadComponent>
                     </div>
                 </div> */}
-            </div>
-            </div>
-        );
-    }
+        </div>
+      </div>
+    )
+  }
 }
 
-export default TransportPlan;
+export default TransportPlan

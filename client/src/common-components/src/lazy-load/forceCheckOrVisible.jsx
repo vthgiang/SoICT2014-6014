@@ -1,12 +1,11 @@
-import { forceCheck, forceVisible } from 'react-lazyload';
+import { forceCheck, forceVisible } from 'react-lazyload'
 
 export function forceCheckOrVisible(isCheck, isVisible) {
-    if (isCheck) {
-        forceCheck();
-    }
+  if (isCheck) {
+    forceCheck()
+  }
 
-    if (isVisible) {
-        forceVisible();
-    }
+  if (isVisible) {
+    forceVisible()
+  }
 }
-

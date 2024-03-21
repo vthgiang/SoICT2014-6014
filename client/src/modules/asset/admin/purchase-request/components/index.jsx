@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
 
-import { PurchaseRequestManager } from './PurchaseRequestManager';
+import { PurchaseRequestManager } from './PurchaseRequestManager'
 
 function ManagerRecommendProcure(props) {
-    return (
-        <React.Fragment>
-            <PurchaseRequestManager />
-        </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <PurchaseRequestManager />
+    </React.Fragment>
+  )
 }
 
-export default connect(null, null)(withTranslate(ManagerRecommendProcure)); 
+export default connect(null, null)(withTranslate(ManagerRecommendProcure))

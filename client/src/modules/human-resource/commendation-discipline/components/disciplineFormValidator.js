@@ -1,9 +1,9 @@
 export const DisciplineFromValidator = {
-    validateEmployeeNumber,
-    validateReason,
-    validateDecisionNumber,
-    validateOrganizationalUnit,
-    validateType,
+  validateEmployeeNumber,
+  validateReason,
+  validateDecisionNumber,
+  validateOrganizationalUnit,
+  validateType
 }
 
 /**
@@ -12,11 +12,11 @@ export const DisciplineFromValidator = {
  * @param {*} translate : Props song ngữ
  */
 function validateEmployeeNumber(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.discipline.employee_number_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.discipline.employee_number_required')
+  }
+  return msg
 }
 
 /**
@@ -25,11 +25,11 @@ function validateEmployeeNumber(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateDecisionNumber(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.discipline.number_decisions_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.discipline.number_decisions_required')
+  }
+  return msg
 }
 
 /**
@@ -38,24 +38,24 @@ function validateDecisionNumber(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateOrganizationalUnit(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.discipline.unit_decisions_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.discipline.unit_decisions_required')
+  }
+  return msg
 }
 
 /**
  * Kiểm tra lý do nhập vào
- * @param {*} value 
- * @param {*} translate 
+ * @param {*} value
+ * @param {*} translate
  */
 function validateType(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.discipline.type_discipline_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.discipline.type_discipline_required')
+  }
+  return msg
 }
 
 /**
@@ -64,9 +64,9 @@ function validateType(value, translate) {
  * @param {*} translate : Props song ngữ
  */
 function validateReason(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.commendation_discipline.discipline.reason_discipline_required');
-    }
-    return msg;
+  let msg = undefined
+  if (value.trim() === '') {
+    msg = translate('human_resource.commendation_discipline.discipline.reason_discipline_required')
+  }
+  return msg
 }
