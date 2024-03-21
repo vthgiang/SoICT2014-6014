@@ -1,16 +1,33 @@
-const { default: mongoose } = require('mongoose');
+const { createConnection } = require('mongoose');
 
-const connectDatabase = async (url) => {
-  const connect_url = url || process.env.DB_HOST;
-  console.log(`Connecting to ${connect_url}`);
-  mongoose.connect(connect_url).then(
-    () => {
-      console.log(`Database connected...`);
-    },
-    (err) => {
-      console.log(`Error when connecting`, err);
-    }
-  );
+let dbConnection;
+
+const connectToDatabase = () => {
+  try {
+    const uri = 'mongodb://auth-service-db:27017/';
+
+    const connectOptions = {
+      user: 'root',
+      pass: 'root'
+    };
+
+    dbConnection = createConnection(uri, connectOptions);
+    console.log('Created connection');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+    throw error;
+  }
 };
 
-module.exports = connectDatabase;
+const getDbConnection = () => {
+  if (!dbConnection) {
+    throw new Error('Database connection has not been established.');
+  }
+  return dbConnection;
+};
+
+module.exports = {
+  connectToDatabase,
+  getDbConnection,
+  dbConnection,
+};
