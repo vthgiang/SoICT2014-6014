@@ -1,6 +1,6 @@
 const AssetService = require('../services').ASSET;
 const Logger = require('../logs');
-const NotificationServices = require('../notification/notification.service');
+const NotificationServices = require('../services').NOTIFICATION;
 const {sendEmail} = require('../helpers/emailHelper');
 
 /**

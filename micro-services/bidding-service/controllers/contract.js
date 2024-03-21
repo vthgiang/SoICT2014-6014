@@ -1,6 +1,6 @@
 const BiddingContractService = require('../services').CONTRACT;
-const NotificationServices = require('../../notification/notification.service');
-const NewsFeed = require('../../news-feed/newsFeed.service');
+const NotificationServices = require('../services').NOTIFICATION;
+const NewsFeed = require('../services').NEWS_FEED;
 const {sendEmail} = require('../helpers/emailHelper');
 
 const Logger = require('../logs');

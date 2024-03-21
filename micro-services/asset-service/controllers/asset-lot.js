@@ -1,6 +1,5 @@
-const AssetLotService = require('services').ASSET_LOT;
+const AssetLotService = require('../services').ASSET_LOT;
 const Logger = require('../logs');
-const NotificationServices = require('../../notification/notification.service');
 
 /**
  * Lấy danh sách lô tài sản */

@@ -4,7 +4,7 @@ let dbConnection;
 
 const connectToDatabase = () => {
   try {
-    const uri = 'mongodb://auth-service-db:27017/';
+    const uri = `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/`;
 
     const connectOptions = {
       user: 'root',

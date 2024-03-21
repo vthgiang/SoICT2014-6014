@@ -1,5 +1,5 @@
 const biddingPackageService = require('../services').PACKAGE;
-const CompanyServices = require('../../system-admin/company/company.service');
+const CompanyServices = require('../services').COMPANY;
 const fs = require('fs');
 const Logger = require('../logs');
 const archiver = require('archiver');

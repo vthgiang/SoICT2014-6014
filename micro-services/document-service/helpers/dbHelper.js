@@ -1,15 +1,14 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
 const exec = require('child_process').exec;
 const fs = require('fs');
 const { checkOS } = require('./osHelper');
 const models = require('../models');
-const { SERVER_BACKUP_DIR,SERVER_DIR } = require('./logHelper');
+const {SERVER_BACKUP_DIR,   } = require('./logHelper')
 
 const versionName = () => {
     const time = new Date(),
         month = time.getMonth() + 1,
         date = time.getDate(),
+        year = time.getFullYear(),
         hour = time.getHours(),
         minute = time.getMinutes(),
         second = time.getSeconds();
@@ -115,7 +114,7 @@ exports.restore = async (options) => {
 
     // 1. Khôi phục database
     const command = commandRestoreDB(options);
-    exec(command, (error, stdout, stderr) => {
+    await exec(command, (error, stdout, stderr) => {
         if (error !== null) console.log(error);
     })
 

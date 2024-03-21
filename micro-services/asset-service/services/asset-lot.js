@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Models = require('../models');
 const { connect } = require('../helpers/dbHelper');
 const { Asset } = require('../models');
-const AssetService = require('../asset-management/asset.service');
+const AssetService = require('./asset');
 const { freshObject } = require('../helpers/functionHelper');
 
 const { AssetLot, } = Models;

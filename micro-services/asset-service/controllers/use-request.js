@@ -1,8 +1,8 @@
 const RecommendDistributeService = require('../services').USE_REQUEST;
-const Logger = require('../../../logs');
+const Logger = require('../logs');
 const { read } = require('fs');
-const NotificationServices = require('../../notification/notification.service');
-const { sendEmail } = require('../../../helpers/emailHelper');
+const NotificationServices = require('../services').NOTIFICATION;
+const { sendEmail } = require('../helpers/emailHelper');
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị

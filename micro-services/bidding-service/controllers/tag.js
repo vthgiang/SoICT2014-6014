@@ -1,4 +1,4 @@
-const TagService = require('services').TAG;
+const TagService = require('../services').TAG;
 
 const Logger = require('../logs');
 

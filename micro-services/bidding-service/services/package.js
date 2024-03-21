@@ -2,7 +2,7 @@ const { BiddingPackage, Employee, User, Task, BiddingContract, Tag } = require('
 const fs = require('fs');
 const { connect } = require('../helpers/dbHelper');
 const moment = require('moment');
-const { getEmployeeInforByListId } = require('../../human-resource/profile/profile.service');
+const { getEmployeeInforByListId } = require('./profile');
 
 /**
  * Lấy danh sách thông tin nghỉ phép

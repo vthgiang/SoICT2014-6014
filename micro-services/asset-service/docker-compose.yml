@@ -1,11 +1,10 @@
-version: "3.8"
 services:
   asset-service:
     container_name: asset-service
     image: node:alpine
     restart: always
     ports:
-      - "3002:3002"
+      - "3000:3000"
     env_file:
       - .env
     volumes:

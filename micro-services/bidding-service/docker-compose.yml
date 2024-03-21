@@ -1,11 +1,10 @@
-version: "3.8"
 services:
   bidding-service:
     container_name: bidding-service
     image: node:alpine
     restart: always
     ports:
-      - "3001:3001"
+      - "3000:3000"
     env_file:
       - .env
     volumes:

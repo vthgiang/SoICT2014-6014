@@ -2,7 +2,7 @@ const exec = require('child_process').exec;
 const fs = require('fs');
 const { checkOS } = require('./osHelper');
 const models = require('../models');
-const { SERVER_BACKUP_DIR } = require('./logHelper');
+const {SERVER_BACKUP_DIR,   } = require('./logHelper')
 
 const versionName = () => {
     const time = new Date(),

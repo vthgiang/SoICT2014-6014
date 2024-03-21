@@ -1,6 +1,6 @@
 const RecommendProcureService = require('../services').PURCHASE_REQUEST;
 const Logger = require('../logs');
-const NotificationServices = require('../../notification/notification.service');
+const NotificationServices = require('../services').NOTIFICATION;
 const {sendEmail} = require('../helpers/emailHelper');
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị

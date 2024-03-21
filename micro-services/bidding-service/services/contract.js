@@ -5,7 +5,7 @@ const {
     createProjectInfo,
     createTaskProjectCPM,
     updateProjectInfoAfterCreateProjectTask,
-} = require('../../project-template/projectTemplate.service');
+} = require('./projectTemplate');
 
 const {connect} = require('../helpers/dbHelper');
 const {existsSync, unlinkSync} = require('fs');
