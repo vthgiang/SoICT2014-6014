@@ -1,0 +1,130 @@
+
+.gantt {
+    margin: 10px;
+    }  
+
+.zoom-bar {
+    background: #1f77b4;
+    height: 40px;
+    line-height: 40px;
+  }
+  
+.radio-label {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    line-height: 28px;
+    margin-left: 6px;
+    text-align: center;
+    width: 70px;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    background: #fff;
+    color: rgba(0,0,0,0.7);
+    }
+  
+.radio-label > input[type=radio] {
+    height: 0 !important;
+    margin: 0;
+    visibility: hidden;
+    width: 0 !important;
+  }
+  
+.radio-label-active {
+    background: #152d49;
+    color: white;
+    border-color: #152d49;
+  }
+
+.gantt_grid_scale .gantt_grid_head_cell {
+    color: #111;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.gantt_task .gantt_task_scale .gantt_scale_cell {
+    color: #111;
+    border-right: 1px solid #ebebeb;
+    
+}
+.gantt_task_content {
+    font-size: 13px;
+    color: #111;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.notAchive {
+    border: 2px solid #ff8080;
+    color: #ff8080;
+    background: #ff8080;
+}
+
+.notAchive .gantt_task_progress {
+    background: #de3c29;
+}
+
+.intime {
+    border: 2px solid #41d462;
+    color: #41d462;
+    background: #41d462;
+}
+
+.intime .gantt_task_progress {
+    background: #28a745;
+}
+
+.delay {
+    border: 2px solid #FAC547;
+    color: #FAC547;
+    background: #FAC547;
+}
+
+.delay .gantt_task_progress {
+    background: #ff8900;
+}
+
+.none {
+    border: 2px solid #adadad;
+    color: #a34141;
+    background: #909090;
+}
+
+.baseline_item {
+    border: 1px solid #DCDCDC;
+    background: #DCDCDC;
+}
+
+.gantt_link_control.task_left, .gantt_link_control.task_right {
+    display: none;
+}
+
+.gantt_task_line.gantt_selected .gantt_link_control div {
+    display: none;
+}
+
+#in-time, #delay, #not-achieved{
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin: 0px 5px 0px 15px;
+  }
+
+#in-time{
+    background-color:#23964d;
+  }
+
+#delay{
+    background-color:  #F09A07;
+}
+
+#not-achieved{
+    background-color: #db2536;
+}
+
+#label-for-calendar{
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+}

@@ -1,0 +1,18 @@
+.insert-table-icon-quill {
+    color: black !important; 
+}
+.insert-table-icon-quill:hover {
+    color: #06c !important; 
+}
+
+.ql-disabled {
+    border: none !important;
+}
+.ql-disabled .ql-editor {
+    padding: 0px !important;
+}
+
+/* swal */
+.swal2-content.ql-editor {
+    text-align: unset !important;
+}

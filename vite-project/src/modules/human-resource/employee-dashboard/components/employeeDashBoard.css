@@ -1,0 +1,15 @@
+.number_box {
+    background-color: lightgrey;
+    width: 100%;
+}
+
+.dashboard_box_body {
+    height: 350px;
+}
+
+#annualLeave-table thead th{
+    position: sticky;
+    top: -1px;
+    background: #fff;
+    z-index: 1;
+}

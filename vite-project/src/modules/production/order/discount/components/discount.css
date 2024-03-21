@@ -1,0 +1,82 @@
+/* DISCOUNT ON GOODS COLLAPSIBLE */
+.discount-on-goods-collapsible-ul {
+    padding: 0px !important;
+}
+
+.discount-on-goods-collapsible-li {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-bottom: 0.3px solid #ffe8c6 !important;
+}
+
+.discount-on-goods-collapsible-li > div {
+    padding: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.discount-on-goods-collapsible-li > div:hover {
+    overflow: wrap;
+    white-space: pre-wrap;
+}
+
+.discount-on-goods-collapsible-code {
+    grid-column: 1;
+}
+
+.discount-on-goods-collapsible-name {
+    grid-column: 2/5;
+}
+
+.discount-on-goods-collapsible-price {
+    grid-column: 5;
+}
+
+.discount-on-goods-collapsible-date {
+    grid-column: 6;
+}
+
+/* BONUS GOODS COLLAPSIBLE */
+
+.discount-bonus-goods-collapsible-ul {
+    padding: 0px !important;
+}
+
+.discount-bonus-goods-collapsible-li {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 0.3px solid #ffe8c6 !important;
+}
+
+.discount-bonus-goods-collapsible-li > div {
+    padding: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.discount-bonus-goods-collapsible-li > div:hover {
+    overflow: wrap;
+    white-space: pre-wrap;
+}
+
+.discount-bonus-goods-collapsible-code {
+    grid-column: 1;
+}
+
+.discount-bonus-goods-collapsible-name {
+    grid-column: 2/5;
+}
+
+.discount-bonus-goods-collapsible-baseunit {
+    grid-column: 5;
+}
+
+.discount-bonus-goods-collapsible-quantity {
+    grid-column: 6;
+}
+
+.discount-bonus-goods-collapsible-date {
+    grid-column: 7;
+}

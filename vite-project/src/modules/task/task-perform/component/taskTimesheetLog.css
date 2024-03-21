@@ -1,0 +1,48 @@
+.timesheet-box {
+    min-width: 150px;
+    max-width: 300px;
+    border-radius: 2px;
+    font-size: 13px;
+    margin: 0px 0px 0px;
+    padding: 5px 10px 5px 10px;
+    display: block;
+    box-sizing: border-box;
+    border-top: 2px solid #a1a1a1;
+    background-color: #fff;
+
+    -webkit-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.85);
+    -moz-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.85);
+    box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.85);
+}
+
+.timesheet-box h4 {
+    font-size: 14px;
+    margin: 0px 0px 5px;
+    padding: 0px;
+    font-weight: bold;
+    color: rgb(54, 156, 199)
+}
+
+.timesheet-box .time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.timesheet-box .task-name{
+    margin-top: 10px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.addlog-title{
+    font-weight: 700;
+    text-align: center;
+    margin-top: 0;
+}
+
+.select2-container--open .select2-dropdown{
+    z-index: 100002 !important
+}
