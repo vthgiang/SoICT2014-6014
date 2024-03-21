@@ -1,0 +1,91 @@
+services:
+  database:
+    container_name: database
+    image: mongo
+    restart: always
+    ports:
+      - "${DATABASE_SERVICE_PORT}:${DATABASE_SERVICE_PORT}"
+    env_file:
+      - ./${DATABASE_SERVICE_DIR}/.env
+    volumes:
+      - ./${DATABASE_SERVICE_DIR}/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - service-db:/data/db
+      - service-db:/data/configdb
+      - service-db:/data/log
+    networks:
+      - vnist-network
+  bidding-service:
+    container_name: bidding-service
+    image: node:alpine
+    restart: always
+    ports:
+      - "${BIDDING_SERVICE_PORT}:3000"
+    env_file:
+      - ./${BIDDING_SERVICE_DIR}/.env
+    volumes:
+      - ./${BIDDING_SERVICE_DIR}/node_modules:/app/node_modules
+      - ./${BIDDING_SERVICE_DIR}/:/app
+    command: sh -c "cd /app && npm install && npm start"
+    networks:
+      - vnist-network
+  asset-service:
+    container_name: asset-service
+    extends:
+      service: bidding-service
+    ports: !override
+      - "${ASSET_SERVICE_PORT}:3000"
+    env_file:
+      - ./${ASSET_SERVICE_DIR}/.env
+    volumes:
+      - ./${ASSET_SERVICE_DIR}/:/app
+      - ./${ASSET_SERVICE_DIR}/node_modules:/app/node_modules
+  auth-service:
+    container_name: auth-service
+    extends:
+      service: bidding-service
+    ports: !override
+      - "${AUTH_SERVICE_PORT}:3000"
+    env_file:
+      - ./${AUTH_SERVICE_DIR}/.env
+    volumes:
+      - ./${AUTH_SERVICE_DIR}/:/app
+      - ./${AUTH_SERVICE_DIR}/node_modules:/app/node_modules
+  dashboard-service:
+    container_name: dashboard-service
+    extends:
+      service: bidding-service
+    ports: !override
+      - "${DASHBOARD_SERVICE_PORT}:3000"
+    env_file:
+      - ./${DASHBOARD_SERVICE_DIR}/.env
+    volumes:
+      - ./${DASHBOARD_SERVICE_DIR}/:/app
+      - ./${DASHBOARD_SERVICE_DIR}/node_modules:/app/node_modules
+  document-service:
+    container_name: document-service
+    extends:
+      service: bidding-service
+    ports: !override
+      - "${DOCUMENT_SERVICE_PORT}:3000"
+    env_file:
+      - ./${DOCUMENT_SERVICE_DIR}/.env
+    volumes:
+      - ./${DOCUMENT_SERVICE_DIR}/:/app
+      - ./${DOCUMENT_SERVICE_DIR}/node_modules:/app/node_modules
+  super-admin-service:
+    container_name: super-admin-service
+    extends:
+      service: bidding-service
+    ports: !override
+      - "${SUPER_ADMIN_SERVICE_PORT}:3000"
+    env_file:
+      - ./${SUPER_ADMIN_SERVICE_DIR}/.env
+    volumes:
+      - ./${SUPER_ADMIN_SERVICE_DIR}/:/app
+      - ./${SUPER_ADMIN_SERVICE_DIR}/node_modules:/app/node_modules
+volumes:
+  service-db:
+    driver: local
+networks:
+  vnist-network:
+    driver: bridge
