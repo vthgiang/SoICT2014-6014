@@ -1,4 +1,3 @@
-import { isArraysEqual } from '@fullcalendar/common';
 import moment from 'moment';
 import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -6,11 +5,10 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 import { ChangeRequestActions } from '../../../project/change-requests/redux/actions';
-import { getCurrentProjectDetails, getEndDateOfProject, getEstimateCostOfProject, getNewTasksListAfterCR, MILISECS_TO_DAYS, MILISECS_TO_HOURS, processAffectedTasksChangeRequest, processDataTasksStartEnd } from '../../../project/projects/components/functionHelper';
+import { getCurrentProjectDetails, getEndDateOfProject, getEstimateCostOfProject, MILISECS_TO_DAYS, MILISECS_TO_HOURS } from '../../../project/projects/components/functionHelper';
 import { ProjectActions } from '../../../project/projects/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import { checkIfHasCommonItems } from '../../task-management/component/functionHelpers';
 import { taskManagementActions } from '../../task-management/redux/actions';
 import { AddProjectTaskForm } from './addProjectTaskForm';
 

@@ -17,6 +17,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import './app.css'
 import { getStorage, setStorage } from './config';
 import firebase from './firebase';
+import ReactFlow, {
+    ReactFlowProvider
+} from "reactflow"
 
 const history = createBrowserHistory();
 

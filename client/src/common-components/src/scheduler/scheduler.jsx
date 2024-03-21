@@ -56,5 +56,5 @@ class Scheduler extends Component {
          );
     }
 }
- 
+
 export { Scheduler, formatDate };

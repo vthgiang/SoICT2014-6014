@@ -1,4 +1,3 @@
-import { isArraysEqual } from '@fullcalendar/common';
 import moment from 'moment';
 import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';

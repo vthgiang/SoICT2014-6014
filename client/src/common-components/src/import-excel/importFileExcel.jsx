@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UploadFile } from '../../../common-components'
 
-import XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 
 class ImportFileExcel extends Component {
     constructor(props) {
