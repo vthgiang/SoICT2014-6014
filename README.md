@@ -8,7 +8,9 @@ Thông tin chi tiết được mô tả trong file project_description.docx, bao
 4. Cách cài đặt
 5. Tài liệu tham khảo
 
-
+## Cách update code
+ - Client: Mọi người update vào trong thư mục `client-vite`
+ - Server: Mọi người update vào trong thư mục `micro-services`
 
 ## Git Flow
 
@@ -60,7 +62,7 @@ $ git pull --rebse origin master
 # Nếu có conflict thì giải quyết conflict
 # Kiểm tra lại trạng thái file
 $ git status
-# Tiếp tục rebase   
+# Tiếp tục rebase
 $ git rebase --continue
 # Push code lên nhánh
 $ git push -f origin <branch_name>
