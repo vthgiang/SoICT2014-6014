@@ -1,7 +1,8 @@
 @echo off
 :: tạo file .env trong tất cả các service
-echo "Khoi tao file .env trong cac service"
-for /r %%x in (*.example) do copy "%%x" "%%~dx%%~px%%~nx"
+<nul set /p ="Khoi tao file .env trong cac service "
+for /r %%x in (*.example) do copy "%%x" "%%~dx%%~px%%~nx" >nul
+echo [OK]
 :: chạy backend
 :: check flag --init để khởi tạo database
 set "flag_init="
@@ -11,13 +12,14 @@ for %%i in (%*) do (
     )
 )
 if defined flag_init (
-    echo "Chay backend va khoi tao database"
-    docker-compose -f micro-services/docker-compose.yml -f micro-services/docker-init-db.yml up -d --build
+    <nul set /p ="Chay backend va khoi tao database "
+    docker-compose --log-level ERROR -f micro-services/docker-compose.yml -f micro-services/docker-init-db.yml up -d --build --quiet-pull >nul
 ) else (
-    echo "Chay backend"
-    docker-compose -f micro-services/docker-compose.yml up -d --build
+    <nul set /p ="Chay backend "
+    docker-compose --log-level ERROR -f micro-services/docker-compose.yml up -d --build --quiet-pull >nul
 )
+echo [OK]
 :: chạy frontend
-echo "Chay frontend"
-docker-compose -f client/docker-compose.yml up -d --build
-echo "Hoan thanh"
+<nul set /p ="Chay frontend "
+docker-compose -f client/docker-compose.yml up -d --quiet-pull --build >nul
+echo [OK]

@@ -2,8 +2,8 @@
 
 ### Linux
 
-```bash
-
+```shell
+sudo sh run.sh --init
 ```
 
 ### Windows
@@ -16,8 +16,8 @@ run.bat --init
 
 ### Linux
 
-```bash
-
+```shell
+sudo sh run.sh
 ```
 
 ### Windows
