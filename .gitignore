@@ -1,9 +1,9 @@
 /backup
 /node_modules
 /package-lock.json
-/server/seed/initDataHuman.js
-/server/seed/initSampleCompanyDB.js
-/server/seed/initOrganizationalUnitKPIData.js
+# /server/seed/initDataHuman.js
+# /server/seed/initSampleCompanyDB.js
+# /server/seed/initOrganizationalUnitKPIData.js
 yarn.lock
 /logs
 /**/.env
