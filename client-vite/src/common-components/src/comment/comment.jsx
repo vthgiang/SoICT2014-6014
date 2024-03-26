@@ -753,9 +753,7 @@ class Comment extends Component {
                                                     <a
                                                       style={{
                                                         cursor: "pointer",
-                                                      }}
-                                                      style={{
-                                                        marginTop: "5px",
+                                                        marginTop: "5px"
                                                       }}
                                                       onClick={(e) =>
                                                         this.requestDownloadFile(

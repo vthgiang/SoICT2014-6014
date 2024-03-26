@@ -197,7 +197,7 @@ table>thead>tr>th>div.resizeDiv:hover {
 td {
 	/* Cho phép bảng hoạt động tốt với kích thước nhỏ, không bị vỡ chữ */
 	word-break: break-word;
-	white-space: normal;
+	/*white-space: normal;*/
 }
 
 .table,
@@ -1187,4 +1187,8 @@ div.notification-title ::after {
 	font-size: 13px !important;
 
 	border: 1px solid #ccd0d5 !important;
+}
+
+.w2ui-grid-data {
+	white-space: nowrap !important;
 }
