@@ -349,7 +349,6 @@ const mapStateToProps = (state) => state
 const mapDispatchToProps = {
   getAllRequestByCondition: RequestActions.getAllRequestByCondition,
   getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
-  editRequest: RequestActions.editRequest,
   getUser: UserActions.get,
   getAllStocks: StockActions.getAllStocks,
   editRequest: RequestActions.editRequest,

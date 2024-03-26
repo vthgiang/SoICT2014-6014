@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { withTranslate } from 'react-redux-multilingual'
 import { connect } from 'react-redux'
-import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../../common-components'
+import { DialogModal, SelectBox, ButtonModal } from '../../../../../../common-components'
 import { translate } from 'react-redux-multilingual/lib/utils'
 
 function ArchiveDetailForm(props) {

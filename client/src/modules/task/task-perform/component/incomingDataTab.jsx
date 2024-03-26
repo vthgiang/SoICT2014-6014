@@ -205,7 +205,6 @@ const actions = {
   deleteFileComment: performTaskAction.deleteFileComment,
   deleteFileChildComment: performTaskAction.deleteFileChildComment,
   getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
-  downloadFile: AuthActions.downloadFile
 }
 
 const connectIncomingDataTab = connect(mapState, actions)(withTranslate(IncomingDataTab))

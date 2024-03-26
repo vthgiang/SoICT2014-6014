@@ -100,7 +100,7 @@ import { bills } from '../modules/production/warehouse/bill-management/redux/red
 import { binLocations } from '../modules/production/warehouse/bin-location-management/redux/reducers'
 import { lots } from '../modules/production/warehouse/inventory-management/redux/reducers'
 import { stocks } from '../modules/production/warehouse/stock-management/redux/reducers'
-
+import {storage} from "../modules/production/warehouse/storage-management/redux/reducers";
 //crm
 import { cares } from '../modules/crm/care/redux/reducers'
 import { careTypes } from '../modules/crm/careType/redux/reducers'
@@ -276,7 +276,7 @@ const appReducer = combineReducers({
   lots,
   bills,
   requestManagements,
-
+  storage,
   // customer management
   crm: combineReducers({
     customers,

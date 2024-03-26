@@ -104,7 +104,7 @@ function ReportProcess(props) {
         <button
           className='btn btn-primary'
           type='button'
-          style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+          style={{marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
           title='Dạng bảng'
           onClick={() => handleDisplayType('Tất cả công việc')}
         >
@@ -113,7 +113,7 @@ function ReportProcess(props) {
         <button
           className='btn btn-primary'
           type='button'
-          style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+          style={{marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
           title='Dạng cây'
           onClick={() => handleDisplayType('Công việc đang làm')}
         >
@@ -122,7 +122,7 @@ function ReportProcess(props) {
         <button
           className='btn btn-primary'
           type='button'
-          style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+          style={{marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
           title='Dạng danh sách'
           onClick={() => handleDisplayType('Công việc đã hoàn thành')}
         >
@@ -131,7 +131,7 @@ function ReportProcess(props) {
         <button
           className='btn btn-primary'
           type='button'
-          style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+          style={{marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
           title='Dạng danh sách'
           onClick={() => handleDisplayType('Công việc trễ hạn')}
         >

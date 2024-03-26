@@ -1086,6 +1086,9 @@ exports.links = [
         url: '/inventory-management',
         apis: ['@all']
     }, {
+        url: '/storage-management',
+        apis: ['@all'],
+    }, {
         url: '/manage-sales-order',
         apis: ['@all']
     }, {

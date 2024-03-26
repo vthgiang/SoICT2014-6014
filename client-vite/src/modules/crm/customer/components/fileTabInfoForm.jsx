@@ -39,8 +39,7 @@ class FileTabInfoForm extends Component {
                           <td>{o.name}</td>
                           <td>{o.description}</td>
                           <a
-                            style={{ cursor: 'pointer' }}
-                            style={{ marginTop: '2px' }}
+                            style={{ cursor: 'pointer', marginTop: '2px' }}
                             onClick={(e) => this.requestDownloadFile(e, o.url, o.fileName)}
                           >
                             {' '}

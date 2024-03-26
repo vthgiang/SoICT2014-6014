@@ -17,11 +17,11 @@
   <meta name="author" content="VNIST">
   <meta name="copyright" content="VNIST" />
   <script type="application/ld+json"> {
-    "@context" : "http://schema.org",
-    "@type" : "WebSite",
-    "name" : "DXclan",
-    "alternateName" : "Hỗ trợ các giải pháp vê chuyển đổi số cho doanh nghiệp, quản lý công việc, nhân sự, tài sản, thống kê đánh giá KPI, v.v.",
-    "url": "http://dxclan.com",
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": "DXclan",
+      "alternateName": "Hỗ trợ các giải pháp vê chuyển đổi số cho doanh nghiệp, quản lý công việc, nhân sự, tài sản, thống kê đánh giá KPI, v.v.",
+      "url": "http://dxclan.com"
   } </script>
   <script type="application/ld+json"> {
     "@context": "https://schema.org",
@@ -130,6 +130,35 @@
       return quill;
     }
   </script>
+  <!-------------------------- D3 ---------------------------->
+  <script src="lib/d3.v5.9.2.js" charset="utf-8"></script>
+  <script src="lib/d3-scale-chromatic.v1.min.js"></script>
+  <script src="lib/d3-color.v1.min.js"></script>
+  <script src="lib/d3-interpolate.v1.min.js"></script>
+  <script src="lib/d3-legend.min.js" charset="utf-8"></script>
+<!--  <script src="lib/jquery.min.js" charset="utf-8"></script>-->
+  <!--w2ui http://w2ui.com/web/ -->
+  <link rel="stylesheet" type="text/css" href="css/w2ui.min.css"/>
+  <script src="lib/w2ui.1.5x.min.js" charset="utf-8"></script>
+  <!--ThreeJS -->
+  <script src="lib/three.min.js"></script>
+  <script src="lib/Detector.js"></script>
+  <script src="lib/WebGL.js"></script>
+  <script src="lib/stats.js"></script>
+  <script src="lib/OrbitControls.js"></script>
+  <script src="data/warehouseList.js"></script>
+  <link rel="stylesheet" href="css/dataVisualizer.css"/>
+  <script src="translations/translations.js"></script>
+
+  <!--    <script>-->
+  <!--        //var scriptType = "Obfuscated";-->
+  <!--        // scriptType = window.location.href.indexOf("demo") == -1 ? "" :  scriptType;-->
+  <!--        var scriptType = "";-->
+  <!--        if (window.location.pathname.includes('/storage-management')) {-->
+  <!--            $.getScript("lib/myWarehouseVisualizer" + scriptType + ".js");-->
+  <!--        }-->
+  <!--    </script>-->
+
 </head>
 
 <body class="hold-transition skin-purple sidebar-mini" style="background-color: #343A40;">

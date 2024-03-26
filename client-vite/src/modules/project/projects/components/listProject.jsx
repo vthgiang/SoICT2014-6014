@@ -372,7 +372,7 @@ function ListProject(props) {
               <button
                 className='btn btn-primary'
                 type='button'
-                style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+                style={{marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
                 onClick={() => {
                   window.$('#projects-filter').slideToggle()
                 }}

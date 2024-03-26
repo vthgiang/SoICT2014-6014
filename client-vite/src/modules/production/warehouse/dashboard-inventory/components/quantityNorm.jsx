@@ -40,7 +40,6 @@ function QuantityNorm(props) {
       }
     })
   }
-
   barChart()
   return (
     <React.Fragment>

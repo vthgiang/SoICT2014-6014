@@ -104,8 +104,7 @@ function IncomingDataTab(props) {
                               />
                             ) : (
                               <a
-                                style={{ cursor: 'pointer' }}
-                                style={{ marginTop: '2px' }}
+                                style={{ cursor: 'pointer', marginTop: '2px' }}
                                 onClick={(e) => requestDownloadFile(e, file.url, file.name)}
                               >
                                 {' '}

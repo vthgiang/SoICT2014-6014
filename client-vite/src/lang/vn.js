@@ -193,6 +193,7 @@ export default {
       proposal_management: 'Quản lý phiếu đề nghị',
       bill_management: 'Quản lý thông tin phiếu',
       inventory_management: 'Quản lý lô hàng',
+      storage_management: "Quản lý thông tin lưu trữ",
 
       manage_kpi_unit: 'KPI đơn vị',
       manage_kpi_personal: 'KPI cá nhân',

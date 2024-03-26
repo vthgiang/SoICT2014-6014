@@ -910,7 +910,12 @@ class SideBar extends Component {
                     name: 'menu.request_management',
                     icon: 'fa fa-reorder',
                     path: '/product-request-management/stock'
-                  }
+                  },
+                  {
+                    name: "menu.storage_management",
+                    icon: "fa fa-reorder",
+                    path: "/storage-management",
+                  },
                 ]
               }}
             />

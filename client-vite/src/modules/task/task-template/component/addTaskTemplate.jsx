@@ -497,7 +497,6 @@ function AddTaskTemplate(props) {
                 value={newTemplate.organizationalUnit}
                 onChange={handleTaskTemplateUnit}
                 multiple={false}
-                value={newTemplate.organizationalUnit}
               />
             )}
           </div>

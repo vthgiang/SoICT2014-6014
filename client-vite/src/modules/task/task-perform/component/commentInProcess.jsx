@@ -472,8 +472,7 @@ class CommentInProcess extends Component {
                                         />
                                       ) : (
                                         <a
-                                          style={{ cursor: 'pointer' }}
-                                          style={{ marginTop: '2px' }}
+                                          style={{ cursor: 'pointer', marginTop: '2px' }}
                                           onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}
                                         >
                                           {' '}

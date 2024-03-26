@@ -1,7 +1,7 @@
 import { BillConstants } from '../../bill-management/redux/constants'
 
-const { LotServices } = require('./services')
-const { LotConstants } = require('./constants')
+import { LotServices } from './services';
+import { LotConstants } from './constants';
 
 export const LotActions = {
   getAllLots,

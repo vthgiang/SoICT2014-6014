@@ -471,7 +471,6 @@ const AddTaskTemplate = (props) => {
                 value={newTemplate.organizationalUnit}
                 onChange={handleTaskTemplateUnit}
                 multiple={false}
-                value={newTemplate.organizationalUnit}
               />
             )}
             <ErrorLabel content={newTemplate.errorOnUnit} />
