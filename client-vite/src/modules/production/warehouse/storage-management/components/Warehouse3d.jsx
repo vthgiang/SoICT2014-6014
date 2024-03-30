@@ -5,7 +5,7 @@ const Warehouse3d = () => {
     useEffect(() => {
         // var scriptType = "";
         if (window.location.pathname.includes('/storage-management')) {
-            $.getScript("lib/myWarehouseVisualizer.js");
+            $.getScript("library/warehouse/myWarehouseVisualizer.js");
         }
     }, []);
 

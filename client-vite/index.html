@@ -2,168 +2,195 @@
 <html lang="en">
 
 <head>
-  <title>DX - Giải pháp không gian làm việc số</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- <link rel="icon" href="%PUBLIC_URL%/logo.png"> -->
-  <link rel="icon" href="/favicon.ico" />
+    <title>DX - Giải pháp không gian làm việc số</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- <link rel="icon" href="%PUBLIC_URL%/logo.png"> -->
+    <link rel="icon" href="/favicon.ico"/>
 
-  <!-- Thông tin về website -->
-  <meta name="description"
-    content="Website cung cấp các giải pháp về chuyển đổi số dành cho doanh nghiệp trong các lĩnh vực như: quản lý công việc, quản lý nhân sự, tài sản, quản lý và đánh giá kpi, v.v.">
-  <meta name="keywords" content="dxclan.com, DX, QLCV, VNIST, Digital Tranformation">
-  <meta name="news_keywords" content="dxclan.com, DX, QLCV, VNIST, Digital Tranformation">
-  <meta name="author" content="VNIST">
-  <meta name="copyright" content="VNIST" />
-  <script type="application/ld+json"> {
-      "@context": "http://schema.org",
-      "@type": "WebSite",
-      "name": "DXclan",
-      "alternateName": "Hỗ trợ các giải pháp vê chuyển đổi số cho doanh nghiệp, quản lý công việc, nhân sự, tài sản, thống kê đánh giá KPI, v.v.",
-      "url": "http://dxclan.com"
-  } </script>
-  <script type="application/ld+json"> {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "DXclan",
-    "url": "http://dxclan.com",
-    "logo": "http://dxclan.com/logo.png",
-    "address": [
-      {
-        "@type": "PostalAddress",
-        "streetAddress": "P901, 8C Tạ Quang Bửu, Hai Bà Trưng, Hà Nội.",
-        "addressLocality": "Hà Nội City",
-        "addressRegion": "Northeast",
-        "postalCode": "100000",
-        "addressCountry": "VNM"
-      }
-    ],
-    "contactPoint": [
-      { "@type": "ContactPoint", "telephone": "+84 986 986 247", "contactType": "customer service" }
-    ],
-    "sameAs": [] }
-  </script>
-
-
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-  <!-- Google Font -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-
-  <script src="/library/jquery/jquery.min.js"></script><!-- jQuery 3 -->
-
-
-  <link rel="stylesheet" href="/library/bootstrap/css/bootstrap.min.css">
-  <script src="/library/bootstrap/bootstrap.min.js"></script><!-- Bootstrap 3.3.7 -->
-  <script type="text/javascript">
-    // Code fix bug bootstrap: khi mở nhiều modal và đóng 1 modal, body sẽ bị mất class modal-open và có scroll y, xấu và bất tiện
-    $(document).on('hidden.bs.modal', function () {
-      if ($('.modal.in').length) {
-        $('body').addClass('modal-open');
-      }
-    });
-
-    // ngăn tắt modal dropdown thông báo khi click vào tab bên trong menu dropdown
-    $(document).on('click.bs.dropdown.data-api', '.dropdown.mega-dropdown', function (e) {
-      e.stopPropagation();
-    });
-  </script>
-
-
-  <link rel="stylesheet" href="/library/adminLTE/AdminLTE.min.css">
-  <link rel="stylesheet" href="/library/adminLTE/_all-skins.min.css">
-  <script src="/library/adminLTE/adminlte.min.js"></script>
-
-
-  <!-- Thư viện common-components: jquery plugin (sẽ thêm default-passive-event sau nếu cần?)-->
-  <script src="/library/jquery-plugin/bootstrap-datepicker.min.js"></script>
-  <link rel="stylesheet" href="/library/jquery-plugin/bootstrap-datepicker.min.css">
-
-  <script src="/library/jquery-plugin/bootstrap-multiselect.js"></script>
-  <link rel="stylesheet" href="/library/jquery-plugin/bootstrap-multiselect.css">
-
-  <script src="/library/jquery-plugin/bootstrap-timepicker.min.js"></script>
-  <link rel="stylesheet" href="/library/jquery-plugin/bootstrap-timepicker.min.css">
-
-  <script src="/library/jquery-plugin/select2.full.min.js"></script>
-  <link rel="stylesheet" href="/library/jquery-plugin/select2.min.css">
-
-  <script src="/library/jquery-plugin/jstree/jstree.min.js"></script>
-  <link rel="stylesheet" href="/library/jquery-plugin/jstree/themes/default/style.min.css">
-
-  <script src="/library/jquery-plugin/checkboxes.min.js"></script>
-
-  <!-- Gantt -->
-  <script src="/library/jquery-plugin/gantt/dhtmlxgantt.js" type="text/javascript"></script>
-  <link href="/library/jquery-plugin/gantt/dhtmlxgantt.css" rel="stylesheet">
-
-  <!-- Script khởi tạo gantt -->
-  <script>
-    function initializationGantt() {
-      return gantt;
+    <!-- Thông tin về website -->
+    <meta name="description"
+          content="Website cung cấp các giải pháp về chuyển đổi số dành cho doanh nghiệp trong các lĩnh vực như: quản lý công việc, quản lý nhân sự, tài sản, quản lý và đánh giá kpi, v.v.">
+    <meta name="keywords" content="dxclan.com, DX, QLCV, VNIST, Digital Tranformation">
+    <meta name="news_keywords" content="dxclan.com, DX, QLCV, VNIST, Digital Tranformation">
+    <meta name="author" content="VNIST">
+    <meta name="copyright" content="VNIST"/>
+    <script type="application/ld+json"> {
+        "@context": "http://schema.org",
+        "@type": "WebSite",
+        "name": "DXclan",
+        "alternateName": "Hỗ trợ các giải pháp vê chuyển đổi số cho doanh nghiệp, quản lý công việc, nhân sự, tài sản, thống kê đánh giá KPI, v.v.",
+        "url": "http://dxclan.com"
+    } </script>
+    <script type="application/ld+json"> {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "DXclan",
+        "url": "http://dxclan.com",
+        "logo": "http://dxclan.com/logo.png",
+        "address": [
+            {
+                "@type": "PostalAddress",
+                "streetAddress": "P901, 8C Tạ Quang Bửu, Hai Bà Trưng, Hà Nội.",
+                "addressLocality": "Hà Nội City",
+                "addressRegion": "Northeast",
+                "postalCode": "100000",
+                "addressCountry": "VNM"
+            }
+        ],
+        "contactPoint": [
+            {
+                "@type": "ContactPoint",
+                "telephone": "+84 986 986 247",
+                "contactType": "customer service"
+            }
+        ],
+        "sameAs": []
     }
-  </script>
+    </script>
 
 
-  <!-- Quill editor -->
-  <script src="/library/jquery-plugin/quill-editor/quill.min.js" type="text/javascript"></script>
-  <link href="/library/jquery-plugin/quill-editor/quill.snow.min.css" rel="stylesheet">
-  <script src="/library/jquery-plugin/quill-editor/quill-table.js" type="text/javascript"></script>
-  <link href="/library/jquery-plugin/quill-editor/quill-table.css" rel="stylesheet">
-  <!-- <script src="%PUBLIC_URL%/library/jquery-plugin/quill-editor/quill-image.min.js"></script> -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-  <!-- Script khởi tạo quill-editor -->
-  <script>
-    function initializationQuill(id, config) {
-      // Thêm các module tiện ích
-      Quill.register({
-        // 'modules/imageDropAndPaste': QuillImageDropAndPaste,
-        'modules/tableUI': quillTableUI.default
-      }, true);
 
-      // Khởi tạo Quill Editor trong thẻ có id = id truyền vào, config lấy từ common-component/quill-editor
-      const quill = new Quill(id, config);
+    <script src="/library/jquery/jquery.min.js"></script><!-- jQuery 3 -->
 
-      return quill;
-    }
-  </script>
-  <!-------------------------- D3 ---------------------------->
-  <script src="/lib/d3.v5.9.2.js" charset="utf-8"></script>
-  <script src="/lib/d3-scale-chromatic.v1.min.js"></script>
-  <script src="/lib/d3-color.v1.min.js"></script>
-  <script src="/lib/d3-interpolate.v1.min.js"></script>
-  <script src="/lib/d3-legend.min.js" charset="utf-8"></script>
-<!--  <script src="./public/lib/jquery.min.js" charset="utf-8"></script>-->
-  <!--w2ui http://w2ui.com/web/ -->
-  <link rel="stylesheet" type="text/css" href="/css/w2ui.min.css"/>
-  <script src="/lib/w2ui.1.5x.min.js" charset="utf-8"></script>
-  <!--ThreeJS -->
-  <script src="/lib/three.min.js"></script>
-  <script src="/lib/Detector.js"></script>
-  <script src="/lib/WebGL.js"></script>
-  <script src="/lib/stats.js"></script>
-  <script src="/lib/OrbitControls.js"></script>
-  <script src="data/warehouseList.js"></script>
-  <link rel="stylesheet" href="css/dataVisualizer.css"/>
-  <script src="translations/translations.js"></script>
 
-  <!--    <script>-->
-  <!--        //var scriptType = "Obfuscated";-->
-  <!--        // scriptType = window.location.href.indexOf("demo") == -1 ? "" :  scriptType;-->
-  <!--        var scriptType = "";-->
-  <!--        if (window.location.pathname.includes('/storage-management')) {-->
-  <!--            $.getScript("lib/myWarehouseVisualizer" + scriptType + ".js");-->
-  <!--        }-->
-  <!--    </script>-->
+    <link rel="stylesheet" href="/library/bootstrap/css/bootstrap.min.css">
+    <script src="/library/bootstrap/bootstrap.min.js"></script><!-- Bootstrap 3.3.7 -->
+    <script type="text/javascript">
+        // Code fix bug bootstrap: khi mở nhiều modal và đóng 1 modal, body sẽ bị mất class modal-open và có scroll y, xấu và bất tiện
+        $(document).on('hidden.bs.modal', function () {
+            if ($('.modal.in').length) {
+                $('body').addClass('modal-open');
+            }
+        });
+
+        // ngăn tắt modal dropdown thông báo khi click vào tab bên trong menu dropdown
+        $(document).on('click.bs.dropdown.data-api', '.dropdown.mega-dropdown', function (e) {
+            e.stopPropagation();
+        });
+    </script>
+
+
+    <link rel="stylesheet" href="/library/adminLTE/AdminLTE.min.css">
+    <link rel="stylesheet" href="/library/adminLTE/_all-skins.min.css">
+    <script src="/library/adminLTE/adminlte.min.js"></script>
+
+
+    <!-- Thư viện common-components: jquery plugin (sẽ thêm default-passive-event sau nếu cần?)-->
+    <script src="/library/jquery-plugin/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="/library/jquery-plugin/bootstrap-datepicker.min.css">
+
+    <script src="/library/jquery-plugin/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="/library/jquery-plugin/bootstrap-multiselect.css">
+
+    <script src="/library/jquery-plugin/bootstrap-timepicker.min.js"></script>
+    <link rel="stylesheet" href="/library/jquery-plugin/bootstrap-timepicker.min.css">
+
+    <script src="/library/jquery-plugin/select2.full.min.js"></script>
+    <link rel="stylesheet" href="/library/jquery-plugin/select2.min.css">
+
+    <script src="/library/jquery-plugin/jstree/jstree.min.js"></script>
+    <link rel="stylesheet" href="/library/jquery-plugin/jstree/themes/default/style.min.css">
+
+    <script src="/library/jquery-plugin/checkboxes.min.js"></script>
+
+    <!-- Gantt -->
+    <script src="/library/jquery-plugin/gantt/dhtmlxgantt.js" type="text/javascript"></script>
+    <link href="/library/jquery-plugin/gantt/dhtmlxgantt.css" rel="stylesheet">
+
+    <!-- Script khởi tạo gantt -->
+    <script>
+        function initializationGantt() {
+            return gantt;
+        }
+    </script>
+
+
+    <!-- Quill editor -->
+    <script src="/library/jquery-plugin/quill-editor/quill.min.js" type="text/javascript"></script>
+    <link href="/library/jquery-plugin/quill-editor/quill.snow.min.css" rel="stylesheet">
+    <script src="/library/jquery-plugin/quill-editor/quill-table.js" type="text/javascript"></script>
+    <link href="/library/jquery-plugin/quill-editor/quill-table.css" rel="stylesheet">
+    <!-- <script src="%PUBLIC_URL%/library/jquery-plugin/quill-editor/quill-image.min.js"></script> -->
+
+    <!-- Script khởi tạo quill-editor -->
+    <script>
+        function initializationQuill(id, config) {
+            // Thêm các module tiện ích
+            Quill.register({
+                // 'modules/imageDropAndPaste': QuillImageDropAndPaste,
+                'modules/tableUI': quillTableUI.default
+            }, true);
+
+            // Khởi tạo Quill Editor trong thẻ có id = id truyền vào, config lấy từ common-component/quill-editor
+            const quill = new Quill(id, config);
+
+            return quill;
+        }
+    </script>
+    <!-------------------------- D3 ---------------------------->
+    <script>
+        if (window.location.pathname.includes('/storage-management')) {
+            const head = document.getElementsByTagName('head')[0];
+
+            const scripts = [
+                "/library/warehouse/d3.v5.9.2.js",
+                "/library/warehouse/d3-scale-chromatic.v1.min.js",
+                "/library/warehouse/d3-color.v1.min.js",
+                "/library/warehouse/d3-interpolate.v1.min.js",
+                "/library/warehouse/d3-legend.min.js",
+                "/library/warehouse/w2ui.1.5x.min.js",
+                "/library/warehouse/Detector.js",
+                "/library/warehouse/WebGL.js",
+                "/library/warehouse/stats.js",
+                "/library/warehouse/OrbitControls.js",
+                "/data/warehouseList.js",
+                "/translations/translations.js"
+            ];
+
+            const styles = [
+                "/css/w2ui.min.css",
+                "/css/dataVisualizer.css"
+            ];
+
+            styles.forEach(function (href) {
+                const link = document.createElement('link');
+                link.href = href;
+                link.rel = "stylesheet";
+                head.appendChild(link);
+            });
+
+            // Load and execute three.min.js first
+            fetch("/library/warehouse/three.min.js")
+                .then(response => response.text())
+                .then(content => {
+                    const script = document.createElement('script');
+                    script.textContent = content;
+                    head.appendChild(script);
+
+                    // After three.min.js is loaded and executed, load the other scripts
+                    scripts.forEach(function (src) {
+                        const script = document.createElement('script');
+                        script.src = src;
+                        script.charset = "utf-8";
+                        head.appendChild(script);
+                    });
+                });
+        }
+    </script>
 
 </head>
 
 <body class="hold-transition skin-purple sidebar-mini" style="background-color: #343A40;">
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>
