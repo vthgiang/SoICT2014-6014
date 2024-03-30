@@ -136,56 +136,24 @@
         }
     </script>
     <!-------------------------- D3 ---------------------------->
-    <script>
-        if (window.location.pathname.includes('/storage-management')) {
-            const head = document.getElementsByTagName('head')[0];
-
-            const scripts = [
-                "/library/warehouse/d3.v5.9.2.js",
-                "/library/warehouse/d3-scale-chromatic.v1.min.js",
-                "/library/warehouse/d3-color.v1.min.js",
-                "/library/warehouse/d3-interpolate.v1.min.js",
-                "/library/warehouse/d3-legend.min.js",
-                "/library/warehouse/w2ui.1.5x.min.js",
-                "/library/warehouse/Detector.js",
-                "/library/warehouse/WebGL.js",
-                "/library/warehouse/stats.js",
-                "/library/warehouse/OrbitControls.js",
-                "/data/warehouseList.js",
-                "/translations/translations.js"
-            ];
-
-            const styles = [
-                "/css/w2ui.min.css",
-                "/css/dataVisualizer.css"
-            ];
-
-            styles.forEach(function (href) {
-                const link = document.createElement('link');
-                link.href = href;
-                link.rel = "stylesheet";
-                head.appendChild(link);
-            });
-
-            // Load and execute three.min.js first
-            fetch("/library/warehouse/three.min.js")
-                .then(response => response.text())
-                .then(content => {
-                    const script = document.createElement('script');
-                    script.textContent = content;
-                    head.appendChild(script);
-
-                    // After three.min.js is loaded and executed, load the other scripts
-                    scripts.forEach(function (src) {
-                        const script = document.createElement('script');
-                        script.src = src;
-                        script.charset = "utf-8";
-                        head.appendChild(script);
-                    });
-                });
-        }
-    </script>
-
+    <script src="/library/warehouse/d3.v5.9.2.js" charset="utf-8"></script>
+    <script src="/library/warehouse/d3-scale-chromatic.v1.min.js"></script>
+    <script src="/library/warehouse/d3-color.v1.min.js"></script>
+    <script src="/library/warehouse/d3-interpolate.v1.min.js"></script>
+    <script src="/library/warehouse/d3-legend.min.js" charset="utf-8"></script>
+    <!--  <script src="lib/jquery.min.js" charset="utf-8"></script>-->
+    <!--w2ui http://w2ui.com/web/ -->
+    <link rel="stylesheet" type="text/css" href="css/w2ui.min.css"/>
+    <script src="/library/warehouse/w2ui.1.5x.min.js" charset="utf-8"></script>
+    <!--ThreeJS -->
+    <script src="/library/warehouse/three.min.js"></script>
+    <script src="/library/warehouse/Detector.js"></script>
+    <script src="/library/warehouse/WebGL.js"></script>
+    <script src="/library/warehouse/stats.js"></script>
+    <script src="/library/warehouse/OrbitControls.js"></script>
+    <script src="data/warehouseList.js"></script>
+    <link rel="stylesheet" href="css/dataVisualizer.css"/>
+    <script src="translations/translations.js"></script>
 </head>
 
 <body class="hold-transition skin-purple sidebar-mini" style="background-color: #343A40;">
