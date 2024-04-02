@@ -2122,6 +2122,15 @@ const LINKS = [
     },
 
     {
+        url: "/transportation-route-init",
+        description: "Đơn vận chuyển",
+        category: LINK_CATEGORY.TRANSPORTATION.name,
+        roles: [
+            ROOT_ROLES.MANAGER.name,
+            ROOT_ROLES.ADMIN.name,
+        ]
+    },
+    {
         url: "/transportation-list-journey",
         description: "Danh sách lộ trình",
         category: LINK_CATEGORY.TRANSPORTATION.name,
