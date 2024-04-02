@@ -173,7 +173,7 @@ function GeneralTab(props) {
     setState((state) => {
       return {
         ...state,
-        isVehicle: value[0] == 'vehicle',
+        isVehicle: value[0] == 'vehicle' ? true : false,
         group: value[0]
       }
     })
@@ -602,7 +602,11 @@ function GeneralTab(props) {
     setPrevProps(props)
   }
 
+<<<<<<< HEAD
   const { id, translate, user, assetsManager, role, department, categories, assetType } = props
+=======
+  const { id, translate, user, assetsManager, role, department, categories } = props
+>>>>>>> 397a1b650 (add module transportation from qlcv)
   const {
     img,
     defaultAvatar,

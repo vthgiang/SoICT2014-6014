@@ -126,8 +126,12 @@ const ProductRequestManagementSchema = new Schema({
     },
 
     desiredTime: { // Thời gian mong muốn nhận hàng hoặc nhập hàng
+<<<<<<< HEAD
         type: String,
         default: null,
+=======
+        type: String
+>>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     /*yêu cầu mua hàng gửi từ sản xuất : requestType = 1, type = 1
     1: chờ phê duyệt, 2: đã gửi đến bộ phận mua hàng, 3: đã phê duyệt mua hàng, 4. Đã tạo đơn mua hàng

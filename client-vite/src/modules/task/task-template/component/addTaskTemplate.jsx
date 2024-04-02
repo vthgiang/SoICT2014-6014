@@ -84,6 +84,31 @@ function AddTaskTemplate({
     })
   }
 
+  //for analysis
+  const handleTaskTempLateClassName = (value) => {
+    let singleValue = value[0]; // SelectBox một lựa chọn
+    let { newTemplate } = state;
+    newTemplate.class = singleValue
+    props.onChangeTemplateData(newTemplate)
+    setState({
+      ...state,
+      newTemplate
+    });
+    // props.handleChangeClassName(singleValue)
+  }
+
+  // handleTaskTemplateDesc = (e) => {
+  //     let { value } = e.target;
+  //     let { isProcess, translate } = props
+  //     isProcess && props.handleChangeName(value);
+  //     let { message } = ValidationHelper.validateName(translate, value, 1, 255);
+  //     let { newTemplate } = state;
+  //     newTemplate.description = value;
+  //     newTemplate.errorDescription = message;
+  //     props.onChangeTemplateData(newTemplate);
+  //     setState({ newTemplate });
+  // }
+
   const handleTaskTemplateDesc = (value, imgs) => {
     setState((state) => {
       return {
@@ -453,6 +478,27 @@ function AddTaskTemplate({
               onChange={handleTaskTemplateName}
             />
             <ErrorLabel content={state.newTemplate.errorOnName} />
+          </div>
+          <div className={`form-group`} >
+            <label className="control-label">Lớp công việc <span style={{ color: "red" }}>*</span></label>
+            {props.analysisData.class && <SelectBox
+              id={`class-name-select-box-${id}`}
+              className="form-control select2"
+              style={{ width: "100%" }}
+              items={
+                [
+                  { value: 1, text: 'Loại 1: Chịu ảnh hưởng bởi con người' },
+                  { value: 2, text: 'Loại 2: Chịu ảnh hưởng bởi con người và thiết bị' },
+                  { value: 3, text: 'Loại 3: Chịu ảnh hưởng của sản phẩm và thiết bị' },
+                  { value: 4, text: 'Loại 4: Chịu ảnh hưởng của môi trường' },
+
+                ]
+              }
+              value={newTemplate.class}
+              onChange={handleTaskTempLateClassName}
+              multiple={false}
+
+            />}
           </div>
 
           {/* <div className='form-group'>
