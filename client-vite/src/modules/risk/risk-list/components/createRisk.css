@@ -1,0 +1,98 @@
+.ranking-info table{
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid black;
+    width: 100%;
+    font-weight: bold;
+    padding-left: 1em;
+    table-layout: fixed;
+    width: 202px;
+    margin: 1em;
+}
+.ranking-info table td{
+    text-align: center;
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+}
+.detail-ranking-info{
+    text-align: center;
+    padding-left: 0px;
+    margin-bottom: 10px;
+    /* margin-left: -19px; */
+}
+.detail-ranking-info table{
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid black;
+    width: 100%;
+    font-weight: bold;
+    padding-left: 1em;
+    table-layout: fixed;
+    width: 192px;
+    /* padding-bottom: 10p; */
+    /* margin: 1em; */
+}
+.detail-info{
+    padding: 1em;
+    /* border-radius: 10%; */
+    border: 1px solid black;
+    margin: auto;
+
+}
+.detail-ranking-info table td{
+    text-align: center;
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+}
+.ranking-info{
+    min-height: 150px;
+}
+.ranking-info div{
+   margin-left: 0px;
+}
+.ranking-info table tr td div p{
+
+    padding: 0;
+    margin: 0;
+}
+.ranking-info div{
+    width: 215px;
+}
+.ranking-info{
+    margin-left: 20%;
+    /* text-align: center; */
+}
+#general-tasks-wraper div{
+    max-height: 400px;
+}
+#select-task-from-list{
+    height: 500px;
+    overflow-y: scroll; 
+}
+#select-risk-response-plan{
+    height: 300px;
+    overflow-y: scroll; 
+}
+#risk-response-plan-table{
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid black;
+    width: 100%;
+    font-weight: bold;
+    padding: 1em;
+    table-layout: fixed;
+    /* width: 192px; */
+    /* padding-bottom: 10p; */
+    /* margin: 1em; */
+}
+#risk-response-plan-table tbody tr td{
+    text-align: center;
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+}
+#risk-response-plan-table thead tr th{
+    text-align: center;
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+}

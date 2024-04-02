@@ -288,3 +288,19 @@ exports.importBinLocation = async (portal, data) => {
     }
     return await getBin(portal);
 }
+
+exports.getAllStockWithBinLocation = async (query, portal) => {
+    const list = await BinLocation(connect(DB_CONNECTION, portal)).find()
+        .populate([
+            { path: 'enableGoods.good', select: 'id name type baseUnit'}
+        ]);
+    const listStock = list.map(bin => {
+        return {
+            stockId: bin.stock,
+            enableGoods: bin.enableGoods
+        }
+    });
+
+    return { listStock };
+
+}

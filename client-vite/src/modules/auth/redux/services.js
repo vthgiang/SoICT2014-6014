@@ -1,5 +1,6 @@
 import { getStorage } from '../../../config'
 import { sendRequest } from '../../../helpers/requestHelper'
+import sendExternalRequest from "../../../helpers/requestExternalServerHelpers"
 
 export const AuthService = {
   login,
@@ -16,7 +17,9 @@ export const AuthService = {
   downloadFile,
   createPassword2,
   deletePassword2,
-  checkLinkValid
+  checkLinkValid,
+  getExternalServerSessionId,
+  logoutExternalSystem
 }
 
 async function login(data) {
@@ -237,4 +240,16 @@ function checkLinkValid(data) {
     false,
     'auth'
   )
+}
+
+function getExternalServerSessionId() {
+  const user = {
+    "email": `${process.env.REACT_APP_EXTERNAL_SYSTEM_EMAIL}`,
+    "password": `${process.env.REACT_APP_EXTERNAL_SYSTEM_PASSWORD}`
+  }
+  return sendExternalRequest.post("/sign-in", user);
+}
+
+function logoutExternalSystem(user) {
+  return sendExternalRequest.post("/sign-out", user);
 }

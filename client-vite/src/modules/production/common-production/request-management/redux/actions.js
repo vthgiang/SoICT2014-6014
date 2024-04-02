@@ -6,7 +6,10 @@ export const RequestActions = {
   createRequest,
   getDetailRequest,
   editRequest,
-  getNumberStatus
+  getNumberStatus,
+  getAllStockWithBinLocation,
+  updateRealTimeStatus,
+  editTransportationRequest
 }
 
 function getAllRequestByCondition(query = {}) {
@@ -42,7 +45,39 @@ function createRequest(data) {
         dispatch({
           type: requestConstants.CREATE_REQUEST_SUCCESS,
           payload: res.data.content
+        });
+        const resData = res.data.content.request;
+        let capacity = 0;
+        let weight = 0;
+        let orderValue = 0;
+        let orderItems = resData.goods.map((good) => {
+          capacity += good.good.volume * good.quantity;
+          weight += good.good.weight * good.quantity;
+          orderValue += (good.good.pricePerBaseUnit - good.good.salesPriceVariance ? good.good.salesPriceVariance : 0) * good.quantity;
+          return {
+            productDxCodeToSearch: good.good._id,
+            quantity: good.quantity
+          }
         })
+        const dataToSync = {
+          dxCode: resData._id,
+          orderCustomerDxCode: resData.supplier._id,
+          capacity: capacity,
+          weight: weight,
+          orderValue: orderValue,
+          deliveryMode: "STANDARD",
+          timeService: 300,
+          timeLoading: 300,
+          orderItems: orderItems
+        }
+        console.log("ra data roi", dataToSync);
+        requestServices.syncCreateRequestTransport(dataToSync)
+          .then((res) => {
+            console.log("Add order to transport system ok!", res);
+          })
+          .catch((error) => {
+            console.log("Add order to transport system failure", error);
+          })
       })
       .catch((error) => {
         dispatch({
@@ -97,6 +132,26 @@ function editRequest(id, data) {
   }
 }
 
+function editTransportationRequest(id, data) {
+  return dispatch => {
+    dispatch({
+      type: requestConstants.UPDATE_REQUEST_REQUEST
+    });
+    requestServices.editTransportationRequest(id, data)
+      .then((res) => {
+        dispatch({
+          type: requestConstants.UPDATE_REQUEST_SUCCESS,
+          payload: res.data.content
+        });
+      }).catch((error) => {
+        dispatch({
+          type: requestConstants.UPDATE_REQUEST_FAILURE,
+          error
+        });
+      });
+  }
+}
+
 function getNumberStatus(query) {
   return (dispatch) => {
     dispatch({
@@ -116,5 +171,34 @@ function getNumberStatus(query) {
           error
         })
       })
+  }
+}
+
+function getAllStockWithBinLocation(query = {}) {
+  return dispatch => {
+    dispatch({
+      type: requestConstants.GET_ALL_STOCK_WITH_BIN_LOCATION_REQUEST
+    });
+    requestServices.getAllStockWithBinLocation(query)
+      .then((res) => {
+        dispatch({
+          type: requestConstants.GET_ALL_STOCK_WITH_BIN_LOCATION_SUCCESS,
+          payload: res.data.content
+        });
+      }).catch((error) => {
+        dispatch({
+          type: requestConstants.GET_ALL_STOCK_WITH_BIN_LOCATION_FAILURE,
+          error
+        });
+      });
+  }
+}
+
+function updateRealTimeStatus(data) {
+  return dispatch => {
+    dispatch({
+      type: requestConstants.UPDATE_REALTIME_STATUS,
+      payload: data
+    });
   }
 }

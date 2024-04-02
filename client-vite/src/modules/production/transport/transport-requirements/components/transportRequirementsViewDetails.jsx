@@ -13,7 +13,6 @@ import { formatDate } from '../../../../../helpers/formatDate'
 import { getTypeRequirement, getTransportRequirementStatus, getPlanStatus } from '../../transportHelper/getTextFromValue'
 // import { MapContainer } from '../../transportHelper/googleReactMap/mapContainer'
 import { MapContainer } from '../../transportHelper/mapbox/map'
-import { exampleActions } from '../redux/actions'
 
 function TransportRequirementsViewDetails(props) {
   // const { translate, example, page, perPage } = props;

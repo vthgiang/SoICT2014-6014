@@ -28,7 +28,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
   delete entries['create.data-store']
   delete entries['create.data-object']
   delete entries['create.group']
-  delete entries['create.participant-expanded']
+  // delete entries['create.participant-expanded']
   return entries
 }
 

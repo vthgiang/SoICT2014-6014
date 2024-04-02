@@ -152,7 +152,7 @@ exports.createRequest = async (user, data, portal) => {
             { path: "toStock" },
             { path: "requestingDepartment" },
             { path: "manufacturingWork", select: "name" },
-            { path: "supplier", select: "name" },
+            { path: "supplier", select: "name address" },
             { path: "customer", select: "name" },
             { path: "orderUnit", select: "name" },
         ]);
@@ -238,6 +238,13 @@ exports.getAllRequestByCondition = async (query, portal) => {
             '$lte': getArrayTimeFromString(query.desiredTime)[1]
         }
     }
+    if (query.fromDate && !query.toDate) {
+        option.desiredTime = query.fromDate
+    }
+
+    if (!query.fromDate && query.toDate) {
+        option.desiredTime = query.toDate
+    }
     if (query.requestFrom !== 'stock' || (query.requestType == 3 && query.type != 1 && query.type != 2) || (query.requestType == 4)) {
         if (query.requestType) {
             option.requestType = query.requestType;
@@ -273,7 +280,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
             .find(option)
             .populate([
                 { path: "creator", select: "name" },
-                { path: "goods.good", select: "code name baseUnit" },
+                { path: "goods.good", select: "code name baseUnit volume weight pricePerBaseUnit salesPriceVariance" },
                 { path: "goods.lots.lot" },
                 { path: "bill", select: "code" },
                 { path: "purchaseOrder", select: "code" },
@@ -297,7 +304,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 limit: limit,
                 page: page,
                 populate: [{ path: "creator", select: "name" },
-                { path: "goods.good", select: "code name baseUnit" },
+                { path: "goods.good", select: "code name baseUnit volume weight pricePerBaseUnit salesPriceVariance" },
                 { path: "goods.lots.lot" },
                 { path: "bill", select: "code" },
                 { path: "purchaseOrder", select: "code" },
@@ -308,12 +315,12 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 { path: "toStock" },
                 { path: "requestingDepartment" },
                 { path: "manufacturingWork", select: "name" },
-                { path: "supplier", select: "name" },
+                { path: "supplier", select: "name address" },
                 { path: "customer", select: "name" },
                 { path: "orderUnit", select: "name" },
                 ],
                 sort: {
-                    'updatedAt': 'desc'
+                    'createdAt': 'asc'
                 }
             });
         return { requests }
@@ -338,7 +345,7 @@ exports.getRequestById = async (id, portal) => {
         { path: "toStock" },
         { path: "requestingDepartment" },
         { path: "manufacturingWork", select: "name" },
-        { path: "supplier", select: "name" },
+        { path: "supplier", select: "name address" },
         { path: "customer", select: "name" },
         { path: "orderUnit", select: "name" },
         ]);
@@ -593,6 +600,95 @@ exports.editRequest = async (user, id, data, portal) => {
         ]);
 
     return { request }
+}
+
+exports.editTransportationRequest = async (user, id, data, portal) => {
+    let oldRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal))
+        .findById({ _id: id })
+        .populate([
+            { path: "orderUnit" },
+        ]);
+    if (!oldRequest) {
+        throw Error("request is not existing");
+    }
+
+    oldRequest.code = data.code ? data.code : oldRequest.code;
+    oldRequest.creator = data.creator ? data.creator : oldRequest.creator;
+    oldRequest.desiredTime = data.desiredTime ? data.desiredTime : oldRequest.desiredTime;
+    oldRequest.description = data.description ? data.description : oldRequest.description;
+    oldRequest.status = data.status ? data.status : oldRequest.status;
+
+    oldRequest.requestType = data.requestType ? data.requestType : oldRequest.requestType;
+    oldRequest.type = data.type ? data.type : oldRequest.type;
+    oldRequest.stock = data.stock ? data.stock : oldRequest.stock;
+    oldRequest.toStock = data.toStock ? data.toStock : oldRequest.toStock;
+    oldRequest.goods = data.goods ? data.goods.map((good) => {
+        return {
+            good: good.good,
+            quantity: good.quantity
+        }
+    }) : oldRequest.goods;
+    oldRequest.supplier = data.supplier ? data.supplier : oldRequest.supplier;
+    oldRequest.customer = data.customer ? data.customer : oldRequest.customer;
+    await oldRequest.save();
+
+    let request = await ProductRequestManagement(connect(DB_CONNECTION, portal))
+        .findById({ _id: oldRequest._id })
+        .populate([
+            { path: "creator", select: "name" },
+            { path: "goods.good", select: "code name baseUnit" },
+            { path: "goods.lots.lot" },
+            { path: "bill", select: "code" },
+            { path: "purchaseOrder", select: "code" },
+            { path: "saleOrder", select: "code" },
+            { path: "approvers.information.approver" },
+            { path: "refuser.refuser", select: "name" },
+            { path: "stock" },
+            { path: "toStock" },
+            { path: "requestingDepartment" },
+            { path: "manufacturingWork", select: "name" },
+            { path: "supplier", select: "name address" },
+            { path: "customer", select: "name" },
+            { path: "orderUnit", select: "name" },
+        ]);
+
+    return { request }
+}
+// Tự động cập nhật trạng thái đơn hàng vận chuyển
+exports.autoUpdateTransportRequest = async (updateId, data, portal) => {
+    let updateRequest;
+    if (Array.isArray(updateId)) {
+        await ProductRequestManagement(connect(DB_CONNECTION, portal)).updateMany({ _id: {$in: updateId} }, {"$set":{"status": data.requestStatus ? data.requestStatus : 3}});
+        updateRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal)).find({_id: {$in: updateId}});
+    } else {
+        let oldRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal))
+            .findById({ _id: updateId })
+        if (!oldRequest) {
+            throw Error("request is not existing");
+        }
+        if (data.requestType && data.requestType == 4 && data.requestStatus) {
+            oldRequest.status = data.requestStatus;
+        }
+        await oldRequest.save();
+        updateRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal))
+        .findById({ _id: oldRequest._id })
+        .populate([
+            { path: "creator", select: "name" },
+            { path: "goods.good", select: "code name baseUnit" },
+            { path: "goods.lots.lot" },
+            { path: "bill", select: "code" },
+            { path: "approvers.information.approver" },
+            { path: "refuser.refuser", select: "name" },
+            { path: "stock" },
+            { path: "toStock" },
+            { path: "requestingDepartment" },
+            { path: "manufacturingWork", select: "name" },
+            { path: "supplier", select: "name address" },
+            { path: "orderUnit", select: "name" },
+        ]);
+    }
+
+    return { updateRequest }
 }
 
 // Lấy số lượng request

@@ -69,6 +69,48 @@ class SideBar extends Component {
               }}
             />
 
+            {/* Quản lý rủi ro */}
+
+            <GroupItem
+              groupItem={{
+                name: "menu.risk_management",
+                icon: " fa fa-newspaper-o",
+                list: [
+                  {
+                    name: "menu.task_pert",
+                    icon: "fa fa-circle",
+                    path: "/taskPert",
+                  },
+                  {
+                    name: "menu.risk_dashboard",
+                    icon: "fa fa-circle",
+                    path: "/riskDistribution",
+                  },
+                  {
+                    name: "menu.risk_list",
+                    icon: "fa fa-circle",
+                    path: "/risk",
+                  },
+                  {
+                    name: "menu.exprimental_analysis",
+                    icon: "fa fa-circle",
+                    path: "/exprimentalAnalysis",
+                  },
+                  {
+                    name: "menu.risk_response_plan",
+                    icon: "fa fa-circle",
+                    path: "/riskResponsePlan",
+                  },
+                  {
+                    name: "menu.bayesian_network_config",
+                    icon: "fa fa-circle",
+                    path: "/bayesianNetworkConfig",
+                  },
+
+                ],
+              }}
+            />
+
             {/* Bảng tin nhân viên */}
             <Item
               item={{
@@ -1001,6 +1043,45 @@ class SideBar extends Component {
             {/* Quản lý vận chuyển */}
             <GroupItem
               groupItem={{
+                name: "menu.manufacturing_process_title",
+                icon: "fa fa-industry",
+                list: [
+                  {
+                    name: "menu.manager_manufacturing_dashboard",
+                    icon: "fa fa-dashboard",
+                    path: "/manager-manufacturing-dashboard",
+                  },
+                  {
+                    name: "menu.manager_manufacturing_process",
+                    icon: "fa fa-circle-o",
+                    path: "/manager-manufacturing-process",
+                  },
+                  {
+                    name: "menu.chain_design",
+                    icon: "fa fa-circle-o",
+                    path: "/manufacturing-chain",
+                  },
+                  {
+                    name: "menu.manufacturing_process",
+                    icon: "fa fa-adjust",
+                    path: "/manufacturing-process",
+                  },
+                  {
+                    name: "menu.manufacturing_task_managerment",
+                    icon: "fa fa-list-alt",
+                    path: "/manufacturing-task-managerment",
+                  },
+                  {
+                    name: "menu.manufacturing_issue",
+                    icon: "fa fa-exclamation",
+                    path: "/manufacturing-issue",
+                  }
+                ],
+              }}
+            />
+            {/* Quản lý vận chuyển */}
+            {/* <GroupItem
+              groupItem={{
                 name: 'menu.manage_transport',
                 icon: 'fa fa-truck',
                 list: [
@@ -1048,7 +1129,52 @@ class SideBar extends Component {
                   //     name: "menu.carrier_all_times_transport_mission",
                   //     icon: "fa fa-calendar-o",
                   //     path: "/carrier-all-times-transport-mission",
-                  // },
+                                        // },
+                                    ]
+                                }}
+                            /> */}
+
+            {/* Quản lý vận chuyển 2 */}
+            <GroupItem
+              groupItem={{
+                name: "menu.manage_transportation",
+                icon: "fa fa-subway",
+                list: [
+                  {
+                    name: "menu.manage_transportation_dashboard",
+                    icon: "fa fa-dashboard",
+                    path: "/transportation-dashboard",
+                  },
+                  {
+                    name: "menu.manage_transportation_init_route",
+                    icon: "fa fa-road",
+                    path: "/transportation-route-init",
+                  },
+                  {
+                    name: "menu.manage_transportation_list_journey",
+                    icon: "fa fa-list-alt",
+                    path: "/transportation-list-journey",
+                  },
+                  {
+                    name: "menu.manage_transportation_vehicles",
+                    icon: "fa fa-car",
+                    path: "/transportation-info-vehicles",
+                  },
+                  {
+                    name: "menu.manage_transportation_shipper",
+                    icon: "fa fa-user-circle-o",
+                    path: "/transportation-shipper-manage",
+                  },
+                  {
+                    name: "menu.manage_transportation_test_api_shipper",
+                    icon: "fa fa-circle-o",
+                    path: "/transportation-test-api-shipper",
+                  },
+                  {
+                    name: "menu.manage_transportation_cost",
+                    icon: "fa fa-usd",
+                    path: "/transportation-cost-manage",
+                  }
                 ]
               }}
             />

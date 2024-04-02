@@ -1,7 +1,7 @@
 import FileDownload from 'js-file-download'
 import { AuthService } from './services'
 import { AuthConstants } from './constants'
-import { setStorage } from '../../../config'
+import { setStorage, getStorage } from '../../../config'
 import { SocketConstants } from '../../socket/redux/constants'
 
 export const AuthActions = {
@@ -48,6 +48,10 @@ function login(user) {
         })
         dispatch({ type: SocketConstants.DISCONNECT_SOCKET_IO })
       })
+    AuthService.getExternalServerSessionId()
+      .then(res => {
+        setStorage('externalSessionId', res.data.data.sessionId);
+      })
   }
 }
 
@@ -62,7 +66,8 @@ function logout() {
       })
       .catch((err) => {
         dispatch({ type: AuthConstants.LOGOUT_FAILE })
-      })
+      });
+    AuthService.logoutExternalSystem({ sessionId: getStorage('externalSessionId') });
   }
 }
 
@@ -77,7 +82,8 @@ function logoutAllAccount() {
       })
       .catch((err) => {
         dispatch({ type: AuthConstants.LOGOUT_ALL_FAILE })
-      })
+      });
+    AuthService.logoutExternalSystem({ sessionId: getStorage('externalSessionId') });
   }
 }
 

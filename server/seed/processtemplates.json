@@ -1,0 +1,492 @@
+{
+    "viewer": [
+    ],
+    "manager": [
+    ],
+    "numberOfUse": 0,
+    "xmlDiagram": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"Event_1doe2eu\">\n      <bpmn:outgoing>Flow_0596109</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:task id=\"Activity_0zayx03\" shapeName=\"Tạo phiếu xuất kho\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_0596109</bpmn:incoming>\n      <bpmn:outgoing>Flow_1l6ddhe</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_0596109\" sourceRef=\"Event_1doe2eu\" targetRef=\"Activity_0zayx03\" />\n    <bpmn:task id=\"Activity_1b24z4j\" shapeName=\"Chuyển kho vật lý\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_1l6ddhe</bpmn:incoming>\n      <bpmn:outgoing>Flow_0ak7jl3</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1l6ddhe\" sourceRef=\"Activity_0zayx03\" targetRef=\"Activity_1b24z4j\" />\n    <bpmn:task id=\"Activity_1ls114p\" shapeName=\"Chuẩn bị nhân sự\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_0ak7jl3</bpmn:incoming>\n      <bpmn:outgoing>Flow_1k658ne</bpmn:outgoing>\n      <bpmn:outgoing>Flow_0p5pvpf</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_0ak7jl3\" sourceRef=\"Activity_1b24z4j\" targetRef=\"Activity_1ls114p\" />\n    <bpmn:task id=\"Activity_124e3m5\" shapeName=\"Di chuyển xe lấy hàng\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_1k658ne</bpmn:incoming>\n      <bpmn:outgoing>Flow_1vhuxa4</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1k658ne\" sourceRef=\"Activity_1ls114p\" targetRef=\"Activity_124e3m5\" />\n    <bpmn:task id=\"Activity_09ygj0a\" shapeName=\"Dỡ hàng từ trên kệ\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_0p5pvpf</bpmn:incoming>\n      <bpmn:outgoing>Flow_1se6g58</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_0p5pvpf\" sourceRef=\"Activity_1ls114p\" targetRef=\"Activity_09ygj0a\" />\n    <bpmn:task id=\"Activity_0o5wo80\" shapeName=\"Check quẹt\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_1se6g58</bpmn:incoming>\n      <bpmn:outgoing>Flow_0mg72ts</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1se6g58\" sourceRef=\"Activity_09ygj0a\" targetRef=\"Activity_0o5wo80\" />\n    <bpmn:task id=\"Activity_0obxv9j\" shapeName=\"Mang hàng đến khu vực đóng gói\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_0mg72ts</bpmn:incoming>\n      <bpmn:incoming>Flow_1vhuxa4</bpmn:incoming>\n      <bpmn:outgoing>Flow_1hl2hlg</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_0mg72ts\" sourceRef=\"Activity_0o5wo80\" targetRef=\"Activity_0obxv9j\" />\n    <bpmn:sequenceFlow id=\"Flow_1vhuxa4\" sourceRef=\"Activity_124e3m5\" targetRef=\"Activity_0obxv9j\" />\n    <bpmn:task id=\"Activity_12vxoan\" shapeName=\"Kiểm tra chất lượng hàng\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_1hl2hlg</bpmn:incoming>\n      <bpmn:outgoing>Flow_1ags2x6</bpmn:outgoing>\n      <bpmn:outgoing>Flow_1s7y8pf</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1hl2hlg\" sourceRef=\"Activity_0obxv9j\" targetRef=\"Activity_12vxoan\" />\n    <bpmn:task id=\"Activity_03wsmua\" shapeName=\"Đóng gói hàng \" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_1ags2x6</bpmn:incoming>\n      <bpmn:outgoing>Flow_04z80nh</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1ags2x6\" sourceRef=\"Activity_12vxoan\" targetRef=\"Activity_03wsmua\" />\n    <bpmn:task id=\"Activity_1en7l4b\" shapeName=\"Đóng hàng theo lô và di chuyển đến khu vực vận chuyển\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_04z80nh</bpmn:incoming>\n      <bpmn:incoming>Flow_1s7y8pf</bpmn:incoming>\n      <bpmn:outgoing>Flow_06k84fn</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_04z80nh\" sourceRef=\"Activity_03wsmua\" targetRef=\"Activity_1en7l4b\" />\n    <bpmn:sequenceFlow id=\"Flow_1s7y8pf\" sourceRef=\"Activity_12vxoan\" targetRef=\"Activity_1en7l4b\" />\n    <bpmn:task id=\"Activity_0ovf9ti\" shapeName=\"Hoàn thành xuất kho và cập nhật số liệu\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_06k84fn</bpmn:incoming>\n      <bpmn:outgoing>Flow_0ctnrkv</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_06k84fn\" sourceRef=\"Activity_1en7l4b\" targetRef=\"Activity_0ovf9ti\" />\n    <bpmn:endEvent id=\"Event_08g74wo\">\n      <bpmn:incoming>Flow_0ctnrkv</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0ctnrkv\" sourceRef=\"Activity_0ovf9ti\" targetRef=\"Event_08g74wo\" />\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNEdge id=\"Flow_0596109_di\" bpmnElement=\"Flow_0596109\">\n        <di:waypoint x=\"248\" y=\"210\" />\n        <di:waypoint x=\"319\" y=\"210\" />\n        <di:waypoint x=\"319\" y=\"70\" />\n        <di:waypoint x=\"340\" y=\"70\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1l6ddhe_di\" bpmnElement=\"Flow_1l6ddhe\">\n        <di:waypoint x=\"500\" y=\"70\" />\n        <di:waypoint x=\"620\" y=\"70\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0ak7jl3_di\" bpmnElement=\"Flow_0ak7jl3\">\n        <di:waypoint x=\"780\" y=\"70\" />\n        <di:waypoint x=\"900\" y=\"70\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1k658ne_di\" bpmnElement=\"Flow_1k658ne\">\n        <di:waypoint x=\"1060\" y=\"70\" />\n        <di:waypoint x=\"1180\" y=\"70\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0p5pvpf_di\" bpmnElement=\"Flow_0p5pvpf\">\n        <di:waypoint x=\"1060\" y=\"70\" />\n        <di:waypoint x=\"1120\" y=\"70\" />\n        <di:waypoint x=\"1120\" y=\"230\" />\n        <di:waypoint x=\"1180\" y=\"230\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1se6g58_di\" bpmnElement=\"Flow_1se6g58\">\n        <di:waypoint x=\"1340\" y=\"230\" />\n        <di:waypoint x=\"1460\" y=\"230\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0mg72ts_di\" bpmnElement=\"Flow_0mg72ts\">\n        <di:waypoint x=\"1620\" y=\"230\" />\n        <di:waypoint x=\"1645\" y=\"230\" />\n        <di:waypoint x=\"1645\" y=\"110\" />\n        <di:waypoint x=\"1670\" y=\"110\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1vhuxa4_di\" bpmnElement=\"Flow_1vhuxa4\">\n        <di:waypoint x=\"1340\" y=\"70\" />\n        <di:waypoint x=\"1505\" y=\"70\" />\n        <di:waypoint x=\"1505\" y=\"110\" />\n        <di:waypoint x=\"1670\" y=\"110\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1hl2hlg_di\" bpmnElement=\"Flow_1hl2hlg\">\n        <di:waypoint x=\"1830\" y=\"110\" />\n        <di:waypoint x=\"1880\" y=\"110\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1ags2x6_di\" bpmnElement=\"Flow_1ags2x6\">\n        <di:waypoint x=\"2040\" y=\"110\" />\n        <di:waypoint x=\"2065\" y=\"110\" />\n        <di:waypoint x=\"2065\" y=\"10\" />\n        <di:waypoint x=\"2090\" y=\"10\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_04z80nh_di\" bpmnElement=\"Flow_04z80nh\">\n        <di:waypoint x=\"2250\" y=\"10\" />\n        <di:waypoint x=\"2285\" y=\"10\" />\n        <di:waypoint x=\"2285\" y=\"200\" />\n        <di:waypoint x=\"2320\" y=\"200\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1s7y8pf_di\" bpmnElement=\"Flow_1s7y8pf\">\n        <di:waypoint x=\"2040\" y=\"110\" />\n        <di:waypoint x=\"2170\" y=\"110\" />\n        <di:waypoint x=\"2170\" y=\"250\" />\n        <di:waypoint x=\"2320\" y=\"250\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_06k84fn_di\" bpmnElement=\"Flow_06k84fn\">\n        <di:waypoint x=\"2480\" y=\"200\" />\n        <di:waypoint x=\"2550\" y=\"200\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0ctnrkv_di\" bpmnElement=\"Flow_0ctnrkv\">\n        <di:waypoint x=\"2710\" y=\"200\" />\n        <di:waypoint x=\"2782\" y=\"200\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNShape id=\"Event_1doe2eu_di\" bpmnElement=\"Event_1doe2eu\">\n        <dc:Bounds x=\"212\" y=\"192\" width=\"36\" height=\"36\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0zayx03_di\" bpmnElement=\"Activity_0zayx03\">\n        <dc:Bounds x=\"340\" y=\"5\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1b24z4j_di\" bpmnElement=\"Activity_1b24z4j\">\n        <dc:Bounds x=\"620\" y=\"5\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1ls114p_di\" bpmnElement=\"Activity_1ls114p\">\n        <dc:Bounds x=\"900\" y=\"5\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_124e3m5_di\" bpmnElement=\"Activity_124e3m5\">\n        <dc:Bounds x=\"1180\" y=\"5\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_09ygj0a_di\" bpmnElement=\"Activity_09ygj0a\">\n        <dc:Bounds x=\"1180\" y=\"165\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0o5wo80_di\" bpmnElement=\"Activity_0o5wo80\">\n        <dc:Bounds x=\"1460\" y=\"165\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0obxv9j_di\" bpmnElement=\"Activity_0obxv9j\">\n        <dc:Bounds x=\"1670\" y=\"45\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_12vxoan_di\" bpmnElement=\"Activity_12vxoan\">\n        <dc:Bounds x=\"1880\" y=\"45\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1en7l4b_di\" bpmnElement=\"Activity_1en7l4b\">\n        <dc:Bounds x=\"2320\" y=\"135\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_03wsmua_di\" bpmnElement=\"Activity_03wsmua\">\n        <dc:Bounds x=\"2090\" y=\"-55\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0ovf9ti_di\" bpmnElement=\"Activity_0ovf9ti\">\n        <dc:Bounds x=\"2550\" y=\"135\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Event_08g74wo_di\" bpmnElement=\"Event_08g74wo\">\n        <dc:Bounds x=\"2782\" y=\"182\" width=\"36\" height=\"36\" />\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n",
+    "processName": "Xuất kho thành phẩm với PERT",
+    "processDescription": "Xuất kho thành phẩm với PERT",
+    "tasks": [
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [
+                
+            ],
+            "informedEmployees": [
+                
+            ],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Tạo phiếu xuất kho",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Người thủ kho tạo phiếu xuất kho với đầy đủ các ràng buộc về số lượng cũng như chất lượng</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0zayx03",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_1b24z4j"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Event_1doe2eu"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Chuyển kho vật lý",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Gửi thông tin về đơn hàng cho các nhân viên kho vật lý</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_1b24z4j",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_1ls114p"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_0zayx03"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Chuẩn bị nhân sự",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Thủ kho chuẩn bị nhân sự để tiến hành xuất kho</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_1ls114p",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_124e3m5"
+                },
+                {
+
+                    "task": "Activity_09ygj0a"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_1b24z4j"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Di chuyển xe lấy hàng",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên kho di chuyển xe lấy hàng ở các zone</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_124e3m5",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_0obxv9j"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_1ls114p"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Dỡ hàng từ trên kệ",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên dỡ hàng từ trên kệ dựa theo đơn hàng nhận từ thủ kho</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_09ygj0a",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_0o5wo80"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_1ls114p"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Check quẹt",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên check quẹt barcode của các mặt hàng sau khi lấy hàng từ kệ xuống:</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0o5wo80",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_0obxv9j"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_09ygj0a"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Mang hàng đến khu vực đóng gói",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Mang hàng đến khu vực đóng gói</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0obxv9j",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_12vxoan"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_0o5wo80"
+                },
+                {
+
+                    "task": "Activity_124e3m5"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Kiểm tra chất lượng hàng",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Chuyên viên kiểm tra chất lượng thực hiện kiểm tra chất lượng các mặt hàng tại khu vực đóng gói</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_12vxoan",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_03wsmua"
+                },
+                {
+
+                    "task": "Activity_1en7l4b"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_0obxv9j"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Đóng gói hàng ",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên đóng gói hàng theo đúng yêu cầu từ phía khách hàng và đảm bảo yêu cầu về mặt chất lượng</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_03wsmua",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_1en7l4b"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_12vxoan"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Đóng hàng theo lô và di chuyển đến khu vực vận chuyển",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên sử dụng xe nâng hàng để di chuyển đến khu vực vận chuyển </em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_1en7l4b",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_0ovf9ti"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_03wsmua"
+                },
+                {
+
+                    "task": "Activity_12vxoan"
+                }
+            ]
+        },
+        {
+            "collaboratedWithOrganizationalUnits": [
+                
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                
+            ],
+            "accountableEmployees": [
+                
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+           
+            "organizationalUnit": {
+            },
+            "name": "Hoàn thành xuất kho và cập nhật số liệu",
+            "description": "<h2><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Kho vật lý kết thúc quá trình xuất kho, cập nhật thông tin xuất kho vào thẻ kho, kết thúc phiếu xuất kho ERP .- Thủ kho chuyển phiếu xuất kho/ Phiếu xuất điều chuyển cho Quản lý số liệu kho vật lý để cập nhật số liệu vào Nhật ký kho,</em></strong></h2><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">-<em>Cập nhật lại cơ sở dữ liệu của kho</em></strong></p>",
+            
+                
+    
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0ovf9ti",
+            "followingTasks": [
+                {
+                    
+                    "task": "Event_08g74wo"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_1en7l4b"
+                }
+            ]
+        }
+    ]
+}

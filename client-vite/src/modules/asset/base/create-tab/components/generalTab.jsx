@@ -6,6 +6,7 @@ import { DatePicker, ErrorLabel, SelectBox, TreeSelect, ApiImage } from '../../.
 import './addAsset.css'
 import { UserActions } from '../../../../super-admin/user/redux/actions'
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions'
+import { CategoryActions } from '../../../../production/common-production/category-management/redux/actions'
 import { string2literal } from '../../../../../helpers/handleResponse'
 import { generateCode } from '../../../../../helpers/generateCode'
 import ValidationHelper from '../../../../../helpers/validationHelper'
@@ -14,7 +15,9 @@ function GeneralTab(props) {
     detailInfo: [],
     isObj: true,
     defaultAvatar: 'image/asset_blank.jpg',
-    assetType: []
+    assetType: [],
+    isVehicle: false,
+    excludingProduct: []
   })
 
   const [prevProps, setPrevProps] = useState({
@@ -33,6 +36,7 @@ function GeneralTab(props) {
   }
 
   useEffect(() => {
+    props.getCategories();
     window.$('#modal-add-asset').on('shown.bs.modal', regenerateCode)
     return () => {
       window.$('#modal-add-asset').unbind('shown.bs.modal', regenerateCode)
@@ -169,6 +173,7 @@ function GeneralTab(props) {
     setState((state) => {
       return {
         ...state,
+        isVehicle: value[0] == 'vehicle' ? true : false,
         group: value[0]
       }
     })
@@ -522,6 +527,36 @@ function GeneralTab(props) {
     }
   }
 
+  const handleVehicleKindChange = (value) => {
+    var { detailInfo } = state;
+    if (value) {
+        if (detailInfo.length > 0) {
+            detailInfo = detailInfo.filter((detailItem) => {
+                return detailItem.nameField != "vehicleKind";
+            })
+        }
+        detailInfo = [...detailInfo, { nameField: "vehicleKind", value: value[0] }]
+    } else {
+        if (detailInfo.length > 0) {
+            detailInfo = detailInfo.filter((detailItem) => {
+                return detailItem.nameField != "vehicleKind";
+            })
+        }
+    }
+    setState(state => {
+        return {
+            ...state,
+            vehicle: value[0],
+            detailInfo: detailInfo
+        }
+    });
+    props.handleChange("detailInfo", detailInfo);
+}
+
+const handleExcludingProductChange = (value) => {
+    console.log("tao day:::", value);
+}
+
   if (
     prevProps.id !== props.id ||
     prevProps.assignedToUser !== props.assignedToUser ||
@@ -569,7 +604,7 @@ function GeneralTab(props) {
     setPrevProps(props)
   }
 
-  const { id, translate, user, assetsManager, role, department, assetType } = props
+  const { id, translate, user, assetsManager, role, department, categories } = props
   const {
     img,
     defaultAvatar,
@@ -602,7 +637,10 @@ function GeneralTab(props) {
     usageLogs,
     readByRoles,
     errorOnNameFieldPosition,
-    errorOnValuePosition
+    errorOnValuePosition,
+    vehicle, 
+    isVehicle, 
+    excludingProduct
   } = state
 
   var userlist = user.list,
@@ -632,6 +670,13 @@ function GeneralTab(props) {
         parent: item.parent ? item.parent._id : null
       }
     })
+    let listCategory = categories && categories.listPaginate;
+        let categoryArr = listCategory && listCategory.map(item => {
+            return {
+                _id: item._id,
+                name: item.name,
+            };
+        })
   return (
     <div id={id} className='tab-pane active'>
       <div className='row'>
@@ -665,7 +710,7 @@ function GeneralTab(props) {
                   type='text'
                   className='form-control'
                   name='code'
-                  value={code}
+                  value={code?code:""}
                   onChange={handleCodeChange}
                   placeholder={translate('asset.general_information.asset_code')}
                   autoComplete='off'
@@ -683,7 +728,7 @@ function GeneralTab(props) {
                   type='text'
                   className='form-control'
                   name='assetName'
-                  value={assetName}
+                  value={assetName?assetName:""}
                   onChange={handleAssetNameChange}
                   placeholder={translate('asset.general_information.asset_name')}
                   autoComplete='off'
@@ -698,7 +743,7 @@ function GeneralTab(props) {
                   type='text'
                   className='form-control'
                   name='serial'
-                  value={serial}
+                  value={serial?serial:""}
                   onChange={handleSerialChange}
                   placeholder={translate('asset.general_information.serial_number')}
                   autoComplete='off'
@@ -724,6 +769,43 @@ function GeneralTab(props) {
                   onChange={handleGroupChange}
                 />
               </div>
+
+              {isVehicle &&
+                                    <>
+                                        <div className='row'>
+                                            <div className="col-md-9 offset-md-3">
+                                                <div className="form-group">
+                                                    <label>{translate('asset.asset_info.vehicle_kind')}<span className="text-red">*</span></label>
+                                                    <SelectBox
+                                                        id={`vehicle${id}`}
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        value={vehicle}
+                                                        items={[
+                                                            { value: '', text: `---${translate('asset.asset_info.select_vehicle_kind')}---` },
+                                                            { value: 'bike', text: translate('asset.asset_info.bike') },
+                                                            { value: 'truck', text: translate('asset.asset_info.truck') },
+                                                        ]}
+                                                        onChange={handleVehicleKindChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className='row'>
+                                            <div className="col-md-9 offset-md-3">
+                                                <div className="form-group">
+                                                    <label>{translate('asset.asset_info.excluded_good_category')}</label>
+                                                    <TreeSelect
+                                                        data={categoryArr}
+                                                        value={excludingProduct}
+                                                        handleChange={handleExcludingProductChange}
+                                                        mode="hierarchical"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                }
 
               {/* Loại tài sản */}
               <div className={`form-group ${!errorOnAssetType ? '' : 'has-error'}`}>
@@ -997,13 +1079,14 @@ function GeneralTab(props) {
 }
 
 function mapState(state) {
-  const { assetType, user, assetsManager, role, department } = state
-  return { assetType, user, assetsManager, role, department }
+  const { assetType, user, assetsManager, role, department, categories } = state
+  return { assetType, user, assetsManager, role, department, categories }
 }
 
 const actionCreators = {
   getUser: UserActions.get,
-  getAssetType: AssetTypeActions.getAssetTypes
+  getAssetType: AssetTypeActions.getAssetTypes,
+  getCategories: CategoryActions.getCategories,
 }
 const generalTab = connect(mapState, actionCreators)(withTranslate(GeneralTab))
 export { generalTab as GeneralTab }

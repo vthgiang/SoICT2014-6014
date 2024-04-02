@@ -121,3 +121,53 @@ exports.getNumberRequest = async (req, res) => {
         })
     }
 }
+
+exports.autoUpdateTransportRequest = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let data = req.body;
+
+        let request = await RequestService.autoUpdateTransportRequest(id, data, req.portal);
+
+        await Log.info(req.user.email, "EDIT_TRANSPORTATION_REQUEST", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["edit_successfully"],
+            content: request
+        })
+    } catch (error) {
+        await Log.error(req.user.email, "EDIT_TRANSPORTATION_REQUEST", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["edit_failed"],
+            content: error.message
+        })
+    }
+}
+
+exports.editTransportationRequest = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let data = req.body;
+
+        let request = await RequestService.editTransportationRequest(req.user, id, data, req.portal);
+
+        await Log.info(req.user.email, "EDIT_REQUEST", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["edit_successfully"],
+            content: request
+        })
+    } catch (error) {
+        await Log.error(req.user.email, "EDIT_REQUEST", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["edit_failed"],
+            content: error.message
+        })
+    }
+}

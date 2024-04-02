@@ -1,5 +1,6 @@
 import { CrmCustomerServices } from './services'
 import { CrmCustomerConstants } from './constants'
+import { convertTimeStringToInt } from "../../../transportation/utilities"
 
 export const CrmCustomerActions = {
   getCustomers,
@@ -41,7 +42,23 @@ function createCustomer(data) {
         dispatch({
           type: CrmCustomerConstants.CREATE_CRM_CUSTOMER_SUCCESS,
           payload: res.data.content
-        })
+        });
+        const resData = res.data.content;
+        const dataToSync = {
+          dxCode: resData._id,
+          name: resData.name,
+          startTime: convertTimeStringToInt(resData.startWorkingTime),
+          endTime: convertTimeStringToInt(resData.endWorkingTime),
+          penaltyCost: resData.latePenaltyCost,
+          address: resData.address,
+        }
+        CrmCustomerServices.syncCreateCustomer(dataToSync)
+          .then((res) => {
+            console.log("Add to transport system success!");
+          })
+          .catch((error) => {
+            console.log("Add to transport system failure", error);
+          })
       })
       .catch((err) => {
         dispatch({ type: CrmCustomerConstants.CREATE_CRM_CUSTOMER_FAILE })

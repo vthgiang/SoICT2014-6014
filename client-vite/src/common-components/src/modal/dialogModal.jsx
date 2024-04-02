@@ -47,6 +47,18 @@ class DialogModal extends Component {
     }
   }
 
+  handleSubmitClient = () => {
+    const { closeOnSave = true, resetOnSave = false, afterSave } = this.props;
+    this.props.func();
+    if (closeOnSave) {
+        this.closeModal(resetOnSave);
+    }
+
+    if (afterSave !== undefined) {
+        afterSave()
+    }
+}
+
   render() {
     const { translate } = this.props
     const {

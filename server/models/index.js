@@ -150,5 +150,38 @@ module.exports = {
     ProjectMilestone: require('./project/projectMilestone.model'),
 
     // news feed
+    NewsFeed: require('./news-feed/newsFeed.model'),
+
+    //Manufacturing-process
+    ProductionLine: require('./manufacturing-process/ProductionLine.model'),
+    ProductionActivity: require('./manufacturing-process/ProductionActivity.model'),
+    ManufacturingProcess: require('./manufacturing-process/ManufacturingProcess.model'),
+    ProductionActivityIssue: require('./manufacturing-process/ProductionActivityIssue.model'),
+    ActivityAssetTemplate: require('./manufacturing-process/ActivityAssetTemplate.model'),
     NewsFeed: require('./news-feed/newsFeed.model')
+    //Risk
+    ,Risk: require('./risk/risk.model'),
+    // Risk Distribution
+    RiskDistribution: require('./risk-distribution/riskDistribution.model'),
+    TaskDistribution: require('./task-distribution/taskDistribution.model'),
+    Impact: require('./risk/impact.model'),
+    BayesDataset: require('./risk-distribution/bayesDataset.model'),
+    PertEstimation: require('./task-distribution/pertEstimation.model'),
+    Exprimental:require('./risk/exprimentalAnalysis.model'),
+    RiskResponsePlan:require('./risk/riskResponsePlan.model'),
+    RiskResponsePlanRequest:require('./risk/riskResponsePlanRequest.model'),
+
+    // Transportation
+    Vehicle: require('./transportation/vehicle/vehicle.model'),
+    ProblemAssumption: require('./transportation/delivery-plan/problemAssumption.model'),
+    DeliveryPlan: require('./transportation/delivery-plan/deliveryPlan.model'),
+    Solution: require('./transportation/delivery-plan/solution.model'),
+    Journey: require('./transportation/delivery-plan/journey.model'),
+    VehicleSchedule: require('./transportation/vehicle/vehicleSchedule.model'),
+    EmployeeWorkingSchedule: require('./employee-schedule/employeeWorkingSchedule.model'),
+    VehicleCost: require('./transportation/cost/vehicleCost.model'),
+    ShipperCost: require('./transportation/cost/shipperCost.model'),
+    CostFormula: require('./transportation/cost/costFormula.model'),
+    Driver: require('./transportation/driver/driver.model'),
+    ShipperSalary: require('./transportation/driver/shipperSalary.model'),
 }

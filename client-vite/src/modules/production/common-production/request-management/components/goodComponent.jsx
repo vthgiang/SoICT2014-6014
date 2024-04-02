@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import withTranslate from 'react-redux-multilingual/lib/withTranslate'
 import { ErrorLabel, SelectBox } from '../../../../../common-components'
@@ -249,8 +249,16 @@ function GoodComponentRequest(props) {
       listGoodsByType: props.listGoods
     })
   }
-  const { translate, selectBoxName } = props
+  const { translate, selectBoxName, listGoods } = props
   const { good, errorGood, errorQuantity, listGoodsByType, requestId, errorType } = state
+  useEffect(() => {
+    if (listGoods) {
+      setState({
+        ...state,
+        listGoodsByType: listGoods
+      })
+    }
+  }, [listGoods]);
   return (
     <React.Fragment>
       <fieldset className='scheduler-border'>

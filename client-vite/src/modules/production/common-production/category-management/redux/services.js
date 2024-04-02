@@ -1,4 +1,5 @@
 import { sendRequest } from '../../../../../helpers/requestHelper'
+import sendExternalRequest from "../../../../../helpers/requestExternalServerHelpers"
 
 export const CategoryServices = {
   getCategories,
@@ -8,7 +9,8 @@ export const CategoryServices = {
   editCategory,
   deleteCategory,
   deleteManyCategories,
-  importCategory
+  importCategory,
+  syncCreateCategory
 }
 
 function getCategories(params) {
@@ -111,4 +113,8 @@ function importCategory(data) {
     true,
     'manage_warehouse.category_management'
   )
+}
+
+function syncCreateCategory(data) {
+  return sendExternalRequest.post("/goods-groups", data);
 }

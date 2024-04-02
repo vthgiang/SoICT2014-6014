@@ -1,11 +1,13 @@
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { SelectBox, DatePicker, ErrorLabel } from '../../../../common-components'
+import { SelectBox, DatePicker, ErrorLabel, TimePicker } from '../../../../common-components'
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper'
 import ValidationHelper from '../../../../helpers/validationHelper'
 import './customer.css'
 import { getData } from '../../common'
+import { formatDate } from '../../../../helpers/formatDate'
+import dayjs from "dayjs"
 
 function GeneralTabCreateForm(props) {
   const { crm, user, auth, role } = props
@@ -383,6 +385,65 @@ function GeneralTabCreateForm(props) {
   //     callBackFromParentCreateForm('linkedIn', value)
   // }
 
+  const convertDateTime = (date, time) => {
+    let splitter = date.split("-");
+    let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+    return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
+  }
+
+  const handleChangeStartWorkingTime = (value) => {
+    validateStartTime(value, true);
+  }
+
+  const handleChangeEndWorkingTime = (value) => {
+    validateEndTime(value, true);
+  }
+
+  const handleChangeLatePenaltyCost = (e) => {
+    const { value } = e.target;
+    setCustomerInfo({
+      ...customerInfo,
+      latePenaltyCost: value
+    });
+    callBackFromParentCreateForm('latePenaltyCost', value);
+  }
+
+  const validateStartTime = (value, willUpdateState = true) => {
+    let msg = undefined;
+    let startTime = convertDateTime(formatDate((new Date()).toISOString()), value);
+    let endTime = convertDateTime(formatDate((new Date()).toISOString()), endWorkingTime);
+    if (startTime > endTime) {
+      msg = "Thời gian mở cửa phải trước thời gian đóng cửa";
+    }
+    if (willUpdateState) {
+      setCustomerInfo({
+        ...customerInfo,
+        startWorkingTime: value,
+        errorStartTime: msg
+      });
+      callBackFromParentCreateForm('startWorkingTime', value);
+    }
+    return msg === undefined;
+  }
+
+  const validateEndTime = (value, willUpdateState = true) => {
+    let msg = undefined;
+    let startTime = convertDateTime(formatDate((new Date()).toISOString()), startWorkingTime);
+    let endTime = convertDateTime(formatDate((new Date()).toISOString()), value);
+    if (startTime > endTime) {
+      msg = "Thời gian đóng cửa phải sau thời gian mở cửa";
+    }
+    if (willUpdateState) {
+      setCustomerInfo({
+        ...customerInfo,
+        endWorkingTime: value,
+        errorEndTime: msg
+      });
+      callBackFromParentCreateForm('endWorkingTime', value);
+    }
+    return msg === undefined;
+  }
+
   const { translate } = props // state redux
   const { id } = props // Lấy giá trị từ component cha
   const {
@@ -402,7 +463,12 @@ function GeneralTabCreateForm(props) {
     group,
     location,
     taxNumber,
-    website
+    website,
+    startWorkingTime,
+    endWorkingTime,
+    latePenaltyCost,
+    errorEndTime,
+    errorStartTime,
   } = customerInfo
 
   const { customerNameError, customerCodeError, customerTaxNumberError } = {}
@@ -671,6 +737,40 @@ function GeneralTabCreateForm(props) {
             </div>
           </div>
           <div className='row'>
+            {/* Thời gian bắt đầu mở cửa của khách hàng */}
+            <div className="col-md-6">
+              <div className={`form-group ${!errorStartTime ? "" : "has-error"}`}>
+                <label>{"Thời gian bắt đầu mở cửa"}<span className="text-red"> * </span></label>
+                <TimePicker
+                  id={`customerStartTimePicker`}
+                  refs={`customerStartTimePicker`}
+                  value={startWorkingTime}
+                  onChange={(e) => handleChangeStartWorkingTime(e)}
+                />
+                <ErrorLabel content={errorStartTime} />
+              </div>
+            </div>
+            {/* Thời gian đóng cửa của khách hàng */}
+            <div className="col-md-6">
+              <div className={`form-group ${!errorEndTime ? "" : "has-error"}`}>
+                <label>{"Thời gian đóng cửa"}<span className="text-red"> * </span></label>
+                <TimePicker
+                  id={`customerEndTimePicker`}
+                  refs={`customerEndTimePicker`}
+                  value={endWorkingTime}
+                  onChange={(e) => handleChangeEndWorkingTime(e)}
+                />
+                <ErrorLabel content={errorEndTime} />
+              </div>
+            </div>
+
+            {/* phí phạt nếu giao hàng chậm */}
+            <div className="col-md-6">
+              <div className="form-group">
+                <label htmlFor="customer-late-penalty-cost">{"Phí phạt nếu trễ hàng"}<span className='text-red'>*</span></label>
+                <input type="number" className="form-control" name="latePenatyCost" id="lataPenaltyCost" value={latePenaltyCost ? latePenaltyCost : ""} onChange={(e) => handleChangeLatePenaltyCost(e)} placeholder="VND" />
+              </div>
+            </div>
             {/* website */}
             <div className='col-md-6'>
               <div className='form-group'>

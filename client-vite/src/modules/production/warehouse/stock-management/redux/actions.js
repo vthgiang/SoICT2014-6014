@@ -1,5 +1,6 @@
 import { StockServices } from './services'
 import { StockConstants } from './constants'
+import { convertTimeStringToInt } from '../../../../transportation/utilities'
 
 export const StockActions = {
   getAllStocks,
@@ -40,7 +41,25 @@ function getAllStocks(data) {
           dispatch({
             type: StockConstants.GET_STOCK_SUCCESS,
             payload: res.data.content
-          })
+          });
+          const resData = res.data.content;
+          let productCodes = resData?.goods.map((good) => good.good._id)
+          const dataToSync = {
+              dxCode: resData._id,
+              address: resData.address,
+              startTime: convertTimeStringToInt(resData.startTime),
+              endTime: convertTimeStringToInt(resData.endTime),
+              name: resData.name,
+              productCodes: productCodes
+          }
+          console.log(dataToSync);
+          StockServices.syncCreateStock(dataToSync)
+              .then((res) => {
+                  console.log("Add to transport system ok!");
+              })
+              .catch((error) => {
+                  console.log("Add to transport system failure", error);
+              })
         })
         .catch((err) => {
           dispatch({

@@ -1306,12 +1306,84 @@ exports.links = [
     }, {
         url: '/personal-time-sheet-log',
         apis: ['@all']
+    },
+    {    url: '/manufacturing-chain',
+        apis: ['@all']
+    }, {
+        url: '/manager-manufacturing-process',
+        apis: ['@all']
+    }, {
+        url: '/manufacturing-process',
+        apis: ['@all']
+    }, {
+        url: '/manufacturing-issue',
+        apis: ['@all']
+    }, {
+        url: '/manufacturing-task-managerment',
+        apis: ['@all']
     }, {
         url: '/employees-infomation',
         apis: ['@all']
     },
     {
+        url: '/risk',
+        apis : ['@all']
+    },
+    {
+        url:'/riskDistribution',
+        apis: ['@all']
+    },{
+        url:'/taskPert',
+        apis: ['@all']
+    },{
+        url:'/exprimentalAnalysis',
+        apis: ['@all']
+    },{
+        url:'/riskResponsePlan',
+        apis: ['@all']
+    },{
+        url:'/bayesianNetworkConfig',
+        apis: ['@all']
+    },
+    {
         url: '/majors',
         apis: ['@all']
-    }
+    },
+    // Manage transportation
+    {
+        url: '/transportation-dashboard',
+        apis: ['@all']
+    },
+    {
+        url: '/transportation-route-init',
+        apis: ['@all']
+    },
+    {
+        url: '/transportation-list-journey',
+        apis: ['@all']
+    },
+    {
+        url: '/transportation-info-vehicles',
+        apis: ['@all']
+    },
+    {
+        url: '/transportation-test-api-shipper',
+        apis: ['@all']
+    },
+    {
+        url: '/transportation-delivery-detail',
+        apis: ['@all']
+    },
+    {
+        url: '/transportation-journey-detail',
+        apis: ['@all']
+    },
+    {
+        url: '/transportation-cost-manage',
+        apis: ['@all']
+    },
+    {
+        url: '/transportation-shipper-manage',
+        apis: ['@all']
+    },
 ];

@@ -4,7 +4,6 @@ import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../
 import { withTranslate } from 'react-redux-multilingual'
 
 import { formatToTimeZoneDate } from '../../../../../helpers/formatDate'
-import ValidationHelper from '../../../../../helpers/validationHelper'
 import { generateCode } from '../../../../../helpers/generateCode'
 
 import { TransportGeneralInfoShip } from './create-transport-requirements/transportGeneralInfoShip'
@@ -17,15 +16,43 @@ import { TransportTime } from './create-transport-requirements/transportTime'
 
 import { BillActions } from '../../../warehouse/bill-management/redux/actions'
 import { CrmCustomerActions } from '../../../../crm/customer/redux/actions'
-import { GoodActions } from '../../../common-production/good-management/redux/actions'
 import { transportRequirementsActions } from '../redux/actions'
 import { transportDepartmentActions } from '../../transport-department/redux/actions'
-import { getListTypeRequirement, getValueTypeRequirement, getTypeRequirement } from '../../transportHelper/getTextFromValue'
+import { getValueTypeRequirement, getTypeRequirement } from '../../transportHelper/getTextFromValue'
 import { getGeocode } from '../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
   const { bills, transportDepartment, billFromStockModules } = props
-  const requirements = getListTypeRequirement()
+  const requirements = [
+    {
+      value: '1',
+      text: 'Giao hàng',
+      billType: '4',
+      billGroup: '2'
+    },
+    {
+      value: '2',
+      text: 'Trả hàng',
+      billType: '7',
+      billGroup: '3'
+    },
+    {
+      value: '3',
+      text: 'Chuyển thành phẩm tới kho',
+      billType: '2',
+      billGroup: '1'
+    },
+    {
+      value: '4',
+      text: 'Giao nguyên vật liệu',
+      billType: '3',
+      billGroup: '2'
+    },
+    {
+      value: '5',
+      text: 'Vận chuyển'
+    }
+  ]
 
   useEffect(() => {
     console.log(billFromStockModules, 'billFromStockModules')

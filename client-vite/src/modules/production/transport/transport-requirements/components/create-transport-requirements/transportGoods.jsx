@@ -3,13 +3,8 @@ import { connect } from 'react-redux'
 
 import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../../common-components'
 import { withTranslate } from 'react-redux-multilingual'
-import ValidationHelper from '../../../../../../helpers/validationHelper'
 
-import { exampleActions } from '../../redux/actions'
-import { BillActions } from '../../../../warehouse/bill-management/redux/actions'
-import { CrmCustomerActions } from '../../../../../crm/customer/redux/actions'
 import { GoodActions } from '../../../../common-production/good-management/redux/actions'
-import { validate } from 'uuid'
 
 function TransportGoods(props) {
   const { goods, callBackState, translate } = props

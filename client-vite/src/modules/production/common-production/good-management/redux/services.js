@@ -1,4 +1,5 @@
 import { sendRequest } from '../../../../../helpers/requestHelper'
+import externalTransportSystem from '../../../../../helpers/requestExternalServerHelpers'
 
 export const GoodServices = {
   getGoodsByType,
@@ -15,7 +16,8 @@ export const GoodServices = {
   getGoodByManageWorkRole,
   getManufacturingWorksByProductId,
   getNumberGoods,
-  importGood
+  importGood,
+  syncCreateGood
 }
 
 function getGoodsByType(params) {
@@ -205,4 +207,8 @@ function importGood(data) {
     true,
     'manage_warehouse.good_management'
   )
+}
+
+function syncCreateGood(data) {
+  return externalTransportSystem.post('/products', data)
 }

@@ -1,4 +1,5 @@
 import { sendRequest } from '../../../../../helpers/requestHelper'
+import externalTransportSystem from '../../../../../helpers/requestExternalServerHelpers'
 
 export const StockServices = {
   getAllStocks,
@@ -6,7 +7,8 @@ export const StockServices = {
   createStock,
   editStock,
   deleteStock,
-  importStock
+  importStock,
+  syncCreateStock
 }
 
 function getAllStocks(params) {

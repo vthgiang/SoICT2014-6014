@@ -1,0 +1,149 @@
+.bg-green{
+    background-color:#28a745;
+}
+.bg-yellow{
+    background-color: #ffc107!important;
+}
+.bg-red{
+    background-color: #dc3545!important;
+}
+.widget-box{
+    padding-top:0.5em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+#risk-model{
+    border: black;
+}
+.gate-way-progress {
+    font-size: 15px; 
+    font-weight: bold;
+    text-align: center;
+    background-color: transparent;
+}
+.io-zoom-controls ul {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: flex-end; */
+}
+
+.io-zoom-controls li {
+    list-style: none;
+    margin: 0px 0;
+    padding: 0 15px;
+}
+
+.io-zoom-controls button{
+    padding: 5px;
+    outline: none;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 26px;
+    color: #aaa;
+    background: none;
+    border: none;
+}
+
+.io-zoom-controls button:hover{
+    color: #fff;
+}
+
+.io-control hr {
+    border: none;
+    border-top: solid 1px #DDD;
+    width: 15px;
+}
+
+.io-control-list {
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+}
+
+.io-control-list a,
+.io-control-list a:visited {
+    padding: 0;
+    outline: none;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 26px;
+    color: #555555;
+    background: none;
+    border: none;
+}
+.chartResize{
+    width: 300px;
+    min-height: 400px;
+}
+.contain-border {
+    /* border: 1px solid; */
+    padding-left: 20px;
+    outline:dashed;
+    outline-offset:-10px;    
+    /* margin-left: 1px; */
+
+}
+
+.description-box {
+    background-color: #fff;
+    box-shadow: none;
+    border: 1px solid #f4f4f4;
+    padding: 8px 15px 15px 15px;
+    line-height: 2.3;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+.description-box.without-border {
+    border: none;
+}
+.description-box div.no-line-height {
+    line-height: initial;
+}
+.description-box > ol, .description-box > ul {
+    margin: 0;
+}
+.description-box h4 {
+    font-weight: 600;
+    line-height: 1.5;
+}
+.description-box >strong, .description-box > div > strong, .description-box li > strong {
+    font-weight: 600;
+    padding-right: 10px;
+}
+.description-box input[type='checkbox'],
+.description-box input[type='radio']{
+    margin-top: 0.5em;
+}
+.task-process-title{
+    text-align: center;
+    padding:0.5em;
+
+}
+.highlight-connection.djs-connection .djs-outline {
+    stroke: #000;
+    visibility: visible;
+    opacity: 0.7;
+    stroke-dasharray: 3;
+    fill: #d6e9c6 !important;
+  }
+  #canvas {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+  }
+
+  .dmn-js-parent {
+    position: absolute !important;
+  }
+  .dmn-drd-container {
+    height: 100%;
+  }
+  #chart{
+      width:50%;
+      max-height: fit-content;
+  }
+  .table-row{
+    color: red;
+  }

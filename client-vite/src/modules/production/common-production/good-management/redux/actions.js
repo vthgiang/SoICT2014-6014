@@ -132,7 +132,27 @@ function createGoodByType(data) {
         dispatch({
           type: GoodConstants.CREATE_GOOD_SUCCESS,
           payload: res.data.content
-        })
+        });
+        const resData = res.data.content;
+        const dataToSync = {
+          dxCode: resData._id,
+          excludingProductCodes: resData?.excludingGoods.map((good) => good.good._id),
+          goodsGroupCode: [resData.category],
+          height: resData.height,
+          weight: resData.weight,
+          length: resData.depth,
+          width: resData.width,
+          capacity: resData.volume,
+          name: resData.name,
+          price: resData.pricePerBaseUnit - (resData.salesPriceVariance ? resData.salesPriceVariance : 0)
+        }
+        GoodServices.syncCreateGood(dataToSync)
+          .then((res) => {
+            console.log("Add to transport system ok!", res);
+          })
+          .catch((error) => {
+            console.log("Add to transport system failure", error);
+          });
       })
       .catch((err) => {
         dispatch({

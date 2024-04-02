@@ -159,6 +159,12 @@ router.use("/documents", require("./modules/document/document.route"));
 
 router.use("/dashboard-unit", require("./modules/dashboard-unit/dashboardUnit.route"));
 
+// manufacturing-process
+router.use("/manufacturing-chain", require("./modules/manufacturing-process/template-production-line/productionLineTemplate.route"));
+router.use("/report-issue", require("./modules/manufacturing-process/manage-issue/manageIssue.route"));
+router.use("/manager-manufacturing-process", require("./modules/manufacturing-process/manufacturing-process-manager/manufacturingProcessManager.route"));
+router.use("/asset-template", require("./modules/manufacturing-process/manufacturing-asset-template/assetTemplate.route"));
+
 // CRM
 app.use("/crm/customers", require("./modules/crm/customer/customer.route"));
 app.use("/crm/cares", require("./modules/crm/care/care.route"));
@@ -197,12 +203,30 @@ app.use("/projects", require("./modules/project/project-management/project.route
 app.use("/projects", require("./modules/project/project-phase/projectPhase.route"));
 app.use("/project-templates", require("./modules/project-template/projectTemplate.route"));
 
+//risk
+app.use("/risk", require("./modules/risk-management/risk-list/risk.route"));
+app.use("/riskDistribution", require("./modules/risk-management/riskDistribution/riskDistribution.route"));
+app.use("/taskPert",require("./modules/risk-management/process-analysis/taskPert.route"))
+app.use("/exprimentalAnalysis",require("./modules/exprimental-analysis/exprimentalAnalysis.route"))
+app.use("/riskResponsePlan",require('./modules/risk-management/risk-response-plan/riskResponsePlan.router'))
+app.use("/riskResponsePlanRequest",require('./modules/risk-management/change-process-request/request.router'))
+
 app.use("/transport-requirement", require("./modules/production/transport/transportRequirements/transportRequirements.route"));
 app.use("/transport-plan", require("./modules/production/transport/transportPlan/transportPlan.route"));
 app.use("/transport-vehicle", require("./modules/production/transport/transportVehicle/transportVehicle.route"));
 app.use("/transport-schedule", require("./modules/production/transport/transportSchedule/transportSchedule.route"));
 app.use("/transport-process", require("./modules/production/transport/transportProcess/transportProcess.route"))
 app.use("/transport-department", require("./modules/production/transport/transportDepartment/transportDepartment.route"));
+
+// transportation module
+app.use("/transportation/vehicle", require("./modules/transportation/vehicle/vehicle.route"));
+app.use("/transportation/delivery-plan", require("./modules/transportation/delivery-plan/deliveryPlan.route"));
+app.use("/transportation/journeys", require("./modules/transportation/journey/journey.route"));
+app.use("/transportation/shippers", require("./modules/transportation/shipper-report/shipperReport.route"));
+app.use("/transportation/costs", require("./modules/transportation/cost/transportationCost.route"));
+app.use("/transportation/cost-formula", require("./modules/transportation/cost-formula/costFormula.route"));
+app.use("/transportation/manage-shipper", require("./modules/transportation/manage-shipper/manageShipper.route"));
+
 
 app.use(router);
 

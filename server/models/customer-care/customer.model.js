@@ -194,6 +194,15 @@ const CustomerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "CustomerCareUnit",
     },
+    startWorkingTime: {
+        type: String
+    },
+    endWorkingTime: {
+        type: String
+    },
+    latePenaltyCost: {
+        type: Number
+    }
 
 }
 

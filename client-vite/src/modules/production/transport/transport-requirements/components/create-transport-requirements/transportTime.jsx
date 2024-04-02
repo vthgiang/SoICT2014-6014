@@ -6,7 +6,6 @@ import { withTranslate } from 'react-redux-multilingual'
 import ValidationHelper from '../../../../../../helpers/validationHelper'
 import { formatDate, formatToTimeZoneDate } from '../../../../../../helpers/formatDate'
 
-import { exampleActions } from '../../redux/actions'
 import { BillActions } from '../../../../warehouse/bill-management/redux/actions'
 import { CrmCustomerActions } from '../../../../../crm/customer/redux/actions'
 import { GoodActions } from '../../../../common-production/good-management/redux/actions'

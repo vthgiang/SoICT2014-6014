@@ -100,7 +100,7 @@ import { bills } from '../modules/production/warehouse/bill-management/redux/red
 import { binLocations } from '../modules/production/warehouse/bin-location-management/redux/reducers'
 import { lots } from '../modules/production/warehouse/inventory-management/redux/reducers'
 import { stocks } from '../modules/production/warehouse/stock-management/redux/reducers'
-import {storage} from "../modules/production/warehouse/storage-management/redux/reducers";
+import { storage } from "../modules/production/warehouse/storage-management/redux/reducers";
 //crm
 import { cares } from '../modules/crm/care/redux/reducers'
 import { careTypes } from '../modules/crm/careType/redux/reducers'
@@ -126,6 +126,14 @@ import { taxs } from '../modules/production/order/tax/redux/reducers'
 //plan
 import { plan } from '../modules/plan/redux/reducers'
 
+// risk
+import { risk } from "../modules/risk/risk-list/redux/reducers";
+import { riskDistribution } from "../modules/risk/risk-dash-board/redux/reducers"
+import { taskPert } from "../modules/risk/process-analysis/redux/reducers"
+import { exprimentalData } from "../modules/exprimental-analysis/redux/reducers"
+import { riskResponsePlan } from "../modules/risk/risk-response-plan/redux/reducers"
+import { riskResponsePlanRequest } from "../modules/risk/change-process-request/redux/reducers"
+
 //example1
 import { example1 } from '../modules/example/example1/redux/reducers'
 
@@ -142,6 +150,9 @@ import { manufacturingPlan } from '../modules/production/manufacturing/manufactu
 import { manufacturingWorks } from '../modules/production/manufacturing/manufacturing-works/redux/reducers'
 import { purchasingRequest } from '../modules/production/manufacturing/purchasing-request/redux/reducers'
 import { workSchedule } from '../modules/production/manufacturing/work-schedule/redux/reducers'
+import { manufacturingProcess } from "../modules/production-manufacturing/manufacturing-process/redux/reducers";
+import { manufacturingLineTemplate } from "../modules/production-manufacturing/manage-chain/redux/reducers";
+import { issueReport } from "../modules/production-manufacturing/manage-issue/redux/reducers";
 
 // Transport
 import { transportDepartment } from '../modules/production/transport/transport-department/redux/reducers'
@@ -161,6 +172,13 @@ import { projectStatistic } from '../modules/project/statistic/redux/reducers'
 // Delegation
 import { delegation } from '../modules/delegation/delegation-list/redux/reducers'
 import { delegationReceive } from '../modules/delegation/delegation-receive/redux/reducers'
+
+//Transportation Quản lý vận chuyển 2
+import { delivery } from '../modules/transportation/scheduling/delivery-plan/redux/reducers';
+import { vehicle } from '../modules/transportation/vehicle/redux/reducers';
+import { journey } from '../modules/transportation/scheduling/tracking-route/redux/reducers';
+import { shipper } from '../modules/transportation/shipper/redux/reducers';
+import { transportationCostManagement } from '../modules/transportation/cost/redux/reducers';
 
 import { newsFeeds } from '../modules/home/redux/reducers'
 
@@ -345,7 +363,26 @@ const appReducer = combineReducers({
 
   Intl,
 
-  newsFeeds
+  newsFeeds,
+  //risk
+  risk,
+  riskDistribution,
+  taskPert,
+  exprimentalData,
+  riskResponsePlan,
+  riskResponsePlanRequest,
+
+  //Production manufacturing
+  manufacturingProcess,
+  manufacturingLineTemplate,
+  issueReport,
+
+  //Transportation
+  delivery,
+  vehicle,
+  journey,
+  transportationCostManagement,
+  shipper
 })
 
 const rootReducer = (state, action) => {

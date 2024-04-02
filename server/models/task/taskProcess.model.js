@@ -34,7 +34,7 @@ const TaskProcessSchema = new Schema({
         type: String,
         default: "inprocess",
         required: true,
-        enum: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled","not_initialized"],
+        enum: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled","temp_finished","approved", "not_initialized"],
     },
     creator: {
         type: Schema.Types.ObjectId,
@@ -55,6 +55,9 @@ const TaskProcessSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Task',
     }],
+    updateDataStatus : {
+        type: Schema.Types.Boolean
+    },
     processTemplate:{
         type: Schema.Types.ObjectId,
         ref: "ProcessTemplate",

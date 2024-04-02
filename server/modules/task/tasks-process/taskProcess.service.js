@@ -1,4 +1,4 @@
-const { TaskProcess, ProcessTemplate, Privilege, Role, Task, UserRole, User, OrganizationalUnit } = require(`../../../models`);
+const { TaskProcess, ProcessTemplate, Privilege, Role, Task, UserRole, User, OrganizationalUnit,TaskDistribution,PertEstimation } = require(`../../../models`);
 
 const TaskService = require(`../task-management/task.service`);
 const { connect } = require(`../../../helpers/dbHelper`);
@@ -13,8 +13,8 @@ const NotificationServices = require(`../../notification/notification.service`)
 exports.getAllXmlDiagram = async (portal, query) => {
     let userId = query.userId;
     let name = query.name;
-    let pageNumber = query.pageNumber;
-    let noResultsPerPage = query.noResultsPerPage;
+    let pageNumber = query.pageNumber ? query.pageNumber : 1;
+    let noResultsPerPage = query.noResultsPerPage ? query.noResultsPerPage : 10;
     let roles = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: userId }).populate({ path: "roleId" });
     let newRoles = roles.map(role => role.roleId);
 
@@ -110,7 +110,23 @@ exports.getXmlDiagramById = async (portal, params) => {
 exports.createXmlDiagram = async (portal, body) => {
     let info = [];
     let processTemplates = [];
+    let classMap = new Map();
+    let mostLikelyMap = new Map();
     for (const x in body.info) {
+        // lưu các giá trị class
+        if(body.info[x].class!=undefined){
+            classMap.set(body.info[x].code,parseInt(body.info[x].class))
+        }else{
+            classMap.set(body.info[x].code,1)
+        }
+        // Tạo mostlikely cho bảng estimate pert
+        if(body.info[x].numberOfDaysTaken!=undefined&&body.info[x].numberOfDaysTaken!=null){
+            console.log(' number of taksen',body.info[x].numberOfDaysTaken)
+            mostLikelyMap.set(body.info[x].code,parseInt(body.info[x].numberOfDaysTaken)+0.5)
+        }else{
+            console.log('null number of taksen')
+            mostLikelyMap.set(body.info[x].code,5)
+        }
         body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
             return {
                 name: item.name,
@@ -205,6 +221,55 @@ exports.createXmlDiagram = async (portal, body) => {
         { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
         { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
     ]);
+    // Update for analysis
+    // console.log(classMap)
+    // Tạo TaskDistribution từ ProcessTempalte
+    let process = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(data._id).populate('tasks')
+    let tasks = []
+    try{
+        if (process.tasks != undefined && process.tasks.length != 0) {
+            let count = 0
+
+            for (let task of process.tasks) {
+                let className = classMap.get(task.code)
+                let mos = mostLikelyMap.get(task.code)
+                console.log('mos',mos)
+                console.log('taskCode',task.code)
+
+                await PertEstimation(connect(DB_CONNECTION,portal)).create(
+                    {
+                        taskID: task.code,
+                        opt: mos - mos/2,
+                        mos:mos,
+                        pes: mos+mos/2
+                    }
+                )
+
+                tasks = [
+                    ...tasks,
+                    {
+                        taskID: task.code,
+                        name: task.name,
+                        description: task.description,
+                        riskTaskCPT: [],
+                        childList: task == process.tasks[process.tasks.length - 1] ? [] : task.followingTasks.map(t => t.task),
+                        parentList: task == process.tasks[0] ? [] : task.preceedingTasks.map(t => t.task),
+                        class: className
+                    }
+                ]
+                count++;
+            }
+
+        }
+        await TaskDistribution(connect(DB_CONNECTION,portal)).create({
+            processName: process.processName,
+            processDescription: process.processDescription,
+            tasks: tasks
+        })
+    }catch(er){
+        console.log(e)
+    }
+
     return data;
 }
 
@@ -414,6 +479,13 @@ exports.createTaskByProcess = async (portal, processId, body) => {
     let listProcess = [];
     let mailInfoArr = [];
     let taskProcessId = newTaskProcess._id;
+    // random number for analysis
+    let rand = await TaskProcess(connect(DB_CONNECTION, portal)).find()
+    rand = rand.length
+    let check = true
+    // let rand = Math.floor(Math.random() * 10);
+    console.log(rand)
+    let endDatePrev = new Date()
     for (let i in data) {
         let taskInformations, taskActions, cloneActions = [];
 
@@ -444,6 +516,22 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         }
         let collaboratedWithOrganizationalUnits = data[i].collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item } })
         let process = taskProcessId;
+        //Ngày cuối của task trước là ngày đầu của task sau
+        if (check != true) {
+            startDate = endDatePrev
+        }
+
+        console.log('startDate', startDate)
+        endDate = new Date(startDate)
+        endDate.setTime(endDate.getTime() + data[i].numberOfDaysTaken * 24 * 3600 * 1000)
+        // if (rand % 2 == 0) {
+        //     endDate.setTime(endDate.getTime() + data[i].numberOfDaysTaken / 2 * 24 * 3600 * 1000)
+        // } else {
+        //     endDate.setTime(endDate.getTime() + (data[i].numberOfDaysTaken + 0.5) / 2 * 24 * 3600 * 1000)
+        // }
+        endDatePrev = endDate
+        console.log('endDatePrve', endDatePrev)
+        check = false
         newTaskItem = await Task(connect(DB_CONNECTION, portal)).create({
             process: process,
             codeInProcess: data[i].code,
@@ -717,6 +805,7 @@ exports.getAllTaskProcess = async (portal, query) => {
 
     let data = await TaskProcess(connect(DB_CONNECTION, portal)).find({
         processName: { $regex: name, $options: 'i' },
+        status: { $ne: "finished" },
         $or: [
             { viewer: { $in: [userId] } },
             { manager: { $in: [userId] } },

@@ -282,12 +282,12 @@ exports.getCustomers = async (portal, companyId, query, userId, role) => {
     const listDocsTotal = await Customer(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     let customers;
-    if (page && limit) customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+    if (page && limit) customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(parseInt(page)).limit(parseInt(limit))
         .populate({ path: 'customerGroup', select: '_id name' })
         .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
-    else customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+    else customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: 'customerGroup', select: '_id name' })
         .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });

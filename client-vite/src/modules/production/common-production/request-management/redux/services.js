@@ -1,11 +1,15 @@
 import { sendRequest } from '../../../../../helpers/requestHelper'
+import externalTransportSystem from '../../../../../helpers/requestExternalServerHelpers'
 
 export const requestServices = {
   getAllRequestByCondition,
   createRequest,
   getDetailRequest,
   editRequest,
-  getNumberStatus
+  getNumberStatus,
+    syncCreateRequestTransport,
+    getAllStockWithBinLocation,
+    editTransportationRequest
 }
 
 function getAllRequestByCondition(query) {
@@ -59,6 +63,19 @@ function editRequest(id, data) {
   )
 }
 
+function editTransportationRequest(id, data) {
+  return sendRequest(
+      {
+          url: `${process.env.REACT_APP_SERVER}/product-request-management/edit-transportation/${id}`,
+          method: "PATCH",
+          data
+      },
+      true,
+      true,
+      'manufacturing.purchasing_request'
+  )
+}
+
 function getNumberStatus(query) {
   return sendRequest(
     {
@@ -69,5 +86,22 @@ function getNumberStatus(query) {
     false,
     true,
     'manufacturing.purchasing_request'
+  )
+}
+
+function syncCreateRequestTransport(data) {
+  return externalTransportSystem.post('orders/sync/create', data)
+}
+
+function getAllStockWithBinLocation(query) {
+  return sendRequest(
+      {
+          url: `${process.env.REACT_APP_SERVER}/bin-locations/get-stock-bin-location`,
+          method: "GET",
+          params: query
+      },
+      false,
+      true,
+      'manufacturing.purchasing_request'
   )
 }

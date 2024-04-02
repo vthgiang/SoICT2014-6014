@@ -168,3 +168,24 @@ exports.importBinLocations = async (req, res) => {
         });
     }
 }
+
+exports.getAllStockWithBinLocation = async (req, res) => {
+    try {
+        const stocks = await BinLocationServices.getAllStockWithBinLocation(req.query, req.portal);
+
+        await Logger.info(req.user.email, 'GET_BIN_LOCATIONS_SUCCESS', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_bin_locations_success'],
+            content: stocks
+        });
+    }
+    catch(error) {
+        await Logger.error(req.user.email, 'GET_BIN_LOCATIONS_FAILED', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_bin_locations_failed'],
+            content: error.message
+        });
+    }
+}

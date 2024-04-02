@@ -1,0 +1,191 @@
+[
+    {
+        "id":1,
+        "isRiskClass":true,
+        "name": "Con người",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[5,6,7,8],
+        "parentList":[],
+        "taskClass":[1,2],
+        "prob":-1
+        
+    },
+    {
+        "id":2,
+        "isRiskClass":true,
+        "name": "Thiết bị",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[13,14,15],
+        "parentList":[],
+        "taskClass":[2,4],
+        "prob":-1
+    },
+    {
+        "id":3,
+        "isRiskClass":true,
+        "name": "Sản phẩm",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[9,10,11,12],
+        "parentList":[],
+        "taskClass":[3],
+        "prob":-1
+    },
+   
+    {
+        "id":4,
+        "isRiskClass":true,
+        "name": "Môi trường",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[16,17],
+        "parentList":[],
+        "taskClass":[4],
+        "prob":-1
+    },
+    {
+        "id":5,
+        "isRiskClass":false,
+        "name": "Giao hàng không đúng yêu cầu",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[1,2],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":6,
+        "isRiskClass":false,
+        "name": "Dán nhãn sản phẩm sai",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[1,2],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":7,
+        "isRiskClass":false,
+        "name": "Gây hỏng móc sản phẩm trong quá trình nhận hàng",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[1,2],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":8,
+        "isRiskClass":false,
+        "name": "Dán nhãn sản phẩm không chính xác ",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[1,2],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":9,
+        "isRiskClass":false,
+        "name": "Sản phẩm không có đầy đủ thông tin",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[3],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":10,
+        "isRiskClass":false,
+        "name": "Sản phẩm chứa những khiếm khuyết tiềm ẩn",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[3],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":11,
+        "isRiskClass":false,
+        "name": "Hàng tồn kho vượt quá định mức",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[3],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":12,
+        "isRiskClass":false,
+        "name": "Số lượng sản phẩm không đủ",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[3],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":13,
+        "isRiskClass":false,
+        "name": "Chập cháy thiết bị",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[2,4],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":14,
+        "isRiskClass":false,
+        "name": "Thiết bị hỏng do va chạm",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[2,4],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":15,
+        "isRiskClass":false,
+        "name": "Thiết bị không sử dụng được do sự cố điện",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[2,4],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":16,
+        "isRiskClass":false,
+        "name": "Thiếu sáng",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[4],
+        "parentList":[],
+        "prob":-1
+    },
+    {
+        "id":17,
+        "isRiskClass":false,
+        "name": "Đường trơn trượt",
+        "probs":[],
+        "taskRelate":null,
+        "parents":[],
+        "taskClass":[4],
+        "parentList":[],
+        "prob":-1
+    }
+]

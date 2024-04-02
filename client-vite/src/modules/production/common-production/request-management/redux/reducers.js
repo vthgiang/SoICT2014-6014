@@ -22,7 +22,8 @@ const initialState = {
   hasNextPage: false,
   prevPage: 0,
   nextPage: 0,
-  currentRequest: {}
+  currentRequest: {},
+  allStockWithBinLocation: []
 }
 
 export const requestManagements = (state = initialState, action) => {
@@ -33,6 +34,8 @@ export const requestManagements = (state = initialState, action) => {
     case requestConstants.GET_DETAIL_REQUEST_REQUEST:
     case requestConstants.UPDATE_REQUEST_REQUEST:
     case requestConstants.GET_NUMBER_REQUEST_REQUEST:
+    case requestConstants.GET_ALL_STOCK_WITH_BIN_LOCATION_REQUEST:
+    case requestConstants.UPDATE_TRANSPORTATION_REQUEST_STATUS_REQUEST:
       return {
         ...state,
         isLoading: true
@@ -42,6 +45,8 @@ export const requestManagements = (state = initialState, action) => {
     case requestConstants.GET_DETAIL_REQUEST_FAILURE:
     case requestConstants.UPDATE_REQUEST_FAILURE:
     case requestConstants.GET_NUMBER_REQUEST_FAILURE:
+    case requestConstants.GET_ALL_STOCK_WITH_BIN_LOCATION_FAILURE:
+    case requestConstants.UPDATE_TRANSPORTATION_REQUEST_STATUS_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -87,6 +92,48 @@ export const requestManagements = (state = initialState, action) => {
       return {
         ...state,
         purchasingNumber: action.payload,
+        isLoading: false
+      }
+    }
+    case requestConstants.GET_ALL_STOCK_WITH_BIN_LOCATION_SUCCESS: {
+      return {
+        ...state,
+        allStockWithBinLocation: action.payload,
+        isLoading: false
+      }
+    }
+    case requestConstants.UPDATE_REALTIME_STATUS: {
+      let updateListRequest = state.listRequests;
+      let updateData = action.payload;
+      if (Array.isArray(updateData.updateRequest)) {
+        updateData.updateRequest.map((request) => {
+          console.log("update realtime", request._id);
+          let index = updateListRequest.findIndex(oldRequest => oldRequest._id == request._id);
+          if (index !== -1) {
+            console.log("update realtime ok!");
+            updateListRequest[index].status = request.status
+          }
+        });
+      } else {
+        let index = updateListRequest.findIndex(oldRequest => oldRequest._id == updateData.updateRequest._id);
+        if (index !== -1) {
+          updateListRequest[index].status = updateData.updateRequest.status
+        }
+      }
+      return {
+        ...state,
+        listRequests: updateListRequest
+      }
+    }
+    case requestConstants.UPDATE_TRANSPORTATION_REQUEST_STATUS_SUCCESS: {
+      console.log(action.payload);
+      let updateRequest = action.payload.updateRequest;
+      let index = state.listRequests.findIndex((request) => request._id == updateRequest._id);
+      if (index !== -1) {
+        state.listRequests[index] = updateRequest
+      }
+      return {
+        ...state,
         isLoading: false
       }
     }

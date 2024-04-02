@@ -37,12 +37,12 @@ const GoodSchema = new Schema({
         default: '1',
         required: true
     },
-
+     // Đơn vị cơ bản vd: ml, kg
     baseUnit: {
         type: String,
         required: true
     },
-
+    // Đơn vị quy đổi
     units: [{
 
         name: {

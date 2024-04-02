@@ -2,6 +2,7 @@ export const clearStorage = () => {
   localStorage.removeItem('currentRole')
   localStorage.removeItem('jwt')
   localStorage.removeItem('userId')
+  localStorage.removeItem('externalSessionId');
   return true
 }
 

@@ -1,0 +1,48 @@
+.detail-request-change{
+    /* text-align: left; */
+    border: 1px solid;
+    border-radius: 0px;
+    padding:0em;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.approve-infor{
+    padding: 10px;
+    display: block;
+    border: 1px solid;
+    margin: 0% 10% 5% 1%;
+    margin-left: 10%;
+}
+.detail-request-change div{
+    display: block;
+    /* width: 400px; */
+      /* float: left; */
+}
+.basic{
+    display: block;
+    float: left;
+}
+.user{
+    padding-left: 0%;
+    /* padding-left: 10%; */
+    display: block;
+    float: left;
+}
+.border-div{
+    border: 1px solid;
+    padding: 10px;
+    margin-left:100px;
+    margin-right: 100px;
+    border-radius:10px;
+    
+}
+.process-info{
+    border: solid 1px;
+    margin-left: 20%;
+    margin-right:20% ;
+    padding-bottom: 2%;
+    margin-bottom: 2%;
+}
+.search{
+    width: 50%;
+}

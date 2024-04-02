@@ -28,10 +28,10 @@ const requirements = [
     text: 'Vận chuyển'
   }
 ]
-exports.getListTypeRequirement = () => {
+export const getListTypeRequirement = () => {
   return requirements
 }
-exports.getValueTypeRequirement = (billGroup, billType) => {
+export const getValueTypeRequirement = (billGroup, billType) => {
   let res = '5'
   if (billGroup && billType) {
     requirements.map((item) => {
@@ -42,7 +42,7 @@ exports.getValueTypeRequirement = (billGroup, billType) => {
   }
   return res
 }
-exports.getTypeRequirement = (value) => {
+export const getTypeRequirement = (value) => {
   let res = ''
   if (value && requirements) {
     requirements.map((item) => {
@@ -57,7 +57,7 @@ exports.getTypeRequirement = (value) => {
   return res
 }
 
-exports.getTransportStatus = (routeOrdinal) => {
+export const getTransportStatus = (routeOrdinal) => {
   if (routeOrdinal && routeOrdinal.transportRequirement && routeOrdinal.transportRequirement.transportStatus) {
     if (String(routeOrdinal.type) === '1') {
       if (String(routeOrdinal.transportRequirement.transportStatus.fromAddress?.status) === '1') {
@@ -106,10 +106,10 @@ const transportRequirementStatus = [
     text: 'Vận chuyển thất bại'
   }
 ]
-exports.getListTransportRequirementStatus = () => {
+export const getListTransportRequirementStatus = () => {
   return transportRequirementStatus
 }
-exports.getTransportRequirementStatus = (value) => {
+export const getTransportRequirementStatus = (value) => {
   let res = ''
   let k = transportRequirementStatus.filter((r) => String(r.value) === String(value))
   if (k && k.length !== 0) {
@@ -136,10 +136,10 @@ const planStatus = [
     text: 'Hoàn thành'
   }
 ]
-exports.getListPlanStatus = () => {
+export const getListPlanStatus = () => {
   return planStatus
 }
-exports.getPlanStatus = (value) => {
+export const getPlanStatus = (value) => {
   let res = ''
   let tmp = planStatus.filter((r) => String(r.value) === String(value))
   if (tmp && tmp.length !== 0) {
@@ -148,7 +148,7 @@ exports.getPlanStatus = (value) => {
   return res
 }
 
-exports.checkFinishMission = (mission) => {
+export const checkFinishMission = (mission) => {
   if (Number(mission.type) === 1) {
     if (mission.transportRequirement?.transportStatus?.fromAddress) {
       return true
@@ -163,3 +163,4 @@ exports.checkFinishMission = (mission) => {
     }
   }
 }
+

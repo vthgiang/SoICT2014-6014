@@ -8,5 +8,6 @@ router.post('/', auth, ProductRequestManagementController.createRequest);
 router.get('/', auth, ProductRequestManagementController.getAllRequestByCondition);
 router.get('/:id', auth, ProductRequestManagementController.getRequestById);
 router.patch('/:id', auth, ProductRequestManagementController.editRequest);
+router.patch('/edit-transportation/:id', auth, ProductRequestManagementController.editTransportationRequest);
 
 module.exports = router;

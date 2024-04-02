@@ -28,7 +28,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
   delete entries['create.data-store']
   delete entries['create.data-object']
   delete entries['create.group']
-  delete entries['create.participant-expanded']
+  // delete entries['create.participant-expanded']
   return entries
 }
 
@@ -47,6 +47,10 @@ ElementFactory.prototype._getDefaultSize = function (semantic) {
   if (is(semantic, 'bpmn:Event')) {
     return { width: 36, height: 36 }
   }
+
+  if(is(semantic, 'bpmn:Participant')){
+		return { width: 350, height: 250 };
+	}
 
   if (is(semantic, 'bpmn:TextAnnotation')) {
     return { width: 100, height: 30 }

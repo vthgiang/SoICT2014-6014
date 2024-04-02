@@ -1,0 +1,12 @@
+const express = require('express');
+const router = express.Router();
+const exprimentalAnalysisController = require('./exprimentalAnalysis.controller');
+const { auth } = require(`../../middleware`);
+router.post('/', auth,exprimentalAnalysisController.analysis);
+router.post('/riskDataset', auth,exprimentalAnalysisController.createRiskDataset);
+router.post('/taskDataset', auth,exprimentalAnalysisController.createTaskDataset);
+router.post('/riskInformation', auth,exprimentalAnalysisController.createRiskDistribution);
+router.post('/taskInformation', auth,exprimentalAnalysisController.createTaskDistribution);
+router.post('/pertData', auth,exprimentalAnalysisController.createPertData);
+router.post('/probabilityDistribution', auth,exprimentalAnalysisController.getProbablityDistribution);
+module.exports = router;

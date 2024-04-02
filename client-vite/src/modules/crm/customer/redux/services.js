@@ -1,4 +1,5 @@
 import { sendRequest } from '../../../../helpers/requestHelper'
+import sendRequestExternalSystem from '../../../../helpers/requestExternalServerHelpers'
 
 export const CrmCustomerServices = {
   getCustomers,
@@ -13,7 +14,8 @@ export const CrmCustomerServices = {
   getCustomerPromotions,
   editPromotion,
   deletePromotion,
-  usePromotion
+  usePromotion,
+  syncCreateCustomer
 }
 
 function getCustomers(params) {
@@ -178,4 +180,8 @@ function deletePromotion(id, data) {
     true,
     'crm.customer'
   )
+}
+
+function syncCreateCustomer (data) {
+  return sendRequestExternalSystem.post('/customers', data);
 }

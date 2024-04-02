@@ -1,0 +1,972 @@
+{
+    "processName": "Xuất kho thành phẩm",
+    "processDescription": "Xuất kho thành phẩm",
+    "viewer": [
+        "60712abf45571f26b8bb1d35"
+    ],
+    "manager": [
+        "60712abf45571f26b8bb1d38"
+    ],
+    "xmlDiagram": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"Event_039tpbh\">\n      <bpmn:outgoing>Flow_177nlv6</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:task id=\"Activity_0ncs7sc\" shapeName=\"Tạo phiếu xuất kho\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_177nlv6</bpmn:incoming>\n      <bpmn:outgoing>Flow_10k1sct</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_177nlv6\" sourceRef=\"Event_039tpbh\" targetRef=\"Activity_0ncs7sc\" />\n    <bpmn:task id=\"Activity_1az3urw\" shapeName=\"Chuyển kho vật lý\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_10k1sct</bpmn:incoming>\n      <bpmn:outgoing>Flow_1063ivg</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_10k1sct\" sourceRef=\"Activity_0ncs7sc\" targetRef=\"Activity_1az3urw\" />\n    <bpmn:task id=\"Activity_0waat5l\" shapeName=\"Chuẩn bị nhân sự\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_1063ivg</bpmn:incoming>\n      <bpmn:outgoing>Flow_011e3t0</bpmn:outgoing>\n      <bpmn:outgoing>Flow_051sosj</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1063ivg\" sourceRef=\"Activity_1az3urw\" targetRef=\"Activity_0waat5l\" />\n    <bpmn:task id=\"Activity_1xeoxk5\" shapeName=\"Di chuyển xe lấy hàng\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_011e3t0</bpmn:incoming>\n      <bpmn:outgoing>Flow_1iwyew2</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_011e3t0\" sourceRef=\"Activity_0waat5l\" targetRef=\"Activity_1xeoxk5\" />\n    <bpmn:task id=\"Activity_0760q8s\" shapeName=\"Dỡ hàng từ trên kệ\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_051sosj</bpmn:incoming>\n      <bpmn:outgoing>Flow_0135vrg</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_051sosj\" sourceRef=\"Activity_0waat5l\" targetRef=\"Activity_0760q8s\" />\n    <bpmn:task id=\"Activity_0d8rdwx\" shapeName=\"Check quẹt\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_0135vrg</bpmn:incoming>\n      <bpmn:outgoing>Flow_14m64dq</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_0135vrg\" sourceRef=\"Activity_0760q8s\" targetRef=\"Activity_0d8rdwx\" />\n    <bpmn:task id=\"Activity_12jpbi7\" shapeName=\"Mang hàng đến khu vực đóng gói\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_1iwyew2</bpmn:incoming>\n      <bpmn:incoming>Flow_14m64dq</bpmn:incoming>\n      <bpmn:outgoing>Flow_0d83bg2</bpmn:outgoing>\n      <bpmn:outgoing>Flow_0bw9oin</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1iwyew2\" sourceRef=\"Activity_1xeoxk5\" targetRef=\"Activity_12jpbi7\" />\n    <bpmn:sequenceFlow id=\"Flow_14m64dq\" sourceRef=\"Activity_0d8rdwx\" targetRef=\"Activity_12jpbi7\" />\n    <bpmn:task id=\"Activity_0mbwjcd\" shapeName=\"Kiểm tra chất lượng hàng\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_0d83bg2</bpmn:incoming>\n      <bpmn:outgoing>Flow_0h3e7ex</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_0d83bg2\" sourceRef=\"Activity_12jpbi7\" targetRef=\"Activity_0mbwjcd\" />\n    <bpmn:task id=\"Activity_1v876x5\" shapeName=\"Đóng gói hàng \" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_0bw9oin</bpmn:incoming>\n      <bpmn:outgoing>Flow_12njfre</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_0bw9oin\" sourceRef=\"Activity_12jpbi7\" targetRef=\"Activity_1v876x5\" />\n    <bpmn:task id=\"Activity_1smoykj\" shapeName=\"Đóng hàng theo lô và di chuyển đến khu vực vận chuyển\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_12njfre</bpmn:incoming>\n      <bpmn:incoming>Flow_0h3e7ex</bpmn:incoming>\n      <bpmn:outgoing>Flow_1hhmw9o</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_12njfre\" sourceRef=\"Activity_1v876x5\" targetRef=\"Activity_1smoykj\" />\n    <bpmn:sequenceFlow id=\"Flow_0h3e7ex\" sourceRef=\"Activity_0mbwjcd\" targetRef=\"Activity_1smoykj\" />\n    <bpmn:task id=\"Activity_145tv6a\" shapeName=\"Hoàn thành xuất kho và cập nhật số liệu\" responsibleName=\"Nguyễn Văn Danh\" accountableName=\"Nguyễn Văn Danh\">\n      <bpmn:incoming>Flow_1hhmw9o</bpmn:incoming>\n      <bpmn:outgoing>Flow_1lsg969</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_1hhmw9o\" sourceRef=\"Activity_1smoykj\" targetRef=\"Activity_145tv6a\" />\n    <bpmn:endEvent id=\"Event_155ysv1\">\n      <bpmn:incoming>Flow_1lsg969</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_1lsg969\" sourceRef=\"Activity_145tv6a\" targetRef=\"Event_155ysv1\" />\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNEdge id=\"Flow_1lsg969_di\" bpmnElement=\"Flow_1lsg969\">\n        <di:waypoint x=\"2800\" y=\"0\" />\n        <di:waypoint x=\"2882\" y=\"0\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1hhmw9o_di\" bpmnElement=\"Flow_1hhmw9o\">\n        <di:waypoint x=\"2430\" y=\"0\" />\n        <di:waypoint x=\"2640\" y=\"0\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0h3e7ex_di\" bpmnElement=\"Flow_0h3e7ex\">\n        <di:waypoint x=\"2210\" y=\"130\" />\n        <di:waypoint x=\"2240\" y=\"130\" />\n        <di:waypoint x=\"2240\" y=\"0\" />\n        <di:waypoint x=\"2270\" y=\"0\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_12njfre_di\" bpmnElement=\"Flow_12njfre\">\n        <di:waypoint x=\"2060\" y=\"-50\" />\n        <di:waypoint x=\"2165\" y=\"-50\" />\n        <di:waypoint x=\"2165\" y=\"0\" />\n        <di:waypoint x=\"2270\" y=\"0\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0bw9oin_di\" bpmnElement=\"Flow_0bw9oin\">\n        <di:waypoint x=\"1870\" y=\"65\" />\n        <di:waypoint x=\"1870\" y=\"40\" />\n        <di:waypoint x=\"1980\" y=\"40\" />\n        <di:waypoint x=\"1980\" y=\"15\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0d83bg2_di\" bpmnElement=\"Flow_0d83bg2\">\n        <di:waypoint x=\"1950\" y=\"130\" />\n        <di:waypoint x=\"2050\" y=\"130\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_14m64dq_di\" bpmnElement=\"Flow_14m64dq\">\n        <di:waypoint x=\"1690\" y=\"280\" />\n        <di:waypoint x=\"1740\" y=\"280\" />\n        <di:waypoint x=\"1740\" y=\"130\" />\n        <di:waypoint x=\"1790\" y=\"130\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1iwyew2_di\" bpmnElement=\"Flow_1iwyew2\">\n        <di:waypoint x=\"1410\" y=\"120\" />\n        <di:waypoint x=\"1600\" y=\"120\" />\n        <di:waypoint x=\"1600\" y=\"130\" />\n        <di:waypoint x=\"1790\" y=\"130\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0135vrg_di\" bpmnElement=\"Flow_0135vrg\">\n        <di:waypoint x=\"1410\" y=\"280\" />\n        <di:waypoint x=\"1530\" y=\"280\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_051sosj_di\" bpmnElement=\"Flow_051sosj\">\n        <di:waypoint x=\"1130\" y=\"120\" />\n        <di:waypoint x=\"1190\" y=\"120\" />\n        <di:waypoint x=\"1190\" y=\"280\" />\n        <di:waypoint x=\"1250\" y=\"280\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_011e3t0_di\" bpmnElement=\"Flow_011e3t0\">\n        <di:waypoint x=\"1130\" y=\"120\" />\n        <di:waypoint x=\"1250\" y=\"120\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_1063ivg_di\" bpmnElement=\"Flow_1063ivg\">\n        <di:waypoint x=\"850\" y=\"120\" />\n        <di:waypoint x=\"970\" y=\"120\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_10k1sct_di\" bpmnElement=\"Flow_10k1sct\">\n        <di:waypoint x=\"570\" y=\"120\" />\n        <di:waypoint x=\"690\" y=\"120\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_177nlv6_di\" bpmnElement=\"Flow_177nlv6\">\n        <di:waypoint x=\"280\" y=\"182\" />\n        <di:waypoint x=\"280\" y=\"120\" />\n        <di:waypoint x=\"410\" y=\"120\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNShape id=\"Event_039tpbh_di\" bpmnElement=\"Event_039tpbh\">\n        <dc:Bounds x=\"262\" y=\"182\" width=\"36\" height=\"36\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0ncs7sc_di\" bpmnElement=\"Activity_0ncs7sc\">\n        <dc:Bounds x=\"410\" y=\"55\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1az3urw_di\" bpmnElement=\"Activity_1az3urw\">\n        <dc:Bounds x=\"690\" y=\"55\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0waat5l_di\" bpmnElement=\"Activity_0waat5l\">\n        <dc:Bounds x=\"970\" y=\"55\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1xeoxk5_di\" bpmnElement=\"Activity_1xeoxk5\">\n        <dc:Bounds x=\"1250\" y=\"55\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0760q8s_di\" bpmnElement=\"Activity_0760q8s\">\n        <dc:Bounds x=\"1250\" y=\"215\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0d8rdwx_di\" bpmnElement=\"Activity_0d8rdwx\">\n        <dc:Bounds x=\"1530\" y=\"215\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_12jpbi7_di\" bpmnElement=\"Activity_12jpbi7\">\n        <dc:Bounds x=\"1790\" y=\"65\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_0mbwjcd_di\" bpmnElement=\"Activity_0mbwjcd\">\n        <dc:Bounds x=\"2050\" y=\"65\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1v876x5_di\" bpmnElement=\"Activity_1v876x5\">\n        <dc:Bounds x=\"1900\" y=\"-115\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_1smoykj_di\" bpmnElement=\"Activity_1smoykj\">\n        <dc:Bounds x=\"2270\" y=\"-65\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_145tv6a_di\" bpmnElement=\"Activity_145tv6a\">\n        <dc:Bounds x=\"2640\" y=\"-65\" width=\"160\" height=\"130\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Event_155ysv1_di\" bpmnElement=\"Event_155ysv1\">\n        <dc:Bounds x=\"2882\" y=\"-18\" width=\"36\" height=\"36\" />\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n",
+    "creator": "60712abf45571f26b8bb1d38",
+    "taskList": {
+        "Activity_0ncs7sc": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d5a"
+                    ],
+                    "deputyManagers": [],
+                    "employees": [
+                        "60712abf45571f26b8bb1d59"
+                    ],
+                    
+                    "name": "Nhà máy sản xuất thuốc bột",
+                    "description": "Nhà máy sản xuất thuốc bột của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "createdAt": "2021-04-10T04:34:07.424Z",
+                    "updatedAt": "2021-04-10T04:34:07.424Z",
+                    "__v": 0
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d52"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d51"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d50"
+                ],
+                
+                "name": "Phòng kinh doanh",
+                "description": "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": "60712abf45571f26b8bb1d7a",
+                "__v": 0,
+                "createdAt": "2021-04-10T04:34:07.421Z",
+                "updatedAt": "2021-04-10T04:34:07.421Z"
+            },
+            "name": "Tạo phiếu xuất kho",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Người thủ kho tạo phiếu xuất kho với đầy đủ các ràng buộc về số lượng cũng như chất lượng</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0ncs7sc",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_1az3urw"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Event_039tpbh"
+                }
+            ],
+            "startDate": "10-04-2021",
+            "endDate": "15-04-2021"
+        },
+        "Activity_1az3urw": {
+            "collaboratedWithOrganizationalUnits": [],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Chuyển kho vật lý",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Gửi thông tin về đơn hàng cho các nhân viên kho vật lý</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_1az3urw",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_0waat5l"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_0ncs7sc"
+                }
+            ],
+            "startDate": "16-04-2021",
+            "endDate": "24-04-2021"
+        },
+        "Activity_0waat5l": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d5c"
+                    ],
+                    "deputyManagers": [],
+                    "employees": [
+                        "60712abf45571f26b8bb1d5b"
+                    ],
+                    
+                    "name": "Nhà máy sản xuất thuốc nước",
+                    "description": "Nhà máy sản xuất thuốc nước của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "createdAt": "2021-04-10T04:34:07.427Z",
+                    "updatedAt": "2021-04-10T04:34:07.427Z",
+                    "__v": 0
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Chuẩn bị nhân sự",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Thủ kho chuẩn bị nhân sự để tiến hành xuất kho</em></strong></p><p><br></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0waat5l",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_1xeoxk5"
+                },
+                {
+                    
+                    "task": "Activity_0760q8s"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_1az3urw"
+                }
+            ],
+            "startDate": "25-04-2021",
+            "endDate": "01-05-2021"
+        },
+        "Activity_1xeoxk5": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d52"
+                    ],
+                    "deputyManagers": [
+                        "60712abf45571f26b8bb1d51"
+                    ],
+                    "employees": [
+                        "60712abf45571f26b8bb1d50"
+                    ],
+                    
+                    "name": "Phòng kinh doanh",
+                    "description": "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "__v": 0,
+                    "createdAt": "2021-04-10T04:34:07.421Z",
+                    "updatedAt": "2021-04-10T04:34:07.421Z"
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Di chuyển xe lấy hàng",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên kho di chuyển xe lấy hàng ở các zone</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_1xeoxk5",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_12jpbi7"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_0waat5l"
+                }
+            ],
+            "startDate": "02-05-2021",
+            "endDate": "05-05-2021"
+        },
+        "Activity_0760q8s": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d5c"
+                    ],
+                    "deputyManagers": [],
+                    "employees": [
+                        "60712abf45571f26b8bb1d5b"
+                    ],
+                    
+                    "name": "Nhà máy sản xuất thuốc nước",
+                    "description": "Nhà máy sản xuất thuốc nước của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "createdAt": "2021-04-10T04:34:07.427Z",
+                    "updatedAt": "2021-04-10T04:34:07.427Z",
+                    "__v": 0
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Dỡ hàng từ trên kệ",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên dỡ hàng từ trên kệ dựa theo đơn hàng nhận từ thủ kho</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0760q8s",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_0d8rdwx"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_0waat5l"
+                }
+            ],
+            "startDate": "06-05-2021",
+            "endDate": "12-05-2021"
+        },
+        "Activity_0d8rdwx": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d5c"
+                    ],
+                    "deputyManagers": [],
+                    "employees": [
+                        "60712abf45571f26b8bb1d5b"
+                    ],
+                    
+                    "name": "Nhà máy sản xuất thuốc nước",
+                    "description": "Nhà máy sản xuất thuốc nước của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "createdAt": "2021-04-10T04:34:07.427Z",
+                    "updatedAt": "2021-04-10T04:34:07.427Z",
+                    "__v": 0
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Check quẹt",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên check quẹt barcode của các mặt hàng sau khi lấy hàng từ kệ xuống:</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0d8rdwx",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_12jpbi7"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_0760q8s"
+                }
+            ],
+            "startDate": "13-05-2021",
+            "endDate": "20-05-2021"
+        },
+        "Activity_12jpbi7": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d5c"
+                    ],
+                    "deputyManagers": [],
+                    "employees": [
+                        "60712abf45571f26b8bb1d5b"
+                    ],
+                    
+                    "name": "Nhà máy sản xuất thuốc nước",
+                    "description": "Nhà máy sản xuất thuốc nước của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "createdAt": "2021-04-10T04:34:07.427Z",
+                    "updatedAt": "2021-04-10T04:34:07.427Z",
+                    "__v": 0
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d52"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d51"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d50"
+                ],
+                
+                "name": "Phòng kinh doanh",
+                "description": "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": "60712abf45571f26b8bb1d7a",
+                "__v": 0,
+                "createdAt": "2021-04-10T04:34:07.421Z",
+                "updatedAt": "2021-04-10T04:34:07.421Z"
+            },
+            "name": "Mang hàng đến khu vực đóng gói",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Mang hàng đến khu vực đóng gói</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_12jpbi7",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_0mbwjcd"
+                },
+                {
+                    
+                    "task": "Activity_1v876x5"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_1xeoxk5"
+                },
+                {
+                    
+                    "task": "Activity_0d8rdwx"
+                }
+            ],
+            "startDate": "21-05-2021",
+            "endDate": "24-05-2021"
+        },
+        "Activity_0mbwjcd": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d5c"
+                    ],
+                    "deputyManagers": [],
+                    "employees": [
+                        "60712abf45571f26b8bb1d5b"
+                    ],
+                    
+                    "name": "Nhà máy sản xuất thuốc nước",
+                    "description": "Nhà máy sản xuất thuốc nước của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "createdAt": "2021-04-10T04:34:07.427Z",
+                    "updatedAt": "2021-04-10T04:34:07.427Z",
+                    "__v": 0
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Kiểm tra chất lượng hàng",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Chuyên viên kiểm tra chất lượng thực hiện kiểm tra chất lượng các mặt hàng tại khu vực đóng gói</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_0mbwjcd",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_1smoykj"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_12jpbi7"
+                }
+            ],
+            "startDate": "25-05-2021",
+            "endDate": "01-06-2021"
+        },
+        "Activity_1v876x5": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d52"
+                    ],
+                    "deputyManagers": [
+                        "60712abf45571f26b8bb1d51"
+                    ],
+                    "employees": [
+                        "60712abf45571f26b8bb1d50"
+                    ],
+                    
+                    "name": "Phòng kinh doanh",
+                    "description": "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "__v": 0,
+                    "createdAt": "2021-04-10T04:34:07.421Z",
+                    "updatedAt": "2021-04-10T04:34:07.421Z"
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Đóng gói hàng ",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên đóng gói hàng theo đúng yêu cầu từ phía khách hàng và đảm bảo yêu cầu về mặt chất lượng</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_1v876x5",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_1smoykj"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_12jpbi7"
+                }
+            ],
+            "startDate": "02-06-2021",
+            "endDate": "08-06-2021"
+        },
+        "Activity_1smoykj": {
+            "collaboratedWithOrganizationalUnits": [
+                {
+                    "managers": [
+                        "60712abf45571f26b8bb1d52"
+                    ],
+                    "deputyManagers": [
+                        "60712abf45571f26b8bb1d51"
+                    ],
+                    "employees": [
+                        "60712abf45571f26b8bb1d50"
+                    ],
+                    
+                    "name": "Phòng kinh doanh",
+                    "description": "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                    "parent": "60712abf45571f26b8bb1d7a",
+                    "__v": 0,
+                    "createdAt": "2021-04-10T04:34:07.421Z",
+                    "updatedAt": "2021-04-10T04:34:07.421Z"
+                }
+            ],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Đóng hàng theo lô và di chuyển đến khu vực vận chuyển",
+            "description": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Nhân viên sử dụng xe nâng hàng để di chuyển đến khu vực vận chuyển </em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_1smoykj",
+            "followingTasks": [
+                {
+                    
+                    "task": "Activity_145tv6a"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_1v876x5"
+                },
+                {
+                    
+                    "task": "Activity_0mbwjcd"
+                }
+            ],
+            "startDate": "09-06-2021",
+            "endDate": "12-06-2021"
+        },
+        "Activity_145tv6a": {
+            "collaboratedWithOrganizationalUnits": [],
+            "readByEmployees": [],
+            "responsibleEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "accountableEmployees": [
+                {
+                    
+                    "name": "Nguyễn Văn Danh",
+                    "email": "nvd.vnist@gmail.com",
+                    "id": "60712abf45571f26b8bb1d38"
+                }
+            ],
+            "consultedEmployees": [],
+            "informedEmployees": [],
+            "formula": "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+            "status": false,
+            "numberOfUse": 0,
+            
+            "organizationalUnit": {
+                "managers": [
+                    "60712abf45571f26b8bb1d4f"
+                ],
+                "deputyManagers": [
+                    "60712abf45571f26b8bb1d4e"
+                ],
+                "employees": [
+                    "60712abf45571f26b8bb1d4d"
+                ],
+                
+                "name": "Ban giám đốc",
+                "description": "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "parent": null,
+                "createdAt": "2021-04-10T04:34:07.411Z",
+                "updatedAt": "2021-04-10T04:34:07.411Z",
+                "__v": 0
+            },
+            "name": "Hoàn thành xuất kho và cập nhật số liệu",
+            "description": "<h2><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><em>- Kho vật lý kết thúc quá trình xuất kho, cập nhật thông tin xuất kho vào thẻ kho, kết thúc phiếu xuất kho ERP .- Thủ kho chuyển phiếu xuất kho/ Phiếu xuất điều chuyển cho Quản lý số liệu kho vật lý để cập nhật số liệu vào Nhật ký kho,</em></strong></h2><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">-<em>Cập nhật lại cơ sở dữ liệu của kho</em></strong></p>",
+            "creator": {
+                
+                "name": "Nguyễn Văn Danh",
+                "email": "nvd.vnist@gmail.com",
+                "id": "60712abf45571f26b8bb1d38"
+            },
+            "numberOfDaysTaken": null,
+            "priority": 3,
+            "taskActions": [],
+            "taskInformations": [],
+            "code": "Activity_145tv6a",
+            "followingTasks": [
+                {
+                    
+                    "task": "Event_155ysv1"
+                }
+            ],
+            "preceedingTasks": [
+                {
+                    
+                    "task": "Activity_1smoykj"
+                }
+            ],
+            "startDate": "13-06-2021",
+            "endDate": "18-06-2021"
+        }
+    },
+    "startDate": "10-04-2021",
+    "endDate": "18-06-2021"
+}

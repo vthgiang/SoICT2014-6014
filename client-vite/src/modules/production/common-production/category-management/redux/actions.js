@@ -42,7 +42,19 @@ function getCategories() {
         dispatch({
           type: CategoryConstants.GETALL_CATEGORY_SUCCESS,
           payload: res.data.content
-        })
+        });
+        const resData = res.data.content.list;
+        const newCategory = resData.pop();
+        const dataToSync = {
+          name: newCategory.name,
+          detail: newCategory.description,
+          dxCode: newCategory._id
+        }
+        console.log(dataToSync);
+        CategoryServices.syncCreateCategory(dataToSync)
+          .then(res => {
+            console.log("Add to external system success", res.data.data);
+          });
       })
       .catch((err) => {
         dispatch({
@@ -82,14 +94,26 @@ function createCategory(data) {
         dispatch({
           type: CategoryConstants.CREATE_CATEGORY_SUCCESS,
           payload: res.data.content
-        })
+        });
+        const resData = res.data.content.list;
+        const newCategory = resData.pop();
+        const dataToSync = {
+          name: newCategory.name,
+          detail: newCategory.description,
+          dxCode: newCategory._id
+        }
+        console.log(dataToSync);
+        CategoryServices.syncCreateCategory(dataToSync)
+          .then(res => {
+            console.log("Add to external system success", res.data.data);
+          });
       })
       .catch((err) => {
         dispatch({
           type: CategoryConstants.CREATE_CATEGORY_FAILURE,
           error: err
         })
-      })
+      });
   }
 }
 
