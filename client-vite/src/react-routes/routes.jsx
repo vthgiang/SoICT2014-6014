@@ -229,6 +229,7 @@ const CarrierAllTimesTransportMission = lazy(() => import("../modules/production
 // Quản lý vận chuyển 2
 const DashBoardTransportationUnit = lazy(() => import("../modules/transportation/dashboard/components"))
 const InitializationType = lazy(() => import("../modules/transportation/scheduling/delivery-plan/components"));
+const DeliveryPlanList = lazy(()=> import("../modules/transportation/scheduling/delivery-plan/components"))
 const VehiclesTransportation = lazy(() => import("../modules/transportation/vehicle/components"));
 const DetailSolution = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/detailSolution'));
 const Journeys = lazy(() => import("../modules/transportation/scheduling/tracking-route/components/index"));

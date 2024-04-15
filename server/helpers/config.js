@@ -1962,18 +1962,6 @@ const LINKS = [
             ROOT_ROLES.EMPLOYEE.name,
         ],
     },
-    {
-        url: '/transportation-cost-manage',
-        description: 'Chi phí vận chuyển',
-        category: LINK_CATEGORY.TRANSPORTATION.name,
-        roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
-    },
-    {
-        url: '/transportation-shipper-manage',
-        description: 'Nhân viên giao hàng',
-        category: LINK_CATEGORY.TRANSPORTATION.name,
-        roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
-    },
 
     // Quản lý vận chuyển 3
     {
@@ -2133,16 +2121,6 @@ const LINKS = [
         components: getComponentsInLink('/manage-transport3-requirement'),
     },
 
-    // Quan li du an
-    {
-        url: "/transportation-route-init",
-        description: "Đơn vận chuyển",
-        category: LINK_CATEGORY.TRANSPORTATION.name,
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.ADMIN.name,
-        ]
-    },
     {
         url: "/transportation-list-journey",
         description: "Danh sách lộ trình",

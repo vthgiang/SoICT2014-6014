@@ -310,6 +310,7 @@ function CreateTransportRequestForm(props) {
 
     // Tìm ra kho tối ưu phục vụ cho đơn hàng của khách
     const handleSearchOptimalStock = () => {
+
         setState({
             ...state,
             isSearchingStock: true
@@ -370,7 +371,7 @@ function CreateTransportRequestForm(props) {
     const getAvailableStocks = () => {
         const { listGoods } = state;
         let listStock = requestManagements.allStockWithBinLocation?.listStock;
-
+        
         let listRequestGood = listGoods.map((good) => {
             return {
                 id: good.goodId,
@@ -396,6 +397,7 @@ function CreateTransportRequestForm(props) {
             })
             if (check) return true;
         })
+
         return availableStock;
     }
 
