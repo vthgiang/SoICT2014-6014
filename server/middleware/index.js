@@ -11,7 +11,10 @@ const { decryptMessage } = require('../helpers/functionHelper');
 const { compareDate } = require('../helpers/functionHelper');
 const rateLimit = require("express-rate-limit");
 const DelegationService = require("../modules/delegation/delegation.service");
+const { default: axios } = require("axios");
 const pushLog = false;
+
+require("dotenv").config();
 
 /**
  * ****************************************
@@ -26,41 +29,67 @@ const pushLog = false;
 exports.authFunc = (checkPage = true) => {
     return async (req, res, next) => {
         try {
-            /**
-             * 2 types of utk:
-             * - token được tạo cho phiên đăng nhập của người dùng
-             * - token cho phép người dùng dùng previlegeAPI
-             */
-
-            const token = req.header("utk"); //JWT nhận từ người dùng
-            if (!token) throw ["access_denied_4001"];
-
-            /**
-             * Giải mã token gửi lên để check dữ liệu trong token
-             */
-            let verified;
-            try {
-                verified = await jwt.verify(token, process.env.TOKEN_SECRET);
-            } catch (error) {
-                throw ["access_denied_4002"];
-            }
-
-            req.user = verified;
-            req.token = token;
-            req.thirdParty = verified.thirdParty;
-            req.portal = req.thirdParty ? verified.portal : (!req.user.company
-                ? process.env.DB_NAME
-                : req.user.company.shortName);
-
-            /**
-             * Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
-             * Nếu được gọi từ bên thứ 3: thirdParty = true
-             */
-
-            if (!req.thirdParty) {
+            if (req.header("x-services") == "true") {
+                const clientId = req.header("x-clientId");
+                const clientSecret = req.header("x-clientSecret");
+                const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+    
+                const { data } = await axios.post("/authorize-service-consumer", {
+                    clientId: clientId,
+                    clientSecret: clientSecret,
+                    resource: apiCalled,
+                    action: req.method,
+                }, {
+                    baseURL: `${process.env.SERVICE_IDENTITY_SERVER}`
+                })
+    
+                if (data == false) {
+                    throw [`Error while calling request ${apiCalled}`];
+                }
+    
+                const portal = req.header("portal");
+    
+                req.portal = portal;
+                req.user = {};
+                req.user.email = "ddd@gmail.com";
+    
+                next();
+            } else {
                 /**
-                 * 1. Trường hợp service được gọi từ ứng dụng dxclan
+                 * 2 types of utk:
+                 * - token được tạo cho phiên đăng nhập của người dùng
+                 * - token cho phép người dùng dùng previlegeAPI
                  */
+
+                const token = req.header("utk"); //JWT nhận từ người dùng
+                if (!token) throw ["access_denied_4001"];
+
+                /**
+                 * Giải mã token gửi lên để check dữ liệu trong token
+                 */
+                let verified;
+                try {
+                    verified = await jwt.verify(token, process.env.TOKEN_SECRET);
+                } catch (error) {
+                    throw ["access_denied_4002"];
+                }
+
+                req.user = verified;
+                req.token = token;
+                req.thirdParty = verified.thirdParty;
+                req.portal = req.thirdParty ? verified.portal : (!req.user.company
+                    ? process.env.DB_NAME
+                    : req.user.company.shortName);
+
+                /**
+                 * Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
+                 * Nếu được gọi từ bên thứ 3: thirdParty = true
+                 */
+
+                if (!req.thirdParty) {
+                    /**
+                     * 1. Trường hợp service được gọi từ ứng dụng dxclan
+                     */
 
                 // Kiểm tra xem token có nằm trong mảng tokens model User
                 if (req.user) {
@@ -69,230 +98,231 @@ exports.authFunc = (checkPage = true) => {
                     ).findById(req.user._id).select("tokens");
                     let userParse = user.toObject();
 
-                    const checkToken = userParse?.tokens?.find(element => element === req.token);
-                    if (!checkToken)
-                        throw ['access_denied_4003']
-                }
-
-                let crtp, crtr, fgp;
-
-                if (process.env.DEVELOPMENT === "true") {
-                    crtp = req.header("crtp");
-                    crtr = req.header("crtr");
-                    fgp = req.header("fgp");
-                } else {
-                    crtp = decryptMessage(req.header("crtp")); // trang hiện tại
-                    crtr = decryptMessage(req.header("crtr")); // role hiện tại
-                    fgp = decryptMessage(req.header("fgp")); // fingerprint
-                }
-
-                /**
-                 * Xác định db truy vấn cho request
-                 */
-                initModels(connect(DB_CONNECTION, req.portal), Models);
-
-                if (crtp !== "/") {
-                    const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
-                    const currentRole = crtr; // role hiện tại của người dùng
-                    if (!ObjectId.isValid(currentRole)) {
-                        throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
+                        const checkToken = userParse?.tokens?.find(element => element === req.token);
+                        if (!checkToken)
+                            throw ['access_denied_4003']
                     }
-                    req.currentRole = currentRole;
 
-                    const role = await Role(connect(DB_CONNECTION, req.portal))
-                        .findById(currentRole); //current role của người dùng
-                    if (role === null) throw ["role_invalid"];
+                    let crtp, crtr, fgp;
 
-                    /**
-                     * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
-                     * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
-                     * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
-                     */
-                    // if (verified.fingerprint !== fingerprint)
-                    //     throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
-
-                    /**
-                     * Kiểm tra xem current role có đúng với người dùng hay không?
-                     */
-                    const userId = req.user._id;
-                    const userrole = await UserRole(connect(DB_CONNECTION, req.portal)).findOne({ userId, roleId: role._id });
-                    if (userrole === null) throw ["user_role_invalid"];
+                    if (process.env.DEVELOPMENT === "true") {
+                        crtp = req.header("crtp");
+                        crtr = req.header("crtr");
+                        fgp = req.header("fgp");
+                    } else {
+                        crtp = decryptMessage(req.header("crtp")); // trang hiện tại
+                        crtr = decryptMessage(req.header("crtr")); // role hiện tại
+                        fgp = decryptMessage(req.header("fgp")); // fingerprint
+                    }
 
                     /**
-                     * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
+                     * Xác định db truy vấn cho request
                      */
-                    /**
-                     * Riêng đối với system admin của hệ thống thì bỏ qua bước này
-                     */
-                    if (role.name !== "System Admin") {
-                        const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(req.user.company._id);
-                        if (!company.active) {
-                            //dịch vụ của công ty người dùng đã tạm dừng
-                            const resetUser = await User(
-                                connect(DB_CONNECTION, req.portal)
-                            ).findById(req.user._id);
-                            resetUser.tokens = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
-                            await resetUser.save();
-                            throw ["service_off"];
+                    initModels(connect(DB_CONNECTION, req.portal), Models);
+
+                    if (crtp !== "/") {
+                        const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
+                        const currentRole = crtr; // role hiện tại của người dùng
+                        if (!ObjectId.isValid(currentRole)) {
+                            throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
                         }
-                    }
+                        req.currentRole = currentRole;
 
-                    /**
-                     * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
-                     * 1. Kiểm tra xem thông tin 
-                     * 2. Lấy đường link mà người dùng đã truy cập
-                     * 3. Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang
-                     * 4. Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
-                     * 5. Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
-                     */
+                        const role = await Role(connect(DB_CONNECTION, req.portal))
+                            .findById(currentRole); //current role của người dùng
+                        if (role === null) throw ["role_invalid"];
 
-                    //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
-                    const url = crtp;
-                    const device = req.header("device");
+                        /**
+                         * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
+                         * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
+                         * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
+                         */
+                        // if (verified.fingerprint !== fingerprint)
+                        //     throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
-                    if (!device) {
-                        if (checkPage) {
-                            const link = role.name !== "System Admin" ?
-                                await Link(connect(DB_CONNECTION, req.portal)).findOne({ url, deleteSoft: false }) :
-                                await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
+                        /**
+                         * Kiểm tra xem current role có đúng với người dùng hay không?
+                         */
+                        const userId = req.user._id;
+                        const userrole = await UserRole(connect(DB_CONNECTION, req.portal)).findOne({ userId, roleId: role._id });
+                        if (userrole === null) throw ["user_role_invalid"];
 
-                            if (link === null) throw ["url_invalid"];
-                            const roleArr = [role._id].concat(role.parents);
-                            const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
-                                resourceId: link._id,
-                                resourceType: "Link",
-                                roleId: {
-                                    $in: roleArr,
-                                }
-                            });
-                            // Kiểm tra nếu privilege có policy thì phải có policy map ở bên userrole thì mới được phép truy cập trang đó
-                            // Nếu không tồn tại map thì không được truy cập
-                            if (privilege.policies.length > 0) {
-                                if (userrole.policies.length > 0) {
-                                    if (!privilege.policies.some(policy => userrole.policies.includes(policy))) throw ["page_access_denied"]
-                                }
-                                else throw ["page_access_denied"]
+                        /**
+                         * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
+                         */
+                        /**
+                         * Riêng đối với system admin của hệ thống thì bỏ qua bước này
+                         */
+                        if (role.name !== "System Admin") {
+                            const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(req.user.company._id);
+                            if (!company.active) {
+                                //dịch vụ của công ty người dùng đã tạm dừng
+                                const resetUser = await User(
+                                    connect(DB_CONNECTION, req.portal)
+                                ).findById(req.user._id);
+                                resetUser.tokens = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
+                                await resetUser.save();
+                                throw ["service_off"];
                             }
-                            if (userrole.delegation) {
+                        }
 
-                                // Nếu tồn tại ủy quyền đang hoạt động có endDate < now, re login
+                        /**
+                         * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
+                         * 1. Kiểm tra xem thông tin 
+                         * 2. Lấy đường link mà người dùng đã truy cập
+                         * 3. Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang
+                         * 4. Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
+                         * 5. Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
+                         */
 
-                                const delegation = await Delegation(connect(DB_CONNECTION, req.portal)).findOne({ _id: userrole.delegation, status: 'activated', delegateType: "Role" })
-                                if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
-                                    throw ["page_access_denied"]
-                                }
+                        //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+                        const url = crtp;
+                        const device = req.header("device");
 
+                        if (!device) {
+                            if (checkPage) {
+                                const link = role.name !== "System Admin" ?
+                                    await Link(connect(DB_CONNECTION, req.portal)).findOne({ url, deleteSoft: false }) :
+                                    await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
 
-                                // Log delegation truy cập trang
-                                if (delegation) {
-                                    // Log nếu mỗi lần truy cập cách nhau > 5s
-                                    if ((!delegation.logs || delegation.logs.length == 0) || (delegation.logs.length > 0 && ((new Date()).getTime() - (new Date(delegation.logs[delegation.logs.length - 1].createdAt)).getTime()) / 1000 > 5)) {
-
-                                        await Delegation(connect(DB_CONNECTION, req.portal)).updateOne({ _id: delegation._id }, {
-                                            logs: [
-                                                ...delegation.logs,
-                                                {
-                                                    createdAt: new Date(),
-                                                    user: userId,
-                                                    content: link.url + " - " + link.description,
-                                                    time: new Date(),
-                                                    category: "page_access"
-                                                }
-                                            ]
-                                        })
+                                if (link === null) throw ["url_invalid"];
+                                const roleArr = [role._id].concat(role.parents);
+                                const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
+                                    resourceId: link._id,
+                                    resourceType: "Link",
+                                    roleId: {
+                                        $in: roleArr,
                                     }
-
-
+                                });
+                                // Kiểm tra nếu privilege có policy thì phải có policy map ở bên userrole thì mới được phép truy cập trang đó
+                                // Nếu không tồn tại map thì không được truy cập
+                                if (privilege.policies.length > 0) {
+                                    if (userrole.policies.length > 0) {
+                                        if (!privilege.policies.some(policy => userrole.policies.includes(policy))) throw ["page_access_denied"]
+                                    }
+                                    else throw ["page_access_denied"]
                                 }
+                                if (userrole.delegation) {
 
-                                if (privilege.delegations.length > 0) {
-                                    if (!privilege.delegations.some(delegation => userrole.delegation.toString() == delegation.toString())) {
+                                    // Nếu tồn tại ủy quyền đang hoạt động có endDate < now, re login
+
+                                    const delegation = await Delegation(connect(DB_CONNECTION, req.portal)).findOne({ _id: userrole.delegation, status: 'activated', delegateType: "Role" })
+                                    if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
                                         throw ["page_access_denied"]
                                     }
 
 
-                                }
-                            }
+                                    // Log delegation truy cập trang
+                                    if (delegation) {
+                                        // Log nếu mỗi lần truy cập cách nhau > 5s
+                                        if ((!delegation.logs || delegation.logs.length == 0) || (delegation.logs.length > 0 && ((new Date()).getTime() - (new Date(delegation.logs[delegation.logs.length - 1].createdAt)).getTime()) / 1000 > 5)) {
 
-                            // Nếu tồn tại ủy quyền chờ xác nhận có startDate < now, re login
-                            const delegationPending = await Delegation(connect(DB_CONNECTION, req.portal)).find({ delegatee: req.user._id, status: 'pending', delegateType: "Role" })
-                            delegationPending.every(delegation => {
-                                if (delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
-                                    throw ["page_access_denied"]
+                                            await Delegation(connect(DB_CONNECTION, req.portal)).updateOne({ _id: delegation._id }, {
+                                                logs: [
+                                                    ...delegation.logs,
+                                                    {
+                                                        createdAt: new Date(),
+                                                        user: userId,
+                                                        content: link.url + " - " + link.description,
+                                                        time: new Date(),
+                                                        category: "page_access"
+                                                    }
+                                                ]
+                                            })
+                                        }
+
+
+                                    }
+
+                                    if (privilege.delegations.length > 0) {
+                                        if (!privilege.delegations.some(delegation => userrole.delegation.toString() == delegation.toString())) {
+                                            throw ["page_access_denied"]
+                                        }
+
+
+                                    }
                                 }
-                            })
+
+                                // Nếu tồn tại ủy quyền chờ xác nhận có startDate < now, re login
+                                const delegationPending = await Delegation(connect(DB_CONNECTION, req.portal)).find({ delegatee: req.user._id, status: 'pending', delegateType: "Role" })
+                                delegationPending.every(delegation => {
+                                    if (delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
+                                        throw ["page_access_denied"]
+                                    }
+                                })
 
 
                             if (privilege === null) throw ["page_access_denied"];
                         }
 
-                        /**
-                        * Kiểm tra xem với trang truy cập là như trên thì trang này có được truy cập vào API này không
-                        */
-                        const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
-                        const perLink = links.find(l => l.url === url);
-                        if (!perLink) throw ['url_invalid_permission']
-                        if (perLink.apis[0] !== '@all') {
-                            const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
-                            if (!perAPI) throw ['api_permission_invalid'];
+                            /**
+                            * Kiểm tra xem với trang truy cập là như trên thì trang này có được truy cập vào API này không
+                            */
+                            const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+                            const perLink = links.find(l => l.url === url);
+                            if (!perLink) throw ['url_invalid_permission']
+                            if (perLink.apis[0] !== '@all') {
+                                const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
+                                if (!perAPI) throw ['api_permission_invalid'];
+                            }
                         }
                     }
+                } else {
+                    /**
+                     * 2. Trường hợp service được gọi từ bên thứ 3
+                     */
+                    console.log('### API ARE CALLED FROM THIRD PARTY');
+
+                    const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+
+                    let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+                        .findOne({
+                            path: apiCalled.toString(),
+                            method: req.method.toString()
+                        })
+                    if (!systemApi) throw ['api_invalid']
+
+                    // Kiểm tra quyền truy cập api của bên thứ 3
+                    let privilegeApi = await PrivilegeApi(connect(DB_CONNECTION, req.portal))
+                        .findOne({
+                            token,
+                            // email: verified.email,
+                            apis: {
+                                $elemMatch: {
+                                    path: apiCalled.toString(),
+                                    method: req.method.toString()
+                                }
+                            },
+                            // company: verified.company,
+                            status: 3
+                        })
+
+                    if (!privilegeApi) {
+                        throw ['api_permission_invalid']
+                    }
+
+                    // Kiểm tra phân quyền api cho 1 cty
+                    // let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                    //     .findOne({
+                    //         apis: {
+                    //             $in: [systemApi?._id]
+                    //         },
+                    //         shortName: req.portal,
+                    //         // company: verified.company
+                    //     })
+
+                    //     if (!apiInCompany) {
+                    //     throw ['api_permission_to_company_invalid']
+                    // };
+
+                    req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                        .findOne({ company: verified.company });
+
+                    console.log('### THIRD PARTY ARE AUTHORIZED');
                 }
-            } else {
-                /**
-                 * 2. Trường hợp service được gọi từ bên thứ 3
-                 */
-                console.log('### API ARE CALLED FROM THIRD PARTY');
 
-                const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
-
-                let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({
-                        path: apiCalled.toString(),
-                        method: req.method.toString()
-                    })
-                if (!systemApi) throw ['api_invalid']
-
-                // Kiểm tra quyền truy cập api của bên thứ 3
-                let privilegeApi = await PrivilegeApi(connect(DB_CONNECTION, req.portal))
-                    .findOne({
-                        token,
-                        // email: verified.email,
-                        apis: {
-                            $elemMatch: {
-                                path: apiCalled.toString(),
-                                method: req.method.toString()
-                            }
-                        },
-                        // company: verified.company,
-                        status: 3
-                    })
-
-                if (!privilegeApi) {
-                    throw ['api_permission_invalid']
-                }
-
-                // Kiểm tra phân quyền api cho 1 cty
-                // let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                //     .findOne({
-                //         apis: {
-                //             $in: [systemApi?._id]
-                //         },
-                //         shortName: req.portal,
-                //         // company: verified.company
-                //     })
-
-                //     if (!apiInCompany) {
-                //     throw ['api_permission_to_company_invalid']
-                // };
-
-                req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({ company: verified.company });
-
-                console.log('### THIRD PARTY ARE AUTHORIZED');
+                next();
             }
-
-            next();
         } catch (error) {
             console.log(error)
             res.status(400).json({

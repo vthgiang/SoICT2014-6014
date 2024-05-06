@@ -269,6 +269,31 @@ class SideBar extends Component {
                     name: 'menu.manage_component',
                     icon: 'fa fa-object-group',
                     path: '/components-management'
+                  },
+                  {
+                    name: "menu.manage_internal_policies",
+                    icon: "fa fa-cube",
+                    path: "/internal-policy-management",
+                  },
+                  {
+                    name: "menu.manage_internal_service_identity",
+                    icon: "fa fa-cube",
+                    path: "/internal-service-identity-management",
+                  },
+                  {
+                    name: "menu.manage_external_policies",
+                    icon: "fa fa-cube",
+                    path: "/external-policy-management",
+                  },
+                  {
+                    name: "menu.manage_external_service_consumers",
+                    icon: "fa fa-cube",
+                    path: "/external-service-consumers-management",
+                  },
+                  {
+                    name: "menu.manage_service_logging",
+                    icon: "fa fa-cube",
+                    path: "/service-logging-management",
                   }
                 ]
               }}

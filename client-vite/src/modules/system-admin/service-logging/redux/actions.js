@@ -1,0 +1,27 @@
+import { ServiceLoggingServices } from "./services";
+import { ServiceLoggingConstants } from "./constants";
+
+export const ServiceLoggingActions = {
+    getServiceLogging,
+}
+
+function getServiceLogging(data) {
+    return dispatch => {
+        dispatch({ type: ServiceLoggingConstants.GET_SERVICE_LOGGING_REQUEST });
+
+        ServiceLoggingServices.getServiceLogging(data)
+            .then(res => {
+                dispatch({
+                    type: ServiceLoggingConstants.GET_SERVICE_LOGGING_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(error => {
+                dispatch({ 
+                    type: ServiceLoggingConstants.GET_SERVICE_LOGGING_FAILURE,
+                    payload: error
+                });
+                
+            })
+    }
+}

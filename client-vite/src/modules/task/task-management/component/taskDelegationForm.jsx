@@ -74,6 +74,14 @@ function TaskDelegationForm(props) {
     INFORMED: { name: translate('task.task_management.informed'), value: 'informed' }
   }
 
+  useEffect(() => {
+    setState({
+      ...state,
+      taskId: props.taskId,
+      delegateTaskName: props.taskName
+    });
+  }, [props.taskId, props.taskName]);
+
   // useEffect(() => {
   //     if (props.taskId) {
   //         props.getTaskById(props.taskId); // props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
@@ -111,9 +119,7 @@ function TaskDelegationForm(props) {
       }
       setState({
         ...state,
-        taskId: props.taskId,
         roles: roles,
-        delegateTaskName: props.taskName
       })
     }
   }, [tasks?.task])
