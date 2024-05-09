@@ -7,7 +7,7 @@ import { TaskGantt } from '../../../../../common-components/src/gantt/taskGantt'
 import { UserActions } from '../../../../super-admin/user/redux/actions'
 
 const ViewTaskInGantt = (props) => {
-  const { translate, taskList, allEmployee } = props
+  const { translate, taskList, allEmployee, unit } = props
   const [currentZoom, setCurrentZoom] = useState(translate('system_admin.system_setting.backup.date'))
   const [dataTask, setDataTask] = useState({
     data: [],

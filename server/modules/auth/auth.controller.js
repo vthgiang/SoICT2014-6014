@@ -4,8 +4,8 @@ const { decryptMessage } = require('../../helpers/functionHelper');
 
 exports.login = async (req, res) => {
     try {
-        const fingerprint = decryptMessage(req.header('fgp'));
-        const loginUser = await AuthService.login(fingerprint, req.body);
+        // const fingerprint = decryptMessage(req.header('fgp'));
+        const loginUser = await AuthService.login(fingerprint=null, req.body);
 
         await Logger.info(req.body.email, 'login_success', req.body.portal);
         res.status(200).json({

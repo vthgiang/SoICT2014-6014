@@ -69,7 +69,7 @@ const ProjectSchema = new Schema(
             ],
         },
         status: {
-            // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
+            // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy, Hồ sơ đề xuất
             type: String,
             default: "inprocess",
             enum: [
@@ -78,6 +78,7 @@ const ProjectSchema = new Schema(
                 "finished",
                 "delayed",
                 "canceled",
+                "proposal"
             ],
         },
         // Những người quản trị dự án
@@ -121,6 +122,66 @@ const ProjectSchema = new Schema(
         // Thời điểm dự kiến kết thúc dự án sau khi 1 change request được accept
         endDateRequest: {
             type: Date,
+        },
+
+        // Lấy dữ liệu users tham gia dự án (mỗi user tương ứng 1 employee và thuộc 1 unit, vì database thiết kế + hiện tại nên phải thêm cái này cho đỡ sửa nhiều ảnh hưởng)
+        usersInProject: [{
+            userId: {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            },
+            unitId: {
+                type: Schema.Types.ObjectId,
+                ref: "OrganizationalUnit"
+            },
+            employeeId: {
+                type: Schema.Types.ObjectId,
+                ref: "Employee"
+            }
+        }],
+
+        // Tài sản tham gia dự án
+        assets: [{
+            type: Schema.Types.ObjectId,
+            ref: "Asset"
+        }],
+
+        kpiTarget: [{
+            type: {
+                type: Schema.Types.ObjectId,
+                ref: "OrganizationalUnitKpi"
+            },
+            typeIndex: {
+                type: Number
+            },
+            // Giá trị (0-1)
+            targetKPIValue: {
+                type: Number
+            },
+            assignValueInProject: {
+                type: Number
+            },
+            targetValueInProject: {
+                type: Number
+            }
+        }],
+
+        tasks: [{
+            type: Schema.Types.ObjectId,
+            ref: "Task"
+        }],
+
+        proposals: {
+            type: Schema.Types.Mixed
+        },
+        proposalLogs: {
+            // logs
+            oldVersion: {
+                type: Schema.Types.Mixed,
+            },
+            newVersion: {
+                type: Schema.Types.Mixed,
+            },
         }
     },
     {

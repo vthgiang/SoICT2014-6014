@@ -359,6 +359,8 @@ export default {
       issues_list: 'Danh sách vấn đề',
       project_report: 'Báo cáo dự án',
       project_evaluation: 'Thống kê đánh giá',
+      project_create: 'Tạo dự án mới',
+      project_proposal: 'Phân bổ nguồn lực dự án',
 
       // Quản lý vận chuyển 3
       manage_transport3: 'Quản lý vận chuyển',

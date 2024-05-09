@@ -310,7 +310,7 @@ const ProjectEditForm = (props) => {
     }
 
     if (willUpdateState) {
-      console.log(value)
+      // console.log(value)
       setState({
         ...state,
         newProject: {

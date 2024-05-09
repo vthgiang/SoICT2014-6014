@@ -345,50 +345,6 @@ const CreateGeneralTab = (props) => {
               </div>
             </div>
 
-            {/* <div className="row">
-                            <div className="form-group col-md-6">
-                                <label>{translate('project.startDate')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`create-project-start-date`}
-                                    value={startDate}
-                                    onChange={(e) => handleChangeForm(e, 'startDate')}
-                                    dateFormat="day-month-year"
-                                    disabled={false}
-                                />
-                            </div>
-                            <div className="form-group col-md-6">
-                                <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
-                                <TimePicker
-                                    id={`create-project-start-time`}
-                                    value={startTime}
-                                    onChange={(e) => setStartTime(e)}
-                                    disabled={false}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="form-group col-md-6">
-                                <label>{translate('project.endDate')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`create-project-end-date`}
-                                    value={endDate}
-                                    onChange={(e) => handleChangeForm(e, 'endDate')}
-                                    dateFormat="day-month-year"
-                                    disabled={false}
-                                />
-                            </div>
-                            <div className="form-group col-md-6">
-                                <label>Thời gian dự kiến kết thúc dự án<span className="text-red">*</span></label>
-                                <TimePicker
-                                    id={`create-project-end-time`}
-                                    value={endTime}
-                                    onChange={(e) => setEndTime(e)}
-                                    disabled={false}
-                                />
-                            </div>
-                        </div> */}
-
             <div className='form-group'>
               <label>{translate('project.unitTime')}</label>
               <SelectBox

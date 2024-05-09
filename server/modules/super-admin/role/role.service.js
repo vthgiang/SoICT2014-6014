@@ -412,6 +412,7 @@ exports.editRelationshipUserRole = async (portal, roleId, userArr = []) => {
 
     const checkDelegate = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: { $in: userArr }, roleId: roleId, delegation: { $nin: [[], undefined] } })
     console.log('check', checkDelegate)
+    console.log("vao day")
     if (checkDelegate.length > 0) { throw ['user_role_exist'] }
 
     const userRoleWithPolicies = await UserRole(connect(DB_CONNECTION, portal)).find({

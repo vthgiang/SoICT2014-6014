@@ -8,7 +8,6 @@
     "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --security-revert=CVE-2023-46809  index.js",
-
     "dev": "nodemon index.js",
     "db": "node seed/initDB.js",
     "viavet": "node seed/viavet.js",
@@ -30,7 +29,9 @@
     "y-init": "yarn db && yarn sc",
     "y-init-full": "yarn db && yarn sc && yarn sp && yarn shr",
     "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js",
-    "init-kpi-vnist-2": "node seed/initOrganizationalUnitKPIDataVnist2.js"
+    "init-kpi-vnist-2": "node seed/initOrganizationalUnitKPIDataVnist2.js",
+    "y-init-sw-unit": "node seed/initSWUnit.js",
+    "y-init-sw-project": "node seed/initSWProjectData.js"
   },
   "keywords": [],
   "author": "",

@@ -52,6 +52,7 @@ exports.get = async (portal, query) => {
             { 'creator': userId }
         ]
     } : {};
+    // console.log("userId: ", userId)
 
     // Tìm kiếm theo tên dự án
     if (projectName && projectName.toString().trim()) {
@@ -226,9 +227,13 @@ exports.get = async (portal, query) => {
         currentPerPage = perPage ? Number(perPage) : 5;
 
         project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({ createdAt: -1 }).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
-            .populate({ path: "responsibleEmployees", select: "_id name email" })
+            .populate({ path: "responsibleEmployees", select: "_id name" })
             .populate({ path: "projectManager", select: "_id name email" })
-            .populate({ path: "creator", select: "_id name email" });
+            .populate({ path: "creator", select: "_id name email" })
+            .populate({ path: "assets", select: "_id assetName assetType group" })
+            .populate({ path: "responsibleEmployeesWithUnit", select: "unitId listUsers" })
+            .populate({ path: "kpiTarget.type", select: "_id name" })
+            .populate({ path: "tasks"});
         return {
             docs: project,
             totalDocs: totalList,
@@ -237,9 +242,14 @@ exports.get = async (portal, query) => {
 
     else {
         project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({ createdAt: -1 })
-            .populate({ path: "responsibleEmployees", select: "_id name email" })
+            .populate({ path: "responsibleEmployees", select: "_id name" })
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" })
+            .populate({ path: "assets", select: "_id assetName assetType group" })
+            .populate({ path: "responsibleEmployeesWithUnit", select: "unitId listUsers" })
+            .populate({ path: "kpiTarget.type", select: "_id name" })
+            .populate({ path: "tasks"});
+
     }
     return project;
 }
@@ -253,7 +263,7 @@ exports.show = async (portal, id) => {
  * Tạo dự án mới
  * @param {*} data 
  */
-exports.create = async (portal, data, company) => {
+exports.create = async (portal, data, userId, company) => {
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
 
@@ -266,49 +276,50 @@ exports.create = async (portal, data, company) => {
         //         }
         //     }
         // }
-        for (let employeeItem of data.responsibleEmployeesWithUnit) {
-            let newListUsers = [];
-            for (let userItem of employeeItem.listUsers) {
-                // Nếu như gửi lên từ client đã có lương rồi
-                if (userItem.salary) {
-                    newListUsers.push({
-                        userId: userItem.userId,
-                        salary: userItem.salary,
-                    })
-                }
-                else {
-                    let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
-                    // Tìm employee từ user email
-                    let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
-                        'emailInCompany': currentUser.email
-                    })
-                    // Nếu user này không phải là nhân viên => Không có lương
-                    if (!currentEmployee || currentEmployee.length === 0) {
-                        newListUsers.push({
-                            userId: userItem.userId,
-                            salary: 0
-                        })
-                        continue;
-                    }
-                    // Tra cứu bảng lương
-                    let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
-                        $and: [
-                            { 'organizationalUnit': employeeItem.unitId },
-                            { 'employee': currentEmployee[0]._id },
-                        ]
-                    });
-                    newListUsers.push({
-                        userId: userItem.userId,
-                        salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
-                    })
-                }
-            }
-            // Add vào mảng cuối cùng
-            newResponsibleEmployeesWithUnit.push({
-                unitId: employeeItem.unitId,
-                listUsers: newListUsers,
-            })
-        }
+        // for (let employeeItem of data.responsibleEmployeesWithUnit) {
+        //     let newListUsers = [];
+        //     for (let userItem of employeeItem.listUsers) {
+        //         // Nếu như gửi lên từ client đã có lương rồi
+        //         if (userItem.salary) {
+        //             newListUsers.push({
+        //                 userId: userItem.userId,
+        //                 salary: userItem.salary,
+        //             })
+        //         }
+        //         else {
+
+        //             let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+        //             // Tìm employee từ user email
+        //             let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+        //                 'emailInCompany': currentUser.email
+        //             })
+        //             // Nếu user này không phải là nhân viên => Không có lương
+        //             if (!currentEmployee || currentEmployee.length === 0) {
+        //                 newListUsers.push({
+        //                     userId: userItem.userId,
+        //                     salary: 0
+        //                 })
+        //                 continue;
+        //             }
+        //             // Tra cứu bảng lương
+        //             let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+        //                 $and: [
+        //                     { 'organizationalUnit': employeeItem.unitId },
+        //                     { 'employee': currentEmployee[0]._id },
+        //                 ]
+        //             });
+        //             newListUsers.push({
+        //                 userId: userItem.userId,
+        //                 salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
+        //             })
+        //         }
+        //     }
+        //     // Add vào mảng cuối cùng
+        //     newResponsibleEmployeesWithUnit.push({
+        //         unitId: employeeItem.unitId,
+        //         listUsers: newListUsers,
+        //     })
+        // }
     }
 
     let project = await Project(connect(DB_CONNECTION, portal)).create({
@@ -316,10 +327,50 @@ exports.create = async (portal, data, company) => {
         ...data,
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
         company: company,
+        creator: userId,
+        status: 'proposal'
     });
 
+    if (data?.tasksData && data?.tasksData?.length) {
+        const tasksToAdd = data?.tasksData.map((task) => {
+            return {
+                ...task,
+                taskProject: project._id,
+                preceedingTasks: task?.preceedingTasks && task?.preceedingTasks?.length ? task?.preceedingTasks.map((item) => {
+                    return {
+                        link: item
+                    }
+                }) : []
+            }
+        }) 
+
+        // Tạo các tasks và lấy các `_id` của chúng
+        const createdTasks = await Task(connect(DB_CONNECTION, portal)).insertMany(tasksToAdd);
+
+        // Tạo bản đồ ánh xạ taskCode -> _id và taskCode -> taskCode
+        const taskCodeToIdMap = {};
+        createdTasks.forEach(task => {
+            taskCodeToIdMap[task.code] = task._id;
+        });
+
+         // Cập nhật lại các tasks với preceedingTasks
+        for (let taskData of createdTasks) {
+            if (taskData.preceedingTasks) {
+                taskData.preceedingTasks = taskData.preceedingTasks.map(({ link }) => ({
+                    task: taskCodeToIdMap[link],
+                    link: link // Sử dụng taskCode làm giá trị cho link
+                }));
+                await taskData.save();
+            }
+        }
+
+        project.tasks = createdTasks.map(task => task._id);
+
+        await project.save();
+    }
+
     project = await Project(connect(DB_CONNECTION, portal)).findById(project._id)
-        .populate({ path: "responsibleEmployees", select: "_id name email" })
+        .populate({ path: "responsibleEmployees", select: "_id email name" })
         .populate({ path: "projectManager", select: "_id name email" })
         .populate({ path: "creator", select: "_id name email" })
     return project;
@@ -332,68 +383,184 @@ exports.create = async (portal, data, company) => {
  */
 exports.edit = async (portal, id, data) => {
     let newResponsibleEmployeesWithUnit = [];
-    if (data) {
-        for (let employeeItem of data.responsibleEmployeesWithUnit) {
-            let newListUsers = [];
-            for (let userItem of employeeItem.listUsers) {
-                // Nếu như gửi lên từ client đã có lương rồi
-                if (userItem.salary) {
-                    newListUsers.push({
-                        userId: userItem.userId,
-                        salary: userItem.salary,
-                    })
-                }
-                else {
-                    let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
-                    // Tìm employee từ user email
-                    let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
-                        'emailInCompany': currentUser.email
-                    })
-                    // Nếu user này không phải là nhân viên => Không có lương
-                    if (!currentEmployee || currentEmployee.length === 0) {
-                        newListUsers.push({
-                            userId: userItem.userId,
-                            salary: 0
-                        })
-                        continue;
-                    }
-                    // Tra cứu bảng lương
-                    let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
-                        $and: [
-                            { 'organizationalUnit': employeeItem.unitId },
-                            { 'employee': currentEmployee[0]._id },
-                        ]
-                    });
-                    newListUsers.push({
-                        userId: userItem.userId,
-                        salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
-                    })
-                }
-            }
-            // Add vào mảng cuối cùng
-            newResponsibleEmployeesWithUnit.push({
-                unitId: employeeItem.unitId,
-                listUsers: newListUsers,
-            })
-        }
+    // if (data) {
+    //     // for (let employeeItem of data.responsibleEmployeesWithUnit) {
+    //     //     let newListUsers = [];
+    //     //     for (let userItem of employeeItem.listUsers) {
+    //     //         // Nếu như gửi lên từ client đã có lương rồi
+    //     //         if (userItem.salary) {
+    //     //             newListUsers.push({
+    //     //                 userId: userItem.userId,
+    //     //                 salary: userItem.salary,
+    //     //             })
+    //     //         }
+    //     //         else {
+    //     //             let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+    //     //             // Tìm employee từ user email
+    //     //             let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+    //     //                 'emailInCompany': currentUser.email
+    //     //             })
+    //     //             // Nếu user này không phải là nhân viên => Không có lương
+    //     //             if (!currentEmployee || currentEmployee.length === 0) {
+    //     //                 newListUsers.push({
+    //     //                     userId: userItem.userId,
+    //     //                     salary: 0
+    //     //                 })
+    //     //                 continue;
+    //     //             }
+    //     //             // Tra cứu bảng lương
+    //     //             let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+    //     //                 $and: [
+    //     //                     { 'organizationalUnit': employeeItem.unitId },
+    //     //                     { 'employee': currentEmployee[0]._id },
+    //     //                 ]
+    //     //             });
+    //     //             newListUsers.push({
+    //     //                 userId: userItem.userId,
+    //     //                 salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
+    //     //             })
+    //     //         }
+    //     //     }
+    //     //     // Add vào mảng cuối cùng
+    //     //     newResponsibleEmployeesWithUnit.push({
+    //     //         unitId: employeeItem.unitId,
+    //     //         listUsers: newListUsers,
+    //     //     })
+    //     // }
+    // }
+
+    // const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    //     $set: {
+    //         // code: data.code,
+    //         name: data.name,
+    //         projectType: data.projectType,
+    //         parent: data.parent,
+    //         startDate: data.startDate,
+    //         endDate: data.endDate,
+    //         description: data.description,
+    //         projectManager: data.projectManager,
+    //         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    //         responsibleEmployees: data.responsibleEmployees,
+    //         unitTime: data.unitTime,
+    //         unitCost: data.unitCost
+    //     }
+    // }, { new: true });
+
+    // Bước 2: Tìm dự án cần cập nhật
+    let project = await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id });
+
+    if (!project) {
+        console.log("vao day")
+        throw new Error('Project not found');
     }
 
-    const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
-        $set: {
-            // code: data.code,
-            name: data.name,
-            projectType: data.projectType,
-            parent: data.parent,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            description: data.description,
-            projectManager: data.projectManager,
-            responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
-            responsibleEmployees: data.responsibleEmployees,
-            unitTime: data.unitTime,
-            unitCost: data.unitCost
+    // Bước 3: Cập nhật các thông tin của dự án (ngoại trừ tasks)
+    Object.assign(project, data);
+    await project.save();
+
+    // Bước 4: Cập nhật các tasks (nếu có)
+    if (data?.tasksData) {
+        // Lấy tất cả các tasks hiện có của dự án
+        const tasksDataToUpdate = data?.tasksData.map((task) => {
+            return {
+                ...task,
+                taskProject: project._id,
+                preceedingTasks: task?.preceedingTasks && task?.preceedingTasks?.length ? task?.preceedingTasks.map((item) => {
+                    return {
+                        link: item
+                    }
+                }) : []
+            }
+        }) 
+        const existingTasks = await Task(connect(DB_CONNECTION, portal)).find({ taskProject: id });
+        const existingTaskIds = existingTasks.map(task => task._id.toString());
+
+        // Bản đồ ánh xạ taskCode -> _id
+        const taskCodeToIdMap = {};
+        existingTasks.forEach(task => {
+            taskCodeToIdMap[task.code] = task._id;
+        });
+
+        // Mảng để lưu các tasks mới và cập nhật
+        const tasksToCreate = [];
+        const tasksToUpdate = [];
+
+        // Duyệt qua tasksData để xử lý từng task
+        for (let taskData of tasksDataToUpdate) {
+            if (taskData._id && existingTaskIds.includes(taskData._id)) {
+                // Task đã tồn tại, cập nhật task
+                tasksToUpdate.push(taskData);
+            } else {
+                // Task mới, thêm vào mảng tasksToCreate
+                tasksToCreate.push(taskData);
+            }
         }
-    }, { new: true });
+
+        // Thêm các tasks mới
+        if (tasksToCreate.length > 0) {
+            const newTasks = tasksToCreate.map(task => ({
+                ...task,
+                taskProject: project._id,
+                preceedingTasks: task?.preceedingTasks?.length ? task.preceedingTasks.map(({link}) => ({
+                    link: link
+                })) : []
+            }));
+
+            const createdTasks = await Task(connect(DB_CONNECTION, portal)).insertMany(newTasks);
+
+            createdTasks.forEach(task => {
+                taskCodeToIdMap[task.code] = task._id;
+            });
+
+            project.tasks = [...project.tasks, ...createdTasks.map(task => task._id)];
+            
+            for (let taskData of createdTasks) {
+                if (taskData.preceedingTasks) {
+                    taskData.preceedingTasks = taskData.preceedingTasks.map(({ link }) => ({
+                        task: taskCodeToIdMap[link],
+                        link: link // Sử dụng taskCode làm giá trị cho link
+                    }));
+                    await taskData.save();
+                }
+            }
+        }
+
+
+
+        // Cập nhật các tasks hiện có
+        for (let taskData of tasksToUpdate) {
+            const updatedTask = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(taskData._id, taskData, { new: true });
+
+            if (taskData.preceedingTasks) {
+                updatedTask.preceedingTasks = updatedTask.preceedingTasks.map(({link}) => ({
+                    task: taskCodeToIdMap[link],
+                    link: link
+                }));
+                await updatedTask.save();
+            }
+        }
+
+        // Xóa các tasks không còn trong tasksData
+        const newTaskIds = data.tasksData.map(task => task._id).filter(id => id);
+        const tasksToDelete = existingTaskIds.filter(id => !newTaskIds.includes(id));
+
+        if (tasksToDelete.length > 0) {
+            await Task(connect(DB_CONNECTION, portal)).deleteMany({ _id: { $in: tasksToDelete } });
+            project.tasks = project.tasks.filter(taskId => !tasksToDelete.includes(taskId.toString()));
+        }
+
+        await project.save();
+    }
+
+    // Bước 5: Lấy lại dự án với các thông tin chi tiết
+    project = await Project(connect(DB_CONNECTION, portal)).findById(project._id)
+        .populate({ path: "responsibleEmployees", select: "_id email name" })
+        .populate({ path: "projectManager", select: "_id name email" })
+        .populate({ path: "creator", select: "_id name email" })
+        .populate({ path: "tasks" });
+
+    return project;
+
     return await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: "responsibleEmployees", select: "_id name email" })
         .populate({ path: "projectManager", select: "_id name email" })
@@ -405,6 +572,8 @@ exports.edit = async (portal, id, data) => {
  * @param {*} id
 */
 exports.delete = async (portal, id) => {
+    await Task(connect(DB_CONNECTION, portal)).deleteMany({ taskProject: id });
+
     await Project(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
     return id;
 }
