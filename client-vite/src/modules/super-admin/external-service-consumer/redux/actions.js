@@ -16,7 +16,7 @@ function getExternalServiceConsumers(data) {
             .then(res => {
                 dispatch({
                     type: ExternalServiceConsumerConstants.GET_EXTERNAL_SERVICE_CONSUMER_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -37,7 +37,7 @@ function createExternalServiceConsumer(data) {
             .then(res => {
                 dispatch({
                     type: ExternalServiceConsumerConstants.CREATE_EXTERNAL_SERVICE_CONSUMER_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -58,7 +58,7 @@ function editExternalServiceConsumer(externalServiceConsumerId, data) {
             .then(res => {
                 dispatch({
                     type: ExternalServiceConsumerConstants.EDIT_EXTERNAL_SERVICE_CONSUMER_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {

@@ -7,7 +7,7 @@ export const InternalPolicyServices = {
     deleteInternalPolicy,
 };
 
-const POLICY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/internal-policies`;
+const POLICY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/authorization/internal-policies`;
 
 function getInternalPolicies(params) {
     return sendRequest({

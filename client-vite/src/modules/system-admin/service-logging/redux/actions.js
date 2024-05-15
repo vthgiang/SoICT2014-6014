@@ -13,7 +13,7 @@ function getServiceLogging(data) {
             .then(res => {
                 dispatch({
                     type: ServiceLoggingConstants.GET_SERVICE_LOGGING_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {

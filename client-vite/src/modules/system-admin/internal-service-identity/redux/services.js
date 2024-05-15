@@ -7,7 +7,7 @@ export const InternalServiceIdentityServices = {
     deleteInternalServiceIdentity,
 };
 
-const SERVICE_IDENTITY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/internal-service-identities`;
+const SERVICE_IDENTITY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/authorization/internal-service-identities`;
 
 function getInternalServiceIdentities(params) {
     const { name, apiPrefix, clientId, page = 0, perPage = 5 } = params;
@@ -30,7 +30,7 @@ function createInternalServiceIdentity(data) {
         url: `${SERVICE_IDENTITY_BASE_API_URL}/internal-service-identities`,
         method: 'POST',
         data: data
-    }, true, true, 'system_admin.system_api');
+    }, true, true, 'system_admin.internal_service_identity');
 }
 
 function editInternalServiceIdentity (serviceIdentityId, data) {

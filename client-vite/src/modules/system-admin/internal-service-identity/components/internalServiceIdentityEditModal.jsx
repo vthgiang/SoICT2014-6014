@@ -25,10 +25,10 @@ function InternalServiceIdentityEditModal(props) {
     useEffect(() => {
         async function init() {
             const internalPolicesResponse = await InternalPolicyServices.getInternalPolicies();
-            setListInternalPolices(internalPolicesResponse.data.data);
+            setListInternalPolices(internalPolicesResponse.data.content.data);
 
             const externalPolicesResponse = await ExternalPolicyServices.getExternalPolicies();
-            setListExternalPolices(externalPolicesResponse.data.data);
+            setListExternalPolices(externalPolicesResponse.data.content.data);
         }
         init()
     }, [])
@@ -40,8 +40,8 @@ function InternalServiceIdentityEditModal(props) {
                 name: internalServiceIdentity?.name,
                 apiPrefix: internalServiceIdentity?.apiPrefix,
                 description: internalServiceIdentity?.description,
-                internalPolicies: internalServiceIdentity?.internalPolicies.map((policy) => policy.id),
-                externalPolicies: internalServiceIdentity?.externalPolicies.map((policy) => policy.id),
+                internalPolicies: internalServiceIdentity?.internalPolicies?.map((policy) => policy.id),
+                externalPolicies: internalServiceIdentity?.externalPolicies?.map((policy) => policy.id),
             })
         }
         init();
@@ -130,7 +130,7 @@ function InternalServiceIdentityEditModal(props) {
                                 id={`internal-policies-update-internal-service`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={listInternalPolicies.map(internalPolicy => { return { value: internalPolicy ? internalPolicy.id : null, text: internalPolicy ? internalPolicy.name : "" } })}
+                                items={listInternalPolicies?.map(internalPolicy => { return { value: internalPolicy ? internalPolicy.id : null, text: internalPolicy ? internalPolicy.name : "" } })}
                                 value={internalPolicies}
                                 onChange={handleChangeInternalPolicies}
                                 multiple={true}
@@ -145,7 +145,7 @@ function InternalServiceIdentityEditModal(props) {
                                 id={`external-policies-update-internal-service`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={listExternalPolicies.map(externalPolicy => { return { value: externalPolicy ? externalPolicy.id : null, text: externalPolicy ? externalPolicy.name : "" } })}
+                                items={listExternalPolicies?.map(externalPolicy => { return { value: externalPolicy ? externalPolicy.id : null, text: externalPolicy ? externalPolicy.name : "" } })}
                                 value={externalPolicies}
                                 onChange={handleChangeExternalPolicies}
                                 multiple={true}

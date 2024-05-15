@@ -77,7 +77,7 @@ function ExternalPolicyEditModal(props) {
     const handleToggleEnabled = (value) => {
         setState({
             ...state,
-            enabled: value.target.value
+            enabled: value.target.checked
         })
     }
 
@@ -114,7 +114,7 @@ function ExternalPolicyEditModal(props) {
                 {/* Form them API */}
                 <form id="form-update-external-policy" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <input id="update-external-policy-enabled" className="form-control" type="checkbox" name="name" placeholder="Enabled" defaultChecked={externalPolicy?.enabled} value={enabled} onChange={handleToggleEnabled} />
+                        <input id="update-external-policy-enabled" className="form-control" type="checkbox" name="name" placeholder="Enabled" defaultChecked={externalPolicy?.enabled ?? enabled} onChange={handleToggleEnabled} />
                         <label htmlFor="update-external-policy-enabled">{translate('system_admin.external_policy.table.enabled')}</label>
                     </div>
 

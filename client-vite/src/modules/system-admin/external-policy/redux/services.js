@@ -7,7 +7,7 @@ export const ExternalPolicyServices = {
     deleteExternalPolicy,
 };
 
-const POLICY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/external-policies`;
+const POLICY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/authorization/external-policies`;
 
 function getExternalPolicies(params) {
     return sendRequest({

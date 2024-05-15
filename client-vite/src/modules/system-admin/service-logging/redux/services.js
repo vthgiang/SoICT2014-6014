@@ -4,7 +4,7 @@ export const ServiceLoggingServices = {
     getServiceLogging,
 };
 
-const SERVICE_LOGGING_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/service-logging`;
+const SERVICE_LOGGING_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/authorization/logging`;
 
 function getServiceLogging(params) {
     return sendRequest({

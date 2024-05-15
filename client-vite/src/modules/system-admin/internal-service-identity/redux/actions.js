@@ -16,7 +16,7 @@ function getInternalServiceIdentities(data) {
             .then(res => {
                 dispatch({
                     type: InternalServiceIdentityConstants.GET_INTERNAL_SERVICE_IDENTITY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -37,7 +37,7 @@ function createInternalServiceIdentity(data) {
             .then(res => {
                 dispatch({
                     type: InternalServiceIdentityConstants.CREATE_INTERNAL_SERVICE_IDENTITY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -58,7 +58,7 @@ function editInternalServiceIdentity(internalServiceIdentityId, data) {
             .then(res => {
                 dispatch({
                     type: InternalServiceIdentityConstants.EDIT_INTERNAL_SERVICE_IDENTITY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {

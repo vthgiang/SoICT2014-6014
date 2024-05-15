@@ -16,7 +16,7 @@ function getExternalPolicies(data) {
             .then(res => {
                 dispatch({
                     type: ExternalPolicyConstants.GET_EXTERNAL_POLICY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -37,7 +37,7 @@ function createExternalPolicy(data) {
             .then(res => {
                 dispatch({
                     type: ExternalPolicyConstants.CREATE_EXTERNAL_POLICY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -58,7 +58,7 @@ function editExternalPolicy(externalPolicyId, data) {
             .then(res => {
                 dispatch({
                     type: ExternalPolicyConstants.EDIT_EXTERNAL_POLICY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {

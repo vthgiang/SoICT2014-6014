@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
     define: {
-      'process.env.REACT_APP_SERVER': JSON.stringify(env.REACT_APP_SERVER)
+      'process.env.REACT_APP_SERVER': JSON.stringify(env.REACT_APP_SERVER),
+      'process.env.REACT_APP_SERVICE_IDENTITY_SERVER': JSON.stringify(env.REACT_APP_SERVICE_IDENTITY_SERVER)
     },
     resolve: {
       alias: {

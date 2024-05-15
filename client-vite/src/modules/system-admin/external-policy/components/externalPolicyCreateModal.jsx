@@ -111,7 +111,7 @@ function ExternalPolicyCreateModal(props) {
                 {/* Form them API */}
                 <form id="form-create-external-policy" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <input id="create-external-policy-enabled" className="form-control" type="checkbox" name="name" placeholder="Enabled" value={enabled} onChange={handleToggleEnabled} />
+                        <input id="create-external-policy-enabled" className="form-control" type="checkbox" name="name" placeholder="Enabled" defaultChecked={enabled} onChange={handleToggleEnabled} />
                         <label htmlFor="create-external-policy-enabled">{translate('system_admin.external_policy.table.enabled')}</label>
                     </div>
 

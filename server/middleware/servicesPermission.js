@@ -777,6 +777,21 @@ exports.links = [
     {
         url: '/policies-management',
         apis: ['@all'],
+    }, {
+        url: '/external-service-consumers-management',
+        apis: ['@all']
+    }, {
+        url: '/internal-service-identity-management',
+        apis: ['@all']
+    }, {
+        url: '/internal-policy-management',
+        apis: ['@all']
+    }, {
+        url: '/external-policy-management',
+        apis: ['@all']
+    }, {
+        url: '/service-logging-management',
+        apis: ['@all']
     },
     {
         url: '/delegation-policies-management',

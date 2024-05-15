@@ -7,7 +7,7 @@ export const ExternalServiceConsumerServices = {
     deleteExternalServiceConsumer,
 };
 
-const EXTERNAL_SERVICE_CONSUMER_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/external-service-consumers`;
+const EXTERNAL_SERVICE_CONSUMER_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/authorization/external-service-consumers`;
 
 function getExternalServiceConsumers(params) {
     const { name, description, page, perPage } = params;

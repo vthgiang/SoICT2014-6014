@@ -16,7 +16,7 @@ function getInternalPolicies(data) {
             .then(res => {
                 dispatch({
                     type: InternalPolicyConstants.GET_INTERNAL_POLICY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -37,7 +37,7 @@ function createInternalPolicy(data) {
             .then(res => {
                 dispatch({
                     type: InternalPolicyConstants.CREATE_INTERNAL_POLICY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -58,7 +58,7 @@ function editInternalPolicy(internalPolicyId, data) {
             .then(res => {
                 dispatch({
                     type: InternalPolicyConstants.EDIT_INTERNAL_POLICY_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(error => {
