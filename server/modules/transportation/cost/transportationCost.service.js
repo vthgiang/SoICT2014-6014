@@ -2,6 +2,10 @@ const { VehicleCost, CostFormula, Vehicle, ShipperCost } = require('../../../mod
 const { connect } = require(`../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
 
+
+exports.testAPI = async()=>{
+    return {data:'abc'}
+}
 // Tạo mới loại chi phí đội xe
 exports.createVehicleCost = async (portal, data) => {
     let newVehicleCost;

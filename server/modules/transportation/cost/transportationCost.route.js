@@ -3,6 +3,7 @@ const router = express.Router();
 const TransportationCost = require('./transportationCost.controller');
 const { auth } = require(`../../../middleware`);
 
+router.get('/testAPI', TransportationCost.testAPI);
 router.get('/get/vehicle-cost', auth, TransportationCost.getVehicleCosts);
 router.get('/get/shipper-cost', auth, TransportationCost.getShipperCosts);
 router.post('/create/vehicle-cost', auth, TransportationCost.createVehicleCost);

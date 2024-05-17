@@ -1,6 +1,14 @@
 const TransportationCostService = require('./transportationCost.service');
 const Log = require(`../../../logs`);
 
+exports.testAPI = async (req, res)=>{
+    let data = TransportationCostService.testAPI();
+    res.status(201).json({
+        success: true,
+        messages: ["add_success"],
+        content: data
+    });
+}
 // Tạo mới chi phí đội xe
 exports.createVehicleCost = async (req, res) => {
     try {

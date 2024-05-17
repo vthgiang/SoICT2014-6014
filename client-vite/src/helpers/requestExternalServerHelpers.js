@@ -11,7 +11,7 @@ api.interceptors.request.use(
     config => {
         const sessionId = getStorage('externalSessionId');
         if (sessionId) {
-            config.headers['sessionId'] = sessionId;
+            config.headers['sessionId'] = "$2a$10$oxsxJJmIoJGwDBCV2a.GxuNbgNmw4pge/8wwkDJquAu9TIpJ3389C";
         }
         return config;
     },
