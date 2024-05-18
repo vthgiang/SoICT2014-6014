@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti } from '../../../../../common-components'
 import ManufacturingCommandDetailInfo from './manufacturingCommandDetailInfo'
 import { connect } from 'react-redux'
@@ -10,6 +10,7 @@ import ManufacturingLotCreateForm from '../../manufacturing-lot/components/manuf
 import QualityControlForm from './qualityControlForm'
 import { generateCode } from '../../../../../helpers/generateCode'
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+
 function ManufacturingCommandManagementTable(props) {
   const tableIdDefault = 'manufacturing-command-table'
   const defaultConfig = { limit: 5 }
@@ -100,14 +101,6 @@ function ManufacturingCommandManagementTable(props) {
     setState({
       ...state,
       createdAt: value
-    })
-  }
-
-  const handleManufacturingOrderCodeChange = (e) => {
-    const { value } = e.target
-    setState({
-      ...state,
-      manufacturingOrderCode: value
     })
   }
 
@@ -248,7 +241,6 @@ function ManufacturingCommandManagementTable(props) {
     let index = findIndexOfStaff(command.qualityControlStaffs, userId)
     let qcStatus = command.qualityControlStaffs[index].status
     let qcContent = command.qualityControlStaffs[index].content ? command.qualityControlStaffs[index].content : ''
-    console.log(qcContent)
     await setState({
       ...state,
       currentQCCommand: command,
@@ -310,8 +302,6 @@ function ManufacturingCommandManagementTable(props) {
         <QualityControlForm
           commandId={state.currentQCCommand._id}
           code={state.currentQCCommand.code}
-          status={state.qcStatus}
-          content={state.qcContent}
         />
       )}
       <div className='box-body qlcv'>
@@ -360,9 +350,9 @@ function ManufacturingCommandManagementTable(props) {
         </div>
         <div className='form-inline'>
           {/* <div className="form-group">
-                        <label className="form-control-static">{translate('manufacturing.command.manufacturing_order_code')}</label>
-                        <input type="text" className="form-control" value={manufacturingOrderCode} onChange={handleManufacturingOrderCodeChange} placeholder="DSX202012221" autoComplete="off" />
-                    </div> */}
+              <label className="form-control-static">{translate('manufacturing.command.manufacturing_order_code')}</label>
+              <input type="text" className="form-control" value={manufacturingOrderCode} onChange={handleManufacturingOrderCodeChange} placeholder="DSX202012221" autoComplete="off" />
+          </div> */}
           <div className='form-group'>
             <label className='form-control-static'>{translate('manufacturing.command.sales_order_code')}</label>
             <input
@@ -441,7 +431,6 @@ function ManufacturingCommandManagementTable(props) {
               <th>{translate('manufacturing.command.approvers')}</th>
               <th>{translate('manufacturing.command.qualityControlStaffs')}</th>
               <th>{translate('manufacturing.command.accountables')}</th>
-              <th>{translate('manufacturing.command.mill')}</th>
               <th>{translate('manufacturing.command.start_date')}</th>
               <th>{translate('manufacturing.command.end_date')}</th>
               <th>{translate('manufacturing.command.status')}</th>
@@ -457,7 +446,6 @@ function ManufacturingCommandManagementTable(props) {
                     translate('manufacturing.command.approvers'),
                     translate('manufacturing.command.qualityControlStaffs'),
                     translate('manufacturing.command.accountables'),
-                    translate('manufacturing.command.mill'),
                     translate('manufacturing.command.start_date'),
                     translate('manufacturing.command.end_date'),
                     translate('manufacturing.command.status')
@@ -499,7 +487,6 @@ function ManufacturingCommandManagementTable(props) {
                         return acc.name + ', '
                       })}
                   </td>
-                  <td>{command.manufacturingMill && command.manufacturingMill.name}</td>
                   <td>
                     {translate('manufacturing.command.turn') +
                       ' ' +

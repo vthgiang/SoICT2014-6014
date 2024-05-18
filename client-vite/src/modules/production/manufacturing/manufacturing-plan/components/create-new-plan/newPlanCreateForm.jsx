@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ButtonModal, DialogModal } from '../../../../../../common-components'
 import CommandCreateForm from './commandCreateForm'
 import PlanInfoForm from './generalPlanInfoForm'
-import ScheduleBooking from './scheduleBooking'
+import ScheduleBooking from './schedule-booking'
 import './planCreate.css'
 import { connect } from 'react-redux'
 import withTranslate from 'react-redux-multilingual/lib/withTranslate'
@@ -12,62 +12,59 @@ import { manufacturingPlanActions } from '../../redux/actions'
 import { GoodActions } from '../../../../common-production/good-management/redux/actions'
 import { LotActions } from '../../../../warehouse/inventory-management/redux/actions'
 import { UserActions } from '../../../../../super-admin/user/redux/actions'
-import { compareLtDate, compareLteDate, formatToTimeZoneDate } from '../../../../../../helpers/formatDate'
+import { compareLteDate, formatToTimeZoneDate } from '../../../../../../helpers/formatDate'
 import { workScheduleActions } from '../../../work-schedule/redux/actions'
-import { manufacturingCommand } from '../../../manufacturing-command/redux/reducers'
 
-class NewPlanCreateForm extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      step: 0,
-      steps: [
-        {
-          label: this.props.translate('manufacturing.plan.general_info'),
-          active: true,
-          disabled: false
-        },
-        {
-          label: this.props.translate('manufacturing.plan.command_info'),
-          active: false,
-          disabled: true
-        },
-        {
-          label: this.props.translate('manufacturing.plan.schedule_info'),
-          active: false,
-          disabled: true
-        }
-      ],
+const NewPlanCreateForm = (props) => {
+  const { translate } = props
 
-      code: '',
-      salesOrders: [],
-      startDate: '',
-      endDate: '',
-      description: '',
-      goods: [],
-      approvers: [],
-      manufacturingCommands: [],
-      // Danh sách list goods được tổng hợp từ các salesorder
-      listGoodsSalesOrders: [],
-      // Mảng chưa good, số lượng good chưa được nhập vào lệnh sản xuất
-      listRemainingGoods: []
-      // Danh sách lịch của xưởng được book trong kế hoạch
+  const [steps, setSteps] = useState([
+    {
+      label: props.translate('manufacturing.plan.general_info'),
+      active: true,
+      disabled: false
+    },
+    {
+      label: props.translate('manufacturing.plan.command_info'),
+      active: false,
+      disabled: true
+    },
+    {
+      label: props.translate('manufacturing.plan.schedule_info'),
+      active: false,
+      disabled: true
     }
-  }
+  ])
 
-  componentDidMount = () => {
-    // this.props.getAllSalesOrder({ page: 1, limit: 1000 });
-    this.props.getAllUserOfCompany()
-    const currentRole = localStorage.getItem('currentRole')
-    this.props.getSalesOrdersByManufacturingWorks(currentRole)
-    this.props.getAllApproversOfPlan(currentRole)
-    this.props.getGoodByManageWorkRole(currentRole)
-  }
+  const [step, setStep] = useState(0)
+  const [code, setCode] = useState('')
+  const [salesOrders, setSalesOrders] = useState([])
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [description, setDescription] = useState('')
+  const [goods, setGoods] = useState([])
+  const [addedAllGoods, setAddedAllGoods] = useState(false)
+  const [approvers, setApprovers] = useState([])
+  const [manufacturingCommands, setManufacturingCommands] = useState([])
+  const [listGoodsSalesOrders, setListGoodsSalesOrders] = useState([])
+  const [listRemainingGoods, setListRemainingGoods] = useState([])
+  const [listWorkSchedulesOfWorks, setListWorkSchedulesOfWorks] = useState([])
+  const [arrayWorkerSchedules, setArrayWorkerSchedules] = useState([])
 
-  setCurrentStep = async (e, step) => {
+  useEffect(() => {
+    const getData = async () => {
+      await props.getAllUserOfCompany()
+      const currentRole = localStorage.getItem('currentRole')
+      await props.getSalesOrdersByManufacturingWorks(currentRole)
+      await props.getAllApproversOfPlan(currentRole)
+      await props.getGoodByManageWorkRole(currentRole)
+    }
+    getData()
+  }, [])
+
+  const setCurrentStep = async (e, step) => {
     e.preventDefault()
-    let { steps } = this.state
-    steps.map((item, index) => {
+    const newSteps = steps.map((item, index) => {
       if (index <= step) {
         item.active = true
       } else {
@@ -75,86 +72,67 @@ class NewPlanCreateForm extends Component {
       }
       return item
     })
-    this.setState((state) => {
-      return {
-        ...state,
-        steps: steps,
-        step: step
+    setStep(step)
+    setSteps(newSteps)
+  }
+
+  const handleClickCreate = () => {
+    setCode(generateCode('KHSX'))
+  }
+
+  const handleStartDateChange = async (value) => {
+    setStartDate(value)
+    if (value && endDate) {
+      const { manufacturingMill } = props
+      const { listMills } = manufacturingMill
+      if (listMills) {
+        const listMillIds = listMills.map((x) => x._id)
+        const data = {
+          startDate: value,
+          endDate: endDate,
+          manufacturingMills: listMillIds
+        }
+        props.getAllWorkSchedulesOfManufacturingWork(data)
       }
-    })
+    }
   }
 
-  handleClickCreate = () => {
-    this.setState({
-      code: generateCode('KHSX')
-    })
-  }
+  const handleEndDateChange = async (value) => {
+    setEndDate(value)
 
-  handleStartDateChange = async (value) => {
-    await this.setState({
-      startDate: value
-    })
-    if (this.state.startDate && this.state.endDate) {
-      const { manufacturingMill } = this.props
-      const { startDate, endDate } = this.state
+    if (startDate && value) {
+      const { manufacturingMill } = props
       const { listMills } = manufacturingMill
       if (listMills) {
         const listMillIds = listMills.map((x) => x._id)
         const data = {
           startDate: startDate,
-          endDate: endDate,
+          endDate: value,
           manufacturingMills: listMillIds
         }
-        this.props.getAllWorkSchedulesOfManufacturingWork(data)
+        props.getAllWorkSchedulesOfManufacturingWork(data)
       }
     }
   }
 
-  handleEndDateChange = async (value) => {
-    await this.setState({
-      endDate: value
-    })
-    if (this.state.startDate && this.state.endDate) {
-      const { manufacturingMill } = this.props
-      const { startDate, endDate } = this.state
-      const { listMills } = manufacturingMill
-      if (listMills) {
-        const listMillIds = listMills.map((x) => x._id)
-        const data = {
-          startDate: startDate,
-          endDate: endDate,
-          manufacturingMills: listMillIds
-        }
-        this.props.getAllWorkSchedulesOfManufacturingWork(data)
-      }
-    }
+  const handleApproversChange = (value) => {
+    setApprovers(value)
   }
 
-  handleApproversChange = (value) => {
-    this.setState({
-      approvers: value
-    })
+  const handleDescriptionChange = (value) => {
+    setDescription(value)
   }
 
-  handleDescriptionChange = (value) => {
-    this.setState({
-      description: value
-    })
-  }
+  const handleSalesOrderChange = (value) => {
+    setSalesOrders(value)
 
-  handleSalesOrderChange = (value) => {
-    this.setState({
-      salesOrders: value
-    })
-
-    const { listSalesOrdersWorks } = this.props.salesOrders
+    const { listSalesOrdersWorks } = props.salesOrders //* note
 
     let listOrders = []
     if (listSalesOrdersWorks.length) {
       listOrders = listSalesOrdersWorks.filter((x) => value.includes(x._id))
     }
     let goods = []
-    // let goodIds = goods.map(x => x.good._id);
     let goodIds = []
     for (let i = 0; i < listOrders.length; i++) {
       listOrders[i].goods.map((x) => {
@@ -165,21 +143,19 @@ class NewPlanCreateForm extends Component {
             quantity: x.quantity
           })
         } else {
-          goods[this.findIndex(goods, x.good._id)].quantity += Number(x.quantity)
+          goods[findIndex(goods, x.good._id)].quantity += Number(x.quantity)
         }
       })
     }
     if (goodIds.length) {
-      this.props.getInventoryByGoodIds({
+      props.getInventoryByGoodIds({
         array: goodIds
       })
     }
-    this.setState({
-      listGoodsSalesOrders: [...goods]
-    })
+    setListGoodsSalesOrders([...goods])
   }
 
-  findIndex = (array, id) => {
+  const findIndex = (array, id) => {
     let result = -1
     array.map((x, index) => {
       if (x.good._id === id) {
@@ -190,138 +166,83 @@ class NewPlanCreateForm extends Component {
   }
 
   // Hàm xử lý thêm tất cả các good trong sales orders vào goods
-  handleAddAllGood = () => {
-    let { goods, listGoodsSalesOrders } = this.state
+  const handleAddAllGood = () => {
     let goodIds = goods.map((x) => x.good._id)
+    const newGoods = goods
     for (let i = 0; i < listGoodsSalesOrders.length; i++) {
       let x = listGoodsSalesOrders[i]
       if (!goodIds.includes(x.good._id)) {
         goodIds.push(x.good._id)
-        goods.push({ ...x })
+        newGoods.push({ ...x })
       } else {
-        goods[this.findIndex(goods, x.good._id)].quantity = Number(goods[this.findIndex(goods, x.good._id)].quantity)
-        goods[this.findIndex(goods, x.good._id)].quantity += Number(x.quantity)
+        newGoods[findIndex(goods, x.good._id)].quantity = Number(goods[findIndex(newGoods, x.good._id)].quantity)
+        newGoods[findIndex(goods, x.good._id)].quantity += Number(x.quantity)
       }
     }
-    this.setState({
-      goods: [...goods],
-      // State đánh dấu đã add tất cả các good của sales order để tạo KH => Không được sửa lại nữa
-      addedAllGoods: true,
-
-      // Thay đổi số lượng sản phẩm thì lệnh phải về rỗng
-      manufacturingCommands: []
-    })
+    setGoods([...newGoods])
+    setAddedAllGoods(true)
+    setManufacturingCommands([])
   }
 
-  // getListApproverIds = () => {
-  //     const { manufacturingPlan } = this.props;
-  //     let approvers = [];
-  //     if (manufacturingPlan.listApprovers && manufacturingPlan.isLoading === false) {
-  //         approvers = manufacturingPlan.listApprovers.map(x => x._id);
-  //     }
-  //     return approvers;
-  // }
-
-  handleListGoodsChange = (goods) => {
-    this.setState({
-      goods: goods
-    })
+  const handleListGoodsChange = (goods) => {
+    setGoods(goods)
   }
 
-  handleAddGood = (good) => {
-    const { goods } = this.state
+  const handleAddGood = (good) => {
     const goodIds = goods.map((x) => x.good._id)
+    const newGoods = goods
     if (!goodIds.includes(good.goodId)) {
-      const { listGoodsByRole } = this.props.goods
+      const { listGoodsByRole } = props.goods
       const goodObject = listGoodsByRole.filter((x) => x._id === good.goodId)[0]
       good.good = goodObject
-      goods.push(good)
+      newGoods.push(good)
     } else {
-      goods[this.findIndex(goods, good.goodId)].quantity += Number(good.quantity)
+      newGoods[findIndex(goods, good.goodId)].quantity += Number(good.quantity)
     }
-    this.setState((state) => ({
-      ...state,
-      goods: [...goods],
-      // Thay đổi phải cho lệnh về rỗng
-      manufacturingCommands: []
-    }))
+    setGoods([...newGoods])
+    setManufacturingCommands([])
   }
 
-  handleSaveEditGood = (good, indexEditting) => {
-    // Do good.good cũ truyền sang vẫn của good.good cũ, nên nếu thay đổi tên mặt hàng phải cập nhật lại;
-    const { listGoodsByRole } = this.props.goods
+  const handleSaveEditGood = (good, indexEditting) => {
+    const { listGoodsByRole } = props.goods
     const goodObject = listGoodsByRole.filter((x) => x._id === good.goodId)[0]
     good.good = goodObject
 
-    const { goods } = this.state
     const goodIds = goods.map((x) => x.good._id)
+    const newGoods = goods
     if (!goodIds.includes(good.goodId)) {
-      goods[indexEditting] = good
+      newGoods[indexEditting] = good
     } else if (goods[indexEditting].good._id === good.goodId) {
-      goods[indexEditting] = good
+      newGoods[indexEditting] = good
     } else {
-      goods[this.findIndex(goods, good.goodId)].quantity = Number(goods[this.findIndex(goods, good.goodId)].quantity)
-      goods[this.findIndex(goods, good.goodId)].quantity += Number(good.quantity)
-      goods.splice(indexEditting, 1)
+      newGoods[findIndex(newGoods, good.goodId)].quantity = Number(newGoods[findIndex(newGoods, good.goodId)].quantity)
+      newGoods[findIndex(newGoods, good.goodId)].quantity += Number(good.quantity)
+      newGoods.splice(indexEditting, 1)
     }
-    this.setState((state) => ({
-      ...state,
-      goods: [...goods],
-      // Thay đổi phải cho lệnh về rỗng
-      manufacturingCommands: []
-    }))
+    setGoods([...newGoods])
+    setManufacturingCommands([])
   }
 
-  handleDeleteGood = (index) => {
-    const { goods } = this.state
-    goods.splice(index, 1)
-    this.setState((state) => ({
-      ...state,
-      goods: [...goods],
-      // Thay đổi phải cho lệnh về rỗng
-      manufacturingCommands: []
-    }))
+  const handleDeleteGood = (index) => {
+    const newGoods = goods
+    newGoods.splice(index, 1)
+
+    setGoods([...newGoods])
+    setManufacturingCommands([])  
   }
 
   // Phần chia lệnh sản xuất
 
-  handleChangeListCommands = (listCommands) => {
-    this.setState((state) => ({
-      ...state,
-      manufacturingCommands: listCommands
-    }))
+  const handleChangeListCommands = (listCommands) => {
+    setManufacturingCommands(listCommands)
   }
 
-  static getDerivedStateFromProps = (props, state) => {
-    if (state.salesOrders.length) {
-      const { lots } = props
-      const { listInventories } = lots
-      const { listGoodsSalesOrders } = state
-      if (listInventories) {
-        listInventories.map((x, index) => {
-          if (listGoodsSalesOrders[index]) {
-            listGoodsSalesOrders[index].inventory = x.inventory
-          }
-        })
-      }
-      return {
-        ...state,
-        listGoodsSalesOrders: listGoodsSalesOrders
-      }
-    }
-    return null
-  }
-
-  handleRemainingGoodsChange = (listRemainingGoods) => {
-    this.setState((state) => ({
-      ...state,
-      listRemainingGoods: listRemainingGoods
-    }))
+  const handleRemainingGoodsChange = (listRemainingGoods) => {
+    setListRemainingGoods(listRemainingGoods)
   }
 
   // Check xem bước phân chia lệnh đã được validate hay chưa
-  checkValidateListRemainingGoods = () => {
-    const { listRemainingGoods } = this.state
+  const checkValidateListRemainingGoods = () => {
     if (listRemainingGoods.length === 0) {
       return false
     }
@@ -333,26 +254,26 @@ class NewPlanCreateForm extends Component {
     return true
   }
 
-  isValidateStep = (index) => {
+  const isValidateStep = (index) => {
     if (index == 1) {
       if (
-        this.state.goods.length === 0 ||
-        this.state.startDate === '' ||
-        this.state.endDate === '' ||
-        (this.state.startDate && this.state.endDate && !compareLteDate(this.state.startDate, this.state.endDate).status) ||
-        this.state.approvers === undefined ||
-        (this.state.approvers && this.state.approvers.length === 0)
+        goods.length === 0 ||
+        startDate === '' ||
+        endDate === '' ||
+        (startDate && endDate && !compareLteDate(startDate, endDate).status) ||
+        approvers === undefined ||
+        (approvers && approvers.length === 0)
       ) {
         return false
       }
       return true
     } else if (index == 2) {
       if (
-        this.state.goods.length === 0 ||
-        this.state.startDate === '' ||
-        this.state.endDate === '' ||
-        this.state.manufacturingCommands.length === 0 ||
-        !this.checkValidateListRemainingGoods()
+        goods.length === 0 ||
+        startDate === '' ||
+        endDate === '' ||
+        manufacturingCommands.length === 0 ||
+        !checkValidateListRemainingGoods()
       ) {
         return false
       }
@@ -360,16 +281,12 @@ class NewPlanCreateForm extends Component {
     }
   }
 
-  handleManufacturingCommandsChange = (data) => {
-    this.setState((state) => ({
-      ...state,
-      manufacturingCommands: [...data]
-    }))
+  const handleManufacturingCommandsChange = (data) => {
+    setManufacturingCommands([...data])
   }
 
-  getListWorkSchedulesOfWorks = () => {
-    // Lấy danh sách lịch của xưởng truyền xuống
-    const { manufacturingMill, workSchedule } = this.props
+  const getListWorkSchedulesOfWorks = () => {
+    const { manufacturingMill, workSchedule } = props
     const { listMills } = manufacturingMill
     const listMillIds = listMills.map((x) => x._id)
     var listSchedulesMap = new Map()
@@ -380,14 +297,11 @@ class NewPlanCreateForm extends Component {
     return listSchedulesMap
   }
 
-  handleListWorkSchedulesOfWorksChange = (data) => {
-    this.setState({
-      listWorkSchedulesOfWorks: data
-    })
+  const handleListWorkSchedulesOfWorksChange = (data) => {
+    setListWorkSchedulesOfWorks(data)
   }
 
-  isFormValidated = () => {
-    const { manufacturingCommands } = this.state
+  const isFormValidated = () => {
     let result = true
     for (let i = 0; i < manufacturingCommands.length; i++) {
       if (!manufacturingCommands[i].completed) {
@@ -397,39 +311,35 @@ class NewPlanCreateForm extends Component {
     return result && manufacturingCommands.length
   }
 
-  handleArryWorkerSchedulesChange = (data) => {
-    this.setState((state) => ({
-      ...state,
-      arrayWorkerSchedules: [...data]
-    }))
+  const handleArrayWorkerSchedulesChange = (data) => {
+    setArrayWorkerSchedules([...data])
   }
 
-  save = () => {
-    if (this.isFormValidated()) {
-      const { listWorkSchedulesOfWorks } = this.state
+  const save = () => {
+    if (isFormValidated()) {
       let listMillSchedules = []
       for (var value of listWorkSchedulesOfWorks.values()) {
         listMillSchedules = [...listMillSchedules, ...value]
       }
       const data = {
-        code: this.state.code,
-        salesOrders: this.state.salesOrders,
-        startDate: formatToTimeZoneDate(this.state.startDate),
-        endDate: formatToTimeZoneDate(this.state.endDate),
-        description: this.state.description,
-        goods: this.state.goods,
-        approvers: this.state.approvers,
+        code: code,
+        salesOrders: salesOrders,
+        startDate: formatToTimeZoneDate(startDate),
+        endDate: formatToTimeZoneDate(endDate),
+        description: description,
+        goods: goods,
+        approvers: approvers,
         creator: localStorage.getItem('userId'),
-        manufacturingCommands: this.state.manufacturingCommands,
+        manufacturingCommands: manufacturingCommands,
         listMillSchedules: listMillSchedules,
-        arrayWorkerSchedules: this.state.arrayWorkerSchedules
+        arrayWorkerSchedules: arrayWorkerSchedules
       }
-      this.props.createManufacturingPlan(data)
+      props.createManufacturingPlan(data)
     }
   }
 
-  checkHasComponent = (name) => {
-    let { auth } = this.props
+  const checkHasComponent = (name) => {
+    let { auth } = props
     let result = false
     auth.components.forEach((component) => {
       if (component.name === name) result = true
@@ -438,112 +348,96 @@ class NewPlanCreateForm extends Component {
     return result
   }
 
-  render() {
-    const { step, steps } = this.state
-    const { translate } = this.props
-    const {
-      code,
-      salesOrders,
-      startDate,
-      approvers,
-      endDate,
-      description,
-      goods,
-      listGoodsSalesOrders,
-      addedAllGoods,
-      manufacturingCommands
-    } = this.state
-    return (
-      <React.Fragment>
-        {this.checkHasComponent('create-manufacturing-plan') && (
-          <ButtonModal
-            onButtonCallBack={this.handleClickCreate}
-            modalID='modal-create-new-plan'
-            button_name={translate('manufacturing.plan.create_plan')}
-            title={translate('manufacturing.plan.create_plan_title')}
-          />
-        )}
-        <DialogModal
+  return (
+    <React.Fragment>
+      {checkHasComponent('create-manufacturing-plan') && (
+        <ButtonModal
+          onButtonCallBack={handleClickCreate}
           modalID='modal-create-new-plan'
-          isLoading={false}
-          formID='form-create-new-plan'
+          button_name={translate('manufacturing.plan.create_plan')}
           title={translate('manufacturing.plan.create_plan_title')}
-          msg_success={translate('manufacturing.plan.create_successfully')}
-          msg_failure={translate('manufacturing.plan.create_failed')}
-          func={this.save}
-          disableSubmit={!this.isFormValidated()}
-          size={100}
-          maxWidth={500}
-        >
-          <form id='form-create-new-plan'>
-            <div className='timeline'>
-              <div className='timeline-progress' style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
-              <div className='timeline-items'>
-                {steps.map((item, index) => (
-                  <div className={`timeline-item ${item.active ? 'active' : ''}`} key={index}>
-                    <div
-                      className={`timeline-contain ${!this.isValidateStep(index) && index > 0 ? 'disable-timeline-contain' : ''}`}
-                      onClick={(e) => this.setCurrentStep(e, index)}
-                    >
-                      {item.label}
-                    </div>
+        />
+      )}
+      <DialogModal
+        modalID='modal-create-new-plan'
+        isLoading={false}
+        formID='form-create-new-plan'
+        title={translate('manufacturing.plan.create_plan_title')}
+        msg_success={translate('manufacturing.plan.create_successfully')}
+        msg_failure={translate('manufacturing.plan.create_failed')}
+        func={save}
+        disableSubmit={!isFormValidated()}
+        size={100}
+        maxWidth={800}
+      >
+        <form id='form-create-new-plan'>
+          <div className='timeline'>
+            <div className='timeline-progress' style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
+            <div className='timeline-items'>
+              {steps.map((item, index) => (
+                <div className={`timeline-item ${item.active ? 'active' : ''}`} key={index}>
+                  <div
+                    className={`timeline-contain ${!isValidateStep(index) && index > 0 ? 'disable-timeline-contain' : ''}`}
+                    onClick={(e) => setCurrentStep(e, index)}
+                  >
+                    {item.label}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-            <div>
-              {step === 0 && (
-                <PlanInfoForm
-                  code={code}
-                  salesOrderIds={salesOrders}
-                  startDate={startDate}
-                  endDate={endDate}
-                  approvers={approvers}
-                  description={description}
-                  listGoods={goods}
-                  listGoodsSalesOrders={listGoodsSalesOrders}
-                  addedAllGoods={addedAllGoods}
-                  onStartDateChange={this.handleStartDateChange}
-                  onEndDateChange={this.handleEndDateChange}
-                  onApproversChange={this.handleApproversChange}
-                  onDescriptionChange={this.handleDescriptionChange}
-                  onSalesOrdersChange={this.handleSalesOrderChange}
-                  onListGoodsChange={this.handleListGoodsChange}
-                  onAddAllGood={this.handleAddAllGood}
-                  onAddGood={this.handleAddGood}
-                  onSaveEditGood={this.handleSaveEditGood}
-                  onDeleteGood={this.handleDeleteGood}
-                />
-              )}
-              {step === 1 && (
-                <CommandCreateForm
-                  listGoods={goods}
-                  commandCode={generateCode('LSX')}
-                  // approvers={this.getListApproverIds()}
-                  onChangeListCommands={this.handleChangeListCommands}
-                  manufacturingCommands={manufacturingCommands}
-                  onListRemainingGoodsChange={this.handleRemainingGoodsChange}
-                />
-              )}
-              {step === 2 && (
-                <ScheduleBooking
-                  listGoods={goods}
-                  manufacturingCommands={manufacturingCommands}
-                  startDate={startDate}
-                  endDate={endDate}
-                  onManufacturingCommandsChange={this.handleManufacturingCommandsChange}
-                  listWorkSchedulesOfWorks={this.getListWorkSchedulesOfWorks()}
-                  onListWorkSchedulesOfWorksChange={this.handleListWorkSchedulesOfWorksChange}
-                  onArrayWorkerSchedulesChange={this.handleArryWorkerSchedulesChange}
-                />
-              )}
-            </div>
-            <div style={{ textAlign: 'center' }}>{`${step + 1} / ${steps.length}`}</div>
-          </form>
-        </DialogModal>
-      </React.Fragment>
-    )
-  }
+          </div>
+          <div>
+            {step === 0 && (
+              <PlanInfoForm
+                code={code}
+                salesOrderIds={salesOrders}
+                startDate={startDate}
+                endDate={endDate}
+                approvers={approvers}
+                description={description}
+                listGoods={goods}
+                listGoodsSalesOrders={listGoodsSalesOrders}
+                addedAllGoods={addedAllGoods}
+                onStartDateChange={handleStartDateChange}
+                onEndDateChange={handleEndDateChange}
+                onApproversChange={handleApproversChange}
+                onDescriptionChange={handleDescriptionChange}
+                onSalesOrdersChange={handleSalesOrderChange}
+                onListGoodsChange={handleListGoodsChange}
+                onAddAllGood={handleAddAllGood}
+                onAddGood={handleAddGood}
+                onSaveEditGood={handleSaveEditGood}
+                onDeleteGood={handleDeleteGood}
+              />
+            )}
+            {step === 1 && (
+              <CommandCreateForm
+                listGoods={goods}
+                commandCode={generateCode('LSX')}
+                // approvers={getListApproverIds()}
+                onChangeListCommands={handleChangeListCommands}
+                manufacturingCommands={manufacturingCommands}
+                onListRemainingGoodsChange={handleRemainingGoodsChange}
+              />
+            )}
+            {step === 2 && (
+              <ScheduleBooking
+                listGoods={goods}
+                manufacturingCommands={manufacturingCommands}
+                startDate={startDate}
+                endDate={endDate}
+                onManufacturingCommandsChange={handleManufacturingCommandsChange}
+                listWorkSchedulesOfWorks={getListWorkSchedulesOfWorks()}
+                onListWorkSchedulesOfWorksChange={handleListWorkSchedulesOfWorksChange}
+                onArrayWorkerSchedulesChange={handleArrayWorkerSchedulesChange}
+              />
+            )}
+          </div>
+          <div style={{ textAlign: 'center' }}>{`${step + 1} / ${steps.length}`}</div>
+        </form>
+      </DialogModal>
+    </React.Fragment>
+  )
 }
 
 function mapStateToProps(state) {
@@ -558,7 +452,7 @@ const mapDispatchToProps = {
   getAllUserOfCompany: UserActions.getAllUserOfCompany,
   getGoodByManageWorkRole: GoodActions.getGoodByManageWorkRole,
   getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
-  createManufacturingPlan: manufacturingPlanActions.createManufacturingPlan
+  createManufacturingPlan: manufacturingPlanActions.createManufacturingPlan,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm))

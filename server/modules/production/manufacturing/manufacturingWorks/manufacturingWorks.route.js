@@ -10,6 +10,7 @@ router.get('/users', auth, ManufacturingWorksController.getUserByWorksManageRole
 router.post('/', auth, ManufacturingWorksController.createManufacturingWorks);
 router.get('/', auth, ManufacturingWorksController.getAllManufacturingWorks);
 router.get('/:id', auth, ManufacturingWorksController.getManufacturingWorksById);
+router.get('/:id/get-employee-roles', auth, ManufacturingWorksController.getAllManufacturingEmployeeRoles);
 router.delete('/:id', auth, ManufacturingWorksController.deleteManufacturingWorks);
 router.patch('/:id', auth, ManufacturingWorksController.editManufacturingWorks);
 

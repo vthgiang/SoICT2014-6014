@@ -5,7 +5,6 @@ import { formatToTimeZoneDate, formatYearMonth } from '../../../../../../helpers
 import ManufacturingCommandDetailInfo from '../../../manufacturing-command/components/manufacturingCommandDetailInfo'
 import './workSchedule.css'
 import moment from 'moment'
-import { translate } from 'react-redux-multilingual/lib/utils'
 
 class WorkScheduleComponent extends Component {
   constructor(props) {

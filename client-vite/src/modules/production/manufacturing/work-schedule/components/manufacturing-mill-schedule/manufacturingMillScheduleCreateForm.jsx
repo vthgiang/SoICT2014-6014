@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { ButtonModal, DatePicker, DialogModal, SelectBox, SlimScroll } from '../../../../../../common-components'
@@ -68,13 +68,6 @@ function ManufacturingMillScheduleCreateForm(props) {
     }))
   }
 
-  // handleNumberOfTurnsChange = (e) => {
-  //     const { value } = e.target;
-  //     setState((state) => ({
-  //         ...state,
-  //         numberOfTurns: value
-  //     }))
-  // }
 
   const save = () => {
     let { manufacturingMill, month, numberOfTurns } = state

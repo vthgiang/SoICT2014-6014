@@ -67,7 +67,6 @@ exports.authFunc = (checkPage = true) => {
                     const user = await User(
                         connect(DB_CONNECTION, req.portal)
                     ).findById(req.user._id).select("tokens");
-
                     let userParse = user.toObject();
 
                     const checkToken = userParse?.tokens?.find(element => element === req.token);

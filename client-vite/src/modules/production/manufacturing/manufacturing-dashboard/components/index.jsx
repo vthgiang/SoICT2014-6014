@@ -7,6 +7,7 @@ import CommandPieChart from './commandPieChart'
 import TopTenProductBarChart from './topTenProductBarChart'
 import FluctuatingProductChart from './fluctuatingProductChart'
 import PurchasingRequestPieChart from './purchasingRequestPieChart'
+
 class ManufacturingDashboard extends Component {
   constructor(props) {
     super(props)
@@ -14,7 +15,7 @@ class ManufacturingDashboard extends Component {
   }
 
   checkHasComponent = (name) => {
-    let { auth } = this.props
+    const { auth } = this.props
     let result = false
     auth.components.forEach((component) => {
       if (component.name === name) result = true
@@ -25,37 +26,35 @@ class ManufacturingDashboard extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <div className='qlcv'>
-          <ManufacturingDashboardHeader />
-          <div className='row'>
-            <div className=' col-lg-6 col-md-6 col-md-sm-12 col-xs-12'>
-              <PlanPieChart />
-            </div>
-            <div className=' col-lg-6 col-md-6 col-md-sm-12 col-xs-12'>
-              <CommandPieChart />
-            </div>
-            <div className=' col-lg-6 col-md-6 col-md-sm-12 col-xs-12'>
-              <ManufacturingLotPieChart />
-            </div>
-            {this.checkHasComponent('view-pie-chart-purchasing') && (
-              <div className=' col-lg-6 col-md-6 col-md-sm-12 col-xs-12'>
-                <PurchasingRequestPieChart />
-              </div>
-            )}
+      <div className='qlcv'>
+        <ManufacturingDashboardHeader />
+        <div className='row'>
+          <div className=' col-lg-6 col-md-6 col-md-sm-12 col-xs-12'>
+            <PlanPieChart />
           </div>
-          <div className='row'>
-            <div className='col-lg-12 col-md-12 col-md-sm-12 col-xs-12'>
-              <TopTenProductBarChart />
-            </div>
+          <div className=' col-lg-6 col-md-6 col-md-sm-12 col-xs-12'>
+            <CommandPieChart />
           </div>
-          <div className='row'>
-            <div className=' col-lg-12 col-md-12 col-md-sm-12 col-xs-12'>
-              <FluctuatingProductChart />
+          <div className=' col-lg-6 col-md-6 col-md-sm-12 col-xs-12'>
+            <ManufacturingLotPieChart />
+          </div>
+          {this.checkHasComponent('view-pie-chart-purchasing') && (
+            <div className=' col-lg-6 col-md-6 col-md-sm-12 col-xs-12'>
+              <PurchasingRequestPieChart />
             </div>
+          )}
+        </div>
+        <div className='row'>
+          <div className='col-lg-12 col-md-12 col-md-sm-12 col-xs-12'>
+            <TopTenProductBarChart />
           </div>
         </div>
-      </React.Fragment>
+        <div className='row'>
+          <div className=' col-lg-12 col-md-12 col-md-sm-12 col-xs-12'>
+            <FluctuatingProductChart />
+          </div>
+        </div>
+      </div>
     )
   }
 }

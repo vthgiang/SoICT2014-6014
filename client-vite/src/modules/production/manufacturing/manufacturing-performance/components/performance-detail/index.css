@@ -1,0 +1,133 @@
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Daily Board View */
+.board-view {
+    padding-top: 2rem;
+}
+
+.board-view .d-flex-center {
+    display: flex;
+    justify-content: center;
+    gap: 1px;
+    margin-bottom: 1px;
+}
+
+.date-item {
+    width: 3rem;
+    height: 2rem;
+    text-align: center;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+    line-height: 2rem;
+}
+
+.date-item.success {
+    background-color: #28a745;
+    color: white;
+}
+
+.date-item.warning {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.date-item.danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.date-item.default {
+    background-color: #e9ecef;
+    color: #333;
+}
+
+/* Daily detail */
+.date-detail {
+    margin-top: 2rem;
+}
+
+.date_detail-wrapper {
+    width: 90%;
+    padding: 0 1rem 1rem 1rem;
+    border-radius: 0.4rem;
+    background-color: #f4f6f9;
+    margin: auto;
+}
+
+.date_detail-header {
+    padding: 1rem 0;
+}
+
+.date_detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date_detail-item.percentage {
+    background-color: #e9ecef;
+    padding: 0.6rem;
+    border-radius: 0.6rem;
+}
+
+.date_detail-item.value {
+    padding: 0.4rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.circular_progress {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Notification */
+.noti_item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 0.4rem;
+    background-color: #ff851b;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.noti_icon {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.noti_icon i {
+    font-size: 2rem;
+}
+
+.noti-wrapper {
+    flex-grow: 1;
+}
+
+.noti_header {
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+/* Action table */
+.action_table {
+    padding: 1rem;
+}
+
+.action_table-title{
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.action_table-table {
+    margin-top: 1rem;
+}

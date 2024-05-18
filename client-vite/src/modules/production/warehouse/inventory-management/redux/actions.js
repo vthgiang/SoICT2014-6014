@@ -1,25 +1,5 @@
-import { BillConstants } from '../../bill-management/redux/constants'
-
-import { LotServices } from './services';
-import { LotConstants } from './constants';
-
-export const LotActions = {
-  getAllLots,
-  getDetailLot,
-  editLot,
-  getLotsByGood,
-  createOrUpdateLots,
-  deleteManyLots,
-  getAllManufacturingLots,
-  createManufacturingLot,
-  getDetailManufacturingLot,
-  handleEditManufacturingLot,
-  getInventoryByGoodIds,
-  getInventoryByGoodId,
-  getInventoriesDashboard,
-  getInventoryByGoodAndStock,
-  getNumberLotsStatus
-}
+import { LotServices  } from './services'
+import { LotConstants } from './constants'
 
 function getAllLots(data) {
   if (data !== undefined && data.limit !== undefined && data.page !== undefined) {
@@ -37,7 +17,7 @@ function getAllLots(data) {
         .catch((error) => {
           dispatch({
             type: LotConstants.GET_LOT_PAGINATE_FAILURE,
-            error: error
+            error
           })
         })
     }
@@ -355,4 +335,22 @@ function getNumberLotsStatus(data) {
         })
       })
   }
+}
+
+export const LotActions = {
+  getAllLots,
+  getDetailLot,
+  editLot,
+  getLotsByGood,
+  createOrUpdateLots,
+  deleteManyLots,
+  getAllManufacturingLots,
+  createManufacturingLot,
+  getDetailManufacturingLot,
+  handleEditManufacturingLot,
+  getInventoryByGoodIds,
+  getInventoryByGoodId,
+  getInventoriesDashboard,
+  getInventoryByGoodAndStock,
+  getNumberLotsStatus
 }

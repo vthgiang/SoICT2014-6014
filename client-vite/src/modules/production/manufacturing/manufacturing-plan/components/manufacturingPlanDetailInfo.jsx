@@ -332,14 +332,6 @@ function ManufacturingPlanDetailInfo(props) {
               </fieldset>
             </div>
           </div>
-          {/* <div className="row">
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('manufacturing.plan.manufacturing_commands')}</legend>
-                                Bình luận
-                            </fieldset>
-                        </div>
-                    </div> */}
         </form>
       </DialogModal>
     </React.Fragment>

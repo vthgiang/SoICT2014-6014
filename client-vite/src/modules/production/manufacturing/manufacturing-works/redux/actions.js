@@ -6,7 +6,8 @@ export const worksActions = {
   createManufacturingWorks,
   getDetailManufacturingWorks,
   editManufacturingWorks,
-  getAllUsersByWorksManageRole
+  getAllUsersByWorksManageRole,
+  getAllManufacturingEmployeeRoles
 }
 
 function getAllManufacturingWorks(queryData = {}) {
@@ -113,6 +114,28 @@ function getAllUsersByWorksManageRole(data) {
       .catch((error) => {
         dispatch({
           type: worksConstants.GET_ALL_USERS_BY_WORKS_MANAGE_ROLEST_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+function getAllManufacturingEmployeeRoles(id) {
+  return (dispatch) => {
+    dispatch({
+      type: worksConstants.GET_ALL_EMPLOYEE_ROLES_REQUEST
+    })
+    worksServices
+      .getAllManufacturingEmployeeRoles(id)
+      .then((res) => {
+        dispatch({
+          type: worksConstants.GET_ALL_EMPLOYEE_ROLES_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: worksConstants.GET_ALL_EMPLOYEE_ROLES_FAILURE,
           error
         })
       })

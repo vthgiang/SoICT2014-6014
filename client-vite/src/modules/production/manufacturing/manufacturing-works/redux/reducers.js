@@ -32,6 +32,7 @@ export function manufacturingWorks(state = initState, action) {
     case worksConstants.GET_DETAIL_WORKS_REQUEST:
     case worksConstants.UPDATE_WORKS_FAILURE:
     case worksConstants.GET_ALL_USERS_BY_WORKS_MANAGE_ROLEST_REQUEST:
+    case worksConstants.GET_ALL_EMPLOYEE_ROLES_REQUEST:
       return {
         ...state,
         isLoading: true
@@ -41,6 +42,7 @@ export function manufacturingWorks(state = initState, action) {
     case worksConstants.GET_DETAIL_WORKS_FAILURE:
     case worksConstants.UPDATE_WORKS_FAILURE:
     case worksConstants.GET_ALL_USERS_BY_WORKS_MANAGE_ROLEST_FAILURE:
+    case worksConstants.GET_ALL_EMPLOYEE_ROLES_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -87,6 +89,12 @@ export function manufacturingWorks(state = initState, action) {
         ...state,
         isLoading: false,
         employees: action.payload.employees
+      }
+    case worksConstants.GET_ALL_EMPLOYEE_ROLES_SUCCESS:
+      return {
+        ...state,
+        employeeRoles: action.payload.roles,
+        isLoading: false,
       }
     default:
       return state

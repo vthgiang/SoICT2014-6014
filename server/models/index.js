@@ -134,7 +134,10 @@ module.exports = {
     ManufacturingCommand: require('./production/manufacturing/manufacturingCommand.model'),
     PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
     WorkSchedule: require('./production/manufacturing/workSchedule.model'),
-
+    ManufacturingQualityError: require('./production/manufacturing/manufacturingQualityError.model'),
+    ManufacturingQualityCriteria: require('./production/manufacturing/manufacturingQualityCriteria.model'),
+    ManufacturingQualityInspection: require('./production/manufacturing/manufacturingQualityInspection.model'),
+    ManufacturingRouting: require('./production/manufacturing/manufacturingRouting.model'),
     // transport
     TransportRequirement: require('./production/transport/transportRequirement.model'),
     TransportPlan: require('./production/transport/transportPlan.model'),

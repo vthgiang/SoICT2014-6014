@@ -10,6 +10,7 @@ import { millActions } from '../../manufacturing-mill/redux/actions'
 import ManufacturingPlanDetailInfo from './manufacturingPlanDetailInfo'
 
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import AutoScheduleBooking from './create-new-plan/schedule-booking/autoScheduleBooking'
 function ManufacturingPlanManagementTable(props) {
   const tableIdDefault = 'manufacturing-plan-manager-table'
   const defaultConfig = { limit: 5 }
@@ -43,26 +44,6 @@ function ManufacturingPlanManagementTable(props) {
     props.getAllManufacturingWorks({ currentRole: currentRole })
     props.getAllManufacturingMills({ status: 1, currentRole: currentRole })
   }, [])
-
-  const handleShowDetailInfo = async (id) => {
-    await setState((state) => {
-      return {
-        ...state,
-        manufacturingOrderId: id
-      }
-    })
-    window.$(`#modal-detail-info-manufacturing-order`).modal('show')
-  }
-
-  // checkHasComponent = (name) => {
-  //     let { auth } = props;
-  //     let result = false;
-  //     auth.components.forEach(component => {
-  //         if (component.name === name) result = true;
-  //     });
-
-  //     return result;
-  // }
 
   const handleCodeChange = (e) => {
     const { value } = e.target
@@ -182,14 +163,6 @@ function ManufacturingPlanManagementTable(props) {
     }))
   }
 
-  const handleManufacturingOrderCodeChange = (e) => {
-    const { value } = e.target
-    setState((state) => ({
-      ...state,
-      manufacturingOrderCode: value
-    }))
-  }
-
   const handleSalesOrderCodeChange = (e) => {
     const { value } = e.target
     setState((state) => ({
@@ -222,13 +195,6 @@ function ManufacturingPlanManagementTable(props) {
       }
     }
     return false
-    // map bất đồng bộ nên luôn trả về false
-    // approvers.map(x => {
-    //     if (x.approver._id === userId && !x.approvedTime) {
-    //         return true;
-    //     }
-    // });
-    // return false;
   }
 
   const isApproverPlan = (plan) => {
@@ -295,10 +261,6 @@ function ManufacturingPlanManagementTable(props) {
           </div>
         </div>
         <div className='form-inline'>
-          {/* <div className="form-group">
-                        <label className="form-control-static">{translate('manufacturing.plan.manufacturing_order_code')}</label>
-                        <input type="text" className="form-control" value={manufacturingOrderCode} onChange={handleManufacturingOrderCodeChange} placeholder="DSX202012242" autoComplete="off" />
-                    </div> */}
           <div className='form-group'>
             <label className='form-control-static'>{translate('manufacturing.plan.sales_order_code')}</label>
             <input
@@ -434,7 +396,7 @@ function ManufacturingPlanManagementTable(props) {
               listPlans.length !== 0 &&
               listPlans.map((plan, index) => (
                 <tr key={index}>
-                  <td>{index + 1}</td>
+                  <td >{index + 1}</td>
                   <td>{plan.code}</td>
                   <td>{plan.creator && plan.creator.name}</td>
                   <td>
@@ -473,7 +435,6 @@ function ManufacturingPlanManagementTable(props) {
                         func={() => handleApprovePlan(plan)}
                       />
                     )}
-                    {/* <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a> */}
                     {((checkRoleCreator(plan) && plan.status === 1) ||
                       (isApproverPlan(plan) && (plan.status === 1 || plan.status === 2))) && (
                       <ConfirmNotification

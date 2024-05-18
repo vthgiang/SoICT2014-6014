@@ -1,8 +1,10 @@
 const {
     ManufacturingWorks,
     ManufacturingMill,
-    OrganizationalUnit
+    OrganizationalUnit,
+    Role
 } = require(`../../../../models`);
+
 
 const { getAllEmployeeOfUnitByRole } = require("../../../super-admin/user/user.service");
 
@@ -288,4 +290,27 @@ exports.getUserByWorksManageRole = async (currentRole, portal) => {
     }
     return { employees };
 
+}
+
+// Lấy ra tất cả các role employee của nhà máy sản xuất
+exports.getAllManufacturingEmployeeRoles = async (id, portal) => {
+    let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate({
+            path: "organizationalUnit",
+            populate: [
+                { path: 'employees' }
+            ]
+        })
+    
+    if (!manufacturingWorks) {
+        throw Error("ManufacturingWorks is not existing")
+    }
+
+    let employees = manufacturingWorks.organizationalUnit.employees;
+    
+    let roles = await Role(connect(DB_CONNECTION, portal))
+        .find({_id: { $in: employees }});
+
+    return { roles }
 }

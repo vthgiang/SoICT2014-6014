@@ -6,6 +6,9 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 const { deleteCommandFromSchedule } = require('../workSchedule/workSchedule.service');
+const TaskManagementService = require('../../../task/task-management/task.service');
+
+const dayjs = require('dayjs');
 
 function getArrayTimeFromString(stringDate) {
     arrayDate = stringDate.split('-');
@@ -39,7 +42,11 @@ function formatToTimeZoneDate(stringDate) {
     }
 }
 
-
+const convertDateTime = (date, time) => {
+    let splitter = date.split('-')
+    let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`
+    return dayjs(strDateTime, 'YYYY-MM-DD H').format('YYYY/MM/DD HH:mm:ss')
+}
 
 exports.createManufacturingCommand = async (data, portal) => {
     let newManufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).create({
@@ -53,6 +60,13 @@ exports.createManufacturingCommand = async (data, portal) => {
         good: data.good._id,
         quantity: data.quantity,
         creator: data.creator,
+        workOrders: data.workOrders.map(x => {
+            return {
+                ...x,
+                startDate: formatToTimeZoneDate(x.startDate),
+                endDate: formatToTimeZoneDate(x.endDate),
+            }
+        }),
         approvers: data.approvers.map(x => {
             return {
                 approver: x,
@@ -67,16 +81,43 @@ exports.createManufacturingCommand = async (data, portal) => {
                 time: null
             }
         }),
-        responsibles: data.responsibles.map(x => {
-            return x
-        }),
         accountables: data.accountables.map(x => {
             return x
         }),
         description: data.description
     });
-
+    
     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(newManufacturingCommand);
+
+    // Tạo công việc cho từng công đoạn
+    // await Promise.all(data.workOrders.map(async (wo) => {
+    //     const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById(wo.manufacturingMill);
+    //     const manufacturingWork = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(manufacturingMill.manufacturingWorks);
+    //     const organizationalUnitId = manufacturingWork.organizationalUnit;
+        
+    //     let newTask = {
+    //         name: `Công đoạn ${wo.operation} - ${manufacturingCommand.code}`,
+    //         description: 'Công việc tạo tự động từ lệnh sản xuất',
+    //         quillDescriptionDefault: '',
+    //         startDate: convertDateTime(wo.startDate, wo.startHour),
+    //         endDate: convertDateTime(wo.endDate, wo.endHour),
+    //         priority: 3,
+    //         responsibleEmployees: wo.responsibles,
+    //         accountableEmployees: data.accountables,
+    //         consultedEmployees: data.accountables,
+    //         informedEmployees: data.accountables,
+    //         creator: data.creator,
+    //         organizationalUnit: organizationalUnitId,
+    //         collaboratedWithOrganizationalUnits: [],
+    //         taskTemplate: '66410e53e26fa913a0f74a91',
+    //         parent: '',
+    //         taskProject: '',
+    //         tags: [],
+    //         taskOutputs: [],
+    //         imgs: null
+    //     }
+    //     await TaskManagementService.createTask(portal, newTask);
+    // })) 
 
     let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById(data.manufacturingPlan);
     manufacturingPlan.manufacturingCommands.push(manufacturingCommand._id);
@@ -338,6 +379,12 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                 }, {
                     path: "approvers.approver",
                     select: "_id name email avatar"
+                }, {
+                    path: "workOrders.manufacturingMill",
+                    select: "name"
+                }, {
+                    path: "workOrders.responsibles",
+                    select: "name email"
                 }],
                 sort: {
                     "updatedAt": "desc"
@@ -362,8 +409,6 @@ exports.getManufacturingCommandById = async (id, portal) => {
             path: "manufacturingMill",
             select: "code name"
         }, {
-            path: "responsibles"
-        }, {
             path: "accountables"
         }, {
             path: "creator"
@@ -379,6 +424,15 @@ exports.getManufacturingCommandById = async (id, portal) => {
             }]
         }, {
             path: "qualityControlStaffs.staff"
+        }, {
+            path: "workOrders.manufacturingMill",
+            select: "name"
+        }, {
+            path: "workOrders.responsibles",
+            select: "name email"
+        }, {
+            path: "inspections",
+            select: "workOrder",
         }]);
     if (!manufacturingCommand) {
         throw Error("ManufacturingCommand is not existing");

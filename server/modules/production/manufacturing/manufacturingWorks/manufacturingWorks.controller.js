@@ -135,3 +135,21 @@ exports.getUserByWorksManageRole = async (req, res) => {
         })
     }
 }
+
+exports.getAllManufacturingEmployeeRoles = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let roles = await ManufacturingWorksService.getAllManufacturingEmployeeRoles(id, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_successfully"],
+            content: roles
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ["get__failed"],
+            content: error.message
+        });
+    }
+}

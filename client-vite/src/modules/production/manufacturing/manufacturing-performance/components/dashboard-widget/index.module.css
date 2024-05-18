@@ -1,0 +1,50 @@
+/* Widget Title */
+.chart-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.chart-title i {
+    cursor: pointer;
+}
+
+/* Numeric card */
+.single_value {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, .125);
+    padding: 0.4rem;
+    border-radius: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card_icon {
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 0.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card_icon i {
+    color: white;
+    font-size: 4rem;
+}
+
+.card_value-number {
+    font-size: 2.4rem;
+    font-weight: 600;
+}
+
+.card_value-trend {
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: inline-flex;
+    margin-left: 0.5rem;
+}

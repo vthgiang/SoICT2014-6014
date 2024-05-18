@@ -1195,6 +1195,9 @@ exports.links = [
         url: '/analysis-manufacturing-performance',
         apis: ['@all']
     }, {
+        url: '/detail-analysis-manufacturing-performance',
+        apis: ['@all']
+    }, {
         url: '/manage-manufacturing-works',
         apis: ['@all']
     }, {
@@ -1202,6 +1205,12 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/manage-manufacturing-lot',
+        apis: ['@all']
+    }, {
+        url: '/manage-manufacturing-routing',
+        apis: ['@all']
+    }, {
+        url: '/manage-manufacturing-quality',
         apis: ['@all']
     }, {
         url: '/product-request-management/stock',

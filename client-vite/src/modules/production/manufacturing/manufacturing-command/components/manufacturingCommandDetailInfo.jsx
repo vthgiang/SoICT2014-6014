@@ -173,12 +173,12 @@ function ManufacturingCommandDetailInfo(props) {
               <div className='form-group'>
                 <strong>{translate('manufacturing.command.sales_order_code')}:&emsp;</strong>
                 {currentCommand.manufacturingPlan &&
-                currentCommand.manufacturingPlan.salesOrders &&
-                currentCommand.manufacturingPlan.salesOrders.length
+                  currentCommand.manufacturingPlan.salesOrders &&
+                  currentCommand.manufacturingPlan.salesOrders.length
                   ? currentCommand.manufacturingPlan.salesOrders.map((x, index) => {
-                      if (index === currentCommand.manufacturingPlan.salesOrders.length - 1) return x.code
-                      return x.code + ', '
-                    })
+                    if (index === currentCommand.manufacturingPlan.salesOrders.length - 1) return x.code
+                    return x.code + ', '
+                  })
                   : ''}
               </div>
               <div className='form-group'>
@@ -395,7 +395,7 @@ function ManufacturingCommandDetailInfo(props) {
               <fieldset className='scheduler-border'>
                 <legend className='scheduler-border'>{translate('manufacturing.command.approvers')}</legend>
                 {currentCommand.approvers &&
-                  currentCommand.approvers.length &&
+                  currentCommand.approvers.length > 0 &&
                   currentCommand.approvers.map((x, index) => {
                     return (
                       <div className='form-group' key={index}>
@@ -421,19 +421,38 @@ function ManufacturingCommandDetailInfo(props) {
             <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
               <fieldset className='scheduler-border'>
                 <legend className='scheduler-border'>{translate('manufacturing.command.responsibles')}</legend>
-                {currentCommand.responsibles &&
-                  currentCommand.responsibles.length &&
-                  currentCommand.responsibles.map((x, index) => {
-                    return (
-                      <div className='form-group' key={index}>
-                        <p>
-                          {x.name}
-                          {' - '}
-                          {x.email}
-                        </p>
-                      </div>
-                    )
-                  })}
+                <table className='table'>
+                  <thead>
+                    <tr>
+                      <th>{translate('manufacturing.command.index')}</th>
+                      <th>{translate('manufacturing.command.mills')}</th>
+                      <th>{translate('manufacturing.command.responsibles')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentCommand.workOrders &&
+                      currentCommand.workOrders.length > 0 &&
+                      currentCommand.workOrders.map((x, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{x.manufacturingMill.name}</td>
+                            <td style={{ textAlign: "left" }}>
+                              <ul>
+                                {x.responsibles
+                                  && x.responsibles.length > 0
+                                  && x.responsibles.map((y, index1) => (
+                                    <li key={index1}>{y.name}</li>
+                                  ))
+                                }
+                              </ul>
+                            </td>
+
+                          </tr>
+                        )
+                      })}
+                  </tbody>
+                </table>
               </fieldset>
             </div>
           </div>
@@ -507,7 +526,7 @@ function ManufacturingCommandDetailInfo(props) {
                         ((currentCommand.finishedProductQuantity * 100) /
                           (currentCommand.finishedProductQuantity +
                             (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0))) *
-                          100
+                        100
                       ) / 100}
                       %
                     </p>
@@ -522,7 +541,7 @@ function ManufacturingCommandDetailInfo(props) {
                         (((currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0) * 100) /
                           (currentCommand.finishedProductQuantity +
                             (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0))) *
-                          100
+                        100
                       ) / 100}
                       %
                     </p>
@@ -538,15 +557,15 @@ function ManufacturingCommandDetailInfo(props) {
             </div>
           </div>
           {/* <div className="row">
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('manufacturing.command.comment')}</legend>
-                                <div className={`form-group`}>
-                                    Bình luận
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div> */}
+              <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <fieldset className="scheduler-border">
+                      <legend className="scheduler-border">{translate('manufacturing.command.comment')}</legend>
+                      <div className={`form-group`}>
+                          Bình luận
+                      </div>
+                  </fieldset>
+              </div>
+          </div> */}
         </form>
       </DialogModal>
     </React.Fragment>

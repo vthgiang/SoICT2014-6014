@@ -261,6 +261,7 @@ exports.createWorkSchedule = async (data, portal) => {
             workSchedules.push(workSchedule);
         }
 
+        console.log(workSchedules)
 
         return { workSchedules }
     }

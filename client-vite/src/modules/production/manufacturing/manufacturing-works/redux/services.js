@@ -5,7 +5,8 @@ export const worksServices = {
   createManufacturingWorks,
   getDetailManufacturingWorks,
   editManufacturingWorks,
-  getAllUsersByWorksManageRole
+  getAllUsersByWorksManageRole,
+  getAllManufacturingEmployeeRoles
 }
 
 function getAllManufacturingWorks(queryData) {
@@ -71,3 +72,16 @@ function getAllUsersByWorksManageRole(data) {
     'manufacturing.manufacturing_works'
   )
 }
+
+function getAllManufacturingEmployeeRoles(id) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/manufacturing-works/${id}/get-employee-roles`,
+      method: 'GET'
+    },
+    false,
+    true,
+    'manufacturing.manufacturing_works'
+  )
+}
+

@@ -1,17 +1,19 @@
 const moment = require('moment');
 const {
-    ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, ManufacturingOrder, SalesOrder, ManufacturingMill
+    ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, SalesOrder, ManufacturingMill
 } = require(`../../../../models`);
 
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+const TaskService = require('../../../task/task-management/task.service');
 const UserService = require('../../../super-admin/user/user.service');
 const { createManufacturingCommand } = require('../manufacturingCommand/manufacturingCommand.service');
 const { bookingManyManufacturingMills, bookingManyWorkerToCommand, deleteCommandFromSchedule } = require('../workSchedule/workSchedule.service');
 const { addManufacturingPlanForGood, removeManufacturingPlanForGood } = require('../../order/sales-order/salesOrder.service');
 
+const dayjs = require('dayjs');
 
 function getArrayTimeFromString(stringDate) {
     arrayDate = stringDate.split('-');
@@ -73,12 +75,51 @@ function filterPlansWithProgress(arrayPlans, progress) {
     return arrayPlans;
 }
 
+function convertDateTime(date, time) {
+    return dayjs(date).add(time, 'hour').format('YYYY/MM/DD HH:mm:ss')
+}
+
+const createTaskFromPlan = async (id, portal) => {
+    let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById(id);
+    await Promise.all(manufacturingPlan.manufacturingCommands.map(async (command) => {
+        const manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(command);
+        const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById(manufacturingCommand.workOrders[0].manufacturingMill);
+        const manufacturingWork = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(manufacturingMill.manufacturingWorks);
+        const organizationalUnitId = manufacturingWork.organizationalUnit;
+
+        await Promise.all(manufacturingCommand.workOrders.map(async (wo) => {
+            let newTask = {
+                name: `Công đoạn ${wo.operation} - ${manufacturingCommand.code}`,
+                description: 'Công việc tạo tự động từ lệnh sản xuất',
+                quillDescriptionDefault: '',
+                startDate: convertDateTime(wo.startDate, wo.startHour),
+                endDate: convertDateTime(wo.endDate, wo.endHour),
+                priority: 3,
+                responsibleEmployees: wo.responsibles,
+                accountableEmployees: manufacturingCommand.accountables,
+                consultedEmployees: manufacturingCommand.accountables,
+                informedEmployees: manufacturingCommand.accountables,
+                creator: manufacturingPlan.creator,
+                organizationalUnit: organizationalUnitId,
+                collaboratedWithOrganizationalUnits: [],
+                taskTemplate: '664889f4955c55194419c779',
+                parent: '',
+                taskProject: '',
+                tags: [],
+                taskOutputs: [],
+                imgs: null
+            } 
+            await TaskService.createTask(portal, newTask);
+        }))
+    }))
+}
+
 exports.createManufacturingPlan = async (data, portal) => {
     const manufacturingCommands = data.manufacturingCommands;
     const listMillSchedules = data.listMillSchedules;
     const arrayWorkerSchedules = data.arrayWorkerSchedules;
     const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById({
-        _id: manufacturingCommands[0].manufacturingMill
+        _id: manufacturingCommands[0].workOrders[0].manufacturingMill
     });
     const manufacturingWorksId = manufacturingMill.manufacturingWorks;
 
@@ -116,6 +157,7 @@ exports.createManufacturingPlan = async (data, portal) => {
     for (let i = 0; i < manufacturingCommands.length; i++) {
         manufacturingCommands[i].manufacturingPlan = newManufacturingPlan._id;
         manufacturingCommands[i].creator = data.creator;
+        manufacturingCommands[i].creator = data.approvers;
         await createManufacturingCommand(manufacturingCommands[i], portal);
     }
     await bookingManyManufacturingMills(listMillSchedules, portal);
@@ -125,7 +167,6 @@ exports.createManufacturingPlan = async (data, portal) => {
             await addManufacturingPlanForGood(data.salesOrders[i], manufacturingWorksId, newManufacturingPlan._id, portal);
         }
     }
-
 
     return { manufacturingPlan }
 }
@@ -432,6 +473,7 @@ exports.editManufacturingPlan = async (id, data, portal) => {
             let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal)).find({
                 manufacturingPlan: oldPlan._id
             });
+            await createTaskFromPlan(oldPlan._id, portal); // Tạo công việc từ kế hoạch cho từng công đoạn SX
             manufacturingCommands.map(x => {
                 x.status = 1;
                 x.save();

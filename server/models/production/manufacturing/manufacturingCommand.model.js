@@ -12,10 +12,6 @@ const ManufacturingCommandSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "ManufacturingPlan"
     },
-    manufacturingMill: { //  Lệnh được thực hiện ở xưởng nào
-        type: Schema.Types.ObjectId,
-        ref: "ManufacturingMill"
-    },
     startDate: { // Ngày bắt đầu
         type: Date
     },
@@ -35,6 +31,36 @@ const ManufacturingCommandSchema = new Schema({
     quantity: { // Số lượng
         type: Number
     },
+    workOrders: [{ // Danh sách công việc
+        operation: { // Công đoạn
+            type: String,
+            required: true
+        },
+        manufacturingMill: { //  Lệnh được thực hiện ở xưởng nào
+            type: Schema.Types.ObjectId,
+            ref: "ManufacturingMill"
+        },
+        responsibles: [{ // Danh sách người thực hiện công việc
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }],
+        machines: [{
+            type: Schema.Types.ObjectId,
+            ref: "Asset"
+        }],
+        startDate: { // Ngày bắt đầu
+            type: Date
+        },
+        startHour: { // Giờ bắt đầu
+            type: Number
+        },
+        endDate: { // Ngày kết thúc
+            type: Date
+        },
+        endHour: { // Giờ kết thúc
+            type: Number
+        },
+    }],
     creator: { // Người tạo
         type: Schema.Types.ObjectId,
         ref: "User"
@@ -55,9 +81,9 @@ const ManufacturingCommandSchema = new Schema({
             type: Date
         }
     }],
-    responsibles: [{ // Danh sách người thực hiện lệnh
+    inspections: [{ // Danh sách phiếu kiểm định
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "ManufacturingQualityInspection"
     }],
     accountables: [{ // Người giám sát lệnh
         type: Schema.Types.ObjectId,

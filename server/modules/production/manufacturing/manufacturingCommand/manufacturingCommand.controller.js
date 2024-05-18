@@ -1,5 +1,4 @@
 const ManufacturingCommandServices = require('./manufacturingCommand.service');
-
 const Logger = require(`../../../../logs`);
 
 exports.createManufacturingCommand = async (req, res) => {

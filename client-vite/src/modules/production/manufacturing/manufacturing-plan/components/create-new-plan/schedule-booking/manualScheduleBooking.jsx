@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import withTranslate from 'react-redux-multilingual/lib/withTranslate'
-import { DatePicker, ErrorLabel, SelectBox } from '../../../../../../common-components'
-import { millActions } from '../../../manufacturing-mill/redux/actions'
-import WorkScheduleComponent from '../plan-component/workScheduleComponent'
-import WorkSchedule from '../../../work-schedule/components'
-import MillProductivity from '../plan-component/millProductivity'
-import HistoryCommandTable from './historyCommandTable'
-import { workScheduleActions } from '../../../work-schedule/redux/actions'
+import { DatePicker, ErrorLabel, SelectBox } from '../../../../../../../common-components'
+import WorkScheduleComponent from '../../plan-component/workScheduleComponent'
+import WorkSchedule from '../../../../work-schedule/components'
+import MillProductivity from '../../plan-component/millProductivity'
+import HistoryCommandTable from '../historyCommandTable'
+import { workScheduleActions } from '../../../../work-schedule/redux/actions'
 
 class ScheduleBooking extends Component {
   constructor(props) {
@@ -28,7 +27,7 @@ class ScheduleBooking extends Component {
       // Mảng chứa các ca đang book tạm thời [{index1, index2, month}]
       arrayWorkerSchedules: [],
       // Mảng chứa tổng thể các ca đã được save [{index1, index2, month, commandCode, users}]
-      arrayAllWorkerSchedules: []
+      arrayAllWorkerSchedules: [],
     }
   }
 

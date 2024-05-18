@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import withTranslate from 'react-redux-multilingual/lib/withTranslate'
 import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components'
@@ -7,29 +7,29 @@ import ValidationHelper from '../../../../../helpers/validationHelper'
 import { UserActions } from '../../../../super-admin/user/redux/actions'
 import { millActions } from '../redux/actions'
 
-class ManufacturingMillCreateForm extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      code: '',
-      name: '',
-      worksValue: '',
-      description: '',
-      status: '',
-      teamLeaderValue: ''
-    }
-  }
+const ManufacturingMillCreateForm = (props) => {
+  const { translate, manufacturingMill } = props
 
-  handleClickCreate = () => {
+  const [mill, setMill] = useState({
+    code: '',
+    name: '',
+    worksValue: '',
+    description: '',
+    status: '',
+    teamLeaderValue: ''
+  })
+  const [nameError, setNameError] = useState("")
+  const [worksValueError, setWorksValueError] = useState("")
+  const [teamLeaderValueError, setTeamLeaderValueError] = useState("")
+  const [statusError, setStatusError] = useState("")
+
+  const handleClickCreate = () => {
     const code = generateCode('XSX')
-    this.setState((state) => ({
-      ...state,
-      code: code
-    }))
+    setMill({...mill, code: code})
   }
 
-  getListUsers = () => {
-    const { translate, user } = this.props
+  const getListUsers = () => {
+    const { translate, user } = props
     let listUsersArray = [
       {
         value: '',
@@ -41,7 +41,6 @@ class ManufacturingMillCreateForm extends Component {
     if (userdepartments) {
       userdepartments = userdepartments[0]
       if (userdepartments.employees && Object.keys(userdepartments.employees).length > 0) {
-        // Nếu nhà máy có nhân viên
         let members = userdepartments.employees[Object.keys(userdepartments.employees)[0]].members
         if (members.length) {
           members.map((member) => {
@@ -57,8 +56,8 @@ class ManufacturingMillCreateForm extends Component {
     return listUsersArray
   }
 
-  getListWorks = () => {
-    const { translate, manufacturingWorks } = this.props
+  const getListWorks = () => {
+    const { translate, manufacturingWorks } = props
     let listWorksArray = [
       {
         value: '',
@@ -80,98 +79,91 @@ class ManufacturingMillCreateForm extends Component {
     return listWorksArray
   }
 
-  handleManufacturingWorksChange = (value) => {
+  const handleManufacturingWorksChange = (value) => {
     const worksValue = value[0]
-    this.validateManufacturingWorks(worksValue, true)
+    validateManufacturingWorks(worksValue, true)
   }
 
-  validateManufacturingWorks(value, willUpdateState) {
+  const validateManufacturingWorks = (value, willUpdateState) => {
     let msg = undefined
-    const { translate } = this.props
+    const { translate } = props
     if (value === '') {
       msg = translate('manufacturing.manufacturing_mill.worksValue_error')
     }
     if (willUpdateState) {
-      this.setState((state) => ({
-        ...state,
+      setMill({
+        ...mill,
         worksValue: value,
-        worksValueError: msg,
         teamLeaderValue: ''
-      }))
+      })
+      setWorksValueError(msg)
     }
-
     return msg
   }
 
-  handleTeamLeaderValueChange = (value) => {
-    console.log(value[0])
+  const handleTeamLeaderValueChange = (value) => {
     const teamLeaderValue = value[0]
-    this.validateTeamLeader(teamLeaderValue, true)
+    validateTeamLeader(teamLeaderValue, true)
   }
 
-  validateTeamLeader(value, willUpdateState = true) {
+  const validateTeamLeader = (value, willUpdateState = true) => {
     let msg = undefined
-    const { translate } = this.props
+    const { translate } = props
     if (value === '') {
       msg = translate('manufacturing.manufacturing_mill.team_leader_error')
     }
     if (willUpdateState) {
-      this.setState((state) => ({
-        ...state,
+      setMill({
+        ...mill,
         teamLeaderValue: value,
-        teamLeaderValueError: msg
-      }))
+      })
+      setTeamLeaderValueError(msg)
     }
-
     return msg
   }
 
-  handleNameChange = (e) => {
+  const handleNameChange = (e) => {
     const { value } = e.target
-    this.setState({
-      name: value
-    })
-    let { translate } = this.props
+    setMill({...mill, name: value})
+
+    let { translate } = props
     let { message } = ValidationHelper.validateName(translate, value, 6, 255)
-    this.setState({ nameError: message })
+    setNameError(message)
   }
 
-  handleDescriptionChange = (e) => {
+  const handleDescriptionChange = (e) => {
     const { value } = e.target
-    this.setState({
-      description: value
-    })
+    setMill({...mill, description: value})
   }
 
-  handleStatusChange = (value) => {
+  const handleStatusChange = (value) => {
     const status = value[0]
-    this.validateStatus(status, true)
+    validateStatus(status, true)
   }
 
-  validateStatus = (value, willUpdateState) => {
+  const validateStatus = (value, willUpdateState) => {
     let msg = undefined
-    const { translate } = this.props
+    const { translate } = props
     if (value === '') {
       msg = translate('manufacturing.manufacturing_mill.status_error')
     }
     if (willUpdateState) {
-      this.setState((state) => ({
-        ...state,
+      setMill({
+        ...mill,
         status: value,
-        statusError: msg
-      }))
+      })
+      setStatusError(msg)
     }
-
     return msg
   }
 
-  isFormValidated = () => {
-    const { name, worksValue, status, teamLeaderValue } = this.state
-    const { translate } = this.props
+  const isFormValidated = () => {
+    const { name, worksValue, status, teamLeaderValue } = mill
+    const { translate } = props
     if (
-      this.validateManufacturingWorks(worksValue, false) ||
-      this.validateStatus(status, false) ||
-      this.validateTeamLeader(teamLeaderValue, false) ||
+      validateManufacturingWorks(worksValue, false) ||
+      validateStatus(status, false) ||
+      validateTeamLeader(teamLeaderValue, false) ||
       !ValidationHelper.validateName(translate, name, 6, 255).status
     ) {
       return false
@@ -179,22 +171,22 @@ class ManufacturingMillCreateForm extends Component {
     return true
   }
 
-  save = () => {
-    if (this.isFormValidated) {
+  const save = () => {
+    if (isFormValidated) {
       const data = {
-        code: this.state.code,
-        name: this.state.name,
-        manufacturingWorks: this.state.worksValue,
-        teamLeader: this.state.teamLeaderValue,
-        description: this.state.description,
-        status: this.state.status
+        code: mill.code,
+        name: mill.name,
+        manufacturingWorks: mill.worksValue,
+        teamLeader: mill.teamLeaderValue,
+        description: mill.description,
+        status: mill.status
       }
-      this.props.createManufacturingMill(data)
+      props.createManufacturingMill(data)
     }
   }
 
   // Tìm trong trong listWorksArray object có value = value truyền vào
-  findIndex = (array, value) => {
+  const findIndex = (array, value) => {
     let result = -1
     array.map((item, index) => {
       if (item.value === value) {
@@ -204,27 +196,18 @@ class ManufacturingMillCreateForm extends Component {
     return result
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.worksValue !== '' && this.state.worksValue !== nextState.worksValue) {
-      let listWorks = this.getListWorks()
-      let result = this.findIndex(listWorks, nextState.worksValue)
-      if (result !== -1) {
-        this.props.getAllUserOfDepartment(listWorks[result].organizationalUnit)
-      }
+  
+  useEffect(() => {
+      const listWorks = getListWorks()
+      let result = findIndex(listWorks, mill.worksValue)
+      props.getAllUserOfDepartment(listWorks[result].organizationalUnit)
+  }, [mill.worksValue])
 
-      return false
-    }
-    return true
-  }
 
-  render() {
-    const { translate, manufacturingMill } = this.props
-    const { code, name, nameError, worksValue, worksValueError, description, status, statusError, teamLeaderValue, teamLeaderValueError } =
-      this.state
     return (
       <React.Fragment>
         <ButtonModal
-          onButtonCallBack={this.handleClickCreate}
+          onButtonCallBack={handleClickCreate}
           modalID='modal-create-mill'
           button_name={translate('manufacturing.manufacturing_mill.create_mill')}
           title={translate('manufacturing.manufacturing_mill.create_mill')}
@@ -236,8 +219,8 @@ class ManufacturingMillCreateForm extends Component {
           title={translate('manufacturing.manufacturing_mill.create_manufacturing_mill')}
           msg_success={translate('manufacturing.manufacturing_mill.create_mill_successfully')}
           msg_failure={translate('manufacturing.manufacturing_mill.create_mill_failed')}
-          func={this.save}
-          disableSubmit={!this.isFormValidated()}
+          func={save}
+          disableSubmit={!isFormValidated()}
           size={50}
           maxWidth={500}
         >
@@ -247,14 +230,14 @@ class ManufacturingMillCreateForm extends Component {
                 {translate('manufacturing.manufacturing_mill.code')}
                 <span className='text-red'>*</span>
               </label>
-              <input type='text' value={code} className='form-control' disabled={true}></input>
+              <input type='text' value={mill.code} className='form-control' disabled={true}></input>
             </div>
             <div className={`form-group ${!nameError ? '' : 'has-error'}`}>
               <label>
                 {translate('manufacturing.manufacturing_mill.name')}
                 <span className='text-red'>*</span>
               </label>
-              <input type='text' className='form-control' value={name} onChange={this.handleNameChange}></input>
+              <input type='text' className='form-control' value={mill.name} onChange={handleNameChange}></input>
               <ErrorLabel content={nameError} />
             </div>
             <div className={`form-group ${!worksValueError ? '' : 'has-error'}`}>
@@ -266,14 +249,14 @@ class ManufacturingMillCreateForm extends Component {
                 id={`select-works`}
                 className='form-control select2'
                 style={{ width: '100%' }}
-                value={worksValue}
-                items={this.getListWorks()}
-                onChange={this.handleManufacturingWorksChange}
+                value={mill.worksValue}
+                items={getListWorks()}
+                onChange={handleManufacturingWorksChange}
                 multiple={false}
               />
               <ErrorLabel content={worksValueError} />
             </div>
-            {this.state.worksValue !== '' && (
+            {mill.worksValue !== '' && (
               <div className={`form-group ${!teamLeaderValueError ? '' : 'has-error'}`}>
                 <label>
                   {translate('manufacturing.manufacturing_mill.team_leader')}
@@ -283,9 +266,9 @@ class ManufacturingMillCreateForm extends Component {
                   id={`select-teamLeader-create`}
                   className='form-control select2'
                   style={{ width: '100%' }}
-                  value={teamLeaderValue}
-                  items={this.getListUsers()}
-                  onChange={this.handleTeamLeaderValueChange}
+                  value={mill.teamLeaderValue}
+                  items={getListUsers()}
+                  onChange={handleTeamLeaderValueChange}
                   multiple={false}
                 />
                 <ErrorLabel content={teamLeaderValueError} />
@@ -300,26 +283,25 @@ class ManufacturingMillCreateForm extends Component {
                 id={`select-status`}
                 className='form-control select2'
                 style={{ width: '100%' }}
-                value={status}
+                value={mill.status}
                 items={[
                   { value: '', text: translate('manufacturing.manufacturing_mill.choose_status') },
                   { value: '1', text: translate('manufacturing.manufacturing_mill.1') },
                   { value: '0', text: translate('manufacturing.manufacturing_mill.0') }
                 ]}
-                onChange={this.handleStatusChange}
+                onChange={handleStatusChange}
                 multiple={false}
               />
               <ErrorLabel content={statusError} />
             </div>
             <div className='form-group'>
               <label>{translate('manufacturing.manufacturing_mill.description')}</label>
-              <textarea type='text' className='form-control' value={description} onChange={this.handleDescriptionChange}></textarea>
+              <textarea type='text' className='form-control' value={mill.description} onChange={handleDescriptionChange}></textarea>
             </div>
           </form>
         </DialogModal>
       </React.Fragment>
     )
-  }
 }
 
 function mapStateToProps(state) {

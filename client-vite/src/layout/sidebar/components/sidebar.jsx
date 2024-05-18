@@ -992,6 +992,11 @@ class SideBar extends Component {
                     path: '/manufacturing-dashboard'
                   },
                   {
+                      name: "menu.analysis_manufacturing_performance",
+                      icon: "fa fa-bar-chart",
+                      path: "/analysis-manufacturing-performance",
+                  },
+                  {
                     name: 'menu.manage_manufacturing_plan',
                     icon: 'fa fa-file-o',
                     path: '/manage-manufacturing-plan'
@@ -1011,16 +1016,16 @@ class SideBar extends Component {
                     icon: 'fa fa-navicon',
                     path: '/manage-manufacturing-lot'
                   },
-                  {
-                    name: 'menu.manage_purchasing_request',
-                    icon: 'fa fa-file-text-o',
-                    path: '/manage-purchasing-request'
-                  },
                   // {
-                  //     name: "menu.analysis_manufacturing_performance",
-                  //     icon: "fa fa-bar-chart",
-                  //     path: "/analysis-manufacturing-performance",
+                  //   name: 'menu.manage_purchasing_request',
+                  //   icon: 'fa fa-file-text-o',
+                  //   path: '/manage-purchasing-request'
                   // },
+                  {
+                    name: 'menu.request_management',
+                    icon: 'fa fa-envelope-open-o',
+                    path: '/product-request-management/manufacturing'
+                  },
                   {
                     name: 'menu.manage_manufacturing_works',
                     icon: 'fa fa-university',
@@ -1032,10 +1037,16 @@ class SideBar extends Component {
                     path: '/manage-manufacturing-mill'
                   },
                   {
-                    name: 'menu.request_management',
-                    icon: 'fa fa-file-text-o',
-                    path: '/product-request-management/manufacturing'
-                  }
+                    name: 'menu.manage_manufacturing_routing',
+                    icon: 'fa fa-sitemap',
+                    path: '/manage-manufacturing-routing'
+                  },
+                  {
+                    name: 'menu.manage_manufacturing_quality',
+                    icon: 'fa fa-certificate',
+                    path: '/manage-manufacturing-quality'
+                  },
+                  
                 ]
               }}
             />
