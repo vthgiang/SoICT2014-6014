@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  api-gateway-service:
+    container_name: api-gateway-service
+    image: maven:3.8-eclipse-temurin-19-alpine
+    working_dir: /app
+    entrypoint: mvn spring-boot:run -DskipTests
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+      - m2_repository:/root/.m2
+volumes:
+    m2_repository:
+        driver: local

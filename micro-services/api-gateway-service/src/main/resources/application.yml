@@ -1,0 +1,40 @@
+spring:
+    cloud:
+        gateway:
+            routes:
+                -   id: asset-service
+                    uri: http://asset-service:3000
+                    predicates:
+                        - Path=/asset/**
+                    filters:
+                        - RewritePath=/asset/(?<segment>.*), /$\{segment}
+                -   id: auth-service
+                    uri: http://auth-service:3000
+                    predicates:
+                        - Path=/auth/**
+                    filters:
+                        - RewritePath=/auth/(?<segment>.*), /$\{segment}
+                -   id: bidding-service
+                    uri: http://bidding-service:3000
+                    predicates:
+                        - Path=/bidding/**
+                    filters:
+                        - RewritePath=/bidding/(?<segment>.*), /$\{segment}
+                -   id: dashboard-service
+                    uri: http://dashboard-service:3000
+                    predicates:
+                        - Path=/dashboard/**
+                    filters:
+                        - RewritePath=/dashboard/(?<segment>.*), /$\{segment}
+                -   id: document-service
+                    uri: http://document-service:3000
+                    predicates:
+                        - Path=/document/**
+                    filters:
+                        - RewritePath=/document/(?<segment>.*), /$\{segment}
+                -   id: super-admin-service
+                    uri: http://super-admin-service:3000
+                    predicates:
+                        - Path=/admin/**
+                    filters:
+                        - RewritePath=/admin/(?<segment>.*), /$\{segment}

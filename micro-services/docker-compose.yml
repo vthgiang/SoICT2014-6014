@@ -14,6 +14,18 @@ services:
       - service-db:/data/log
     networks:
       - vnist-network
+  api-gateway-service:
+    container_name: api-gateway-service
+    image: maven:3.8-eclipse-temurin-19-alpine
+    working_dir: /app
+    entrypoint: mvn spring-boot:run -Dmaven.repo.local=repository -DskipTests
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./api-gateway-service:/app
+      - ./api-gateway-service/repository:/app/repository
+    networks:
+      - vnist-network
   bidding-service:
     container_name: bidding-service
     image: node:alpine
