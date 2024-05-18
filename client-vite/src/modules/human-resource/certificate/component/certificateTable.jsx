@@ -2,30 +2,30 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip, ConfirmNotification } from '../../../../common-components'
+import { PaginateBar, DataTableSetting, ConfirmNotification } from '../../../../common-components'
 
 import { CertificateActions } from '../redux/actions'
 import EditForm from './editForm'
 import CreateForm from './createForm'
 
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import Swal from 'sweetalert2'
 import { MajorActions } from '../../major/redux/actions'
+
 function CertificateTable(props) {
   console.log('prob ------', props)
 
   const tableId_constructor = 'table-manage-certificate'
   const defaultConfig = { name: '', page: 0, limit: 100 }
-  const limit = getTableConfiguration(tableId_constructor, defaultConfig).limit
+  const { limit } = getTableConfiguration(tableId_constructor, defaultConfig)
 
   const [state, setState] = useState({
     tableId: tableId_constructor,
-    limit: limit,
+    limit,
     page: 0,
     name: '' // Mặc định tìm kiếm theo tên
   })
 
-  let { certificateDuplicate, certificateDuplicateName } = state
+  const { certificateDuplicateName } = state
   // Cac ham xu ly du lieu voi modal
   const handleAddCertificate = async (certificate) => {
     await setState({
@@ -55,11 +55,11 @@ function CertificateTable(props) {
       ...state,
       page
     })
-    let { name, limit } = state
+    const { name, limit } = state
     const data = {
       limit,
       page,
-      name: name
+      name
     }
     props.get(data)
   }
@@ -69,11 +69,11 @@ function CertificateTable(props) {
       ...state,
       limit: number
     })
-    let { name, page } = state
+    const { name, page } = state
     const data = {
       limit: number,
       page,
-      name: name
+      name
     }
     props.get(data)
   }
@@ -94,10 +94,10 @@ function CertificateTable(props) {
 
   const { certificate, major, translate } = props
   const { currentRow, option, tableId } = state
-  console.log('currentRow', currentRow)
+  console.log(certificate)
 
   return (
-    <React.Fragment>
+    <>
       {/* Button thêm bằng cấp - chứng chỉ mới */}
       <div style={{ display: 'flex', marginBottom: 20, marginTop: 20, float: 'right' }}>
         <a className='btn btn-success pull-right' href='#modal-create-certificate' title='Add certificate' onClick={handleAddCertificate}>
@@ -105,7 +105,7 @@ function CertificateTable(props) {
         </a>
       </div>
 
-      {<CreateForm list={major?.listMajor} />}
+      <CreateForm list={major?.listMajor} />
 
       {/* Thanh tìm kiếm */}
       <div className='form-inline' style={{ marginBottom: '20px', marginTop: '20px' }}>
@@ -118,12 +118,12 @@ function CertificateTable(props) {
             className='form-control'
             name='name'
             onChange={setName}
-            placeholder={'Nhập tên bằng cấp - chứng chỉ'}
+            placeholder='Nhập tên bằng cấp - chứng chỉ'
             autoComplete='off'
           />
         </div>
         <div className='form-group'>
-          <label></label>
+          <label />
           <button
             type='button'
             className='btn btn-success'
@@ -143,6 +143,7 @@ function CertificateTable(props) {
             <th>Tên viết tắt</th>
             {/* <th>Chuyên ngành</th> */}
             <th>Mô tả</th>
+            <th>Điểm</th>
             <th style={{ width: '120px', textAlign: 'center' }}>
               {translate('table.action')}
               <DataTableSetting
@@ -168,21 +169,20 @@ function CertificateTable(props) {
               <td> {certificate.abbreviation} </td>
               {/* <td><ToolTip dataTooltip={certificate?.majors?.length ? certificate.majors.map(major => major ? major.name : "") : []} /></td> */}
               <td> {certificate.description}</td>
+              <td> {certificate.score} </td>
               <td style={{ textAlign: 'center' }}>
                 <a className='edit' href={`#${certificate._id}`} onClick={() => handleEdit(certificate)}>
                   <i className='material-icons'>edit</i>
                 </a>
                 {/* <a className="delete" href={`#${certificate._id}`} onClick={() => handleDelete(certificate)}><i className="material-icons">delete</i></a> */}
-                {
-                  <ConfirmNotification
-                    icon='question'
-                    title='Xóa chứng chỉ'
-                    name='delete'
-                    className='text-red'
-                    content={`<h4>Delete ${certificate.name}</h4>`}
-                    func={() => props.deleteCertificate(certificate._id)}
-                  />
-                }
+                <ConfirmNotification
+                  icon='question'
+                  title='Xóa chứng chỉ'
+                  name='delete'
+                  className='text-red'
+                  content={`<h4>Delete ${certificate.name}</h4>`}
+                  func={() => props.deleteCertificate(certificate._id)}
+                />
               </td>
             </tr>
           ))}
@@ -197,6 +197,7 @@ function CertificateTable(props) {
           certificateAbbreviation={currentRow.abbreviation}
           certificateDescription={currentRow.description}
           listData={major?.listMajor}
+          certificateScore={currentRow.score}
         />
       )}
       {certificate.isLoading ? (
@@ -213,7 +214,7 @@ function CertificateTable(props) {
         currentPage={certificate?.page}
         func={setPage}
       />
-    </React.Fragment>
+    </>
   )
 }
 

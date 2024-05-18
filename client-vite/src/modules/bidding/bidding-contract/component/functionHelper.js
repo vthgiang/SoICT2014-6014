@@ -4,23 +4,128 @@
 //     return result
 // }
 
+export const getDepartmentWithUsers = (
+  usersOfChildrenOrganizationalUnit,
+  includeManager = true,
+  includeDeputyManager = true,
+  includeEmployee = true
+) => {
+  let unitMembers
+  const structEmployee = []
+
+  if (usersOfChildrenOrganizationalUnit) {
+    const units = {} // // Map: key-id nhân viên, value-phòng/ban nhân viên
+    const employees = {} // Map: key-id nhân viên, value-tên nhân viên
+    const roles = {} // Map: key-id nhân viên, value-các chức danh của nhân viên
+
+    for (let i = 0; i < usersOfChildrenOrganizationalUnit.length; i++) {
+      const unit = usersOfChildrenOrganizationalUnit[i]
+
+      if (includeManager && unit) {
+        for (const key in unit.managers) {
+          // Xử lý managers
+          const value = unit.managers[key]
+          for (let j = 0; j < value.members.length; j++) {
+            const member = value.members[j]
+            if (employees[member._id]) {
+              roles[member._id] += `, ${value.name}`
+            } else {
+              employees[member._id] = member.name
+              roles[member._id] = value.name
+              units[member._id] = units[member._id] ? units[member._id] : unit.department
+            }
+          }
+        }
+      }
+
+      if (includeDeputyManager) {
+        for (const key in unit.deputyManagers) {
+          // Xử lý deputyManagers
+          const value = unit.deputyManagers[key]
+          for (let j = 0; j < value.members.length; j++) {
+            const member = value.members[j]
+            if (employees[member._id]) {
+              roles[member._id] += `, ${value.name}`
+            } else {
+              employees[member._id] = member.name
+              roles[member._id] = value.name
+              units[member._id] = units[member._id] ? units[member._id] : unit.department
+            }
+          }
+        }
+      }
+
+      if (includeEmployee) {
+        for (const key in unit.employees) {
+          // Xử lý employees
+          const value = unit.employees[key]
+          for (let j = 0; j < value.members.length; j++) {
+            const member = value.members[j]
+            if (employees[member._id]) {
+              roles[member._id] += `, ${value.name}`
+            } else {
+              employees[member._id] = member.name
+              roles[member._id] = value.name
+              units[member._id] = units[member._id] ? units[member._id] : unit.department
+            }
+          }
+        }
+      }
+    }
+
+    for (const item in employees) {
+      structEmployee.push({
+        id: item,
+        name: employees[item],
+        role: roles[item],
+        department: units[item]
+      })
+    }
+  }
+
+  if (usersOfChildrenOrganizationalUnit) {
+    unitMembers = usersOfChildrenOrganizationalUnit.map((unitMember) => {
+      const temp = []
+      for (let i = 0; i < structEmployee.length; i++) {
+        const item = structEmployee[i]
+        if (item.department === unitMember.department) {
+          temp.push({
+            text: `${item.name} (${item.role})`,
+            value: item.id
+          })
+        }
+      }
+      const unit = {
+        text: unitMember && unitMember.department,
+        value: temp,
+        unitId: unitMember.id
+      }
+
+      return unit
+    })
+  }
+
+  return unitMembers
+}
+
 export const getDepartmentIdByUserId = (listUserDepartment, userId) => {
   if (!listUserDepartment) return null
   const unitWithUser = getDepartmentWithUsers(listUserDepartment)
-  for (let x of unitWithUser) {
+  for (const x of unitWithUser) {
     const userList = x.value // danh sách nhân viên trong phòng ban đó
-    for (let user of userList) {
+    for (const user of userList) {
       if (user.value === userId) {
         return x.unitId
       }
     }
   }
+  return null
 }
 
 // return user account of employee
 export const convertEmployeeToUserInUnit = (allUser, employee) => {
   if (!allUser?.length) return null
-  for (let u of allUser) {
+  for (const u of allUser) {
     if (u.email === employee.emailInCompany) {
       return u
     }
@@ -28,10 +133,10 @@ export const convertEmployeeToUserInUnit = (allUser, employee) => {
 }
 
 export const checkExistedUserId = (uid, listUsers) => {
-  let check = listUsers.find((x) => String(x.userId) === String(uid))
+  const check = listUsers.find((x) => String(x.userId) === String(uid))
 
   if (check) return true
-  else return false
+  return false
 }
 
 /**
@@ -63,18 +168,18 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
     responsibleEmployeesWithUnit: []
   }
 
-  let responsibleEmployeesArr = []
-  let responsibleEmployeesWithUnitArr = []
-  let ObjResponsibleEmployeesWithUnit = {}
-  for (let p of proposalsCopy.tasks) {
-    for (let emp of p.directEmployees) {
-      let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp)
+  const responsibleEmployeesArr = []
+  const responsibleEmployeesWithUnitArr = []
+  const ObjResponsibleEmployeesWithUnit = {}
+  for (const p of proposalsCopy.tasks) {
+    for (const emp of p.directEmployees) {
+      const cvtEmp = convertEmployeeToUserInUnit(allUsers, emp)
       if (cvtEmp) {
         responsibleEmployeesArr.push(cvtEmp._id)
 
-        let unitIdOfEmp = getDepartmentIdByUserId(listUserDepartment, cvtEmp._id)
+        const unitIdOfEmp = getDepartmentIdByUserId(listUserDepartment, cvtEmp._id)
 
-        let listEmp = ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`]?.listUsers ?? []
+        const listEmp = ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`]?.listUsers ?? []
         if (!checkExistedUserId(cvtEmp._id, listEmp)) {
           ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`] = {
             unitId: unitIdOfEmp,
@@ -85,15 +190,15 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
     }
   }
 
-  for (let p of proposalsCopy.tasks) {
-    for (let emp of p.backupEmployees) {
-      let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp)
+  for (const p of proposalsCopy.tasks) {
+    for (const emp of p.backupEmployees) {
+      const cvtEmp = convertEmployeeToUserInUnit(allUsers, emp)
       if (cvtEmp) {
         responsibleEmployeesArr.push(cvtEmp._id)
 
-        let unitIdOfEmp = getDepartmentIdByUserId(listUserDepartment, cvtEmp._id)
+        const unitIdOfEmp = getDepartmentIdByUserId(listUserDepartment, cvtEmp._id)
 
-        let listEmp = ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`]?.listUsers ?? []
+        const listEmp = ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`]?.listUsers ?? []
         if (!checkExistedUserId(cvtEmp._id, listEmp)) {
           ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`] = {
             unitId: unitIdOfEmp,
@@ -104,7 +209,7 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
     }
   }
 
-  for (let key in ObjResponsibleEmployeesWithUnit) {
+  for (const key in ObjResponsibleEmployeesWithUnit) {
     responsibleEmployeesWithUnitArr.push(ObjResponsibleEmployeesWithUnit[key])
   }
 
@@ -132,11 +237,11 @@ export const getProjectTaskDataWhenCreateByContract = (bp, allUsers) => {
         tasks: []
       }
 
-  let taskList = []
+  const taskList = []
 
-  for (let idx in proposalsCopy.tasks) {
-    let p = proposalsCopy.tasks[idx]
-    let projectTaskData = {
+  for (const idx in proposalsCopy.tasks) {
+    const p = proposalsCopy.tasks[idx]
+    const projectTaskData = {
       code: p.code,
       name: p.taskName,
       description: p.taskDescription,
@@ -150,14 +255,14 @@ export const getProjectTaskDataWhenCreateByContract = (bp, allUsers) => {
       totalResWeight: 80
       // tags: [p.tag],
     }
-    for (let emp of p.directEmployees) {
-      let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp)
+    for (const emp of p.directEmployees) {
+      const cvtEmp = convertEmployeeToUserInUnit(allUsers, emp)
       if (cvtEmp) {
         projectTaskData.responsibleEmployees.push(cvtEmp._id)
       }
     }
-    for (let emp of p.backupEmployees) {
-      let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp)
+    for (const emp of p.backupEmployees) {
+      const cvtEmp = convertEmployeeToUserInUnit(allUsers, emp)
       if (cvtEmp) {
         projectTaskData.accountableEmployees.push(cvtEmp._id)
       }
@@ -167,108 +272,4 @@ export const getProjectTaskDataWhenCreateByContract = (bp, allUsers) => {
   }
 
   return taskList
-}
-
-export const getDepartmentWithUsers = (
-  usersOfChildrenOrganizationalUnit,
-  includeManager = true,
-  includeDeputyManager = true,
-  includeEmployee = true
-) => {
-  let unitMembers
-  let structEmployee = []
-
-  if (usersOfChildrenOrganizationalUnit) {
-    let units = {} // // Map: key-id nhân viên, value-phòng/ban nhân viên
-    let employees = {} // Map: key-id nhân viên, value-tên nhân viên
-    let roles = {} // Map: key-id nhân viên, value-các chức danh của nhân viên
-
-    for (let i = 0; i < usersOfChildrenOrganizationalUnit.length; i++) {
-      var unit = usersOfChildrenOrganizationalUnit[i]
-
-      if (includeManager && unit) {
-        for (let key in unit.managers) {
-          // Xử lý managers
-          let value = unit.managers[key]
-          for (let j = 0; j < value.members.length; j++) {
-            let member = value.members[j]
-            if (employees[member._id]) {
-              roles[member._id] += ', ' + value.name
-            } else {
-              employees[member._id] = member.name
-              roles[member._id] = value.name
-              units[member._id] = units[member._id] ? units[member._id] : unit.department
-            }
-          }
-        }
-      }
-
-      if (includeDeputyManager) {
-        for (let key in unit.deputyManagers) {
-          // Xử lý deputyManagers
-          let value = unit.deputyManagers[key]
-          for (let j = 0; j < value.members.length; j++) {
-            let member = value.members[j]
-            if (employees[member._id]) {
-              roles[member._id] += ', ' + value.name
-            } else {
-              employees[member._id] = member.name
-              roles[member._id] = value.name
-              units[member._id] = units[member._id] ? units[member._id] : unit.department
-            }
-          }
-        }
-      }
-
-      if (includeEmployee) {
-        for (let key in unit.employees) {
-          // Xử lý employees
-          let value = unit.employees[key]
-          for (let j = 0; j < value.members.length; j++) {
-            let member = value.members[j]
-            if (employees[member._id]) {
-              roles[member._id] += ', ' + value.name
-            } else {
-              employees[member._id] = member.name
-              roles[member._id] = value.name
-              units[member._id] = units[member._id] ? units[member._id] : unit.department
-            }
-          }
-        }
-      }
-    }
-
-    for (let item in employees) {
-      structEmployee.push({
-        id: item,
-        name: employees[item],
-        role: roles[item],
-        department: units[item]
-      })
-    }
-  }
-
-  if (usersOfChildrenOrganizationalUnit) {
-    unitMembers = usersOfChildrenOrganizationalUnit.map((unitMember) => {
-      var temp = []
-      for (let i = 0; i < structEmployee.length; i++) {
-        let item = structEmployee[i]
-        if (item.department === unitMember.department) {
-          temp.push({
-            text: item.name + ' (' + item.role + ')',
-            value: item.id
-          })
-        }
-      }
-      var unit = {
-        text: unitMember && unitMember.department,
-        value: temp,
-        unitId: unitMember.id
-      }
-
-      return unit
-    })
-  }
-
-  return unitMembers
 }

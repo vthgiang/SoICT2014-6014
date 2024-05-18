@@ -89,6 +89,7 @@ exports.updateCertificate = async (portal, data, id, company) => {
                 abbreviation: data.abbreviation,
                 description: data.description,
                 company: company,
+                score: data.score,
             },
         },
         { $new: true }

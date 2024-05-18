@@ -12,8 +12,6 @@ import {
   ModalEditExperience,
   ModalAddCareerPosition,
   ModalEditCareerPosition,
-  ModalAddWorkProcess,
-  ModalEditWorkProcess
 } from './combinedContent'
 
 function ExperienceTab(props) {

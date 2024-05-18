@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const { ObjectId } = mongoose.Types;
 
 // Tạo bảng cho bằng cấp chứng chỉ
 const CertificateSchema = new Schema(
@@ -17,8 +18,16 @@ const CertificateSchema = new Schema(
         },
         company: {
             type: Schema.Types.ObjectId,
-            ref: "Company",
+            ref: 'Company',
         },
+        score: {
+            type: Number,
+        },
+        majors: [
+            {
+                type: ObjectId,
+            },
+        ],
     },
     {
         timestamps: true,
@@ -26,7 +35,6 @@ const CertificateSchema = new Schema(
 );
 
 module.exports = (db) => {
-    if (!db.models.Certificate)
-        return db.model("Certificate", CertificateSchema);
+    if (!db.models.Certificate) return db.model('Certificate', CertificateSchema);
     return db.models.Certificate;
 };

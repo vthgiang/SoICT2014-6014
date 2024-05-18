@@ -1,24 +1,23 @@
-import { getStorage } from '../config'
-import { setStorage } from '../config'
+import { getStorage, setStorage } from '../config'
 
-export const getTableConfiguration = (tableId, defaultConfig) => {
-  // check xem localStorage đã có tableConfiguration chưa
+export const getTableConfiguration = (tableId, defaultConfig = {}) => {
+  // Check if localStorage has tableConfiguration
   let tableConfiguration = getStorage('tableConfiguration')
 
-  if (!JSON.parse(tableConfiguration)) {
-    // chưa có thì set default ={}
-    tableConfiguration = JSON.stringify({})
-    setStorage('tableConfiguration', tableConfiguration)
+  if (!tableConfiguration) {
+    // If not, initialize it with an empty object
+    tableConfiguration = {}
+    setStorage('tableConfiguration', JSON.stringify(tableConfiguration))
+  } else {
+    tableConfiguration = JSON.parse(tableConfiguration)
   }
 
-  tableConfiguration = JSON.parse(tableConfiguration)
-
+  // If the specific table configuration does not exist, set the default configuration
   if (!tableConfiguration[tableId]) {
-    // Chưa có thì set mặc định: limit người dùng tự định nghĩa, hidden columns = []
-    const limit = defaultConfig && defaultConfig.limit ? defaultConfig.limit : 5
-    const hiddenColumns = defaultConfig && defaultConfig.hiddenColumns ? defaultConfig.hiddenColumns : []
+    const limit = defaultConfig.limit || 5
+    const hiddenColumns = defaultConfig.hiddenColumns || []
 
-    tableConfiguration = { ...tableConfiguration, [tableId]: { limit, hiddenColumns } }
+    tableConfiguration[tableId] = { limit, hiddenColumns }
     setStorage('tableConfiguration', JSON.stringify(tableConfiguration))
   }
 
@@ -26,8 +25,14 @@ export const getTableConfiguration = (tableId, defaultConfig) => {
 }
 
 export const setTableConfiguration = (tableId, config) => {
-  let tableConfiguration = JSON.parse(getStorage('tableConfiguration'))
+  let tableConfiguration = getStorage('tableConfiguration')
 
-  tableConfiguration = { ...tableConfiguration, [tableId]: config }
+  if (!tableConfiguration) {
+    tableConfiguration = {}
+  } else {
+    tableConfiguration = JSON.parse(tableConfiguration)
+  }
+
+  tableConfiguration[tableId] = config
   setStorage('tableConfiguration', JSON.stringify(tableConfiguration))
 }

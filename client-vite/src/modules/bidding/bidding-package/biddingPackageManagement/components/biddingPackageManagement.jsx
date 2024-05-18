@@ -1,23 +1,18 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
 import {
-  DataTableSetting,
-  DeleteNotification,
   ConfirmNotification,
   PaginateBar,
   SelectMulti,
-  ExportExcel,
   DatePicker,
-  SelectBox
 } from '../../../../../common-components'
 
 import { BiddingPackageCreateForm, BiddingPackageDetailForm, BiddingPackageEditFrom } from './combinedContent'
 // , BiddingPackageDetailForm, BiddingPackageEditFrom, BiddingPackageImportForm
 
 import { BiddingPackageManagerActions } from '../redux/actions'
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions'
 import { FieldsActions } from '../../../../human-resource/field/redux/actions'
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 import { MajorActions } from '../../../../human-resource/major/redux/actions'

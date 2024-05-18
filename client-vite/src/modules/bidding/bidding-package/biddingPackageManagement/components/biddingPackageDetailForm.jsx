@@ -11,7 +11,6 @@ import { MajorActions } from '../../../../human-resource/major/redux/actions'
 import { CareerReduxAction } from '../../../../human-resource/career/redux/actions'
 import { CertificateActions } from '../../../../human-resource/certificate/redux/actions'
 import { BiddingPackageReduxAction } from '../../redux/actions'
-import CreateBiddingContract from '../../../bidding-contract/component/createContract'
 
 const BiddingPackageDetailForm = (props) => {
   const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2 }

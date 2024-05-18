@@ -2,29 +2,29 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip, ConfirmNotification } from '../../../../common-components'
+import { PaginateBar, DataTableSetting, ConfirmNotification } from '../../../../common-components'
 
 import { MajorActions } from '../redux/actions'
 import EditForm from './editForm'
 import CreateForm from './createForm'
 
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import Swal from 'sweetalert2'
+
 function MajorTable(props) {
   console.log('prob ------', props)
 
   const tableId_constructor = 'table-manage-major'
   const defaultConfig = { name: '', page: 0, limit: 100 }
-  const limit = getTableConfiguration(tableId_constructor, defaultConfig).limit
+  const { limit } = getTableConfiguration(tableId_constructor, defaultConfig)
 
   const [state, setState] = useState({
     tableId: tableId_constructor,
-    limit: limit,
+    limit,
     page: 0,
     name: '' // Mặc định tìm kiếm theo tên
   })
 
-  let { majorDuplicate, majorDuplicateName } = state
+  const { majorDuplicateName } = state
   // Cac ham xu ly du lieu voi modal
   const handleAddMajor = async (major) => {
     await setState({
@@ -46,11 +46,11 @@ function MajorTable(props) {
       ...state,
       page
     })
-    let { name, limit } = state
+    const { name, limit } = state
     const data = {
       limit,
       page,
-      name: name
+      name
     }
     props.get(data)
   }
@@ -68,11 +68,11 @@ function MajorTable(props) {
       ...state,
       limit: number
     })
-    let { name, page } = state
+    const { name, page } = state
     const data = {
       limit: number,
       page,
-      name: name
+      name
     }
     props.get(data)
   }
@@ -96,8 +96,8 @@ function MajorTable(props) {
   console.log('isLoading')
 
   return (
-    <React.Fragment>
-      {/* Button kiểm tra tất cả chuyên ngành hợp lệ không*/}
+    <>
+      {/* Button kiểm tra tất cả chuyên ngành hợp lệ không */}
       <div style={{ display: 'flex', marginBottom: 6, float: 'right' }}>
         <a className='btn btn-success pull-right' href='#create-major' title='Add major' onClick={handleAddMajor}>
           Thêm
@@ -105,7 +105,7 @@ function MajorTable(props) {
       </div>
 
       {/* Button thêm chuyên ngành mới */}
-      {<CreateForm list={major?.listMajor} />}
+      <CreateForm list={major?.listMajor} />
 
       {/* Thanh tìm kiếm */}
       <div className='form-inline'>
@@ -118,12 +118,12 @@ function MajorTable(props) {
             className='form-control'
             name='name'
             onChange={setName}
-            placeholder={'Nhập tên chuyên ngành'}
+            placeholder='Nhập tên chuyên ngành'
             autoComplete='off'
           />
         </div>
         <div className='form-group'>
-          <label></label>
+          <label />
           <button
             type='button'
             className='btn btn-success'
@@ -158,6 +158,7 @@ function MajorTable(props) {
             <th>Tên</th>
             <th>Code</th>
             <th>Mô tả</th>
+            <th>Điểm số</th>
             <th style={{ width: '120px', textAlign: 'center' }}>
               {translate('table.action')}
               <DataTableSetting
@@ -182,21 +183,20 @@ function MajorTable(props) {
               <td> {major.name} </td>
               <td> {major.code} </td>
               <td> {major.description} </td>
+              <td>{major.score}</td>
               <td style={{ textAlign: 'center' }}>
                 <a className='edit' href={`#${major._id}`} onClick={() => handleEdit(major)}>
                   <i className='material-icons'>edit</i>
                 </a>
                 {/* <a className="delete" href={`#${major._id}`} onClick={() => handleDelete(major)}><i className="material-icons">delete</i></a> */}
-                {
-                  <ConfirmNotification
-                    icon='question'
-                    title='Xóa chuyên ngành'
-                    name='delete'
-                    className='text-red'
-                    content={`<h4>Delete ${major.name + ' - ' + major.code}</h4>`}
-                    func={() => props.deleteMajor(major._id)}
-                  />
-                }
+                <ConfirmNotification
+                  icon='question'
+                  title='Xóa chuyên ngành'
+                  name='delete'
+                  className='text-red'
+                  content={`<h4>Delete ${`${major.name} - ${major.code}`}</h4>`}
+                  func={() => props.deleteMajor(major._id)}
+                />
               </td>
             </tr>
           ))}
@@ -211,6 +211,7 @@ function MajorTable(props) {
           majorCode={currentRow.code}
           majorDescription={currentRow.description}
           listData={major?.listMajor}
+          majorScore={currentRow.score}
         />
       )}
       {major.isLoading ? (
@@ -226,7 +227,7 @@ function MajorTable(props) {
         currentPage={major?.page}
         func={setPage}
       />
-    </React.Fragment>
+    </>
   )
 }
 

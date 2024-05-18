@@ -1,9 +1,9 @@
-const CertificateService = require("./certificate.service");
-const UserService = require(`${SERVER_MODULES_DIR}/super-admin/user/user.service`);
-const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
-const EmployeeService = require("../profile/profile.service");
+const CertificateService = require('./certificate.service');
+// const UserService = require(`${SERVER_MODULES_DIR}/super-admin/user/user.service`);
+// const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
+// const EmployeeService = require('../profile/profile.service');
 
-const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
+// const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
 
 const Log = require(`${SERVER_LOGS_DIR}`);
 
@@ -19,17 +19,17 @@ exports.searchCertificate = async (req, res) => {
         };
         data = await CertificateService.searchCertificate(req.portal, params);
 
-        await Log.info(req.user.email, "GET_CERTIFICATE", req.portal);
+        await Log.info(req.user.email, 'GET_CERTIFICATE', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_certificate_success"],
+            messages: ['get_certificate_success'],
             content: data,
         });
     } catch (error) {
-        await Log.error(req.user.email, "GET_CERTIFICATE", req.portal);
+        await Log.error(req.user.email, 'GET_CERTIFICATE', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_certificate_faile"],
+            messages: ['get_certificate_faile'],
             content: {
                 error: error,
             },
@@ -40,22 +40,18 @@ exports.searchCertificate = async (req, res) => {
 /** Tạo mới chứng chỉ */
 exports.createNewCertificate = async (req, res) => {
     try {
-        data = await CertificateService.createNewCertificate(
-            req.portal,
-            req.body,
-            req.user.company._id
-        );
-        await Log.info(req.user.email, "GET_CERTIFICATE", req.portal);
+        data = await CertificateService.createNewCertificate(req.portal, req.body, req.user.company._id);
+        await Log.info(req.user.email, 'GET_CERTIFICATE', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["create_certificate_success"],
+            messages: ['create_certificate_success'],
             content: data,
         });
     } catch (error) {
-        await Log.error(req.user.email, "GET_CERTIFICATE", req.portal);
+        await Log.error(req.user.email, 'GET_CERTIFICATE', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["create_certificate_faile"],
+            messages: ['create_certificate_faile'],
             content: {
                 error: error,
             },
@@ -66,23 +62,18 @@ exports.createNewCertificate = async (req, res) => {
 /** Chỉnh sửa chuyên ngành */
 exports.editCertificate = async (req, res) => {
     try {
-        data = await CertificateService.updateCertificate(
-            req.portal,
-            req.body,
-            req.params.id,
-            req.user.company._id
-        );
-        await Log.info(req.user.email, "EDIT_CERTIFICATE", req.portal);
+        data = await CertificateService.updateCertificate(req.portal, req.body, req.params.id, req.user.company._id);
+        await Log.info(req.user.email, 'EDIT_CERTIFICATE', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["edit_certificate_success"],
+            messages: ['edit_certificate_success'],
             content: data,
         });
     } catch (error) {
-        await Log.error(req.user.email, "EDIT_CERTIFICATE", req.portal);
+        await Log.error(req.user.email, 'EDIT_CERTIFICATE', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["edit_certificate_failure"],
+            messages: ['edit_certificate_failure'],
             content: {
                 error: error,
             },
@@ -95,21 +86,18 @@ exports.editCertificate = async (req, res) => {
 /** Xóa chuyên ngành */
 exports.deleteCertificate = async (req, res) => {
     try {
-        data = await CertificateService.deleteCertificate(
-            req.portal,
-            req.params.id
-        );
-        await Log.info(req.user.email, "DELETE_CERTIFICATE", req.portal);
+        data = await CertificateService.deleteCertificate(req.portal, req.params.id);
+        await Log.info(req.user.email, 'DELETE_CERTIFICATE', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["delete_certificate_success"],
+            messages: ['delete_certificate_success'],
             content: data,
         });
     } catch (error) {
-        await Log.error(req.user.email, "DELETE_CERTIFICATE", req.portal);
+        await Log.error(req.user.email, 'DELETE_CERTIFICATE', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["delete_certificate_failure"],
+            messages: ['delete_certificate_failure'],
             content: {
                 error: error,
             },

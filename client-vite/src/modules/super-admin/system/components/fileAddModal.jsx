@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-
-import { DialogModal, ButtonModal, ErrorLabel, UploadFile } from '../../../../common-components'
-
+import { DialogModal, ErrorLabel, UploadFile } from '../../../../common-components'
 import ValidationHelper from '../../../../helpers/validationHelper'
-import { SystemActions, SystemSettingActions } from '../redux/actions'
+import { SystemActions } from '../redux/actions'
 
 function FileAddModal(props) {
   const [state, setState] = useState({
@@ -37,13 +35,13 @@ function FileAddModal(props) {
   }
 
   const handleDiscFileChange = (e) => {
-    let { value } = e.target
+    const { value } = e.target
     validateDiscFile(value, true)
   }
 
   const validateDiscFile = (value, willUpdateState = true) => {
     const { translate } = props
-    let { message } = ValidationHelper.validateEmpty(translate, value)
+    const { message } = ValidationHelper.validateEmpty(translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -65,7 +63,7 @@ function FileAddModal(props) {
   /** Bắt sự kiện submit form */
   const save = () => {
     if (isFormValidated()) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('description', description)
       formData.append('files', state.fileUpload)
       return props.uploadBackupFiles(formData)
@@ -75,14 +73,14 @@ function FileAddModal(props) {
   return (
     <DialogModal
       size='50'
-      modalID={`modal-create-file-super-admin-backup`}
+      modalID='modal-create-file-super-admin-backup'
       isLoading={false}
-      formID={`form-create-file-backup`}
+      formID='form-create-file-backup'
       title={translate('human_resource.profile.add_file')}
       func={save}
       disableSubmit={!isFormValidated()}
     >
-      <form className='form-group' id={`form-create-file-backup`}>
+      <form className='form-group' id='form-create-file-backup'>
         {/* Mô tả */}
         <div className={`form-group ${errorOnDiscFile && 'has-error'}`}>
           <label>

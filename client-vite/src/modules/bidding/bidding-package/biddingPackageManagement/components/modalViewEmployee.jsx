@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
 import { DataTableSetting, DialogModal } from '../../../../../common-components'
-import { nonAccentVietnamese, stringToSlug } from '../../../../../helpers/stringMethod'
+import { nonAccentVietnamese } from '../../../../../helpers/stringMethod'
 import { EmployeeDetailForm } from '../../../../human-resource/profile/employee-management/components/employeeDetailForm'
 
 import { EmployeeManagerActions } from '../../../../human-resource/profile/employee-management/redux/actions'
 import { taskManagementActions } from '../../../../task/task-management/redux/actions'
-import getAllEmployeeSelectBoxItems, { getEmployeeInfoWithTask } from './employeeHelper'
+import getAllEmployeeSelectBoxItems from './employeeHelper'
 
 const ModalViewEmployee = (props) => {
   const [state, setState] = useState({

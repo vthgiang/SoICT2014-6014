@@ -1,4 +1,3 @@
-import { dispatch } from 'd3-dispatch'
 import { CertificateConstant } from './constants'
 
 import { CertificateService } from './services'

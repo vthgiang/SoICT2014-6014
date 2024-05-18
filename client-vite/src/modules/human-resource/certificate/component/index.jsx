@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-// import { Tree, SlimScroll, ExportExcel } from '../../../../common-components';
-import Swal from 'sweetalert2'
 import { CertificateActions } from '../redux/actions'
-// import EditForm from './editForm';
-// import CreateForm from './createForm';
 import './certificate.css'
 
 import CertificateTable from './certificateTable'

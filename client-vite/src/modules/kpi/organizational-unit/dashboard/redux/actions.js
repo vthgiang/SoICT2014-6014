@@ -1,16 +1,6 @@
 import { dashboardOrganizationalUnitKpiConstants } from './constants'
 import { dashboardOrganizationalUnitKpiServices } from './services'
 
-export const dashboardOrganizationalUnitKpiActions = {
-  getAllEmployeeKpiInOrganizationalUnit,
-  getAllEmployeeKpiInChildrenOrganizationalUnit,
-
-  getAllEmployeeKpiSetInOrganizationalUnit,
-
-  getAllTaskOfOrganizationalUnit,
-  getAllTaskOfChildrenOrganizationalUnit
-}
-
 // Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại
 function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId = undefined, month = undefined) {
   return (dispatch) => {
@@ -119,4 +109,12 @@ function getAllTaskOfChildrenOrganizationalUnit(roleId, month, organizationalUni
         })
       })
   }
+}
+
+export const dashboardOrganizationalUnitKpiActions = {
+  getAllEmployeeKpiInOrganizationalUnit,
+  getAllEmployeeKpiInChildrenOrganizationalUnit,
+  getAllEmployeeKpiSetInOrganizationalUnit,
+  getAllTaskOfOrganizationalUnit,
+  getAllTaskOfChildrenOrganizationalUnit
 }

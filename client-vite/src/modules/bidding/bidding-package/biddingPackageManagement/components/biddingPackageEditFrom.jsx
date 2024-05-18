@@ -1,11 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
 import { DialogModal } from '../../../../../common-components'
 
-import { KeyPeopleRequire, ExperienceTab, GeneralTab, Proposals } from './combinedContent'
+import { KeyPeopleRequire, GeneralTab, Proposals } from './combinedContent'
 import { BiddingPackageManagerActions } from '../redux/actions'
 import { MajorActions } from '../../../../human-resource/major/redux/actions'
 import { CareerReduxAction } from '../../../../human-resource/career/redux/actions'

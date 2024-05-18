@@ -1,11 +1,11 @@
 export default {
   locale: 'vn',
   messages: {
-    /*******************************************************
+    /** *****************************************************
      * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
      * @general những phần ngôn ngữ dùng chung cho mọi module
      * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
-     *******************************************************/
+     ****************************************************** */
     general: {
       show: 'Hiển thị ',
       table: 'Bảng',
@@ -93,14 +93,14 @@ export default {
     menu: {
       home: 'Trang chủ',
       /** Quản lý rủi ro */
-      bayesian_network_config: "Cấu hình mạng rủi ro",
-      risk_response_plan: "Quản lý biện pháp ứng phó rủi ro",
-      exprimental_analysis: "Đánh giá thực nghiệm",
-      risk_management: "Quản lý rủi ro",
-      risk_dashboard: "Dashboard rủi ro đơn vị",
-      risk_list: "Danh sách rủi ro",
-      task_pert: "Phân tích xác suất thành công",
-      task_pert_dash: "Phân tích quy trình",
+      bayesian_network_config: 'Cấu hình mạng rủi ro',
+      risk_response_plan: 'Quản lý biện pháp ứng phó rủi ro',
+      exprimental_analysis: 'Đánh giá thực nghiệm',
+      risk_management: 'Quản lý rủi ro',
+      risk_dashboard: 'Dashboard rủi ro đơn vị',
+      risk_list: 'Danh sách rủi ro',
+      task_pert: 'Phân tích xác suất thành công',
+      task_pert_dash: 'Phân tích quy trình',
       system_administration: 'Quản trị hệ thống',
       manage_configuration: 'Cấu hình hệ thống',
       manage_system: 'Sao lưu phục hồi',
@@ -142,7 +142,7 @@ export default {
         crmUnitConfiguration: 'Cấu hình đơn vị chăm sóc khách hàng'
       },
 
-      risk_template: "Quản lý rủi ro",
+      risk_template: 'Quản lý rủi ro',
       task_template: 'Mẫu Công Việc',
       administrative_document_process_dashboard: 'Dashboard quy trình văn bản',
       taskmanagement: 'Quản Lý Công Việc',
@@ -203,7 +203,7 @@ export default {
       proposal_management: 'Quản lý phiếu đề nghị',
       bill_management: 'Quản lý thông tin phiếu',
       inventory_management: 'Quản lý lô hàng',
-      storage_management: "Quản lý thông tin lưu trữ",
+      storage_management: 'Quản lý thông tin lưu trữ',
 
       manage_kpi_unit: 'KPI đơn vị',
       manage_kpi_personal: 'KPI cá nhân',
@@ -239,7 +239,6 @@ export default {
       all_time_sheet_log: '-------',
       personal_time_sheet_log: 'Thống kê bấm giờ',
 
-      //*******START */
       // Quản lý tài sản
       // QUẢN LÝ
 
@@ -264,7 +263,7 @@ export default {
       manage_recommend_procure: 'Quản lý đề nghị mua sắm',
       manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
       employee_manage_asset_info: 'Tài sản quản lý',
-      //loo tai san
+      // loo tai san
       add_asset_lot: 'Thêm mới lô tài sản',
       add_asset_lot_title: 'Thêm mới lô tài sản - Cập nhật lô tài sản',
       add_update_asset_lot: 'Thêm - Cập nhật lô tài sản',
@@ -275,9 +274,8 @@ export default {
       recommend_equipment_procurement: 'Đăng ký mua sắm tài sản',
       recommend_distribute_asset: 'Đăng ký sử dụng tài sản',
       manage_assigned_asset: 'Tài sản sử dụng',
-      //******END */
 
-      /**Quản lý vật tư */
+      /** Quản lý vật tư */
       manage_supplies: 'Quản lý vật tư',
       dashboard_supplies: 'Dashboard quản lý vật tư',
       manage_supplies_infor: 'Quản lý thông tin vật tư',
@@ -294,7 +292,7 @@ export default {
       report_management: 'Quản lý báo cáo',
       task_report: 'Quản lý báo cáo công việc',
 
-      //QUẢN LÝ ĐƠN HÀNG
+      // QUẢN LÝ ĐƠN HÀNG
       manage_orders: 'Quản lý đơn hàng',
       manage_sales_order: 'Đơn bán hàng',
       manage_purchase_order: 'Đơn mua nguyên vật liệu',
@@ -309,7 +307,7 @@ export default {
 
       // Quản lý kế hoạch sản xuất
       manage_plans: 'Quản lý kế hoạch sản xuất',
-      //VÍ DỤ EXAMPLE
+      // VÍ DỤ EXAMPLE
       manage_examples: 'Ví dụ CRUD',
       manage_examples_1: 'CRUD theo mô hình số 1',
       manage_examples_2: 'CRUD theo mô hình số 2',
@@ -354,43 +352,43 @@ export default {
       carrier_today_transport_mission: 'Nhiệm vụ vận chuyển',
       carrier_all_times_transport_mission: 'Nhiệm vụ vận chuyển mỗi ngày',
 
-      //Quản lý vận chuyển 2
-      manage_transportation: "Quản lý vận chuyển",
-      manage_transportation_init_route: "Đơn giao hàng",
-      manage_transportation_list_journey: "Danh sách lộ trình",
-      manage_transportation_dashboard: "Bảng tin đơn vị vận chuyển",
-      manage_transportation_vehicles: "Danh sách đội xe",
-      manage_transportation_test_api_shipper: "Thực hiện giao hàng",
-      manage_transportation_delivery_detail: "Chi tiết lộ trình",
-      manage_transportation_journey_detail: "Chi tiết chuyến hàng",
-      manage_transportation_cost: "Chi phí vận chuyển",
-      manage_transportation_shipper: "Nhân viên giao hàng",
+      // Quản lý vận chuyển 2
+      manage_transportation: 'Quản lý vận chuyển',
+      manage_transportation_init_route: 'Đơn giao hàng',
+      manage_transportation_list_journey: 'Danh sách lộ trình',
+      manage_transportation_dashboard: 'Bảng tin đơn vị vận chuyển',
+      manage_transportation_vehicles: 'Danh sách đội xe',
+      manage_transportation_test_api_shipper: 'Thực hiện giao hàng',
+      manage_transportation_delivery_detail: 'Chi tiết lộ trình',
+      manage_transportation_journey_detail: 'Chi tiết chuyến hàng',
+      manage_transportation_cost: 'Chi phí vận chuyển',
+      manage_transportation_shipper: 'Nhân viên giao hàng',
 
       user_guide: 'Hướng dẫn sử dụng',
       user_guide_detail: 'Chi tiết hướng dẫn sử dụng',
 
-      //Quản lý quy trình công việc sản xuất
-      manufacturing_process_title: "Công việc sản xuất",
-      manager_manufacturing_dashboard: "Dashboard quản lý",
-      manager_manufacturing_process: "Quản lý dây chuyền sản xuất",
-      chain_design: "Thiết kế chuyền",
-      manufacturing_task_managerment: "Danh sách công việc sản xuất",
-      manufacturing_process: "Quy trình dây chuyền sản xuất",
-      manufacturing_task_process: "Mẫu quy trình công việc",
-      manufacturing_issue: "Quản lý sự cố",
+      // Quản lý quy trình công việc sản xuất
+      manufacturing_process_title: 'Công việc sản xuất',
+      manager_manufacturing_dashboard: 'Dashboard quản lý',
+      manager_manufacturing_process: 'Quản lý dây chuyền sản xuất',
+      chain_design: 'Thiết kế chuyền',
+      manufacturing_task_managerment: 'Danh sách công việc sản xuất',
+      manufacturing_process: 'Quy trình dây chuyền sản xuất',
+      manufacturing_task_process: 'Mẫu quy trình công việc',
+      manufacturing_issue: 'Quản lý sự cố'
     },
 
     manufacturing_managerment: {
       manufacturing_process: {
-        //add
-        add_button: "Thêm mới",
+        // add
+        add_button: 'Thêm mới',
 
-        //tab name
-        tab_information: "Thông tin chung",
-        tab_employee: "Danh sách công nhân",
-        tab_asset: "Tài sản dây chuyền",
-        tab_task_list: "Danh sách công việc",
-        //Tab information
+        // tab name
+        tab_information: 'Thông tin chung',
+        tab_employee: 'Danh sách công nhân',
+        tab_asset: 'Tài sản dây chuyền',
+        tab_task_list: 'Danh sách công việc',
+        // Tab information
         add_title: 'Tạo mới quy trình sản xuất đơn vị',
         process_id: 'Mã dây chuyền sản xuất',
         process_unit: 'Đơn vị sản xuất',
@@ -402,85 +400,85 @@ export default {
         assign_supporter: 'Người hỗ trợ',
         assign_manager: 'Người quản lý',
 
-        //tab asset
-        asset_name: "Tên tài sản",
-        asset_quantity: "Số lượng",
-        asset_status: "Trạng thái",
-        asset_cate: "Loại tài sản",
-        asset_use_time: "Thời gian sử dụng",
+        // tab asset
+        asset_name: 'Tên tài sản',
+        asset_quantity: 'Số lượng',
+        asset_status: 'Trạng thái',
+        asset_cate: 'Loại tài sản',
+        asset_use_time: 'Thời gian sử dụng',
 
-        //tab employee list
-        employee_name: "Tên người thực hiện",
-        list_employee: "Danh sách công nhân",
-        task_name: "Cụm công việc",
-        task_action_name: "Công việc",
+        // tab employee list
+        employee_name: 'Tên người thực hiện',
+        list_employee: 'Danh sách công nhân',
+        task_name: 'Cụm công việc',
+        task_action_name: 'Công việc',
 
-        search: "Tìm kiếm",
-        //table
-        index: "STT",
-        identification: "Mã quy trình",
-        process_name: "Tên quy trình",
-        process_time_start: "Giờ bắt đầu làm việc",
-        process_time_end: "Giờ kết thúc làm việc",
-        process_asset: "Tài sản nhóm SX",
-        process_status: "Trạng thái",
-        progress: "Tiến độ",
-        supervisor: "Người giám sát",
-        employee_number: "Số công nhân",
-        production_target: "Chỉ tiêu sản phẩm",
+        search: 'Tìm kiếm',
+        // table
+        index: 'STT',
+        identification: 'Mã quy trình',
+        process_name: 'Tên quy trình',
+        process_time_start: 'Giờ bắt đầu làm việc',
+        process_time_end: 'Giờ kết thúc làm việc',
+        process_asset: 'Tài sản nhóm SX',
+        process_status: 'Trạng thái',
+        progress: 'Tiến độ',
+        supervisor: 'Người giám sát',
+        employee_number: 'Số công nhân',
+        production_target: 'Chỉ tiêu sản phẩm'
       },
       management_chain: {
-        add_form_titile: "Thiết kế chuyền mới",
-        unit_production: "Đơn vị sản xuất",
-        chain_name: "Tên dây chuyền",
-        employee_watcher: "Người phụ trách",
-        employee_approver: "Người phê duyệt",
-        description: "Mô tả",
+        add_form_titile: 'Thiết kế chuyền mới',
+        unit_production: 'Đơn vị sản xuất',
+        chain_name: 'Tên dây chuyền',
+        employee_watcher: 'Người phụ trách',
+        employee_approver: 'Người phê duyệt',
+        description: 'Mô tả',
 
-        job_list_title: "Danh sách công việc quy trình",
-        job_infor: "Thông tin công việc",
-        job_code: "Mã công việc",
-        job_name: "Tên công việc",
-        job_description: "Nội dung công việc",
-        job_asset: "Tài sản công việc",
-        job_asset_numbers: "Số lượng",
-        job_asset_unit: "Đơn vị",
-        job_asset_status: "Trạng thái",
-        job_times: "Thời gian thực hiện",
+        job_list_title: 'Danh sách công việc quy trình',
+        job_infor: 'Thông tin công việc',
+        job_code: 'Mã công việc',
+        job_name: 'Tên công việc',
+        job_description: 'Nội dung công việc',
+        job_asset: 'Tài sản công việc',
+        job_asset_numbers: 'Số lượng',
+        job_asset_unit: 'Đơn vị',
+        job_asset_status: 'Trạng thái',
+        job_times: 'Thời gian thực hiện',
 
-        //table asset job
-        index: "STT",
-        add_job_list: "Thêm",
-        actions: "Hành động",
+        // table asset job
+        index: 'STT',
+        add_job_list: 'Thêm',
+        actions: 'Hành động'
       },
       management_issue: {
-        //table
-        index: "STT",
-        issue_task: "Công việc",
-        issue_action: "Hoạt động",
-        issue_name: "Tên sự cố",
-        issue_on_time: "Thời gian xảy ra sự cố",
-        issue_status: "Trạng thái sự cố",
-        issue_fix_time: "Thời gian khắc phục",
-        issue_repair_date: "Ngày sửa chữa",
-        issue_repairer: "Người sửa chữa",
-        issue_cate: "Loại lỗi",
+        // table
+        index: 'STT',
+        issue_task: 'Công việc',
+        issue_action: 'Hoạt động',
+        issue_name: 'Tên sự cố',
+        issue_on_time: 'Thời gian xảy ra sự cố',
+        issue_status: 'Trạng thái sự cố',
+        issue_fix_time: 'Thời gian khắc phục',
+        issue_repair_date: 'Ngày sửa chữa',
+        issue_repairer: 'Người sửa chữa',
+        issue_cate: 'Loại lỗi',
 
-        //form edit
-        edit_issue_form: "Sửa thông tin sự cố",
-        add_issue_form: "Thêm lỗi sự cố",
+        // form edit
+        edit_issue_form: 'Sửa thông tin sự cố',
+        add_issue_form: 'Thêm lỗi sự cố'
       },
       management_task_action: {
-        //table manage
-        index: "STT",
-        unitOrganizational: "Đơn vị sản xuất",
-        processManufacturingName: "Tên chuyền sản xuất",
-        taskProcessName: "Tên công việc",
-        progress: "Tiến độ",
-        performer: "Người thực hiện",
-        reporter: "Người báo cáo",
-        date: "Ngày sản xuất",
-        productDone: "Sản phẩm đã hoàn thiện",
+        // table manage
+        index: 'STT',
+        unitOrganizational: 'Đơn vị sản xuất',
+        processManufacturingName: 'Tên chuyền sản xuất',
+        taskProcessName: 'Tên công việc',
+        progress: 'Tiến độ',
+        performer: 'Người thực hiện',
+        reporter: 'Người báo cáo',
+        date: 'Ngày sản xuất',
+        productDone: 'Sản phẩm đã hoàn thiện'
       }
     },
 
@@ -789,7 +787,7 @@ export default {
           description: 'Mô tả về phân quyền'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_root_roles_success: 'Lấy thông tin về các root role thành công'
       },
 
@@ -844,7 +842,7 @@ export default {
         },
         select_link: 'Chọn link tương ứng',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_system_component_success: 'Tạo system component thành công',
         get_system_component_success: 'Lấy dữ liệu system component thành công',
         edit_system_component_success: 'Chỉnh sửa system admin thành công',
@@ -881,14 +879,14 @@ export default {
           delete_title: 'Xóa API'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_system_api_success: 'Thêm system API thành công',
         create_system_api_failure: 'Thêm system API thất bại',
         system_api_exist: 'System API đã tồn tại'
       },
 
       system_page: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_system_page_apis_success: 'Lấy system page API thành công',
         get_system_page_api_failure: 'Lấy system page API thất bại',
 
@@ -942,7 +940,7 @@ export default {
       },
 
       organization_unit: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_department_success: 'Tạo đơn vị thành công',
         edit_department_success: 'Chỉnh sửa đơn vị thành công',
         delete_department_success: 'Xóa đơn vị thành công',
@@ -1200,7 +1198,7 @@ export default {
         title: 'Tài liệu, văn bản'
       },
 
-      //Thông điệp trả về từ server
+      // Thông điệp trả về từ server
       get_documents_success: 'Lấy danh sách tài liệu thành công',
       get_documents_faile: 'Lấy danh sách tài liệu thất bại',
       create_document_success: 'Thêm mới tài liệu thành công',
@@ -2169,7 +2167,7 @@ export default {
       end_date_after_start_date: 'Ngày kết thúc phải sau ngày bắt đầu',
       cannot_be_empty: 'không được để trống',
       value_duplicate: 'bị trùng lặp',
-      //Lấy dữ liệu bảng tin quản lý nhân sự
+      // Lấy dữ liệu bảng tin quản lý nhân sự
       get_human_resources_dashboard_data: {
         get_human_resources_dashboard_success: 'Lấy thông tin bảng tin quản lý nhân sự thành công',
         get_human_resources_dashboard_failed: 'Lấy thông tin bảng tin quản lý nhân sự thất bại'
@@ -3360,7 +3358,7 @@ export default {
         asset_type_name: 'Tên loại tài sản',
         parent_asset_type: 'Loại tài sản cha',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_asset_type_success: 'Lấy thông tin loại tài sản thành công',
         get_asset_type_faile: 'Lấy thông tin loại tài sản thất bại',
         create_asset_type_success: 'Thêm loại tài sản thành công',
@@ -3415,13 +3413,13 @@ export default {
         vehicle: 'Xe cộ',
         machine: 'Máy móc',
         other: 'Khác',
-        bike: "Xe máy",
-        truck: "Xe tải",
-        vehicle_kind: "Loại phương tiện",
-        select_vehicle_kind: "Chọn phương tiện",
-        excluded_good_category: "Không chuyên trở",
+        bike: 'Xe máy',
+        truck: 'Xe tải',
+        vehicle_kind: 'Loại phương tiện',
+        select_vehicle_kind: 'Chọn phương tiện',
+        excluded_good_category: 'Không chuyên trở',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_asset_group_success: 'Lấy thông tin nhóm tài sản thành công',
         get_asset_group_fail: 'Lấy thông tin nhóm tài sản thất bại',
         get_asset_statistic_success: 'Lấy thông tin trạng thái và giá trị tài sản thành công',
@@ -3446,7 +3444,7 @@ export default {
         asset_code_exist: 'Mã tài sản đã tồn tại'
       },
 
-      //Quản lý lô tài sản
+      // Quản lý lô tài sản
       asset_lot: {
         asset_lot_code: 'Mã lô tài sản',
         asset_lot_name: 'Tên lô tài sản',
@@ -3463,7 +3461,7 @@ export default {
         edit_info: 'Chỉnh sửa thông tin lô tài sản',
         delete_info: 'Xóa thông tin lô tài sản',
 
-        //thông điệp trả về từ server
+        // thông điệp trả về từ server
         create_asset_lot_success: 'Thêm lô tài sản thành công',
         create_asset_lot_failed: 'Thêm lô tài sản thất bại',
         asset_code_lot_exist: 'Mã lô đã tồn tại',
@@ -3483,7 +3481,7 @@ export default {
       maintainance: {
         total_cost: 'Tổng chi phí',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_maintainance_success: 'Lấy thông tin bảo trì-sửa chữa thành công',
         get_maintainance_faile: 'Lấy thông tin thông tin bảo trì-sửa chữa thất bại',
         create_maintainance_success: 'Thêm phiếu bảo trì-sửa chữa thành công',
@@ -3507,7 +3505,7 @@ export default {
         time_created: 'Thời gian lập phiếu',
         task_in_use_request: 'Công việc sử dụng tài sản',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_usage_success: 'Lấy thông tin sử dụng thành công',
         get_usage_faile: 'Lấy thông tin sử dụng thất bại',
         create_usage_success: 'Thêm hoạt động sử dụng tài sản thành công',
@@ -3534,7 +3532,7 @@ export default {
         declining_balance: 'Phương pháp khấu hao theo số dư giảm dần',
         units_production: 'Phương pháp khấu hao theo sản lượng',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_depreciation_success: 'Lấy thông tin khấu hao thành công',
         get_depreciation_failure: 'Lấy thông tin khấu hao thất bại',
         create_depreciation_success: 'Thêm thông tin khấu hao tài sản thành công',
@@ -3550,7 +3548,7 @@ export default {
         incident: 'Sự cố tài sản',
         report_incident: 'Báo cáo sự cố tài sản',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
         get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
         create_incident_success: 'Thêm sự cố tài sản thành công',
@@ -3576,7 +3574,7 @@ export default {
 
       // Quản lý đề nghị cấp phát
       manage_use_request: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
         get_use_request_failure: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
         create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
@@ -3589,7 +3587,7 @@ export default {
 
       // Đăng ký mua sắm tài sản
       purchase_request: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_purchase_request_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
         get_purchase_request_failure: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
         create_purchase_request_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
@@ -3603,7 +3601,7 @@ export default {
 
       // Đăng ký sử dụng thiết bị
       use_request: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
         get_use_request_failure: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
         create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
@@ -3617,7 +3615,7 @@ export default {
       }
     },
 
-    //Modules Quản lý vật tư tiêu hao
+    // Modules Quản lý vật tư tiêu hao
     supplies: {
       general_information: {
         add_supplies: 'Thêm vật tư',
@@ -3646,7 +3644,7 @@ export default {
         invoice_history_information: 'Lịch sử chỉnh sửa',
         none_description: 'Không có mô tả',
 
-        //button
+        // button
         add: 'Thêm',
         select_approver: 'Chọn người phê duyệt',
         search: 'Tìm kiếm',
@@ -3895,7 +3893,7 @@ export default {
         add_task: 'Thêm mới',
         add_title: 'Thêm mới một công việc',
         add_subtask: 'Thêm công việc con',
-        subtask: "Công việc con",
+        subtask: 'Công việc con',
 
         department: 'Đơn vị',
         select_department: 'Chọn đơn vị',
@@ -3956,7 +3954,7 @@ export default {
         start_date: 'Ngày bắt đầu',
         end_date: 'Ngày kết thúc',
         task_additional_info: 'Tùy chọn thêm',
-        list_sub_task: "Danh sách công việc con",
+        list_sub_task: 'Danh sách công việc con',
 
         search: 'Tìm kiếm',
 
@@ -4232,7 +4230,7 @@ export default {
 
         project: 'Thuộc dự án (nếu có)',
 
-        //dashboard cv đơn vị
+        // dashboard cv đơn vị
         type_of_point: 'Loại điểm',
         criteria: 'Tiêu chí',
         load_task: 'Tải công việc',
@@ -4455,10 +4453,10 @@ export default {
         },
 
         issue_form: {
-          issue_form_title: "Báo cáo sự cố",
-          issue_cate: "Loại sự cố",
-          issue_description: "Mô tả sự cố",
-          issue_btn_report: "Gửi báo cáo"
+          issue_form_title: 'Báo cáo sự cố',
+          issue_cate: 'Loại sự cố',
+          issue_description: 'Mô tả sự cố',
+          issue_btn_report: 'Gửi báo cáo'
         },
 
         request_close_task: 'Yêu cầu kết thúc công việc',
@@ -4612,7 +4610,7 @@ export default {
         get_kpi_responsible_success: 'Lấy tất cả KPI cá nhân của người thực hiện trong công việc thành công',
         get_kpi_responsible_fail: 'Lấy tất cả KPI cá nhân của người thực hiện trong công việc lỗi',
 
-        //Nhóm dành cho module creation
+        // Nhóm dành cho module creation
         employee_kpi_set: {
           create_employee_kpi_set: {
             // Module chính
@@ -4762,7 +4760,7 @@ export default {
             weight: 'Trọng số'
           },
 
-          //Thông điệp trả về từ server
+          // Thông điệp trả về từ server
           messages_from_server: {
             initialize_employee_kpi_set_success: 'Khởi tạo tập KPI nhân viên thành công',
             initialize_employee_kpi_set_failure: 'Khởi tạo tập KPI nhân viên thất bại',
@@ -5189,7 +5187,7 @@ export default {
           weight_analysis_tree_unit: 'Trọng số KPI theo phân tích trọng số đang thiết lập của cây KPI đơn vị'
         },
 
-        //Thông điệp khác trả về từ server
+        // Thông điệp khác trả về từ server
         get_parent_by_unit_success: 'Lấy KPI đơn vị của đơn vị cha thành công',
         get_parent_by_unit_failure: 'Lấy KPI đơn vị của đơn vị cha không thành công',
         get_kpi_unit_success: 'Lấy danh sách KPI đơn vị thành công',
@@ -5819,7 +5817,7 @@ export default {
       }
     },
 
-    //manager order
+    // manager order
     manage_order: {
       tax: {
         index: 'STT',
@@ -5984,7 +5982,7 @@ export default {
       search_by_name: 'Nhập tên mẫu báo cáo',
       search_by_creator: 'Nhập tên người tạo báo cáo',
 
-      //message trả về từ server
+      // message trả về từ server
       create_report_manager_success: 'Tạo báo cáo thành công !',
       create_report_manager_faile: 'Tạo báo cáo thất bại ! ',
       edit_report_manager_success: 'Sửa báo cáo thành công !',
@@ -6017,347 +6015,343 @@ export default {
       detail_info_plan: 'Thông tin chi tiết kế hoạch'
     },
 
-    //riskdashboard
+    // riskdashboard
     change_algorithms: {
-      get_risk_sucess: "Đã sử dụng MLE"
+      get_risk_sucess: 'Đã sử dụng MLE'
     },
     // process_analysis
     process_analysis: {
       change_time: {
-        title: "Thay đổi kế hoạch quy trình",
+        title: 'Thay đổi kế hoạch quy trình',
         change: 'Thay đổi',
         reset: 'Đặt lại',
         name: 'Tên công việc',
-        duration: "Thời gian thực hiện",
+        duration: 'Thời gian thực hiện',
         day: 'ngày',
-        responsible_employees: "Người thực hiện",
-        action: "Hành động",
-        change_plan: "Thay đổi kế hoạch",
-        process_name: "Process Name",
-        total_duration: "Thời gian thực hiện",
-        total_prob: "Xác suất thành công",
-        warning: "Những hoạt động trên đường găng được đánh dấu màu đỏ",
-        change_success: "Thay đổi kế hoạch thành công"
+        responsible_employees: 'Người thực hiện',
+        action: 'Hành động',
+        change_plan: 'Thay đổi kế hoạch',
+        process_name: 'Process Name',
+        total_duration: 'Thời gian thực hiện',
+        total_prob: 'Xác suất thành công',
+        warning: 'Những hoạt động trên đường găng được đánh dấu màu đỏ',
+        change_success: 'Thay đổi kế hoạch thành công'
       },
       cpt_table: {
-        conditional_probability_table: "Bảng xác suất có điều kiện",
-        risk_name: "Tên rủi ro",
-        parents: "Rủi ro cha",
-        CPT: "Bảng xác suất"
+        conditional_probability_table: 'Bảng xác suất có điều kiện',
+        risk_name: 'Tên rủi ro',
+        parents: 'Rủi ro cha',
+        CPT: 'Bảng xác suất'
       },
       index: {
-        loading_data: "Đang tải dữ liệu....",
-        calculate_successfully: "Phân tích xác suất thành công",
-        change_process_request: "Quản lý yêu cầu thay đổi quy trình"
+        loading_data: 'Đang tải dữ liệu....',
+        calculate_successfully: 'Phân tích xác suất thành công',
+        change_process_request: 'Quản lý yêu cầu thay đổi quy trình'
       },
       modal_view_process: {
-        title: "Phân tích xác suất thành công",
-        statistical: "Thống kê",
-        success_probability: "Xác suất thành công",
-        ratio_chart: "Biểu đồ tỉ lệ",
-        number_task: "Số công việc trong quy trình"
+        title: 'Phân tích xác suất thành công',
+        statistical: 'Thống kê',
+        success_probability: 'Xác suất thành công',
+        ratio_chart: 'Biểu đồ tỉ lệ',
+        number_task: 'Số công việc trong quy trình'
       },
       pert_model: {
         title: 'Dữ liệu PERT/CPM',
-        pert: "Dữ liệu PERT",
-        cpm: "Dữ liệu CPM",
-        optimistic: "Thời gian lạc quan ",
-        mostlikely: "Thời gian thường xảy ra",
-        pessimistic: "Thời gian bi quan",
-        expected_time: "Thời gian mong đợi",
-        standard_deviation: "Độ lệch chuẩn",
-        duration: "Thời gian thực hiện ",
-        early_start: "Thời gian bắt đầu sớm ",
-        early_finish: "Thời gian kết thúc sớm ",
-        late_start: "Thời gian bắt đầu muộn ",
-        late_finish: "Thời gian kết thúc muộn ",
-        slack: "Thời gian dự trữ ",
-        equations: "Các công thức tính",
-        success_probability: "Xác suất thành công"
+        pert: 'Dữ liệu PERT',
+        cpm: 'Dữ liệu CPM',
+        optimistic: 'Thời gian lạc quan ',
+        mostlikely: 'Thời gian thường xảy ra',
+        pessimistic: 'Thời gian bi quan',
+        expected_time: 'Thời gian mong đợi',
+        standard_deviation: 'Độ lệch chuẩn',
+        duration: 'Thời gian thực hiện ',
+        early_start: 'Thời gian bắt đầu sớm ',
+        early_finish: 'Thời gian kết thúc sớm ',
+        late_start: 'Thời gian bắt đầu muộn ',
+        late_finish: 'Thời gian kết thúc muộn ',
+        slack: 'Thời gian dự trữ ',
+        equations: 'Các công thức tính',
+        success_probability: 'Xác suất thành công'
       },
       process_list: {
-        search_name: "Tìm theo tên quy trình",
+        search_name: 'Tìm theo tên quy trình',
         index: 'STT',
-        analysis: "Phân tích",
-        request_change_process: "Yêu cầu chỉnh sửa quy trình",
-        finish: "Kết thúc",
-        select: "Chọn"
+        analysis: 'Phân tích',
+        request_change_process: 'Yêu cầu chỉnh sửa quy trình',
+        finish: 'Kết thúc',
+        select: 'Chọn'
       },
       request_change_process: {
-        request_success: "Gửi yêu cầu thành công",
-        edit_success: "Sửa yêu cầu thành công",
-        delete_success: "Xoá yêu cầu thành công",
-        approve_success: "Phê duyệt yêu cầu thành công",
-        title: "Yêu cầu chỉnh sửa quy trình",
-        content: "Nội dung chỉnh sửa",
-        reson: "Lý do yêu cầu chỉnh sửa",
-        manager: "Người quản lý",
-        processID: "ID Quy trình",
-        request_sender: "Người yêu cầu",
-        approver: "Người phê duyệt",
-        request_date: "Ngày yêu cầu",
-        status: "Trạng thái",
-        view_detail: "Xem chi tiết",
-        edit: "Sửa",
-        approve: "Phê duyệt",
-        delete_content: "Bạn muốn xoá yêu cầu chỉnh sửa này"
+        request_success: 'Gửi yêu cầu thành công',
+        edit_success: 'Sửa yêu cầu thành công',
+        delete_success: 'Xoá yêu cầu thành công',
+        approve_success: 'Phê duyệt yêu cầu thành công',
+        title: 'Yêu cầu chỉnh sửa quy trình',
+        content: 'Nội dung chỉnh sửa',
+        reson: 'Lý do yêu cầu chỉnh sửa',
+        manager: 'Người quản lý',
+        processID: 'ID Quy trình',
+        request_sender: 'Người yêu cầu',
+        approver: 'Người phê duyệt',
+        request_date: 'Ngày yêu cầu',
+        status: 'Trạng thái',
+        view_detail: 'Xem chi tiết',
+        edit: 'Sửa',
+        approve: 'Phê duyệt',
+        delete_content: 'Bạn muốn xoá yêu cầu chỉnh sửa này'
       },
       risk_detail_modal: {
-        title: "Chi tiết rủi ro",
-        occurrence_probability: "Xác suất xảy ra",
-        affected_task_class: "Các lớp công việc chỉnh ảnh hưởng",
-        parents: "Các rủi ro cha"
+        title: 'Chi tiết rủi ro',
+        occurrence_probability: 'Xác suất xảy ra',
+        affected_task_class: 'Các lớp công việc chỉnh ảnh hưởng',
+        parents: 'Các rủi ro cha'
       },
       risk_model: {
-        title: "Dữ liệu mô hình mạng rủi ro",
-        risk_model_info: "Thông tin mô hình rủi ro",
-        occurrence_probability: "Xác suất xảy ra",
-        risk_class_related: "Các rủi ro có liên quan",
-        view_cpt: "Xem bảng xác suất có điều kiện",
-        low: "Xác suất xảy ra mức thấp(0%-50%)",
-        medium: "Xác suất xảy ra mức trung bình(50%-90%)",
-        high: "Xác suất xảy ra mức cao (90%-100%)",
-        unaffected: "Không ảnh hưởng",
-        affected: "Ảnh hưởng",
-        note: "Chú thích"
+        title: 'Dữ liệu mô hình mạng rủi ro',
+        risk_model_info: 'Thông tin mô hình rủi ro',
+        occurrence_probability: 'Xác suất xảy ra',
+        risk_class_related: 'Các rủi ro có liên quan',
+        view_cpt: 'Xem bảng xác suất có điều kiện',
+        low: 'Xác suất xảy ra mức thấp(0%-50%)',
+        medium: 'Xác suất xảy ra mức trung bình(50%-90%)',
+        high: 'Xác suất xảy ra mức cao (90%-100%)',
+        unaffected: 'Không ảnh hưởng',
+        affected: 'Ảnh hưởng',
+        note: 'Chú thích'
       },
       task_detail: {
-        title: "Chi tiết công việc",
-        probability_analysis_result: "Kết quả phân tích",
-        pert: "Giải thuật PERT",
-        view_pert_cpm_result: "Xem dữ liệu PERT/CPM",
-        risk_probability: "Xác suất xảy ra rủi ro",
-        view_risk_model: "Xem mô hình rủi ro",
-        result_of_new_model: "Tính theo mô hình",
-        probability_in_time: "Xác suất thành công theo thời gian"
+        title: 'Chi tiết công việc',
+        probability_analysis_result: 'Kết quả phân tích',
+        pert: 'Giải thuật PERT',
+        view_pert_cpm_result: 'Xem dữ liệu PERT/CPM',
+        risk_probability: 'Xác suất xảy ra rủi ro',
+        view_risk_model: 'Xem mô hình rủi ro',
+        result_of_new_model: 'Tính theo mô hình',
+        probability_in_time: 'Xác suất thành công theo thời gian'
       },
       task_list_modal: {
-        title: "Phân tích quy trình",
-        index: "STT",
-        task_name: "Tên công việc",
-        process_name: "Quy trình",
-        view_detail: "Xem chi tiết"
+        title: 'Phân tích quy trình',
+        index: 'STT',
+        task_name: 'Tên công việc',
+        process_name: 'Quy trình',
+        view_detail: 'Xem chi tiết'
       },
       task_widget_group: {
-        high_probability: "Xác suất thành công cao",
-        medium_probability: "Xác suất thành công trung bình",
-        low_probability: "Xác suất thành công thấp",
-        task: "Công việc"
+        high_probability: 'Xác suất thành công cao',
+        medium_probability: 'Xác suất thành công trung bình',
+        low_probability: 'Xác suất thành công thấp',
+        task: 'Công việc'
       },
       view_process: {
-        on_critical: "Trên đường găng",
-        not_on_critical: "Không trên đường găng",
-        critical_activity: "Hoạt động găng",
-        number_of_task: "Số công việc trong quy trình",
-        low: "Xác suất thành công mức thấp(0%-50%)",
-        medium: "Xác suất thành công mức trung bình(50%-90%)",
-        high: "Xác suất thành công mức cao (90%-100%)"
+        on_critical: 'Trên đường găng',
+        not_on_critical: 'Không trên đường găng',
+        critical_activity: 'Hoạt động găng',
+        number_of_task: 'Số công việc trong quy trình',
+        low: 'Xác suất thành công mức thấp(0%-50%)',
+        medium: 'Xác suất thành công mức trung bình(50%-90%)',
+        high: 'Xác suất thành công mức cao (90%-100%)'
       }
-
     },
     risk_dash: {
       unit: 'Đơn vị',
-      time: "Thời gian",
-      quantity_y: "Số lượng",
-      risks: "rủi ro",
-      general: "Tổng quan rủi ro",
-      total_risk: "Tổng số rủi ro",
-      your_risk: "Rủi ro đã đăng kí",
-      approve: "Rủi ro cần phê duyệt",
-      probability: "Xác suất xảy ra của các rủi ro",
-      quantity: "Số lượng rủi ro xảy ra ",
-      bayes: "Các rủi ro trong hệ thống",
-      risk_in_month: "Rủi ro theo tháng",
+      time: 'Thời gian',
+      quantity_y: 'Số lượng',
+      risks: 'rủi ro',
+      general: 'Tổng quan rủi ro',
+      total_risk: 'Tổng số rủi ro',
+      your_risk: 'Rủi ro đã đăng kí',
+      approve: 'Rủi ro cần phê duyệt',
+      probability: 'Xác suất xảy ra của các rủi ro',
+      quantity: 'Số lượng rủi ro xảy ra ',
+      bayes: 'Các rủi ro trong hệ thống',
+      risk_in_month: 'Rủi ro theo tháng',
       low: 'Xác suất xảy ra thấp',
       medium: 'Xác suất xảy ra trung bình',
       high: 'Xác suất xảy ra cao',
-      urgency: "Khẩn cấp",
-      need_approval: "Cần phê duyệt",
-      high_probability: "Khả năng xảy ra cao",
-      high_impact: "Mức độ ảnh hưởng lớn",
-      occurred_today: "Xảy ra hôm nay",
-      finished: "Đã kết thúc",
-      processed: "Đã xử lý",
-      chart_title_1: "Phân loại rủi ro theo các tiêu chí",
-      ranking: "Xếp hạng",
-      criteria: "Tiêu chí",
-      impact_level: "Mức độ ảnh hưởng",
-      occurrence_probability: "Khả năng xảy ra",
+      urgency: 'Khẩn cấp',
+      need_approval: 'Cần phê duyệt',
+      high_probability: 'Khả năng xảy ra cao',
+      high_impact: 'Mức độ ảnh hưởng lớn',
+      occurred_today: 'Xảy ra hôm nay',
+      finished: 'Đã kết thúc',
+      processed: 'Đã xử lý',
+      chart_title_1: 'Phân loại rủi ro theo các tiêu chí',
+      ranking: 'Xếp hạng',
+      criteria: 'Tiêu chí',
+      impact_level: 'Mức độ ảnh hưởng',
+      occurrence_probability: 'Khả năng xảy ra',
       risk_detail: {
-        ago: "trước",
-        risk_name: "Tên rủi ro",
-        occurrence_date: "Thời gian xảy ra",
-        status: "Trạng thái",
-        responsibleEmployee: "Người đăng ký",
-        approvalEmployee: "Người phê duyệt",
-        ranking: "Xếp hạng",
-        probability: "Khả năng xảy ra",
-        view_detail: "Xem chi tiết"
+        ago: 'trước',
+        risk_name: 'Tên rủi ro',
+        occurrence_date: 'Thời gian xảy ra',
+        status: 'Trạng thái',
+        responsibleEmployee: 'Người đăng ký',
+        approvalEmployee: 'Người phê duyệt',
+        ranking: 'Xếp hạng',
+        probability: 'Khả năng xảy ra',
+        view_detail: 'Xem chi tiết'
       },
       risk_matrix: {
-        title: "Ma trận rủi ro",
-        probability: "Khả năng xảy ra",
-        probable: "Chắc chắn (4)",
-        possible: "Có thể (3)",
-        unlikely: "Thi thoảng (2)",
-        rare: "Hiếm (1)",
-        impact: "Mức độ ảnh hưởng",
-        low: "Thấp(1)",
-        medium: "Trung bình(2)",
-        high: "Cao(3)",
-        very_high: "Rất cao(4)",
-        moderate: "Vừa phải",
-        major: "Nghiêm trọng",
-        severe: "Rất nghiêm trọng",
-        minor: "Không nghiêm trọng",
-        impact: ""
-
-
+        title: 'Ma trận rủi ro',
+        probability: 'Khả năng xảy ra',
+        probable: 'Chắc chắn (4)',
+        possible: 'Có thể (3)',
+        unlikely: 'Thi thoảng (2)',
+        rare: 'Hiếm (1)',
+        impact: 'Mức độ ảnh hưởng',
+        low: 'Thấp(1)',
+        medium: 'Trung bình(2)',
+        high: 'Cao(3)',
+        very_high: 'Rất cao(4)',
+        moderate: 'Vừa phải',
+        major: 'Nghiêm trọng',
+        severe: 'Rất nghiêm trọng',
+        minor: 'Không nghiêm trọng',
+        impact: ''
       },
       risk_table: {
-        risk_id: "ID",
-        risk_name: "Tên",
-        risk_parent: "Rủi ro cha",
-        risk_CPT: "Bảng xác suất có điều kiện",
-        risk_description: "Mô tả",
-        cpt_description: "Chú thích",
-        occur: "Xảy ra",
-        not_occur: "Không xảy ra",
-        note: "Xác suất xảy ra A khi B đã xảy ra",
-        new_value: "Gía trị mới"
+        risk_id: 'ID',
+        risk_name: 'Tên',
+        risk_parent: 'Rủi ro cha',
+        risk_CPT: 'Bảng xác suất có điều kiện',
+        risk_description: 'Mô tả',
+        cpt_description: 'Chú thích',
+        occur: 'Xảy ra',
+        not_occur: 'Không xảy ra',
+        note: 'Xác suất xảy ra A khi B đã xảy ra',
+        new_value: 'Gía trị mới'
       }
     },
 
     // manage risk
     manage_risk: {
-      select: "Chọn",
-      delete: "Xoá",
-      warning: "Chỉ có thể xoá rủi ro ở trạng thái Đang chờ phê duyêt",
+      select: 'Chọn',
+      delete: 'Xoá',
+      warning: 'Chỉ có thể xoá rủi ro ở trạng thái Đang chờ phê duyêt',
 
-      low: "Thấp",
-      medium: "Trung Bình",
-      high: "Cao",
-      very_high: "Rất cao",
+      low: 'Thấp',
+      medium: 'Trung Bình',
+      high: 'Cao',
+      very_high: 'Rất cao',
       risk_bayes_config: {
-        config: "Cấu hình",
-        mle_use_noti: "Sau thông báo này giải thuật MLE sẽ được áp dụng",
-        using_tech: "Kỹ thuật đang sử dụng",
-        risk_info: "Thông tin rủi ro",
-        select_tech: "Chọn kỹ thuật",
-        expert: "Tri thức chuyên gia",
-        mle: "Giải thuật MLE",
-        configuration_guide: "Hướng dẫn cấu hình",
-        guide_1: "1.Chọn một trong những rủi ro bên trái.",
-        guide_2: "2.Cấu hình các giá trị trong bảng CPT",
+        config: 'Cấu hình',
+        mle_use_noti: 'Sau thông báo này giải thuật MLE sẽ được áp dụng',
+        using_tech: 'Kỹ thuật đang sử dụng',
+        risk_info: 'Thông tin rủi ro',
+        select_tech: 'Chọn kỹ thuật',
+        expert: 'Tri thức chuyên gia',
+        mle: 'Giải thuật MLE',
+        configuration_guide: 'Hướng dẫn cấu hình',
+        guide_1: '1.Chọn một trong những rủi ro bên trái.',
+        guide_2: '2.Cấu hình các giá trị trong bảng CPT',
         guide_3: "3. Ấn nút 'Lưu'",
-        warning: "Chú ý : Nếu sử dụng tri thức chuyên gia hệ thống sẽ không tự động cập nhập tham số đầu vào cho mạng Bayes"
+        warning: 'Chú ý : Nếu sử dụng tri thức chuyên gia hệ thống sẽ không tự động cập nhập tham số đầu vào cho mạng Bayes'
       },
 
       create_risk_form: {
-        occurrence_date: "Thời gian xảy ra ",
-        affectable_tasks: "Công việc chịu ảnh hưởng",
-        noti_affect_tasks: "Không có công việc nào đang thực hiện chịu ảnh hưởng của rủi ro này",
-        process: "Quy trình",
-        apply_plan: "Các biện pháp ứng phó sẽ được áp dụng",
-        view_detail: "Click để xem chi tiết",
-        note: "*Hiện tại không có biện pháp xử lý cho rủi ro này hãy chờ thông tin từ người phê duyệt",
-        probability: "Khả năng xảy ra",
-        impact: "Mức độ ảnh hưởng",
-        risk_matrix: "Ma trận rủi ro",
-        basic_info: "Thông tin cơ bản",
-        plan: "Kế hoạch",
-        plan_1: "Làm chậm kế hoạch 80-100%",
-        plan_2: "Làm chậm kế hoạch 51-80%",
-        plan_3: "Làm chậm kế hoạch 11-50%",
-        plan_4: "Làm chậm kế hoạch 1-10%",
-        security: "Bảo mật",
-        security_1: "Vi phạm an ninh với thiệt hại và mất mát tài sản lớn",
-        security_2: "Vi phạm an ninh với thiệt hại và mất mát tài sản nghiêm trọng",
-        security_3: "Vi phạm an ninh với thiệt hại và mất mát tài sản vừa phải",
-        security_4: "Vi phạm an ninh với thiệt hại và mất mát tài sản nhỏ",
-        cost: "Chi phí dự toán",
-        cost_1: "Làm tăng chi phí dự toán từ 81-100 %",
-        cost_2: "Làm tăng chi phí dự toán từ 51-80 %",
-        cost_3: "Làm tăng chi phí dự toán từ 11-50 %",
-        cost_4: "Làm tăng chi phí dự toán từ 1-10 %"
+        occurrence_date: 'Thời gian xảy ra ',
+        affectable_tasks: 'Công việc chịu ảnh hưởng',
+        noti_affect_tasks: 'Không có công việc nào đang thực hiện chịu ảnh hưởng của rủi ro này',
+        process: 'Quy trình',
+        apply_plan: 'Các biện pháp ứng phó sẽ được áp dụng',
+        view_detail: 'Click để xem chi tiết',
+        note: '*Hiện tại không có biện pháp xử lý cho rủi ro này hãy chờ thông tin từ người phê duyệt',
+        probability: 'Khả năng xảy ra',
+        impact: 'Mức độ ảnh hưởng',
+        risk_matrix: 'Ma trận rủi ro',
+        basic_info: 'Thông tin cơ bản',
+        plan: 'Kế hoạch',
+        plan_1: 'Làm chậm kế hoạch 80-100%',
+        plan_2: 'Làm chậm kế hoạch 51-80%',
+        plan_3: 'Làm chậm kế hoạch 11-50%',
+        plan_4: 'Làm chậm kế hoạch 1-10%',
+        security: 'Bảo mật',
+        security_1: 'Vi phạm an ninh với thiệt hại và mất mát tài sản lớn',
+        security_2: 'Vi phạm an ninh với thiệt hại và mất mát tài sản nghiêm trọng',
+        security_3: 'Vi phạm an ninh với thiệt hại và mất mát tài sản vừa phải',
+        security_4: 'Vi phạm an ninh với thiệt hại và mất mát tài sản nhỏ',
+        cost: 'Chi phí dự toán',
+        cost_1: 'Làm tăng chi phí dự toán từ 81-100 %',
+        cost_2: 'Làm tăng chi phí dự toán từ 51-80 %',
+        cost_3: 'Làm tăng chi phí dự toán từ 11-50 %',
+        cost_4: 'Làm tăng chi phí dự toán từ 1-10 %'
       },
       risk_detail_info: {
-        probability: "Khả năng xảy ra",
-        impact: "Mức độ ảnh hưởng",
-        probability_mitigation_method: "Biện pháp giảm thiểu khả năng xảy ra",
-        impact_mitigation_method: "Biện pháp giảm thiếu mức độ ảnh hưởng"
+        probability: 'Khả năng xảy ra',
+        impact: 'Mức độ ảnh hưởng',
+        probability_mitigation_method: 'Biện pháp giảm thiểu khả năng xảy ra',
+        impact_mitigation_method: 'Biện pháp giảm thiếu mức độ ảnh hưởng'
       },
       risk_management_table: {
-        filter: "Lọc",
-        role: "Vai trò",
-        all: "Tất cả",
-        creator: "Người tạo",
-        aprrovalEmployee: "Người phê duyệt",
-        status: "Trạng thái",
-        wait_for_approval: "Chờ phê duyệt",
-        processed: "Đã xử lý",
-        request_to_close: "Yêu cầu kết thúc",
-        finised: "Kết thúc",
-        level: "Mức độ",
-        view_detail: "Xem chi tiết",
-        approve: "Phê duyệt",
-        edit: "Chỉnh sửa",
+        filter: 'Lọc',
+        role: 'Vai trò',
+        all: 'Tất cả',
+        creator: 'Người tạo',
+        aprrovalEmployee: 'Người phê duyệt',
+        status: 'Trạng thái',
+        wait_for_approval: 'Chờ phê duyệt',
+        processed: 'Đã xử lý',
+        request_to_close: 'Yêu cầu kết thúc',
+        finised: 'Kết thúc',
+        level: 'Mức độ',
+        view_detail: 'Xem chi tiết',
+        approve: 'Phê duyệt',
+        edit: 'Chỉnh sửa'
       },
       approve_modal: {
-        approval_information: "Thông tin phê duyệt",
-        occurrence_date: "Ngày xảy ra",
-        responsibleEmployee: "Nhân viên đăng ký",
-        status: "Trạng thái",
-        description: "Mô tả",
-        select_risk_response_plan: "Chọn biện pháp ứng phó rủi ro",
-
+        approval_information: 'Thông tin phê duyệt',
+        occurrence_date: 'Ngày xảy ra',
+        responsibleEmployee: 'Nhân viên đăng ký',
+        status: 'Trạng thái',
+        description: 'Mô tả',
+        select_risk_response_plan: 'Chọn biện pháp ứng phó rủi ro'
       },
       undefined: 'Yêu cầu kết thúc thành công',
       request_to_close: 'Yêu cầu kết thúc',
       request_close_risk_success: 'Yêu cầu kết thúc thành công',
-      request_close_risk_failure: "Yêu cầu kết thúc thất bại",
-      riskName: "Tên rủi ro",
-      search: "Tìm kiếm",
-      add_risk: "Thêm mới",
-      index: "STT",
-      description: "Mô tả",
-      edit: "Chỉnh sửa thông tin rủi ro",
-      delete: "Xóa rủi ro",
-      delete_success: "Xóa rủi ro thành công!",
-      delete_fail: "Xóa rủi ro thất bại!",
-      add: "Thêm rủi ro",
-      add_title: "Thêm mới rủi ro",
-      add_multi_risk: "Thêm nhiều rủi ro",
-      add_one_risk: "Thêm một rủi ro",
-      add_success: "Thêm rủi ro thành công!",
-      add_fail: "Thêm rủi ro thất bại!",
-      risk_description: "Mô tả rủi ro",
-      edit_title: "Cập nhật rủi ro",
-      edit_risk_success: "Cập nhật rủi ro thành công!",
-      edit_risk_faile: "Cập nhật rủi ro thất bại!",
-      detail_info_risk: "Thông tin chi tiết rủi ro",
-      responsible: "Người đăng kí",
-      accountable: "Người phê duyệt",
-      raised_date: "Ngày đăng kí",
-      occurrence_date: "Ngày xảy ra",
-      responsibleEmployees: "Nhân viên đăng kí",
-      select_risk_title: "Chọn tên rủi ro",
-      select_task_title: "Công việc chịu ảnh hưởng",
-      select_risk_parent: "Các rủi ro đính kèm",
-      risk_status: "Trạng thái",
-      wait_for_approve: "Chờ phê duyệt",
-      finished: "Kết thúc",
-      inprocess: "Đã xử lý",
-      cancel: "Đã huỷ bỏ",
-      probability_create: "Khả năng xảy ra  :",
+      request_close_risk_failure: 'Yêu cầu kết thúc thất bại',
+      riskName: 'Tên rủi ro',
+      search: 'Tìm kiếm',
+      add_risk: 'Thêm mới',
+      index: 'STT',
+      description: 'Mô tả',
+      edit: 'Chỉnh sửa thông tin rủi ro',
+      delete: 'Xóa rủi ro',
+      delete_success: 'Xóa rủi ro thành công!',
+      delete_fail: 'Xóa rủi ro thất bại!',
+      add: 'Thêm rủi ro',
+      add_title: 'Thêm mới rủi ro',
+      add_multi_risk: 'Thêm nhiều rủi ro',
+      add_one_risk: 'Thêm một rủi ro',
+      add_success: 'Thêm rủi ro thành công!',
+      add_fail: 'Thêm rủi ro thất bại!',
+      risk_description: 'Mô tả rủi ro',
+      edit_title: 'Cập nhật rủi ro',
+      edit_risk_success: 'Cập nhật rủi ro thành công!',
+      edit_risk_faile: 'Cập nhật rủi ro thất bại!',
+      detail_info_risk: 'Thông tin chi tiết rủi ro',
+      responsible: 'Người đăng kí',
+      accountable: 'Người phê duyệt',
+      raised_date: 'Ngày đăng kí',
+      occurrence_date: 'Ngày xảy ra',
+      responsibleEmployees: 'Nhân viên đăng kí',
+      select_risk_title: 'Chọn tên rủi ro',
+      select_task_title: 'Công việc chịu ảnh hưởng',
+      select_risk_parent: 'Các rủi ro đính kèm',
+      risk_status: 'Trạng thái',
+      wait_for_approve: 'Chờ phê duyệt',
+      finished: 'Kết thúc',
+      inprocess: 'Đã xử lý',
+      cancel: 'Đã huỷ bỏ',
+      probability_create: 'Khả năng xảy ra  :',
       add_tab: {
-        basic: "Thông tin cơ bản",
-        impact: "Ảnh hưởng"
+        basic: 'Thông tin cơ bản',
+        impact: 'Ảnh hưởng'
       }
     },
     manage_risk_plan: {
       index: 'STT',
-      name: "Tên biện pháp",
+      name: 'Tên biện pháp',
       riskApply: 'Rủi ro',
       riskApplyName: 'Tên rủi ro',
       last_update: 'Chỉnh sửa lần cuối',
@@ -6373,40 +6367,40 @@ export default {
       edit_failure: 'Chỉnh sửa biện pháp thất bại',
       probability_mitigation_method: 'Giải pháp hạn chế khả năng xảy ra',
       impact_mitigation_method: 'Giải pháp giảm thiểu mức độ ảnh hưởng',
-      apply_case: "Trường hợp áp dụng",
-      risk_level: "Mức độ rủi ro",
+      apply_case: 'Trường hợp áp dụng',
+      risk_level: 'Mức độ rủi ro',
       detail: 'Xem chi tiết',
       search: 'Tìm kiếm',
       create_form: {
-        risk_info: "Thông tin rủi ro",
-        mitigation_method: "Biện pháp ứng phó",
+        risk_info: 'Thông tin rủi ro',
+        mitigation_method: 'Biện pháp ứng phó',
         risk_level: 'Mức độ rủi ro',
         apply_description: 'Mô tả trường hợp áp dụng',
         risk_description: 'Mô tả rủi ro',
         probability_description: 'Mô tả biện pháp hạn chế khả năng xảy ra',
-        impact_description: "Mô tả biện pháp giảm thiểu mức độ ảnh hưởng"
+        impact_description: 'Mô tả biện pháp giảm thiểu mức độ ảnh hưởng'
       }
     },
     manage_change_process: {
-      search_by_id: "Search by Process ID",
-      title: "Thông tin chi tiết",
-      status: "Trạng thái",
-      content: "Nội dung chỉnh sửa",
-      wait_for_approve: "Chờ phê duyệt",
-      canceled: "Đã bị huỷ",
-      finished: "Đã phê duyệt",
+      search_by_id: 'Search by Process ID',
+      title: 'Thông tin chi tiết',
+      status: 'Trạng thái',
+      content: 'Nội dung chỉnh sửa',
+      wait_for_approve: 'Chờ phê duyệt',
+      canceled: 'Đã bị huỷ',
+      finished: 'Đã phê duyệt',
       detail: {
-        content: "Nội dung phê duyệt",
-        reson: "Lý do yêu cầu chỉnh sửa",
-        request_content: "Nội dung yêu cầu",
-        send_request: "Người gửi yêu cầu",
-        approver: "Người phê duyệt",
-        create_date: "Ngày tạo",
-        last_updated: "Chỉnh sửa lần cuối",
-        process_name: "Tên quy trình",
-        process_id: "Process ID",
-        working_duration: "Thời gian thực hiện"
-      },
+        content: 'Nội dung phê duyệt',
+        reson: 'Lý do yêu cầu chỉnh sửa',
+        request_content: 'Nội dung yêu cầu',
+        send_request: 'Người gửi yêu cầu',
+        approver: 'Người phê duyệt',
+        create_date: 'Ngày tạo',
+        last_updated: 'Chỉnh sửa lần cuối',
+        process_name: 'Tên quy trình',
+        process_id: 'Process ID',
+        working_duration: 'Thời gian thực hiện'
+      }
     },
 
     // manage example
@@ -6574,7 +6568,7 @@ export default {
         number_purchasing_status: 'Số lượng phiếu đề nghị mua hàng theo trạng thái'
       },
       work_schedule: {
-        //general
+        // general
         time: 'Thời gian',
         search: 'Tìm kiếm',
         work_turns: 'Ca làm việc',
@@ -6627,14 +6621,14 @@ export default {
           color: '#26f2da',
           content: 'Mới tạo'
         },
-        //mill
+        // mill
         choose_all_mill: 'Tất cả các xưởng',
         manufacturing_mill_schedule_list: 'Lịch sản xuất của xưởng',
         mill_name: 'Tên xưởng',
         mill_code: 'Mã xưởng',
         add_work_schedule_mill: 'Tạo lịch làm việc cho xưởng sản xuất',
         manufacturingMill: 'Xưởng sản xuất',
-        //employee
+        // employee
         worker_schedule_list: 'Lịch sản xuất của công nhân',
         employee_name: 'Tên nhân viên',
         employee_email: 'Email nhân viên',
@@ -7087,176 +7081,177 @@ export default {
     // Quản lý vận chuyển 2
     manage_transportation: {
       orders_table: {
-        customer_code: "Mã khách hàng",
-        order_code: "Mã đơn",
-        estimated_delivery_date: "Ngày yêu cầu giao",
-        status: "Trạng thái",
-        address: "Địa chỉ",
-        priority: "Chế độ giao hàng",
-        quick_create: "Tạo nhanh",
-        setup_create: "Tuỳ chỉnh",
-        search: "Tìm kiếm",
-        from_date: "Từ ngày",
-        to_date: "Đến ngày",
-        create_new_order: "Tạo mới",
-        select_customer: "Khách hàng",
-        text_select_customer: "Chọn khách hàng",
-        customer_name: "Khách hàng",
-        init_route: "Khởi tạo lộ trình",
-        quick_create_title: "Tạo với thông số mặc định",
-        setup_create_title: "Tuỳ chỉnh thông số thuật toán",
-        not_transport_requests_tab: "Lập lịch giao hàng",
-        transporting_requests_tab: "Đang vận chuyển",
-        failure_transport_requests_tab: "Vận chuyển thất bại",
-        success_transport_requests_tab: "Vận chuyển thành công",
-        customer_search_name: "Tên khách hàng",
-        request_stock_confirm: "Yêu cầu vận chuyển",
+        customer_code: 'Mã khách hàng',
+        order_code: 'Mã đơn',
+        estimated_delivery_date: 'Ngày yêu cầu giao',
+        status: 'Trạng thái',
+        address: 'Địa chỉ',
+        priority: 'Chế độ giao hàng',
+        quick_create: 'Tạo nhanh',
+        setup_create: 'Tuỳ chỉnh',
+        search: 'Tìm kiếm',
+        from_date: 'Từ ngày',
+        to_date: 'Đến ngày',
+        create_new_order: 'Tạo mới',
+        select_customer: 'Khách hàng',
+        text_select_customer: 'Chọn khách hàng',
+        customer_name: 'Khách hàng',
+        init_route: 'Khởi tạo lộ trình',
+        quick_create_title: 'Tạo với thông số mặc định',
+        setup_create_title: 'Tuỳ chỉnh thông số thuật toán',
+        not_transport_requests_tab: 'Lập lịch giao hàng',
+        transporting_requests_tab: 'Đang vận chuyển',
+        failure_transport_requests_tab: 'Vận chuyển thất bại',
+        success_transport_requests_tab: 'Vận chuyển thành công',
+        customer_search_name: 'Tên khách hàng',
+        request_stock_confirm: 'Yêu cầu vận chuyển'
       },
       vehicle_management: {
-        index: "STT",
-        add: "Thêm mới",
-        name: "Tên xe",
-        capacity: "Sức Chứa(kg/m3)",
-        average_speed: "Vận tốc trung bình",
-        cost_per_km: "Phí di chuyển(VND/Km)",
-        type: "Loại xe",
-        status: "Trạng thái",
-        search: "Tìm kiếm",
-        detail_info_vehicle: "Xem thông tin xe",
-        edit: "Chỉnh sửa thông tin xe",
-        delete: "Xoá xe",
-        edit_title: "Cập nhật xe",
-        add_title: "Thêm mới xe",
-        add_success: "Thêm mới xe thành công",
-        add_fail: "Thêm mới xe thất bại",
-        height: "Chiều cao(thùng hàng)",
-        width: "Chiều rộng(thùng hàng)",
-        depth: "Chiều sâu(thùng hàng)",
-        tonnage: "Trọng tải xe",
-        average_gas_consume: "Sử dụng nhiên liệu(l/km)",
-        gas_price: "Giá xăng dấu(VND/l)",
-        min_velocity: "Tốc độ tối thiểu",
-        max_velocity: "Tốc độ tối đa",
-        fixed_cost: "Chi phí sử dụng cố định",
-        unloading_cost: "Chi phí bốc dỡ hàng theo xe",
-        cannot_carry_good_group: "Không chở nhóm sản phẩm",
-        operation_cost: "Chi phí vận hành từng chuyến",
-        update_operation_cost_button: "Cập nhật phí",
-        select_require_license: "Chọn bằng lái",
-        require_license: "Bằng lái yêu cầu",
+        index: 'STT',
+        add: 'Thêm mới',
+        name: 'Tên xe',
+        capacity: 'Sức Chứa(kg/m3)',
+        average_speed: 'Vận tốc trung bình',
+        cost_per_km: 'Phí di chuyển(VND/Km)',
+        type: 'Loại xe',
+        status: 'Trạng thái',
+        search: 'Tìm kiếm',
+        detail_info_vehicle: 'Xem thông tin xe',
+        edit: 'Chỉnh sửa thông tin xe',
+        delete: 'Xoá xe',
+        edit_title: 'Cập nhật xe',
+        add_title: 'Thêm mới xe',
+        add_success: 'Thêm mới xe thành công',
+        add_fail: 'Thêm mới xe thất bại',
+        height: 'Chiều cao(thùng hàng)',
+        width: 'Chiều rộng(thùng hàng)',
+        depth: 'Chiều sâu(thùng hàng)',
+        tonnage: 'Trọng tải xe',
+        average_gas_consume: 'Sử dụng nhiên liệu(l/km)',
+        gas_price: 'Giá xăng dấu(VND/l)',
+        min_velocity: 'Tốc độ tối thiểu',
+        max_velocity: 'Tốc độ tối đa',
+        fixed_cost: 'Chi phí sử dụng cố định',
+        unloading_cost: 'Chi phí bốc dỡ hàng theo xe',
+        cannot_carry_good_group: 'Không chở nhóm sản phẩm',
+        operation_cost: 'Chi phí vận hành từng chuyến',
+        update_operation_cost_button: 'Cập nhật phí',
+        select_require_license: 'Chọn bằng lái',
+        require_license: 'Bằng lái yêu cầu'
       },
       journey_list: {
-        index: "STT",
-        journey_code: "Mã lộ trình",
-        journey_name: "Tên lộ trình",
-        number_vehicle: "Số lượng xe",
-        efficiency: "Hiệu suất",
-        revenue: "Lợi nhuận (VND)",
-        total_cost: "Tổng chi phí (VND)",
-        estimated_delivery_date: "Ngày giao dự kiến",
-        status: "Trạng thái",
-        total_distance: "Tổng quãng đường",
-        shippers_for_journey: "Shipper",
-        date_search: "Ngày",
-        delivered: "Đã thực hiện",
-        not_delivered: "Chưa thực hiện",
-        in_process: "Đang thực hiện",
-        journey_driver_name: "Tài xế đảm nhận",
+        index: 'STT',
+        journey_code: 'Mã lộ trình',
+        journey_name: 'Tên lộ trình',
+        number_vehicle: 'Số lượng xe',
+        efficiency: 'Hiệu suất',
+        revenue: 'Lợi nhuận (VND)',
+        total_cost: 'Tổng chi phí (VND)',
+        estimated_delivery_date: 'Ngày giao dự kiến',
+        status: 'Trạng thái',
+        total_distance: 'Tổng quãng đường',
+        shippers_for_journey: 'Shipper',
+        date_search: 'Ngày',
+        delivered: 'Đã thực hiện',
+        not_delivered: 'Chưa thực hiện',
+        in_process: 'Đang thực hiện',
+        journey_driver_name: 'Tài xế đảm nhận'
       },
       delivery_plan: {
-        get_plan_failure: "Lấy dữ liệu kế hoạch giao hàng thất bai",
-        save_plan: "Lưu kế hoạch giao hàng thành công",
-        get_plans: "Lấy dữ liệu kế hoạch giao hàng"
+        get_plan_failure: 'Lấy dữ liệu kế hoạch giao hàng thất bai',
+        save_plan: 'Lưu kế hoạch giao hàng thành công',
+        get_plans: 'Lấy dữ liệu kế hoạch giao hàng'
       },
       cost_management: {
-        button_create_title: "Thêm mới",
-        vehicle_cost_title: "Công thức chi phí vận hành xe",
-        type_vehicle_cost: "Loại phí",
-        name_vehicle_cost: "Tên",
-        vehicle_list: "Danh sách xe",
-        vehicle_cost: "Số tiền",
-        vehicle_cost_search_title: "Tên chi phí",
-        vehicle_cost_add: "Chi phí xe",
-        vehicle_cost_type_add: "Loại chi phí",
-        vehicle_cost_add_form_title: "Thêm mới loại chi phí xe",
-        vehicle_cost_add_success: "Thêm mới thành công",
-        vehicle_constraint: "Danh sách xe phụ thuộc",
-        vehicle_cost_code: "Mã chi phí",
-        vehicle_fixed_cost: "Cố định",
-        vehicle_operation_cost: "Không cố định",
-        vehicle_cost_type_select: "Chọn loại chi phí",
-        vehicle_cost_delete: "Xoá chi phí xe",
-        vehicle_cost_update_button: "Chỉnh sửa chi phí",
+        button_create_title: 'Thêm mới',
+        vehicle_cost_title: 'Công thức chi phí vận hành xe',
+        type_vehicle_cost: 'Loại phí',
+        name_vehicle_cost: 'Tên',
+        vehicle_list: 'Danh sách xe',
+        vehicle_cost: 'Số tiền',
+        vehicle_cost_search_title: 'Tên chi phí',
+        vehicle_cost_add: 'Chi phí xe',
+        vehicle_cost_type_add: 'Loại chi phí',
+        vehicle_cost_add_form_title: 'Thêm mới loại chi phí xe',
+        vehicle_cost_add_success: 'Thêm mới thành công',
+        vehicle_constraint: 'Danh sách xe phụ thuộc',
+        vehicle_cost_code: 'Mã chi phí',
+        vehicle_fixed_cost: 'Cố định',
+        vehicle_operation_cost: 'Không cố định',
+        vehicle_cost_type_select: 'Chọn loại chi phí',
+        vehicle_cost_delete: 'Xoá chi phí xe',
+        vehicle_cost_update_button: 'Chỉnh sửa chi phí',
 
-        type_shipper_cost: "Chỉ số",
-        name_shipper_cost: "Định mức",
-        shipper_list: "Danh sách xe",
-        shipper_cost: "Số tiền",
-        shipper_cost_search_title: "Tên chỉ số",
-        shipper_cost_add: "Thêm chỉ số",
-        shipper_cost_title: "Công thức lương",
-        shipper_name: "Tài xế",
-        fixed_salary: "Lương cứng",
-        bonus_salary: "Lương thưởng",
-        total_salary: "Tổng lương",
-        shipper_cost_calculate: "Tính lương",
-        shipper_salary_table: "Bảng lương",
-        shipper_salary_statistic_table: "Lương nhân viên",
-        shipper_name_search: "Tên tài xế",
-        month: "Tháng",
-        shipper_cost_add_success: "Cập nhật thành công",
-        bonus_title: "Thưởng",
-        save_salary: "Lưu lương thành công"
+        type_shipper_cost: 'Chỉ số',
+        name_shipper_cost: 'Định mức',
+        shipper_list: 'Danh sách xe',
+        shipper_cost: 'Số tiền',
+        shipper_cost_search_title: 'Tên chỉ số',
+        shipper_cost_add: 'Thêm chỉ số',
+        shipper_cost_title: 'Công thức lương',
+        shipper_name: 'Tài xế',
+        fixed_salary: 'Lương cứng',
+        bonus_salary: 'Lương thưởng',
+        total_salary: 'Tổng lương',
+        shipper_cost_calculate: 'Tính lương',
+        shipper_salary_table: 'Bảng lương',
+        shipper_salary_statistic_table: 'Lương nhân viên',
+        shipper_name_search: 'Tên tài xế',
+        month: 'Tháng',
+        shipper_cost_add_success: 'Cập nhật thành công',
+        bonus_title: 'Thưởng',
+        save_salary: 'Lưu lương thành công'
       },
       shipper: {
-        shipper_name: "Tên tài xế",
-        time_working_month: "Làm việc",
-        number_order_deliveried: "Đã thực hiện(đơn)",
-        rate_order_complete: "Tỷ lệ thành công",
-        searching_shipper: "Tìm kiếm tài xế",
-        driver_license: "Giấy phép lái xe",
-        shipper_task_list_title: "Danh sách công việc",
-        shipper_report_history_title: "Lịch sử làm việc",
-        start_time_journey: "Thời gian bắt đầu",
-        end_time_journey: "Thời gian kết thúc",
-        used_vehicle: "Xe sử dụng",
-        start_place: "Điểm xuất phát",
-        process: "Tiến độ",
-        success_order_rate: "Thành công",
-        order_code: "Mã đơn",
-        index: "STT",
-        destination_place: "Điểm đến",
-        estimated_time_arrive: "Thời điểm dự kiến",
-        order_status: "Trạng thái",
-        show_map_button: "Hiện bản độ",
-        hide_map_button: "Ẩn bản đồ",
-        order_table_label: "Các đơn cần giao",
-        report_failure: "Giao hàng thất bại",
-        report_success: "Giao hàng thành công",
-        start_doing: "Bắt đầu",
-        end_doing: "Kết thúc",
-        form_edit_title: "Cập nhật thông tin tài xế",
-        list_license: "Danh sách bằng lái",
-        approve: "Phê duyệt phân công nhân sự shipper",
-        edit_info: "Chỉnh sửa thông tin shipper",
-        searching_license: "Bằng lái",
-        salary: "Lương cứng",
+        shipper_name: 'Tên tài xế',
+        time_working_month: 'Làm việc',
+        number_order_deliveried: 'Đã thực hiện(đơn)',
+        rate_order_complete: 'Tỷ lệ thành công',
+        searching_shipper: 'Tìm kiếm tài xế',
+        driver_license: 'Giấy phép lái xe',
+        shipper_task_list_title: 'Danh sách công việc',
+        shipper_report_history_title: 'Lịch sử làm việc',
+        start_time_journey: 'Thời gian bắt đầu',
+        end_time_journey: 'Thời gian kết thúc',
+        used_vehicle: 'Xe sử dụng',
+        start_place: 'Điểm xuất phát',
+        process: 'Tiến độ',
+        success_order_rate: 'Thành công',
+        order_code: 'Mã đơn',
+        index: 'STT',
+        destination_place: 'Điểm đến',
+        estimated_time_arrive: 'Thời điểm dự kiến',
+        order_status: 'Trạng thái',
+        show_map_button: 'Hiện bản độ',
+        hide_map_button: 'Ẩn bản đồ',
+        order_table_label: 'Các đơn cần giao',
+        report_failure: 'Giao hàng thất bại',
+        report_success: 'Giao hàng thành công',
+        start_doing: 'Bắt đầu',
+        end_doing: 'Kết thúc',
+        form_edit_title: 'Cập nhật thông tin tài xế',
+        list_license: 'Danh sách bằng lái',
+        approve: 'Phê duyệt phân công nhân sự shipper',
+        edit_info: 'Chỉnh sửa thông tin shipper',
+        searching_license: 'Bằng lái',
+        salary: 'Lương cứng'
       },
       shipper_management: {
-        "edit_title": "Cập nhật chỉ số tính lương",
-        "edit_success": "Cập nhật thành công",
-        "edit_fail": "Cập nhật thất bại",
-        "calculated_salary_table": "Bảng lương tháng",
-        "save_salary_success": "Lưu bảng lương thành công",
-        "save_salary_fail": "Lưu bảng lương thất bại",
+        edit_title: 'Cập nhật chỉ số tính lương',
+        edit_success: 'Cập nhật thành công',
+        edit_fail: 'Cập nhật thất bại',
+        calculated_salary_table: 'Bảng lương tháng',
+        save_salary_success: 'Lưu bảng lương thành công',
+        save_salary_fail: 'Lưu bảng lương thất bại'
       },
       formula: {
-        add_success: "Cập nhật công thức",
-        title: "Công thức tính",
+        add_success: 'Cập nhật công thức',
+        title: 'Công thức tính'
       }
     },
 
-    //quản lý đề nghị
+    // quản lý đề nghị
+    // quản lý đề nghị
     production: {
       request_management: {
         code: 'Mã đề nghị',
@@ -7393,13 +7388,13 @@ export default {
         base_infomation: 'Thông tin cơ bản',
         approved_true: 'Phê duyệt đề nghị',
         source_request: 'Nguồn đề nghị',
-        optimal_stock: "Vị trí kho tối ưu",
-        optimal_stock_name: "Tên kho",
-        optimal_stock_address: "Vị trí kho",
-        optimal_stock_distance: "Khoảng cách đến điểm khách hàng",
-        optimal_stock_search: "Tìm kiếm",
-        optimal_stock_message: "Bấm để tìm kiếm kho tối ưu cho đơn hàng trên",
-        optimal_stock_error_message: "Không có kho nào đáp ứng được đơn hàng trên"
+        optimal_stock: 'Vị trí kho tối ưu',
+        optimal_stock_name: 'Tên kho',
+        optimal_stock_address: 'Vị trí kho',
+        optimal_stock_distance: 'Khoảng cách đến điểm khách hàng',
+        optimal_stock_search: 'Tìm kiếm',
+        optimal_stock_message: 'Bấm để tìm kiếm kho tối ưu cho đơn hàng trên',
+        optimal_stock_error_message: 'Không có kho nào đáp ứng được đơn hàng trên'
       }
     },
 

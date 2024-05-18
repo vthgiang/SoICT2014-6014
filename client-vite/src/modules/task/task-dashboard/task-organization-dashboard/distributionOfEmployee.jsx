@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-
 import { SelectMulti, PaginateBar, DataTableSetting } from '../../../../common-components/index'
 import { withTranslate } from 'react-redux-multilingual'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-
 import c3 from 'c3'
 import 'c3/c3.css'
 import _deepClone from 'lodash/cloneDeep'
@@ -12,6 +10,7 @@ import _deepClone from 'lodash/cloneDeep'
 let infoSearch = {
   status: ['inprocess', 'wait_for_approval', 'finished', 'delayed', 'canceled']
 }
+
 function DistributionOfEmployee(props) {
   const { translate } = props
   const { taskDashboardCharts } = props.tasks
@@ -29,23 +28,24 @@ function DistributionOfEmployee(props) {
   }
   useEffect(() => {
     const dataChart = getDataChart('employee-distribution-chart')
+
     if (dataChart) {
-      let data = _deepClone(dataChart)
-      let nameEmployee = data.nameEmployee.slice(0, perPage)
-      let taskCount = data.taskCount
-      for (let i in taskCount) {
+      const data = _deepClone(dataChart)
+      const nameEmployee = data.nameEmployee.slice(0, perPage)
+      const { taskCount } = data
+      for (const i in taskCount) {
         taskCount[i] = taskCount[i].slice(0, 1).concat(taskCount[i].slice(1, perPage + 1))
       }
       setState({
         ...state,
-        nameEmployee: nameEmployee,
-        taskCount: taskCount,
+        nameEmployee,
+        taskCount,
         total: data?.totalEmployee,
         pageTotal: Math.ceil(data?.totalEmployee / perPage),
         page: 1,
         display: nameEmployee.length
       })
-      console.log('state: ', state)
+      // console.log('state: ', state)
     }
   }, [JSON.stringify(taskDashboardCharts?.['employee-distribution-chart'])])
 
@@ -61,38 +61,38 @@ function DistributionOfEmployee(props) {
       ...infoSearch,
       status: value
     }
-    props.handleChangeDataSearch('employee-distribution-chart', { status: value, page: page, perPage: perPage })
+    props.handleChangeDataSearch('employee-distribution-chart', { status: value, page, perPage })
   }
   const handleSearchData = () => {
-    let status = infoSearch.status
-    let dataSearch = {
+    const { status } = infoSearch
+    const dataSearch = {
       'employee-distribution-chart': {
-        status: status
+        status
       }
     }
     props.getDataSearchChart(dataSearch)
     setState({
       ...state,
-      status: status
+      status
     })
   }
 
   const handlePaginationDistributionOfEmployeeChart = (page) => {
     const dataChart = getDataChart('employee-distribution-chart')
     if (dataChart) {
-      let data = _deepClone(dataChart)
-      let begin = (Number(page) - 1) * perPage
-      let end = (Number(page) - 1) * perPage + perPage
-      let nameEmployee = data?.nameEmployee.slice(begin, end)
-      let taskCount = data.taskCount
-      for (let i in taskCount) {
+      const data = _deepClone(dataChart)
+      const begin = (Number(page) - 1) * perPage
+      const end = (Number(page) - 1) * perPage + perPage
+      const nameEmployee = data?.nameEmployee.slice(begin, end)
+      const { taskCount } = data
+      for (const i in taskCount) {
         taskCount[i] = taskCount[i].slice(0, 1).concat(taskCount[i].slice(begin + 1, end + 1))
       }
       setState({
         ...state,
-        nameEmployee: nameEmployee,
-        taskCount: taskCount,
-        page: page,
+        nameEmployee,
+        taskCount,
+        page,
         display: nameEmployee.length
       })
     }
@@ -100,17 +100,17 @@ function DistributionOfEmployee(props) {
   const setLimitDistributionOfEmployeeChart = (limit) => {
     const dataChart = getDataChart('employee-distribution-chart')
     if (dataChart) {
-      let data = _deepClone(dataChart)
-      let nameEmployee = data?.nameEmployee.slice(0, Number(limit))
-      let taskCount = data.taskCount
-      for (let i in taskCount) {
+      const data = _deepClone(dataChart)
+      const nameEmployee = data?.nameEmployee.slice(0, Number(limit))
+      const { taskCount } = data
+      for (const i in taskCount) {
         taskCount[i] = taskCount[i].slice(0, 1).concat(taskCount[i].slice(1, Number(limit) + 1))
       }
 
       setState({
         ...state,
-        nameEmployee: nameEmployee,
-        taskCount: taskCount,
+        nameEmployee,
+        taskCount,
         page: 1,
         perPage: Number(limit),
         display: nameEmployee.length,
@@ -121,8 +121,8 @@ function DistributionOfEmployee(props) {
 
   function getDataChart(chartName) {
     let dataChart
-    let data = taskDashboardCharts?.[chartName]
-    if (data) {
+    const data = taskDashboardCharts?.[chartName]
+    if (data.dataChart) {
       dataChart = data.dataChart
       dataChart.taskCount[0][0] = translate('task.task_management.responsible_role')
       dataChart.taskCount[1][0] = translate('task.task_management.accountable_role')
@@ -145,13 +145,13 @@ function DistributionOfEmployee(props) {
   const barChart = () => {
     removePreviousChart()
 
-    let height = nameEmployee?.length * 60
-    let heightOfChart = height > 320 ? height : 320
+    const height = nameEmployee?.length * 60
+    const heightOfChart = height > 320 ? height : 320
     c3.generate({
       bindto: document.getElementById('distributionChart'),
 
       data: {
-        columns: taskCount ? taskCount : [],
+        columns: taskCount || [],
         type: 'bar',
         groups: [
           [
@@ -188,8 +188,8 @@ function DistributionOfEmployee(props) {
     })
   }
   return (
-    <React.Fragment>
-      <DataTableSetting tableId={'distribution-of-employee-chart'} setLimit={setLimitDistributionOfEmployeeChart} />
+    <>
+      <DataTableSetting tableId='distribution-of-employee-chart' setLimit={setLimitDistributionOfEmployeeChart} />
       <div className='box-body qlcv'>
         <section className='form-inline' style={{ textAlign: 'right' }}>
           {/* Chọn trạng thái công việc */}
@@ -210,7 +210,7 @@ function DistributionOfEmployee(props) {
                 nonSelectedText: translate('task.task_management.inprocess'),
                 allSelectedText: translate('task.task_management.select_all_status')
               }}
-            ></SelectMulti>
+            />
           </div>
           <div className='form-group'>
             <button className='btn btn-success' onClick={handleSearchData}>
@@ -220,7 +220,7 @@ function DistributionOfEmployee(props) {
         </section>
 
         {/* Biểu đồ đóng góp */}
-        <section id='distributionChart'></section>
+        <section id='distributionChart' />
 
         <PaginateBar
           display={display}
@@ -230,7 +230,7 @@ function DistributionOfEmployee(props) {
           func={handlePaginationDistributionOfEmployeeChart}
         />
       </div>
-    </React.Fragment>
+    </>
   )
 }
 

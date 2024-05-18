@@ -43,6 +43,9 @@ module.exports = {
       }
     ],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-    'unused-imports/no-unused-imports': 'error'
+    'unused-imports/no-unused-imports': 'error',
+    'no-underscore-dangle': 'off',
+    'react/prop-types': 'off',
+    'react-hooks/exhaustive-deps': 'off'
   }
 }

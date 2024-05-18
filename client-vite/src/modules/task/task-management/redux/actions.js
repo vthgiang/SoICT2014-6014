@@ -1,48 +1,5 @@
 import { taskManagementConstants } from './constants'
 import { taskManagementService } from './services'
-export const taskManagementActions = {
-  getResponsibleTaskByUser,
-  getAccountableTaskByUser,
-  getConsultedTaskByUser,
-  getInformedTaskByUser,
-  getCreatorTaskByUser,
-  getPaginateTasksByUser,
-  getPaginateTasks,
-  getPaginatedTasksByOrganizationalUnit,
-  getAllTasksThatHasEvaluation,
-
-  addTask,
-  editTask,
-  _delete,
-  getSubTask,
-
-  getTasksByUser,
-  getTaskInOrganizationUnitByMonth,
-  getTaskEvaluations,
-
-  getTaskAnalysOfUser,
-  getTaskByPriorityInOrganizationUnit,
-  getTimeSheetOfUser,
-  getAllUserTimeSheet,
-
-  addProjectTask,
-  getTasksByProject,
-  getAllTasksByProject,
-
-  importTasks,
-
-  getOrganizationTaskDashboardChart,
-
-  saveTaskAttributes,
-  addTaskDelegation,
-  deleteTaskDelegation,
-  revokeTaskDelegation,
-  confirmTaskDelegation,
-  rejectTaskDelegation,
-  editTaskDelegation,
-
-  proposalPersonnel
-}
 
 /**
  * lấy công việc theo người thực hiện
@@ -71,7 +28,7 @@ function getResponsibleTaskByUser(
   endDateBefore,
   aPeriodOfTime = false
 ) {
-  //user, -- param
+  // user, -- param
   return (dispatch) => {
     dispatch({
       type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_REQUEST
@@ -414,7 +371,7 @@ function getPaginateTasksByUser(
   return (dispatch) => {
     dispatch({
       type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST,
-      calledId: calledId
+      calledId
     })
 
     taskManagementService
@@ -436,7 +393,7 @@ function getPaginateTasksByUser(
         dispatch({
           type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_SUCCESS,
           payload: res.data.content,
-          calledId: calledId
+          calledId
         })
       })
       .catch((error) => {
@@ -581,7 +538,7 @@ function editTask(id, task) {
  * delete task
  * prefixed function name with underscore because delete is a reserved word in javascript
  */
-function _delete(id) {
+function deleteTask(id) {
   return (dispatch) => {
     dispatch({ type: taskManagementConstants.DELETE_TASK_REQUEST, id })
 
@@ -663,13 +620,13 @@ function getTaskEvaluations(data) {
 
 function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore, typeApi = null) {
   return (dispatch) => {
-    dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST, typeApi: typeApi })
+    dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST, typeApi })
     taskManagementService
       .getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore)
       .then((res) => {
         dispatch({
           type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS,
-          typeApi: typeApi,
+          typeApi,
           payload: res.data.content
         })
       })
@@ -809,7 +766,7 @@ function getAllTasksByProject(projectId) {
       type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST
     })
     taskManagementService
-      .getTasksByProject({ projectId: projectId, calledId: 'get_all' })
+      .getTasksByProject({ projectId, calledId: 'get_all' })
       .then((res) => {
         dispatch({
           type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
@@ -1053,4 +1010,48 @@ function proposalPersonnel(data) {
         })
       })
   }
+}
+
+export const taskManagementActions = {
+  getResponsibleTaskByUser,
+  getAccountableTaskByUser,
+  getConsultedTaskByUser,
+  getInformedTaskByUser,
+  getCreatorTaskByUser,
+  getPaginateTasksByUser,
+  getPaginateTasks,
+  getPaginatedTasksByOrganizationalUnit,
+  getAllTasksThatHasEvaluation,
+
+  addTask,
+  editTask,
+  deleteTask,
+  getSubTask,
+
+  getTasksByUser,
+  getTaskInOrganizationUnitByMonth,
+  getTaskEvaluations,
+
+  getTaskAnalysOfUser,
+  getTaskByPriorityInOrganizationUnit,
+  getTimeSheetOfUser,
+  getAllUserTimeSheet,
+
+  addProjectTask,
+  getTasksByProject,
+  getAllTasksByProject,
+
+  importTasks,
+
+  getOrganizationTaskDashboardChart,
+
+  saveTaskAttributes,
+  addTaskDelegation,
+  deleteTaskDelegation,
+  revokeTaskDelegation,
+  confirmTaskDelegation,
+  rejectTaskDelegation,
+  editTaskDelegation,
+
+  proposalPersonnel
 }

@@ -1,156 +1,100 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { useDispatch, connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import { DialogModal, ErrorLabel, SelectBox, TreeSelect } from '../../../../common-components'
+import { DialogModal, ErrorLabel } from '../../../../common-components'
 import { MajorActions } from '../redux/actions'
 import ValidationHelper from '../../../../helpers/validationHelper'
 
-class EditForm extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {}
-  }
+function EditForm(props) {
+  const { translate, majorId, majorName, majorCode, majorDescription, majorScore } = props
+  const dispatch = useDispatch()
 
-  handleName = (e) => {
+  const [state, setState] = useState({
+    majorId,
+    name: majorName,
+    code: majorCode,
+    description: majorDescription,
+    score: majorScore,
+    nameError: undefined,
+    codeError: undefined
+  })
+
+  useEffect(() => {
+    setState((prevState) => ({
+      ...prevState,
+      majorId,
+      name: majorName,
+      code: majorCode,
+      description: majorDescription,
+      nameError: undefined,
+      codeError: undefined
+    }))
+  }, [majorId, majorName, majorCode, majorDescription])
+
+  const handleName = (e) => {
     const { value } = e.target
-    const { translate } = this.props
     const { message } = ValidationHelper.validateName(translate, value, 1, 255)
-    this.setState({
+    setState((prevState) => ({
+      ...prevState,
       name: value,
       nameError: message
-    })
+    }))
   }
 
-  handleCode = (e) => {
+  const handleCode = (e) => {
     const { value } = e.target
-    let msg
-    this.setState({
+    setState((prevState) => ({
+      ...prevState,
       code: value,
-      codeError: msg
-    })
+      codeError: undefined
+    }))
   }
 
-  handleDescription = (e) => {
+  const handleDescription = (e) => {
     const { value } = e.target
-    this.setState({
+    setState((prevState) => ({
+      ...prevState,
       description: value
-    })
+    }))
   }
 
-  isValidateForm = () => {
-    let { name } = this.state
-    let { translate } = this.props
+  const isValidateForm = () => {
+    const { name } = state
     if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false
     return true
   }
 
-  findNode = (element, id) => {
-    if (element.id === id) {
-      return element
-    } else if (element.children) {
-      let i
-      let result = ''
-      for (i = 0; i < element.children.length; i++) {
-        result = this.findNode(element.children[i], id)
-      }
-      return result
-    }
-    return null
-  }
-  // tìm các node con cháu
-  findChildrenNode = (list, node) => {
-    let array = []
-    let queue_children = [node]
-    console.log(list, node, 'findChildrenNode')
-    while (queue_children.length > 0) {
-      let tmp = queue_children.shift()
-      array = [...array, tmp._id]
-      let children = list.filter((child) => child.parent === tmp._id)
-      queue_children = queue_children.concat(children)
-    }
-    return array
+  const save = () => {
+    dispatch(MajorActions.editMajor(state))
   }
 
-  save = () => {
-    const { documents } = this.props
-    const { majorId, name, code, majorParent } = this.state
-    const { list } = documents.administration.archives
+  const { name, code, description, nameError, codeError } = state
 
-    console.log('state data', this.state)
-    console.log('props data', this.props)
-
-    this.props.editMajor(this.state)
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.majorId !== prevState.majorId) {
-      return {
-        ...prevState,
-        oldData: {
-          majorId: nextProps.majorId,
-          name: nextProps.majorName,
-          code: nextProps.majorCode,
-          description: nextProps.majorDescription
-        },
-        majorId: nextProps.majorId,
-        name: nextProps.majorName,
-        code: nextProps.majorCode,
-        description: nextProps.majorDescription,
-
-        nameError: undefined,
-        codeError: undefined
-      }
-    } else {
-      return null
-    }
-  }
-
-  render() {
-    const { translate } = this.props
-    const { listData } = this.props
-    let { name, code, description, codeError, nameError } = this.state
-    console.log('listData', listData)
-
-    return (
-      <React.Fragment>
-        <DialogModal
-          modalID='edit-major'
-          formID='edit-major'
-          title='Chỉnh sửa chuyên ngành'
-          disableSubmit={!this.isValidateForm()}
-          func={this.save}
-        >
-          <form id='edit-major'>
-            <div className={`form-group ${nameError === undefined ? '' : 'has-error'}`}>
-              <label>
-                Tên<span className='text-red'>*</span>
-              </label>
-              <input type='text' className='form-control' onChange={this.handleName} value={name} />
-              <ErrorLabel content={nameError} />
-            </div>
-            <div className={`form-group ${nameError === undefined ? '' : 'has-error'}`}>
-              <label>
-                Nhãn dán<span className='text-red'>*</span>
-              </label>
-              <input type='text' className='form-control' onChange={this.handleCode} value={code} />
-              <ErrorLabel content={codeError} />
-            </div>
-            <div className='form-group'>
-              <label>Mô tả</label>
-              <input type='text' className='form-control' onChange={this.handleDescription} value={description} />
-            </div>
-            {/* <div className="form-group">
-                        <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
-                        <button className="btn btn-danger" onClick={() => {
-                            window.$(`#edit-major`).slideUp()
-                        }}>{translate('form.close')}</button>
-                    </div> */}
-          </form>
-        </DialogModal>
-      </React.Fragment>
-    )
-  }
+  return (
+    <DialogModal modalID='edit-major' formID='edit-major' title='Chỉnh sửa chuyên ngành' disableSubmit={!isValidateForm()} func={save}>
+      <form id='edit-major'>
+        <div className={`form-group ${nameError === undefined ? '' : 'has-error'}`}>
+          <label>
+            Tên<span className='text-red'>*</span>
+          </label>
+          <input type='text' className='form-control' onChange={handleName} value={name} />
+          <ErrorLabel content={nameError} />
+        </div>
+        <div className={`form-group ${codeError === undefined ? '' : 'has-error'}`}>
+          <label>
+            Nhãn dán<span className='text-red'>*</span>
+          </label>
+          <input type='text' className='form-control' onChange={handleCode} value={code} />
+          <ErrorLabel content={codeError} />
+        </div>
+        <div className='form-group'>
+          <label>Mô tả</label>
+          <input type='text' className='form-control' onChange={handleDescription} value={description} />
+        </div>
+      </form>
+    </DialogModal>
+  )
 }
 
 const mapStateToProps = (state) => state

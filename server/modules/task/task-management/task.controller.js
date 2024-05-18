@@ -12,8 +12,8 @@ const moment = require('moment')
 
 /**
  * Lấy công việc theo tùy chọn
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 
 
@@ -69,8 +69,8 @@ exports.getTasks = async (req, res) => {
 
 /**
  * Lấy task evaluation
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 
 
@@ -887,7 +887,7 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
 }
 
 /**
- * lấy các công việc sắp hết hạn và quá hạn của nhân viên 
+ * lấy các công việc sắp hết hạn và quá hạn của nhân viên
  */
 getTasksByUser = async (req, res) => {
     try {

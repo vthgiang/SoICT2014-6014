@@ -7,7 +7,7 @@
     "build": "(webpack) && (nodemon build/backend.js)",
     "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --security-revert=CVE-2023-46809  index.js",
+    "start": "nodemon --security-revert=CVE-2023-46809  index.js",
     "dev": "nodemon index.js",
     "db": "node seed/initDB.js",
     "viavet": "node seed/viavet.js",
