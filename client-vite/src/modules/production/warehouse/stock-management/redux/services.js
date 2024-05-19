@@ -8,7 +8,6 @@ export const StockServices = {
   editStock,
   deleteStock,
   importStock,
-  syncCreateStock
 }
 
 function getAllStocks(params) {

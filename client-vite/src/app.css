@@ -87,6 +87,31 @@ div.qlcv>.form-inline>.form-group>div.react-dropdown-tree-select {
 	margin-top: 0px;
 	margin-bottom: 15px;
 }
+/* Ghi đè CSS layout AdminLTE*/
+.sidebar {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	overflow-y: scroll;
+}
+
+.sidebar {
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
+}
+
+.sidebar::-webkit-scrollbar { 
+    display: none;
+}
+
+.main-header {
+	position: fixed;
+	width: 100%;
+}
+
+.content-wrapper {
+	margin-top: 50px;
+}
 
 /* Ghi đè CSS menu AdminLTE */
 .sidebar-menu>li>a {
