@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -21,37 +21,40 @@ function GeneralTab(props) {
   // Function format dữ liệu Date thành string
   const formatDate = (date, monthYear = false) => {
     if (!date) return null
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
 
   const convertGroupAsset = (group) => {
     const { translate } = props
     if (group === 'building') {
       return translate('asset.dashboard.building')
-    } else if (group === 'vehicle') {
+    }
+    if (group === 'vehicle') {
       return translate('asset.asset_info.vehicle')
-    } else if (group === 'machine') {
+    }
+    if (group === 'machine') {
       return translate('asset.dashboard.machine')
-    } else if (group === 'other') {
+    }
+    if (group === 'other') {
       return translate('asset.dashboard.other')
-    } else return null
+    }
+    return null
   }
 
   if (prevProps.id !== props.id) {
@@ -87,24 +90,27 @@ function GeneralTab(props) {
 
     if (status === 'ready_to_use') {
       return translate('asset.general_information.ready_use')
-    } else if (status === 'in_use') {
-      return translate('asset.general_information.using')
-    } else if (status === 'broken') {
-      return translate('asset.general_information.damaged')
-    } else if (status === 'lost') {
-      return translate('asset.general_information.lost')
-    } else if (status === 'disposed') {
-      return translate('asset.general_information.disposal')
-    } else {
-      return ''
     }
+    if (status === 'in_use') {
+      return translate('asset.general_information.using')
+    }
+    if (status === 'broken') {
+      return translate('asset.general_information.damaged')
+    }
+    if (status === 'lost') {
+      return translate('asset.general_information.lost')
+    }
+    if (status === 'disposed') {
+      return translate('asset.general_information.disposal')
+    }
+    return ''
   }
 
   const { id, translate, user, assetsManager, department, role } = props
-  var userlist = user.list,
-    departmentlist = department.list
-  let assetbuilding = assetsManager && assetsManager.buildingAssets
-  let assetbuildinglist = assetbuilding && assetbuilding.list
+  const userlist = user.list
+  const departmentlist = department.list
+  const assetbuilding = assetsManager && assetsManager.buildingAssets
+  const assetbuildinglist = assetbuilding && assetbuilding.list
 
   const {
     avatar,
@@ -170,7 +176,7 @@ function GeneralTab(props) {
                   <strong>{translate('asset.general_information.asset_type')}&emsp; </strong>
                   {assetTypes && assetTypes.length
                     ? assetTypes.map((item, index) => {
-                        let suffix = index < assetTypes.length - 1 ? ', ' : ''
+                        const suffix = index < assetTypes.length - 1 ? ', ' : ''
                         return item.typeName + suffix
                       })
                     : ''}
@@ -196,7 +202,7 @@ function GeneralTab(props) {
                     : ''}
                 </div>
 
-                {/* Quyền được xem*/}
+                {/* Quyền được xem */}
                 <div className='form-group'>
                   <strong>{translate('system_admin.system_link.table.roles')}&emsp; </strong>
                   {readByRoles
@@ -284,7 +290,7 @@ function GeneralTab(props) {
             <div className='col-md-12'>
               <label>
                 {translate('asset.general_information.asset_properties')}:
-                <a style={{ cursor: 'pointer' }} title={translate('asset.general_information.asset_properties')}></a>
+                <a style={{ cursor: 'pointer' }} title={translate('asset.general_information.asset_properties')} />
               </label>
               <div className='form-group'>
                 <table className='table'>

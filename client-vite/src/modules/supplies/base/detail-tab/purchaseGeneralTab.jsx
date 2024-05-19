@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -30,24 +30,23 @@ function PurchaseGeneralTab(props) {
   // Function format dữ liệu Date thành string
   const formatDate = (date, monthYear = false) => {
     if (!date) return null
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
   return (
     <div id={id} className='tab-pane active'>
@@ -81,7 +80,7 @@ function PurchaseGeneralTab(props) {
             {/* Gia tien */}
             <div className='form-group'>
               <strong>{translate('supplies.invoice_management.price')}&emsp; </strong>
-              {price + '(VND)'}
+              {`${price}(VND)`}
             </div>
             {/* Nha cung cap */}
             <div className='form-group'>

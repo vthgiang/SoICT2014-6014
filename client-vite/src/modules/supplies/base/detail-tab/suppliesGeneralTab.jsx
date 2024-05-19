@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -44,10 +44,10 @@ function SuppliesGeneralTab(props) {
               {suppliesName}
             </div>
 
-            {/* Gia tien tham khảo*/}
+            {/* Gia tien tham khảo */}
             <div className='form-group'>
               <strong>{translate('supplies.supplies_management.price')}&emsp; </strong>
-              {price + '(VND)'}
+              {`${price}(VND)`}
             </div>
           </div>
           <div className='col-md-6'>

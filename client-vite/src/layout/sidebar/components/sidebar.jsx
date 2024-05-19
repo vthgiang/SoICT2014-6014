@@ -73,41 +73,40 @@ class SideBar extends Component {
 
             <GroupItem
               groupItem={{
-                name: "menu.risk_management",
-                icon: " fa fa-newspaper-o",
+                name: 'menu.risk_management',
+                icon: ' fa fa-newspaper-o',
                 list: [
                   {
-                    name: "menu.task_pert",
-                    icon: "fa fa-circle",
-                    path: "/taskPert",
+                    name: 'menu.task_pert',
+                    icon: 'fa fa-circle',
+                    path: '/taskPert'
                   },
                   {
-                    name: "menu.risk_dashboard",
-                    icon: "fa fa-circle",
-                    path: "/riskDistribution",
+                    name: 'menu.risk_dashboard',
+                    icon: 'fa fa-circle',
+                    path: '/riskDistribution'
                   },
                   {
-                    name: "menu.risk_list",
-                    icon: "fa fa-circle",
-                    path: "/risk",
+                    name: 'menu.risk_list',
+                    icon: 'fa fa-circle',
+                    path: '/risk'
                   },
                   {
-                    name: "menu.exprimental_analysis",
-                    icon: "fa fa-circle",
-                    path: "/exprimentalAnalysis",
+                    name: 'menu.exprimental_analysis',
+                    icon: 'fa fa-circle',
+                    path: '/exprimentalAnalysis'
                   },
                   {
-                    name: "menu.risk_response_plan",
-                    icon: "fa fa-circle",
-                    path: "/riskResponsePlan",
+                    name: 'menu.risk_response_plan',
+                    icon: 'fa fa-circle',
+                    path: '/riskResponsePlan'
                   },
                   {
-                    name: "menu.bayesian_network_config",
-                    icon: "fa fa-circle",
-                    path: "/bayesianNetworkConfig",
-                  },
-
-                ],
+                    name: 'menu.bayesian_network_config',
+                    icon: 'fa fa-circle',
+                    path: '/bayesianNetworkConfig'
+                  }
+                ]
               }}
             />
 
@@ -385,6 +384,32 @@ class SideBar extends Component {
                     name: 'menu.kpi_member_manager',
                     icon: 'fa fa-circle-o',
                     path: '/kpi-member/manager'
+                  },
+                  {
+                    name: 'menu.kpi_allocation_title',
+                    icon: 'fa fa-file-powerpoint-o',
+                    list: [
+                      {
+                        name: 'menu.kpi_allocation_affected_factor_management',
+                        icon: 'fa fa-circle-o',
+                        path: '/kpi-allocation/affected-factor-management'
+                      },
+                      {
+                        name: 'menu.kpi_allocation_allocation_management',
+                        icon: 'fa fa-circle-o',
+                        path: '/kpi-allocation/allocation-management'
+                      },
+                      {
+                        name: 'menu.kpi_allocation_config_management',
+                        icon: 'fa fa-circle-o',
+                        path: '/kpi-allocation/config-management'
+                      },
+                      {
+                        name: 'menu.kpi_allocation_task_package_management',
+                        icon: 'fa fa-circle-o',
+                        path: '/kpi-allocation/task_package_management'
+                      }
+                    ]
                   }
                 ]
               }}
@@ -954,10 +979,10 @@ class SideBar extends Component {
                     path: '/product-request-management/stock'
                   },
                   {
-                    name: "menu.storage_management",
-                    icon: "fa fa-reorder",
-                    path: "/storage-management",
-                  },
+                    name: 'menu.storage_management',
+                    icon: 'fa fa-reorder',
+                    path: '/storage-management'
+                  }
                 ]
               }}
             />
@@ -992,9 +1017,9 @@ class SideBar extends Component {
                     path: '/manufacturing-dashboard'
                   },
                   {
-                      name: "menu.analysis_manufacturing_performance",
-                      icon: "fa fa-bar-chart",
-                      path: "/analysis-manufacturing-performance",
+                    name: 'menu.analysis_manufacturing_performance',
+                    icon: 'fa fa-bar-chart',
+                    path: '/analysis-manufacturing-performance'
                   },
                   {
                     name: 'menu.manage_manufacturing_plan',
@@ -1045,8 +1070,7 @@ class SideBar extends Component {
                     name: 'menu.manage_manufacturing_quality',
                     icon: 'fa fa-certificate',
                     path: '/manage-manufacturing-quality'
-                  },
-                  
+                  }
                 ]
               }}
             />
@@ -1054,40 +1078,40 @@ class SideBar extends Component {
             {/* Quản lý vận chuyển */}
             <GroupItem
               groupItem={{
-                name: "menu.manufacturing_process_title",
-                icon: "fa fa-industry",
+                name: 'menu.manufacturing_process_title',
+                icon: 'fa fa-industry',
                 list: [
                   {
-                    name: "menu.manager_manufacturing_dashboard",
-                    icon: "fa fa-dashboard",
-                    path: "/manager-manufacturing-dashboard",
+                    name: 'menu.manager_manufacturing_dashboard',
+                    icon: 'fa fa-dashboard',
+                    path: '/manager-manufacturing-dashboard'
                   },
                   {
-                    name: "menu.manager_manufacturing_process",
-                    icon: "fa fa-circle-o",
-                    path: "/manager-manufacturing-process",
+                    name: 'menu.manager_manufacturing_process',
+                    icon: 'fa fa-circle-o',
+                    path: '/manager-manufacturing-process'
                   },
                   {
-                    name: "menu.chain_design",
-                    icon: "fa fa-circle-o",
-                    path: "/manufacturing-chain",
+                    name: 'menu.chain_design',
+                    icon: 'fa fa-circle-o',
+                    path: '/manufacturing-chain'
                   },
                   {
-                    name: "menu.manufacturing_process",
-                    icon: "fa fa-adjust",
-                    path: "/manufacturing-process",
+                    name: 'menu.manufacturing_process',
+                    icon: 'fa fa-adjust',
+                    path: '/manufacturing-process'
                   },
                   {
-                    name: "menu.manufacturing_task_managerment",
-                    icon: "fa fa-list-alt",
-                    path: "/manufacturing-task-managerment",
+                    name: 'menu.manufacturing_task_managerment',
+                    icon: 'fa fa-list-alt',
+                    path: '/manufacturing-task-managerment'
                   },
                   {
-                    name: "menu.manufacturing_issue",
-                    icon: "fa fa-exclamation",
-                    path: "/manufacturing-issue",
+                    name: 'menu.manufacturing_issue',
+                    icon: 'fa fa-exclamation',
+                    path: '/manufacturing-issue'
                   }
-                ],
+                ]
               }}
             />
             {/* Quản lý vận chuyển */}
@@ -1148,43 +1172,43 @@ class SideBar extends Component {
             {/* Quản lý vận chuyển 2 */}
             <GroupItem
               groupItem={{
-                name: "menu.manage_transportation",
-                icon: "fa fa-subway",
+                name: 'menu.manage_transportation',
+                icon: 'fa fa-subway',
                 list: [
                   {
-                    name: "menu.manage_transportation_dashboard",
-                    icon: "fa fa-dashboard",
-                    path: "/transportation-dashboard",
+                    name: 'menu.manage_transportation_dashboard',
+                    icon: 'fa fa-dashboard',
+                    path: '/transportation-dashboard'
                   },
                   {
-                    name: "menu.manage_transportation_init_route",
-                    icon: "fa fa-road",
-                    path: "/transportation-route-init",
+                    name: 'menu.manage_transportation_init_route',
+                    icon: 'fa fa-road',
+                    path: '/transportation-route-init'
                   },
                   {
-                    name: "menu.manage_transportation_list_journey",
-                    icon: "fa fa-list-alt",
-                    path: "/transportation-list-journey",
+                    name: 'menu.manage_transportation_list_journey',
+                    icon: 'fa fa-list-alt',
+                    path: '/transportation-list-journey'
                   },
                   {
-                    name: "menu.manage_transportation_vehicles",
-                    icon: "fa fa-car",
-                    path: "/transportation-info-vehicles",
+                    name: 'menu.manage_transportation_vehicles',
+                    icon: 'fa fa-car',
+                    path: '/transportation-info-vehicles'
                   },
                   {
-                    name: "menu.manage_transportation_shipper",
-                    icon: "fa fa-user-circle-o",
-                    path: "/transportation-shipper-manage",
+                    name: 'menu.manage_transportation_shipper',
+                    icon: 'fa fa-user-circle-o',
+                    path: '/transportation-shipper-manage'
                   },
                   {
-                    name: "menu.manage_transportation_test_api_shipper",
-                    icon: "fa fa-circle-o",
-                    path: "/transportation-test-api-shipper",
+                    name: 'menu.manage_transportation_test_api_shipper',
+                    icon: 'fa fa-circle-o',
+                    path: '/transportation-test-api-shipper'
                   },
                   {
-                    name: "menu.manage_transportation_cost",
-                    icon: "fa fa-usd",
-                    path: "/transportation-cost-manage",
+                    name: 'menu.manage_transportation_cost',
+                    icon: 'fa fa-usd',
+                    path: '/transportation-cost-manage'
                   }
                 ]
               }}

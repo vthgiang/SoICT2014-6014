@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -65,39 +65,38 @@ function ListAsset(props) {
 
   // Function format dữ liệu Date thành string
   const formatDate2 = (date, monthYear = false) => {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
 
   // Function format ngày hiện tại thành dạnh mm-yyyy
   const formatDate = (date) => {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     return [month, year].join('-')
@@ -191,7 +190,7 @@ function ListAsset(props) {
 
   // Bắt sự kiện chuyển trang
   const setPage = async (pageNumber) => {
-    let page = (pageNumber - 1) * state.limit
+    const page = (pageNumber - 1) * state.limit
     await setState({
       ...state,
       page: parseInt(page)
@@ -201,9 +200,9 @@ function ListAsset(props) {
   }
 
   const getAssetTypes = () => {
-    let { assetType } = props
-    let assetTypeName = assetType && assetType.listAssetTypes
-    let typeArr = []
+    const { assetType } = props
+    const assetTypeName = assetType && assetType.listAssetTypes
+    const typeArr = []
     assetTypeName.map((item) => {
       typeArr.push({
         _id: item._id,
@@ -219,11 +218,14 @@ function ListAsset(props) {
     const { translate } = props
     if (group === 'building') {
       return translate('asset.dashboard.building')
-    } else if (group === 'vehicle') {
+    }
+    if (group === 'vehicle') {
       return translate('asset.dashboard.vehicle')
-    } else if (group === 'machine') {
+    }
+    if (group === 'machine') {
       return translate('asset.dashboard.machine')
-    } else if (group === 'other') {
+    }
+    if (group === 'other') {
       return translate('asset.dashboard.other')
     }
   }
@@ -232,13 +234,17 @@ function ListAsset(props) {
     const { translate } = props
     if (status === 'ready_to_use') {
       return translate('asset.general_information.ready_use')
-    } else if (status === 'in_use') {
+    }
+    if (status === 'in_use') {
       return translate('asset.general_information.using')
-    } else if (status === 'broken') {
+    }
+    if (status === 'broken') {
       return translate('asset.general_information.damaged')
-    } else if (status === 'lost') {
+    }
+    if (status === 'lost') {
       return translate('asset.general_information.lost')
-    } else if (status === 'disposed') {
+    }
+    if (status === 'disposed') {
       return translate('asset.general_information.disposal')
     }
   }
@@ -246,25 +252,26 @@ function ListAsset(props) {
   const converttypeRegisterForUseAsset = (value) => {
     if (value === 3) {
       return 'Đăng ký sử dụng lâu dài'
-    } else if (value === 2) {
+    }
+    if (value === 2) {
       return 'Đăng ký sử dụng theo giờ'
     }
   }
 
-  var lists = ''
-  var userlist = user.list
-  var assettypelist = assetType.listAssetTypes
-  let assetTypeName = state.assetType ? state.assetType : []
+  let lists = ''
+  const userlist = user.list
+  const assettypelist = assetType.listAssetTypes
+  const assetTypeName = state.assetType ? state.assetType : []
 
   if (assetsManager.isLoading === false) {
     lists = assetsManager.listAssets
   }
 
-  var pageTotal =
+  const pageTotal =
     assetsManager.totalList % limit === 0 ? parseInt(assetsManager.totalList / limit) : parseInt(assetsManager.totalList / limit + 1)
 
-  var currentPage = parseInt(page / limit + 1)
-  let typeArr = getAssetTypes()
+  const currentPage = parseInt(page / limit + 1)
+  const typeArr = getAssetTypes()
 
   return (
     <div id='listasset' className='tab-pane active'>
@@ -303,7 +310,7 @@ function ListAsset(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('asset.general_information.asset_group')}</label>
             <SelectMulti
-              id={`multiSelectGroupInManagement`}
+              id='multiSelectGroupInManagement'
               multiple='multiple'
               value={group}
               options={{
@@ -317,7 +324,7 @@ function ListAsset(props) {
                 { value: 'machine', text: translate('asset.dashboard.machine') },
                 { value: 'other', text: translate('asset.dashboard.other') }
               ]}
-            ></SelectMulti>
+            />
           </div>
 
           {/* Loại tài sản */}
@@ -332,7 +339,7 @@ function ListAsset(props) {
           <div className='form-group'>
             <label>Quyền đăng ký</label>
             <SelectMulti
-              id={`typeRegisterForUseInManagement`}
+              id='typeRegisterForUseInManagement'
               className='form-control select2'
               multiple='multiple'
               value={typeRegisterForUse}
@@ -350,7 +357,7 @@ function ListAsset(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('page.status')}</label>
             <SelectMulti
-              id={`multiSelectStatus1`}
+              id='multiSelectStatus1'
               multiple='multiple'
               value={status}
               options={{
@@ -365,7 +372,7 @@ function ListAsset(props) {
                 { value: 'lost', text: translate('asset.general_information.lost') },
                 { value: 'disposal', text: translate('asset.general_information.disposal') }
               ]}
-            ></SelectMulti>
+            />
           </div>
 
           {/* Button tìm kiếm */}
@@ -420,7 +427,7 @@ function ListAsset(props) {
                       <td>
                         {x.assetType && x.assetType.length
                           ? x.assetType.map((item, index) => {
-                              let suffix = index < x.assetType.length - 1 ? ', ' : ''
+                              const suffix = index < x.assetType.length - 1 ? ', ' : ''
                               return item.typeName + suffix
                             })
                           : ''}
@@ -455,7 +462,7 @@ function ListAsset(props) {
         <PaginateBar
           display={assetsManager.listAssets?.length}
           total={assetsManager.totalList}
-          pageTotal={pageTotal ? pageTotal : 0}
+          pageTotal={pageTotal || 0}
           currentPage={currentPage}
           func={setPage}
         />

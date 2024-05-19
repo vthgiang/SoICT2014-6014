@@ -75,7 +75,7 @@ function AssetLotManagement(props) {
       confirmButtonText: translate('general.yes')
     }).then((result) => {
       if (result.value && selectedData.length > 0) {
-        //console.log("hang select delete:",selectedData);
+        // console.log("hang select delete:",selectedData);
         props.deleteAssetLot({
           assetLotIds: selectedData
         })
@@ -84,20 +84,20 @@ function AssetLotManagement(props) {
   }
 
   const handleDeleteAnAssetLot = (id) => {
-    //console.log("hang delete id",id);
+    // console.log("hang delete id",id);
     props.deleteAssetLot({
       assetLotIds: [id]
     })
   }
 
-  let assetLot = useSelector((state) => state.assetLotManager.assetLot)
+  const assetLot = useSelector((state) => state.assetLotManager.assetLot)
   // Bắt sự kiện click chỉnh sửa thông tin tài sản
   const handleEdit = async (value) => {
     props.getAssetLotInforById(value._id)
     window.$('#modal-edit-asset-lot').modal('show')
   }
 
-  //lưu giá trị mã lô tài sản vào state khi thay đổi
+  // lưu giá trị mã lô tài sản vào state khi thay đổi
   const handleCodeChange = (event) => {
     const { name, value } = event.target
     setState({
@@ -106,7 +106,7 @@ function AssetLotManagement(props) {
     })
   }
 
-  //lưu giá trị tên lô tài sản vào state khi thay đổi
+  // lưu giá trị tên lô tài sản vào state khi thay đổi
   const handleAssetLotNameChange = (event) => {
     const { name, value } = event.target
     setState({
@@ -115,7 +115,7 @@ function AssetLotManagement(props) {
     })
   }
 
-  //lưu giá trị nhà sản xuất vào state khi thay đổi
+  // lưu giá trị nhà sản xuất vào state khi thay đổi
   const handleSupplierChange = (event) => {
     const { name, value } = event.target
     setState({
@@ -124,7 +124,7 @@ function AssetLotManagement(props) {
     })
   }
 
-  //lưu giá trị loại tài sản vào state khi thay đổi
+  // lưu giá trị loại tài sản vào state khi thay đổi
   const handleAssetTypeChange = (value) => {
     setState((state) => {
       return {
@@ -166,7 +166,7 @@ function AssetLotManagement(props) {
 
   // Bắt sự kiện chuyển trang
   const setPage = async (pageNumber) => {
-    let page = (pageNumber - 1) * state.limit
+    const page = (pageNumber - 1) * state.limit
     await setState({
       ...state,
       page: parseInt(page)
@@ -176,20 +176,20 @@ function AssetLotManagement(props) {
   }
 
   const getAssetTypesList = (types) => {
-    let list = types.reduce((list, cur) => {
-      return list ? list + ', ' + cur.typeName : cur.typeName
+    const list = types.reduce((list, cur) => {
+      return list ? `${list}, ${cur.typeName}` : cur.typeName
     }, '')
     return list
   }
 
   const getNumber = (number) => {
-    return number ? number : ''
+    return number || ''
   }
 
   const getAssetTypes = () => {
-    let { assetType } = props
-    let assetTypeName = assetType && assetType.listAssetTypes
-    let typeArr = []
+    const { assetType } = props
+    const assetTypeName = assetType && assetType.listAssetTypes
+    const typeArr = []
     assetTypeName.map((item) => {
       typeArr.push({
         _id: item._id,
@@ -205,18 +205,22 @@ function AssetLotManagement(props) {
     const { translate } = props
     if (group === 'building') {
       return translate('asset.dashboard.building')
-    } else if (group === 'vehicle') {
+    }
+    if (group === 'vehicle') {
       return translate('asset.asset_info.vehicle')
-    } else if (group === 'machine') {
+    }
+    if (group === 'machine') {
       return translate('asset.dashboard.machine')
-    } else if (group === 'other') {
+    }
+    if (group === 'other') {
       return translate('asset.dashboard.other')
-    } else return null
+    }
+    return null
   }
 
   // Bắt sự kiện click xem thông tin tài sản
   const handleView = async (value) => {
-    //console.log("hang view currentRowView",value);
+    // console.log("hang view currentRowView",value);
     await setState({
       ...state,
       currentRowView: value
@@ -226,17 +230,17 @@ function AssetLotManagement(props) {
     window.$('#modal-view-asset-lot').modal('show')
   }
 
-  var lists = ''
-  var assettypelist = assetType.listAssetTypes
-  let typeArr = getAssetTypes()
-  let assetTypeName = state.assetType ? state.assetType : []
+  const lists = ''
+  const assettypelist = assetType.listAssetTypes
+  const typeArr = getAssetTypes()
+  const assetTypeName = state.assetType ? state.assetType : []
 
-  var pageTotal =
+  const pageTotal =
     assetLotManager.totalList % limit === 0 ? parseInt(assetLotManager.totalList / limit) : parseInt(assetLotManager.totalList / limit + 1)
-  var currentPage = parseInt(page / limit + 1)
+  const currentPage = parseInt(page / limit + 1)
 
   return (
-    <div className={isActive ? isActive : 'box'}>
+    <div className={isActive || 'box'}>
       <div className='box-body qlcv'>
         {/* Form thêm tài sản mới */}
         <div className='dropdown pull-right'>
@@ -293,7 +297,7 @@ function AssetLotManagement(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('asset.general_information.asset_group')}</label>
             <SelectMulti
-              id={`multiSelectGroupInManagement`}
+              id='multiSelectGroupInManagement'
               multiple='multiple'
               value={group}
               options={{
@@ -306,7 +310,7 @@ function AssetLotManagement(props) {
                 { value: 'machine', text: translate('asset.dashboard.machine') },
                 { value: 'other', text: translate('asset.dashboard.other') }
               ]}
-            ></SelectMulti>
+            />
           </div>
 
           {/* Loại tài sản */}
@@ -332,7 +336,7 @@ function AssetLotManagement(props) {
 
           {/* Nút tìm kiếm */}
           <div className='form-group'>
-            <label></label>
+            <label />
             <button
               type='button'
               className='btn btn-success'
@@ -380,7 +384,7 @@ function AssetLotManagement(props) {
           tableBodyData={
             assetLotManager.listAssetLots?.length > 0 &&
             assetLotManager.listAssetLots.map((x, index) => {
-              //console.log("hang x data manager:",x.assetType);
+              // console.log("hang x data manager:",x.assetType);
               return {
                 id: x?._id,
                 index: <td>{index + 1}</td>,
@@ -391,7 +395,7 @@ function AssetLotManagement(props) {
                   <td>
                     {x.assetType &&
                       x.assetType.length !== 0 &&
-                      x.assetType.map((type, index, arr) => (index !== arr.length - 1 ? type.typeName + ', ' : type.typeName))}
+                      x.assetType.map((type, index, arr) => (index !== arr.length - 1 ? `${type.typeName}, ` : type.typeName))}
                   </td>
                 ),
                 total: <th>{x.total}</th>,
@@ -419,7 +423,7 @@ function AssetLotManagement(props) {
                       content={translate('asset.general_information.delete_info')}
                       data={{
                         id: x._id,
-                        info: x.code + ' - ' + x.assetLotName
+                        info: `${x.code} - ${x.assetLotName}`
                       }}
                       func={handleDeleteAnAssetLot}
                     />
@@ -445,7 +449,7 @@ function AssetLotManagement(props) {
         <PaginateBar
           display={assetLotManager.listAssetLots ? assetLotManager.listAssetLots.length : null}
           total={assetLotManager.totalList ? assetLotManager.totalList : null}
-          pageTotal={pageTotal ? pageTotal : 0}
+          pageTotal={pageTotal || 0}
           currentPage={currentPage}
           func={setPage}
         />
@@ -464,7 +468,7 @@ function AssetLotManagement(props) {
           supplier={currentRowView.supplier}
           archivedRecordNumber={currentRowView.archivedRecordNumber}
           files={currentRowView.documents}
-          linkPage={'management'}
+          linkPage='management'
         />
       )}
 
@@ -482,7 +486,7 @@ function AssetLotManagement(props) {
           supplier={assetLot.supplier}
           archivedRecordNumber={assetLot.archivedRecordNumber}
           files={assetLot.documents}
-          linkPage={'management'}
+          linkPage='management'
         />
       )}
     </div>

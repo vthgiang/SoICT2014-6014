@@ -1,10 +1,11 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
 import { UsageLogAddModal, UsageLogEditModal } from './combinedContent'
 import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 import { CalendarUsage } from './calendarUsage'
+
 function UsageLogTab(props) {
   const [state, setState] = useState({
     assignedToUser: props.assignedToUser,
@@ -19,24 +20,23 @@ function UsageLogTab(props) {
 
   // Function format dữ liệu Date thành string
   const formatDate = (date, monthYear = false) => {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
 
   // Function lưu giá trị mã phiếu vào state khi thay đổi
@@ -101,7 +101,7 @@ function UsageLogTab(props) {
     await setState((state) => {
       return {
         ...state,
-        currentRow: { ...value, index: index }
+        currentRow: { ...value, index }
       }
     })
     window.$(`#modal-edit-usage-editUsage${index}`).modal('show')
@@ -109,14 +109,15 @@ function UsageLogTab(props) {
 
   // Function thêm thông tin phiếu
   const handleAddUsage = async (data) => {
-    //const { usageLogs } = props.usageLogs;
+    // const { usageLogs } = props.usageLogs;
     let { usageLogs } = state
-    //console.log("hang usageLogs",usageLogs);
+    // console.log("hang usageLogs",usageLogs);
     if (usageLogs === undefined) {
       usageLogs = []
     }
 
-    let assignedToUser, assignedToOrganizationalUnit
+    let assignedToUser
+    let assignedToOrganizationalUnit
     if (data && data.calendar) {
       usageLogs.push(data.newUsage)
       assignedToUser = data.newUsage.usedByUser
@@ -126,22 +127,22 @@ function UsageLogTab(props) {
       assignedToUser = data.usedByUser
       assignedToOrganizationalUnit = data.usedByOrganizationalUnit
     }
-    let usageLogsData = usageLogs
+    const usageLogsData = usageLogs
     await setState((state) => {
       return {
         ...state,
         usageLogs: usageLogsData,
-        assignedToUser: assignedToUser,
-        assignedToOrganizationalUnit: assignedToOrganizationalUnit,
+        assignedToUser,
+        assignedToOrganizationalUnit,
         status: 'in_use'
       }
     })
 
-    let createUsage = {
-      usageLogs: usageLogs,
+    const createUsage = {
+      usageLogs,
       status: 'in_use',
-      assignedToUser: assignedToUser,
-      assignedToOrganizationalUnit: assignedToOrganizationalUnit
+      assignedToUser,
+      assignedToOrganizationalUnit
     }
     if (props.assetId && !data.calendar) {
       await props.createUsage(props.assetId, createUsage)
@@ -150,8 +151,8 @@ function UsageLogTab(props) {
     if (props.id == `edit_usage${props.assetId}`) {
       await props.handleAddUsage({
         usageLogs: usageLogsData,
-        assignedToUser: assignedToUser,
-        assignedToOrganizationalUnit: assignedToOrganizationalUnit
+        assignedToUser,
+        assignedToOrganizationalUnit
       })
     } else {
       await props.handleAddUsage(usageLogsData, { status: 'in_use' })
@@ -164,7 +165,9 @@ function UsageLogTab(props) {
     if (usageLogs === undefined) {
       usageLogs = []
     }
-    let assignedToUser, assignedToOrganizationalUnit, updateUsage
+    let assignedToUser
+    let assignedToOrganizationalUnit
+    let updateUsage
     usageLogs[data.index] = data
     if (data.index == usageLogs.length - 1 && (state.assignedToUser || state.assignedToOrganizationalUnit)) {
       assignedToUser = data.usedByUser ? data.usedByUser : null
@@ -177,9 +180,9 @@ function UsageLogTab(props) {
     await setState((state) => {
       return {
         ...state,
-        usageLogs: usageLogs,
-        assignedToUser: assignedToUser,
-        assignedToOrganizationalUnit: assignedToOrganizationalUnit
+        usageLogs,
+        assignedToUser,
+        assignedToOrganizationalUnit
       }
     })
 
@@ -190,15 +193,15 @@ function UsageLogTab(props) {
       description: data.description,
       endDate: data.endDate,
       startDate: data.startDate,
-      assignedToUser: assignedToUser,
-      assignedToOrganizationalUnit: assignedToOrganizationalUnit
+      assignedToUser,
+      assignedToOrganizationalUnit
     }
     if (props.assetId) {
       await props.updateUsage(props.assetId, updateUsage)
       await props.handleEditUsage({
-        usageLogs: usageLogs,
-        assignedToUser: assignedToUser,
-        assignedToOrganizationalUnit: assignedToOrganizationalUnit
+        usageLogs,
+        assignedToUser,
+        assignedToOrganizationalUnit
       })
     } else {
       await props.handleEditUsage(usageLogs)
@@ -207,11 +210,11 @@ function UsageLogTab(props) {
 
   // Function bắt sự kiện xoá thông tin phiếu
   const handleDeleteUsage = async (index) => {
-    var { usageLogs } = state
+    let { usageLogs } = state
     if (usageLogs === undefined) {
       usageLogs = []
     }
-    var data = usageLogs[index]
+    const data = usageLogs[index]
     usageLogs.splice(index, 1)
     await setState((state) => {
       return {
@@ -225,8 +228,8 @@ function UsageLogTab(props) {
   }
 
   const handleRecallAsset = async () => {
-    let assetId = props.assetId
-    let assignedToUser = props.assignedToUser
+    const { assetId } = props
+    const { assignedToUser } = props
 
     await setState({
       ...state,
@@ -234,7 +237,7 @@ function UsageLogTab(props) {
       assignedToOrganizationalUnit: null,
       status: 'ready_to_use'
     })
-    let data = {
+    const data = {
       usageId: assignedToUser
     }
 
@@ -266,8 +269,8 @@ function UsageLogTab(props) {
   const { id, assetId } = props
   const { translate, user, department } = props
   const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse, managedBy } = state
-  var userlist = user.list,
-    departmentlist = department.list
+  const userlist = user.list
+  const departmentlist = department.list
   return (
     <div id={id} className='tab-pane'>
       <div className='box-body qlcv'>

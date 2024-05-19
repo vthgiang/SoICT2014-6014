@@ -1,9 +1,10 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
+import qs from 'qs'
+import Swal from 'sweetalert2'
 import {
-  DataTableSetting,
   DatePicker,
   DeleteNotification,
   PaginateBar,
@@ -20,10 +21,8 @@ import { UserActions } from '../../../../super-admin/user/redux/actions'
 import { RoleActions } from '../../../../super-admin/role/redux/actions'
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent'
-import qs from 'qs'
 import { getFormatDateFromTime, getPropertyOfValue } from '../../../../../helpers/stringMethod'
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
-import Swal from 'sweetalert2'
 import { AssetLotManagerActions } from '../../asset-lot/redux/actions'
 
 const getAssetName = (listAsset, idAsset) => {
@@ -130,16 +129,16 @@ function AssetManagement(props) {
 
   // Function format ngày hiện tại thành dạnh mm-yyyy
   const formatDate2 = (date) => {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     return [month, year].join('-')
@@ -148,24 +147,23 @@ function AssetManagement(props) {
   // Function format dữ liệu Date thành string
   const formatDate = (date, monthYear = false) => {
     if (!date) return null
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
 
   // Bắt sự kiện click xem thông tin tài sản
@@ -364,7 +362,7 @@ function AssetManagement(props) {
 
   // Bắt sự kiện chuyển trang
   const setPage = async (pageNumber) => {
-    let page = (pageNumber - 1) * state.limit
+    const page = (pageNumber - 1) * state.limit
     await setState({
       ...state,
       page: parseInt(page)
@@ -374,14 +372,14 @@ function AssetManagement(props) {
   }
 
   const getAssetTypesList = (types) => {
-    let list = types.reduce((list, cur) => {
-      return list ? list + ', ' + cur.typeName : cur.typeName
+    const list = types.reduce((list, cur) => {
+      return list ? `${list}, ${cur.typeName}` : cur.typeName
     }, '')
     return list
   }
 
   const getNumber = (number) => {
-    return number ? number : ''
+    return number || ''
   }
 
   const getAssetDepreciationType = (type) => {
@@ -402,20 +400,22 @@ function AssetManagement(props) {
     const { translate } = props
     if (Number(type) === 1) {
       return translate('asset.general_information.damaged')
-    } else if (Number(type) === 2) {
-      return translate('asset.general_information.lost')
-    } else {
-      return null
     }
+    if (Number(type) === 2) {
+      return translate('asset.general_information.lost')
+    }
+    return null
   }
 
   const getIncidentStatus = (status) => {
     const { translate } = props
     if (Number(status) === 1) {
       return translate('asset.general_information.waiting')
-    } else if (Number(status) === 2) {
+    }
+    if (Number(status) === 2) {
       return translate('asset.general_information.processed')
-    } else return null
+    }
+    return null
   }
 
   const gettDisposalType = (type) => {
@@ -423,23 +423,24 @@ function AssetManagement(props) {
 
     if (type === '1') {
       return translate('asset.asset_info.destruction')
-    } else if (type === '2') {
-      return translate('asset.asset_info.sale')
-    } else if (type === '3') {
-      return translate('asset.asset_info.give')
-    } else {
-      return ''
     }
+    if (type === '2') {
+      return translate('asset.asset_info.sale')
+    }
+    if (type === '3') {
+      return translate('asset.asset_info.give')
+    }
+    return ''
   }
 
   const getCostNumber = (number) => {
     if (!number) return ''
-    else return new Intl.NumberFormat().format(number)
+    return new Intl.NumberFormat().format(number)
   }
 
   const convertDataToExportData = (data, assettypelist, userlist) => {
     const organizationalUnitList = props.department.list
-    let fileName = 'File export tài sản'
+    const fileName = 'File export tài sản'
     let length = 0
     let exportThongTinChung = []
     let exportKhauHao = []
@@ -451,18 +452,18 @@ function AssetManagement(props) {
     if (data) {
       data.forEach((x, index) => {
         // Dữ liệu tab thông tin chung
-        let code = x.code
-        let name = x.assetName
-        let description = x.description
-        let group = convertGroupAsset(x.group)
-        let type = x.assetType && getAssetTypesList(x.assetType)
-        let purchaseDate = getFormatDateFromTime(x.purchaseDate, 'dd-mm-yyyy')
-        let disposalDate = getFormatDateFromTime(x.disposalDate, 'dd-mm-yyyy')
-        let manager = getPropertyOfValue(x.managedBy, 'email', false, userlist)
-        let assigner = getPropertyOfValue(x.assignedToUser, 'email', false, userlist)
-        let status = formatStatus(x.status)
+        const { code } = x
+        const name = x.assetName
+        const { description } = x
+        const group = convertGroupAsset(x.group)
+        const type = x.assetType && getAssetTypesList(x.assetType)
+        const purchaseDate = getFormatDateFromTime(x.purchaseDate, 'dd-mm-yyyy')
+        const disposalDate = getFormatDateFromTime(x.disposalDate, 'dd-mm-yyyy')
+        const manager = getPropertyOfValue(x.managedBy, 'email', false, userlist)
+        const assigner = getPropertyOfValue(x.assignedToUser, 'email', false, userlist)
+        const status = formatStatus(x.status)
         length = x.detailInfo && x.detailInfo.length
-        let info = length
+        const info = length
           ? x.detailInfo.map((item, index) => {
               return {
                 infoName: item.nameField,
@@ -470,8 +471,8 @@ function AssetManagement(props) {
               }
             })
           : ''
-        let infoName = info[0] ? info[0].infoName : ''
-        let value = length ? info[0].value : ''
+        const infoName = info[0] ? info[0].infoName : ''
+        const value = length ? info[0].value : ''
 
         exportThongTinChung = [
           ...exportThongTinChung,
@@ -515,11 +516,11 @@ function AssetManagement(props) {
         }
 
         // Dữ liệu tab khấu hao
-        let cost = getCostNumber(x.cost)
-        let residualValue = getCostNumber(x.residualValue)
-        let usefulLife = getNumber(x.usefulLife)
-        let startDepreciation = getFormatDateFromTime(x.startDepreciation, 'dd-mm-yyyy')
-        let depreciationType = getAssetDepreciationType(x.depreciationType)
+        const cost = getCostNumber(x.cost)
+        const residualValue = getCostNumber(x.residualValue)
+        const usefulLife = getNumber(x.usefulLife)
+        const startDepreciation = getFormatDateFromTime(x.startDepreciation, 'dd-mm-yyyy')
+        const depreciationType = getAssetDepreciationType(x.depreciationType)
         exportKhauHao = [
           ...exportKhauHao,
           {
@@ -535,7 +536,7 @@ function AssetManagement(props) {
         ]
 
         // Dữ liệu tab thông tin sử dụng
-        let dataKH = x.usageLogs
+        const dataKH = x.usageLogs
           ? x.usageLogs.map((use) => {
               return {
                 index: index + 1,
@@ -552,7 +553,7 @@ function AssetManagement(props) {
         exportSuDung = dataKH ? [...exportSuDung, ...dataKH] : [...exportSuDung]
 
         // Dữ liệu tab sự cố
-        let dataSuCo = x.incidentLogs
+        const dataSuCo = x.incidentLogs
           ? x.incidentLogs.map((incident) => {
               return {
                 index: index + 1,
@@ -570,7 +571,7 @@ function AssetManagement(props) {
         exportSuCo = dataSuCo ? [...exportSuCo, ...dataSuCo] : [...exportSuCo]
 
         // Dữ liệu tab bảo trì - sửa chữa
-        let dataBTSC = x.maintainanceLogs
+        const dataBTSC = x.maintainanceLogs
           ? x.maintainanceLogs.map((mt) => {
               return {
                 index: index + 1,
@@ -590,9 +591,9 @@ function AssetManagement(props) {
         exportBaoTriSuaChua = dataBTSC ? [...exportBaoTriSuaChua, ...dataBTSC] : [...exportBaoTriSuaChua]
 
         // Dữ liệu tab thanh lý
-        let disposalDesc = x.disposalDesc
-        let disposalType = x.disposalType
-        let disposalCost = getCostNumber(x.disposalCost)
+        const { disposalDesc } = x
+        const { disposalType } = x
+        const disposalCost = getCostNumber(x.disposalCost)
 
         exportThanhLy = [
           ...exportThanhLy,
@@ -609,8 +610,8 @@ function AssetManagement(props) {
       })
     }
 
-    let exportData = {
-      fileName: fileName,
+    const exportData = {
+      fileName,
       dataSheets: [
         // 1. Sheet thông tin sử dụng
         {
@@ -773,9 +774,9 @@ function AssetManagement(props) {
   }
 
   const getAssetTypes = () => {
-    let { assetType } = props
-    let assetTypeName = assetType && assetType.listAssetTypes
-    let typeArr = []
+    const { assetType } = props
+    const assetTypeName = assetType && assetType.listAssetTypes
+    const typeArr = []
     assetTypeName.map((item) => {
       typeArr.push({
         _id: item._id,
@@ -788,9 +789,9 @@ function AssetManagement(props) {
   }
 
   const getDepartment = () => {
-    let { department } = props
-    let listUnit = department && department.list
-    let unitArr = []
+    const { department } = props
+    const listUnit = department && department.list
+    const unitArr = []
 
     listUnit.map((item) => {
       unitArr.push({
@@ -803,9 +804,9 @@ function AssetManagement(props) {
   }
 
   const getAssetLot = () => {
-    let { assetLotManager } = props
-    let listLot = assetLotManager && assetLotManager.listAssetLots
-    let lotArr = []
+    const { assetLotManager } = props
+    const listLot = assetLotManager && assetLotManager.listAssetLots
+    const lotArr = []
 
     listLot.map((item) => {
       lotArr.push({
@@ -821,13 +822,17 @@ function AssetManagement(props) {
     const { translate } = props
     if (group === 'building') {
       return translate('asset.dashboard.building')
-    } else if (group === 'vehicle') {
+    }
+    if (group === 'vehicle') {
       return translate('asset.asset_info.vehicle')
-    } else if (group === 'machine') {
+    }
+    if (group === 'machine') {
       return translate('asset.dashboard.machine')
-    } else if (group === 'other') {
+    }
+    if (group === 'other') {
       return translate('asset.dashboard.other')
-    } else return null
+    }
+    return null
   }
 
   const formatStatus = (status) => {
@@ -835,46 +840,48 @@ function AssetManagement(props) {
 
     if (status === 'ready_to_use') {
       return translate('asset.general_information.ready_use')
-    } else if (status === 'in_use') {
-      return translate('asset.general_information.using')
-    } else if (status === 'broken') {
-      return translate('asset.general_information.damaged')
-    } else if (status === 'lost') {
-      return translate('asset.general_information.lost')
-    } else if (status === 'disposed') {
-      return translate('asset.general_information.disposal')
-    } else {
-      return ''
     }
+    if (status === 'in_use') {
+      return translate('asset.general_information.using')
+    }
+    if (status === 'broken') {
+      return translate('asset.general_information.damaged')
+    }
+    if (status === 'lost') {
+      return translate('asset.general_information.lost')
+    }
+    if (status === 'disposed') {
+      return translate('asset.general_information.disposal')
+    }
+    return ''
   }
 
   const formatDisposalDate = (disposalDate, status) => {
     const { translate } = props
     if (status === 'disposed') {
       if (disposalDate) return formatDate(disposalDate)
-      else return translate('asset.general_information.not_disposal_date')
-    } else {
-      return translate('asset.general_information.not_disposal')
+      return translate('asset.general_information.not_disposal_date')
     }
+    return translate('asset.general_information.not_disposal')
   }
 
-  var lists = '',
-    exportData
-  var userlist = user.list,
-    departmentlist = department.list,
-    assetLotList = assetLotManager.listAssetLots
-  var assettypelist = assetType.listAssetTypes
-  let typeArr = getAssetTypes()
-  let dataSelectBox = getDepartment()
-  let assetTypeName = state.assetType ? state.assetType : []
+  let lists = ''
+  let exportData
+  const userlist = user.list
+  const departmentlist = department.list
+  const assetLotList = assetLotManager.listAssetLots
+  const assettypelist = assetType.listAssetTypes
+  const typeArr = getAssetTypes()
+  const dataSelectBox = getDepartment()
+  const assetTypeName = state.assetType ? state.assetType : []
 
   if (assetsManager.isLoading === false) {
     lists = assetsManager.listAssets
   }
 
-  let assetbuilding = assetsManager && assetsManager.buildingAssets
-  let assetbuildinglist = assetbuilding && assetbuilding.list
-  let buildingList =
+  const assetbuilding = assetsManager && assetsManager.buildingAssets
+  const assetbuildinglist = assetbuilding && assetbuilding.list
+  const buildingList =
     assetbuildinglist &&
     assetbuildinglist.map((node) => {
       return {
@@ -885,15 +892,15 @@ function AssetManagement(props) {
       }
     })
 
-  var pageTotal =
+  const pageTotal =
     assetsManager.totalList % limit === 0 ? parseInt(assetsManager.totalList / limit) : parseInt(assetsManager.totalList / limit + 1)
-  var currentPage = parseInt(page / limit + 1)
+  const currentPage = parseInt(page / limit + 1)
 
   if (userlist && lists && assettypelist) {
     exportData = convertDataToExportData(lists, assettypelist, userlist)
   }
   return (
-    <div className={isActive ? isActive : 'box'}>
+    <div className={isActive || 'box'}>
       <div className='box-body qlcv'>
         {/* Form thêm tài sản mới */}
         <div className='dropdown pull-right'>
@@ -966,7 +973,7 @@ function AssetManagement(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('asset.general_information.asset_group')}</label>
             <SelectMulti
-              id={`multiSelectGroupInManagement`}
+              id='multiSelectGroupInManagement'
               multiple='multiple'
               value={group}
               options={{
@@ -980,7 +987,7 @@ function AssetManagement(props) {
                 { value: 'machine', text: translate('asset.dashboard.machine') },
                 { value: 'other', text: translate('asset.dashboard.other') }
               ]}
-            ></SelectMulti>
+            />
           </div>
 
           {/* Loại tài sản */}
@@ -995,14 +1002,14 @@ function AssetManagement(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('page.status')}</label>
             <SelectMulti
-              id={`multiSelectStatus1`}
+              id='multiSelectStatus1'
               multiple='multiple'
               options={{
                 nonSelectedText: translate('page.non_status'),
                 allSelectedText: translate('asset.general_information.select_all_status')
               }}
               onChange={handleStatusChange}
-              value={status ? status : []}
+              value={status || []}
               items={[
                 { value: 'ready_to_use', text: translate('asset.general_information.ready_use') },
                 { value: 'in_use', text: translate('asset.general_information.using') },
@@ -1010,7 +1017,7 @@ function AssetManagement(props) {
                 { value: 'lost', text: translate('asset.general_information.lost') },
                 { value: 'disposed', text: translate('asset.general_information.disposal') }
               ]}
-            ></SelectMulti>
+            />
           </div>
 
           {/* Vị trí tài sản */}
@@ -1025,7 +1032,7 @@ function AssetManagement(props) {
           <div className='form-group'>
             <label>{translate('asset.general_information.organization_unit')}</label>
             <SelectMulti
-              id={`unitInManagement`}
+              id='unitInManagement'
               multiple='multiple'
               options={{
                 nonSelectedText: translate('asset.general_information.select_organization_unit'),
@@ -1053,7 +1060,7 @@ function AssetManagement(props) {
         </div>
         {advancedSearch && (
           <div className='form-inline'>
-            {/* Ngày nhập từ*/}
+            {/* Ngày nhập từ */}
             <div className='form-group'>
               <label className='form-control-static'>{translate('asset.general_information.purchase_date_start')}</label>
               <DatePicker
@@ -1064,7 +1071,7 @@ function AssetManagement(props) {
               />
             </div>
 
-            {/* Ngày nhập đến*/}
+            {/* Ngày nhập đến */}
             <div className='form-group'>
               <label className='form-control-static' style={{ padding: 0 }}>
                 {translate('asset.general_information.purchase_date_end')}
@@ -1102,7 +1109,7 @@ function AssetManagement(props) {
           <div className='form-group'>
             <label>{translate('asset.general_information.can_register')}</label>
             <SelectMulti
-              id={`typeRegisterForUseInManagement`}
+              id='typeRegisterForUseInManagement'
               className='form-control select2'
               multiple='multiple'
               value={typeRegisterForUse}
@@ -1146,7 +1153,7 @@ function AssetManagement(props) {
 
           {/* Nút tìm kiếm */}
           <div className='form-group'>
-            <label></label>
+            <label />
             <button
               type='button'
               className='btn btn-success'
@@ -1174,7 +1181,7 @@ function AssetManagement(props) {
           <div style={{ color: 'red' }}>
             <strong style={{ fontWeight: 600, paddingRight: 10 }}>{translate('asset.asset_info.asset_code_exist')}:</strong>
             {assetsManager.assetCodeError.map((item, index) => {
-              let seperator = index !== 0 ? ', ' : ''
+              const seperator = index !== 0 ? ', ' : ''
               return (
                 <span key={index}>
                   {seperator}
@@ -1228,7 +1235,7 @@ function AssetManagement(props) {
                   <td>
                     {x.assetType &&
                       x.assetType.length !== 0 &&
-                      x.assetType.map((type, index, arr) => (index !== arr.length - 1 ? type.typeName + ', ' : type.typeName))}
+                      x.assetType.map((type, index, arr) => (index !== arr.length - 1 ? `${type.typeName}, ` : type.typeName))}
                   </td>
                 ),
                 assetPurchaseDate: <td>{formatDate(x.purchaseDate)}</td>,
@@ -1260,7 +1267,7 @@ function AssetManagement(props) {
                       content={translate('asset.general_information.delete_info')}
                       data={{
                         id: x._id,
-                        info: x.code + ' - ' + x.assetName
+                        info: `${x.code} - ${x.assetName}`
                       }}
                       func={handleDeleteAnAsset}
                     />
@@ -1284,7 +1291,7 @@ function AssetManagement(props) {
         <PaginateBar
           display={assetsManager.listAssets ? assetsManager.listAssets.length : null}
           total={assetsManager.totalList ? assetsManager.totalList : null}
-          pageTotal={pageTotal ? pageTotal : 0}
+          pageTotal={pageTotal || 0}
           currentPage={currentPage}
           func={setPage}
         />
@@ -1329,7 +1336,7 @@ function AssetManagement(props) {
           disposalDesc={currentRowView.disposalDesc}
           archivedRecordNumber={currentRowView.archivedRecordNumber}
           files={currentRowView.documents}
-          linkPage={'management'}
+          linkPage='management'
         />
       )}
 
@@ -1379,7 +1386,7 @@ function AssetManagement(props) {
           incidentLogs={currentRow.incidentLogs}
           archivedRecordNumber={currentRow.archivedRecordNumber}
           files={currentRow.documents}
-          linkPage={'management'}
+          linkPage='management'
           page={page}
         />
       )}

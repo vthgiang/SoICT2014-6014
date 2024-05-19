@@ -46,6 +46,7 @@ module.exports = {
     'unused-imports/no-unused-imports': 'error',
     'no-underscore-dangle': 'off',
     'react/prop-types': 'off',
-    'react-hooks/exhaustive-deps': 'off'
+    'react-hooks/exhaustive-deps': 'off',
+    'jsx-a11y/label-has-associated-control': 'off'
   }
 }

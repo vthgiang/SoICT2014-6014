@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { BiddingPackageDetailForm } from '../../biddingPackageManagement/components/biddingPackageDetailForm'
 import { saveAs } from 'file-saver'
 import { Packer } from 'docx'
 import { bidsDocxCreate } from './bidsDocxCreator'
-import CreateBiddingContract from '../../../bidding-contract/component/createContract'
 
 function GeneralTab(props) {
   const [state, setState] = useState({
@@ -19,20 +17,20 @@ function GeneralTab(props) {
    */
   const formatDate = (date, monthYear = false) => {
     if (date) {
-      let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear()
+      const d = new Date(date)
+      let month = `${d.getMonth() + 1}`
+      let day = `${d.getDate()}`
+      const year = d.getFullYear()
 
-      if (month.length < 2) month = '0' + month
-      if (day.length < 2) day = '0' + day
+      if (month.length < 2) month = `0${month}`
+      if (day.length < 2) day = `0${day}`
 
       if (monthYear === true) {
         return [month, year].join('-')
-      } else return [day, month, year].join('-')
-    } else {
-      return date
+      }
+      return [day, month, year].join('-')
     }
+    return date
   }
 
   useEffect(() => {
@@ -166,31 +164,31 @@ function GeneralTab(props) {
           </div>
           <div className='row'>
             {/* Bên mới thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <strong>Bên mời thầu&emsp; </strong>
               {customer}
             </div>
             {/* Dự toán gói thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <strong>Dự toán gói thầu&emsp; </strong>
               {price}
             </div>
           </div>
           <div className='row'>
             {/* Địa điểm mở thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <strong>Địa điểm mở thầu&emsp; </strong>
               {openLocal}
             </div>
             {/* Địa điểm nhận thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <strong>Địa điểm nhận thầu&emsp; </strong>
               {receiveLocal}
             </div>
           </div>
           <div className='row'>
             {/* Mô tả */}
-            <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
               <strong htmlFor='emailCompany'>Mô tả</strong>
               &emsp; {description}
             </div>

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import dayjs from 'dayjs'
@@ -70,51 +70,51 @@ function GeneralTab(props) {
 
   return (
     <div id={props.id} className='tab-pane active'>
-      <div class='row'>
+      <div className='row'>
         {/* Mã ủy quyền */}
-        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+        <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
           <label>{translate('manage_delegation.delegationName')}:</label>
           <span> {delegationName}</span>
         </div>
 
         {/* Mô tả */}
-        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+        <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
           <label>{translate('manage_delegation.description')}:</label>
           <span> {description}</span>
         </div>
       </div>
 
       {delegateTask ? (
-        <div class='row'>
-          <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+        <div className='row'>
+          <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
             <label>{translate('manage_delegation.delegateObjectTask')}:</label>
             <span> {delegateTask.name}</span>
           </div>
         </div>
       ) : null}
-      <div class='row'>
-        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+      <div className='row'>
+        <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
           {delegateRole ? (
-            <React.Fragment>
+            <>
               <label>{translate('manage_delegation.delegate_role')}:</label>
               <span> {delegateRole?.name}</span>
-            </React.Fragment>
+            </>
           ) : (
-            <React.Fragment>
+            <>
               <label>{translate('manage_delegation.delegateObjectTaskRole')}:</label>
-              <span> {delegateTaskRoles ? delegateTaskRoles.map((r) => translate('task.task_management.' + r)).join(', ') : ''}</span>
-            </React.Fragment>
+              <span> {delegateTaskRoles ? delegateTaskRoles.map((r) => translate(`task.task_management.${r}`)).join(', ') : ''}</span>
+            </>
           )}
         </div>
 
-        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+        <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
           <label>{forReceive ? translate('manage_delegation.delegator') : translate('manage_delegation.delegate_receiver')}:</label>
           <span> {forReceive ? delegator?.name : delegatee?.name}</span>
         </div>
       </div>
 
-      <div class='row'>
-        <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+      <div className='row'>
+        <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
           <label>{translate('manage_delegation.delegation_period')}:</label>
           <span>
             {' '}
@@ -128,15 +128,15 @@ function GeneralTab(props) {
         </div>
       </div>
 
-      <div class='row'>
-        <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+      <div className='row'>
+        <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
           <label>{translate('manage_delegation.delegate_policy')}:</label>
           <span> {delegatePolicy?.policyName}</span>
         </div>
       </div>
 
-      <div class='row'>
-        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+      <div className='row'>
+        <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
           <label>{translate('manage_delegation.delegateStatus')}:</label>
           <span style={{ fontWeight: 600 }}>
             {' '}
@@ -144,23 +144,23 @@ function GeneralTab(props) {
           </span>
         </div>
         {revokeReason && (
-          <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+          <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
             <label>{translate('manage_delegation.revoke_reason')}:</label>
             <span> {revokeReason}</span>
           </div>
         )}
       </div>
       {declineReason && (
-        <div class='row'>
-          <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+        <div className='row'>
+          <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
             <label>{translate('manage_delegation.reject_reason')}:</label>
             <span> {declineReason}</span>
           </div>
         </div>
       )}
       {delegatePrivileges && delegatePrivileges.length > 0 && (
-        <div class='row'>
-          <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+        <div className='row'>
+          <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
             <label>{translate('manage_delegation.delegation_allowed_links')}:</label>
             <table className='table table-hover table-bordered detail-policy-attribute-table not-sort'>
               <thead>
