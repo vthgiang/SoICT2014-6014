@@ -1,20 +1,6 @@
 import { NotificationServices } from './services'
 import { NotificationConstants } from './constants'
 
-export const NotificationActions = {
-  getAllManualNotifications,
-  paginateManualNotifications,
-  getAllNotifications,
-  paginateNotifications,
-  create,
-  readedNotification,
-  deleteManualNotification,
-  deleteNotification,
-  setLevelNotificationReceivered,
-  setLevelNotificationSent,
-  receiveNotification
-}
-
 function getAllManualNotifications() {
   return (dispatch) => {
     dispatch({ type: NotificationConstants.GET_MANUAL_NOTIFICATIONS_REQUEST })
@@ -157,4 +143,18 @@ function receiveNotification(notification) {
       type: NotificationConstants.RECEIVE_NOTIFICATION_SUCCESS,
       payload: notification
     })
+}
+
+export const NotificationActions = {
+  getAllManualNotifications,
+  paginateManualNotifications,
+  getAllNotifications,
+  paginateNotifications,
+  create,
+  readedNotification,
+  deleteManualNotification,
+  deleteNotification,
+  setLevelNotificationReceivered,
+  setLevelNotificationSent,
+  receiveNotification
 }

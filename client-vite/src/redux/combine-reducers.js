@@ -64,6 +64,9 @@ import { KPIPersonalManager } from '../modules/kpi/employee/management/redux/red
 import { kpimembers } from '../modules/kpi/evaluation/employee-evaluation/redux/reducers'
 import { tasktemplates } from '../modules/task/task-template/redux/reducers'
 
+// kpi allocation
+import { configManagementReducer } from '../modules/kpi/kpi-allocation/config-management/redux/reducers'
+
 import { dashboardEvaluationEmployeeKpiSet } from '../modules/kpi/evaluation/dashboard/redux/reducers'
 
 import { rootRoles } from '../modules/system-admin/root-role/redux/reducers'
@@ -72,27 +75,27 @@ import { tasks } from '../modules/task/task-management/redux/reducers'
 import { performtasks } from '../modules/task/task-perform/redux/reducers'
 import { taskProcess } from '../modules/task/task-process/redux/reducers'
 
-//asset
+// asset
 import { assetsManager } from '../modules/asset/admin/asset-information/redux/reducers'
 import { assetType } from '../modules/asset/admin/asset-type/redux/reducers'
 import { incidentManager } from '../modules/asset/admin/incident/redux/reducers'
 import { mintainanceManager } from '../modules/asset/admin/maintainance/redux/reducers'
 import { recommendProcure } from '../modules/asset/user/purchase-request/redux/reducers'
 import { recommendDistribute } from '../modules/asset/user/use-request/redux/reducers'
-//asset lot
+// asset lot
 import { assetLotManager } from '../modules/asset/admin/asset-lot/redux/reducers'
 
-//supplies
+// supplies
 import { suppliesReducer } from '../modules/supplies/admin/supplies/redux/reducers'
 import { suppliesDashboardReducer } from '../modules/supplies/admin/supplies-dashboard/redux/reducers'
 import { purchaseInvoiceReducer } from '../modules/supplies/admin/purchase-invoice/redux/reducers'
 import { allocationHistoryReducer } from '../modules/supplies/admin/allocation-history/redux/reducers'
 import { purchaseRequest } from '../modules/supplies/admin/purchase-request/redux/reducers'
 
-//report
+// report
 import { reports } from '../modules/report/task-report/redux/reducers'
 
-//warehouse
+// warehouse
 import { categories } from '../modules/production/common-production/category-management/redux/reducers'
 import { goods } from '../modules/production/common-production/good-management/redux/reducers'
 import { requestManagements } from '../modules/production/common-production/request-management/redux/reducers'
@@ -100,8 +103,8 @@ import { bills } from '../modules/production/warehouse/bill-management/redux/red
 import { binLocations } from '../modules/production/warehouse/bin-location-management/redux/reducers'
 import { lots } from '../modules/production/warehouse/inventory-management/redux/reducers'
 import { stocks } from '../modules/production/warehouse/stock-management/redux/reducers'
-import { storage } from "../modules/production/warehouse/storage-management/redux/reducers";
-//crm
+import { storage } from '../modules/production/warehouse/storage-management/redux/reducers'
+// crm
 import { cares } from '../modules/crm/care/redux/reducers'
 import { careTypes } from '../modules/crm/careType/redux/reducers'
 import { crmUnits } from '../modules/crm/crmUnitConfiguration/redux/reducers'
@@ -112,7 +115,7 @@ import { evaluations } from '../modules/crm/evaluation/redux/reducers'
 import { groups } from '../modules/crm/group/redux/reducers'
 import { loyalCustomers } from '../modules/crm/loyalCustomer/redux/reducers'
 import { status } from '../modules/crm/status/redux/reducers'
-//order
+// order
 import { bankAccounts } from '../modules/production/order/bank-account/redux/reducers'
 import { businessDepartments } from '../modules/production/order/business-department/redux/reducers'
 import { discounts } from '../modules/production/order/discount/redux/reducers'
@@ -123,24 +126,24 @@ import { salesOrders } from '../modules/production/order/sales-order/redux/reduc
 import { serviceLevelAgreements } from '../modules/production/order/service-level-agreement/redux/reducers'
 import { taxs } from '../modules/production/order/tax/redux/reducers'
 
-//plan
+// plan
 import { plan } from '../modules/plan/redux/reducers'
 
 // risk
-import { risk } from "../modules/risk/risk-list/redux/reducers";
-import { riskDistribution } from "../modules/risk/risk-dash-board/redux/reducers"
-import { taskPert } from "../modules/risk/process-analysis/redux/reducers"
-import { exprimentalData } from "../modules/exprimental-analysis/redux/reducers"
-import { riskResponsePlan } from "../modules/risk/risk-response-plan/redux/reducers"
-import { riskResponsePlanRequest } from "../modules/risk/change-process-request/redux/reducers"
+import { risk } from '../modules/risk/risk-list/redux/reducers'
+import { riskDistribution } from '../modules/risk/risk-dash-board/redux/reducers'
+import { taskPert } from '../modules/risk/process-analysis/redux/reducers'
+import { exprimentalData } from '../modules/exprimental-analysis/redux/reducers'
+import { riskResponsePlan } from '../modules/risk/risk-response-plan/redux/reducers'
+import { riskResponsePlanRequest } from '../modules/risk/change-process-request/redux/reducers'
 
-//example1
+// example1
 import { example1 } from '../modules/example/example1/redux/reducers'
 
-//example2
+// example2
 import { example2 } from '../modules/example/example2/redux/reducers'
 
-//example3
+// example3
 import { example3 } from '../modules/example/example3/redux/reducers'
 
 // Manufacturing
@@ -150,9 +153,9 @@ import { manufacturingPlan } from '../modules/production/manufacturing/manufactu
 import { manufacturingWorks } from '../modules/production/manufacturing/manufacturing-works/redux/reducers'
 import { purchasingRequest } from '../modules/production/manufacturing/purchasing-request/redux/reducers'
 import { workSchedule } from '../modules/production/manufacturing/work-schedule/redux/reducers'
-import { manufacturingProcess } from "../modules/production-manufacturing/manufacturing-process/redux/reducers";
-import { manufacturingLineTemplate } from "../modules/production-manufacturing/manage-chain/redux/reducers";
-import { issueReport } from "../modules/production-manufacturing/manage-issue/redux/reducers";
+import { manufacturingProcess } from '../modules/production-manufacturing/manufacturing-process/redux/reducers'
+import { manufacturingLineTemplate } from '../modules/production-manufacturing/manage-chain/redux/reducers'
+import { issueReport } from '../modules/production-manufacturing/manage-issue/redux/reducers'
 
 import { manufacturingQualityError } from '../modules/production/manufacturing/manufacturing-quality/manufacturing-quality-error/redux/reducers'
 import { manufacturingQualityCriteria } from '../modules/production/manufacturing/manufacturing-quality/manufacturing-quality-criteria/redux/reducers'
@@ -177,18 +180,18 @@ import { projectStatistic } from '../modules/project/statistic/redux/reducers'
 import { delegation } from '../modules/delegation/delegation-list/redux/reducers'
 import { delegationReceive } from '../modules/delegation/delegation-receive/redux/reducers'
 
-//Transportation Quản lý vận chuyển 2
-import { delivery } from '../modules/transportation/scheduling/delivery-plan/redux/reducers';
-import { vehicle } from '../modules/transportation/vehicle/redux/reducers';
-import { journey } from '../modules/transportation/scheduling/tracking-route/redux/reducers';
-import { shipper } from '../modules/transportation/shipper/redux/reducers';
-import { transportationCostManagement } from '../modules/transportation/cost/redux/reducers';
+// Transportation Quản lý vận chuyển 2
+import { delivery } from '../modules/transportation/scheduling/delivery-plan/redux/reducers'
+import { vehicle } from '../modules/transportation/vehicle/redux/reducers'
+import { journey } from '../modules/transportation/scheduling/tracking-route/redux/reducers'
+import { shipper } from '../modules/transportation/shipper/redux/reducers'
+import { transportationCostManagement } from '../modules/transportation/cost/redux/reducers'
 
 import { newsFeeds } from '../modules/home/redux/reducers'
 
 const appReducer = combineReducers({
   socket,
-  //system
+  // system
   systemSetting,
   company,
   systemLinks,
@@ -199,7 +202,7 @@ const appReducer = combineReducers({
   systemComponents,
   privilegeApis,
 
-  //admin
+  // admin
   system,
   user,
   role,
@@ -252,21 +255,26 @@ const appReducer = combineReducers({
   statisticsOfOrganizationalUnitKpi,
   kpitemplates,
 
-  //kpi-personal
+  // kpi-personal
   createEmployeeKpiSet,
   KPIPersonalManager,
   dashboardEmployeeKpiSet,
 
-  //tasktemplates
+  // tasktemplates
   tasktemplates,
 
-  //task-managemnet
+  // task-managemnet
   tasks,
   performtasks,
   taskProcess,
 
   // kpi members
   kpimembers,
+
+  // kpi allocation unit
+  kpiAllocation: combineReducers({
+    configManagementReducer
+  }),
 
   // asset
   recommendProcure,
@@ -275,10 +283,10 @@ const appReducer = combineReducers({
   assetsManager,
   incidentManager,
   mintainanceManager,
-  //asset lot
+  // asset lot
   assetLotManager,
 
-  //supplies
+  // supplies
   suppliesReducer,
   suppliesDashboardReducer,
   purchaseInvoiceReducer,
@@ -287,10 +295,10 @@ const appReducer = combineReducers({
 
   dashboardEvaluationEmployeeKpiSet,
 
-  //report
+  // report
   reports,
 
-  //warehouse
+  // warehouse
   stocks,
   categories,
   goods,
@@ -313,7 +321,7 @@ const appReducer = combineReducers({
     crmUnitKPI
   }),
 
-  //order
+  // order
   taxs,
   quotes,
   discounts,
@@ -324,20 +332,20 @@ const appReducer = combineReducers({
   payments,
   purchaseOrders,
 
-  //plane
+  // plane
   plan,
 
   // delegation
   delegation,
   delegationReceive,
 
-  //example1
+  // example1
   example1,
 
-  //example2
+  // example2
   example2,
 
-  //example3
+  // example3
   example3,
 
   // production - manufacturing works management
@@ -372,7 +380,7 @@ const appReducer = combineReducers({
   Intl,
 
   newsFeeds,
-  //risk
+  // risk
   risk,
   riskDistribution,
   taskPert,
@@ -380,12 +388,12 @@ const appReducer = combineReducers({
   riskResponsePlan,
   riskResponsePlanRequest,
 
-  //Production manufacturing
+  // Production manufacturing
   manufacturingProcess,
   manufacturingLineTemplate,
   issueReport,
 
-  //Transportation
+  // Transportation
   delivery,
   vehicle,
   journey,

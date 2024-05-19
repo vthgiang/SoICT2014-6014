@@ -1,6 +1,3 @@
-const { Role } = require('../models');
-const { connect } = require('../helpers/dbHelper');
-
 exports.links = [
     {
         url: '/system/companies-management',
@@ -367,6 +364,11 @@ exports.links = [
 
             // Employee KPI evaluate dashboard
             { path: '/kpi/evaluation/dashboard/employee-kpis', method: 'GET' },
+
+            // KPI Allocation
+            { path: '/kpi/allocation/config-setting', method: 'GET' },
+            { path: '/kpi/allocation/config-setting/:id', method: 'PATCH' },
+            { path: '/kpi/allocation/config-setting/:id', method: 'PUT' },
 
             // Task-management
             { path: '/task/tasks', method: 'GET' },

@@ -55,17 +55,11 @@ const {
     CoinRule,
     Quote,
     BusinessDepartment,
-    SalesOrder,
-    Payment,
-    PurchaseOrder,
 
     Customer,
     CustomerCare,
     CustomerCareType,
     CustomerGroup,
-    Product,
-    ProductCategory,
-    ProductDiscount,
     CustomerStatus,
     CustomerRankPoint,
     CustomerCareUnit,
@@ -89,6 +83,7 @@ const {
     Supplies,
     PurchaseInvoice,
     AllocationHistory,
+    AllocationConfigSetting,
 } = require('../models');
 const { ObjectId } = require('mongodb');
 
@@ -236,6 +231,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.TransportRequirement) TransportRequirement(db);
         if (!db.models.TransportPlan) TransportPlan(db);
         if (!db.models.TransportSchedule) TransportSchedule(db);
+        if (!db.models.AllocationConfigSetting) AllocationConfigSetting(db);
 
         // console.log("models_list", db.models);
     };
@@ -380,32 +376,32 @@ const initSampleCompanyDB = async () => {
             company: vnist._id,
         },
         {
-            name: "Nguyễn Tiến Đạt",
-            email: "datnt.vnist@gmail.com",
+            name: 'Nguyễn Tiến Đạt',
+            email: 'datnt.vnist@gmail.com',
             password: hash,
             company: vnist._id,
         },
         {
-            name: "Vũ Tiến Dũng",
-            email: "dungvt.vnist@gmail.com",
+            name: 'Vũ Tiến Dũng',
+            email: 'dungvt.vnist@gmail.com',
             password: hash,
             company: vnist._id,
         },
         {
-            name: "Nguyễn Đức Minh",
-            email: "minhmd.vnist@gmail.com",
+            name: 'Nguyễn Đức Minh',
+            email: 'minhmd.vnist@gmail.com',
             password: hash,
             company: vnist._id,
         },
         {
-            name: "Lê Đình Thiện",
-            email: "thienld.vnist@gmail.com",
+            name: 'Lê Đình Thiện',
+            email: 'thienld.vnist@gmail.com',
             password: hash,
             company: vnist._id,
         },
         {
-            name: "Phạm Tấn Hưng",
-            email: "hungpt.vnist@gmail.com",
+            name: 'Phạm Tấn Hưng',
+            email: 'hungpt.vnist@gmail.com',
             password: hash,
             company: vnist._id,
         },
@@ -563,31 +559,31 @@ const initSampleCompanyDB = async () => {
 
     const nvXuongNguyenLieu = await Role(vnistDB).create({
         parents: [roleEmployee._id, nvNhaMayThuocBot._id],
-        name: "Nhân viên xử lý nguyên liệu",
+        name: 'Nhân viên xử lý nguyên liệu',
         type: roleChucDanh._id,
     });
 
     const nvXuongXay = await Role(vnistDB).create({
         parents: [roleEmployee._id, nvNhaMayThuocBot._id],
-        name: "Nhân viên vận hành máy xay",
+        name: 'Nhân viên vận hành máy xay',
         type: roleChucDanh._id,
     });
 
     const nvXuongTron = await Role(vnistDB).create({
         parents: [roleEmployee._id, nvNhaMayThuocBot._id],
-        name: "Nhân viên vận hành máy trộn",
+        name: 'Nhân viên vận hành máy trộn',
         type: roleChucDanh._id,
     });
 
     const nvXuongNen = await Role(vnistDB).create({
         parents: [roleEmployee._id, nvNhaMayThuocBot._id],
-        name: "Nhân viên vận hành máy nén",
+        name: 'Nhân viên vận hành máy nén',
         type: roleChucDanh._id,
     });
 
     const nvXuongDongGoi = await Role(vnistDB).create({
         parents: [roleEmployee._id, nvNhaMayThuocBot._id],
-        name: "Nhân viên đóng gói",
+        name: 'Nhân viên đóng gói',
         type: roleChucDanh._id,
     });
 
@@ -826,7 +822,7 @@ const initSampleCompanyDB = async () => {
         {
             userId: users[22]._id,
             roleId: nvXuongTron._id,
-        }, 
+        },
         {
             // Nhân viên nén nhà máy thuôc bột
             userId: users[22]._id,
@@ -1073,14 +1069,7 @@ const initSampleCompanyDB = async () => {
         description: 'Nhà máy sản xuất thuốc bột của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
         managers: [quanDocNhaMayThuocBot._id],
         deputyManagers: [],
-        employees: [
-            nvNhaMayThuocBot._id, 
-            nvXuongNguyenLieu._id,
-            nvXuongXay._id,
-            nvXuongTron._id,
-            nvXuongNen._id,
-            nvXuongDongGoi._id
-        ],
+        employees: [nvNhaMayThuocBot._id, nvXuongNguyenLieu._id, nvXuongXay._id, nvXuongTron._id, nvXuongNen._id, nvXuongDongGoi._id],
         parent: Directorate._id,
     });
     const nhamaythuocnuoc = await OrganizationalUnit(vnistDB).create({
@@ -3160,175 +3149,154 @@ const initSampleCompanyDB = async () => {
         // Máy móc trong định tuyến sản xuất
         {
             company: vnist._id,
-            assetName: "Máy xay SGE",
-            code: "MX.0006",
-            group: "other",
-            usefulLife: "20",
+            assetName: 'Máy xay SGE',
+            code: 'MX.0006',
+            group: 'other',
+            usefulLife: '20',
             unitsProducedDuringTheYears: [
                 {
-                    month: new Date("2024-04-05"),
+                    month: new Date('2024-04-05'),
                     unitsProducedDuringTheYear: 20,
                 },
             ],
             estimatedTotalProduction: 500,
-            serial: "00006",
+            serial: '00006',
             assetType: [listAssetType[16]._id],
-            purchaseDate: new Date("2020-05-25"),
-            warrantyExpirationDate: new Date("2022-05-25"),
+            purchaseDate: new Date('2020-05-25'),
+            warrantyExpirationDate: new Date('2022-05-25'),
             managedBy: users[4]._id,
             assignedToUser: null,
             assignedToOrganizationalUnit: nhamaythuocbot._id,
-            status: "ready_to_use",
+            status: 'ready_to_use',
             typeRegisterForUse: 3,
-            description: "Máy xay nguyên liệu",
+            description: 'Máy xay nguyên liệu',
             detailInfo: [],
-            readByRoles: [
-                giamDoc._id,
-                roleAdmin._id,
-                roleSuperAdmin._id,
-                roleManager._id,
-                thanhVienBGĐ._id,
-                quanDocNhaMayThuocBot._id
-            ],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id, quanDocNhaMayThuocBot._id],
             usageLogs: [],
             maintainanceLogs: [],
             incidentLogs: [
                 {
-                    createdAt: new Date("2024-04-07"),
-                    dateOfIncident: new Date("2024-04-07"),
-                    description: "No description",
-                    incidentCode: "icd03",
-                    statusIncident: "1",
-                    type: "1",
-                    statusIncident: "1",
-                    updatedAt: new Date("2024-04-07"),
+                    createdAt: new Date('2024-04-07'),
+                    dateOfIncident: new Date('2024-04-07'),
+                    description: 'No description',
+                    incidentCode: 'icd03',
+                    statusIncident: '1',
+                    type: '1',
+                    statusIncident: '1',
+                    updatedAt: new Date('2024-04-07'),
                 },
             ],
             cost: 30000000,
             residualValue: 5000000,
-            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            startDepreciation: new Date('2020-05-25'), // thời gian bắt đầu trích khấu hao
             usefulLife: 16, // thời gian trích khấu hao
-            depreciationType: "straight_line", // thời gian trích khấu hao
+            depreciationType: 'straight_line', // thời gian trích khấu hao
             disposalDate: null,
-            disposalType: "2",
+            disposalType: '2',
             disposalCost: null,
-            disposalDesc: "",
+            disposalDesc: '',
             files: [],
         },
         {
             company: vnist._id,
-            assetName: "Máy trộn D20",
-            code: "MT.0007",
-            group: "other",
-            usefulLife: "20",
+            assetName: 'Máy trộn D20',
+            code: 'MT.0007',
+            group: 'other',
+            usefulLife: '20',
             unitsProducedDuringTheYears: [
                 {
-                    month: new Date("2024-04-05"),
+                    month: new Date('2024-04-05'),
                     unitsProducedDuringTheYear: 20,
                 },
             ],
             estimatedTotalProduction: 500,
-            serial: "00007",
+            serial: '00007',
             assetType: [listAssetType[16]._id],
-            purchaseDate: new Date("2020-05-25"),
-            warrantyExpirationDate: new Date("2022-05-25"),
+            purchaseDate: new Date('2020-05-25'),
+            warrantyExpirationDate: new Date('2022-05-25'),
             managedBy: users[4]._id,
             assignedToUser: null,
             assignedToOrganizationalUnit: nhamaythuocbot._id,
-            status: "ready_to_use",
+            status: 'ready_to_use',
             typeRegisterForUse: 3,
-            description: "Máy trộn nguyên liệu",
+            description: 'Máy trộn nguyên liệu',
             detailInfo: [],
-            readByRoles: [
-                giamDoc._id,
-                roleAdmin._id,
-                roleSuperAdmin._id,
-                roleManager._id,
-                thanhVienBGĐ._id,
-                quanDocNhaMayThuocBot._id
-            ],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id, quanDocNhaMayThuocBot._id],
             usageLogs: [],
             maintainanceLogs: [],
             incidentLogs: [
                 {
-                    createdAt: new Date("2024-04-07"),
-                    dateOfIncident: new Date("2024-04-07"),
-                    description: "No description",
-                    incidentCode: "icd03",
-                    statusIncident: "1",
-                    type: "1",
-                    statusIncident: "1",
-                    updatedAt: new Date("2024-04-07"),
+                    createdAt: new Date('2024-04-07'),
+                    dateOfIncident: new Date('2024-04-07'),
+                    description: 'No description',
+                    incidentCode: 'icd03',
+                    statusIncident: '1',
+                    type: '1',
+                    statusIncident: '1',
+                    updatedAt: new Date('2024-04-07'),
                 },
             ],
             cost: 30000000,
             residualValue: 5000000,
-            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            startDepreciation: new Date('2020-05-25'), // thời gian bắt đầu trích khấu hao
             usefulLife: 16, // thời gian trích khấu hao
-            depreciationType: "straight_line", // thời gian trích khấu hao
+            depreciationType: 'straight_line', // thời gian trích khấu hao
             disposalDate: null,
-            disposalType: "2",
+            disposalType: '2',
             disposalCost: null,
-            disposalDesc: "",
+            disposalDesc: '',
             files: [],
         },
         {
             company: vnist._id,
-            assetName: "Máy nén 1.5T",
-            code: "MN.0008",
-            group: "other",
-            usefulLife: "20",
+            assetName: 'Máy nén 1.5T',
+            code: 'MN.0008',
+            group: 'other',
+            usefulLife: '20',
             unitsProducedDuringTheYears: [
                 {
-                    month: new Date("2024-04-05"),
+                    month: new Date('2024-04-05'),
                     unitsProducedDuringTheYear: 20,
                 },
             ],
             estimatedTotalProduction: 500,
-            serial: "00008",
+            serial: '00008',
             assetType: [listAssetType[16]._id],
-            purchaseDate: new Date("2020-05-25"),
-            warrantyExpirationDate: new Date("2022-05-25"),
+            purchaseDate: new Date('2020-05-25'),
+            warrantyExpirationDate: new Date('2022-05-25'),
             managedBy: users[4]._id,
             assignedToUser: null,
             assignedToOrganizationalUnit: nhamaythuocbot._id,
-            status: "ready_to_use",
+            status: 'ready_to_use',
             typeRegisterForUse: 3,
-            description: "Máy nén thuốc viên",
+            description: 'Máy nén thuốc viên',
             detailInfo: [],
-            readByRoles: [
-                giamDoc._id,
-                roleAdmin._id,
-                roleSuperAdmin._id,
-                roleManager._id,
-                thanhVienBGĐ._id,
-                quanDocNhaMayThuocBot._id
-            ],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id, quanDocNhaMayThuocBot._id],
             usageLogs: [],
             maintainanceLogs: [],
             incidentLogs: [
                 {
-                    createdAt: new Date("2024-04-07"),
-                    dateOfIncident: new Date("2024-04-07"),
-                    description: "No description",
-                    incidentCode: "icd03",
-                    statusIncident: "1",
-                    type: "1",
-                    statusIncident: "1",
-                    updatedAt: new Date("2024-04-07"),
+                    createdAt: new Date('2024-04-07'),
+                    dateOfIncident: new Date('2024-04-07'),
+                    description: 'No description',
+                    incidentCode: 'icd03',
+                    statusIncident: '1',
+                    type: '1',
+                    statusIncident: '1',
+                    updatedAt: new Date('2024-04-07'),
                 },
             ],
             cost: 30000000,
             residualValue: 5000000,
-            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            startDepreciation: new Date('2020-05-25'), // thời gian bắt đầu trích khấu hao
             usefulLife: 16, // thời gian trích khấu hao
-            depreciationType: "straight_line", // thời gian trích khấu hao
+            depreciationType: 'straight_line', // thời gian trích khấu hao
             disposalDate: null,
-            disposalType: "2",
+            disposalType: '2',
             disposalCost: null,
-            disposalDesc: "",
+            disposalDesc: '',
             files: [],
-        }
+        },
     ]);
 
     var asset = await Asset(vnistDB).create({
@@ -4384,9 +4352,9 @@ const initSampleCompanyDB = async () => {
     // ****************** Tạo mẫu dữ liệu mẫu xưởng sản xuất********************
     const manufacturingMillsData = [
         {
-            code: "XSX202010000",
-            name: "Xưởng thuốc viên",
-            description: "Xưởng thuốc viên sản xuất tập trung của nhà máy sản xuất thuốc bột",
+            code: 'XSX202010000',
+            name: 'Xưởng thuốc viên',
+            description: 'Xưởng thuốc viên sản xuất tập trung của nhà máy sản xuất thuốc bột',
             manufacturingWorks: manufacturingWorks[0]._id,
             status: 1,
             teamLeader: users[14]._id,
@@ -4440,59 +4408,52 @@ const initSampleCompanyDB = async () => {
             teamLeader: users[9]._id,
         },
         {
-            code: "XSX202404007",
-            name: "Xưởng nguyên liệu",
-            description:
-                "Xưởng nguyên liệu của nhà máy sản thuốc bột",
+            code: 'XSX202404007',
+            name: 'Xưởng nguyên liệu',
+            description: 'Xưởng nguyên liệu của nhà máy sản thuốc bột',
             manufacturingWorks: manufacturingWorks[0]._id,
             status: 1,
             teamLeader: users[19]._id,
         },
         {
-            code: "XSX202404008",
-            name: "Xưởng xay nghiền",
-            description:
-                "Xưởng xay nghiền của nhà máy sản thuốc bột",
+            code: 'XSX202404008',
+            name: 'Xưởng xay nghiền',
+            description: 'Xưởng xay nghiền của nhà máy sản thuốc bột',
             manufacturingWorks: manufacturingWorks[0]._id,
             status: 1,
             teamLeader: users[19]._id,
         },
         {
-            code: "XSX202404009",
-            name: "Xưởng trộn",
-            description:
-                "Xưởng trộn nguyên liệu của nhà máy sản thuốc bột",
+            code: 'XSX202404009',
+            name: 'Xưởng trộn',
+            description: 'Xưởng trộn nguyên liệu của nhà máy sản thuốc bột',
             manufacturingWorks: manufacturingWorks[0]._id,
             status: 1,
             teamLeader: users[19]._id,
         },
         {
-            code: "XSX202404010",
-            name: "Xưởng nén hạt",
-            description:
-                "Xưởng nén hạt của nhà máy sản thuốc bột",
+            code: 'XSX202404010',
+            name: 'Xưởng nén hạt',
+            description: 'Xưởng nén hạt của nhà máy sản thuốc bột',
             manufacturingWorks: manufacturingWorks[0]._id,
             status: 1,
             teamLeader: users[19]._id,
         },
         {
-            code: "XSX202404011",
-            name: "Xưởng đóng gói",
-            description:
-                "Xưởng đóng gói của nhà máy sản thuốc bột",
+            code: 'XSX202404011',
+            name: 'Xưởng đóng gói',
+            description: 'Xưởng đóng gói của nhà máy sản thuốc bột',
             manufacturingWorks: manufacturingWorks[0]._id,
             status: 1,
             teamLeader: users[19]._id,
-        }
+        },
     ];
 
     const manufacturingMills = await ManufacturingMill(vnistDB).insertMany(manufacturingMillsData);
 
     console.log('Tạo dữ liệu xưởng sản xuất');
 
-    const manufacturingWorks0 = await ManufacturingWorks(vnistDB).findById(
-        manufacturingWorks[0]._id
-    );
+    const manufacturingWorks0 = await ManufacturingWorks(vnistDB).findById(manufacturingWorks[0]._id);
     manufacturingWorks0.manufacturingMills = [
         manufacturingMills[0]._id,
         manufacturingMills[1]._id,
@@ -5129,15 +5090,15 @@ const initSampleCompanyDB = async () => {
 
     const manufacturingPlansData = [
         {
-            code: "KHSX202400001",
-            manufacturingOrder: "5fa4fa483b746017bca19a3d",
+            code: 'KHSX202400001',
+            manufacturingOrder: '5fa4fa483b746017bca19a3d',
             manufacturingWorks: [manufacturingWorks[0]._id],
             goods: [
                 {
                     good: listProduct[0]._id,
                     quantity: 200,
                     orderedQuantity: 150,
-                }
+                },
             ],
 
             approvers: [
@@ -5146,17 +5107,17 @@ const initSampleCompanyDB = async () => {
                 },
             ],
             creator: users[13]._id,
-            startDate: "2024-04-16",
-            endDate: "2024-04-22",
-            description: "Kế hoạch sản xuất trong tháng 4 năm 2024",
+            startDate: '2024-04-16',
+            endDate: '2024-04-22',
+            description: 'Kế hoạch sản xuất trong tháng 4 năm 2024',
             logs: [
                 {
                     creator: users[13]._id,
-                    title: "Tạo kế hoạch sản xuất",
-                    description: "Tạo kế hoạch sản xuất KHSX202400001",
+                    title: 'Tạo kế hoạch sản xuất',
+                    description: 'Tạo kế hoạch sản xuất KHSX202400001',
                 },
             ],
-        }
+        },
     ];
 
     const manufacturingPlans = await ManufacturingPlan(vnistDB).insertMany(manufacturingPlansData);
@@ -5166,77 +5127,77 @@ const initSampleCompanyDB = async () => {
     // ****************** Tạo mẫu dữ liệu mẫu lệnh sản xuất sản xuất********************
     const manufacturingCommandData = [
         {
-            code: "LSX202400001",
+            code: 'LSX202400001',
             manufacturingPlan: manufacturingPlans[0]._id,
-            startDate: "2024-04-16",
-            endDate: "2024-04-20",
+            startDate: '2024-04-16',
+            endDate: '2024-04-20',
             startTurn: 1,
             endTurn: 3,
             good: listProduct[0],
             quantity: 20,
             workOrders: [
                 {
-                    operation: "Nhập nguyên liệu",
+                    operation: 'Nhập nguyên liệu',
                     manufacturingMill: manufacturingMills[7]._id,
-                    startDate: "2024-04-16",
+                    startDate: '2024-04-16',
                     startHour: 6,
-                    endDate: "2024-04-16",
+                    endDate: '2024-04-16',
                     endHour: 22,
                     responsibles: [users[19]._id],
-                    machines: []
+                    machines: [],
                 },
                 {
-                    operation: "Xay nguyên liệu",
+                    operation: 'Xay nguyên liệu',
                     manufacturingMill: manufacturingMills[8]._id,
-                    startDate: "2024-04-16",
+                    startDate: '2024-04-16',
                     startHour: 22,
-                    endDate: "2024-04-18",
+                    endDate: '2024-04-18',
                     endHour: 6,
                     responsibles: [users[20]._id],
-                    machines: [listAsset[6]._id]
+                    machines: [listAsset[6]._id],
                 },
                 {
-                    operation: "Trộn nguyên liệu",
-                    startDate: "2024-04-18",
+                    operation: 'Trộn nguyên liệu',
+                    startDate: '2024-04-18',
                     startHour: 6,
-                    endDate: "2024-04-19",
+                    endDate: '2024-04-19',
                     endHour: 6,
                     manufacturingMill: manufacturingMills[9]._id,
                     responsibles: [users[21]._id],
-                    machines: [listAsset[7]._id]
+                    machines: [listAsset[7]._id],
                 },
                 {
-                    operation: "Nén hạt",
-                    startDate: "2024-04-19",
+                    operation: 'Nén hạt',
+                    startDate: '2024-04-19',
                     startHour: 6,
-                    endDate: "2024-04-20",
+                    endDate: '2024-04-20',
                     endHour: 14,
                     manufacturingMill: manufacturingMills[10]._id,
                     responsibles: [users[22]._id],
-                    machines: [listAsset[8]._id]
+                    machines: [listAsset[8]._id],
                 },
                 {
-                    operation: "Đóng gói",
-                    startDate: "2024-04-20",
+                    operation: 'Đóng gói',
+                    startDate: '2024-04-20',
                     startHour: 14,
-                    endDate: "2024-04-21",
+                    endDate: '2024-04-21',
                     endHour: 6,
                     manufacturingMill: manufacturingMills[11]._id,
                     responsibles: [users[23]._id],
-                }
+                },
             ],
             qualityControlStaffs: [
                 {
                     staff: users[0]._id,
-                    time: new Date("2024-04-20 6:00:00"),
+                    time: new Date('2024-04-20 6:00:00'),
                     status: 3,
                 },
             ],
             status: 3,
             creator: users[13]._id,
             accountables: [users[11]._id, users[0]._id],
-            description: "Lệnh sản xuất đường ACK của nhà máy sản xuất thuốc bột",
-        }
+            description: 'Lệnh sản xuất đường ACK của nhà máy sản xuất thuốc bột',
+        },
     ];
 
     const manufacturingCommands = await ManufacturingCommand(vnistDB).insertMany(manufacturingCommandData);
@@ -5267,80 +5228,74 @@ const initSampleCompanyDB = async () => {
     const workScheduleData = [
         {
             manufacturingMill: manufacturingMills[7]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array31days, array31days, array31days],
         },
         {
             manufacturingMill: manufacturingMills[8]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array31days, array31days, array31days],
         },
         {
             manufacturingMill: manufacturingMills[9]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array31days, array31days, array31days],
         },
         {
             manufacturingMill: manufacturingMills[10]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array31days, array31days, array31days],
         },
         {
             manufacturingMill: manufacturingMills[11]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array31days, array31days, array31days],
         },
         {
             user: users[19]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array30days, array30days, array30days],
         },
         {
             user: users[20]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array30days, array30days, array30days],
         },
         {
             user: users[21]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array30days, array30days, array30days],
         },
         {
             user: users[22]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array31days, array31days, array31days],
         },
         {
             user: users[23]._id,
-            month: "2024-04",
+            month: '2024-04',
             turns: [array31days, array31days, array31days],
-        }
+        },
     ];
 
     const workSchedules = await WorkSchedule(vnistDB).insertMany(workScheduleData);
 
     let workSchedule0 = await WorkSchedule(vnistDB).find({
         _id: {
-            $in: [
-                workSchedules[0]._id,
-                workSchedules[5]._id,
-            ],
+            $in: [workSchedules[0]._id, workSchedules[5]._id],
         },
     });
 
     for (let i = 0; i < workSchedule0.length; i++) {
         workSchedule0[i].turns[0][15] = manufacturingCommands[0]._id;
         workSchedule0[i].turns[1][15] = manufacturingCommands[0]._id;
-        await workSchedule0[i].markModified("turns");
+        await workSchedule0[i].markModified('turns');
         await workSchedule0[i].save();
     }
 
     let workSchedule1 = await WorkSchedule(vnistDB).find({
         _id: {
-            $in: [
-                workSchedules[1]._id,
-                workSchedules[6]._id,
-            ],
+            $in: [workSchedules[1]._id, workSchedules[6]._id],
         },
     });
     for (let i = 0; i < workSchedule0.length; i++) {
@@ -5349,16 +5304,13 @@ const initSampleCompanyDB = async () => {
         workSchedule1[i].turns[1][16] = manufacturingCommands[0]._id;
         workSchedule1[i].turns[2][16] = manufacturingCommands[0]._id;
 
-        await workSchedule1[i].markModified("turns");
+        await workSchedule1[i].markModified('turns');
         await workSchedule1[i].save();
     }
 
     let workSchedule2 = await WorkSchedule(vnistDB).find({
         _id: {
-            $in: [
-                workSchedules[2]._id,
-                workSchedules[7]._id,
-            ],
+            $in: [workSchedules[2]._id, workSchedules[7]._id],
         },
     });
     for (let i = 0; i < workSchedule0.length; i++) {
@@ -5366,16 +5318,13 @@ const initSampleCompanyDB = async () => {
         workSchedule2[i].turns[1][17] = manufacturingCommands[0]._id;
         workSchedule2[i].turns[2][17] = manufacturingCommands[0]._id;
 
-        await workSchedule2[i].markModified("turns");
+        await workSchedule2[i].markModified('turns');
         await workSchedule2[i].save();
     }
 
     let workSchedule3 = await WorkSchedule(vnistDB).find({
         _id: {
-            $in: [
-                workSchedules[3]._id,
-                workSchedules[8]._id,
-            ],
+            $in: [workSchedules[3]._id, workSchedules[8]._id],
         },
     });
 
@@ -5385,29 +5334,25 @@ const initSampleCompanyDB = async () => {
         workSchedule3[i].turns[2][18] = manufacturingCommands[0]._id;
         workSchedule3[i].turns[0][19] = manufacturingCommands[0]._id;
 
-        await workSchedule3[i].markModified("turns");
+        await workSchedule3[i].markModified('turns');
         await workSchedule3[i].save();
     }
 
     let workSchedule4 = await WorkSchedule(vnistDB).find({
         _id: {
-            $in: [
-                workSchedules[4]._id,
-                workSchedules[9]._id,
-            ],
+            $in: [workSchedules[4]._id, workSchedules[9]._id],
         },
     });
 
     for (let i = 0; i < workSchedule0.length; i++) {
         workSchedule4[i].turns[1][19] = manufacturingCommands[0]._id;
         workSchedule4[i].turns[2][19] = manufacturingCommands[0]._id;
-``
-        await workSchedule4[i].markModified("turns");
+        ``;
+        await workSchedule4[i].markModified('turns');
         await workSchedule4[i].save();
     }
 
-
-    console.log("Tạo dữ liệu lịch làm việc cho xưởng và công nhân");
+    console.log('Tạo dữ liệu lịch làm việc cho xưởng và công nhân');
 
     //************Tạo mẫu dữ liệu lô hàng******************* */
     console.log('Tạo mẫu dữ liệu lô hàng');
@@ -5515,7 +5460,7 @@ const initSampleCompanyDB = async () => {
             creator: users[0]._id,
             manufacturingCommand: manufacturingCommands[0]._id,
             productType: 2,
-        }
+        },
     ]);
     console.log('Tạo xong mẫu dữ liệu lô hàng');
 
@@ -5535,10 +5480,10 @@ const initSampleCompanyDB = async () => {
             },
             approver: users[1]._id,
             receiver: {
-                name: "Phạm Đại Tài",
-                phone: "0344213030",
-                email: "thangbao2698@gmail.com",
-                address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
+                name: 'Phạm Đại Tài',
+                phone: '0344213030',
+                email: 'thangbao2698@gmail.com',
+                address: 'Thuần Thiện - Can Lộc - Hà Tĩnh',
             },
             status: '2',
             timestamp: '02-06-2020',
@@ -5775,254 +5720,227 @@ const initSampleCompanyDB = async () => {
     // *********** Tạo mẫu dữ liệu tiêu chí kiểm tra chất lượng sản phẩm *********
     const manufacturingQualityCriteriaData = [
         {
-            code: "TC25032024",
-            name: "Tiêu chí kiểm định nén thuốc viên",
-            operation: "Nén viên",
+            code: 'TC25032024',
+            name: 'Tiêu chí kiểm định nén thuốc viên',
+            operation: 'Nén viên',
             goods: [listProduct[0]._id],
             checklist: [
                 {
-                    name: "Lực nén",
-                    method: "Máy đo lực nén",
-                    acceptedValue: "100N"
-                }, 
+                    name: 'Lực nén',
+                    method: 'Máy đo lực nén',
+                    acceptedValue: '100N',
+                },
                 {
-                    name: "Độ dày",
-                    method: "Thước đo độ dày",
-                    acceptedValue: "3mm",
-                }, 
+                    name: 'Độ dày',
+                    method: 'Thước đo độ dày',
+                    acceptedValue: '3mm',
+                },
                 {
-                    name: "Trọng lượng",
-                    method: "Cân",
-                    acceptedValue: "350mg"
-                }, 
+                    name: 'Trọng lượng',
+                    method: 'Cân',
+                    acceptedValue: '350mg',
+                },
                 {
-                    name: "Độ tan rã",
-                    method: "Máy kiểm tra độ tan rã",
-                    acceptedValue: "15p"
-                }
-            ],
-            status: 1,
-            creator: users[19]._id
-        }, 
-        {
-            code: "TC26032024",
-            name: "Tiêu chí kiểm định chia nguyên liệu",
-            operation: "Chia nguyên liệu",
-            products: [listProduct[0]._id],
-            checklist: [
-                {
-                    name: "Kích thước hạt",
-                    method: "Máy sàng hạt",
-                    acceptedValue: "Phù hợp với tiêu chuẩn"
-                }, 
-                {
-                    name: "Tỷ lệ phần trăm rây",
-                    method: "Máy sàng hạt",
-                    acceptedValue: "Phù hợp với tiêu chuẩn",
+                    name: 'Độ tan rã',
+                    method: 'Máy kiểm tra độ tan rã',
+                    acceptedValue: '15p',
                 },
             ],
             status: 1,
             creator: users[19]._id,
-        }, 
+        },
         {
-            code: "TC27032024",
-            name: "Tiêu chí kiểm định trộn nguyên liệu",
-            operation: "Trộn nguyên liệu",
+            code: 'TC26032024',
+            name: 'Tiêu chí kiểm định chia nguyên liệu',
+            operation: 'Chia nguyên liệu',
             products: [listProduct[0]._id],
             checklist: [
                 {
-                    name: "Đồng nhất",
-                    method: "Kiểm tra bằng mắt",
-                    acceptedValue: "Phân bố đều"
-                }, 
+                    name: 'Kích thước hạt',
+                    method: 'Máy sàng hạt',
+                    acceptedValue: 'Phù hợp với tiêu chuẩn',
+                },
                 {
-                    name: "Độ ẩm",
-                    method: "Máy đo độ ẩm",
-                    acceptedValue: "<= 5%",
+                    name: 'Tỷ lệ phần trăm rây',
+                    method: 'Máy sàng hạt',
+                    acceptedValue: 'Phù hợp với tiêu chuẩn',
                 },
             ],
             status: 1,
             creator: users[19]._id,
-        }, 
+        },
         {
-            code: "TC28032024",
-            name: "Tiêu chí kiểm định bao phim thuốc",
-            operation: "Bao phim",
+            code: 'TC27032024',
+            name: 'Tiêu chí kiểm định trộn nguyên liệu',
+            operation: 'Trộn nguyên liệu',
             products: [listProduct[0]._id],
             checklist: [
                 {
-                    name: "Độ dày",
-                    method: "Máy đo độ dày",
-                    acceptedValue: "3mm - 5mm"
-                }, 
+                    name: 'Đồng nhất',
+                    method: 'Kiểm tra bằng mắt',
+                    acceptedValue: 'Phân bố đều',
+                },
                 {
-                    name: "Độ hòa tan",
-                    method: "Máy kiểm tra độ hòa tan",
-                    acceptedValue: "100S - 150S"
+                    name: 'Độ ẩm',
+                    method: 'Máy đo độ ẩm',
+                    acceptedValue: '<= 5%',
                 },
             ],
             status: 1,
             creator: users[19]._id,
-        }, {
-            code: "TC29032024",
-            name: "Tiêu chí kiểm định đóng gói sản phẩm",
-            operation: "Đóng gói",
-            products: [listProduct[0]._id],
-            checklist: [
-                {
-                    name: "Chất lượng bao bì",
-                    method: "Kiểm tra bằng mắt",
-                    acceptedValue: "100% không nứt, vỡ"
-                }, 
-                {
-                    name: "In ấn",
-                    method: "Kiểm tra bằng mắt",
-                    acceptedValue: "Rõ ràng, sắc nét"
-                },
-            ],
-            status: 1,
-            creator: users[19]._id
-        }, 
+        },
         {
-            code: "TC230032024",
-            name: "Tiêu chí kiểm định thành phẩm",
-            operation: "Kiểm tra thành phẩm",
+            code: 'TC28032024',
+            name: 'Tiêu chí kiểm định bao phim thuốc',
+            operation: 'Bao phim',
             products: [listProduct[0]._id],
             checklist: [
                 {
-                    name: "Hàm lượng hoạt chất",
-                    method: "HPLC, UV-Vis",
-                    acceptedValue: "Phù hợp với tiêu chuẩn"
-                }, 
+                    name: 'Độ dày',
+                    method: 'Máy đo độ dày',
+                    acceptedValue: '3mm - 5mm',
+                },
                 {
-                    name: "Độ pH",
-                    method: "Máy đo pH",
-                    acceptedValue: "Phù hợp với tiêu chuẩn"
+                    name: 'Độ hòa tan',
+                    method: 'Máy kiểm tra độ hòa tan',
+                    acceptedValue: '100S - 150S',
                 },
             ],
             status: 1,
-            creator: users[19]._id
-        }
-    ]
-    
-    const manufacturingQualityCriterias = await ManufacturingQualityCriteria(vnistDB).insertMany(
-        manufacturingQualityCriteriaData
-    )
-    
-    console.log("Tạo dữ liệu tiêu chí kiểm tra chất lượng sản phẩm")
+            creator: users[19]._id,
+        },
+        {
+            code: 'TC29032024',
+            name: 'Tiêu chí kiểm định đóng gói sản phẩm',
+            operation: 'Đóng gói',
+            products: [listProduct[0]._id],
+            checklist: [
+                {
+                    name: 'Chất lượng bao bì',
+                    method: 'Kiểm tra bằng mắt',
+                    acceptedValue: '100% không nứt, vỡ',
+                },
+                {
+                    name: 'In ấn',
+                    method: 'Kiểm tra bằng mắt',
+                    acceptedValue: 'Rõ ràng, sắc nét',
+                },
+            ],
+            status: 1,
+            creator: users[19]._id,
+        },
+        {
+            code: 'TC230032024',
+            name: 'Tiêu chí kiểm định thành phẩm',
+            operation: 'Kiểm tra thành phẩm',
+            products: [listProduct[0]._id],
+            checklist: [
+                {
+                    name: 'Hàm lượng hoạt chất',
+                    method: 'HPLC, UV-Vis',
+                    acceptedValue: 'Phù hợp với tiêu chuẩn',
+                },
+                {
+                    name: 'Độ pH',
+                    method: 'Máy đo pH',
+                    acceptedValue: 'Phù hợp với tiêu chuẩn',
+                },
+            ],
+            status: 1,
+            creator: users[19]._id,
+        },
+    ];
 
+    const manufacturingQualityCriterias = await ManufacturingQualityCriteria(vnistDB).insertMany(manufacturingQualityCriteriaData);
+
+    console.log('Tạo dữ liệu tiêu chí kiểm tra chất lượng sản phẩm');
 
     // ******************* Tạo mẫu dữ liệu lôi sản phẩm ************************
     const manufacturingQualityErrorData = [
         {
-            code: "LSP25032024",
-            group: "Nhân lực",
-            name: "Sai lệch hàm lượng hoạt chất",
-            description: "Hàm lượng hoạt chất trong sản phẩm không nằm trong phạm vi cho phép",
-            recognize: [
-                "Kết quả kiểm nghiệm không đạt yêu cầu",
-                "Khả năng ảnh hưởng đến hiệu quả và độ an toàn của thuốc"
-            ],
+            code: 'LSP25032024',
+            group: 'Nhân lực',
+            name: 'Sai lệch hàm lượng hoạt chất',
+            description: 'Hàm lượng hoạt chất trong sản phẩm không nằm trong phạm vi cho phép',
+            recognize: ['Kết quả kiểm nghiệm không đạt yêu cầu', 'Khả năng ảnh hưởng đến hiệu quả và độ an toàn của thuốc'],
             resolution: [
-                "Đào tạo lại nhân viên về quy trình cân nguyên liệu và trộn nguyên liệu",
-                "Nâng cao kỹ năng thao tác và tập trung của nhân viên"
+                'Đào tạo lại nhân viên về quy trình cân nguyên liệu và trộn nguyên liệu',
+                'Nâng cao kỹ năng thao tác và tập trung của nhân viên',
             ],
-            cause: "Nhân viên thao tác sai quy trình",
+            cause: 'Nhân viên thao tác sai quy trình',
             reporter: users[19]._id,
             aql: 0.15,
-        }, {
-            code: "LSP26032024",
-            group: "Nhân lực",
-            name: "Nhầm lẫn nguyên liệu",
-            description: "Các nguyên liệu bị nhầm trong cùng một nhóm",
-            recognize: [
-                "Sản phẩm có màu sắc, mùi vị khác thường"
-            ],
-            resolution: [
-                "Đào tạo lại nhân viên về cách nhận biết nguyên liệu",
-                "Làm rõ nhãn mác nguyên liệu"
-            ],
-            cause: "Nhãn mác nguyên liệu không rõ ràng",
+        },
+        {
+            code: 'LSP26032024',
+            group: 'Nhân lực',
+            name: 'Nhầm lẫn nguyên liệu',
+            description: 'Các nguyên liệu bị nhầm trong cùng một nhóm',
+            recognize: ['Sản phẩm có màu sắc, mùi vị khác thường'],
+            resolution: ['Đào tạo lại nhân viên về cách nhận biết nguyên liệu', 'Làm rõ nhãn mác nguyên liệu'],
+            cause: 'Nhãn mác nguyên liệu không rõ ràng',
             reporter: users[19]._id,
             aql: 0.05,
-            created_at: "16/03/2024"
-        }, {
-            code: "LSP27032024",
-            group: "Máy móc",
-            name: "Vi sinh vật vượt quá giới hạn cho phép",
-            description: "Số lượng vi sinh vật trong sản phẩm cao hơn mức cho phép",
-            recognize: [
-                "Kết quả kiểm nghiệm vi sinh vật không đạt yêu cầu"
-            ],
-            resolution: [
-                "Bảo trì, bảo dưỡng thiết bị sản xuất định kỳ.",
-                "Khử trùng thiết bị sản xuất bằng phương pháp hiệu quả"
-            ],
-            cause: "Thiết bị sản xuất không được khử trùng hoặc bảo trì đúng cách",
+            created_at: '16/03/2024',
+        },
+        {
+            code: 'LSP27032024',
+            group: 'Máy móc',
+            name: 'Vi sinh vật vượt quá giới hạn cho phép',
+            description: 'Số lượng vi sinh vật trong sản phẩm cao hơn mức cho phép',
+            recognize: ['Kết quả kiểm nghiệm vi sinh vật không đạt yêu cầu'],
+            resolution: ['Bảo trì, bảo dưỡng thiết bị sản xuất định kỳ.', 'Khử trùng thiết bị sản xuất bằng phương pháp hiệu quả'],
+            cause: 'Thiết bị sản xuất không được khử trùng hoặc bảo trì đúng cách',
             reporter: users[19]._id,
             aql: 0.05,
-            created_at: "16/03/2024"
-        }, {
-            code: "LSP28032024",
-            group: "Nguyên vật liệu",
-            name: "Bao bì bị rách, nứt",
-            description: "Bao bì sản phẩm không đảm bảo chất lượng",
-            recognize: [
-                "Bao bì sản phẩm bị rách, nứt"
-            ],
-            resolution: [
-                "Kiểm tra chất lượng bao bì đầu vào",
-            ],
-            cause: "Nguyên liệu bao bì không đạt chất lượng",
+            created_at: '16/03/2024',
+        },
+        {
+            code: 'LSP28032024',
+            group: 'Nguyên vật liệu',
+            name: 'Bao bì bị rách, nứt',
+            description: 'Bao bì sản phẩm không đảm bảo chất lượng',
+            recognize: ['Bao bì sản phẩm bị rách, nứt'],
+            resolution: ['Kiểm tra chất lượng bao bì đầu vào'],
+            cause: 'Nguyên liệu bao bì không đạt chất lượng',
             reporter: users[19]._id,
             aql: 0.05,
-            created_at: "16/03/2024"
-        }, {
-            code: "LSP30032024",
-            group: "Nguyên vật liệu",
-            name: "Sản phẩm bị biến màu",
-            description: "Màu sắc của thuốc khác so với tiêu chuẩn",
-            recognize: [
-                "Không đạt kiểm tra thành phẩn sản phẩm"
-            ],
-            resolution: [
-                "Kiểm tra chất lượng nguyên liệu đầu vào",
-                "Bảo quản nguyên liệu và thành phẩm ở điều kiện phù hợp"
-            ],
-            cause: "Bảo quản nguyên liệu hoặc thành phẩm không đúng cách",
+            created_at: '16/03/2024',
+        },
+        {
+            code: 'LSP30032024',
+            group: 'Nguyên vật liệu',
+            name: 'Sản phẩm bị biến màu',
+            description: 'Màu sắc của thuốc khác so với tiêu chuẩn',
+            recognize: ['Không đạt kiểm tra thành phẩn sản phẩm'],
+            resolution: ['Kiểm tra chất lượng nguyên liệu đầu vào', 'Bảo quản nguyên liệu và thành phẩm ở điều kiện phù hợp'],
+            cause: 'Bảo quản nguyên liệu hoặc thành phẩm không đúng cách',
             reporter: users[19]._id,
             aql: 0.05,
-            created_at: "16/03/2024"
-        }, {
-            code: "LSP31032024",
-            group: "Máy móc",
-            name: "Viên thuốc bị nứt, vỡ",
-            description: "Viên thuốc không nguyên vẹn",
-            recognize: [
-                "Sản phẩm bị nứt, vỡ"
-            ],
-            resolution: [
-                "Bảo trì, bảo dưỡng máy móc sản xuất định kỳ",
-                "Kiểm tra và điều chỉnh lực nén viên thuốc"
-            ],
-            cause: "Lực nén viên thuốc quá cao",
+            created_at: '16/03/2024',
+        },
+        {
+            code: 'LSP31032024',
+            group: 'Máy móc',
+            name: 'Viên thuốc bị nứt, vỡ',
+            description: 'Viên thuốc không nguyên vẹn',
+            recognize: ['Sản phẩm bị nứt, vỡ'],
+            resolution: ['Bảo trì, bảo dưỡng máy móc sản xuất định kỳ', 'Kiểm tra và điều chỉnh lực nén viên thuốc'],
+            cause: 'Lực nén viên thuốc quá cao',
             reporter: users[19]._id,
             aql: 0.05,
-            created_at: "16/03/2024"
-        }
-    ]
+            created_at: '16/03/2024',
+        },
+    ];
 
-    const manufacturingQualityErrors = await ManufacturingQualityError(vnistDB).insertMany(
-        manufacturingQualityErrorData
-    )
+    const manufacturingQualityErrors = await ManufacturingQualityError(vnistDB).insertMany(manufacturingQualityErrorData);
 
-    console.log("Tạo dữ liệu lỗi sản phẩm");
-
+    console.log('Tạo dữ liệu lỗi sản phẩm');
 
     // ******************* Tạo mẫu dữ liệu phiếu QC ****************************
     const manufacturingQualityInspectionData = [
         {
-            code: "PQC190302024",
+            code: 'PQC190302024',
             manufacturingCommand: manufacturingCommands[0]._id,
             type: 1,
             responsible: users[19]._id,
@@ -6031,16 +5949,12 @@ const initSampleCompanyDB = async () => {
                 inspectionNum: 80,
                 passedNum: 75,
                 errorNum: 5,
-                errorList: [
-                    manufacturingQualityErrors[0]._id,
-                    manufacturingQualityErrors[1]._id,
-                ],
-                final: 1
-                
-            }
-        }, 
+                errorList: [manufacturingQualityErrors[0]._id, manufacturingQualityErrors[1]._id],
+                final: 1,
+            },
+        },
         {
-            code: "PQC200302024",
+            code: 'PQC200302024',
             manufacturingCommand: manufacturingCommands[0]._id,
             type: 1,
             responsible: users[19]._id,
@@ -6049,15 +5963,12 @@ const initSampleCompanyDB = async () => {
                 inspectionNum: 80,
                 passedNum: 75,
                 errorNum: 5,
-                errorList: [
-                    manufacturingQualityErrors[2]._id,
-                ],
-                final: 1
-                
-            }
-        }, 
+                errorList: [manufacturingQualityErrors[2]._id],
+                final: 1,
+            },
+        },
         {
-            code: "PQC210302024",
+            code: 'PQC210302024',
             manufacturingCommand: manufacturingCommands[0]._id,
             type: 1,
             responsible: users[19]._id,
@@ -6066,33 +5977,28 @@ const initSampleCompanyDB = async () => {
                 inspectionNum: 80,
                 passedNum: 75,
                 errorNum: 5,
-                errorList: [
-                    manufacturingQualityErrors[3]._id,
-                ],
-                final: 1
-                
-            }
-        }, 
-    ]
+                errorList: [manufacturingQualityErrors[3]._id],
+                final: 1,
+            },
+        },
+    ];
 
-    const manufacturingQualityInspections = await ManufacturingQualityInspection(vnistDB).insertMany(
-        manufacturingQualityInspectionData
-    )
+    const manufacturingQualityInspections = await ManufacturingQualityInspection(vnistDB).insertMany(manufacturingQualityInspectionData);
 
     /***************** Tạo dữ liệu định tuyến sản xuất ************************/
     const manufacturingRoutingData = [
         {
-            code: "DT19032024",
-            name: "Quy trình sản xuất đường ACK",
+            code: 'DT19032024',
+            name: 'Quy trình sản xuất đường ACK',
             manufacturingWorks: manufacturingWorks[0]._id,
             goods: [listProduct[0]._id],
             creator: users[19]._id,
             status: 1,
-            description: "Quy trình sản xuất đường ACK của nhà máy thuốc bột",
+            description: 'Quy trình sản xuất đường ACK của nhà máy thuốc bột',
             operations: [
                 {
                     id: 1,
-                    name: "Nhập nguyên liệu",
+                    name: 'Nhập nguyên liệu',
                     manufacturingMill: manufacturingMills[7]._id,
                     setupTime: 1,
                     hourProduction: 200,
@@ -6100,14 +6006,14 @@ const initSampleCompanyDB = async () => {
                         {
                             workerRole: nvXuongNguyenLieu._id,
                             expYear: 1,
-                            number: 2
-                        }
+                            number: 2,
+                        },
                     ],
-                    nextOperation: 2
+                    nextOperation: 2,
                 },
                 {
                     id: 2,
-                    name: "Xay nguyên liệu",
+                    name: 'Xay nguyên liệu',
                     manufacturingMill: manufacturingMills[8]._id,
                     setupTime: 1,
                     hourProduction: 200,
@@ -6115,23 +6021,23 @@ const initSampleCompanyDB = async () => {
                         {
                             workerRole: nvXuongXay._id,
                             expYear: 1,
-                            number: 1
-                        }
+                            number: 1,
+                        },
                     ],
                     machines: [
                         {
                             machine: listAsset[6]._id,
                             operatingCost: 40000,
-                            number: 1
-                        }
+                            number: 1,
+                        },
                     ],
 
                     preOperation: 1,
-                    nextOperation: 3
+                    nextOperation: 3,
                 },
                 {
                     id: 3,
-                    name: "Trộn nguyên liệu",
+                    name: 'Trộn nguyên liệu',
                     manufacturingMill: manufacturingMills[9]._id,
                     setupTime: 1,
                     hourProduction: 200,
@@ -6139,23 +6045,23 @@ const initSampleCompanyDB = async () => {
                         {
                             workerRole: nvXuongTron._id,
                             expYear: 1,
-                            number: 1
-                        }
+                            number: 1,
+                        },
                     ],
                     machines: [
                         {
                             machine: listAsset[7]._id,
                             operatingCost: 20000,
-                            number: 1
-                        }
+                            number: 1,
+                        },
                     ],
 
                     preOperation: 2,
-                    nextOperation: 4
+                    nextOperation: 4,
                 },
                 {
                     id: 4,
-                    name: "Dập viên nén",
+                    name: 'Dập viên nén',
                     manufacturingMill: manufacturingMills[10]._id,
                     setupTime: 1,
                     hourProduction: 200,
@@ -6163,23 +6069,23 @@ const initSampleCompanyDB = async () => {
                         {
                             workerRole: nvXuongNen._id,
                             expYear: 1,
-                            number: 1
-                        }
+                            number: 1,
+                        },
                     ],
                     machines: [
                         {
                             machine: listAsset[8]._id,
                             operatingCost: 40000,
-                            number: 1
-                        }
+                            number: 1,
+                        },
                     ],
 
                     preOperation: 3,
-                    nextOperation: 5
+                    nextOperation: 5,
                 },
                 {
                     id: 5,
-                    name: "Đóng gói",
+                    name: 'Đóng gói',
                     manufacturingMill: manufacturingMills[11]._id,
                     setupTime: 1,
                     hourProduction: 200,
@@ -6187,20 +6093,18 @@ const initSampleCompanyDB = async () => {
                         {
                             workerRole: nvXuongDongGoi._id,
                             expYear: 1,
-                            number: 1
-                        }
+                            number: 1,
+                        },
                     ],
                     preOperation: 4,
-                }
-            ]
-        }
-    ]
+                },
+            ],
+        },
+    ];
 
-    const manufacturingRoutings = await ManufacturingRouting(vnistDB).insertMany(
-        manufacturingRoutingData
-    )
+    const manufacturingRoutings = await ManufacturingRouting(vnistDB).insertMany(manufacturingRoutingData);
 
-    console.log("Tạo dữ liệu định tuyến sản xuất");
+    console.log('Tạo dữ liệu định tuyến sản xuất');
 
     //**********************************Tạo dữ liệu đơn vị chăm sóc khách hàng */
     const CustomerUnitData = [
@@ -7867,6 +7771,39 @@ const initSampleCompanyDB = async () => {
     ]);
 
     console.log('Khởi tạo xong dữ liệu vận chuyển');
+
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU CẤU HÌNH GIẢI THUẬT CHO GIẢI THUẬT PHÂN BỔ KPI
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+    console.log('Khởi tạo cấu hình giải thuật cho giải thuật phân bổ KPI');
+
+    await AllocationConfigSetting(vnistDB).create({
+        company: vnist._id,
+        numberGeneration: 5000,
+        solutionSize: 40,
+        hmcr: 0.83,
+        par: 0.75,
+        bandwidth: 0.5,
+        alpha: 0.4,
+        beta: 0.6,
+        gamma: 0.6,
+        isAutomatically: true,
+        defaultSetting: {
+            numberGeneration: 5000,
+            solutionSize: 40,
+            hmcr: 0.83,
+            par: 0.75,
+            bandwidth: 0.5,
+            alpha: 0.4,
+            beta: 0.6,
+            gamma: 0.6,
+            isAutomatically: true,
+        },
+    });
+
+    console.log('Khởi tạo xong cấu hình giải thuật cho giải thuật phân bổ KPI');
 
     /*---------------------------------------------------------------------------------------------
         -----------------------------------------------------------------------------------------------

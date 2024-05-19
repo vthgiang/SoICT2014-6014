@@ -46,7 +46,7 @@ const EmployeeKpiSchema = new Schema({
         type: Number,
         default: null
     },
-    // Đánh đấu các mục tiêu mặc định khi thiết lập kpi cá nhân: 
+    // Đánh đấu các mục tiêu mặc định khi thiết lập kpi cá nhân:
     // 0 là không phải mục tiêu mặc định
     // 1 là mục tiêu mặc đinh cho vai trò A (người phê duyệt)
     // 2 là mục tiêu mặc định cho vai trò C (Người tư vấn)
