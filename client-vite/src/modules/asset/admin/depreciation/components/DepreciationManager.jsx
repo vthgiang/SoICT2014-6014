@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -9,7 +9,6 @@ import { AssetTypeActions } from '../../asset-type/redux/actions'
 import { UserActions } from '../../../../super-admin/user/redux/actions'
 
 import { AssetDetailForm, AssetEditForm } from '../../asset-information/components/combinedContent'
-import { DepreciationEditForm } from './depreciationEditForm'
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 function DepreciationManager(props) {
@@ -30,7 +29,7 @@ function DepreciationManager(props) {
   })
 
   const { translate, assetsManager, assetType } = props
-  let { page, limit, currentRowView, currentRow, managedBy, tableId } = state
+  const { page, limit, currentRowView, currentRow, managedBy, tableId } = state
 
   useEffect(() => {
     props.getAssetTypes()
@@ -52,17 +51,17 @@ function DepreciationManager(props) {
   // Function format ngày hiện tại thành dạnh mm-yyyy
   const formatDate2 = (date) => {
     if (!date) return null
-    let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     return [month, year].join('-')
@@ -71,24 +70,23 @@ function DepreciationManager(props) {
   // Function format dữ liệu Date thành string
   const formatDate = (date, monthYear = false) => {
     if (!date) return null
-    let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
 
   // Bắt sự kiện click xem thông tin tài sản
@@ -170,17 +168,17 @@ function DepreciationManager(props) {
 
   // Bắt sự kiện setting số dòng hiện thị trên một trang
   const setLimit = async (number) => {
-    let limit = parseInt(number)
+    const limit = parseInt(number)
     await setState({
       ...state,
-      limit: limit
+      limit
     })
-    props.getAllAsset({ ...state, limit: limit })
+    props.getAllAsset({ ...state, limit })
   }
 
   // Bắt sự kiện chuyển trang
   const setPage = async (pageNumber) => {
-    let page = (pageNumber - 1) * state.limit
+    const page = (pageNumber - 1) * state.limit
 
     await setState({
       ...state,
@@ -192,27 +190,27 @@ function DepreciationManager(props) {
 
   const addMonth = (date, month) => {
     date = new Date(date)
-    let newDate = new Date(date.setMonth(date.getMonth() + month))
+    const newDate = new Date(date.setMonth(date.getMonth() + month))
 
     return formatDate(newDate)
   }
 
-  /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+  /* Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
   const convertDataToExportData = (data) => {
     const { translate } = props
-    let fileName = 'Bảng quản lý khấu hao tài sản '
-    let formater = new Intl.NumberFormat()
+    const fileName = 'Bảng quản lý khấu hao tài sản '
+    const formater = new Intl.NumberFormat()
     if (data) {
       data = data.map((x, index) => {
-        let code = x.code
-        let assetName = x.assetName
-        let type = x.assetType && x.assetType.map((obj) => obj.typeName).join(', ')
-        let cost = formater.format(parseInt(x.cost))
-        let startDepreciation = formatDate(x.startDepreciation)
-        let month = `${x.usefulLife} ${translate('general.month')}`
-        let depreciationPerYear = formater.format(parseInt(12 * (x.cost / x.usefulLife)))
-        let depreciationPerMonth = formater.format(parseInt(x.cost / x.usefulLife))
-        let accumulatedValue = formater.format(
+        const { code } = x
+        const { assetName } = x
+        const type = x.assetType && x.assetType.map((obj) => obj.typeName).join(', ')
+        const cost = formater.format(parseInt(x.cost))
+        const startDepreciation = formatDate(x.startDepreciation)
+        const month = `${x.usefulLife} ${translate('general.month')}`
+        const depreciationPerYear = formater.format(parseInt(12 * (x.cost / x.usefulLife)))
+        const depreciationPerMonth = formater.format(parseInt(x.cost / x.usefulLife))
+        const accumulatedValue = formater.format(
           parseInt(
             (x.cost / x.usefulLife) *
               (new Date().getFullYear() * 12 +
@@ -220,7 +218,7 @@ function DepreciationManager(props) {
                 (new Date(x.startDepreciation).getFullYear() * 12 + new Date(x.startDepreciation).getMonth()))
           )
         )
-        let remainingValue = formater.format(
+        const remainingValue = formater.format(
           parseInt(
             x.cost -
               (x.cost / x.usefulLife) *
@@ -229,27 +227,27 @@ function DepreciationManager(props) {
                   (new Date(x.startDepreciation).getFullYear() * 12 + new Date(x.startDepreciation).getMonth()))
           )
         )
-        let endDepreciation = addMonth(x.startDepreciation, x.usefulLife)
+        const endDepreciation = addMonth(x.startDepreciation, x.usefulLife)
 
         return {
           index: index + 1,
-          code: code,
-          assetName: assetName,
-          type: type,
-          cost: cost,
-          startDepreciation: startDepreciation,
-          month: month,
-          depreciationPerYear: depreciationPerYear,
-          depreciationPerMonth: depreciationPerMonth,
-          accumulatedValue: accumulatedValue,
-          remainingValue: remainingValue,
-          endDepreciation: endDepreciation
+          code,
+          assetName,
+          type,
+          cost,
+          startDepreciation,
+          month,
+          depreciationPerYear,
+          depreciationPerMonth,
+          accumulatedValue,
+          remainingValue,
+          endDepreciation
         }
       })
     }
 
-    let exportData = {
-      fileName: fileName,
+    const exportData = {
+      fileName,
       dataSheets: [
         {
           sheetName: 'sheet1',
@@ -271,7 +269,7 @@ function DepreciationManager(props) {
                 { key: 'remainingValue', value: 'Giá trị còn lại' },
                 { key: 'endDepreciation', value: 'Thời gian kết thúc trích khấu hao' }
               ],
-              data: data
+              data
             }
           ]
         }
@@ -297,9 +295,9 @@ function DepreciationManager(props) {
     unitsProducedDuringTheYears,
     startDepreciation
   ) => {
-    let annualDepreciation = 0,
-      monthlyDepreciation = 0,
-      remainingValue = cost
+    let annualDepreciation = 0
+    let monthlyDepreciation = 0
+    let remainingValue = cost
 
     if (depreciationType === 'straight_line') {
       // Phương pháp khấu hao theo đường thẳng
@@ -313,13 +311,13 @@ function DepreciationManager(props) {
             (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()))
     } else if (depreciationType === 'declining_balance') {
       // Phương pháp khấu hao theo số dư giảm dần
-      let lastYears = false,
-        t,
-        usefulYear = usefulLife / 12,
-        usedTime =
-          new Date().getFullYear() * 12 +
-          new Date().getMonth() -
-          (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth())
+      let lastYears = false
+      let t
+      const usefulYear = usefulLife / 12
+      const usedTime =
+        new Date().getFullYear() * 12 +
+        new Date().getMonth() -
+        (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth())
 
       if (usefulYear < 4) {
         t = (1 / usefulYear) * 1.5
@@ -340,7 +338,7 @@ function DepreciationManager(props) {
           }
         }
 
-        remainingValue = remainingValue - annualDepreciation
+        remainingValue -= annualDepreciation
       }
 
       // Tính khấu hao đến tháng hiện tại
@@ -355,12 +353,12 @@ function DepreciationManager(props) {
         }
 
         monthlyDepreciation = annualDepreciation / 12
-        remainingValue = remainingValue - monthlyDepreciation * (usedTime % 12)
+        remainingValue -= monthlyDepreciation * (usedTime % 12)
       }
     } else if (depreciationType === 'units_of_production') {
       // Phương pháp khấu hao theo sản lượng
-      let monthTotal = unitsProducedDuringTheYears.length // Tổng số tháng tính khấu hao
-      let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)) // Mức khấu hao đơn vị sản phẩm
+      const monthTotal = unitsProducedDuringTheYears.length // Tổng số tháng tính khấu hao
+      const productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)) // Mức khấu hao đơn vị sản phẩm
       let accumulatedDepreciation = 0 // Giá trị hao mòn lũy kế
 
       for (let i = 0; i < monthTotal; i++) {
@@ -391,9 +389,9 @@ function DepreciationManager(props) {
   }
   // Lấy danh sách loại tài sản cho tree select
   const getAssetTypes = () => {
-    let { assetType } = props
-    let assetTypeName = assetType && assetType.listAssetTypes
-    let typeArr = []
+    const { assetType } = props
+    const assetTypeName = assetType && assetType.listAssetTypes
+    const typeArr = []
     assetTypeName.map((item) => {
       typeArr.push({
         _id: item._id,
@@ -410,28 +408,29 @@ function DepreciationManager(props) {
 
     if (group === 'building') {
       return translate('asset.asset_info.building')
-    } else if (group === 'vehicle') {
-      return translate('asset.asset_info.vehicle')
-    } else if (group === 'machine') {
-      return translate('asset.asset_info.machine')
-    } else {
-      return translate('asset.asset_info.other')
     }
+    if (group === 'vehicle') {
+      return translate('asset.asset_info.vehicle')
+    }
+    if (group === 'machine') {
+      return translate('asset.asset_info.machine')
+    }
+    return translate('asset.asset_info.other')
   }
 
-  let lists = '',
-    exportData
-  let typeArr = getAssetTypes()
-  let assetTypeName = state.assetType ? state.assetType : []
+  let lists = ''
+  let exportData
+  const typeArr = getAssetTypes()
+  const assetTypeName = state.assetType ? state.assetType : []
 
-  let formater = new Intl.NumberFormat()
+  const formater = new Intl.NumberFormat()
   if (assetsManager.isLoading === false) {
     lists = assetsManager.listAssets
   }
 
-  var pageTotal =
+  const pageTotal =
     assetsManager.totalList % limit === 0 ? parseInt(assetsManager.totalList / limit) : parseInt(assetsManager.totalList / limit + 1)
-  var currentPage = parseInt(page / limit + 1)
+  const currentPage = parseInt(page / limit + 1)
   if (lists) {
     exportData = convertDataToExportData(lists)
   }
@@ -473,7 +472,7 @@ function DepreciationManager(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('asset.general_information.asset_group')}</label>
             <SelectMulti
-              id={`multiSelectGroupInManagement`}
+              id='multiSelectGroupInManagement'
               multiple='multiple'
               options={{
                 nonSelectedText: translate('asset.asset_info.select_group'),
@@ -486,7 +485,7 @@ function DepreciationManager(props) {
                 { value: 'machine', text: translate('asset.dashboard.machine') },
                 { value: 'other', text: translate('asset.dashboard.other') }
               ]}
-            ></SelectMulti>
+            />
           </div>
 
           {/* Phân loại */}
@@ -500,7 +499,7 @@ function DepreciationManager(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('asset.general_information.depreciation_type')}</label>
             <SelectMulti
-              id={`multiSelectDepreTypeInManagement`}
+              id='multiSelectDepreTypeInManagement'
               multiple='multiple'
               options={{
                 nonSelectedText: translate('asset.depreciation.select_depreciation_type'),
@@ -512,7 +511,7 @@ function DepreciationManager(props) {
                 { value: 'declining_balance', text: translate('asset.depreciation.declining_balance') },
                 { value: 'units_of_production', text: translate('asset.depreciation.units_production') }
               ]}
-            ></SelectMulti>
+            />
           </div>
 
           {/* Tháng bắt đầu trích khấu hao */}
@@ -582,7 +581,7 @@ function DepreciationManager(props) {
           <tbody>
             {lists
               ? lists.map((x, index) => {
-                  let result = calculateDepreciation(
+                  const result = calculateDepreciation(
                     x.depreciationType,
                     x.cost,
                     x.usefulLife,
@@ -600,7 +599,7 @@ function DepreciationManager(props) {
                       <td>
                         {x.assetType && x.assetType.length
                           ? x.assetType.map((item, index) => {
-                              let suffix = index < x.assetType.length - 1 ? ', ' : ''
+                              const suffix = index < x.assetType.length - 1 ? ', ' : ''
                               return item.typeName + suffix
                             })
                           : ''}
@@ -637,7 +636,7 @@ function DepreciationManager(props) {
         )}
 
         {/* PaginateBar */}
-        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
+        <PaginateBar pageTotal={pageTotal || 0} currentPage={currentPage} func={setPage} />
       </div>
 
       {/* Form xem chi tiết thông tin khấu hao */}
@@ -726,7 +725,7 @@ function DepreciationManager(props) {
           incidentLogs={currentRow.incidentLogs}
           archivedRecordNumber={currentRow.archivedRecordNumber}
           files={currentRow.documents}
-          linkPage={'management'}
+          linkPage='management'
           page={page}
         />
       )}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import { DatePicker, ErrorLabel, SelectBox, ApiImage } from '../../../../../common-components'
+import { DatePicker, ErrorLabel, SelectBox } from '../../../../../common-components'
 
 import ValidationHelper from '../../../../../helpers/validationHelper'
 import './addBiddingPackage.css'
@@ -72,27 +72,27 @@ function GeneralTab(props) {
    */
   const formatDate = (date, monthYear = false) => {
     if (date) {
-      let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear()
+      const d = new Date(date)
+      let month = `${d.getMonth() + 1}`
+      let day = `${d.getDate()}`
+      const year = d.getFullYear()
 
-      if (month.length < 2) month = '0' + month
-      if (day.length < 2) day = '0' + day
+      if (month.length < 2) month = `0${month}`
+      if (day.length < 2) day = `0${day}`
 
       if (monthYear === true) {
         return [month, year].join('-')
-      } else return [day, month, year].join('-')
-    } else {
-      return date
+      }
+      return [day, month, year].join('-')
     }
+    return date
   }
 
   /** Function upload avatar  */
   const handleUpload = (e) => {
-    let file = e.target.files[0]
+    const file = e.target.files[0]
     if (file !== undefined) {
-      let fileLoad = new FileReader()
+      const fileLoad = new FileReader()
       fileLoad.readAsDataURL(file)
       fileLoad.onload = () => {
         setState((state) => {
@@ -154,7 +154,7 @@ function GeneralTab(props) {
 
   const validateBiddingPackageName = (value, willUpdateState = true) => {
     const { translate } = props
-    let { message } = ValidationHelper.validateCode(translate, value)
+    const { message } = ValidationHelper.validateCode(translate, value)
     if (willUpdateState) {
       setState((state) => {
         return {
@@ -168,7 +168,7 @@ function GeneralTab(props) {
     return message === undefined
   }
 
-  /** Function bắt sự kiện thay đổi bên mời thầu*/
+  /** Function bắt sự kiện thay đổi bên mời thầu */
   const handleChangeCustomer = (e) => {
     const { value } = e.target
     setState((state) => {
@@ -180,7 +180,7 @@ function GeneralTab(props) {
     props.handleChange('customer', value)
   }
 
-  /** Function bắt sự kiện thay đổi bên mời thầu*/
+  /** Function bắt sự kiện thay đổi bên mời thầu */
   const handleChangePrice = (e) => {
     const { value } = e.target
     setState((state) => {
@@ -193,7 +193,7 @@ function GeneralTab(props) {
     props.handleChange('price', Number(value))
   }
 
-  /** Function bắt sự kiện thay đổi bên mời thầu*/
+  /** Function bắt sự kiện thay đổi bên mời thầu */
   const handleChangeOpenLocal = (e) => {
     const { value } = e.target
     setState((state) => {
@@ -205,7 +205,7 @@ function GeneralTab(props) {
     props.handleChange('openLocal', value)
   }
 
-  /** Function bắt sự kiện thay đổi bên mời thầu*/
+  /** Function bắt sự kiện thay đổi bên mời thầu */
   const handleChangeReceiveLocal = (e) => {
     const { value } = e.target
     setState((state) => {
@@ -263,16 +263,16 @@ function GeneralTab(props) {
     const { translate } = props
     let { errorOnStartDate, endDate } = state
 
-    let errorOnStartingDate = undefined
+    let errorOnStartingDate
     let startDate
     if (value) {
-      let partValue = value.split('-')
+      const partValue = value.split('-')
       startDate = [partValue[2], partValue[1], partValue[0]].join('-')
-      let date = new Date(startDate)
+      const date = new Date(startDate)
       if (endDate) {
         endDate = endDate.toString().split('-')
         endDate = [endDate[2], endDate[1], endDate[0]].join('-')
-        let d = new Date(endDate)
+        const d = new Date(endDate)
         if (date.getTime() >= d.getTime()) {
           errorOnStartingDate = 'Thời gian kết thúc phải lớn hơn thời gian bắt đầu'
         } else {
@@ -288,7 +288,7 @@ function GeneralTab(props) {
       return {
         ...state,
         startDate: value,
-        errorOnStartingDate: errorOnStartingDate,
+        errorOnStartingDate,
         errorOnStartDate: errorOnStartDate === translate('human_resource.profile.starting_date_required') ? undefined : errorOnStartDate
       }
     })
@@ -309,21 +309,21 @@ function GeneralTab(props) {
                 type='text'
                 className='form-control'
                 name='name'
-                value={name ? name : ''}
+                value={name || ''}
                 placeholder='Tên gói thầu'
                 onChange={handleBiddingPackageName}
               />
               <ErrorLabel content={errorOnName} />
             </div>
             {/* Mã gói thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <label htmlFor='MGT'>Mã gói thầu</label>
               <input
                 type='text'
                 className='form-control'
                 placeholder='Mã gói thầu'
                 name='code'
-                value={code ? code : ''}
+                value={code || ''}
                 onChange={handleChangeCode}
                 autoComplete='off'
               />
@@ -381,26 +381,26 @@ function GeneralTab(props) {
           </div>
           <div className='row'>
             {/* Bên mới thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <label>Bên mời thầu</label>
               <input
                 type='text'
                 className='form-control'
                 name='customer'
-                value={customer ? customer : ''}
+                value={customer || ''}
                 placeholder='Bên mời thầu'
                 onChange={handleChangeCustomer}
               />
             </div>
             {/* Dự toán gói thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <label>Dự toán gói thầu</label>
               <input
                 type='number'
                 className='form-control'
                 placeholder='Giá dự toán'
                 name='price'
-                value={price ? price : ''}
+                value={price || ''}
                 onChange={handleChangePrice}
                 autoComplete='off'
               />
@@ -408,27 +408,27 @@ function GeneralTab(props) {
           </div>
           <div className='row'>
             {/* Địa điểm mở thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <label>Địa điểm mở thầu</label>
               <input
                 type='text'
                 className='form-control'
                 placeholder='Địa điểm mở thầu'
                 name='openLocal'
-                value={openLocal ? openLocal : ''}
+                value={openLocal || ''}
                 onChange={handleChangeOpenLocal}
                 autoComplete='off'
               />
             </div>
             {/* Địa điểm nhận thầu */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <label>Địa điểm nhận thầu</label>
               <input
                 type='text'
                 className='form-control'
                 placeholder='Địa điểm nhận thầu'
                 name='receiveLocal'
-                value={receiveLocal ? receiveLocal : ''}
+                value={receiveLocal || ''}
                 onChange={handleChangeReceiveLocal}
                 autoComplete='off'
               />
@@ -438,7 +438,7 @@ function GeneralTab(props) {
         <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
           <div className='row'>
             {/* Mô tả */}
-            <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
               <label htmlFor='emailCompany'>Mô tả</label>
               <textarea
                 className='form-control'
@@ -448,7 +448,7 @@ function GeneralTab(props) {
                 onChange={handleDescription}
                 placeholder='Enter ...'
                 autoComplete='off'
-              ></textarea>
+              />
             </div>
           </div>
         </div>

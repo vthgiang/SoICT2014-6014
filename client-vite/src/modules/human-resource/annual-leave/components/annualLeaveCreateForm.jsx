@@ -27,13 +27,13 @@ function AnnualLeaveCreateForm(props) {
    */
   const formatDate = (date) => {
     if (date) {
-      let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear()
+      const d = new Date(date)
+      let month = `${d.getMonth() + 1}`
+      let day = `${d.getDate()}`
+      const year = d.getFullYear()
 
-      if (month.length < 2) month = '0' + month
-      if (day.length < 2) day = '0' + day
+      if (month.length < 2) month = `0${month}`
+      if (day.length < 2) day = `0${day}`
 
       return [day, month, year].join('-')
     }
@@ -96,7 +96,10 @@ function AnnualLeaveCreateForm(props) {
   }, [department.departmentsThatUserIsManager])
 
   useEffect(() => {
-    let listAllEmployees, organizationalUnit, employee, email
+    let listAllEmployees
+    let organizationalUnit
+    let employee
+    let email
 
     if (typeView === TYPE_VIEW.MANAGER) {
       if (user?.employeesOfUnitsUserIsManager) {
@@ -130,12 +133,12 @@ function AnnualLeaveCreateForm(props) {
 
     setState({
       ...state,
-      organizationalUnit: organizationalUnit,
-      listAllEmployees: listAllEmployees,
-      employee: employee
+      organizationalUnit,
+      listAllEmployees,
+      employee
     })
 
-    props.getDepartmentOfUser({ email: email })
+    props.getDepartmentOfUser({ email })
   }, [user.employeesOfUnitsUserIsManager, user.usercompanys])
 
   useEffect(() => {
@@ -146,13 +149,13 @@ function AnnualLeaveCreateForm(props) {
       setState({
         ...state,
         organizationalUnit: listDepartments[0]?._id,
-        listDepartments: listDepartments
+        listDepartments
       })
     }
   }, [user.organizationalUnitsOfUserByEmail])
 
   const validateEmployeeNumber = (value, willUpdateState = true) => {
-    let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate)
+    const msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate)
     if (willUpdateState) {
       setState((state) => {
         return {
@@ -173,7 +176,7 @@ function AnnualLeaveCreateForm(props) {
   }
 
   const validateOrganizationalUnit = (value, willUpdateState = true) => {
-    let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate)
+    const msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate)
     if (willUpdateState) {
       setState((state) => {
         return {
@@ -199,11 +202,11 @@ function AnnualLeaveCreateForm(props) {
     let { errorOnEndDate, endDate } = state
 
     let errorOnStartDate
-    let partValue = value.split('-')
-    let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'))
+    const partValue = value.split('-')
+    const date = new Date([partValue[2], partValue[1], partValue[0]].join('-'))
 
-    let partEndDate = endDate.split('-')
-    let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'))
+    const partEndDate = endDate.split('-')
+    const d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'))
 
     if (date.getTime() > d.getTime()) {
       errorOnStartDate = translate('human_resource.start_date_before_end_date')
@@ -214,8 +217,8 @@ function AnnualLeaveCreateForm(props) {
     setState({
       ...state,
       startDate: value,
-      errorOnStartDate: errorOnStartDate,
-      errorOnEndDate: errorOnEndDate
+      errorOnStartDate,
+      errorOnEndDate
     })
   }
 
@@ -264,11 +267,11 @@ function AnnualLeaveCreateForm(props) {
     let { startDate, errorOnStartDate } = state
 
     let errorOnEndDate
-    let partValue = value.split('-')
-    let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'))
+    const partValue = value.split('-')
+    const date = new Date([partValue[2], partValue[1], partValue[0]].join('-'))
 
-    let partStartDate = startDate.split('-')
-    let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'))
+    const partStartDate = startDate.split('-')
+    const d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'))
 
     if (d.getTime() > date.getTime()) {
       errorOnEndDate = translate('human_resource.start_date_before_end_date')
@@ -279,19 +282,19 @@ function AnnualLeaveCreateForm(props) {
     setState({
       ...state,
       endDate: value,
-      errorOnStartDate: errorOnStartDate,
-      errorOnEndDate: errorOnEndDate
+      errorOnStartDate,
+      errorOnEndDate
     })
   }
 
   /** Bắt sự kiện thay đổi tổng số giờ nghỉ phép */
   const handleTotalHoursChange = (e) => {
-    let { value } = e.target
+    const { value } = e.target
     validateTotalHours(value, true)
   }
 
   const validateTotalHours = (value, willUpdateState = true) => {
-    let msg = AnnualLeaveFormValidator.validateTotalHour(value, translate)
+    const msg = AnnualLeaveFormValidator.validateTotalHour(value, translate)
     if (willUpdateState) {
       setState((state) => {
         return {
@@ -306,12 +309,12 @@ function AnnualLeaveCreateForm(props) {
 
   /** Bắt sự kiện thay đổi lý do xin nghỉ phép */
   const handleReasonChange = (e) => {
-    let { value } = e.target
+    const { value } = e.target
     validateReason(value, true)
   }
 
   const validateReason = (value, willUpdateState = true) => {
-    let msg = AnnualLeaveFormValidator.validateReason(value, translate)
+    const msg = AnnualLeaveFormValidator.validateReason(value, translate)
     if (willUpdateState) {
       setState((state) => {
         return {
@@ -326,7 +329,7 @@ function AnnualLeaveCreateForm(props) {
 
   /** Bắt sự kiện thay đổi trạng thái đơn xin nghỉ phép */
   const handleStatusChange = (e) => {
-    let { value } = e.target
+    const { value } = e.target
     setState({
       ...state,
       status: value
@@ -335,29 +338,30 @@ function AnnualLeaveCreateForm(props) {
 
   /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
   const isFormValidated = () => {
-    let result =
+    const result =
       validateEmployeeNumber(employee, false) &&
       validateReason(reason, false) &&
       validateOrganizationalUnit(organizationalUnit, false) &&
       (type ? validateTotalHours(totalHours, false) : true)
 
-    let partStart = startDate.split('-')
-    let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-')
-    let partEnd = endDate.split('-')
-    let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-')
+    const partStart = startDate.split('-')
+    const startDateNew = [partStart[2], partStart[1], partStart[0]].join('-')
+    const partEnd = endDate.split('-')
+    const endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-')
 
     if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
       return result
-    } else return false
+    }
+    return false
   }
 
   /** Bắt sự kiện submit form */
   const save = () => {
-    let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find((x) => x.emailInCompany === employee)?._id
-    let partStart = startDate.split('-')
-    let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-')
-    let partEnd = endDate.split('-')
-    let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-')
+    const employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find((x) => x.emailInCompany === employee)?._id
+    const partStart = startDate.split('-')
+    const startDateNew = [partStart[2], partStart[1], partStart[0]].join('-')
+    const partEnd = endDate.split('-')
+    const endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-')
 
     if (type) {
       if (startTime === '') {
@@ -371,18 +375,18 @@ function AnnualLeaveCreateForm(props) {
     if (isFormValidated()) {
       return props.createAnnualLeave({
         ...state,
-        startTime: startTime,
-        endTime: endTime,
+        startTime,
+        endTime,
         startDate: startDateNew,
         endDate: endDateNew,
         employee: employeeID,
-        organizationalUnit: organizationalUnit
+        organizationalUnit
       })
     }
   }
 
   return (
-    <React.Fragment>
+    <>
       {/* <ButtonModal modalID="modal-create-annual-leave" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} /> */}
       <DialogModal
         size='50'
@@ -401,7 +405,7 @@ function AnnualLeaveCreateForm(props) {
               <span className='text-red'>*</span>
             </label>
             <SelectBox
-              id={`create-annual-leave-employee`}
+              id='create-annual-leave-employee'
               className='form-control select2'
               style={{ width: '100%' }}
               value={employee}
@@ -417,9 +421,9 @@ function AnnualLeaveCreateForm(props) {
               <span className='text-red'>*</span>
             </label>
             <SelectBox
-              id={`create-annual-leave-unit`}
+              id='create-annual-leave-unit'
               className='form-control select2'
-              disabled={listDepartments?.length > 1 ? false : true}
+              disabled={!(listDepartments?.length > 1)}
               style={{ width: '100%' }}
               value={organizationalUnit}
               items={
@@ -450,7 +454,7 @@ function AnnualLeaveCreateForm(props) {
                 <TimePicker
                   id='create_start_time'
                   ref={createStartTime}
-                  //getDefaultValue={getDefaultStartTime}
+                  // getDefaultValue={getDefaultStartTime}
                   onChange={handleStartTimeChange}
                 />
               )}
@@ -464,7 +468,7 @@ function AnnualLeaveCreateForm(props) {
               </label>
               <DatePicker
                 id='create_end_date'
-                //ref={createStartTime}
+                // ref={createStartTime}
                 deleteValue={false}
                 value={endDate}
                 onChange={handleEndDateChange}
@@ -473,7 +477,7 @@ function AnnualLeaveCreateForm(props) {
                 <TimePicker
                   id='create_end_time'
                   ref={createEndTime}
-                  //getDefaultValue={getDefaultEndTime}
+                  // getDefaultValue={getDefaultEndTime}
                   onChange={handleEndTimeChange}
                 />
               )}
@@ -505,7 +509,7 @@ function AnnualLeaveCreateForm(props) {
               onChange={handleReasonChange}
               placeholder='Enter ...'
               autoComplete='off'
-            ></textarea>
+            />
             <ErrorLabel content={errorOnReason} />
           </div>
           {/* Trạng thái */}
@@ -522,7 +526,7 @@ function AnnualLeaveCreateForm(props) {
           </div>
         </form>
       </DialogModal>
-    </React.Fragment>
+    </>
   )
 }
 

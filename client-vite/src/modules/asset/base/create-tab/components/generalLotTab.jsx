@@ -1,31 +1,21 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect, useSelector, useDispatch } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import {
-  DatePicker,
-  ErrorLabel,
-  SelectBox,
-  TreeSelect,
-  ApiImage,
-  SmartTable,
-  PaginateBar,
-  DeleteNotification
-} from '../../../../../common-components'
+import { DatePicker, ErrorLabel, SelectBox, TreeSelect, ApiImage, SmartTable, PaginateBar } from '../../../../../common-components'
 import './addAsset.css'
 import { UserActions } from '../../../../super-admin/user/redux/actions'
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions'
-import { string2literal } from '../../../../../helpers/handleResponse'
 import { generateCode } from '../../../../../helpers/generateCode'
 import ValidationHelper from '../../../../../helpers/validationHelper'
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 import { saveListAssetsAction } from '../../../admin/asset-lot/redux/actions'
 import { getPropertyOfValue } from '../../../../../helpers/stringMethod'
-import { AssetInCreateForm, AssetEditForm } from '../../../admin/asset-lot/components/combinedContent'
+import { AssetInCreateForm } from '../../../admin/asset-lot/components/combinedContent'
 
 function GeneralLotTab(props) {
   const dispatch = useDispatch()
-  let listAssets = useSelector((state) => state.assetLotManager.listAssetCreates)
+  const listAssets = useSelector((state) => state.assetLotManager.listAssetCreates)
 
   const tableId_constructor = 'table-asset-lot-create'
 
@@ -59,18 +49,18 @@ function GeneralLotTab(props) {
     assignedToOrganizationalUnit: null
   })
 
-  //function gen mã tài sản
+  // function gen mã tài sản
   const generateAssetCode = () => {
-    const assetLot = props.assetLot
+    const { assetLot } = props
     const { total, step, startNumber } = state
     props.handleGenAssetCode(startNumber, step, listAssets, true)
   }
 
   const regenerateCode = () => {
-    let code = generateCode('VVTM')
+    const code = generateCode('VVTM')
     setState((state) => ({
       ...state,
-      code: code
+      code
     }))
     validateCode(code)
   }
@@ -79,44 +69,47 @@ function GeneralLotTab(props) {
     const { translate } = props
     if (group === 'building') {
       return translate('asset.dashboard.building')
-    } else if (group === 'vehicle') {
+    }
+    if (group === 'vehicle') {
       return translate('asset.asset_info.vehicle')
-    } else if (group === 'machine') {
+    }
+    if (group === 'machine') {
       return translate('asset.dashboard.machine')
-    } else if (group === 'other') {
+    }
+    if (group === 'other') {
       return translate('asset.dashboard.other')
-    } else return null
+    }
+    return null
   }
 
   // Function format dữ liệu Date thành string
   const formatDate = (date, monthYear = false) => {
     if (!date) return null
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
 
   // Function upload avatar
   const handleUpload = (e) => {
-    var file = e.target.files[0]
+    const file = e.target.files[0]
 
     if (file) {
-      var fileLoad = new FileReader()
+      const fileLoad = new FileReader()
       fileLoad.readAsDataURL(file)
       fileLoad.onload = () => {
         setState((state) => {
@@ -144,7 +137,7 @@ function GeneralLotTab(props) {
 
   // Bắt sự kiện chuyển trang
   const setPage = async (pageNumber) => {
-    let page = (pageNumber - 1) * state.limit
+    const page = (pageNumber - 1) * state.limit
     await setState({
       ...state,
       page: parseInt(page)
@@ -159,7 +152,7 @@ function GeneralLotTab(props) {
     validateCode(value, true)
   }
   const validateCode = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateCode(props.translate, value)
+    const { message } = ValidationHelper.validateCode(props.translate, value)
 
     if (willUpdateState) {
       setState({
@@ -180,7 +173,7 @@ function GeneralLotTab(props) {
     validateAssetName(value, true)
   }
   const validateAssetName = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState({
@@ -203,7 +196,7 @@ function GeneralLotTab(props) {
   const validateTotal = (value, willUpdateState = true) => {
     const { assetLot } = props.assetLot
     const { startNumber, step } = state
-    let { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 1)
+    const { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 1)
 
     if (willUpdateState) {
       setState((state) => {
@@ -229,7 +222,7 @@ function GeneralLotTab(props) {
   const validatePrice = (value, willUpdateState = true) => {
     const { assetLot } = props.assetLot
     const { startNumber, step } = state
-    let { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 0)
+    const { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 0)
 
     if (willUpdateState) {
       setState((state) => {
@@ -245,12 +238,11 @@ function GeneralLotTab(props) {
   }
 
   const validateInput = (value) => {
-    //console.log("vts validateInput value", value, value.length);
+    // console.log("vts validateInput value", value, value.length);
     if (value > 0 && value.length > 0) {
       return true
-    } else {
-      return false
     }
+    return false
   }
 
   /**
@@ -261,7 +253,7 @@ function GeneralLotTab(props) {
     validateStartNumber(value, true)
   }
   const validateStartNumber = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
     const { total, step } = state
 
     if (willUpdateState) {
@@ -283,7 +275,7 @@ function GeneralLotTab(props) {
     validateStep(value, true)
   }
   const validateStep = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
     const { startNumber, total } = state
 
     if (willUpdateState) {
@@ -330,7 +322,7 @@ function GeneralLotTab(props) {
 
   const handleAssetTypeChange = async (value) => {
     const { translate } = props
-    let { message } = ValidationHelper.validateEmpty(translate, value[0])
+    const { message } = ValidationHelper.validateEmpty(translate, value[0])
 
     setState({
       ...state,
@@ -348,7 +340,7 @@ function GeneralLotTab(props) {
     validatePurchaseDate(value, true)
   }
   const validatePurchaseDate = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -370,7 +362,7 @@ function GeneralLotTab(props) {
     validateWarrantyExpirationDate(value, true)
   }
   const validateWarrantyExpirationDate = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -389,7 +381,7 @@ function GeneralLotTab(props) {
    * Bắt sự kiện thay đổi người quản lý
    */
   const handleManagedByChange = (value) => {
-    //console.log("hang manage",value[0]);
+    // console.log("hang manage",value[0]);
     setState((state) => {
       return {
         ...state,
@@ -413,7 +405,7 @@ function GeneralLotTab(props) {
   }
 
   const handleRoles = (value) => {
-    //console.log("hang role",value);
+    // console.log("hang role",value);
     setState((state) => {
       return {
         ...state,
@@ -430,7 +422,7 @@ function GeneralLotTab(props) {
       ...state,
       typeRegisterForUse: value[0]
     })
-    //console.log("hang handleTypeRegisterForUseChange", value);
+    // console.log("hang handleTypeRegisterForUseChange", value);
     props.handleTypeRegisterChange(value[0])
   }
 
@@ -447,41 +439,43 @@ function GeneralLotTab(props) {
 
     if (status === 'ready_to_use') {
       return translate('asset.general_information.ready_use')
-    } else if (status === 'in_use') {
-      return translate('asset.general_information.using')
-    } else if (status === 'broken') {
-      return translate('asset.general_information.damaged')
-    } else if (status === 'lost') {
-      return translate('asset.general_information.lost')
-    } else if (status === 'disposed') {
-      return translate('asset.general_information.disposal')
-    } else {
-      return ''
     }
+    if (status === 'in_use') {
+      return translate('asset.general_information.using')
+    }
+    if (status === 'broken') {
+      return translate('asset.general_information.damaged')
+    }
+    if (status === 'lost') {
+      return translate('asset.general_information.lost')
+    }
+    if (status === 'disposed') {
+      return translate('asset.general_information.disposal')
+    }
+    return ''
   }
 
   const formatDisposalDate = (disposalDate, status) => {
     const { translate } = props
     if (status === 'disposed') {
       if (disposalDate) return formatDate(disposalDate)
-      else return translate('asset.general_information.not_disposal_date')
-    } else {
-      return translate('asset.general_information.not_disposal')
+      return translate('asset.general_information.not_disposal_date')
     }
+    return translate('asset.general_information.not_disposal')
   }
 
   // Function format ngày hiện tại thành dạnh mm-yyyy
   const formatDate2 = (date) => {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     return [month, year].join('-')
@@ -492,11 +486,11 @@ function GeneralLotTab(props) {
       ...state,
       limit: parseInt(number)
     })
-    //props.getAllAsset({ ...state, limit: parseInt(number) });
+    // props.getAllAsset({ ...state, limit: parseInt(number) });
   }
 
   const onSelectedRowsChange = (value) => {
-    //setSelectedData(value)
+    // setSelectedData(value)
   }
 
   if (
@@ -592,18 +586,18 @@ function GeneralLotTab(props) {
     currentIndex
   } = state
 
-  var limit = 5
-  var pageTotal = listAssets.length % limit === 0 ? parseInt(listAssets.length / limit) : parseInt(listAssets.length / limit + 1)
-  var currentPage = parseInt(page / limit + 1)
+  const limit = 5
+  const pageTotal = listAssets.length % limit === 0 ? parseInt(listAssets.length / limit) : parseInt(listAssets.length / limit + 1)
+  const currentPage = parseInt(page / limit + 1)
 
-  var userlist = user.list,
-    departmentlist = department.list
-  let startDate = status == 'in_use' && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].startDate) : ''
-  let endDate = status == 'in_use' && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].endDate) : ''
+  const userlist = user.list
+  const departmentlist = department.list
+  const startDate = status == 'in_use' && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].startDate) : ''
+  const endDate = status == 'in_use' && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].endDate) : ''
 
-  let assetbuilding = assetsManager && assetsManager.buildingAssets
-  let assetbuildinglist = assetbuilding && assetbuilding.list
-  let buildingList =
+  const assetbuilding = assetsManager && assetsManager.buildingAssets
+  const assetbuildinglist = assetbuilding && assetbuilding.list
+  const buildingList =
     assetbuildinglist &&
     assetbuildinglist.map((node) => {
       return {
@@ -613,8 +607,8 @@ function GeneralLotTab(props) {
         parent: node.location
       }
     })
-  let assetTypeName = assetType && assetType.listAssetTypes
-  let typeArr =
+  const assetTypeName = assetType && assetType.listAssetTypes
+  const typeArr =
     assetTypeName &&
     assetTypeName.map((item) => {
       return {
@@ -889,7 +883,7 @@ function GeneralLotTab(props) {
                 />
                 <ErrorLabel content={errorOnPurchaseDate} />
               </div>
-              <label></label>
+              <label />
               {/* Ngày bảo hành */}
               <div className={`form-group ${!errorOnWarrantyExpirationDate ? '' : 'has-error'}`}>
                 <label htmlFor='warrantyExpirationDate'>{translate('asset.general_information.warranty_expiration_date')}</label>
@@ -910,7 +904,7 @@ function GeneralLotTab(props) {
                     className='form-control select2'
                     style={{ width: '100%' }}
                     items={userlist.map((x) => {
-                      return { value: x.id, text: x.name + ' - ' + x.email }
+                      return { value: x.id, text: `${x.name} - ${x.email}` }
                     })}
                     onChange={handleManagedByChange}
                     value={managedBy}
@@ -933,7 +927,7 @@ function GeneralLotTab(props) {
                     })}
                     value={readByRoles}
                     onChange={handleRoles}
-                    multiple={true}
+                    multiple
                   />
                 </div>
               </div>
@@ -992,7 +986,7 @@ function GeneralLotTab(props) {
                     <td>
                       {x.assetType &&
                         x.assetType.length !== 0 &&
-                        assetTypeName.map((type) => (x.assetType.includes(type._id) ? type.typeName + ' ' : null))}
+                        assetTypeName.map((type) => (x.assetType.includes(type._id) ? `${type.typeName} ` : null))}
                     </td>
                   ),
                   assetPurchaseDate: <td>{formatDate(x.purchaseDate)}</td>,
@@ -1027,7 +1021,7 @@ function GeneralLotTab(props) {
           <PaginateBar
             display={listAssets ? listAssets.length : null}
             total={listAssets.length ? listAssets.length : null}
-            pageTotal={pageTotal ? pageTotal : 0}
+            pageTotal={pageTotal || 0}
             currentPage={currentPage}
             func={setPage}
           />
@@ -1079,7 +1073,7 @@ function GeneralLotTab(props) {
               incidentLogs={currentRow.incidentLogs}
               archivedRecordNumber={currentRow.archivedRecordNumber}
               files={currentRow.documents}
-              linkPage={'management'}
+              linkPage='management'
               page={page}
               listAssets={listAssets}
               edit={false}

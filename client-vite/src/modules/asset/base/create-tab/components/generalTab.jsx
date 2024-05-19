@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -10,6 +10,7 @@ import { CategoryActions } from '../../../../production/common-production/catego
 import { string2literal } from '../../../../../helpers/handleResponse'
 import { generateCode } from '../../../../../helpers/generateCode'
 import ValidationHelper from '../../../../../helpers/validationHelper'
+
 function GeneralTab(props) {
   const [state, setState] = useState({
     detailInfo: [],
@@ -27,16 +28,16 @@ function GeneralTab(props) {
   })
 
   const regenerateCode = () => {
-    let code = generateCode('VVTM')
+    const code = generateCode('VVTM')
     setState((state) => ({
       ...state,
-      code: code
+      code
     }))
     validateCode(code)
   }
 
   useEffect(() => {
-    props.getCategories();
+    props.getCategories()
     window.$('#modal-add-asset').on('shown.bs.modal', regenerateCode)
     return () => {
       window.$('#modal-add-asset').unbind('shown.bs.modal', regenerateCode)
@@ -46,32 +47,31 @@ function GeneralTab(props) {
   // Function format dữ liệu Date thành string
   const formatDate = (date, monthYear = false) => {
     if (!date) return null
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
 
   // Function upload avatar
   const handleUpload = (e) => {
-    var file = e.target.files[0]
+    const file = e.target.files[0]
 
     if (file) {
-      var fileLoad = new FileReader()
+      const fileLoad = new FileReader()
       fileLoad.readAsDataURL(file)
       fileLoad.onload = () => {
         setState((state) => {
@@ -105,7 +105,7 @@ function GeneralTab(props) {
     validateCode(value, true)
   }
   const validateCode = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateCode(props.translate, value)
+    const { message } = ValidationHelper.validateCode(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -128,7 +128,7 @@ function GeneralTab(props) {
     validateAssetName(value, true)
   }
   const validateAssetName = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -151,7 +151,7 @@ function GeneralTab(props) {
     validateSerial(value, true)
   }
   const validateSerial = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -173,7 +173,7 @@ function GeneralTab(props) {
     setState((state) => {
       return {
         ...state,
-        isVehicle: value[0] == 'vehicle' ? true : false,
+        isVehicle: value[0] == 'vehicle',
         group: value[0]
       }
     })
@@ -186,7 +186,7 @@ function GeneralTab(props) {
 
   const handleAssetTypeChange = async (value) => {
     const { translate } = props
-    let { message } = ValidationHelper.validateEmpty(translate, value[0])
+    const { message } = ValidationHelper.validateEmpty(translate, value[0])
 
     await setState((state) => {
       return {
@@ -207,8 +207,8 @@ function GeneralTab(props) {
         return assetType.indexOf(type.id) > -1
       })
     }
-    let defaultInfo = []
-    let nameFieldList = []
+    const defaultInfo = []
+    const nameFieldList = []
 
     for (let i = 0; i < listAssetTypes.length; i++) {
       for (let j = 0; j < listAssetTypes[i].defaultInformation.length; j++)
@@ -236,7 +236,7 @@ function GeneralTab(props) {
     validatePurchaseDate(value, true)
   }
   const validatePurchaseDate = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -258,7 +258,7 @@ function GeneralTab(props) {
     validateWarrantyExpirationDate(value, true)
   }
   const validateWarrantyExpirationDate = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -316,7 +316,7 @@ function GeneralTab(props) {
     validateHandoverFromDate(value, true)
   }
   const validateHandoverFromDate = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -338,7 +338,7 @@ function GeneralTab(props) {
     validateHandoverToDate(value, true)
   }
   const validateHandoverToDate = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -371,7 +371,7 @@ function GeneralTab(props) {
    * Bắt sự kiện thay đổi mô tả
    */
   const handleDescriptionChange = (e) => {
-    let value = e.target.value
+    const { value } = e.target
     setState((state) => {
       return {
         ...state,
@@ -420,12 +420,12 @@ function GeneralTab(props) {
    * Bắt sự kiện click thêm Thông tin chi tiết
    */
   const handleAddDetailInfo = () => {
-    var detailInfo = state.detailInfo
+    const { detailInfo } = state
 
     if (detailInfo.length !== 0) {
       let result
 
-      for (let n in detailInfo) {
+      for (const n in detailInfo) {
         result = validateNameField(detailInfo[n].nameField, n) && validateValue(detailInfo[n].value, n)
         if (!result) {
           validateNameField(detailInfo[n].nameField, n)
@@ -456,21 +456,21 @@ function GeneralTab(props) {
    * Bắt sự kiện chỉnh sửa tên trường dữ liệu thông tin chi tiết
    */
   const handleChangeNameField = (e, index) => {
-    var { value } = e.target
+    const { value } = e.target
     validateNameField(value, index)
   }
   const validateNameField = (value, className, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
-      var { detailInfo } = state
+      const { detailInfo } = state
       detailInfo[className] = { ...detailInfo[className], nameField: value }
       setState((state) => {
         return {
           ...state,
           errorOnNameField: message,
           errorOnNameFieldPosition: message ? className : null,
-          detailInfo: detailInfo
+          detailInfo
         }
       })
       props.handleChange('detailInfo', detailInfo)
@@ -482,21 +482,21 @@ function GeneralTab(props) {
    * Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin chi tiết
    */
   const handleChangeValue = (e, index) => {
-    var { value } = e.target
+    const { value } = e.target
     validateValue(value, index)
   }
   const validateValue = (value, className, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
-      var { detailInfo } = state
-      detailInfo[className] = { ...detailInfo[className], value: value }
+      const { detailInfo } = state
+      detailInfo[className] = { ...detailInfo[className], value }
       setState((state) => {
         return {
           ...state,
           errorOnValue: message,
           errorOnValuePosition: message ? className : null,
-          detailInfo: detailInfo
+          detailInfo
         }
       })
       props.handleChange('detailInfo', detailInfo)
@@ -508,10 +508,10 @@ function GeneralTab(props) {
    * Bắt sự kiện xóa thông tin chi tiết
    */
   const delete_function = (index) => {
-    var { detailInfo } = state
+    const { detailInfo } = state
     detailInfo.splice(index, 1)
     if (detailInfo.length !== 0) {
-      for (let n in detailInfo) {
+      for (const n in detailInfo) {
         validateNameField(detailInfo[n].nameField, n)
         validateValue(detailInfo[n].value, n)
       }
@@ -519,7 +519,7 @@ function GeneralTab(props) {
       setState((state) => {
         return {
           ...state,
-          detailInfo: detailInfo,
+          detailInfo,
           errorOnValue: undefined,
           errorOnNameField: undefined
         }
@@ -528,34 +528,32 @@ function GeneralTab(props) {
   }
 
   const handleVehicleKindChange = (value) => {
-    var { detailInfo } = state;
+    let { detailInfo } = state
     if (value) {
-        if (detailInfo.length > 0) {
-            detailInfo = detailInfo.filter((detailItem) => {
-                return detailItem.nameField != "vehicleKind";
-            })
-        }
-        detailInfo = [...detailInfo, { nameField: "vehicleKind", value: value[0] }]
-    } else {
-        if (detailInfo.length > 0) {
-            detailInfo = detailInfo.filter((detailItem) => {
-                return detailItem.nameField != "vehicleKind";
-            })
-        }
+      if (detailInfo.length > 0) {
+        detailInfo = detailInfo.filter((detailItem) => {
+          return detailItem.nameField != 'vehicleKind'
+        })
+      }
+      detailInfo = [...detailInfo, { nameField: 'vehicleKind', value: value[0] }]
+    } else if (detailInfo.length > 0) {
+      detailInfo = detailInfo.filter((detailItem) => {
+        return detailItem.nameField != 'vehicleKind'
+      })
     }
-    setState(state => {
-        return {
-            ...state,
-            vehicle: value[0],
-            detailInfo: detailInfo
-        }
-    });
-    props.handleChange("detailInfo", detailInfo);
-}
+    setState((state) => {
+      return {
+        ...state,
+        vehicle: value[0],
+        detailInfo
+      }
+    })
+    props.handleChange('detailInfo', detailInfo)
+  }
 
-const handleExcludingProductChange = (value) => {
-    console.log("tao day:::", value);
-}
+  const handleExcludingProductChange = (value) => {
+    console.log('tao day:::', value)
+  }
 
   if (
     prevProps.id !== props.id ||
@@ -604,7 +602,7 @@ const handleExcludingProductChange = (value) => {
     setPrevProps(props)
   }
 
-  const { id, translate, user, assetsManager, role, department, categories } = props
+  const { id, translate, user, assetsManager, role, department, categories, assetType } = props
   const {
     img,
     defaultAvatar,
@@ -638,19 +636,19 @@ const handleExcludingProductChange = (value) => {
     readByRoles,
     errorOnNameFieldPosition,
     errorOnValuePosition,
-    vehicle, 
-    isVehicle, 
+    vehicle,
+    isVehicle,
     excludingProduct
   } = state
 
-  var userlist = user.list,
-    departmentlist = department.list
-  let startDate = status == 'in_use' && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].startDate) : ''
-  let endDate = status == 'in_use' && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].endDate) : ''
+  const userlist = user.list
+  const departmentlist = department.list
+  const startDate = status == 'in_use' && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].startDate) : ''
+  const endDate = status == 'in_use' && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].endDate) : ''
 
-  let assetbuilding = assetsManager && assetsManager.buildingAssets
-  let assetbuildinglist = assetbuilding && assetbuilding.list
-  let buildingList =
+  const assetbuilding = assetsManager && assetsManager.buildingAssets
+  const assetbuildinglist = assetbuilding && assetbuilding.list
+  const buildingList =
     assetbuildinglist &&
     assetbuildinglist.map((node) => {
       return {
@@ -660,8 +658,8 @@ const handleExcludingProductChange = (value) => {
         parent: node.location
       }
     })
-  let assetTypeName = assetType && assetType.listAssetTypes
-  let typeArr =
+  const assetTypeName = assetType && assetType.listAssetTypes
+  const typeArr =
     assetTypeName &&
     assetTypeName.map((item) => {
       return {
@@ -670,13 +668,15 @@ const handleExcludingProductChange = (value) => {
         parent: item.parent ? item.parent._id : null
       }
     })
-    let listCategory = categories && categories.listPaginate;
-        let categoryArr = listCategory && listCategory.map(item => {
-            return {
-                _id: item._id,
-                name: item.name,
-            };
-        })
+  const listCategory = categories && categories.listPaginate
+  const categoryArr =
+    listCategory &&
+    listCategory.map((item) => {
+      return {
+        _id: item._id,
+        name: item.name
+      }
+    })
   return (
     <div id={id} className='tab-pane active'>
       <div className='row'>
@@ -710,7 +710,7 @@ const handleExcludingProductChange = (value) => {
                   type='text'
                   className='form-control'
                   name='code'
-                  value={code?code:""}
+                  value={code || ''}
                   onChange={handleCodeChange}
                   placeholder={translate('asset.general_information.asset_code')}
                   autoComplete='off'
@@ -728,7 +728,7 @@ const handleExcludingProductChange = (value) => {
                   type='text'
                   className='form-control'
                   name='assetName'
-                  value={assetName?assetName:""}
+                  value={assetName || ''}
                   onChange={handleAssetNameChange}
                   placeholder={translate('asset.general_information.asset_name')}
                   autoComplete='off'
@@ -743,7 +743,7 @@ const handleExcludingProductChange = (value) => {
                   type='text'
                   className='form-control'
                   name='serial'
-                  value={serial?serial:""}
+                  value={serial || ''}
                   onChange={handleSerialChange}
                   placeholder={translate('asset.general_information.serial_number')}
                   autoComplete='off'
@@ -770,42 +770,45 @@ const handleExcludingProductChange = (value) => {
                 />
               </div>
 
-              {isVehicle &&
-                                    <>
-                                        <div className='row'>
-                                            <div className="col-md-9 offset-md-3">
-                                                <div className="form-group">
-                                                    <label>{translate('asset.asset_info.vehicle_kind')}<span className="text-red">*</span></label>
-                                                    <SelectBox
-                                                        id={`vehicle${id}`}
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        value={vehicle}
-                                                        items={[
-                                                            { value: '', text: `---${translate('asset.asset_info.select_vehicle_kind')}---` },
-                                                            { value: 'bike', text: translate('asset.asset_info.bike') },
-                                                            { value: 'truck', text: translate('asset.asset_info.truck') },
-                                                        ]}
-                                                        onChange={handleVehicleKindChange}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className='row'>
-                                            <div className="col-md-9 offset-md-3">
-                                                <div className="form-group">
-                                                    <label>{translate('asset.asset_info.excluded_good_category')}</label>
-                                                    <TreeSelect
-                                                        data={categoryArr}
-                                                        value={excludingProduct}
-                                                        handleChange={handleExcludingProductChange}
-                                                        mode="hierarchical"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </>
-                                }
+              {isVehicle && (
+                <>
+                  <div className='row'>
+                    <div className='col-md-9 offset-md-3'>
+                      <div className='form-group'>
+                        <label>
+                          {translate('asset.asset_info.vehicle_kind')}
+                          <span className='text-red'>*</span>
+                        </label>
+                        <SelectBox
+                          id={`vehicle${id}`}
+                          className='form-control select2'
+                          style={{ width: '100%' }}
+                          value={vehicle}
+                          items={[
+                            { value: '', text: `---${translate('asset.asset_info.select_vehicle_kind')}---` },
+                            { value: 'bike', text: translate('asset.asset_info.bike') },
+                            { value: 'truck', text: translate('asset.asset_info.truck') }
+                          ]}
+                          onChange={handleVehicleKindChange}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-md-9 offset-md-3'>
+                      <div className='form-group'>
+                        <label>{translate('asset.asset_info.excluded_good_category')}</label>
+                        <TreeSelect
+                          data={categoryArr}
+                          value={excludingProduct}
+                          handleChange={handleExcludingProductChange}
+                          mode='hierarchical'
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Loại tài sản */}
               <div className={`form-group ${!errorOnAssetType ? '' : 'has-error'}`}>
@@ -848,7 +851,7 @@ const handleExcludingProductChange = (value) => {
                     className='form-control select2'
                     style={{ width: '100%' }}
                     items={userlist.map((x) => {
-                      return { value: x.id, text: x.name + ' - ' + x.email }
+                      return { value: x.id, text: `${x.name} - ${x.email}` }
                     })}
                     onChange={handleManagedByChange}
                     value={managedBy}
@@ -871,7 +874,7 @@ const handleExcludingProductChange = (value) => {
                     })}
                     value={readByRoles}
                     onChange={handleRoles}
-                    multiple={true}
+                    multiple
                   />
                 </div>
               </div>
@@ -930,7 +933,7 @@ const handleExcludingProductChange = (value) => {
               </div>
 
               {/* Người sử dụng */}
-              <div className={`form-group`}>
+              <div className='form-group'>
                 <label>{translate('asset.general_information.user')}</label>
                 <SelectBox
                   id={`assignedToUserBox${id}`}
@@ -940,7 +943,7 @@ const handleExcludingProductChange = (value) => {
                   items={[
                     { value: -1, text: 'Chưa có người được giao sử dụng' },
                     ...userlist.map((x) => {
-                      return { value: x.id, text: x.name + ' - ' + x.email }
+                      return { value: x.id, text: `${x.name} - ${x.email}` }
                     })
                   ]}
                   disabled
@@ -991,7 +994,7 @@ const handleExcludingProductChange = (value) => {
                   onChange={handleDescriptionChange}
                   placeholder='Enter ...'
                   autoComplete='off'
-                ></textarea>
+                />
               </div>
             </div>
           </div>
@@ -1086,7 +1089,7 @@ function mapState(state) {
 const actionCreators = {
   getUser: UserActions.get,
   getAssetType: AssetTypeActions.getAssetTypes,
-  getCategories: CategoryActions.getCategories,
+  getCategories: CategoryActions.getCategories
 }
 const generalTab = connect(mapState, actionCreators)(withTranslate(GeneralTab))
 export { generalTab as GeneralTab }

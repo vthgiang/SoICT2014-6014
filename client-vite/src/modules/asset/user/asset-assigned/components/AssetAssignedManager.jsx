@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -59,39 +59,38 @@ function AssetAssignedManager(props) {
 
   // Function format dữ liệu Date thành string
   const formatDate2 = (date, monthYear = false) => {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     if (monthYear === true) {
       return [month, year].join('-')
-    } else {
-      return [day, month, year].join('-')
     }
+    return [day, month, year].join('-')
   }
 
   // Function format ngày hiện tại thành dạnh mm-yyyy
   const formatDate = (date) => {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     return [month, year].join('-')
@@ -197,7 +196,7 @@ function AssetAssignedManager(props) {
 
   // Bắt sự kiện chuyển trang
   const setPage = async (pageNumber) => {
-    var page = (pageNumber - 1) * state.limit
+    const page = (pageNumber - 1) * state.limit
     await setState((state) => {
       return {
         ...state,
@@ -207,9 +206,9 @@ function AssetAssignedManager(props) {
     props.getAllAsset({ ...state, page: 0, limit: 10000 })
   }
   const getAssetTypes = () => {
-    let { assetType } = props
-    let assetTypeName = assetType && assetType.listAssetTypes
-    let typeArr = []
+    const { assetType } = props
+    const assetTypeName = assetType && assetType.listAssetTypes
+    const typeArr = []
     assetTypeName.map((item) => {
       typeArr.push({
         _id: item._id,
@@ -222,9 +221,9 @@ function AssetAssignedManager(props) {
   }
 
   const getUserAndDepartment = () => {
-    let { user } = props
-    let listUser = user && user.list
-    let data = {
+    const { user } = props
+    const listUser = user && user.list
+    const data = {
       userArr: []
     }
 
@@ -243,35 +242,38 @@ function AssetAssignedManager(props) {
 
     if (status === 'ready_to_use') {
       return translate('asset.general_information.ready_use')
-    } else if (status === 'in_use') {
-      return translate('asset.general_information.using')
-    } else if (status === 'broken') {
-      return translate('asset.general_information.damaged')
-    } else if (status === 'lost') {
-      return translate('asset.general_information.lost')
-    } else if (status === 'disposed') {
-      return translate('asset.general_information.disposal')
-    } else {
-      return ''
     }
+    if (status === 'in_use') {
+      return translate('asset.general_information.using')
+    }
+    if (status === 'broken') {
+      return translate('asset.general_information.damaged')
+    }
+    if (status === 'lost') {
+      return translate('asset.general_information.lost')
+    }
+    if (status === 'disposed') {
+      return translate('asset.general_information.disposal')
+    }
+    return ''
   }
 
   const { id, translate, assetsManager, assetType, user, auth } = props
   const { page, limit, currentRowView, currentRow, tableId } = state
 
-  var lists = ''
-  var userlist = user.list
-  var assettypelist = assetType.listAssetTypes
-  let assetTypeName = state.assetType ? state.assetType : []
+  let lists = ''
+  const userlist = user.list
+  const assettypelist = assetType.listAssetTypes
+  const assetTypeName = state.assetType ? state.assetType : []
 
-  var formater = new Intl.NumberFormat()
+  const formater = new Intl.NumberFormat()
   if (assetsManager.isLoading === false) {
     lists = assetsManager.listAssets
   }
 
-  var currentPage = parseInt(page / limit + 1)
-  let typeArr = getAssetTypes()
-  let dataSelectBox = getUserAndDepartment()
+  const currentPage = parseInt(page / limit + 1)
+  const typeArr = getAssetTypes()
+  const dataSelectBox = getUserAndDepartment()
   let pageTotal = 0
   let listAssetAssigns
   let listAssetAssignShow
@@ -319,7 +321,7 @@ function AssetAssignedManager(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('asset.general_information.asset_group')}</label>
             <SelectMulti
-              id={`multiSelectGroupInManagement`}
+              id='multiSelectGroupInManagement'
               multiple='multiple'
               options={{
                 nonSelectedText: translate('asset.asset_info.select_group'),
@@ -332,7 +334,7 @@ function AssetAssignedManager(props) {
                 { value: 'machine', text: translate('asset.dashboard.machine') },
                 { value: 'other', text: translate('asset.dashboard.other') }
               ]}
-            ></SelectMulti>
+            />
           </div>
 
           {/* Loại tài sản */}
@@ -347,7 +349,7 @@ function AssetAssignedManager(props) {
           <div className='form-group'>
             <label className='form-control-static'>{translate('page.status')}</label>
             <SelectMulti
-              id={`multiSelectStatus1`}
+              id='multiSelectStatus1'
               multiple='multiple'
               options={{
                 nonSelectedText: translate('page.non_status'),
@@ -361,11 +363,11 @@ function AssetAssignedManager(props) {
                 { value: 'lost', text: translate('asset.general_information.lost') },
                 { value: 'disposed', text: translate('asset.general_information.disposal') }
               ]}
-            ></SelectMulti>
+            />
           </div>
           {/* Button tìm kiếm */}
           <div className='form-group'>
-            <label htmlFor=''></label>
+            <label htmlFor='' />
             <button
               type='button'
               className='btn btn-success'
@@ -411,7 +413,7 @@ function AssetAssignedManager(props) {
                     <td>
                       {x.assetType && x.assetType.length
                         ? x.assetType.map((item, index) => {
-                            let suffix = index < x.assetType.length - 1 ? ', ' : ''
+                            const suffix = index < x.assetType.length - 1 ? ', ' : ''
                             return item.typeName + suffix
                           })
                         : ''}
@@ -445,7 +447,7 @@ function AssetAssignedManager(props) {
         )}
 
         {/* PaginateBar */}
-        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
+        <PaginateBar pageTotal={pageTotal || 0} currentPage={currentPage} func={setPage} />
       </div>
 
       {/* Form xem chi tiết tài sản */}

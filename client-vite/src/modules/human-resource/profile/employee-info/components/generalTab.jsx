@@ -14,20 +14,20 @@ function GeneralTab(props) {
    */
   const formatDate = (date, monthYear = false) => {
     if (date) {
-      let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear()
+      const d = new Date(date)
+      let month = `${d.getMonth() + 1}`
+      let day = `${d.getDate()}`
+      const year = d.getFullYear()
 
-      if (month.length < 2) month = '0' + month
-      if (day.length < 2) day = '0' + day
+      if (month.length < 2) month = `0${month}`
+      if (day.length < 2) day = `0${day}`
 
       if (monthYear === true) {
         return [month, year].join('-')
-      } else return [day, month, year].join('-')
-    } else {
-      return date
+      }
+      return [day, month, year].join('-')
     }
+    return date
   }
 
   useEffect(() => {
@@ -139,7 +139,7 @@ function GeneralTab(props) {
             </div>
           </div>
           <div className='row'>
-            {/* Trạng thái*/}
+            {/* Trạng thái */}
             <div className='form-group col-lg-6 col-md-6 col-ms-6 col-xs-6'>
               <strong>{translate('general.status')}&emsp; </strong>
               {translate(`human_resource.profile.${status}`)}
@@ -163,12 +163,12 @@ function GeneralTab(props) {
             </div>
           </div>
           <div className='row'>
-            {/* Ngày bắt đầu làm việc*/}
+            {/* Ngày bắt đầu làm việc */}
             <div className='form-group col-lg-6 col-md-6 col-ms-6 col-xs-6'>
               <strong>{translate('human_resource.profile.starting_date')}&emsp; </strong>
               {formatDate(startingDate)}
             </div>
-            {/*Ngày nghỉ việc */}
+            {/* Ngày nghỉ việc */}
             <div className='form-group col-lg-6 col-md-6 col-ms-6 col-xs-6'>
               <strong>{translate('human_resource.profile.leaving_date')}&emsp; </strong>
               {formatDate(leavingDate)}

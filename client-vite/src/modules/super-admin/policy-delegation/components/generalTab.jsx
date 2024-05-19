@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { ErrorLabel } from '../../../../common-components'
@@ -32,7 +32,7 @@ function GeneralTab(props) {
    */
   const handlePolicyName = (e) => {
     const { value } = e.target
-    let result = ValidationHelper.validateName(translate, value, 6, 255)
+    const result = ValidationHelper.validateName(translate, value, 6, 255)
 
     setState({
       ...state,
@@ -66,14 +66,14 @@ function GeneralTab(props) {
           {translate('manage_delegation_policy.policyName')}
           <span className='text-red'>*</span>
         </label>
-        <input type='text' className='form-control' value={policyName} onChange={handlePolicyName}></input>
+        <input type='text' className='form-control' value={policyName} onChange={handlePolicyName} />
         <ErrorLabel content={policyNameError.message} />
       </div>
 
       {/* Mô tả ví dụ */}
-      <div className={`form-group`}>
+      <div className='form-group'>
         <label>{translate('manage_delegation_policy.policy_description')}</label>
-        <input type='text' className='form-control' value={description} onChange={handlePolicyDescription}></input>
+        <input type='text' className='form-control' value={description} onChange={handlePolicyDescription} />
       </div>
     </div>
   )

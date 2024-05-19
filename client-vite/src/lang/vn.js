@@ -5231,7 +5231,16 @@ export default {
           title: 'Quản lý phân bổ'
         },
         config_management: {
-          title: 'Quản lý cấu hình'
+          title: 'Quản lý cấu hình',
+          config_component: 'Cấu hình giải thuật',
+          automatic: 'Tự động chạy giải thuật với cấu hình có sẵn?',
+          automatic_on: 'Sử dụng tham số đầu vào có sẵn',
+          automatic_off: 'Tự thiết lập',
+          number_generation: 'Số thế hệ?',
+          solution_size: 'Kích thước giải pháp',
+          harmony_memory_consideration_rate: 'Tỷ lệ xem xét bộ nhớ hòa âm',
+          pitch_adjusting_rate: 'Tỷ lệ điều chỉnh cao độ',
+          bandwidth: 'Độ rộng băng tần'
         },
         task_package_management: {
           title: 'Quản lý tập nhiệm vụ'

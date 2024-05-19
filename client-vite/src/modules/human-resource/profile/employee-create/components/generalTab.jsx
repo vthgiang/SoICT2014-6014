@@ -105,7 +105,7 @@ function GeneralTab(props) {
     props.getAllRoles()
   }, [])
 
-  let listRoles = role?.list.filter((x) => x.type.name !== 'Root')
+  const listRoles = role?.list.filter((x) => x.type.name !== 'Root')
 
   /**
    * Function format dữ liệu Date thành string
@@ -114,27 +114,27 @@ function GeneralTab(props) {
    */
   const formatDate = (date, monthYear = false) => {
     if (date) {
-      let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear()
+      const d = new Date(date)
+      let month = `${d.getMonth() + 1}`
+      let day = `${d.getDate()}`
+      const year = d.getFullYear()
 
-      if (month.length < 2) month = '0' + month
-      if (day.length < 2) day = '0' + day
+      if (month.length < 2) month = `0${month}`
+      if (day.length < 2) day = `0${day}`
 
       if (monthYear === true) {
         return [month, year].join('-')
-      } else return [day, month, year].join('-')
-    } else {
-      return date
+      }
+      return [day, month, year].join('-')
     }
+    return date
   }
 
   /** Function upload avatar  */
   const handleUpload = (e) => {
-    let file = e.target.files[0]
+    const file = e.target.files[0]
     if (file !== undefined) {
-      let fileLoad = new FileReader()
+      const fileLoad = new FileReader()
       fileLoad.readAsDataURL(file)
       fileLoad.onload = () => {
         setState((state) => {
@@ -206,7 +206,7 @@ function GeneralTab(props) {
 
   const validateEmployeeNumber = (value, willUpdateState = true) => {
     const { translate } = props
-    let { message } = ValidationHelper.validateCode(translate, value)
+    const { message } = ValidationHelper.validateCode(translate, value)
     if (willUpdateState) {
       setState((state) => {
         return {
@@ -240,7 +240,7 @@ function GeneralTab(props) {
 
   const validateFullName = (value, willUpdateState = true) => {
     const { translate } = props
-    let { message } = ValidationHelper.validateEmpty(translate, value)
+    const { message } = ValidationHelper.validateEmpty(translate, value)
 
     if (willUpdateState) {
       setState((state) => {
@@ -313,16 +313,16 @@ function GeneralTab(props) {
     const { translate } = props
     let { errorOnLeavingDate, leavingDate } = state
     console.log(value)
-    let errorOnStartingDate = undefined
+    let errorOnStartingDate
     let startDate
     if (value) {
-      let partValue = value.split('-')
+      const partValue = value.split('-')
       startDate = [partValue[2], partValue[1], partValue[0]].join('-')
-      let date = new Date(startDate)
+      const date = new Date(startDate)
       if (leavingDate) {
         let endDate = leavingDate.split('-')
         endDate = [endDate[2], endDate[1], endDate[0]].join('-')
-        let d = new Date(endDate)
+        const d = new Date(endDate)
         if (date.getTime() >= d.getTime()) {
           errorOnStartingDate = translate('human_resource.profile.starting_date_before_leaving_date')
         } else {
@@ -340,7 +340,7 @@ function GeneralTab(props) {
         ...state,
         startingDate: value,
         leavingDate: value ? leavingDate : '',
-        errorOnStartingDate: errorOnStartingDate,
+        errorOnStartingDate,
         errorOnLeavingDate:
           errorOnLeavingDate === translate('human_resource.profile.starting_date_required') ? undefined : errorOnLeavingDate
       }
@@ -354,16 +354,16 @@ function GeneralTab(props) {
    */
   const handleLeavingDateChange = (value) => {
     const { translate } = props
-    let { startingDate } = state
+    const { startingDate } = state
 
     if (value) {
-      let partValue = value.split('-')
-      let endDate = [partValue[2], partValue[1], partValue[0]].join('-')
-      let date = new Date(endDate)
+      const partValue = value.split('-')
+      const endDate = [partValue[2], partValue[1], partValue[0]].join('-')
+      const date = new Date(endDate)
       if (startingDate) {
         let startDate = startingDate.split('-')
         startDate = [startDate[2], startDate[1], startDate[0]].join('-')
-        let d = new Date(startDate)
+        const d = new Date(startDate)
         if (d.getTime() >= date.getTime()) {
           setState((state) => {
             return {
@@ -462,14 +462,14 @@ function GeneralTab(props) {
                 type='text'
                 className='form-control'
                 name='employeeNumber'
-                value={employeeNumber ? employeeNumber : ''}
+                value={employeeNumber || ''}
                 placeholder={translate('human_resource.profile.staff_number')}
                 onChange={handleMSNVChange}
               />
               <ErrorLabel content={errorOnEmployeeNumber} />
             </div>
             {/* Mã số chấm công */}
-            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
               <label htmlFor='MSCC'>{translate('human_resource.profile.attendance_code')}</label>
               <input
                 type='text'
@@ -509,25 +509,13 @@ function GeneralTab(props) {
               <div>
                 <div className='radio-inline'>
                   <label>
-                    <input
-                      type='radio'
-                      name={`gender${id}`}
-                      value='male'
-                      onChange={handleGenderChange}
-                      checked={gender === 'male' ? true : false}
-                    />
+                    <input type='radio' name={`gender${id}`} value='male' onChange={handleGenderChange} checked={gender === 'male'} />
                     &nbsp;&nbsp;{translate('human_resource.profile.male')}
                   </label>
                 </div>
                 <div className='radio-inline'>
                   <label>
-                    <input
-                      type='radio'
-                      name={`gender${id}`}
-                      value='female'
-                      onChange={handleGenderChange}
-                      checked={gender === 'female' ? true : false}
-                    />
+                    <input type='radio' name={`gender${id}`} value='female' onChange={handleGenderChange} checked={gender === 'female'} />
                     &nbsp;&nbsp;{translate('human_resource.profile.female')}
                   </label>
                 </div>
@@ -547,7 +535,7 @@ function GeneralTab(props) {
                 type='text'
                 className='form-control'
                 name='birthplace'
-                value={birthplace ? birthplace : ''}
+                value={birthplace || ''}
                 onChange={handleChange}
                 placeholder={translate('human_resource.profile.place_birth')}
                 autoComplete='off'
@@ -586,7 +574,7 @@ function GeneralTab(props) {
                       name={`maritalStatus${id}`}
                       value='single'
                       onChange={handleMaritalStatusChange}
-                      checked={maritalStatus === 'single' ? true : false}
+                      checked={maritalStatus === 'single'}
                     />
                     &nbsp;&nbsp;{translate('human_resource.profile.single')}
                   </label>
@@ -598,7 +586,7 @@ function GeneralTab(props) {
                       name={`maritalStatus${id}`}
                       value='married'
                       onChange={handleMaritalStatusChange}
-                      checked={maritalStatus === 'married' ? true : false}
+                      checked={maritalStatus === 'married'}
                     />
                     &nbsp;&nbsp;{translate('human_resource.profile.married')}
                   </label>
@@ -619,7 +607,7 @@ function GeneralTab(props) {
                 })}
                 onChange={handleEmployeeRolesChange}
                 value={roles}
-                multiple={true}
+                multiple
               />
             </div>
           </div>
@@ -627,7 +615,7 @@ function GeneralTab(props) {
         <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
           <div className='row'>
             {/* Email công ty */}
-            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-4 col-md-4 col-ms-12 col-xs-12'>
               <label htmlFor='emailCompany'>{translate('human_resource.profile.email')}</label>
               <input
                 type='email'
@@ -642,12 +630,7 @@ function GeneralTab(props) {
             {/* Ngày bắt đầu làm việc */}
             <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnStartingDate && 'has-error'}`}>
               <label>{translate('human_resource.profile.starting_date')}</label>
-              <DatePicker
-                id={`startingDate${id}`}
-                deleteValue={leavingDate ? false : true}
-                value={startingDate}
-                onChange={handleStartingDateChange}
-              />
+              <DatePicker id={`startingDate${id}`} deleteValue={!leavingDate} value={startingDate} onChange={handleStartingDateChange} />
               <ErrorLabel content={errorOnStartingDate} />
             </div>
             {/* Ngày nghỉ việc */}
@@ -659,7 +642,7 @@ function GeneralTab(props) {
           </div>
           <div className='row'>
             {/* Số CMND */}
-            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-4 col-md-4 col-ms-12 col-xs-12'>
               <label htmlFor='CMND'>{translate('human_resource.profile.id_card')}</label>
               <input
                 type='text'
@@ -672,12 +655,12 @@ function GeneralTab(props) {
               />
             </div>
             {/* Ngày cấp */}
-            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-4 col-md-4 col-ms-12 col-xs-12'>
               <label>{translate('human_resource.profile.date_issued')}</label>
               <DatePicker id={`dateCMND${id}`} value={identityCardDate} onChange={handleDateCMNDChange} />
             </div>
             {/* Nơi cấp */}
-            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+            <div className='form-group col-lg-4 col-md-4 col-ms-12 col-xs-12'>
               <label htmlFor='addressCMND'>{translate('human_resource.profile.issued_by')}</label>
               <input
                 type='text'
@@ -698,7 +681,7 @@ function GeneralTab(props) {
                 type='text'
                 className='form-control'
                 name='ethnic'
-                value={ethnic ? ethnic : ''}
+                value={ethnic || ''}
                 onChange={handleChange}
                 placeholder={translate('human_resource.profile.ethnic')}
                 autoComplete='off'
@@ -711,7 +694,7 @@ function GeneralTab(props) {
                 type='text'
                 className='form-control'
                 name='religion'
-                value={religion ? religion : ''}
+                value={religion || ''}
                 onChange={handleChange}
                 placeholder={translate('human_resource.profile.religion')}
                 autoComplete='off'
@@ -724,7 +707,7 @@ function GeneralTab(props) {
                 type='text'
                 className='form-control'
                 name='nationality'
-                value={nationality ? nationality : ''}
+                value={nationality || ''}
                 onChange={handleChange}
                 placeholder={translate('human_resource.profile.nationality')}
                 autoComplete='off'

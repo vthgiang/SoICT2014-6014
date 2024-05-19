@@ -5171,7 +5171,16 @@ export default {
           title: 'Allocation management'
         },
         config_management: {
-          title: 'Config management'
+          title: 'Config management',
+          config_component: "Algorithms' configs",
+          automatic: 'Automatically run the algorithm with the preset configuration?',
+          automatic_on: 'Use the preset input parameters',
+          automatic_off: 'Set up manually',
+          number_generation: 'Number of generations?',
+          solution_size: 'Solution size',
+          harmony_memory_consideration_rate: 'Harmony memory consideration rate',
+          pitch_adjusting_rate: 'Pitch Adjusting Rate',
+          bandwidth: 'Bandwidth'
         },
         task_package_management: {
           title: 'Task package management'

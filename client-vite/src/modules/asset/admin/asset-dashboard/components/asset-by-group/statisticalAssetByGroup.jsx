@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import useDeepCompareEffect from 'use-deep-compare-effect'
@@ -7,10 +7,9 @@ import 'c3/c3.css'
 import Swal from 'sweetalert2'
 
 function StatisticalAssetByGroup(props) {
-  const [state, setState] = useState([])
   const { translate } = props
   useDeepCompareEffect(() => {
-    let lineBarChart = [[translate('asset.dashboard.amount')], [translate('asset.dashboard.value')], [translate('asset.dashboard.lost')]]
+    const lineBarChart = [[translate('asset.dashboard.amount')], [translate('asset.dashboard.value')], [translate('asset.dashboard.lost')]]
 
     const indices = { amount: 0, value: 1, lost_value: 2 }
     console.log('DEBUG amountOfAsset: ', props.amountOfAsset)
@@ -29,10 +28,10 @@ function StatisticalAssetByGroup(props) {
 
   const barLineChart = (data) => {
     console.log('data: ', data)
-    let { translate } = props
-    let amount = translate('asset.dashboard.amount')
-    let value = translate('asset.dashboard.value')
-    let lost = translate('asset.dashboard.lost')
+    const { translate } = props
+    const amount = translate('asset.dashboard.amount')
+    const value = translate('asset.dashboard.value')
+    const lost = translate('asset.dashboard.lost')
     const types = {
       [amount]: 'line',
       [value]: 'bar',
@@ -57,9 +56,9 @@ function StatisticalAssetByGroup(props) {
 
       data: {
         columns: data,
-        types: types,
+        types,
         axes: customAxes,
-        groups: groups
+        groups
       },
 
       padding: {
@@ -78,8 +77,9 @@ function StatisticalAssetByGroup(props) {
         y: {
           label: 'Tiền (vnđ)',
           tick: {
-            format: function (value) {
-              let valueByUnit, unit
+            format(value) {
+              let valueByUnit
+              let unit
               if (value >= 1000000000) {
                 valueByUnit = Math.round(value / 1000000000)
                 unit = 'B'
@@ -128,12 +128,12 @@ function StatisticalAssetByGroup(props) {
         <div style={{ marginRight: '5px' }} className='box-title'>
           Thống kê tài sản theo nhóm
         </div>
-        <a className='text-red' title={'Giải thích các nhóm tài sản'} onClick={showDetailAssetGroup}>
+        <a className='text-red' title='Giải thích các nhóm tài sản' onClick={showDetailAssetGroup}>
           <i className='fa fa-question-circle' style={{ cursor: 'pointer', color: '#dd4b39' }} />
         </a>
       </div>
       <div className='box-body qlcv'>
-        <div id='statisticalAssetByGroup'></div>
+        <div id='statisticalAssetByGroup' />
       </div>
     </div>
   )
