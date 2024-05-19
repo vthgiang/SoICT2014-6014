@@ -1,16 +1,5 @@
 import { sendRequest } from '../../../helpers/requestHelper'
 
-export const NotificationServices = {
-  getAllManualNotifications,
-  paginateManualNotifications,
-  getAllNotifications,
-  paginateNotifications,
-  create,
-  readedNotification,
-  deleteManualNotification,
-  deleteNotification
-}
-
 function getAllManualNotifications() {
   return sendRequest(
     {
@@ -110,4 +99,15 @@ function deleteNotification(id) {
     true,
     'notification'
   )
+}
+
+export const NotificationServices = {
+  getAllManualNotifications,
+  paginateManualNotifications,
+  getAllNotifications,
+  paginateNotifications,
+  create,
+  readedNotification,
+  deleteManualNotification,
+  deleteNotification
 }

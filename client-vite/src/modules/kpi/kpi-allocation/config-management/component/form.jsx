@@ -1,37 +1,36 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslate } from 'react-redux-multilingual/lib/context'
 import Swal from 'sweetalert2'
+import { useDispatch, useSelector } from 'react-redux'
+import { ConfigManagementAction } from '../redux/actions'
 
 function ConfigManagementForm() {
   const translate = useTranslate()
-  const [numberGeneration, setNumberGeneration] = useState(100)
-  const [solutionSize, setSolutionSize] = useState(30)
-  const [hmcr, setHmcr] = useState(0.5)
-  const [par, setPar] = useState(0.5)
-  const [bandwidth, setBandwith] = useState(0.5)
-  const [alpha, setAlpha] = useState(0.5)
-  const [beta, setBeta] = useState(0.5)
-  const [gamma, setGamma] = useState(0.5)
+  const configData = useSelector((state) => state.kpiAllocation.configManagementReducer)
+  const dispatch = useDispatch()
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+
+    dispatch(ConfigManagementAction.updateConfigSetting(name, parseFloat(value)))
+  }
 
   const showDetailAssetGroup = () => {
     Swal.fire({
       icon: 'question',
-
-      html: `<h3 style="color: red"><div>Các nhóm tài sản</div> </h3>
+      html: `<h3 style="color: red">Giải thích tham số truyền vào của giải thuật</h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
             <ul>
-                <li><b>Mặt bằng: </b>bao gồm nhà, công trình xây dựng, vật kiến trúc,...</li>
-                <li><b>Xe cộ: </b>bao gồm các phương tiện vận tải</li>
-                <li><b>Máy móc: </b>bao gồm các loại máy móc, thiết bị văn phòng, thiết bị truyền dẫn, thiết bị động lực, thiết bị chuyên dùng, thiết bị đo lường thí nghiệm,...</li>
-                <li><b>Khác: </b> bao gồm cây lâu năm, súc vật, trang thiết bị dễ hỏng dễ vỡ hay các tài sản cố định hữu hình khác, các tài sản cố định vô hình, các tài sản cố định đặc thù,...</li>
+                <li><b>${translate('kpi.kpi_allocation.config_management.number_generation')}: </b>Sau mỗi lần chạy thuật toán, kết quả sẽ được cải thiện. Số thế hệ chính là số lần kết quả được tối ưu hóa. Số thế hệ càng nhiều thì kết quả cuối cùng càng tốt.</li>
+                <li><b>${translate('kpi.kpi_allocation.config_management.solution_size')}: </b>Đây là số lượng giải pháp được xem xét. Càng nhiều giải pháp thường sẽ đem lại kết quả tốt hơn. Tuy nhiên, chúng tôi khuyến nghị nên giữ số lượng giải pháp trong khoảng từ 30 đến 50 để đảm bảo hiệu suất và khả năng quản lý.</li>
+                <li><b>${translate('kpi.kpi_allocation.config_management.harmony_memory_consideration_rate')}: </b>Chỉ số này cho biết tần suất thuật toán xem xét tập hợp các giải pháp hiện có (bộ nhớ hòa âm) khi hình thành giải pháp mới. HMCR càng cao thì giải pháp mới càng có khả năng dựa trên tập giải pháp ban đầu, giống như học từ kinh nghiệm trước đó.</li>
+                <li><b>${translate('kpi.kpi_allocation.config_management.pitch_adjusting_rate')}: </b>Chỉ số này điều chỉnh mức độ giá trị của các giải pháp được điều chỉnh. PAR càng cao thì tập giải pháp càng đa dạng, tăng khả năng tìm ra giải pháp tối ưu.</li>
+                <li><b>${translate('kpi.kpi_allocation.config_management.bandwidth')}: </b> Giá trị này xác định mức độ mà các giải pháp được điều chỉnh. Băng thông càng lớn thì tập giải pháp càng phong phú, làm giàu thêm tập giải pháp.</li>
+                <li><b>Alpha: </b> Alpha là trọng số của giải pháp trong công thức xác suất dịch chuyển của thuật toán đàn kiến. Alpha càng lớn thì tầm quan trọng của nồng độ pheromone trên đường đi càng cao, hướng dẫn các kiến tốt hơn.</li>
+                <li><b>Beta: </b> Beta là một trọng số khác trong công thức xác suất dịch chuyển. Beta càng lớn thì tầm quan trọng của giá trị heuristic (hay chất lượng) của giải pháp càng cao, làm cho các giải pháp tốt hơn hấp dẫn hơn.</li>
+                <li><b>Gamma: </b>Gamma là trọng số cho thời gian thực hiện nhiệm vụ trong giải pháp trong công thức xác suất dịch chuyển. Gamma càng lớn thì tầm quan trọng của việc hoàn thành nhiệm vụ nhanh chóng càng cao, tối ưu hóa thời gian thực hiện tổng thể.</li>
             </ul>
-            <p>Ví dụ một số tài sản được phân lần lượt vào các nhóm như sau:</p>
-            <ul>
-               <li><b>Mặt bằng: </b>như nhà văn hóa,....</li>
-                <li><b>Xe cộ: </b>một số tài sản như xe ô tô, xe mô tô/gắn máy,...</li>
-                <li><b>Máy móc: </b>bao gồm một số loại tài sản như máy sưởi, máy hút bụi,....</li>
-                <li><b>Khác: </b> gồm một số tài sản như cây xanh, bản quyền phần mềm, ứng dụng,....</li>
-            </ul>`,
+            </div>`,
       width: '50%'
     })
   }
@@ -42,174 +41,46 @@ function ConfigManagementForm() {
     }
   }
 
+  const parameters = [
+    { label: translate('kpi.kpi_allocation.config_management.number_generation'), name: 'numberGeneration', min: 0, max: 5001 },
+    { label: translate('kpi.kpi_allocation.config_management.solution_size'), name: 'solutionSize', min: 0, max: 50 },
+    { label: translate('kpi.kpi_allocation.config_management.harmony_memory_consideration_rate'), name: 'hmcr', min: 0, max: 1 },
+    { label: translate('kpi.kpi_allocation.config_management.pitch_adjusting_rate'), name: 'par', min: 0, max: 1 },
+    { label: translate('kpi.kpi_allocation.config_management.bandwidth'), name: 'bandwidth', min: 0, max: 1 },
+    { label: 'Alpha', name: 'alpha', min: 0, max: 1 },
+    { label: 'Beta', name: 'beta', min: 0, max: 1 },
+    { label: 'Gamma', name: 'gamma', min: 0, max: 1 }
+  ]
+
   return (
     <>
-      <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <div className='form-group'>
-          <div className='flex gap-[8px] items-center'>
-            <label>{translate('kpi.kpi_allocation.config_management.number_generation')}</label>
-            <i
-              className='fa fa-question-circle mb-[5px]'
-              style={{ cursor: 'pointer', color: '#dd4b39' }}
-              onClick={showDetailAssetGroup}
-              tabIndex='0'
-              role='button'
-              aria-label='Show details'
-              onKeyDown={handleKeyDown}
+      {parameters.map((param) => (
+        <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6' key={param.name}>
+          <div className='form-group'>
+            <div className='flex gap-[8px] items-center'>
+              <label>{param.label}</label>
+              <i
+                className='fa fa-question-circle mb-[5px]'
+                style={{ cursor: 'pointer', color: '#dd4b39' }}
+                onClick={showDetailAssetGroup}
+                tabIndex='0'
+                role='button'
+                aria-label='Show details'
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+            <input
+              className='form-control'
+              type='number'
+              name={param.name}
+              min={param.min}
+              max={param.max}
+              onChange={handleInputChange}
+              value={configData[param.name]}
             />
           </div>
-          <input
-            className='form-control'
-            type='number'
-            min={0}
-            max={5000}
-            onChange={(event) => setNumberGeneration(event.target.value)}
-            value={numberGeneration}
-          />
         </div>
-      </div>
-      <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <div className='form-group'>
-          <div className='flex gap-[8px] items-center'>
-            <label>{translate('kpi.kpi_allocation.config_management.solution_size')}</label>
-            <i
-              className='fa fa-question-circle mb-[5px]'
-              style={{ cursor: 'pointer', color: '#dd4b39' }}
-              onClick={showDetailAssetGroup}
-              tabIndex='0'
-              role='button'
-              aria-label='Show details'
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-          <input
-            className='form-control'
-            type='number'
-            min={0}
-            max={50}
-            onChange={(event) => setSolutionSize(event.target.value)}
-            value={solutionSize}
-          />
-          <span className='text-danger' style={{ display: 'flex', alignItems: 'center' }}>
-            12
-          </span>
-        </div>
-      </div>
-      <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <div className='form-group'>
-          <div className='flex gap-[8px] items-center'>
-            <label>{translate('kpi.kpi_allocation.config_management.harmony_memory_consideration_rate')}</label>
-            <i
-              className='fa fa-question-circle mb-[5px]'
-              style={{ cursor: 'pointer', color: '#dd4b39' }}
-              onClick={showDetailAssetGroup}
-              tabIndex='0'
-              role='button'
-              aria-label='Show details'
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-
-          <input className='form-control' type='number' min={0} max={1} onChange={(event) => setHmcr(event.target.value)} value={hmcr} />
-        </div>
-      </div>
-      <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <div className='form-group'>
-          <div className='flex gap-[8px] items-center'>
-            <label>{translate('kpi.kpi_allocation.config_management.pitch_adjusting_rate')}</label>
-            <i
-              className='fa fa-question-circle mb-[5px]'
-              style={{ cursor: 'pointer', color: '#dd4b39' }}
-              onClick={showDetailAssetGroup}
-              tabIndex='0'
-              role='button'
-              aria-label='Show details'
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-
-          <input className='form-control' type='number' min={0} max={1} onChange={(event) => setPar(event.target.value)} value={par} />
-        </div>
-      </div>
-      <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <div className='form-group'>
-          <div className='flex gap-[8px] items-center'>
-            <label>{translate('kpi.kpi_allocation.config_management.bandwidth')}</label>
-            <i
-              className='fa fa-question-circle mb-[5px]'
-              style={{ cursor: 'pointer', color: '#dd4b39' }}
-              onClick={showDetailAssetGroup}
-              tabIndex='0'
-              role='button'
-              aria-label='Show details'
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-
-          <input
-            className='form-control'
-            type='number'
-            min={0}
-            max={1}
-            onChange={(event) => setBandwith(event.target.value)}
-            value={bandwidth}
-          />
-        </div>
-      </div>
-      <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <div className='form-group'>
-          <div className='flex gap-[8px] items-center'>
-            <label>Alpha</label>
-            <i
-              className='fa fa-question-circle mb-[5px]'
-              style={{ cursor: 'pointer', color: '#dd4b39' }}
-              onClick={showDetailAssetGroup}
-              tabIndex='0'
-              role='button'
-              aria-label='Show details'
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-
-          <input className='form-control' type='number' min={0} max={1} onChange={(event) => setAlpha(event.target.value)} value={alpha} />
-        </div>
-      </div>
-      <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <div className='form-group'>
-          <div className='flex gap-[8px] items-center'>
-            <label>Beta</label>
-            <i
-              className='fa fa-question-circle mb-[5px]'
-              style={{ cursor: 'pointer', color: '#dd4b39' }}
-              onClick={showDetailAssetGroup}
-              tabIndex='0'
-              role='button'
-              aria-label='Show details'
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-
-          <input className='form-control' type='number' min={0} max={1} onChange={(event) => setBeta(event.target.value)} value={beta} />
-        </div>
-      </div>
-      <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-        <div className='form-group'>
-          <div className='flex gap-[8px] items-center'>
-            <label>Gamma</label>
-            <i
-              className='fa fa-question-circle mb-[5px]'
-              style={{ cursor: 'pointer', color: '#dd4b39' }}
-              onClick={showDetailAssetGroup}
-              tabIndex='0'
-              role='button'
-              aria-label='Show details'
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-
-          <input className='form-control' type='number' min={0} max={1} onChange={(event) => setGamma(event.target.value)} value={gamma} />
-        </div>
-      </div>
+      ))}
     </>
   )
 }

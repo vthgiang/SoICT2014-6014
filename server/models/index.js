@@ -29,13 +29,13 @@ module.exports = {
 
     BiddingContract: require('./bidding/biddingContract.model'),
 
-
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
     OrganizationalUnitKpi: require('./kpi/organizationalUnitKpi.model'),
     OrganizationalUnitKpiSet: require('./kpi/organizationalUnitKpiSet.model'),
     OrganizationalUnitKpiSetTemplate: require('./kpi/organizationalUnitKpiSetTemplate.model'),
     OrganizationalUnitKpiTemplate: require('./kpi/organizationalUnitKpiTemplate.model'),
+    AllocationConfigSetting: require('./kpi/allocationConfigSetting.model'),
 
     Notification: require('./notification/notification.model'),
     ManualNotification: require('./notification/manualNotification.model'),
@@ -57,8 +57,8 @@ module.exports = {
 
     Task: require('./task/task.model'),
     TaskTemplate: require('./task/taskTemplate.model'),
-    TaskProcess: require("./task/taskProcess.model"),
-    ProcessTemplate: require("./task/processTemplate.model"),
+    TaskProcess: require('./task/taskProcess.model'),
+    ProcessTemplate: require('./task/processTemplate.model'),
 
     Course: require('./training/course.model'),
     EducationProgram: require('./training/educationProgram.model'),
@@ -161,18 +161,18 @@ module.exports = {
     ManufacturingProcess: require('./manufacturing-process/ManufacturingProcess.model'),
     ProductionActivityIssue: require('./manufacturing-process/ProductionActivityIssue.model'),
     ActivityAssetTemplate: require('./manufacturing-process/ActivityAssetTemplate.model'),
-    NewsFeed: require('./news-feed/newsFeed.model')
+    NewsFeed: require('./news-feed/newsFeed.model'),
     //Risk
-    ,Risk: require('./risk/risk.model'),
+    Risk: require('./risk/risk.model'),
     // Risk Distribution
     RiskDistribution: require('./risk-distribution/riskDistribution.model'),
     TaskDistribution: require('./task-distribution/taskDistribution.model'),
     Impact: require('./risk/impact.model'),
     BayesDataset: require('./risk-distribution/bayesDataset.model'),
     PertEstimation: require('./task-distribution/pertEstimation.model'),
-    Exprimental:require('./risk/exprimentalAnalysis.model'),
-    RiskResponsePlan:require('./risk/riskResponsePlan.model'),
-    RiskResponsePlanRequest:require('./risk/riskResponsePlanRequest.model'),
+    Exprimental: require('./risk/exprimentalAnalysis.model'),
+    RiskResponsePlan: require('./risk/riskResponsePlan.model'),
+    RiskResponsePlanRequest: require('./risk/riskResponsePlanRequest.model'),
 
     // Transportation
     Vehicle: require('./transportation/vehicle/vehicle.model'),
@@ -187,4 +187,4 @@ module.exports = {
     CostFormula: require('./transportation/cost/costFormula.model'),
     Driver: require('./transportation/driver/driver.model'),
     ShipperSalary: require('./transportation/driver/shipperSalary.model'),
-}
+};

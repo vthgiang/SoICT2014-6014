@@ -1,34 +1,54 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslate } from 'react-redux-multilingual/lib/context'
-import Swal from 'sweetalert2'
+import { useDispatch, useSelector } from 'react-redux'
 import { SelectBox } from '../../../../../common-components'
 import ConfigManagementForm from './form'
+import { ConfigManagementAction } from '../redux/actions'
 
 function ConfigManagement() {
   const translate = useTranslate()
-  const [isAutomatic, setIsAutomatic] = useState('on')
+  const configData = useSelector((state) => state.kpiAllocation.configManagementReducer)
+  const { numberGeneration, solutionSize, hmcr, par, bandwidth, alpha, beta, gamma, isAutomatically, defaultSetting, _id } = configData
+  const [isAutomatic, setIsAutomatic] = useState(isAutomatically ? 'on' : 'off')
+  const dispatch = useDispatch()
 
-  const showDetailAssetGroup = () => {
-    Swal.fire({
-      icon: 'question',
+  useEffect(() => {
+    dispatch(ConfigManagementAction.getConfigSettingData())
+  }, [dispatch])
 
-      html: `<h3 style="color: red"><div>Các nhóm tài sản</div> </h3>
-            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
-            <ul>
-                <li><b>Mặt bằng: </b>bao gồm nhà, công trình xây dựng, vật kiến trúc,...</li>
-                <li><b>Xe cộ: </b>bao gồm các phương tiện vận tải</li>
-                <li><b>Máy móc: </b>bao gồm các loại máy móc, thiết bị văn phòng, thiết bị truyền dẫn, thiết bị động lực, thiết bị chuyên dùng, thiết bị đo lường thí nghiệm,...</li>
-                <li><b>Khác: </b> bao gồm cây lâu năm, súc vật, trang thiết bị dễ hỏng dễ vỡ hay các tài sản cố định hữu hình khác, các tài sản cố định vô hình, các tài sản cố định đặc thù,...</li>
-            </ul>
-            <p>Ví dụ một số tài sản được phân lần lượt vào các nhóm như sau:</p>
-            <ul>
-               <li><b>Mặt bằng: </b>như nhà văn hóa,....</li>
-                <li><b>Xe cộ: </b>một số tài sản như xe ô tô, xe mô tô/gắn máy,...</li>
-                <li><b>Máy móc: </b>bao gồm một số loại tài sản như máy sưởi, máy hút bụi,....</li>
-                <li><b>Khác: </b> gồm một số tài sản như cây xanh, bản quyền phần mềm, ứng dụng,....</li>
-            </ul>`,
-      width: '50%'
+  useEffect(() => {
+    setIsAutomatic(isAutomatically ? 'on' : 'off')
+  }, [isAutomatically])
+
+  const handleChangeIsAutomaticState = (value) => {
+    setIsAutomatic(value[0])
+    dispatch(ConfigManagementAction.updateConfigSetting('isAutomatically', value[0] === 'on'))
+  }
+
+  const handleUpdateData = () => {
+    dispatch(ConfigManagementAction.updateConfigSetting('isAutomatically', isAutomatic === 'on'))
+    dispatch(
+      ConfigManagementAction.updateConfigSettingData(_id, {
+        numberGeneration,
+        solutionSize,
+        hmcr,
+        par,
+        bandwidth,
+        alpha,
+        beta,
+        gamma,
+        isAutomatically,
+        isReset: false
+      })
+    )
+  }
+
+  const handleResetData = () => {
+    Object.entries(defaultSetting).forEach(([key, value]) => {
+      dispatch(ConfigManagementAction.updateConfigSetting(key, value))
     })
+
+    dispatch(ConfigManagementAction.updateConfigSettingData(_id, { ...defaultSetting, isReset: true }))
   }
 
   return (
@@ -39,31 +59,41 @@ function ConfigManagement() {
             <b style={{ fontSize: '24px' }}>{translate('kpi.kpi_allocation.config_management.config_component')}</b>
           </div>
           <div className='box-body'>
-            <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-              <div className='form-group'>
-                <label>{translate('kpi.kpi_allocation.config_management.automatic')}</label>
-                <SelectBox
-                  id='select-backup-status'
-                  className='form-control select2'
-                  style={{ width: '100%' }}
-                  items={[
-                    { value: 'on', text: translate('kpi.kpi_allocation.config_management.automatic_on') },
-                    { value: 'off', text: translate('kpi.kpi_allocation.config_management.automatic_off') }
-                  ]}
-                  value={isAutomatic}
-                  onChange={(value) => setIsAutomatic(value[0])}
-                  multiple={false}
-                />
+            <div className='flex items-center justify-center'>
+              <div className='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+                <div className='form-group'>
+                  <label>{translate('kpi.kpi_allocation.config_management.automatic')}</label>
+                  <SelectBox
+                    id='select-backup-status'
+                    className='form-control select2'
+                    style={{ width: '100%' }}
+                    items={[
+                      { value: 'on', text: translate('kpi.kpi_allocation.config_management.automatic_on') },
+                      { value: 'off', text: translate('kpi.kpi_allocation.config_management.automatic_off') }
+                    ]}
+                    value={isAutomatic}
+                    onChange={handleChangeIsAutomaticState}
+                    multiple={false}
+                  />
+                </div>
+              </div>
+
+              <div className='col-xs-12 col-sm-1 col-md-1 col-lg-1 text-center'>
+                <button type='button' className='btn btn-success' onClick={handleResetData}>
+                  Reset thay đổi
+                </button>
               </div>
             </div>
 
-            <ConfigManagementForm />
+            {isAutomatic === 'off' && <ConfigManagementForm />}
           </div>
-          <div className='box-footer text-center'>
-            <button type='button' className='btn btn-success' onClick={showDetailAssetGroup}>
-              Cập nhật
-            </button>
-          </div>
+          {isAutomatic === 'off' && (
+            <div className='box-footer text-center'>
+              <button type='button' className='btn btn-success' onClick={handleUpdateData}>
+                Cập nhật
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
