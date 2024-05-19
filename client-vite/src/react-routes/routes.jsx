@@ -88,9 +88,9 @@ const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/ev
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
 const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
 
-const SearchEmployeeForPackage = lazy(
-  () => import('../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage')
-)
+// const SearchEmployeeForPackage = lazy(
+//   () => import('../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage')
+// )
 
 const CreateEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/creation/component/employeeKpiCreate'))
 const KPIPersonalManager = lazy(() => import('../modules/kpi/employee/management/component/employeeKpiManagement'))
@@ -111,6 +111,12 @@ const ProcessTemplate = lazy(() => import('../modules/task/task-process/componen
 const TaskOrganizationUnitDashboard = lazy(
   () => import('../modules/task/task-dashboard/task-organization-dashboard/taskOrganizationUnitDashboard')
 )
+
+// KPI allocation
+const AffectedFactorManagement = lazy(() => import('../modules/kpi/kpi-allocation/affected-factor-management/component/index'))
+const AllocationManagement = lazy(() => import('../modules/kpi/kpi-allocation/allocation-management/component/index'))
+const ConfigManagement = lazy(() => import('../modules/kpi/kpi-allocation/config-management/component/index'))
+const TaskPackageManagement = lazy(() => import('../modules/kpi/kpi-allocation/task-package-management/component/index'))
 
 //asset
 const RecommendProcure = lazy(() => import('../modules/asset/user/purchase-request/components'))
@@ -1697,6 +1703,83 @@ class Routes extends Component {
             layout={Layout}
             component={KPIPersonalEvaluate}
           />
+          <PrivateRoute
+            isLoading={false}
+            key={'kpi_allocation_affected_factor_management'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/kpi-allocation/affected-factor-management',
+                name: 'kpi_allocation_affected_factor_management',
+                icon: ''
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/kpi-allocation/affected-factor-management'}
+            path={'/kpi-allocation/affected-factor-management'}
+            pageName={'kpi_allocation_affected_factor_management'}
+            layout={Layout}
+            component={AffectedFactorManagement}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'kpi_allocation_allocation_management'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/kpi-allocation/allocation-management',
+                name: 'kpi_allocation_allocation_management',
+                icon: ''
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/kpi-allocation/allocation-management'}
+            path={'/kpi-allocation/allocation-management'}
+            pageName={'kpi_allocation_allocation_management'}
+            layout={Layout}
+            component={AllocationManagement}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'kpi_allocation_config_management'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/kpi-allocation/config-management',
+                name: 'kpi_allocation_config_management',
+                icon: ''
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/kpi-allocation/config-management'}
+            path={'/kpi-allocation/config-management'}
+            pageName={'kpi_allocation_config_management'}
+            layout={Layout}
+            component={ConfigManagement}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'kpi_allocation_task_package_management'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/kpi-allocation/task_package_management',
+                name: 'kpi_allocation_task_package_management',
+                icon: ''
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/kpi-allocation/task_package_management'}
+            path={'/kpi-allocation/task_package_management'}
+            pageName={'kpi_allocation_task_package_management'}
+            layout={Layout}
+            component={AllocationManagement}
+          />
+
           <PrivateRoute
             isLoading={this.props.tasktemplates.isLoading}
             key={'task-template-management'}

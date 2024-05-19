@@ -1,5 +1,3 @@
-import { min } from "lodash";
-
 export default {
   locale: 'vn',
   messages: {
@@ -38,7 +36,7 @@ export default {
       error: 'Lỗi',
       stt: 'STT',
       new_notification: 'Bạn có thông báo mới!',
-      month: 'tháng',
+      // month: 'tháng',
       value: 'Giá trị',
       export: 'Xuất',
       add_tag: 'Thêm tag',
@@ -226,6 +224,11 @@ export default {
       kpi_personal_manager: 'Quản lí KPI cá nhân',
       kpi_member_detail: 'Chi tiết KPI cá nhân',
       kpi_unit_template: 'Mẫu KPI',
+      kpi_allocation_title: 'Phân bổ KPI cho đơn vị',
+      kpi_allocation_affected_factor_management: 'Quản lý yếu tố ảnh hưởng',
+      kpi_allocation_allocation_management: 'Quản lý phân bổ',
+      kpi_allocation_config_management: 'Quản lý cấu hình',
+      kpi_allocation_task_package_management: 'Quản lý tập nhiệm vụ',
 
       notifications: 'Thông báo',
 
@@ -330,8 +333,8 @@ export default {
       manage_manufacturing_works: 'Quản lý nhà máy sản xuất',
       manage_manufacturing_mill: 'Quản lý xưởng sản xuất',
       manage_manufacturing_lot: 'Quản lý lô sản xuất',
-      manage_manufacturing_routing: "Quản lý quy trình sản xuất",
-      manage_manufacturing_quality: "Quản lý chất lượng",
+      manage_manufacturing_routing: 'Quản lý quy trình sản xuất',
+      manage_manufacturing_quality: 'Quản lý chất lượng',
       request_management: 'Quản lý đề nghị',
 
       // Quản lý dự án
@@ -422,7 +425,7 @@ export default {
         // table
         index: 'STT',
         identification: 'Mã quy trình',
-        process_name: 'Tên quy trình',
+        // process_name: 'Tên quy trình',
         process_time_start: 'Giờ bắt đầu làm việc',
         process_time_end: 'Giờ kết thúc làm việc',
         process_asset: 'Tài sản nhóm SX',
@@ -957,7 +960,7 @@ export default {
         role_deputy_manager_exist: 'Tên chức danh cho phó đơn vị đã tồn tại',
         role_employee_exist: 'Tên chức danh cho nhân viên đơn vị đã tồn tại',
         role_name_exist: 'Tên chức danh này đã được sử dụng cho một phân quyền khác',
-        role_name_exist: 'Tên chức danh này đã được sử dụng cho một phân quyền khác',
+        // role_name_exist: 'Tên chức danh này đã được sử dụng cho một phân quyền khác',
         role_name_duplicate: 'Tên các chức danh đã nhập bị trùng với nhau'
       },
       user: {
@@ -2088,9 +2091,9 @@ export default {
 
       add_task_delegation_success: 'Thêm mới ủy quyền cho công việc thành công!\nBạn sẽ thành Người quan sát khi ủy quyền được kích hoạt',
       add_task_delegation_faile: 'Thêm mới ủy quyền cho công việc thất bại',
-      delegator_invalid_policy: 'Người ủy quyền không thỏa mãn chính sách ủy quyền đã chọn',
-      delegatee_invalid_policy: 'Người nhận ủy quyền không thỏa mãn chính sách ủy quyền đã chọn',
-      task_invalid_policy: 'Công việc không thỏa mãn chính sách ủy quyền đã chọn',
+      // delegator_invalid_policy: 'Người ủy quyền không thỏa mãn chính sách ủy quyền đã chọn',
+      // delegatee_invalid_policy: 'Người nhận ủy quyền không thỏa mãn chính sách ủy quyền đã chọn',
+      // task_invalid_policy: 'Công việc không thỏa mãn chính sách ủy quyền đã chọn',
       delete_task_delegation_success: 'Xóa ủy quyền công việc thành công!',
       delete_task_delegation_faile: 'Xóa ủy quyền công việc thất bại!',
       revoke_task_delegation_success: 'Thu hồi ủy quyền công việc thành công!',
@@ -2552,8 +2555,8 @@ export default {
         engineer: 'Kỹ sư',
         bachelor: 'Cử nhân',
         master_degree: 'Thạc sỹ',
-        engineer: 'Kỹ sư',
-        bachelor: 'Cử nhân',
+        // engineer: 'Kỹ sư',
+        // bachelor: 'Cử nhân',
         phd: 'Tiến sỹ',
         unavailable: 'Khác',
         work_experience: 'Kinh nghiệm làm việc',
@@ -2908,7 +2911,7 @@ export default {
         hours: 'giờ',
         total_time_annual_leave: 'Tổng thời gian nghỉ phép tháng',
         fullname: 'Họ và tên',
-        task_total: 'Tổng số công việc',
+        // task_total: 'Tổng số công việc',
         general_task: 'Tổng hợp công việc tháng',
         see_all: 'Xem tất cả',
         general_commendation: 'Tổng hợp khen thưởng tháng',
@@ -3276,7 +3279,7 @@ export default {
         warranty_expiration_date: 'Ngày hết hạn bảo hành',
         asset_location: 'Vị trí tài sản',
         description: 'Mô tả',
-        can_register: 'Quyền đăng ký',
+        // can_register: 'Quyền đăng ký',
         can_register_for_use: 'Quyền đăng ký sử dụng',
         select_image: 'Chọn ảnh',
         content: 'Nội dung',
@@ -3438,7 +3441,7 @@ export default {
         get_asset_maintenance_success: 'Lấy thông tin sự cố tài sản thành công',
         get_asset_maintenance_fail: 'Lấy thông tin bảo trì tài sản thất bại',
         get_list_asset_success: 'Lấy thông tin bảo trì tài sản thành công',
-        get_list_asset_success: 'Lấy thông tin tài sản thành công',
+        // get_list_asset_success: 'Lấy thông tin tài sản thành công',
         get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
         create_asset_success: 'Thêm tài sản thành công',
         create_asset_faile: 'Thêm tài sản thất bại',
@@ -4224,7 +4227,7 @@ export default {
         not_confirm: 'Chưa xác nhận công việc',
 
         left_task_expired: 'còn lại là công việc bị hết hạn',
-        action_not_rating: 'Số hoạt động chưa được đánh giá tháng này',
+        // action_not_rating: 'Số hoạt động chưa được đánh giá tháng này',
 
         left_can_edit_task: 'Thời gian còn lại để chỉnh sửa đánh giá công việc tháng trước',
 
@@ -4242,7 +4245,7 @@ export default {
         time: 'Thời gian',
         load_task_chart: 'Tải công việc cá nhân',
         load_task_chart_unit: 'Tải công việc đơn vị',
-        explain: 'Giải thích',
+        // explain: 'Giải thích',
         select_responsible: 'Chọn người thực hiện',
         timer: 'Bấm giờ',
         additional_timer: 'Bấm bù giờ',
@@ -4369,7 +4372,7 @@ export default {
         create_task_comment_fail: 'Tạo bình luận công việc thất bại',
         get_task_comments_fail: 'Lấy tất cả bình luận công việc thất bại',
         edit_task_comment_fail: 'Sửa bình luận thất bại',
-        delete_task_comment_success: 'Xóa bình luận thất bại',
+        // delete_task_comment_success: 'Xóa bình luận thất bại',
         create_comment_of_task_comment_fail: 'Tạo bình luận thất bại',
         edit_comment_of_task_comment_fail: 'Sửa bình luận thất bại',
         delete_comment_of_task_comment_fail: 'Xóa bình luận thất bại',
@@ -4844,7 +4847,7 @@ export default {
           view_detail: 'Xem chi tiết',
           clone_to_new_kpi: 'Tạo KPI tháng mới từ KPI tháng này',
           name: 'Tên',
-          target: 'Mục tiêu đơn vị',
+          // target: 'Mục tiêu đơn vị',
           criteria: 'Tiêu chí đánh giá',
           weight: 'Trọng số',
           result: 'Kết quả đánh giá',
@@ -5054,12 +5057,12 @@ export default {
           result: 'Kết quả',
           approve: 'Phê duyệt',
           evaluate: 'Đánh giá',
-          index: 'STT',
+          // index: 'STT',
           target_name: 'Tên mục tiêu',
           creator: 'Người tạo',
           organization_unit: 'Đơn vị',
           criteria: 'Tiêu chí đánh giá',
-          result: 'Kết quả',
+          // result: 'Kết quả',
           no_data: 'Không có dữ liệu'
         },
 
@@ -5155,7 +5158,7 @@ export default {
             target_name: 'Tên mục tiêu',
             creator: 'Người tạo',
             organization_unit: 'Đơn vị',
-            criteria: 'Tiêu chí đánh giá',
+            // criteria: 'Tiêu chí đánh giá',
             result: 'Kết quả đánh giá',
             no_data: 'Không có dữ liệu'
           },
@@ -5218,6 +5221,21 @@ export default {
         create_kpi_template_success: 'Tạo mới mẫu KPI thành công',
         delete_kpi_template_success: 'Xóa mẫu KPI thành công',
         edit_kpi_template_success: 'Chỉnh sửa mẫu KPI thành công'
+      },
+      kpi_allocation: {
+        title: 'Phân bổ KPI cho đơn vị',
+        affected_factor_management: {
+          title: 'Quản lý yếu tố ảnh hưởng'
+        },
+        allocation_management: {
+          title: 'Quản lý phân bổ'
+        },
+        config_management: {
+          title: 'Quản lý cấu hình'
+        },
+        task_package_management: {
+          title: 'Quản lý tập nhiệm vụ'
+        }
       }
     },
 
@@ -5298,10 +5316,10 @@ export default {
         description: 'Mô tả',
         choose_type: 'Chọn kiểu hàng hóa',
         all_type: 'Chọn tất cả các kiểu hàng hóa',
-        product: 'Sản phẩm',
-        material: 'Nguyên vật liệu',
-        equipment: 'Công cụ dụng cụ',
-        waste: 'Phế phẩm',
+        // product: 'Sản phẩm',
+        // material: 'Nguyên vật liệu',
+        // equipment: 'Công cụ dụng cụ',
+        // waste: 'Phế phẩm',
         search: 'Tìm kiếm',
         validate_code: 'Mã hàng hóa không được để trống',
         validate_name: 'Tên hàng hóa không được để trống',
@@ -5694,7 +5712,7 @@ export default {
         validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
         add_lot: 'Thêm mới lô hàng',
         expiration_date: 'Ngày hết hạn',
-        validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
+        // validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
         quantity_return: 'Số lượng trả lại',
         quantity_issue: 'Số lượng xuất ra',
         bill_issued: 'Đơn đã xuất',
@@ -5984,7 +6002,7 @@ export default {
       cancel: 'Hủy bỏ',
       title_delete: 'Xóa báo cáo này',
       no_data: 'Không có dữ liệu',
-      search_by_name: 'Nhập tên mẫu báo cáo',
+      // search_by_name: 'Nhập tên mẫu báo cáo',
       search_by_creator: 'Nhập tên người tạo báo cáo',
 
       // message trả về từ server
@@ -6211,8 +6229,8 @@ export default {
         moderate: 'Vừa phải',
         major: 'Nghiêm trọng',
         severe: 'Rất nghiêm trọng',
-        minor: 'Không nghiêm trọng',
-        impact: ''
+        minor: 'Không nghiêm trọng'
+        // impact: ''
       },
       risk_table: {
         risk_id: 'ID',
@@ -6321,7 +6339,7 @@ export default {
       index: 'STT',
       description: 'Mô tả',
       edit: 'Chỉnh sửa thông tin rủi ro',
-      delete: 'Xóa rủi ro',
+      // delete: 'Xóa rủi ro',
       delete_success: 'Xóa rủi ro thành công!',
       delete_fail: 'Xóa rủi ro thất bại!',
       add: 'Thêm rủi ro',
@@ -6562,7 +6580,7 @@ export default {
         cancel_editing_good: 'Hủy chỉnh sửa',
         save_good: 'Lưu',
         add_good: 'Thêm',
-        delete_good: 'Xóa trắng',
+        // delete_good: 'Xóa trắng',
         error_quantity_input: 'Số lượng không hợp lệ',
         purchasing_request_detail: 'Chi tiết phiếu đề nghị',
         material_detail: 'Chi tiết mặt hàng',
@@ -6643,9 +6661,9 @@ export default {
         choose_all_user: 'Tất cả',
 
         // auto schedule
-        edit_work_schedule_button: "Chỉnh sửa",
-        cancel_work_schedule_button: "Hủy",
-        save_work_schedule_button: "Lưu",
+        edit_work_schedule_button: 'Chỉnh sửa',
+        cancel_work_schedule_button: 'Hủy',
+        save_work_schedule_button: 'Lưu'
       },
       plan: {
         code: 'Mã kế hoạch',
@@ -6761,11 +6779,11 @@ export default {
         mill: 'Xưởng sản xuất',
         productity: 'Số sản phẩm sản xuất / ca',
         person_number: 'Số công nhân / ca',
-        approvers: 'Người phê duyệt',
+        // approvers: 'Người phê duyệt',
         qualityControlStaffs: 'Người kiểm định chất lượng',
         accountables: 'Người giám sát',
         accountable_description: 'Người đổi trạng thái của lệnh sang thực hiện và kết thúc lệnh',
-        command_code: 'Mã lệnh',
+        // command_code: 'Mã lệnh',
         created_all_command: 'Vui lòng phân hết số lượng các sản phẩm vào lệnh sản xuất',
         command_quantity: 'Số lượng',
         choose_quality_control_staffs: 'Vui lòng chọn người kiểm định chất lượng',
@@ -6808,19 +6826,19 @@ export default {
         quantity_by_status: 'Số lượng kế hoạch theo trạng thái',
 
         // auto scheduling booking
-        manual_schedule_booking: "Tạo lịch thủ công",
-        auto_schedule_booking: "Tạo lịch tự động",
-        routing: "Quy trình sản xuất",
-        routing_description: "Quy trình sản xuất áp dụng để sản xuất ra sản phẩm này",
-        choose_routing: "Chọn quy trình sản xuất",
-        error_routing: "Vui lòng chọn quy trình sản xuất",
-        operation: "Công đoạn",
-        hourProduction: "Sản lượng mỗi giờ",
-        worker_num: "Số công nhân",
+        manual_schedule_booking: 'Tạo lịch thủ công',
+        auto_schedule_booking: 'Tạo lịch tự động',
+        routing: 'Quy trình sản xuất',
+        routing_description: 'Quy trình sản xuất áp dụng để sản xuất ra sản phẩm này',
+        choose_routing: 'Chọn quy trình sản xuất',
+        error_routing: 'Vui lòng chọn quy trình sản xuất',
+        operation: 'Công đoạn',
+        hourProduction: 'Sản lượng mỗi giờ',
+        worker_num: 'Số công nhân'
       },
       command: {
-        gantt_chart: "Biểu đồ Gantt",
-        list: "Danh sách lệnh sản xuất",
+        gantt_chart: 'Biểu đồ Gantt',
+        list: 'Danh sách lệnh sản xuất',
         code: 'Mã lệnh sản xuất',
         accountables: 'Người  điều hành',
         plan_code: 'Mã kế hoạch',
@@ -6836,7 +6854,7 @@ export default {
         index: 'STT',
         created_at: 'Ngày tạo',
         responsibles: 'Người thực hiện',
-        work_order: "Lệnh làm việc",
+        work_order: 'Lệnh làm việc',
         mill: 'Xưởng sản xuất',
         1: {
           color: '#ffbf00',
@@ -6950,27 +6968,27 @@ export default {
         command_number_status: 'Số lượng lệnh sản xuất theo trạng thái',
 
         // gantt chart
-        command: "Lệnh sản xuất",
-        month: "Tháng",
-        week: "Tuần",
-        day: "Ngày",
-        hour: "Giờ",
-        view_by: "Xem theo",
+        command: 'Lệnh sản xuất',
+        month: 'Tháng',
+        week: 'Tuần',
+        // day: 'Ngày',
+        hour: 'Giờ',
+        view_by: 'Xem theo',
 
         // quality control
         qc_name: 'Tên người kiểm định',
         qc_email: 'email',
-        qc_segment: "Phân đoạn kiểm định",
-        choose_qc_segment: "Chọn phân đoạn kiểm định",
-        qc_criteria: "Tiêu chí kiểm định",
-        choose_qc_criteria: "Chọn tiêu chí kiểm định",
-        qc_result: "Kết quả kiểm định",
-        inspection_num: "SL kiểm định",
-        error_num: "SL lỗi",
-        passed_num: "SL đạt yêu cầu",
-        error_list: "Danh sách lỗi",
-        error_name: "Tên lỗi",
-        quantity: "Số lượng",
+        qc_segment: 'Phân đoạn kiểm định',
+        choose_qc_segment: 'Chọn phân đoạn kiểm định',
+        qc_criteria: 'Tiêu chí kiểm định',
+        choose_qc_criteria: 'Chọn tiêu chí kiểm định',
+        qc_result: 'Kết quả kiểm định',
+        inspection_num: 'SL kiểm định',
+        error_num: 'SL lỗi',
+        passed_num: 'SL đạt yêu cầu',
+        error_list: 'Danh sách lỗi',
+        error_name: 'Tên lỗi',
+        // quantity: 'Số lượng',
         qc_status: {
           1: {
             color: 'orange',
@@ -6984,7 +7002,7 @@ export default {
             color: 'red',
             content: 'Không đạt kiểm định'
           }
-        },
+        }
       },
       lot: {
         index: 'STT',
@@ -7011,9 +7029,9 @@ export default {
         original_quantity: 'Số lượng',
         product_type: 'Loại sản phẩm',
         creator: 'Người tạo',
-        created_at: 'Ngày tạo',
-        expiration_date: 'Ngày hết hạn',
-        status: 'Trạng thái',
+        // created_at: 'Ngày tạo',
+        // expiration_date: 'Ngày hết hạn',
+        // status: 'Trạng thái',
         product_type_object: {
           1: 'Thành phẩm',
           2: 'Phế phẩm'
@@ -7090,220 +7108,219 @@ export default {
         month: 'Tháng',
         quater: 'Quý',
         year: 'Năm',
-        choose_kpi: "Chọn KPI",
-        title: "Tiêu đề",
-        chart_type: "Biểu đồ",
-        color: "Màu sắc",
+        choose_kpi: 'Chọn KPI',
+        title: 'Tiêu đề',
+        chart_type: 'Biểu đồ',
+        color: 'Màu sắc',
 
         // Action table
-        action_improvement: "Hành động cải tiến",
-        index: "STT",
-        problem: "Vấn đề",
-        root_cause: "Nguyên nhân",
-        action: "Hành động",
-        start_date: "Ngày bắt đầu",
-        responsible: "Người thực hiện",
-        status: "Trạng thái",
-
+        action_improvement: 'Hành động cải tiến',
+        index: 'STT',
+        problem: 'Vấn đề',
+        root_cause: 'Nguyên nhân',
+        action: 'Hành động',
+        start_date: 'Ngày bắt đầu',
+        responsible: 'Người thực hiện',
+        status: 'Trạng thái'
       },
       quality: {
-        index: "STT",
-        search: "Tìm kiếm",
-        created_at: "Ngày tạo",
-        status: "Trạng thái",
-        view: "Xem chi tiết",
-        edit: "Chỉnh sửa",
-        delete: "Xóa",
-        choose_status: "Chọn trạng thái",
-        operation: "Công đoạn",
-        good: "Sản phẩm",
-        manufacturing_command: "Lệnh sản xuất",
-        error_tab: "Định nghĩa lỗi",
-        criteria_tab: "Tiêu chí kiểm định",
-        inspection_tab: "Phiếu Kiểm định",
+        index: 'STT',
+        search: 'Tìm kiếm',
+        created_at: 'Ngày tạo',
+        status: 'Trạng thái',
+        view: 'Xem chi tiết',
+        edit: 'Chỉnh sửa',
+        delete: 'Xóa',
+        choose_status: 'Chọn trạng thái',
+        operation: 'Công đoạn',
+        good: 'Sản phẩm',
+        manufacturing_command: 'Lệnh sản xuất',
+        error_tab: 'Định nghĩa lỗi',
+        criteria_tab: 'Tiêu chí kiểm định',
+        inspection_tab: 'Phiếu Kiểm định',
         1: {
-          color: "#ffbf00",
-          content: "Đang chờ duyệt",
+          color: '#ffbf00',
+          content: 'Đang chờ duyệt'
         },
         2: {
-            color: "#00bfff",
-            content: "Đã phê duyệt",
+          color: '#00bfff',
+          content: 'Đã phê duyệt'
         },
         error: {
-          list: "Danh sách lỗi",
-          code: "Mã lỗi",
-          name: "Tên lỗi",
-          group: "Nhóm lỗi",
-          description: "Mô tả",
-          recognize: "Dấu hiệu nhận biết lỗi",
-          resolution: "Biện pháp khắc phục đề xuất",
-          aql: "AQL",
-          cause: "Nguyên nhân lỗi",
-          reporter: "Người tạo",
-          choose_group: "Chọn nhóm lỗi",
-          detail: "Chi tiết lỗi"
+          list: 'Danh sách lỗi',
+          code: 'Mã lỗi',
+          name: 'Tên lỗi',
+          group: 'Nhóm lỗi',
+          description: 'Mô tả',
+          recognize: 'Dấu hiệu nhận biết lỗi',
+          resolution: 'Biện pháp khắc phục đề xuất',
+          aql: 'AQL',
+          cause: 'Nguyên nhân lỗi',
+          reporter: 'Người tạo',
+          choose_group: 'Chọn nhóm lỗi',
+          detail: 'Chi tiết lỗi'
         },
         error_groups: {
-          machine: "Máy móc",
-          material: "Nguyên liệu",
-          man: "Con người",
-          method: "Phương pháp",
-          measurement: "Đo lường",
-          enviroment: "Môi trường",
+          machine: 'Máy móc',
+          material: 'Nguyên liệu',
+          man: 'Con người',
+          method: 'Phương pháp',
+          measurement: 'Đo lường',
+          enviroment: 'Môi trường'
         },
         criteria: {
-          code: "Mã tiêu chí",
-          name: "Tên tiêu chí",
-          creator: "Người tạo",
-          detail: "Chi tiết tiêu chí chất lượng",
-          checklist: "Danh mục kiểm tra",
-          name: "Tên",
-          method: "Phương pháp",
-          accepted_value: "Giá trị cho phép"
+          code: 'Mã tiêu chí',
+          name: 'Tên tiêu chí',
+          creator: 'Người tạo',
+          detail: 'Chi tiết tiêu chí chất lượng',
+          checklist: 'Danh mục kiểm tra',
+          // name: 'Tên',
+          method: 'Phương pháp',
+          accepted_value: 'Giá trị cho phép'
         },
         inspection: {
-          code: "Mã kiểm định",
-          type: "Loại kiểm định",
-          inspection_num: "Số lượng kiểm định",
-          passed_num: "Số lượng đạt",
-          error_num: "Số lượng lỗi",
-          responsible: "Người thực hiện",
-          result: "Kết quả kiểm định",
-          choose_type: "Chọn loại kiểm định",
-          choose_result: "Chọn kết quả",
+          code: 'Mã kiểm định',
+          type: 'Loại kiểm định',
+          inspection_num: 'Số lượng kiểm định',
+          passed_num: 'Số lượng đạt',
+          error_num: 'Số lượng lỗi',
+          responsible: 'Người thực hiện',
+          result: 'Kết quả kiểm định',
+          choose_type: 'Chọn loại kiểm định',
+          choose_result: 'Chọn kết quả'
         },
         inspection_types: {
-          1: "Công đoạn",
-          2: "Thành phẩm"
+          1: 'Công đoạn',
+          2: 'Thành phẩm'
         },
         inspection_results: {
           1: {
-              color: "#00bfff",
-              content: "Đạt yêu cầu"
+            color: '#00bfff',
+            content: 'Đạt yêu cầu'
           },
           2: {
-              color: "red",
-              content: "Không đạt yêu cầu"
+            color: 'red',
+            content: 'Không đạt yêu cầu'
           }
-        },
+        }
       },
       routing: {
         // home
-        index: "STT",
-        name: "Tên quy trình",
-        code: "Mã quy trình",
-        created_at: "Ngày tạo",
-        status: "Trạng thái",
+        index: 'STT',
+        name: 'Tên quy trình',
+        code: 'Mã quy trình',
+        created_at: 'Ngày tạo',
+        status: 'Trạng thái',
         1: {
-            color: "#00bfff",
-            content: "Đang triển khai",
+          color: '#00bfff',
+          content: 'Đang triển khai'
         },
         2: {
-            color: "red",
-            content: "Ngừng thực hiện",
+          color: 'red',
+          content: 'Ngừng thực hiện'
         },
-        add: "Thêm",
+        add: 'Thêm',
 
         // filter
-        works: "Nhà máy",
-        mill: "Xưởng sản xuất",
-        product: "Sản phẩm",
-        creator: "Người tạo",
-        approver: "Người phê duyệt",
-        choose_works: "Chọn nhà máy",
-        choose_status: "Chọn trạng thái",
-        search: "Tìm kiếm",
+        works: 'Nhà máy',
+        mill: 'Xưởng sản xuất',
+        product: 'Sản phẩm',
+        creator: 'Người tạo',
+        approver: 'Người phê duyệt',
+        choose_works: 'Chọn nhà máy',
+        choose_status: 'Chọn trạng thái',
+        search: 'Tìm kiếm',
 
         // action
-        detail: "Chi tiết quy trình",
-        edit: "Sửa quy trình",
-        approve: "Bắt đầu triển khai quy trình",
-        cancel: "Ngừng thực hiện quy trình",
+        detail: 'Chi tiết quy trình',
+        edit: 'Sửa quy trình',
+        approve: 'Bắt đầu triển khai quy trình',
+        cancel: 'Ngừng thực hiện quy trình',
 
         // detail modal
-        detail_title: "Chi tiết quy trình sản xuất",
-        operation_list: "Danh sách công đoạn",
-        operation_name: "Tên công đoạn",
-        flow_detail: "Lộ trình chi tiết",
-        
-        // create general form 
-        create: "Tạo quy trình",
-        create_title: "Tạo mới quy trình sản xuất",
-        general_info: "Thông tin chung",
-        choose_works: "Chọn nhà máy",
-        choose_product: "Chọn sản phẩm",
-        choose_approver: "Chọn người phê duyệt",
-        description: "Mô tả",
-        create_routing_successfully: "Tạo quy trình sản xuất thành công",
-        create_routing_failure: "Tạo quy trình sản xuất thất bại",
+        detail_title: 'Chi tiết quy trình sản xuất',
+        operation_list: 'Danh sách công đoạn',
+        operation_name: 'Tên công đoạn',
+        flow_detail: 'Lộ trình chi tiết',
+
+        // create general form
+        create: 'Tạo quy trình',
+        create_title: 'Tạo mới quy trình sản xuất',
+        general_info: 'Thông tin chung',
+        // choose_works: 'Chọn nhà máy',
+        choose_product: 'Chọn sản phẩm',
+        choose_approver: 'Chọn người phê duyệt',
+        description: 'Mô tả',
+        create_routing_successfully: 'Tạo quy trình sản xuất thành công',
+        create_routing_failure: 'Tạo quy trình sản xuất thất bại',
 
         // routing sheet
-        sheet_info: "Bảng định tuyến",
-        implementation_mill: "Xưởng thực hiện",
-        resource: "Tài nguyên",
-        machine: "Máy móc",
-        worker: "Nhân viên",
-        add_operation: "Thêm công đoạn",
-        edit_operation: "Chỉnh sửa công đoạn",
-        delete_operation: "Xóa công đoạn",
+        sheet_info: 'Bảng định tuyến',
+        implementation_mill: 'Xưởng thực hiện',
+        resource: 'Tài nguyên',
+        machine: 'Máy móc',
+        worker: 'Nhân viên',
+        add_operation: 'Thêm công đoạn',
+        edit_operation: 'Chỉnh sửa công đoạn',
+        delete_operation: 'Xóa công đoạn',
 
         // operation create modal
-        operation_general_info: "Thông tin chung",
-        operation_name: "Tên công đoạn",
-        choose_mill: "Chọn xưởng thực hiện",
-        setup_time: "Thời gian thiết lập",
-        hour_production: "Sản lượng mỗi giờ",
-        cost: "Chi phí",
-        machine_info: "Thêm thông tin máy móc",
-        machine_name: "Tên máy móc",
-        choose_machine: "Chọn máy thực hiện",
-        operating_cost: "Chi phí vận hành",
-        number: "Số lượng",
-        worker_info: "Thêm thông tin nhân viên",
-        worker_role: "Nhân viên vận hành",
-        choose_worker_role: "Chọn nhân viên",
-        exp_years: "Số năm kinh nghiệm",
-        resource_type: "Loại tài nguyên",
-        resource_detail_info: "Thông tin chi tiết",
-        edit_resource: "Chỉnh sửa tài nguyên",
-        delete_resource: "Xóa tài nguyên",
+        operation_general_info: 'Thông tin chung',
+        // operation_name: 'Tên công đoạn',
+        choose_mill: 'Chọn xưởng thực hiện',
+        setup_time: 'Thời gian thiết lập',
+        hour_production: 'Sản lượng mỗi giờ',
+        cost: 'Chi phí',
+        machine_info: 'Thêm thông tin máy móc',
+        machine_name: 'Tên máy móc',
+        choose_machine: 'Chọn máy thực hiện',
+        operating_cost: 'Chi phí vận hành',
+        number: 'Số lượng',
+        worker_info: 'Thêm thông tin nhân viên',
+        worker_role: 'Nhân viên vận hành',
+        choose_worker_role: 'Chọn nhân viên',
+        exp_years: 'Số năm kinh nghiệm',
+        resource_type: 'Loại tài nguyên',
+        resource_detail_info: 'Thông tin chi tiết',
+        edit_resource: 'Chỉnh sửa tài nguyên',
+        delete_resource: 'Xóa tài nguyên',
 
         // validate
         validate: {
           name: {
-            required: "Tên quy trình không được để trống",
+            required: 'Tên quy trình không được để trống'
           },
           works: {
-            required: "Nhà máy sản xuất không được để trống",
+            required: 'Nhà máy sản xuất không được để trống'
           },
           products: {
-            required: "Sản phẩm không được để trống",
+            required: 'Sản phẩm không được để trống'
           },
           approver: {
-            required: "Người phê duyệt không được để trống",
+            required: 'Người phê duyệt không được để trống'
           },
           operation: {
             name: {
-              required: "Tên công đoạn không được để trống",
+              required: 'Tên công đoạn không được để trống'
             },
             mill: {
-              required: "Xưởng thực hiện không được để trống",
+              required: 'Xưởng thực hiện không được để trống'
             },
             setupTime: {
-              required: "Thời gian thiết lập không được để trống",
-              min: "Thời gian thiết lập phải lớn hơn 0",
+              required: 'Thời gian thiết lập không được để trống',
+              min: 'Thời gian thiết lập phải lớn hơn 0'
             },
             hourProduction: {
-              required: "Sản lượng mỗi giờ không được để trống",
-              min: "Sản lượng mỗi giờ phải lớn hơn 0",
-            },
+              required: 'Sản lượng mỗi giờ không được để trống',
+              min: 'Sản lượng mỗi giờ phải lớn hơn 0'
+            }
           }
         },
-        // flow create modal  
-        create_flow: "Tạo lộ trình",
-        create_flow_title: "Tạo lộ trình thực hiện các công đoạn",
-        view_flow_title: "Chi tiết lộ trình"
-      },
+        // flow create modal
+        create_flow: 'Tạo lộ trình',
+        create_flow_title: 'Tạo lộ trình thực hiện các công đoạn',
+        view_flow_title: 'Chi tiết lộ trình'
+      }
     },
     manage_transport: {
       transportRequirement: {
@@ -7608,14 +7625,14 @@ export default {
         delete_good: 'Xóa',
         good_info: 'Thông tin hàng',
         choose_good: '---Chọn mặt hàng---',
-        good_code: 'Mã mặt hàng',
+        // good_code: 'Mã mặt hàng',
         error_good: 'Vui lòng chọn mặt hàng',
         error_description: 'Mô tả không được để trống',
         error_quantity: 'Vui lòng nhập số lượng',
         cancel_editing_good: 'Hủy chỉnh sửa',
         save_good: 'Lưu',
         add_good: 'Thêm',
-        delete_good: 'Xóa trắng',
+        // delete_good: 'Xóa trắng',
         error_quantity_input: 'Số lượng không hợp lệ',
         request_detail: 'Chi tiết đề nghị',
         good_detail: 'Chi tiết mặt hàng',

@@ -1,11 +1,11 @@
 export default {
   locale: 'en',
   messages: {
-    /*******************************************************
+    /** *****************************************************
      * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
      * @general những phần ngôn ngữ dùng chung cho mọi module
      * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
-     *******************************************************/
+     ****************************************************** */
     general: {
       show: 'Show ',
       table: 'Table',
@@ -36,7 +36,7 @@ export default {
       error: 'Error',
       index: 'No.',
       new_notification: 'You have a new notification!',
-      month: 'in',
+      // month: 'in',
       value: 'Value',
       export: 'Export',
       add_tag: 'Add a tag',
@@ -94,14 +94,14 @@ export default {
       home: 'Home Page',
       /** Quản lý rủi ro */
       bayesian_network_config: 'Bayesian network configuration',
-      risk_management: "Risk Management",
-      risk_response_plan: "Risk Response Plan Management",
-      exprimental_analysis: "Đánh giá thực nghiệm",
-      risk_dashboard: "Unit Risk Dashboard",
-      risk_list: "Risk List",
-      task_pert: "Completition Probability Analysis",
-      task_pert_dash: "Completition Probability Analysis",
-      rms_add: "Regiter A New Risk",
+      risk_management: 'Risk Management',
+      risk_response_plan: 'Risk Response Plan Management',
+      exprimental_analysis: 'Đánh giá thực nghiệm',
+      risk_dashboard: 'Unit Risk Dashboard',
+      risk_list: 'Risk List',
+      task_pert: 'Completition Probability Analysis',
+      task_pert_dash: 'Completition Probability Analysis',
+      rms_add: 'Regiter A New Risk',
       system_administration: 'System Administration',
       manage_configuration: 'Configuration',
       manage_system: 'Backup and Restore',
@@ -142,7 +142,7 @@ export default {
         crmUnitConfiguration: 'Customer care unit configuration'
       },
 
-      risk_template: "Risk Template",
+      risk_template: 'Risk Template',
       task_template: 'Task Template',
       administrative_document_process_dashboard: 'Dashboard Administrative Document Process',
       cocautochuc: 'Organizational Structure',
@@ -211,6 +211,11 @@ export default {
       kpi_personal_manager: 'Manager personal KPI',
       kpi_member_detail: 'Details of personal KPI',
       kpi_unit_template: 'KPI template',
+      kpi_allocation_title: 'Kpi Allocation',
+      kpi_allocation_affected_factor_management: 'Affected factor management',
+      kpi_allocation_allocation_management: 'Allocation management',
+      kpi_allocation_config_management: 'Config management',
+      kpi_allocation_task_package_management: 'Task package management',
 
       notifications: 'Notifications',
 
@@ -224,7 +229,7 @@ export default {
       task_management_process: 'Process list',
       task_process_template: 'Process template',
       all_time_sheet_log: 'All Timesheetlogs',
-      //*******START */
+      //* ******START */
       // Quản lý tài sản
       // QUẢN LÝ
 
@@ -249,7 +254,7 @@ export default {
       manage_recommend_procure: 'Manage purchase request',
       manage_recommend_distribute_asset: 'Manage use request',
       employee_manage_asset_info: 'Manage managed assets',
-      //loo tai san
+      // loo tai san
       add_asset_lot: 'Add new asset lot',
       add_asset_lot_title: 'Add new asset lot - Update asset lot',
       add_update_asset_lot: 'Add - Update asset lot',
@@ -260,9 +265,9 @@ export default {
       recommend_equipment_procurement: 'Recommend equipment procurement',
       recommend_distribute_asset: 'Recommend distribute asset',
       manage_assigned_asset: 'Manage assigned assets',
-      //******END */
+      //* *****END */
 
-      //Quản lý vật tư
+      // Quản lý vật tư
       manage_supplies: 'Manage supplies',
       dashboard_supplies: 'Dashboard manage supplies',
       manage_supplies_infor: 'Manage supplies information',
@@ -278,7 +283,7 @@ export default {
       report_management: 'Report management',
       task_report: 'Manage task reports',
 
-      //QUẢN LÝ ĐƠN HÀNG
+      // QUẢN LÝ ĐƠN HÀNG
       manage_orders: 'Manage Order',
       manage_sales_order: 'Sales Order',
       manage_purchase_order: 'Purchase Order',
@@ -291,10 +296,10 @@ export default {
       manage_payment: 'Receipts And Payments',
       manage_bank_account: 'Bank Account',
 
-      //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
+      // QUẢN LÝ KẾ HOẠCH SẢN XUẤT
       manage_plans: 'Manage Plans',
 
-      //VÍ DỤ EXAMPLE
+      // VÍ DỤ EXAMPLE
       manage_examples: 'CRUD example',
       manage_examples_1: 'CRUD by model 1',
       manage_examples_2: 'CRUD by model 2',
@@ -338,17 +343,17 @@ export default {
       carrier_today_transport_mission: 'Transporting missions today',
       carrier_all_times_transport_mission: 'List of transporting missions all times',
 
-      //Quản lý vận chuyển 2
-      manage_transportation: "Manage transportation",
+      // Quản lý vận chuyển 2
+      manage_transportation: 'Manage transportation',
       manage_transportation_dashboard: "Manage transportation' dashboard",
       manage_transportation_init_route: "Manage transportation's route init",
       manage_transportation_list_journey: "Manage transportation's journeys",
-      manage_transportation_vehicles: "Manage vehicles information",
-      manage_transportation_test_api_shipper: "Delivery manage for shipper",
-      manage_transportation_delivery_detail: "Detail delivery",
-      manage_transportation_journey_detail: "Detail journey",
-      manage_transportation_cost: "Transportation cost",
-      manage_transportation_shipper: "Shipper manage",
+      manage_transportation_vehicles: 'Manage vehicles information',
+      manage_transportation_test_api_shipper: 'Delivery manage for shipper',
+      manage_transportation_delivery_detail: 'Detail delivery',
+      manage_transportation_journey_detail: 'Detail journey',
+      manage_transportation_cost: 'Transportation cost',
+      manage_transportation_shipper: 'Shipper manage',
 
       user_guide: 'User guide',
       user_guide_detail: 'User guide detail'
@@ -358,14 +363,14 @@ export default {
     //   news_feed: 'News feed'
     manufacturing_managerment: {
       manufacturing_process: {
-        add_button: "Add",
+        add_button: 'Add',
 
-        //tab name
-        tab_information: "General infomation",
-        tab_employee: "Employee list",
-        tab_asset: "Asset process",
-        tab_task_list: "Danh sách công việc",
-        //Tab information
+        // tab name
+        tab_information: 'General infomation',
+        tab_employee: 'Employee list',
+        tab_asset: 'Asset process',
+        tab_task_list: 'Danh sách công việc',
+        // Tab information
         add_title: 'Add manufacturing process',
         process_id: 'Manufacturing identification',
         process_unit: 'Unit production',
@@ -378,83 +383,82 @@ export default {
         assign_supporter: 'Supporter',
         assign_manager: 'Manager',
 
-        //tab employee list
-        employee_name: "Worker name",
-        list_employee: "Employees list",
-        task_name: "Group task",
-        task_action_name: "Subtask",
+        // tab employee list
+        employee_name: 'Worker name',
+        list_employee: 'Employees list',
+        task_name: 'Group task',
+        task_action_name: 'Subtask',
 
+        search: 'Search',
 
-        search: "Search",
-
-        //tab asset
-        asset_name: "Name",
-        asset_quantity: "Quantity",
-        asset_status: "Status",
-        asset_cate: "Category",
-        asset_use_time: "Times use",
-        //table
-        index: "index",
-        identification: "Manufacturing ID",
-        group_name: "Production Process Name",
-        group_time_start: "Time Start",
-        group_time_end: "Time End",
-        group_asset: "Process Asset",
-        process_status: "Status",
-        progress: "Progress",
-        supervisor: "Supervisor",
-        employee_number: "Number of employees",
+        // tab asset
+        asset_name: 'Name',
+        asset_quantity: 'Quantity',
+        asset_status: 'Status',
+        asset_cate: 'Category',
+        asset_use_time: 'Times use',
+        // table
+        index: 'index',
+        identification: 'Manufacturing ID',
+        group_name: 'Production Process Name',
+        group_time_start: 'Time Start',
+        group_time_end: 'Time End',
+        group_asset: 'Process Asset',
+        process_status: 'Status',
+        progress: 'Progress',
+        supervisor: 'Supervisor',
+        employee_number: 'Number of employees'
       },
       management_chain: {
-        add_form_titile: "New driving belt",
-        unit_production: "Manufacturing unit",
-        chain_name: "Driving belt name",
-        employee_watcher: "Assistant",
-        employee_approver: "Approver",
-        description: "Description",
+        add_form_titile: 'New driving belt',
+        unit_production: 'Manufacturing unit',
+        chain_name: 'Driving belt name',
+        employee_watcher: 'Assistant',
+        employee_approver: 'Approver',
+        description: 'Description',
 
-        job_list_title: "List task process manufacturing",
-        job_infor: "Step description",
-        job_name: "Step name",
-        job_code: "Task code",
-        job_description: "Step job description",
-        job_asset: "Asset job",
-        job_asset_numbers: "Amount",
-        job_asset_unit: "Unit",
-        job_asset_status: "Status",
-        job_times: "Job time scheduler",
+        job_list_title: 'List task process manufacturing',
+        job_infor: 'Step description',
+        job_name: 'Step name',
+        job_code: 'Task code',
+        job_description: 'Step job description',
+        job_asset: 'Asset job',
+        job_asset_numbers: 'Amount',
+        job_asset_unit: 'Unit',
+        job_asset_status: 'Status',
+        job_times: 'Job time scheduler',
 
-        add_job_list: "Add",
-        index: "index",
-        actions: "Actions",
+        add_job_list: 'Add',
+        index: 'index',
+        actions: 'Actions'
       },
       management_issue: {
-        //table
-        index: "Index",
-        issue_task: "Task name",
-        issue_action: "Action",
-        issue_name: "Issue name",
-        issue_on_time: "Time of incident",
-        issue_status: "Status",
-        issue_fix_time: "Time repair",
-        issue_repair_date: "Date repair",
-        issue_repairer: "repairer",
-        issue_cate: "Category",
+        // table
+        index: 'Index',
+        issue_task: 'Task name',
+        issue_action: 'Action',
+        issue_name: 'Issue name',
+        issue_on_time: 'Time of incident',
+        issue_status: 'Status',
+        issue_fix_time: 'Time repair',
+        issue_repair_date: 'Date repair',
+        issue_repairer: 'repairer',
+        issue_cate: 'Category',
 
-        edit_issue_form: "Edit issue",
-        add_issue_form: "Add new issue",
+        edit_issue_form: 'Edit issue',
+        add_issue_form: 'Add new issue'
       },
       management_task_action: {
-        //table manage
-        index: "Index",
-        unitOrganizational: "Organization",
-        processManufacturingName: "Process name",
-        taskProcessName: "Task name",
-        progress: "Progess",
-        performer: "Performer",
-        reporter: "Reporter",
-        date: "Date",
-        productDone: "Products",
+        // table manage
+        index: 'Index',
+        unitOrganizational: 'Organization',
+        processManufacturingName: 'Process name',
+        taskProcessName: 'Task name',
+        progress: 'Progess',
+        performer: 'Performer',
+        reporter: 'Reporter',
+        date: 'Date',
+        productDone: 'Products'
       }
     },
 
@@ -639,12 +643,12 @@ export default {
             no_more255: 'Name not more 255',
             no_space: 'Short name cannot have space and special digit'
           },
-          short_name: {
-            no_blank: 'Description not null',
-            no_less4: 'Description less than 4',
-            no_more255: 'Description more than 255',
-            no_special: 'Description have special digit'
-          },
+          // short_name: {
+          //   no_blank: 'Description not null',
+          //   no_less4: 'Description less than 4',
+          //   no_more255: 'Description more than 255',
+          //   no_special: 'Description have special digit'
+          // },
           super_admin: {
             no_blank: 'Email not null',
             email_invalid: 'Email invalid'
@@ -734,7 +738,7 @@ export default {
           description: 'Description'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_root_roles_success: 'Get data root role success'
       },
 
@@ -789,7 +793,7 @@ export default {
         },
         select_link: 'Select link',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_system_component_success: 'Add system component success',
         get_system_component_success: 'Get data success',
         edit_system_component_success: 'Edit system component success',
@@ -823,14 +827,14 @@ export default {
           input_description: 'Type description'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_system_api_success: 'Create system API successfully',
         create_system_api_failure: 'Can not create system API',
         system_api_exist: 'System API already exists'
       },
 
       system_page: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_system_page_apis_success: 'Get system page APIs successfully',
         get_system_page_api_failure: 'Can not get system page APIs',
 
@@ -884,7 +888,7 @@ export default {
       },
 
       organization_unit: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_department_success: 'Create organizational unit success',
         edit_department_success: 'Edit organizational unit success',
         delete_department_success: 'Delete organizational unit success',
@@ -1142,7 +1146,7 @@ export default {
         title: 'Documents'
       },
 
-      //Response message from server
+      // Response message from server
       get_documents_success: 'Get documents successfully',
       get_documents_faile: 'Get documents faile',
       create_document_success: 'Create new document successfully',
@@ -2030,9 +2034,9 @@ export default {
       add_task_delegation_success:
         'Add a new task delegation successfully!\nYou will become an Informed employee of this task when delegation is activated',
       add_task_delegation_faile: 'Add a new task delegation failed!',
-      delegator_invalid_policy: 'Delegator does not satisfy chosen delegation policy',
-      delegatee_invalid_policy: 'Delegatee does not satisfy chosen delegation policy',
-      task_invalid_policy: 'Task does not satisfy chosen delegation policy',
+      // delegator_invalid_policy: 'Delegator does not satisfy chosen delegation policy',
+      // delegatee_invalid_policy: 'Delegatee does not satisfy chosen delegation policy',
+      // task_invalid_policy: 'Task does not satisfy chosen delegation policy',
       delete_task_delegation_success: 'Delete task delegation successfully!',
       delete_task_delegation_faile: 'Delete task delegation failed!',
       revoke_task_delegation_success: 'Revoke task delegation successfully!',
@@ -2497,8 +2501,8 @@ export default {
         engineer: 'Engineer',
         bachelor: 'Bachelor',
         master_degree: 'Maste degree',
-        engineer: 'Engineer',
-        bachelor: 'Bachelor',
+        // engineer: 'Engineer',
+        // bachelor: 'Bachelor',
         phd: 'Ph.D',
         unavailable: 'Other',
         work_experience: 'Work experience',
@@ -2522,7 +2526,7 @@ export default {
         project: 'Project',
 
         diploma: 'Degrees',
-        certificate: 'Certificate',
+        // certificate: 'Certificate',
         bidding_package: 'Bidding Package',
         name_diploma: 'Name of degree',
         name_certificate: 'Name of certificate',
@@ -2851,7 +2855,7 @@ export default {
         hours: 'hours',
         total_time_annual_leave: 'Total time annual leave',
         fullname: 'Fullname',
-        task_total: 'Total tasks',
+        // task_total: 'Total tasks',
         general_task: 'General tasks',
         see_all: 'See all',
         general_commendation: 'General commendation',
@@ -3099,7 +3103,7 @@ export default {
         course_id_have_exist: 'Course id already exists',
 
         get_list_course_success: 'Get list course success',
-        get_list_course_success: 'Get list course success',
+        // get_list_course_success: 'Get list course success',
         create_course_success: 'Create course success',
         create_course_faile: 'Create course faile',
         delete_course_success: 'Delete course success',
@@ -3214,7 +3218,7 @@ export default {
         warranty_expiration_date: 'Warranty expiration date',
         asset_location: 'Asset location',
         description: 'Description',
-        can_register: 'Can register',
+        // can_register: 'Can register',
         can_register_for_use: 'Can register to use',
         select_image: 'Select image',
         content: 'Content',
@@ -3240,7 +3244,7 @@ export default {
         select_incident_type: 'Select incident type',
         select_all_incident_type: 'Select all incident types',
 
-        disposal_date: 'Disposal date',
+        // disposal_date: 'Disposal date',
         disposal_type: 'Disposal type',
         disposal_price: 'Disposal price',
         disposal_content: 'Disposal content',
@@ -3284,11 +3288,11 @@ export default {
         building: 'Building',
         machine: 'Machine',
         other: 'Other',
-        bike: "Bike",
-        truck: "Truck",
-        vehicle_kind: "Vehicle kind",
-        select_vehicle_kind: "Select vehicle kind",
-        excluded_good_category: "Excluding good category",
+        bike: 'Bike',
+        truck: 'Truck',
+        vehicle_kind: 'Vehicle kind',
+        select_vehicle_kind: 'Select vehicle kind',
+        excluded_good_category: 'Excluding good category',
         asset_by_group: ' Asset by group',
         asset_by_type: ' Asset by type',
         asset_purchase_and_dispose: ' Purchase and dispose',
@@ -3309,7 +3313,7 @@ export default {
         asset_type_name: 'Asset type name',
         parent_asset_type: 'Parent asset type',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_asset_type_success: 'Get asset type successfully',
         get_asset_type_faile: 'Get asset type fail',
         create_asset_type_success: 'Create asset type successfully',
@@ -3365,7 +3369,7 @@ export default {
         machine: 'Machine',
         other: 'Other',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_asset_group_success: 'Get asset group successfully',
         get_asset_group_fail: 'Get asset group fail',
         get_asset_statistic_success: 'Get asset statistic successfully',
@@ -3391,7 +3395,7 @@ export default {
         asset_code_exist: 'Asset code already exists'
       },
 
-      //Quản lý lô tài sản
+      // Quản lý lô tài sản
       asset_lot: {
         asset_lot_code: 'Asset lot code',
         asset_lot_name: 'Asset lot name',
@@ -3408,7 +3412,7 @@ export default {
         edit_info: 'Edit asset lot information',
         delete_info: 'Delete asset lot information',
 
-        //thông điệp trả về từ server
+        // thông điệp trả về từ server
         create_asset_lot_success: 'Create asset lot success',
         create_asset_lot_failed: 'Create asset lot failed',
         asset_code_lot_exist: 'Asset lot code exist',
@@ -3428,7 +3432,7 @@ export default {
       maintainance: {
         total_cost: 'Total cost',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_maintainance_success: 'Get maintainance successfully',
         get_maintainance_faile: 'Get maintainance faile',
         create_maintainance_success: 'Thêm phiếu bảo trì successfully',
@@ -3452,7 +3456,7 @@ export default {
         task_in_use_request: 'Task use asset',
         recommend_units: 'Recommend units',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_usage_success: 'Get usage successfully',
         get_usage_faile: 'Get usage failed',
         create_usage_success: 'Create usage successfully',
@@ -3479,7 +3483,7 @@ export default {
         declining_balance: 'Declining Balance depreciation method',
         units_production: 'Unit of production method',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_depreciation_success: 'Get depreciation successfully',
         get_depreciation_failure: 'Get depreciation faile',
         create_depreciation_success: 'Create depreciation successfully',
@@ -3495,7 +3499,7 @@ export default {
         incident: 'Asset incident',
         report_incident: 'Report asset incident',
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_incident_success: 'Get incident successfully',
         get_incident_faile: 'Get incident faile',
         create_incident_success: 'Create incident successfully',
@@ -3521,7 +3525,7 @@ export default {
 
       // Quản lý đề nghị cấp phát
       manage_use_request: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_use_request_success: 'Get use request successfully',
         get_use_request_failure: 'Get use request faile',
         create_use_request_success: 'Edit use request successfully',
@@ -3534,7 +3538,7 @@ export default {
 
       // Đăng ký mua sắm thiết bị
       purchase_request: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_purchase_request_success: 'Get purchase request successfully',
         get_purchase_request_failure: 'Get purchase request faile',
         create_purchase_request_success: 'Create purchase request successfully',
@@ -3548,7 +3552,7 @@ export default {
 
       // Đăng ký sử dụng tài sản
       use_request: {
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         get_use_request_success: 'Get use request successfully',
         get_use_request_failure: 'Get use request failed',
         create_use_request_success: 'Create use request successfully',
@@ -3560,7 +3564,7 @@ export default {
       }
     },
 
-    //Modules Quản lý vật tư tiêu hao
+    // Modules Quản lý vật tư tiêu hao
     supplies: {
       general_information: {
         add_supplies: 'Add supplies',
@@ -3589,7 +3593,7 @@ export default {
         invoice_history_information: 'History update',
         none_description: 'None description',
 
-        //button
+        // button
         add: 'Add',
         select_approver: 'Select approver',
         search: 'Search',
@@ -3768,7 +3772,7 @@ export default {
 
         get_subtask_fail: 'Get sub task fail',
         get_task_of_informed_employee_fail: 'Get task of informed employee fail',
-        get_task_of_creator_success: 'Get task of creator fail',
+        // get_task_of_creator_success: 'Get task of creator fail',
         get_task_of_consulted_employee_fail: 'Get task of consulted employee fail',
         get_task_of_accountable_employee_fail: 'Get task of accountable employee fail',
         get_task_of_responsible_employee_fail: 'Get task of responsible employee fail',
@@ -3839,7 +3843,7 @@ export default {
         add_task: 'Add task',
         add_title: 'Add a new task',
         add_subtask: 'Add sub task',
-        subtask: "Subtask",
+        subtask: 'Subtask',
 
         department: 'Department',
         select_department: 'Select department',
@@ -3900,7 +3904,7 @@ export default {
         start_date: 'Start date',
         end_date: 'End date',
         task_additional_info: 'Additional Information',
-        list_sub_task: "List sub task",
+        list_sub_task: 'List sub task',
 
         search: 'Search',
 
@@ -4160,7 +4164,7 @@ export default {
         not_confirm: 'Not confirm this task',
 
         left_task_expired: 'left is task expired',
-        action_not_rating: 'Actions not rating this month',
+        // action_not_rating: 'Actions not rating this month',
 
         left_can_edit_task: 'Remaining time to edit task evaluation of previous month',
 
@@ -4171,7 +4175,7 @@ export default {
 
         project: 'Project name (if you have)',
 
-        //dashboard cv đơn vị
+        // dashboard cv đơn vị
         type_of_point: 'Type of point',
         criteria: 'Criteria',
         load_task: 'Load task',
@@ -4179,7 +4183,7 @@ export default {
         load_task_chart: 'Dashboard load task',
         load_task_chart_unit: 'Dashboard load task of unit',
         timesheet_statistics: 'Timesheets Statistics of',
-        explain: 'Explain',
+        // explain: 'Explain',
         select_responsible: 'Select responsible',
         timer: 'Timer',
         additional_timer: 'Additional Timer',
@@ -4199,7 +4203,7 @@ export default {
         change_incoming: 'Incoming data',
         change_outgoing: 'Outgoing data',
         edit_action: 'Edit action',
-        issue_action: "Report issue action",
+        issue_action: 'Report issue action',
         delete_action: 'Delete action',
         mandatory_action: 'Mandatory action',
         confirm_action: 'Confirm action',
@@ -4302,7 +4306,7 @@ export default {
         stop_timer_fail: 'Stop timer fail',
         create_result_info_task_fail: 'Create result infomation task fail',
         create_result_infomation_task_fail: 'Create result infomation task fail',
-        edit_result_infomation_task_success: 'Edit result infomation task fail',
+        // edit_result_infomation_task_success: 'Edit result infomation task fail',
         create_task_comment_fail: 'Create task comment fail',
         get_task_comments_fail: 'Get all task comments fail',
         edit_task_comment_fail: 'Edit task comment fail',
@@ -4384,10 +4388,10 @@ export default {
           err_empty: 'Value must be required'
         },
         issue_form: {
-          issue_form_title: "Report Issue",
-          issue_cate: "Issue Category",
-          issue_description: "Description",
-          issue_btn_report: "Report"
+          issue_form_title: 'Report Issue',
+          issue_cate: 'Issue Category',
+          issue_description: 'Description',
+          issue_btn_report: 'Report'
         },
 
         request_close_task: 'Request to close task',
@@ -4536,7 +4540,7 @@ export default {
         get_kpi_responsible_success: 'Get all KPI responsible successfully',
         get_kpi_responsible_fail: 'Get all KPI responsible fail',
 
-        //Nhóm dành cho module creation
+        // Nhóm dành cho module creation
         employee_kpi_set: {
           create_employee_kpi_set: {
             // Module chính
@@ -4591,7 +4595,7 @@ export default {
             target_name: 'Target name',
             parents_target: 'Parents target',
             evaluation_criteria: 'Evalution criteria',
-            weight: 'Weight',
+            // weight: 'Weight',
             status: 'Status',
             action: 'Action',
             not_initialize: 'No KPI have been initialized in ',
@@ -4695,7 +4699,7 @@ export default {
             weight: 'Weight'
           },
 
-          //Thông điệp trả về từ server
+          // Thông điệp trả về từ server
           messages_from_server: {
             initialize_employee_kpi_set_success: 'Initialize employee KPI set successfully',
             initialize_employee_kpi_set_failure: 'Can not initialize employee KPI set',
@@ -4772,7 +4776,7 @@ export default {
           criteria: 'Criteria',
           weight: 'Weight',
           result: 'Result',
-          target: 'targets',
+          // target: 'targets',
           data_not_found: 'There is no satisfied result',
           unsuitable_weight: 'Unsuitable weight',
           unsuitable_approval: 'Editing is not approved',
@@ -5096,7 +5100,7 @@ export default {
             target_name: 'Target Name',
             creator: 'Creator',
             organization_unit: 'Department',
-            criteria: 'Criteria',
+            // criteria: 'Criteria',
             result: 'Result',
             no_data: 'No data'
           },
@@ -5133,7 +5137,7 @@ export default {
           weight_analysis_tree_unit: 'The KPI weight is based on the established weight analysis of the tree unit KPI'
         },
 
-        //Thông điệp khác trả về từ server
+        // Thông điệp khác trả về từ server
         get_parent_by_unit_success: 'Get KPI by parent unit successfully',
         get_parent_by_unit_failure: 'Can not get KPI by parent unit',
         get_kpi_unit_success: 'Get all KPI unit successfully',
@@ -5157,6 +5161,21 @@ export default {
         create_kpi_template_success: 'Create KPI template Success',
         delete_kpi_template_success: 'Delete KPI template Success',
         edit: 'Edit KPI template Success'
+      },
+      kpi_allocation: {
+        title: 'KPI Allocation',
+        affected_factor_management: {
+          title: 'Affected factor management'
+        },
+        allocation_management: {
+          title: 'Allocation management'
+        },
+        config_management: {
+          title: 'Config management'
+        },
+        task_package_management: {
+          title: 'Task package management'
+        }
       }
     },
 
@@ -5237,12 +5256,12 @@ export default {
         description: 'Description',
         choose_type: 'Choose type of commodity',
         all_type: 'Choose all type of commodity',
-        product: 'Products',
-        material: 'Material',
+        // product: 'Products',
+        // material: 'Material',
         importedFromSuppliers: 'Imported from suppliers',
         selfProduced: 'Self-produced',
-        equipment: 'Equipment',
-        waste: 'Waste',
+        // equipment: 'Equipment',
+        // waste: 'Waste',
         search: 'Search',
         validate_code: 'Commodity code cannot be left blank',
         validate_name: 'Commodity name cannot be left blank',
@@ -5503,13 +5522,13 @@ export default {
           5: 'Completed',
           7: 'Canceled'
         },
-        bill_issue_status: {
-          1: 'Waiting for approval',
-          2: 'waiting for perform',
-          3: 'Processing',
-          5: 'Completed',
-          7: 'Canceled'
-        },
+        // bill_issue_status: {
+        //   1: 'Waiting for approval',
+        //   2: 'waiting for perform',
+        //   3: 'Processing',
+        //   5: 'Completed',
+        //   7: 'Canceled'
+        // },
         stock_book: 'Warehouse book',
         good_receipt: 'Commodity receipt',
         good_issue: 'Commodity',
@@ -5639,7 +5658,7 @@ export default {
         validate_norm: 'Out of quantity of inventory',
         add_lot: 'Add new consignment',
         expiration_date: 'Expiration date',
-        validate_norm: 'Out of quantity of inventory',
+        // validate_norm: 'Out of quantity of inventory',
         quantity_return: 'quantity of return commodity',
         quantity_issue: 'Quantity of issue commodity',
         bill_issued: 'issued bill',
@@ -5819,9 +5838,9 @@ export default {
       title_delete: 'Delete this report',
       creator: 'Creator',
       no_data: 'No data',
-      search_by_name: 'Search by name report',
+      // search_by_name: 'Search by name report',
 
-      //message trả về từ server
+      // message trả về từ server
 
       create_report_manager_success: 'Create report success !',
       create_report_manager_faile: 'Create report fail ! ',
@@ -6000,7 +6019,7 @@ export default {
         cancel_editing_good: 'Cancel',
         save_good: 'Save',
         add_good: 'Add',
-        delete_good: 'Delete all',
+        // delete_good: 'Delete all',
         error_quantity_input: 'Quantity is not available',
         purchasing_request_detail: 'Purchase requestion details',
         material_detail: 'Material details',
@@ -6080,14 +6099,14 @@ export default {
         delete_good: 'Delete',
         good_info: "Good's information",
         choose_good: '---choose good ---',
-        good_code: 'Good code',
+        // good_code: 'Good code',
         error_good: 'Good is required',
         error_description: 'Description is required',
         error_quantity: 'Quantity is required',
         cancel_editing_good: 'Cancel',
         save_good: 'Save',
         add_good: 'Add',
-        delete_good: 'Delete all',
+        // delete_good: 'Delete all',
         error_quantity_input: 'Quantity is not available',
         request_detail: 'Request details',
         good_detail: 'Good details',
@@ -6122,13 +6141,13 @@ export default {
         base_infomation: 'Base infomation',
         approved_true: 'Approve request',
         source_request: 'Source request',
-        optimal_stock: "Optimal Stock",
-        optimal_stock_name: "Stock name",
-        optimal_stock_address: "Stock location",
-        optimal_stock_distance: "Distance from stock to customer",
-        optimal_stock_search: "Search",
-        optimal_stock_message: "Bấm để tìm kiếm kho tối ưu cho đơn hàng trên",
-        optimal_stock_error_message: "Không có kho nào đáp ứng được đơn hàng trên"
+        optimal_stock: 'Optimal Stock',
+        optimal_stock_name: 'Stock name',
+        optimal_stock_address: 'Stock location',
+        optimal_stock_distance: 'Distance from stock to customer',
+        optimal_stock_search: 'Search',
+        optimal_stock_message: 'Bấm để tìm kiếm kho tối ưu cho đơn hàng trên',
+        optimal_stock_error_message: 'Không có kho nào đáp ứng được đơn hàng trên'
       }
     },
 
@@ -6171,168 +6190,168 @@ export default {
     // Quản lý vận chuyển 2
     manage_transportation: {
       orders_table: {
-        customer_code: "Customers code",
-        order_code: "Orders code",
-        estimated_delivery_date: "Estimated delivery date",
-        status: "Status",
-        address: "Address",
-        priority: "Delivert priority",
-        quick_create: "Quick create",
-        setup_create: "Optional create",
-        search: "Search",
-        from_date: "From",
-        to_date: "To",
-        create_new_order: "Create",
-        select_customer: "Khách hàng",
-        text_select_customer: "Chọn khách hàng",
-        customer_name: "Khách hàng",
-        init_route: "Khởi tạo lộ trình",
-        quick_create_title: "Tạo với thông số mặc định",
-        setup_create_title: "Tuỳ chỉnh thông số thuật toán",
-        not_transport_requests_tab: "Not Tranport Requests",
-        transporting_requests_tab: "Transporting Requests",
-        success_transport_requests_tab: "Success Transport Requests",
-        failure_transport_requests_tab: "Failure Transport Requests",
+        customer_code: 'Customers code',
+        order_code: 'Orders code',
+        estimated_delivery_date: 'Estimated delivery date',
+        status: 'Status',
+        address: 'Address',
+        priority: 'Delivert priority',
+        quick_create: 'Quick create',
+        setup_create: 'Optional create',
+        search: 'Search',
+        from_date: 'From',
+        to_date: 'To',
+        create_new_order: 'Create',
+        select_customer: 'Khách hàng',
+        text_select_customer: 'Chọn khách hàng',
+        customer_name: 'Khách hàng',
+        init_route: 'Khởi tạo lộ trình',
+        quick_create_title: 'Tạo với thông số mặc định',
+        setup_create_title: 'Tuỳ chỉnh thông số thuật toán',
+        not_transport_requests_tab: 'Not Tranport Requests',
+        transporting_requests_tab: 'Transporting Requests',
+        success_transport_requests_tab: 'Success Transport Requests',
+        failure_transport_requests_tab: 'Failure Transport Requests',
         customer_search_name: "Customer's Name",
-        request_stock_confirm: "Requests",
+        request_stock_confirm: 'Requests'
       },
       vehicle_management: {
-        index: "Number",
-        add: "Create",
-        name: "Vehicle name",
-        capacity: "Capacity(kg/m3)",
-        average_speed: "Average speed",
-        cost_per_km: "Cost per km",
-        type: "Type",
-        status: "Status",
-        search: "Search",
-        detail_info_vehicle: "Detail info of vehicle",
-        edit: "Edit info of vehicle",
-        delete: "Delete vehicle",
-        edit_title: "Edit vehicle",
-        add_title: "Add new vehicle",
-        add_success: "Add success",
-        add_fail: "Add failure",
-        height: "Chiều cao(thùng hàng)",
-        width: "Chiều rộng(thùng hàng)",
-        depth: "Chiều sâu(thùng hàng)",
-        average_gas_consume: "Sử dụng nhiên liệu(l/km)",
-        gas_price: "Giá xăng dấu(VND/l)",
-        min_velocity: "Tốc độ tối thiểu",
-        max_velocity: "Tốc độ tối đa",
-        unloading_cost: "Unloading Fee follow vehicle",
-        fixed_cost: "Fixed cost",
-        cannot_carry_good_group: "Cannot carry good groups",
+        index: 'Number',
+        add: 'Create',
+        name: 'Vehicle name',
+        capacity: 'Capacity(kg/m3)',
+        average_speed: 'Average speed',
+        cost_per_km: 'Cost per km',
+        type: 'Type',
+        status: 'Status',
+        search: 'Search',
+        detail_info_vehicle: 'Detail info of vehicle',
+        edit: 'Edit info of vehicle',
+        delete: 'Delete vehicle',
+        edit_title: 'Edit vehicle',
+        add_title: 'Add new vehicle',
+        add_success: 'Add success',
+        add_fail: 'Add failure',
+        height: 'Chiều cao(thùng hàng)',
+        width: 'Chiều rộng(thùng hàng)',
+        depth: 'Chiều sâu(thùng hàng)',
+        average_gas_consume: 'Sử dụng nhiên liệu(l/km)',
+        gas_price: 'Giá xăng dấu(VND/l)',
+        min_velocity: 'Tốc độ tối thiểu',
+        max_velocity: 'Tốc độ tối đa',
+        unloading_cost: 'Unloading Fee follow vehicle',
+        fixed_cost: 'Fixed cost',
+        cannot_carry_good_group: 'Cannot carry good groups',
         tonnage: "Vehicle's tonnage",
-        operation_cost: "Operation Cost",
-        update_operation_cost_button: "Update operation cost",
-        select_require_license: "Select require license",
-        require_license: "Require license",
+        operation_cost: 'Operation Cost',
+        update_operation_cost_button: 'Update operation cost',
+        select_require_license: 'Select require license',
+        require_license: 'Require license'
       },
       journey_list: {
-        index: "Number",
-        journey_code: "Journey code",
-        journey_name: "Journey name",
-        number_vehicle: "Vehicle number",
-        efficiency: "Efficiency",
-        revenue: "Revenue",
-        total_cost: "Total cost",
-        estimated_delivery_date: "Estimated delivery date",
-        status: "Status",
-        total_distance: "Total distance",
-        shippers_for_journey: "Shipper",
-        date_search: "Date",
-        delivered: "Đã thực hiện",
-        not_delivered: "Chưa thực hiện",
-        in_process: "Đang thực hiện"
+        index: 'Number',
+        journey_code: 'Journey code',
+        journey_name: 'Journey name',
+        number_vehicle: 'Vehicle number',
+        efficiency: 'Efficiency',
+        revenue: 'Revenue',
+        total_cost: 'Total cost',
+        estimated_delivery_date: 'Estimated delivery date',
+        status: 'Status',
+        total_distance: 'Total distance',
+        shippers_for_journey: 'Shipper',
+        date_search: 'Date',
+        delivered: 'Đã thực hiện',
+        not_delivered: 'Chưa thực hiện',
+        in_process: 'Đang thực hiện'
       },
       delivery_plan: {
         get_plan_failure: "Get all delivery plan's data failure",
-        save_plan: "Save delivery plan success",
+        save_plan: 'Save delivery plan success',
         get_plans: "Get all delivery plan's data"
       },
       cost_management: {
-        button_create_title: "Thêm mới",
+        button_create_title: 'Thêm mới',
 
-        vehicle_cost_title: "Công thức chi phí vận hành xe",
-        type_vehicle_cost: "Loại phí",
-        name_vehicle_cost: "Tên",
-        vehicle_list: "Danh sách xe",
-        vehicle_cost: "Số tiền",
-        vehicle_cost_search_title: "Tên chi phí",
-        vehicle_cost_add: "Chi phí xe",
-        vehicle_cost_type_add: "Loại chi phí",
-        vehicle_cost_add_form_title: "Thêm mới loại chi phí xe",
-        vehicle_cost_add_success: "Thêm mới thành công",
-        vehicle_constraint: "Danh sách xe phụ thuộc",
-        vehicle_cost_code: "Mã chi phí",
-        vehicle_fixed_cost: "Cố định",
-        vehicle_operation_cost: "Không cố định",
-        vehicle_cost_type_select: "Chọn loại chi phí",
-        vehicle_cost_delete: "Xoá chi phí xe",
-        vehicle_cost_update_button: "Chỉnh sửa chi phí",
+        vehicle_cost_title: 'Công thức chi phí vận hành xe',
+        type_vehicle_cost: 'Loại phí',
+        name_vehicle_cost: 'Tên',
+        vehicle_list: 'Danh sách xe',
+        vehicle_cost: 'Số tiền',
+        vehicle_cost_search_title: 'Tên chi phí',
+        vehicle_cost_add: 'Chi phí xe',
+        vehicle_cost_type_add: 'Loại chi phí',
+        vehicle_cost_add_form_title: 'Thêm mới loại chi phí xe',
+        vehicle_cost_add_success: 'Thêm mới thành công',
+        vehicle_constraint: 'Danh sách xe phụ thuộc',
+        vehicle_cost_code: 'Mã chi phí',
+        vehicle_fixed_cost: 'Cố định',
+        vehicle_operation_cost: 'Không cố định',
+        vehicle_cost_type_select: 'Chọn loại chi phí',
+        vehicle_cost_delete: 'Xoá chi phí xe',
+        vehicle_cost_update_button: 'Chỉnh sửa chi phí',
 
-        shipper_cost_title: "Shippers Cost",
-        type_shipper_cost: "Loại phí",
-        name_shipper_cost: "Tên",
-        shipper_list: "Danh sách xe",
-        shipper_cost: "Số tiền",
-        shipper_cost_search_title: "Tên chi phí",
-        shipper_cost_add: "Thêm chi phí",
-        shipper_name: "Tài xế",
-        fixed_salary: "Lương cứng",
-        bonus_salary: "Lương thưởng",
-        total_salary: "Tổng lương",
-        shipper_cost_calculate: "Tính lương",
-        shipper_salary_table: "Bảng lương",
-        shipper_salary_statistic_table: "Lương nhân viên",
+        shipper_cost_title: 'Shippers Cost',
+        type_shipper_cost: 'Loại phí',
+        name_shipper_cost: 'Tên',
+        shipper_list: 'Danh sách xe',
+        shipper_cost: 'Số tiền',
+        shipper_cost_search_title: 'Tên chi phí',
+        shipper_cost_add: 'Thêm chi phí',
+        shipper_name: 'Tài xế',
+        fixed_salary: 'Lương cứng',
+        bonus_salary: 'Lương thưởng',
+        total_salary: 'Tổng lương',
+        shipper_cost_calculate: 'Tính lương',
+        shipper_salary_table: 'Bảng lương',
+        shipper_salary_statistic_table: 'Lương nhân viên',
         shipper_name_search: "Shipper's name",
-        month: "Month",
+        month: 'Month'
       },
       shipper: {
-        shipper_name: "Name",
-        time_working_month: "Time working in month",
-        number_order_deliveried: "Order deliveried",
-        rate_order_complete: "Rate complete",
-        driver_license: "Driver license",
-        searching_shipper: "Searching shipper",
-        shipper_task_list_title: "Shipper task list",
-        shipper_report_history_title: "Shipper report history",
-        start_time_journey: "Start time journey",
-        end_time_journey: "End time journey",
-        used_vehicle: "Used vehicle",
-        start_place: "Start place",
-        process: "Process",
-        success_order_rate: "Success",
-        order_code: "Order Code",
-        index: "Index",
-        destination_place: "Destination place",
-        estimated_time_arrive: "Estimated time arrive",
-        order_status: "order status",
-        show_map_button: "Show map",
-        hide_map_button: "Hide map",
-        order_table_label: "Order List",
-        report_failure: "Giao hàng thất bại",
-        report_success: "Giao hàng thành công",
-        start_doing: "Bắt đầu",
-        end_doing: "Kết thúc",
-        form_edit_title: "Edit info shipper",
-        list_license: "List license",
-        approve: "Approve",
-        edit_info: "Edit info shipper",
-        searching_license: "Bằng lái",
-        salary: "Salary",
+        shipper_name: 'Name',
+        time_working_month: 'Time working in month',
+        number_order_deliveried: 'Order deliveried',
+        rate_order_complete: 'Rate complete',
+        driver_license: 'Driver license',
+        searching_shipper: 'Searching shipper',
+        shipper_task_list_title: 'Shipper task list',
+        shipper_report_history_title: 'Shipper report history',
+        start_time_journey: 'Start time journey',
+        end_time_journey: 'End time journey',
+        used_vehicle: 'Used vehicle',
+        start_place: 'Start place',
+        process: 'Process',
+        success_order_rate: 'Success',
+        order_code: 'Order Code',
+        index: 'Index',
+        destination_place: 'Destination place',
+        estimated_time_arrive: 'Estimated time arrive',
+        order_status: 'order status',
+        show_map_button: 'Show map',
+        hide_map_button: 'Hide map',
+        order_table_label: 'Order List',
+        report_failure: 'Giao hàng thất bại',
+        report_success: 'Giao hàng thành công',
+        start_doing: 'Bắt đầu',
+        end_doing: 'Kết thúc',
+        form_edit_title: 'Edit info shipper',
+        list_license: 'List license',
+        approve: 'Approve',
+        edit_info: 'Edit info shipper',
+        searching_license: 'Bằng lái',
+        salary: 'Salary'
       },
       shipper_management: {
-        "edit_title": "Cập nhật chỉ số tính lương",
-        "edit_success": "Cập nhật thành công",
-        "edit_fail": "Cập nhật thất bại",
-        "calculated_salary_table": "Bảng lương tháng",
-        "save_salary_success": "Lưu bảng lương thành công",
-        "save_salary_fail": "Lưu bảng lương thất bại",
+        edit_title: 'Cập nhật chỉ số tính lương',
+        edit_success: 'Cập nhật thành công',
+        edit_fail: 'Cập nhật thất bại',
+        calculated_salary_table: 'Bảng lương tháng',
+        save_salary_success: 'Lưu bảng lương thành công',
+        save_salary_fail: 'Lưu bảng lương thất bại'
       },
       formula: {
-        update: "Update formula"
+        update: 'Update formula'
       }
     },
 
@@ -6548,298 +6567,295 @@ export default {
       news_feed: 'News'
     },
     // process_analysis
-    //riskdashboard
+    // riskdashboard
     change_algorithms: {
-      get_risk_sucess: "MLE is used"
+      get_risk_sucess: 'MLE is used'
     },
     // process_analysis
     process_analysis: {
       change_time: {
-        title: "Process Plan Change",
+        title: 'Process Plan Change',
         change: 'Change',
         reset: 'Reset',
         name: 'Task Name',
-        duration: "Duration",
+        duration: 'Duration',
         day: 'days',
-        responsible_employees: "Responsible Employees",
-        action: "Action",
-        change_plan: "Change Plan",
-        process_name: "Process Name",
-        total_duration: "Total Duration",
-        total_prob: "Completition Probability",
-        warning: "The activities on the critical path are marked in red",
-        change_success: "Change Plan Successfully",
+        responsible_employees: 'Responsible Employees',
+        action: 'Action',
+        change_plan: 'Change Plan',
+        process_name: 'Process Name',
+        total_duration: 'Total Duration',
+        total_prob: 'Completition Probability',
+        warning: 'The activities on the critical path are marked in red',
+        change_success: 'Change Plan Successfully'
       },
       cpt_table: {
-        conditional_probability_table: "Conditional Probability Table",
-        risk_name: "Risk Name",
-        parents: "Parents",
-        CPT: "CPT"
+        conditional_probability_table: 'Conditional Probability Table',
+        risk_name: 'Risk Name',
+        parents: 'Parents',
+        CPT: 'CPT'
       },
       index: {
-        loading_data: "Loading data....",
-        calculate_successfully: "Completition Probability Analysis",
-        change_process_request: "Change Process Request Management"
+        loading_data: 'Loading data....',
+        calculate_successfully: 'Completition Probability Analysis',
+        change_process_request: 'Change Process Request Management'
       },
       modal_view_process: {
-        title: "Completition Probability Analysis",
-        statistical: "Statistical",
-        success_probability: "Successs probability",
-        ratio_chart: "Ratio Chart",
-        number_task: "Number of tasks"
+        title: 'Completition Probability Analysis',
+        statistical: 'Statistical',
+        success_probability: 'Successs probability',
+        ratio_chart: 'Ratio Chart',
+        number_task: 'Number of tasks'
       },
 
       pert_model: {
         title: 'PERT/CPM Data',
-        pert: "PERT Data",
-        cpm: "CPM Data",
-        optimistic: "Optimistic ",
-        mostlikely: "Mostlikely",
-        pessimistic: "Pessimistic",
-        expected_time: "Expected Time",
-        standard_deviation: "Standard Deviation",
-        duration: "Duration",
-        early_start: "Early start ",
-        early_finish: "Early finish",
-        late_start: "Late start ",
-        late_finish: "Late finish",
-        slack: "Slack",
-        equations: "Equations",
-        success_probability: "Completition probability"
+        pert: 'PERT Data',
+        cpm: 'CPM Data',
+        optimistic: 'Optimistic ',
+        mostlikely: 'Mostlikely',
+        pessimistic: 'Pessimistic',
+        expected_time: 'Expected Time',
+        standard_deviation: 'Standard Deviation',
+        duration: 'Duration',
+        early_start: 'Early start ',
+        early_finish: 'Early finish',
+        late_start: 'Late start ',
+        late_finish: 'Late finish',
+        slack: 'Slack',
+        equations: 'Equations',
+        success_probability: 'Completition probability'
       },
       process_list: {
-        search_name: "Search By Name",
+        search_name: 'Search By Name',
 
         index: 'Index',
-        analysis: "Analysis",
-        request_change_process: "Send Change Process Request",
-        finish: "Close the process",
-        select: "Select"
+        analysis: 'Analysis',
+        request_change_process: 'Send Change Process Request',
+        finish: 'Close the process',
+        select: 'Select'
       },
       request_change_process: {
-        title: "Change Process Request",
-        content: "Content",
-        reson: "Reson",
-        manager: "Accountable Employees",
-        processID: "Process ID",
-        request_sender: "Request Sender",
-        request_success: "Request sent successfully",
-        edit_success: "Edit request sent successfully",
-        delete_success: "Delete request sent successfully",
-        approve_success: "Approve request sent successfully",
-        approver: "Approver",
-        request_date: "Request Date",
-        status: "Status",
-        view_detail: "View Detail",
-        edit: "Edit",
-        approve: "Approve",
-        delete_content: "Do you want to delete this request"
+        title: 'Change Process Request',
+        content: 'Content',
+        reson: 'Reson',
+        manager: 'Accountable Employees',
+        processID: 'Process ID',
+        request_sender: 'Request Sender',
+        request_success: 'Request sent successfully',
+        edit_success: 'Edit request sent successfully',
+        delete_success: 'Delete request sent successfully',
+        approve_success: 'Approve request sent successfully',
+        approver: 'Approver',
+        request_date: 'Request Date',
+        status: 'Status',
+        view_detail: 'View Detail',
+        edit: 'Edit',
+        approve: 'Approve',
+        delete_content: 'Do you want to delete this request'
       },
       risk_detail_modal: {
-        title: "Risk Detail Information",
-        occurrence_probability: "Probability",
-        affected_task_class: "Task Classes Affected ",
-        parents: "Parents"
+        title: 'Risk Detail Information',
+        occurrence_probability: 'Probability',
+        affected_task_class: 'Task Classes Affected ',
+        parents: 'Parents'
       },
       risk_model: {
-        title: "Risk Model",
-        risk_model_info: "Risk Model Information",
-        occurrence_probability: "Probability",
-        risk_class_related: "Risk Classes Related",
-        view_cpt: "View conditional Probability Table",
-        low: "Low probability (0%-50%)",
-        medium: "Medium probability (50%-90%)",
-        high: "High probability (90%-100%)",
-        unaffected: "Unaffected",
-        affected: "Affected",
-        note: "Note"
+        title: 'Risk Model',
+        risk_model_info: 'Risk Model Information',
+        occurrence_probability: 'Probability',
+        risk_class_related: 'Risk Classes Related',
+        view_cpt: 'View conditional Probability Table',
+        low: 'Low probability (0%-50%)',
+        medium: 'Medium probability (50%-90%)',
+        high: 'High probability (90%-100%)',
+        unaffected: 'Unaffected',
+        affected: 'Affected',
+        note: 'Note'
       },
       task_detail: {
-        title: "Task Detail",
-        probability_analysis_result: "Probability Analysis Result",
-        pert: "PERT",
-        view_pert_cpm_result: "View PERT/CPM Data",
-        risk_probability: "Risk Occurence Probability",
-        view_risk_model: "View Risk Model",
-        result_of_new_model: "New Model",
-        probability_in_time: "Completition Probability Over a Period Time"
+        title: 'Task Detail',
+        probability_analysis_result: 'Probability Analysis Result',
+        pert: 'PERT',
+        view_pert_cpm_result: 'View PERT/CPM Data',
+        risk_probability: 'Risk Occurence Probability',
+        view_risk_model: 'View Risk Model',
+        result_of_new_model: 'New Model',
+        probability_in_time: 'Completition Probability Over a Period Time'
       },
       task_list_modal: {
-        title: "Completition Probability Analysis",
-        index: "Index",
-        task_name: "Task Name",
-        process_name: "Process Name",
-        view_detail: "View detail"
+        title: 'Completition Probability Analysis',
+        index: 'Index',
+        task_name: 'Task Name',
+        process_name: 'Process Name',
+        view_detail: 'View detail'
       },
       task_widget_group: {
-        high_probability: "High Completition Probability",
-        medium_probability: "Medium Completition Probability",
-        low_probability: "Low Completition Probability",
-        task: "Tasks"
+        high_probability: 'High Completition Probability',
+        medium_probability: 'Medium Completition Probability',
+        low_probability: 'Low Completition Probability',
+        task: 'Tasks'
       },
       view_process: {
-        on_critical: "On The Critical Path",
-        not_on_critical: "Not On The Critical Path",
-        critical_activity: "Critical Activity",
-        number_of_task: "Number Of Task",
-        low: "Low Completition Probability(0%-50%)",
-        medium: "Medium Completition Probability(50%-90%)",
-        high: "High Completition Probability(90%-100%)"
+        on_critical: 'On The Critical Path',
+        not_on_critical: 'Not On The Critical Path',
+        critical_activity: 'Critical Activity',
+        number_of_task: 'Number Of Task',
+        low: 'Low Completition Probability(0%-50%)',
+        medium: 'Medium Completition Probability(50%-90%)',
+        high: 'High Completition Probability(90%-100%)'
       }
-
     },
     // manage risk
     manage_risk: {
-      select: "Select",
-      delete: "Delete",
-      warning: "Risks can only be removed in Waiting or Finished status",
-      low: "Low",
-      medium: "Medium",
-      high: "High",
-      very_high: "Very High",
+      select: 'Select',
+      delete: 'Delete',
+      warning: 'Risks can only be removed in Waiting or Finished status',
+      low: 'Low',
+      medium: 'Medium',
+      high: 'High',
+      very_high: 'Very High',
 
       risk_bayes_config: {
-        config: "Configuration",
-        mle_use_noti: "Affter this notification , the MLE is applied",
-        using_tech: "Using technology",
-        risk_info: "Risk Information",
-        select_tech: "Select technology",
-        expert: "Expert Knowledge",
-        mle: "MLE Algorithm",
-        configuration_guide: "Configuration Guide",
-        guide_1: "1.Choose one of the risks on the diagram .",
-        guide_2: "2.Configuring the values ​​in the CPT table",
-        guide_3: "3.Click button Save",
-        warning: "Warning :If expert knowledge is used, the system will not automatically update the input parameters for the Bayesian network"
+        config: 'Configuration',
+        mle_use_noti: 'Affter this notification , the MLE is applied',
+        using_tech: 'Using technology',
+        risk_info: 'Risk Information',
+        select_tech: 'Select technology',
+        expert: 'Expert Knowledge',
+        mle: 'MLE Algorithm',
+        configuration_guide: 'Configuration Guide',
+        guide_1: '1.Choose one of the risks on the diagram .',
+        guide_2: '2.Configuring the values ​​in the CPT table',
+        guide_3: '3.Click button Save',
+        warning:
+          'Warning :If expert knowledge is used, the system will not automatically update the input parameters for the Bayesian network'
       },
       create_risk_form: {
-        occurrence_date: "Occurrence Date",
-        affectable_tasks: "Affectable Tasks",
-        noti_affect_tasks: "No task in progress is affected by this risk",
-        process: "Process",
-        apply_plan: "Plans will be taken",
-        view_detail: "View detail",
-        note: "*There is currently no treatment for this risk, please wait for information from the approver",
-        probability: "Probability",
-        impact: "Impact level",
-        risk_matrix: "Risk Matrix",
-        basic_info: "Basic Information",
-        plan: "Planning",
-        plan_1: "Slow down the plan 80-100%",
-        plan_2: "Slow down the plan 51-80%",
-        plan_3: "Slow down the plan 11-50%",
-        plan_4: "Slow down the plan 1-10%",
-        security: "Security",
-        security_1: "Security breach with major property damage and loss",
-        security_2: "Security breach with serious property damage and loss",
-        security_3: "Security breach with moderate property damage and loss",
-        security_4: "Security breach with minor property damage and loss",
-        cost: "Estimated cost",
-        cost_1: "Increases estimated cost 81-100 %",
-        cost_2: "Increases estimated cost 51-80 %",
-        cost_3: "Increases estimated cost 11-50 %",
-        cost_4: "Increases estimated cost 1-10 %"
+        occurrence_date: 'Occurrence Date',
+        affectable_tasks: 'Affectable Tasks',
+        noti_affect_tasks: 'No task in progress is affected by this risk',
+        process: 'Process',
+        apply_plan: 'Plans will be taken',
+        view_detail: 'View detail',
+        note: '*There is currently no treatment for this risk, please wait for information from the approver',
+        probability: 'Probability',
+        impact: 'Impact level',
+        risk_matrix: 'Risk Matrix',
+        basic_info: 'Basic Information',
+        plan: 'Planning',
+        plan_1: 'Slow down the plan 80-100%',
+        plan_2: 'Slow down the plan 51-80%',
+        plan_3: 'Slow down the plan 11-50%',
+        plan_4: 'Slow down the plan 1-10%',
+        security: 'Security',
+        security_1: 'Security breach with major property damage and loss',
+        security_2: 'Security breach with serious property damage and loss',
+        security_3: 'Security breach with moderate property damage and loss',
+        security_4: 'Security breach with minor property damage and loss',
+        cost: 'Estimated cost',
+        cost_1: 'Increases estimated cost 81-100 %',
+        cost_2: 'Increases estimated cost 51-80 %',
+        cost_3: 'Increases estimated cost 11-50 %',
+        cost_4: 'Increases estimated cost 1-10 %'
       },
       risk_detail_info: {
-        probability: "Probability",
-        impact: "Impact level",
-        probability_mitigation_method: "Probability Mitigation Method",
-        impact_mitigation_method: "Impact Mitigation Method"
+        probability: 'Probability',
+        impact: 'Impact level',
+        probability_mitigation_method: 'Probability Mitigation Method',
+        impact_mitigation_method: 'Impact Mitigation Method'
       },
       risk_management_table: {
-        filter_title: "Search",
-        role: "Role",
-        all: "All",
-        creator: "Creator",
-        aprrovalEmployee: "Approver",
-        status: "Status",
-        wait_for_approval: "Waiting for approval",
-        processed: "Processed",
-        request_to_close: "Request to close",
-        finised: "Finished",
-        level: "Ranking",
-        view_detail: "View detail",
-        approve: "Approve",
-        edit: "Edit",
+        filter_title: 'Search',
+        role: 'Role',
+        all: 'All',
+        creator: 'Creator',
+        aprrovalEmployee: 'Approver',
+        status: 'Status',
+        wait_for_approval: 'Waiting for approval',
+        processed: 'Processed',
+        request_to_close: 'Request to close',
+        finised: 'Finished',
+        level: 'Ranking',
+        view_detail: 'View detail',
+        approve: 'Approve',
+        edit: 'Edit'
       },
       approve_modal: {
-        approval_information: "Approval Information",
-        occurrence_date: "Occurrence Date",
-        responsibleEmployee: "Responsible Employee",
-        status: "Status",
-        description: "Description",
-        select_risk_response_plan: "Select A Risk Response Plan",
-
+        approval_information: 'Approval Information',
+        occurrence_date: 'Occurrence Date',
+        responsibleEmployee: 'Responsible Employee',
+        status: 'Status',
+        description: 'Description',
+        select_risk_response_plan: 'Select A Risk Response Plan'
       },
       undefined: 'Request to close successfully',
       request_to_close: 'Request to close',
       request_close_risk_success: 'Request to close successfully',
-      request_close_risk_failure: "Request to close fail!",
-      riskName: "Risk Name",
-      search: "Search",
-      add_risk: "Create A New Risk",
-      index: "Index",
-      description: "Description",
-      edit: "Edit the risk information",
-      delete: "Delete",
-      delete_success: "Delete Risk Successfully!",
-      delete_fail: "Delete Risk Fail!",
-      add: "Create a new risk",
-      add_title: "Create A New Risk",
-      add_multi_risk: "Thêm nhiều rủi ro",
-      add_one_risk: "Thêm một rủi ro",
-      add_success: "Create Risk Successfully!",
-      add_fail: "Create Risk Fail!",
-      risk_description: "Description",
-      edit_title: "Update Risk",
-      edit_risk_success: "Update risk successfully!",
-      edit_risk_faile: "Update risk fail!",
-      detail_info_risk: "Risk Information",
-      responsible: "Responsible Employee",
-      accountable: "Accountable Employees",
-      raised_date: "Raised Date",
-      occurrence_date: "Occurence Date",
-      responsibleEmployees: "Responsible Employee",
-      select_risk_title: "Select Risk Name",
-      select_task_title: "Affectable Task",
-      select_risk_parent: "Parents",
-      risk_status: "Status",
-      wait_for_approve: "Waiting for aprroval",
-      finished: "Finished",
-      inprocess: "Processed",
-      cancel: "Canceled",
-      probability_create: "Probability  :",
+      request_close_risk_failure: 'Request to close fail!',
+      riskName: 'Risk Name',
+      search: 'Search',
+      add_risk: 'Create A New Risk',
+      index: 'Index',
+      description: 'Description',
+      edit: 'Edit the risk information',
+      // delete: 'Delete',
+      delete_success: 'Delete Risk Successfully!',
+      delete_fail: 'Delete Risk Fail!',
+      add: 'Create a new risk',
+      add_title: 'Create A New Risk',
+      add_multi_risk: 'Thêm nhiều rủi ro',
+      add_one_risk: 'Thêm một rủi ro',
+      add_success: 'Create Risk Successfully!',
+      add_fail: 'Create Risk Fail!',
+      risk_description: 'Description',
+      edit_title: 'Update Risk',
+      edit_risk_success: 'Update risk successfully!',
+      edit_risk_faile: 'Update risk fail!',
+      detail_info_risk: 'Risk Information',
+      responsible: 'Responsible Employee',
+      accountable: 'Accountable Employees',
+      raised_date: 'Raised Date',
+      occurrence_date: 'Occurence Date',
+      responsibleEmployees: 'Responsible Employee',
+      select_risk_title: 'Select Risk Name',
+      select_task_title: 'Affectable Task',
+      select_risk_parent: 'Parents',
+      risk_status: 'Status',
+      wait_for_approve: 'Waiting for aprroval',
+      finished: 'Finished',
+      inprocess: 'Processed',
+      cancel: 'Canceled',
+      probability_create: 'Probability  :',
       add_tab: {
-        basic: "Basic Information",
-        impact: "Impact"
+        basic: 'Basic Information',
+        impact: 'Impact'
       }
     },
     manage_change_process: {
-      search_by_id: "Search by Process ID",
-      title: "Detail Information",
-      status: "Status",
-      content: "Requested Content",
-      wait_for_approve: "Waiting for approval",
-      canceled: "Canceled",
-      finished: "Approved",
+      search_by_id: 'Search by Process ID',
+      title: 'Detail Information',
+      status: 'Status',
+      content: 'Requested Content',
+      wait_for_approve: 'Waiting for approval',
+      canceled: 'Canceled',
+      finished: 'Approved',
       detail: {
-        content: "Approved content",
-        reson: "Reason for requesting",
-        request_content: "Requested Content",
-        send_request: "Request Sender",
-        approver: "Approver",
-        create_date: "Created At",
-        last_updated: "Last Updated",
-        process_name: "Process Name",
-        process_id: "Process ID",
-        working_duration: "Working Duration"
-      },
-
-
+        content: 'Approved content',
+        reson: 'Reason for requesting',
+        request_content: 'Requested Content',
+        send_request: 'Request Sender',
+        approver: 'Approver',
+        create_date: 'Created At',
+        last_updated: 'Last Updated',
+        process_name: 'Process Name',
+        process_id: 'Process ID',
+        working_duration: 'Working Duration'
+      }
     },
     manage_risk_plan: {
       index: 'Index',
-      name: "Plan Name",
+      name: 'Plan Name',
       riskApply: 'Risk',
       riskApplyName: 'Risk name',
       last_update: 'Last updated',
@@ -6855,8 +6871,8 @@ export default {
       edit_failure: 'Edit plan fail',
       probability_mitigation_method: 'Probability Mitigation Method',
       impact_mitigation_method: 'Impact Mitigation Method',
-      apply_case: "Apply Case",
-      risk_level: "Risk Level",
+      apply_case: 'Apply Case',
+      risk_level: 'Risk Level',
       detail: 'View Detail',
       search: 'Search',
       create_form: {
@@ -6866,88 +6882,87 @@ export default {
         apply_description: 'Apply Case',
         risk_description: 'Risk description',
         probability_description: 'Probability mitigation method description',
-        impact_description: "Impact mitigation method description"
-      },
-
+        impact_description: 'Impact mitigation method description'
+      }
     },
-    //riskdashboard
+    // riskdashboard
     risk_dash: {
       unit: 'Unit',
-      time: "Time",
-      quantity_y: "Quantity",
-      risks: "risks",
-      general: "General",
-      total_risk: "Total risk",
-      your_risk: "Your risk",
-      approve: "Approve Risk",
-      probability: "Probability",
-      quantity: "Amount of risk ",
-      bayes: "Risks",
-      risk_table: {
-        risk_id: "ID",
-        risk_name: "Name",
-        risk_parent: "Parents",
-        risk_CPT: "CPT",
-        risk_description: "Description",
-        cpt_description: "Note"
-      },
-      risk_in_month: "Risks in month",
+      time: 'Time',
+      quantity_y: 'Quantity',
+      risks: 'risks',
+      general: 'General',
+      total_risk: 'Total risk',
+      your_risk: 'Your risk',
+      approve: 'Approve Risk',
+      probability: 'Probability',
+      quantity: 'Amount of risk ',
+      bayes: 'Risks',
+      // risk_table: {
+      //   risk_id: 'ID',
+      //   risk_name: 'Name',
+      //   risk_parent: 'Parents',
+      //   risk_CPT: 'CPT',
+      //   risk_description: 'Description',
+      //   cpt_description: 'Note'
+      // },
+      risk_in_month: 'Risks in month',
       low: 'Low probability',
       medium: 'Medium probability',
       high: 'High probability',
-      urgency: "Urgency",
-      need_approval: "Need approval",
-      high_probability: "High probability",
-      high_impact: "High impact level",
-      occurred_today: "Today",
-      finished: "Finished",
-      processed: "Processed",
-      chart_title_1: "Filter by criterias",
-      ranking: "Ranking",
-      criteria: "Criteria",
-      impact_level: "Impact Level",
-      occurrence_probability: "Occurence Probability",
+      urgency: 'Urgency',
+      need_approval: 'Need approval',
+      high_probability: 'High probability',
+      high_impact: 'High impact level',
+      occurred_today: 'Today',
+      finished: 'Finished',
+      processed: 'Processed',
+      chart_title_1: 'Filter by criterias',
+      ranking: 'Ranking',
+      criteria: 'Criteria',
+      impact_level: 'Impact Level',
+      occurrence_probability: 'Occurence Probability',
       risk_detail: {
-        ago: "Ago",
-        risk_name: "Risk Name",
-        occurrence_date: "Occurence Date",
-        status: "Status",
-        responsibleEmployee: "Responsible Employee",
-        approvalEmployee: "Approver",
-        ranking: "Ranking",
-        probability: "Probability",
-        view_detail: "View More"
+        ago: 'Ago',
+        risk_name: 'Risk Name',
+        occurrence_date: 'Occurence Date',
+        status: 'Status',
+        responsibleEmployee: 'Responsible Employee',
+        approvalEmployee: 'Approver',
+        ranking: 'Ranking',
+        probability: 'Probability',
+        view_detail: 'View More'
       },
       risk_matrix: {
-        title: "Risk Matrix",
-        probability: "Probability",
-        probable: "Probable (4)",
-        possible: "Possible (3)",
-        unlikely: "Unlikely (2)",
-        rare: "Rare (1)",
-        impact: "Impact Level",
-        low: "Low(1)",
-        medium: "Medium(2)",
-        high: "High(3)",
-        very_high: "Very High(4)",
-        moderate: "Moderate",
-        major: "Major",
-        severe: "Severe",
-        minor: "Minor",
-        impact: "Impact"
+        title: 'Risk Matrix',
+        probability: 'Probability',
+        probable: 'Probable (4)',
+        possible: 'Possible (3)',
+        unlikely: 'Unlikely (2)',
+        rare: 'Rare (1)',
+        impact: 'Impact Level',
+        low: 'Low(1)',
+        medium: 'Medium(2)',
+        high: 'High(3)',
+        very_high: 'Very High(4)',
+        moderate: 'Moderate',
+        major: 'Major',
+        severe: 'Severe',
+        minor: 'Minor'
+        // impact: 'Impact'
       },
       risk_table: {
-        risk_id: "ID",
-        risk_name: "Risk Name",
-        risk_parent: "Parents",
-        risk_CPT: "Conditional Probability Table",
-        risk_description: "Description",
-        cpt_description: "Note",
-        occur: "Occur",
-        not_occur: "Not Occur",
-        note: "Probability of A when B has already occurred",
-        new_value: "New Value"
+        risk_id: 'ID',
+        risk_name: 'Risk Name',
+        risk_parent: 'Parents',
+        risk_CPT: 'Conditional Probability Table',
+        risk_description: 'Description',
+        cpt_description: 'Note',
+        occur: 'Occur',
+        not_occur: 'Not Occur',
+        note: 'Probability of A when B has already occurred',
+        new_value: 'New Value'
       }
-    },
+    }
   }
 }
