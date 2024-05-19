@@ -7144,7 +7144,7 @@ export default {
         operation: 'Công đoạn',
         good: 'Sản phẩm',
         manufacturing_command: 'Lệnh sản xuất',
-        error_tab: 'Định nghĩa lỗi',
+        error_tab: 'Lỗi sản xuất',
         criteria_tab: 'Tiêu chí kiểm định',
         inspection_tab: 'Phiếu Kiểm định',
         1: {

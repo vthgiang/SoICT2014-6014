@@ -171,11 +171,6 @@ const CrmEvaluation = lazy(() => import('../modules/crm/evaluation/components'))
 const GeneralConfiguration = lazy(() => import('../modules/crm/generalConfiguration/components'))
 const CrmUnitConfiguration = lazy(() => import('../modules/crm/crmUnitConfiguration/components'))
 
-//Production Manufacturing
-// import { ManufacturingProcessManagement } from "../modules/production-manufacturing/manufacturing-process/components";
-// import { ManageChain } from "../modules/production-manufacturing/manage-chain/components";
-// import { ManageIssueDashboard } from "../modules/production-manufacturing/manage-issue/components";
-// import { TaskManufacturingManagement } from "../modules/production-manufacturing/manage-task/components";
 //orders
 const PurchaseOrder = lazy(() => import('../modules/production/order/purchase-order/components'))
 const SalesOrder = lazy(() => import('../modules/production/order/sales-order/components'))
@@ -216,6 +211,8 @@ const PurchasingRequest = lazy(() => import('../modules/production/manufacturing
 const ManufacturingDashboard = lazy(() => import('../modules/production/manufacturing/manufacturing-dashboard/components'))
 const ManufacturingLot = lazy(() => import('../modules/production/manufacturing/manufacturing-lot/components'))
 const ManufacturingRequestManagement = lazy(() => import('../modules/production/manufacturing/request-management/components'))
+const ManufacturingRouting = lazy(() => import('../modules/production/manufacturing/manufacturing-routing/components'))
+const ManufacturingQuality = lazy(() => import('../modules/production/manufacturing/manufacturing-quality'))
 
 // Transport Managements
 const TransportRequirement = lazy(() => import('../modules/production/transport/transport-requirements/components'))
@@ -3503,6 +3500,46 @@ class Routes extends Component {
             pageName={'manage_manufacturing_mill'}
             layout={Layout}
             component={ManufacturingMill}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-manufacturing-routing'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-manufacturing-routing',
+                name: 'manage_manufacturing_routing',
+                icon: 'fa fa-home'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-manufacturing-routing'}
+            path={'/manage-manufacturing-routing'}
+            pageName={'manage_manufacturing_routing'}
+            layout={Layout}
+            component={ManufacturingRouting}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-manufacturing-quality'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-manufacturing-quality',
+                name: 'manage_manufacturing_quality',
+                icon: 'fa fa-home'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-manufacturing-quality'}
+            path={'/manage-manufacturing-quality'}
+            pageName={'manage_manufacturing_quality'}
+            layout={Layout}
+            component={ManufacturingQuality}
           />
 
           <PrivateRoute

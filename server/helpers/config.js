@@ -1569,12 +1569,11 @@ const LINKS = [
         ],
         components: getComponentsInLink('/manage-examples-hooks-3'),
     },
-
     {
         url: '/manage-manufacturing-plan',
         description: 'Quản lý kế hoạch sản xuất',
         category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name, ROOT_ROLES.MANAGER.name],
         components: getComponentsInLink('/manage-manufacturing-plan'),
     },
     {
@@ -1588,7 +1587,7 @@ const LINKS = [
         url: '/manage-work-schedule',
         description: 'Quản lý lịch sản xuất',
         category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name, ROOT_ROLES.MANAGER.name],
         components: getComponentsInLink('/manage-work-schedule'),
     },
     {
@@ -1602,14 +1601,19 @@ const LINKS = [
         url: '/manufacturing-dashboard',
         description: 'Dashboard Quản lý sản xuất',
         category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name, 
+            ROOT_ROLES.ADMIN.name, 
+            ROOT_ROLES.MANAGER.name, 
+            ROOT_ROLES.DEPUTY_MANAGER.name
+        ],
         components: getComponentsInLink('/manufacturing-dashboard'),
     },
     {
         url: '/analysis-manufacturing-performance',
         description: 'Phân tích hiệu suất sản xuất',
         category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name, ROOT_ROLES.MANAGER.name],
         components: getComponentsInLink('/analysis-manufacturing-performance'),
     },
     {
@@ -1625,6 +1629,30 @@ const LINKS = [
         category: LINK_CATEGORY.MANUFACTURING.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
         components: getComponentsInLink('/manage-manufacturing-mill'),
+    },
+    {
+        url: '/manage-manufacturing-routing',
+        description: 'Quản lý quy trình sản xuất',
+        category: LINK_CATEGORY.MANUFACTURING.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name, 
+            ROOT_ROLES.ADMIN.name, 
+            ROOT_ROLES.MANAGER.name
+        ],
+        components: getComponentsInLink('/manage-manufacturing-routing'),
+
+    },
+    {
+        url: '/manage-manufacturing-quality',
+        description: 'Quản lý chất lượng',
+        category: LINK_CATEGORY.MANUFACTURING.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name, 
+            ROOT_ROLES.ADMIN.name, 
+            ROOT_ROLES.MANAGER.name
+        ],
+        components: getComponentsInLink('/manage-manufacturing-quality'),
+
     },
     {
         url: '/manage-manufacturing-lot',
