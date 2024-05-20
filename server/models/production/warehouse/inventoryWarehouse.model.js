@@ -3,49 +3,39 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const InventoryWarehouseSchema = new Schema({
-    LOCATION: {
-        type: String,
-        required: true
+    location: {
+        type: String
     },
-    ITEM_NO: {
-        type: Number,
-        required: true
+    item_no: {
+        type: Number
     },
-    ITEM_DESCRIPTION: {
+    item_description: {
         type: String,
         required: false
     },
-    PACK: {
-        type: Number,
-        required: true
+    pack: {
+        type: Number
     },
-    SIZE: {
-        type: String,
-        required: true
+    size: {
+        type: String
     },
-    ITEM_WGT: {
-        type: Number,
-        required: true
+    item_wgt: {
+        type: Number
     },
-    WEEKLY_MVMT: {
-        type: Number,
-        required: true
+    weekly_mvmt: {
+        type: Number
     },
-    ITEM_COST: {
-        type: Number,
-        required: true
+    item_cost: {
+        type: Number
     },
-    CASES_DAMAGED: {
-        type: String,
-        required: true
+    cases_damaged: {
+        type: String
     },
-    COLOR_CASES_DAMAGED: {
-        type: String,
-        required: true
+    color_cases_damaged: {
+        type: String
     },
-    LINK_: {
-        type: String,
-        required: true
+    link_: {
+        type: String
     }
 });
 

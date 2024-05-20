@@ -359,7 +359,7 @@ function fnShowMyWarehouseVisualizerDemo() {
 
             */
 
-            var geometryKey = layoutData[i]["WIDTH"] + ":" + layoutData[i]["HEIGHT"] + ":" + layoutData[i]["DEPTH"];
+            var geometryKey = layoutData[i]["width"] + ":" + layoutData[i]["height"] + ":" + layoutData[i]["depth"];
 
 
             if (geometriesMap.has(geometryKey)) {
@@ -371,7 +371,7 @@ function fnShowMyWarehouseVisualizerDemo() {
             } //if
             else {
 
-                var cubeGeometry = new THREE.BoxBufferGeometry(layoutData[i]["WIDTH"], layoutData[i]["HEIGHT"], layoutData[i]["DEPTH"]); // the visual width(x-axis),height(y-axis) depth(z-axis)
+                var cubeGeometry = new THREE.BoxBufferGeometry(layoutData[i]["width"], layoutData[i]["height"], layoutData[i]["depth"]); // the visual width(x-axis),height(y-axis) depth(z-axis)
                 var edgeGeometry = new THREE.EdgesGeometry(cubeGeometry); //  https://stackoverflow.com/questions/31539130/display-wireframe-and-solid-color/31541369#31541369
                 geometriesMap.set(geometryKey, {cubeGeometry: cubeGeometry, edgeGeometry: edgeGeometry});
 
@@ -404,13 +404,13 @@ function fnShowMyWarehouseVisualizerDemo() {
 
             slot.name = layoutData[i][Object.keys(layoutData[i])[0]]; //.name is used as unique key for getObjectByName method. Eg: properties.warehouseGroup.getObjectByName("someName")
             //Translatiing slot warehouse coordinates to WebGL screen coordinates
-            slot.position.x = layoutData[i]["X"] + (layoutData[i]["HEIGHT"] / 2);
-            slot.position.y = layoutData[i]["Z"] + (layoutData[i]["DEPTH"] / 2);
-            slot.position.z = layoutData[i]["Y"] + (layoutData[i]["HEIGHT"] / 2);
-            slot.userData.aisle = layoutData[i]["AISLE"];
-            slot.userData.aisleSide = layoutData[i]["AISLESIDE"];
-            slot.userData.centerAxis = layoutData[i]["CENTERAXIS"]
-            slot.userData.bay = layoutData[i]["BAY"];
+            slot.position.x = layoutData[i]["x"] + (layoutData[i]["height"] / 2);
+            slot.position.y = layoutData[i]["z"] + (layoutData[i]["depth"] / 2);
+            slot.position.z = layoutData[i]["y"] + (layoutData[i]["width"] / 2);
+            slot.userData.aisle = layoutData[i]["aisle"];
+            slot.userData.aisleSide = layoutData[i]["aisleside"];
+            slot.userData.centerAxis = layoutData[i]["centeraxis"]
+            slot.userData.bay = layoutData[i]["bay"];
             slot.userData.type = "slot";
             slot.userData.numPallets = 1;
             slot.userData.selected = false;
