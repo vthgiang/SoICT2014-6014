@@ -53,3 +53,53 @@ function importStock(data) {
         data,
     }, true, true, 'manage_warehouse.stock_management');
 }
+// import { sendRequest } from '../../../../../helpers/requestHelper';
+// export const LayoutServices = {
+//     getAllLayouts,
+// }
+
+// function getAllLayouts(params){
+//     return sendRequest({
+//         url: `${ process.env.REACT_APP_SERVER }/layout/warehouse`,
+//         method: 'GET',
+//         params
+//     }, false, true, 'manage_warehouse.storage_management')
+// }
+
+// function getStock(id){
+//     return sendRequest({
+//         url: `${ process.env.REACT_APP_SERVER }/stocks/stock-detail/${id}`,
+//         method: 'GET',
+//     })
+// }
+//
+// function createStock(data){
+//     return sendRequest({
+//         url: `${ process.env.REACT_APP_SERVER }/stocks`,
+//         method: 'POST',
+//         data
+//     }, true, true, 'manage_warehouse.stock_management')
+// }
+//
+// function editStock(id, data){
+//     return sendRequest({
+//         url: `${ process.env.REACT_APP_SERVER }/stocks/${id}`,
+//         method: 'PATCH',
+//         data
+//     }, true, true, 'manage_warehouse.stock_management')
+// }
+//
+// function deleteStock(id){
+//     return sendRequest({
+//         url: `${ process.env.REACT_APP_SERVER }/stocks/${id}`,
+//         method: 'DELETE',
+//     }, true, true, 'manage_warehouse.stock_management')
+// }
+//
+// function importStock(data) {
+//     return sendRequest({
+//         url: `${ process.env.REACT_APP_SERVER }/stocks/imports`,
+//         method: 'POST',
+//         data,
+//     }, true, true, 'manage_warehouse.stock_management');
+// }

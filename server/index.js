@@ -149,6 +149,9 @@ router.use(
 );
 router.use('/asset-template', require('./modules/manufacturing-process/manufacturing-asset-template/assetTemplate.route'));
 
+router.use("/dashboard-unit", require("./modules/dashboard-unit/dashboardUnit.route"));
+router.use("/layout", require("./modules/production/warehouse/layout/layout.route"));
+router.use("/inventory-warehouse", require("./modules/production/warehouse/inventory-warehouse/inventory-warehouse.route"));
 // CRM
 app.use('/crm/customers', require('./modules/crm/customer/customer.route'));
 app.use('/crm/cares', require('./modules/crm/care/care.route'));

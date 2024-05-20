@@ -159,6 +159,7 @@ const BinLocationManagement = lazy(() => import('../modules/production/warehouse
 const BillManagement = lazy(() => import('../modules/production/warehouse/bill-management/components'))
 const InventoryManagement = lazy(() => import('../modules/production/warehouse/inventory-management/components'))
 const StockRequestManagement = lazy(() => import('../modules/production/warehouse/request-management/components'))
+const StogareManagement = lazy(() => import("../modules/production/warehouse/storage-management/components"))
 
 // Customer Management
 const CrmDashBoard = lazy(() => import('../modules/crm/dashboard/components'))
@@ -2742,6 +2743,28 @@ class Routes extends Component {
             layout={Layout}
             component={StockRequestManagement}
           />
+
+          <PrivateRoute
+            isLoading={false}
+            key={"storage-management"}
+            arrPage={[
+                {link: "/", name: "home", icon: "fa fa-home"},
+                {
+                    link: "/storage-management",
+                    name: "storage_management",
+                    icon: "fa fa-reorder",
+                },
+            ]}
+            auth={auth}
+            exact={true}
+            link={"/storage-management"}
+            path={"/storage-management"}
+            pageName={"storage_management"}
+            layout={Layout}
+            component={StogareManagement}
+        />
+
+
 
           {/* end warehouse route*/}
 

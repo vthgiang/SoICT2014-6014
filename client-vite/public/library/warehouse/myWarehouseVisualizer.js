@@ -18,10 +18,7 @@ $(document).ready(function () {
     warehouseList.forEach(function (warehouse) {  																					//demos
 
         appWarehouses.push({
-            warehouseName: warehouse,
-            layoutData: null,
-            inventoryData: null
-
+            warehouseName: warehouse, layoutData: null, inventoryData: null
         });
 
     });
@@ -32,217 +29,200 @@ $(document).ready(function () {
         .appendTo('#3dwarehouse');
 
 
-    parentLayout =
-        $().w2layout(
-            {
-                name: "parentLayout",
-                box: appDiv,
-                panels:
-                    [
-                        {
-                            type: 'main', size: "100%", resizable: false, style: pstyle,
-                            toolbar: {
-                                items: [
-                                    {
-                                        type: "menu-radio", id: "warehouse", tooltip: "Select Warehouse",
-                                        items: appWarehouses.map(function (appVisual, index) {
-                                            return {id: index, text: appVisual.warehouseName}
-                                        }),
-                                        //Find index programmatically with: w2ui.parentLayout.get("main").toolbar.items.find(function(item){return item.id == "warehouse"}).selected
-                                        selected: -1,
-                                        lastSelected: -1,
-                                        text: function (item) {
-                                            return "Warehouse: " + (item.selected <= 0 ? "" : item.items[item.selected].text);
-                                        }
-                                    },
-                                    {type: 'break'},
-                                    {
-                                        type: "button",
-                                        id: "toggleAnalyzer",
-                                        tooltip: "Show/hide Inventory Grid",
-                                        text: "Toggle Inventory Grid"
-                                    },
-                                    {type: 'break'},
-                                    {
-                                        type: "button",
-                                        id: "toggleVisualGrid",
-                                        tooltip: "Show/hide Warehouse Layout Grid",
-                                        text: "Toggle Warehouse Layout Grid"
-                                    },
-                                    {type: 'break'},
-                                    {
-                                        type: "menu-radio", id: "language", tooltip: "Select Language",
-                                        items: languages.map(function (language, index) {
-                                            return {id: index, text: language.text, tooltip: language.tooltip}
-                                        }),
-                                        //Find index programmatically with: w2ui.parentLayout.get("main").toolbar.items.find(function(item){return item.id == "warehouse"}).selected
-                                        selected: languageIndex,
-                                        text: function (item) {
-                                            return "Language: " + item.items[item.selected].text;
-                                        }
-                                    },
-                                    {type: 'break'},
-                                    {
-                                        type: "menu", id: "Help", text: fnGetTranslatedText, tooltip: "Help",
-                                        items: [
-                                            {id: "documentation", text: "Documentation"},
-                                            {id: "quickKeys", text: "Quick Keys"},
-                                            {id: "webgl", text: "WebGL"},
-                                            {id: "gltf", text: "glTF"},
-                                            {id: "threejs", text: "three.js"},
-                                            {id: "d3js", text: "d3.js"},
-                                            {id: "w2ui", text: "w2ui"},
-                                            {id: "about", text: translate("About")}
-                                        ]
-                                    }
-                                ],
-                                onClick: function (event) {
-                                    event.done(function () {
+    parentLayout = $().w2layout({
+        name: "parentLayout", box: appDiv, panels: [{
+            type: 'main', size: "100%", resizable: false, style: pstyle, toolbar: {
+                items: [{
+                    type: "menu-radio",
+                    id: "warehouse",
+                    tooltip: "Select Warehouse",
+                    items: appWarehouses.map(function (appVisual, index) {
+                        return {id: index, text: appVisual.warehouseName}
+                    }), //Find index programmatically with: w2ui.parentLayout.get("main").toolbar.items.find(function(item){return item.id == "warehouse"}).selected
+                    selected: -1,
+                    lastSelected: -1,
+                    text: function (item) {
+                        return "Warehouse: " + (item.selected <= 0 ? "" : item.items[item.selected].text);
+                    }
+                }, {type: 'break'}, {
+                    type: "button",
+                    id: "toggleAnalyzer",
+                    tooltip: "Show/hide Inventory Grid",
+                    text: "Toggle Inventory Grid"
+                }, {type: 'break'}, {
+                    type: "button",
+                    id: "toggleVisualGrid",
+                    tooltip: "Show/hide Warehouse Layout Grid",
+                    text: "Toggle Warehouse Layout Grid"
+                }, {type: 'break'}, {
+                    type: "menu-radio",
+                    id: "language",
+                    tooltip: "Select Language",
+                    items: languages.map(function (language, index) {
+                        return {id: index, text: language.text, tooltip: language.tooltip}
+                    }), //Find index programmatically with: w2ui.parentLayout.get("main").toolbar.items.find(function(item){return item.id == "warehouse"}).selected
+                    selected: languageIndex,
+                    text: function (item) {
+                        return "Language: " + item.items[item.selected].text;
+                    }
+                }, {type: 'break'}, {
+                    type: "menu",
+                    id: "Help",
+                    text: fnGetTranslatedText,
+                    tooltip: "Help",
+                    items: [{id: "documentation", text: "Documentation"}, {
+                        id: "quickKeys",
+                        text: "Quick Keys"
+                    }, {id: "webgl", text: "WebGL"}, {id: "gltf", text: "glTF"}, {
+                        id: "threejs",
+                        text: "three.js"
+                    }, {id: "d3js", text: "d3.js"}, {id: "w2ui", text: "w2ui"}, {id: "about", text: translate("About")}]
+                }], onClick: function (event) {
+                    event.done(function () {
 
-                                        const aTargets = event.target.split(":");
-                                        if (aTargets.length === 1 && ["upload", "toggleVisualGrid", "toggleAnalyzer"].indexOf(aTargets[0]) === -1) return; //Menu, not menu item, clicked on option
-                                        switch (aTargets[0]) {
+                        const aTargets = event.target.split(":");
+                        if (aTargets.length === 1 && ["upload", "toggleVisualGrid", "toggleAnalyzer"].indexOf(aTargets[0]) === -1) return; //Menu, not menu item, clicked on option
+                        switch (aTargets[0]) {
 
-                                            case "warehouse":   //Find programmatically with: w2ui.toolbar.items.find(function(item) {return item.id == "warehouse"}).selected
+                            case "warehouse":   //Find programmatically with: w2ui.toolbar.items.find(function(item) {return item.id == "warehouse"}).selected
 
-                                                var vDropDown = this.items.find(function (item) {
-                                                    return item.id === "warehouse"
-                                                });
-                                                var selected = vDropDown.selected;
-                                                if (vDropDown.selected <= 1) {
-                                                    vDropDown.selected = vDropDown.lastSelected;
-                                                    vDropDown.lastSelected = selected;
-                                                    switch (selected) {
-                                                        case -1:
-                                                        case  0:
-                                                            fnGetFileUploads();
-                                                            break;
-                                                        case  1:
-                                                            fnGetCsvUrls();
-                                                            break;
-                                                    } //switch
-                                                } //if
-                                                else {
-                                                    w2utils.lock(document.body, {spinner: true, opacity: 0});
-                                                    vDropDown.lastSelected = selected;
-                                                    vDropDown.text = "Warehouse: " + vDropDown.items[selected].text;
-                                                    fnShowMyWarehouseVisualizerDemo();
-                                                } //else
-                                                break;
+                                var vDropDown = this.items.find(function (item) {
+                                    return item.id === "warehouse"
+                                });
+                                var selected = vDropDown.selected;
+                                if (vDropDown.selected <= 1) {
+                                    vDropDown.selected = vDropDown.lastSelected;
+                                    vDropDown.lastSelected = selected;
+                                    switch (selected) {
+                                        case -1:
+                                        case  0:
+                                            fnGetFileUploads();
+                                            break;
+                                        case  1:
+                                            fnGetCsvUrls();
+                                            break;
+                                    } //switch
+                                } //if
+                                else {
+                                    w2utils.lock(document.body, {spinner: true, opacity: 0});
+                                    vDropDown.lastSelected = selected;
+                                    vDropDown.text = "Warehouse: " + vDropDown.items[selected].text;
+                                    fnShowMyWarehouseVisualizerDemo();
+                                } //else
+                                break;
 
-                                            case "toggleVisualGrid":
+                            case "toggleVisualGrid":
 
-                                                var mainPanel = this.owner.get("main").content;
+                                var mainPanel = this.owner.get("main").content;
 
-                                                if (mainPanel.get("preview").mdvPreHideSize) {
+                                if (mainPanel.get("preview").mdvPreHideSize) {
 
-                                                    mainPanel.sizeTo("preview", mainPanel.get("preview").mdvPreHideSize);				//Must operate on preview, not main (bug)
-                                                    mainPanel.sizeTo("left", mainPanel.get("left").mdvPreHideSize);
-                                                    delete mainPanel.get("preview").mdvPreHideSize;
-                                                    delete mainPanel.get("left").mdvPreHideSize;										//Handling final sizing of preview
+                                    mainPanel.sizeTo("preview", mainPanel.get("preview").mdvPreHideSize);				//Must operate on preview, not main (bug)
+                                    mainPanel.sizeTo("left", mainPanel.get("left").mdvPreHideSize);
+                                    delete mainPanel.get("preview").mdvPreHideSize;
+                                    delete mainPanel.get("left").mdvPreHideSize;										//Handling final sizing of preview
 
-                                                } //if
-                                                else {
+                                } //if
+                                else {
 
-                                                    mainPanel.get("preview").mdvPreHideSize = mainPanel.get("preview").size;
-                                                    mainPanel.get("left").mdvPreHideSize = mainPanel.get("left").size;
-                                                    mainPanel.sizeTo("preview", "100%");
+                                    mainPanel.get("preview").mdvPreHideSize = mainPanel.get("preview").size;
+                                    mainPanel.get("left").mdvPreHideSize = mainPanel.get("left").size;
+                                    mainPanel.sizeTo("preview", "100%");
 
-                                                } //else
+                                } //else
 
-                                                break;
+                                break;
 
-                                            case "toggleAnalyzer":
+                            case "toggleAnalyzer":
 
-                                                var mainPanel = this.owner.get("main").content;
+                                var mainPanel = this.owner.get("main").content;
 
-                                                if (!mainPanel.get("left").hidden)														//Handling final sizing of preview
-                                                    mainPanel.get("left").mdvPreHideSize = mainPanel.get("left").size;
+                                if (!mainPanel.get("left").hidden)														//Handling final sizing of preview
+                                    mainPanel.get("left").mdvPreHideSize = mainPanel.get("left").size;
 
-                                                mainPanel.toggle("left");
+                                mainPanel.toggle("left");
 
-                                                if (!mainPanel.get("left").hidden) {													//Handling final sizing of preview
+                                if (!mainPanel.get("left").hidden) {													//Handling final sizing of preview
 
-                                                    mainPanel.sizeTo("left", mainPanel.get("left").mdvPreHideSize);
-                                                    delete mainPanel.get("left").mdvPreHideSize;
+                                    mainPanel.sizeTo("left", mainPanel.get("left").mdvPreHideSize);
+                                    delete mainPanel.get("left").mdvPreHideSize;
 
-                                                } //if
+                                } //if
 
-                                                break;
+                                break;
 
-                                            case "language":
+                            case "language":
 
-                                                fnSetLanguageIndex(aTargets[1]);
-                                                break;
+                                fnSetLanguageIndex(aTargets[1]);
+                                break;
 
-                                            case "Help"    :
+                            case "Help"    :
 
-                                                switch (aTargets[1]) {
-                                                    case "quickKeys":
+                                switch (aTargets[1]) {
+                                    case "quickKeys":
 
-                                                        var helpText = translate("HelpText1") + translate("HelpText2") + translate("HelpText3") + translate("HelpText4");
-                                                        fnPopUp(document.body, translate("Help"), helpText, 3, 2.5);
-                                                        break;
+                                        var helpText = translate("HelpText1") + translate("HelpText2") + translate("HelpText3") + translate("HelpText4");
+                                        fnPopUp(document.body, translate("Help"), helpText, 3, 2.5);
+                                        break;
 
-                                                    case "about":
+                                    case "about":
 
-                                                        fnPopUp(document.body, translate("AppTitle") + " (" + appVersion + ")", translate("AboutText"), 3, 5);
-                                                        break;
+                                        fnPopUp(document.body, translate("AppTitle") + " (" + appVersion + ")", translate("AboutText"), 3, 5);
+                                        break;
 
-                                                    case "documentation":
-                                                    case "webgl":
-                                                    case "gltf":
-                                                    case "threejs":
-                                                    case "d3js":
-                                                    case "w2ui":
-                                                        var links = {
-                                                            "documentation": "https://github.com/MarioDelgadoSr/MyWarehouseVisualizerDoc#my-warehouse-visualizer-documentation",
-                                                            "webgl": "https://en.wikipedia.org/wiki/WebGL",
-                                                            "gltf": "https://www.khronos.org/gltf/",
-                                                            "threejs": "https://threejs.org/",
-                                                            "d3js": "https://d3js.org/",
-                                                            "w2ui": "http://w2ui.com/"
-                                                        };
-                                                        window.open(links[aTargets[1]], "_blank");
-                                                        break;
+                                    case "documentation":
+                                    case "webgl":
+                                    case "gltf":
+                                    case "threejs":
+                                    case "d3js":
+                                    case "w2ui":
+                                        var links = {
+                                            "documentation": "https://github.com/MarioDelgadoSr/MyWarehouseVisualizerDoc#my-warehouse-visualizer-documentation",
+                                            "webgl": "https://en.wikipedia.org/wiki/WebGL",
+                                            "gltf": "https://www.khronos.org/gltf/",
+                                            "threejs": "https://threejs.org/",
+                                            "d3js": "https://d3js.org/",
+                                            "w2ui": "http://w2ui.com/"
+                                        };
+                                        window.open(links[aTargets[1]], "_blank");
+                                        break;
 
-                                                } //switch
-                                                break;
+                                } //switch
+                                break;
 
-                                        } //switch
+                        } //switch
 
-                                        //Display pop-up Window
-                                        function fnPopUp(appContainer, title, html, wf, hf) {
+                        //Display pop-up Window
+                        function fnPopUp(appContainer, title, html, wf, hf) {
 
-                                            var width = $(appContainer).width() == 0 ? appContainer.parentElement.clientWidth : $(appContainer).width();
-                                            var height = $(appContainer).height() == 0 ? appContainer.parentElement.clientHeight : $(appContainer).height();
+                            var width = $(appContainer).width() == 0 ? appContainer.parentElement.clientWidth : $(appContainer).width();
+                            var height = $(appContainer).height() == 0 ? appContainer.parentElement.clientHeight : $(appContainer).height();
 
-                                            w2popup.open({
-                                                title: title,
-                                                body: html,
-                                                buttons: '<button onclick="w2popup.close();">' + translate("PopUpClose") + '</button>',
-                                                showMax: false,
-                                                showClose: true,
-                                                width: width / wf,
-                                                height: height / hf,
-                                                modal: false
-                                            });
-                                        } // fnPopUp
+                            w2popup.open({
+                                title: title,
+                                body: html,
+                                buttons: '<button onclick="w2popup.close();">' + translate("PopUpClose") + '</button>',
+                                showMax: false,
+                                showClose: true,
+                                width: width / wf,
+                                height: height / hf,
+                                modal: false
+                            });
+                        } // fnPopUp
 
-                                    }); // event.done
+                    }); // event.done
 
-                                } //onClick
-                            } //toolbar
-                        }  //main
+                } //onClick
+            } //toolbar
+        }  //main
 
-                    ], //panels
-                onRender: function (event) {
-                    event.done(function (event) {
-                        fnShowMyWarehouseVisualizerDemo();
-                    });
-                }
-            }
-        ); //parentLayout
+        ], //panels
+        onRender: function (event) {
+            event.done(function (event) {
+                fnShowMyWarehouseVisualizerDemo();
+            });
+        }
+    }); //parentLayout
 
 
     parentLayout.get("main").toolbar.tooltip = "top|right";																				// http://w2ui.com/web/docs/1.5/w2toolbar.tooltip
@@ -252,48 +232,44 @@ $(document).ready(function () {
 
 function fnShowMyWarehouseVisualizerDemo() {
 
-    if (appLayout)
-        appLayout.destroy();
+    if (appLayout) appLayout.destroy();
 
     var warehouseIndex = parentLayout.get("main").toolbar.items.find(function (item) {
         return item.id == "warehouse"
     }).selected;
 
     if (warehouseIndex <= 0) {   																										//Show Demo Instructions
-
         parentLayout.content("main", "<div id='demoInstructions'></div");
         $("#demoInstructions").load("demoInstructions.html");
         parentLayout.get("main").toolbar.disable("toggleAnalyzer"); // Can't click button Toggle Inventory Grid
         parentLayout.get("main").toolbar.disable("toggleVisualGrid"); // Can't click button Toggle Warehouse Layout Grid
         return;
-
+    }
+    const getData = async (path) => { // get data warehouse from server
+        return await $.ajax({
+            url: `${process.env.REACT_APP_SERVER}/${path}`, headers: {
+                "Access-Control-Allow-Origin": "*",
+            }, type: "GET", crossDomain: true, dataType: "json",
+        })
     }
 
     var warehouseName = appWarehouses[warehouseIndex].warehouseName;
-
     if (!appWarehouses[warehouseIndex].layoutData) {
-        d3.json("data/" + warehouseName + "/layout.json", fnParse) //https://github.com/d3/d3-fetch#csv
-            // Sử dụng D3.js để đọc dữ liệu từ một tệp csv, hàm d3.csv nhận vào 2 tham số, đường dẫn đến tệp csv và hàm chuyển đổi dữ liệu fnParse
-            .then(function (layoutData) {
-                var warehouseScene = {scene: fnBuildWarehouse(layoutData)};
-                if (warehouseScene) {
-                    fnLoadWarehouseData(warehouseName, warehouseScene, layoutData);
-                } //if
-            });
-        //.catch(function (error){
-        //	w2alert("Error Loading File: " + "data/" + warehouseName + "/layout.csv");
-        //	return;
-        //});
-
-
+        getData('layout').then((response) => {  // get layout warehouse from server
+            console.log(response)
+            const warehouseScene = {scene: fnBuildWarehouse(response)};
+            fnLoadWarehouseData(warehouseName, warehouseScene, response);
+        }).catch((error) => {
+            console.log(error)
+        })
         function fnLoadWarehouseData(warehouseName, warehouseScene, layoutData) {
-            d3.json("data/" + warehouseName + "/inventory.json", fnParse) //https://github.com/d3/d3-fetch#csv
-                .then(function (inventoryData) {
-                    fnShowWarehouse(warehouseName, warehouseScene, inventoryData, layoutData);
-                });
+            getData('inventory-warehouse').then((response) => {  // get inventory warehouse from server
+                fnShowWarehouse(warehouseName, warehouseScene, response, layoutData);
+            }).catch((error) => {
+                console.log(error)
+            })
         } // fnLoadWarehouseData
-
-    } //ifnewRow
+    }
     else {
         var warehouseScene = {scene: fnBuildWarehouse(appWarehouses[warehouseIndex].layoutData)};
         if (warehouseScene) {
@@ -301,7 +277,6 @@ function fnShowMyWarehouseVisualizerDemo() {
         } //if
 
     } //else
-
 
     function fnShowWarehouse(warehouseName, warehouseScene, inventoryData, layoutData) {
         //var gltfURL = appWarehouses[warehouseIndex].blob ? URL.createObjectURL(appWarehouses[warehouseIndex].blob) : appWarehouses[warehouseIndex].url;
@@ -352,10 +327,19 @@ function fnShowMyWarehouseVisualizerDemo() {
         //var edgeColor = new THREE.Color( 'white' );
         //edgeColor setup as a global so that it can be changed dynamically with Background color changes
         edgeMaterial = new THREE.LineBasicMaterial({
-            color: fnGetBackGroundColorInvert(initalBackgroundColor),
-            transparent: true,
-            opacity: 0.2
+            color: fnGetBackGroundColorInvert(initalBackgroundColor), transparent: true, opacity: 0.2
         }); // 0xffffff Can't control linewidth: https://threejs.org/docs/index.html#api/materials/LineBasicMaterial.linewidth
+// -------------------------------------------------------------
+        const material = new THREE.LineBasicMaterial( { color: 'red',  transparent: true, opacity: 1, linewidth: 10, } );
+        const points = [];
+        points.push( new THREE.Vector3( 180, 0, 2274 ) );
+        points.push( new THREE.Vector3( 100, 0, 954 ) );
+        points.push( new THREE.Vector3( 10, 0, 678 ) );
+
+        const geometry = new THREE.BufferGeometry().setFromPoints( points );
+        const line = new THREE.Line( geometry, material );
+        warehouse.add( line );
+// -------------------------------------------------------------
 
         //Re-use unique geometries.
         //Related discussion: https://stackoverflow.com/questions/16820806/three-js-performance
@@ -375,9 +359,7 @@ function fnShowMyWarehouseVisualizerDemo() {
 
             */
 
-            var geometryKey = layoutData[i]["WIDTH"] + ":" +
-                layoutData[i]["HEIGHT"] + ":" +
-                layoutData[i]["DEPTH"];
+            var geometryKey = layoutData[i]["WIDTH"] + ":" + layoutData[i]["HEIGHT"] + ":" + layoutData[i]["DEPTH"];
 
 
             if (geometriesMap.has(geometryKey)) {
@@ -389,10 +371,7 @@ function fnShowMyWarehouseVisualizerDemo() {
             } //if
             else {
 
-                var cubeGeometry = new THREE.BoxBufferGeometry(layoutData[i]["WIDTH"],
-                    layoutData[i]["HEIGHT"],
-                    layoutData[i]["DEPTH"]
-                ); // the visual width(x-axis),height(y-axis) depth(z-axis)
+                var cubeGeometry = new THREE.BoxBufferGeometry(layoutData[i]["WIDTH"], layoutData[i]["HEIGHT"], layoutData[i]["DEPTH"]); // the visual width(x-axis),height(y-axis) depth(z-axis)
                 var edgeGeometry = new THREE.EdgesGeometry(cubeGeometry); //  https://stackoverflow.com/questions/31539130/display-wireframe-and-solid-color/31541369#31541369
                 geometriesMap.set(geometryKey, {cubeGeometry: cubeGeometry, edgeGeometry: edgeGeometry});
 
@@ -541,8 +520,7 @@ function fnHandleFileUploads(event) {
 
     var csvLayoutFile = files[0].name.toLowerCase().indexOf("layout") != -1 ? files[0] : files[1].name.toLowerCase().indexOf("layout") != -1 ? files[1] : null;
 
-    var csvInventoryFile = files[0] == csvLayoutFile ? (files[1].name.toLowerCase().indexOf("inventory") != -1 ? files[1] : null)
-        : (files[0].name.toLowerCase().indexOf("inventory") != -1 ? files[0] : null);
+    var csvInventoryFile = files[0] == csvLayoutFile ? (files[1].name.toLowerCase().indexOf("inventory") != -1 ? files[1] : null) : (files[0].name.toLowerCase().indexOf("inventory") != -1 ? files[0] : null);
 
     if (!csvLayoutFile && !csvInventoryFile) {
 
@@ -570,16 +548,12 @@ function fnHandleFileUploads(event) {
             var inventoryData = d3.csvParse(this.result, fnParse);
 
             appWarehouses.push({
-                warehouseName: csvLayoutFile.name.split(".csv")[0],
-                layoutData: layoutData,
-                inventoryData: inventoryData
+                warehouseName: csvLayoutFile.name.split(".csv")[0], layoutData: layoutData, inventoryData: inventoryData
             });
 
 
             parentLayout.get("main").toolbar.get("warehouse").items.push({
-                id: appWarehouses.length - 1,
-                text: csvLayoutFile.name.split(".csv")[0],
-                checked: true
+                id: appWarehouses.length - 1, text: csvLayoutFile.name.split(".csv")[0], checked: true
             });
             parentLayout.get("main").toolbar.get("warehouse").selected = appWarehouses.length - 1;
 
@@ -615,16 +589,12 @@ function fnHandleCsvUrls() {
             d3.csv(inventoryURL, fnParse)
                 .then(function (inventoryData) {
                     appWarehouses.push({
-                        warehouseName: "layoutURL",
-                        layoutData: layoutData,
-                        inventoryData: inventoryData
+                        warehouseName: "layoutURL", layoutData: layoutData, inventoryData: inventoryData
                     });
 
 
                     parentLayout.get("main").toolbar.get("warehouse").items.push({
-                        id: appWarehouses.length - 1,
-                        text: "layoutURL",
-                        checked: true
+                        id: appWarehouses.length - 1, text: "layoutURL", checked: true
                     });
                     parentLayout.get("main").toolbar.get("warehouse").selected = appWarehouses.length - 1;
 
@@ -688,17 +658,15 @@ function applicationLayout() {
 
         app.dataVisual = dataVisual;
 
-        var mdvLayoutProperties =
-            {
-                name: dataVisual.warehouseName + "_mainPanel", 	//http://w2ui.com/web/docs/1.5/layout
-                panels:
-                    [	//Tool Bar Handle by Main Panel
-                        {type: 'left', size: '50%', resizable: true, style: pstyle},  	//Data Analyzer
-                        {type: 'main', resizable: true, style: pstyle},					//Warehouse GRID
-                        {type: 'preview', size: '75%', resizable: true}  				//The display panel for the image
+        var mdvLayoutProperties = {
+            name: dataVisual.warehouseName + "_mainPanel", 	//http://w2ui.com/web/docs/1.5/layout
+            panels: [	//Tool Bar Handle by Main Panel
+                {type: 'left', size: '50%', resizable: true, style: pstyle},  	//Data Analyzer
+                {type: 'main', resizable: true, style: pstyle},					//Warehouse GRID
+                {type: 'preview', size: '75%', resizable: true}  				//The display panel for the image
 
-                    ] //panels
-            }
+            ] //panels
+        }
 
         if (w2ui[container.name]) {
             var mdvLayout = $().w2layout(mdvLayoutProperties);
@@ -765,10 +733,13 @@ function myDataVisualizer() {
 
         var analyzerLayout = $().w2layout({
             name: dataVisual.warehouseName + '_analyzerLayout',
-            panels: [
-                {type: 'main', overflow: "auto", size: "70%", resizable: true, style: pstyle},
-                {type: 'preview', size: "30%", style: pstyle, overflow: "auto", resizable: true}
-            ],
+            panels: [{type: 'main', overflow: "auto", size: "70%", resizable: true, style: pstyle}, {
+                type: 'preview',
+                size: "30%",
+                style: pstyle,
+                overflow: "auto",
+                resizable: true
+            }],
             onRender: function (event) {
                 event.done(function () {    																				//http://w2ui.com/web/docs/1.5/utils/events
                     //fnGetObjectListAndLoad(warehouseIndex, languageIndex);
@@ -781,13 +752,15 @@ function myDataVisualizer() {
         //Scale Control
 
         var scaleControlLayout = $().w2layout({
-                name: dataVisual.warehouseName + '_scaleControlLayout',
-                panels: [
-                    {type: 'left', resizable: true, size: "50%", style: pstyle, title: 'Visualization Color Scale'},
-                    {type: 'main', resizable: true, style: pstyle, title: "Legend"}
-                ]
-            }
-        );
+            name: dataVisual.warehouseName + '_scaleControlLayout',
+            panels: [{
+                type: 'left',
+                resizable: true,
+                size: "50%",
+                style: pstyle,
+                title: 'Visualization Color Scale'
+            }, {type: 'main', resizable: true, style: pstyle, title: "Legend"}]
+        });
 
 
         const predefinedScale = $(document.createElement("div")).addClass("wrapper");													//Slider and scale hosted in html table
@@ -816,22 +789,22 @@ function myDataVisualizer() {
         } 		//onRender
 
 
-			//mdvLayout.on('*', function (event) {
-			mdvLayout.on('resize', function (event) {
-				console.log('Event: '+ event.type + ' Target: '+ event.target);
-				console.log(event);
-			});
+        //mdvLayout.on('*', function (event) {
+        mdvLayout.on('resize', function (event) {
+            // console.log('Event: '+ event.type + ' Target: '+ event.target);
+            // console.log(event);
+        });
 
 
-			analyzerLayout.on('*', function (event) {
-				console.log('Event: '+ event.type + ' Target: '+ event.target);
-				console.log(event);
-			});
+        analyzerLayout.on('*', function (event) {
+            // console.log('Event: '+ event.type + ' Target: '+ event.target);
+            // console.log(event);
+        });
 
-			scaleControlLayout.on('*', function (event) {
-				console.log('Event: '+ event.type + ' Target: '+ event.target);
-				console.log(event);
-			});
+        scaleControlLayout.on('*', function (event) {
+            // console.log('Event: '+ event.type + ' Target: '+ event.target);
+            // console.log(event);
+        });
 
 
         var visualizerDiv = document.createElement("div")
@@ -969,10 +942,9 @@ function myDataVisualizer() {
 
                     w2utils.lock(document.body, {spinner: true, opacity: 0});
                     setTimeout(function () {
-                            dataVisual.visualGrid.searchReset(false);  //Reset search (trigger search logic), but don't refresh the grid http://w2ui.com/web/docs/1.5/w2grid.searchReset
-                            dataVisual.visualGrid.search(dataVisual.dataKey, slotRow[dataVisual.dataKey]); //http://w2ui.com/web/docs/1.5/w2grid.search
-                        }
-                        , 1);
+                        dataVisual.visualGrid.searchReset(false);  //Reset search (trigger search logic), but don't refresh the grid http://w2ui.com/web/docs/1.5/w2grid.searchReset
+                        dataVisual.visualGrid.search(dataVisual.dataKey, slotRow[dataVisual.dataKey]); //http://w2ui.com/web/docs/1.5/w2grid.search
+                    }, 1);
                 }
                 return slotRow;
             } //else
@@ -1031,8 +1003,7 @@ function myDataVisualizer() {
             //PREPARE THE VISUAL OPTIONS
             var objVisualizeSettings = {
                 //scene: {background: "#d9dccb"},
-                scene: {background: initalBackgroundColor},
-                //boundingBox:{visible:true, color:"white"},
+                scene: {background: initalBackgroundColor}, //boundingBox:{visible:true, color:"white"},
                 boundingBox: {visible: true, color: fnGetBackGroundColorInvert(initalBackgroundColor)},
                 axesHelper: {visible: false},
                 gridHelper: {visible: true},
@@ -1049,8 +1020,7 @@ function myDataVisualizer() {
             function dataVisualizer(overrideProperties) {
 
                 var properties = {//Default warehouse layout props; attributes can be changed with attributes in ojb3dProperties
-                    version: 1.1,
-                    id: "Warehouse" + uuidv4(),																    //UniqueID
+                    version: 1.1, id: "Warehouse" + uuidv4(),																    //UniqueID
                     //Prefix in warehouseData column that designates a column as a predefined color
                     container: null,																			//Assigned in fnDisplay
                     containerWidth: undefined,																	//Default width (px) or (%)
@@ -1060,42 +1030,30 @@ function myDataVisualizer() {
                     scene: {
                         obj: null, 																		//https://threejs.org/docs/index.html#api/scenes/Scene
                         background: "black"
-                    },
-                    //background: any color acceptable to THREE.Color: https://threejs.org/docs/index.html#api/math/Color
+                    }, //background: any color acceptable to THREE.Color: https://threejs.org/docs/index.html#api/math/Color
                     camera: {
                         obj: null,																		//https://threejs.org/docs/index.html#api/cameras/Camera
                         fov: 45
-                    },
-                    renderer: {obj: null},																		//https://threejs.org/docs/index.html#api/renderers/WebGLRenderer
+                    }, renderer: {obj: null},																		//https://threejs.org/docs/index.html#api/renderers/WebGLRenderer
                     controls: {
                         obj: null,																		//https://threejs.org/docs/index.html#examples/controls/OrbitControls
                         maxPolarAngle: 90,																//90 degrees: Don't rotate below Y = 0 plane, > 90 degrees camera can go -Y
                         zoomSpeed: 1, 																    //https://threejs.org/docs/index.html#examples/controls/OrbitControls.zoomSpeed
                         panSpeed: 1  																    //https://threejs.org/docs/index.html#examples/controls/OrbitControls.panSpeed
 
-                    },
-                    mouse: new THREE.Vector2(),																	//RayCasting mouse object
+                    }, mouse: new THREE.Vector2(),																	//RayCasting mouse object
                     tooltipInteresected: null,																	//Tooltip object last intersected ojbect
-                    raycaster: new THREE.Raycaster(),
-                    boundingBox: {
-                        obj: null,
-                        boundingRange: null,														//A Three.js Vector with +/- lengths along x,y,z axis relative to scene/world 0,0,0
-                        visible: true,
-                        color: "white"
-                    },
-                    axesHelper: {
-                        obj: null,
-                        visible: false
-                    },
-                    gridHelper: {
-                        obj: null,
-                        gridSize: null,
-                        visible: false,																//Set to true to see grid and minimum warehouse y for image
+                    raycaster: new THREE.Raycaster(), boundingBox: {
+                        obj: null, boundingRange: null,														//A Three.js Vector with +/- lengths along x,y,z axis relative to scene/world 0,0,0
+                        visible: true, color: "white"
+                    }, axesHelper: {
+                        obj: null, visible: false
+                    }, gridHelper: {
+                        obj: null, gridSize: null, visible: false,																//Set to true to see grid and minimum warehouse y for image
                         colorGrid: "green",															//Default CSS color for grid
                         colorCenter: "white",														//Default CSS color for grid's centerline
                         divisions: 10
-                    },
-                    stats: null, 																			    //Stats Performance display
+                    }, stats: null, 																			    //Stats Performance display
 
                     visualGroup: null,																			//All the objects displayed in the scene.  It's a child of sceneGroup
                     sceneGroup: null,																			//Collection of of sub objects for easy transformation
@@ -1116,9 +1074,7 @@ function myDataVisualizer() {
                     },                                                            //Callback function handling object selection
 
                     //Methods
-                    setVisual: fnSetVisual,
-                    setIntersectsSelectedCallback: fnSetInteresectsCallBack,
-                    display: fnDisplay,																			//Invoked to render thes scene
+                    setVisual: fnSetVisual, setIntersectsSelectedCallback: fnSetInteresectsCallBack, display: fnDisplay,																			//Invoked to render thes scene
                     resize: null, 																				//resize method...callback assigned by fnGetResizeCallback() at initialization of the dataVisualizer
                     destroy: fnDestroy,																			//Used at initialization and if loading different files by interface to clean-out the current visualization
 
@@ -1127,8 +1083,7 @@ function myDataVisualizer() {
 
 
                 // SET SCENE PROPERTIES
-                if (overrideProperties)
-                    fnSetSceneProperties(overrideProperties);													//Use Override properties if they were set
+                if (overrideProperties) fnSetSceneProperties(overrideProperties);													//Use Override properties if they were set
 
                 return properties;																				//Return the complete properties object to caller
 
@@ -1269,8 +1224,7 @@ function myDataVisualizer() {
                     //NULL-OUT any .obj PROPERTY
                     for (var prop in properties) {
 
-                        if (properties[prop] && properties[prop].hasOwnProperty("obj"))
-                            properties[prop].obj = null;
+                        if (properties[prop] && properties[prop].hasOwnProperty("obj")) properties[prop].obj = null;
 
                     } //for
 
@@ -1393,15 +1347,11 @@ function myDataVisualizer() {
                 // BUILD GRIDHELPER
                 function fnBuildGridHelper(settings) {
 
-                    if (properties.gridHelper.obj)
-                        properties.sceneGroup.remove(properties.gridHelper.obj);
+                    if (properties.gridHelper.obj) properties.sceneGroup.remove(properties.gridHelper.obj);
 
                     properties.gridHelper.obj = null;
 
-                    properties.gridHelper.obj = new THREE.GridHelper(settings.size,
-                        settings.divisions,
-                        settings.colorCenter,
-                        settings.colorGrid);
+                    properties.gridHelper.obj = new THREE.GridHelper(settings.size, settings.divisions, settings.colorCenter, settings.colorGrid);
                     properties.gridHelper.obj.position.set(settings.x, settings.y, settings.z);
                     properties.gridHelper.obj.material.visible = settings.visible;
                     properties.sceneGroup.add(properties.gridHelper.obj);
@@ -1442,20 +1392,17 @@ function myDataVisualizer() {
                     //*******************************************************************************************************************************
 
                     // BOXHELPER																						//A boundingBox for the complete group is then calculated. Its center is used to re-center the group relative to the scene's 0,0,0 coordiante.
-                    properties.boundingBox.obj =
-                        new THREE.BoxHelper(properties.visualGroup, properties.boundingBox.color); 					//Used to get the group's coordinates
+                    properties.boundingBox.obj = new THREE.BoxHelper(properties.visualGroup, properties.boundingBox.color); 					//Used to get the group's coordinates
                     properties.boundingBox.obj.geometry.computeBoundingBox();                         					//https://threejs.org/docs/index.html#api/core/BufferGeometry.computeBoundingBox
                     properties.boundingBox.obj.visible = properties.boundingBox.visible;
 
                     var bBox = properties.boundingBox.obj.geometry.boundingBox;											//Save in properties for possbile future reference
-                    var bSphere =
-                        properties.boundingBox.obj.geometry.boundingSphere;												//Save in properties for possible future reference
+                    var bSphere = properties.boundingBox.obj.geometry.boundingSphere;												//Save in properties for possible future reference
                     properties.gridHelper.gridSize = Math.ceil(bSphere.radius) * 2.25;									//The grid size is 25% larger than the diameter (r*2)
 
                     properties.boundingBox.boundingRange = new THREE.Vector3(											// +/- x,y,z length values; Divide by 2 because group is centered in scene
                         (bBox.max.x - bBox.min.x) / 2, 																	//Used to set orbit controls' target, which is a function of major axis orientation
-                        (bBox.max.y - bBox.min.y) / 2,
-                        (bBox.max.z - bBox.min.z) / 2);
+                        (bBox.max.y - bBox.min.y) / 2, (bBox.max.z - bBox.min.z) / 2);
 
 
                     var x = bSphere.center.x;
@@ -1477,8 +1424,7 @@ function myDataVisualizer() {
                     var fieldOfView = properties.camera.fov.number;
                     var aspectRatio = width / height;
                     //var perspectiveNear = 0.1, perspectiveFar = 20000;
-                    var perspectiveNear = 0.1,
-                        perspectiveFar = properties.gridHelper.gridSize * 2;
+                    var perspectiveNear = 0.1, perspectiveFar = properties.gridHelper.gridSize * 2;
 
                     properties.camera.obj = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, perspectiveNear, perspectiveFar);
 
@@ -1493,10 +1439,7 @@ function myDataVisualizer() {
 
 
                     // RENDERER
-                    if (Detector.webgl)
-                        properties.renderer.obj = new THREE.WebGLRenderer({antialias: true});
-                    else
-                        properties.renderer.obj = new THREE.CanvasRenderer();
+                    if (Detector.webgl) properties.renderer.obj = new THREE.WebGLRenderer({antialias: true}); else properties.renderer.obj = new THREE.CanvasRenderer();
 
                     //https://threejs.org/docs/index.html#examples/en/loaders/GLTFLoader
                     //properties.renderer.obj.gammaOutput = true;
@@ -1507,10 +1450,7 @@ function myDataVisualizer() {
                     var zIndex = parseFloat($(container).css("z-index")) ? parseFloat($(properties.container).css("z-index")) : 0;
 
                     $(properties.renderer.obj.domElement).css({
-                        "z-index": zIndex - 2,
-                        "position": "absolute",
-                        "top": 0,
-                        "left": 0
+                        "z-index": zIndex - 2, "position": "absolute", "top": 0, "left": 0
                     });
 
                     container.appendChild(properties.renderer.obj.domElement);
@@ -1527,9 +1467,14 @@ function myDataVisualizer() {
 
                     // GRIDHELPER
                     fnBuildGridHelper({
-                        x: x, y: minY, z: z, size: properties.gridHelper.gridSize,
-                        divisions: properties.gridHelper.divisions, colorCenter: properties.gridHelper.colorCenter,
-                        colorGrid: properties.gridHelper.colorGrid, visible: properties.gridHelper.visible
+                        x: x,
+                        y: minY,
+                        z: z,
+                        size: properties.gridHelper.gridSize,
+                        divisions: properties.gridHelper.divisions,
+                        colorCenter: properties.gridHelper.colorCenter,
+                        colorGrid: properties.gridHelper.colorGrid,
+                        visible: properties.gridHelper.visible
                     });
 
 
@@ -1668,12 +1613,8 @@ function myDataVisualizer() {
                                     }).caption;
 
                                     var columnText = (fnIsPresetColor(column) || dataVisual.data[0][dataVisual.colorPrefix + column] != undefined) ? columnText0 + text : text;
-                                    var formattedValue = dataVisual.dataTypes[column].type != "text" ?
-                                        fnFloatFormat(dataVisual, dataVisual.activeGridColumn.column, dataRow[dataVisual.activeGridColumn.column]) :
-                                        dataRow[dataVisual.activeGridColumn.column];
-                                    var text = column == dataVisual.dataKey || column == dataVisual.visualKey ?
-                                        dataRow[dataVisual.dataKey] :
-                                        dataRow[dataVisual.dataKey] + ": " + columnText + ": " + formattedValue;
+                                    var formattedValue = dataVisual.dataTypes[column].type != "text" ? fnFloatFormat(dataVisual, dataVisual.activeGridColumn.column, dataRow[dataVisual.activeGridColumn.column]) : dataRow[dataVisual.activeGridColumn.column];
+                                    var text = column == dataVisual.dataKey || column == dataVisual.visualKey ? dataRow[dataVisual.dataKey] : dataRow[dataVisual.dataKey] + ": " + columnText + ": " + formattedValue;
 
 
                                     fnShowToolTip(text, intersects[0].point);
@@ -1818,9 +1759,7 @@ function myDataVisualizer() {
 
                 //https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
                 function uuidv4() {
-                    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-                        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-                    )
+                    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16))
                 }
 
 
@@ -1877,12 +1816,7 @@ function myDataVisualizer() {
 
 
                 //Date must be milliseconds since 1 January 1970 00:00:00 UTC: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
-                dataTypes[column].type =
-                    column.substring(0, dataVisual.urlPrefix.length) == dataVisual.urlPrefix ? "url" :
-                        column.substring(0, dataVisual.datePrefix.length) == dataVisual.datePrefix ? "date" :
-                            column.substring(0, dataVisual.dateTimePrefix.length) == dataVisual.dateTimePrefix ? "dateTime" :
-                                column.substring(0, dataVisual.timePrefix.length) == dataVisual.timePrefix ? "time" :
-                                    dataTypes[column].type;
+                dataTypes[column].type = column.substring(0, dataVisual.urlPrefix.length) == dataVisual.urlPrefix ? "url" : column.substring(0, dataVisual.datePrefix.length) == dataVisual.datePrefix ? "date" : column.substring(0, dataVisual.dateTimePrefix.length) == dataVisual.dateTimePrefix ? "dateTime" : column.substring(0, dataVisual.timePrefix.length) == dataVisual.timePrefix ? "time" : dataTypes[column].type;
 
                 //dataTypes[column].isVisualData = column.split(dataVisual.colorPrefix)[column.split(dataVisual.colorPrefix).length - 1].substring(0,1) == " ";
                 dataTypes[column].isVisualData = dataSource == "warehouse";
@@ -1925,9 +1859,7 @@ function myDataVisualizer() {
                     if (!match) {
                         return 0;
                     }
-                    return Math.max(
-                        0,
-                        // Number of digits right of decimal point.
+                    return Math.max(0, // Number of digits right of decimal point.
                         (match[1] ? match[1].length : 0)
                         // Adjust for scientific notation.
                         - (match[2] ? +match[2] : 0));
@@ -1944,18 +1876,13 @@ function myDataVisualizer() {
             aColumns.forEach(function (column) {
 
                 //https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
-                dataTypes[column].aUniqueCategories =
-                    Array.from(new Set(visualizeData.map(function (row) {
-                        return dataTypes[column].type == "float" ?
-                            parseFloat(row[column]) :
-                            ["date", "time", "dateTime"].indexOf(dataTypes[column].type) != -1 ?
-                                fnFloatFormat(dataVisual, column, row[column]) :
-                                row[column]
-                    })))
-                        .sort(function (a, b) {  //https://stackoverflow.com/questions/4373018/sort-array-of-numeric-alphabetical-elements-natural-sort
-                            var a1 = typeof a, b1 = typeof b;
-                            return a1 < b1 ? -1 : a1 > b1 ? 1 : a < b ? -1 : a > b ? 1 : 0;
-                        });
+                dataTypes[column].aUniqueCategories = Array.from(new Set(visualizeData.map(function (row) {
+                    return dataTypes[column].type == "float" ? parseFloat(row[column]) : ["date", "time", "dateTime"].indexOf(dataTypes[column].type) != -1 ? fnFloatFormat(dataVisual, column, row[column]) : row[column]
+                })))
+                    .sort(function (a, b) {  //https://stackoverflow.com/questions/4373018/sort-array-of-numeric-alphabetical-elements-natural-sort
+                        var a1 = typeof a, b1 = typeof b;
+                        return a1 < b1 ? -1 : a1 > b1 ? 1 : a < b ? -1 : a > b ? 1 : 0;
+                    });
 
             }); //forEach
 
@@ -1979,9 +1906,7 @@ function myDataVisualizer() {
 
                 var filterTest = function (field) {
 
-                    return field == "recid" ? true :
-                        gridType == "visual" ? dataTypes[field].isVisualData :
-                            !dataTypes[field].isVisualData && dataTypes[field].type != "url";
+                    return field == "recid" ? true : gridType == "visual" ? dataTypes[field].isVisualData : !dataTypes[field].isVisualData && dataTypes[field].type != "url";
 
 
                 } //filterTest
@@ -2007,12 +1932,8 @@ function myDataVisualizer() {
                 });   //Always located in column 1 associted with key used for join in Column 2
 
                 columns.push({
-                    field: key,
-                    caption: key.trim() + " (Key)", //Always in column 2
-                    render: fnGridColumnRender,
-                    sortable: true,
-                    searchable: true,
-                    hidden: false
+                    field: key, caption: key.trim() + " (Key)", //Always in column 2
+                    render: fnGridColumnRender, sortable: true, searchable: true, hidden: false
                 });
 
                 if (dataTypes[dataVisual.colorPrefix + key]) { //position here for column grouping
@@ -2093,8 +2014,7 @@ function myDataVisualizer() {
                             hidden: false,
                             render: function (record, rowIndex, columnIndex) {
 
-                                if (dataVisual.selectionLinks.length == 0 && $.isEmptyObject(dataVisual.getJoinByKey(record[dataVisual.dataKey]).selectionLink))
-                                    return "";  //No globla or record level link
+                                if (dataVisual.selectionLinks.length == 0 && $.isEmptyObject(dataVisual.getJoinByKey(record[dataVisual.dataKey]).selectionLink)) return "";  //No globla or record level link
 
                                 var select = "<select "
                                 select += "name='" + dataVisual.warehouseName + "_links_" + record[dataVisual.dataKey] + "'";
@@ -2147,12 +2067,9 @@ function myDataVisualizer() {
 
                 if (bColorField) {
 
-                    columnGroups = [
-                        {
-                            caption: 'Row', span: 1,
-                            master: true
-                        }
-                    ]
+                    columnGroups = [{
+                        caption: 'Row', span: 1, master: true
+                    }]
 
                     for (var i = 1; i < columns.length - 1; i++) {  //skip over recid and last columm ( i < columns.length - 1)
 
@@ -2161,16 +2078,13 @@ function myDataVisualizer() {
                             if (dataTypes[dataVisual.colorPrefix + columns[i].field]) {  //If the current field as a preset color associate with it
 
                                 columnGroups.push({
-                                    caption: columns[i].field.trim(),
-                                    span: 2,
-                                    master: false
+                                    caption: columns[i].field.trim(), span: 2, master: false
                                 });  //Span over current field and next field
 
                             } else {
 
                                 columnGroups.push({
-                                    caption: columns[i].field.trim(),
-                                    span: 1, master: true
+                                    caption: columns[i].field.trim(), span: 1, master: true
                                 }); //Otherwise, just a single splan
 
                             }
@@ -2182,18 +2096,13 @@ function myDataVisualizer() {
                     if (columns[columns.length - 1].field == "_links") {					//links is hidden and was handled above
 
                         columnGroups.push({
-                            caption: "Link(s)",
-                            span: 1,
-                            master: true
+                            caption: "Link(s)", span: 1, master: true
                         });
                     } else {
 
-                        if (!fnIsPresetColor(columns[i].field) && !columns[i].hidden)
-                            columnGroups.push({
-                                caption: columns[i].field.trim(),
-                                span: 1,
-                                master: true
-                            }); //Otherwise, just a single splan
+                        if (!fnIsPresetColor(columns[i].field) && !columns[i].hidden) columnGroups.push({
+                            caption: columns[i].field.trim(), span: 1, master: true
+                        }); //Otherwise, just a single splan
 
                     }
 
@@ -2208,11 +2117,7 @@ function myDataVisualizer() {
                     records: gridRecords,
                     header: dataVisual[gridType + "Name"],
                     show: {
-                        toolbar: true,
-                        toolbarReload: false,
-                        footer: true,
-                        selectColumn: true,
-                        //header: true,
+                        toolbar: true, toolbarReload: false, footer: true, selectColumn: true, //header: true,
 
                     },
 
@@ -2232,9 +2137,7 @@ function myDataVisualizer() {
 
                             return {
                                 field: row.field,
-                                caption: fnIsPresetColor(row.field) ? arr[i - 1].field.trim() + " COLOR"
-                                    : row.field.trim() == "recid" ? "Join Row"
-                                        : dataVisual.dataTypes[row.field].caption.trim(),
+                                caption: fnIsPresetColor(row.field) ? arr[i - 1].field.trim() + " COLOR" : row.field.trim() == "recid" ? "Join Row" : dataVisual.dataTypes[row.field].caption.trim(),
                                 type: dataTypes[row.field].type
                             }
                         }),
@@ -2324,9 +2227,7 @@ function myDataVisualizer() {
                     var dataRecordIndex = record.recid - 1;  //The actual index into the data
 
 
-                    var color = predDefinedColor ?
-                        record[this.columns[column_index].field] :
-                        fnGetObjectScaleColorAndOptionallyVisualize(dataVisual, fieldValueColumn, dataRecordIndex, false, gridRecords);
+                    var color = predDefinedColor ? record[this.columns[column_index].field] : fnGetObjectScaleColorAndOptionallyVisualize(dataVisual, fieldValueColumn, dataRecordIndex, false, gridRecords);
 
 
                     var divWidth;
@@ -2354,12 +2255,9 @@ function myDataVisualizer() {
 
                     $(document.createElement("span"))
                         .css({
-                            "background-color": "white",
-                            "opacity": ".8"
+                            "background-color": "white", "opacity": ".8"
                         })  //Displays the text in a slighlty opaque box
-                        .text(predDefinedColor ? fieldText : fieldValueType != "text" ?
-                            fnFloatFormat(dataVisual, fieldValueColumn, fieldText) :
-                            fieldText)
+                        .text(predDefinedColor ? fieldText : fieldValueType != "text" ? fnFloatFormat(dataVisual, fieldValueColumn, fieldText) : fieldText)
                         .appendTo(div);
 
 
@@ -2397,23 +2295,18 @@ function myDataVisualizer() {
                 case "dataGrid":
 
                     return {
-                        items: [
-                            {type: 'break'},
-                            {
-                                type: 'check',
-                                id: 'styleGrid',
-                                text: "Visualize Grid",
-                                checked: false,
-                                tooltip: 'Visualize Data on Grid'
-                            },
-                            {type: 'break'},
-                            {
-                                type: 'button',
-                                id: 'downloadDataButton',
-                                text: "Download Data",
-                                tooltip: 'Download .csv file of current data grid'
-                            },
-                            // {type: 'break'},
+                        items: [{type: 'break'}, {
+                            type: 'check',
+                            id: 'styleGrid',
+                            text: "Visualize Grid",
+                            checked: false,
+                            tooltip: 'Visualize Data on Grid'
+                        }, {type: 'break'}, {
+                            type: 'button',
+                            id: 'downloadDataButton',
+                            text: "Download Data",
+                            tooltip: 'Download .csv file of current data grid'
+                        }, // {type: 'break'},
                             // {type: 'button', id: 'downloadGLTFButton', text: "Download glTF", tooltip: 'Download .gltf file of warehouse with embedded data'}
 
                         ],
@@ -2427,8 +2320,7 @@ function myDataVisualizer() {
                                     if (!(document.documentMode || /Edge/.test(navigator.userAgent))) {
 
                                         var oGrid = this.owner;
-                                        var gridData = oGrid.searchData.length > 0 ?
-                                            fnFilterDownLoadData(oGrid.last.searchIds.map(function (searchId) {
+                                        var gridData = oGrid.searchData.length > 0 ? fnFilterDownLoadData(oGrid.last.searchIds.map(function (searchId) {
                                                 return dataVisual.data[searchId]
                                             })) :  //search results
                                             fnFilterDownLoadData(dataVisual.data);    //or all records
@@ -2539,15 +2431,13 @@ function myDataVisualizer() {
 
                 case "visualGrid":
                     return {
-                        items: [
-                            {type: 'break'},
-                            {
-                                type: 'check',
-                                id: 'styleGrid',
-                                text: "Visualize Grid",
-                                checked: false,
-                                tooltip: 'Visualize Data on Grid'
-                            },
+                        items: [{type: 'break'}, {
+                            type: 'check',
+                            id: 'styleGrid',
+                            text: "Visualize Grid",
+                            checked: false,
+                            tooltip: 'Visualize Data on Grid'
+                        },
 
                         ],
 
@@ -2578,41 +2468,35 @@ function myDataVisualizer() {
 
                 case "preview":
                     return {
-                        items: [
-                                // {
-                                //     type: 'check',
-                                //     id: 'gpuPerformance',
-                                //     checked: false,
-                                //     text: fnGetTranslatedText,
-                                //     tooltip: "Show Graphical Processing Unit Performance"
-                                // },
-                                // {
-                                //     type: 'html',
-                                //     id: 'gpuPerformanceContainer',
-                                //     html: "<span id='gpuContainer' style='display:none'></span>"
-                                // },
-                                // {type: 'break'},
+                        items: [// {
+                            //     type: 'check',
+                            //     id: 'gpuPerformance',
+                            //     checked: false,
+                            //     text: fnGetTranslatedText,
+                            //     tooltip: "Show Graphical Processing Unit Performance"
+                            // },
+                            // {
+                            //     type: 'html',
+                            //     id: 'gpuPerformanceContainer',
+                            //     html: "<span id='gpuContainer' style='display:none'></span>"
+                            // },
+                            // {type: 'break'},
                             // {type: 'button', id: 'bev', text: "Reset View", tooltip: "Show Bird's Eye View"},
                             // {type: 'break'},
                             // {type: 'button', id: 'rotate', text: "Rotate", tooltip: "Rotate Warehouse"},
-                            {type: 'break'},
-                            {
+                            {type: 'break'}, {
                                 type: 'check',
                                 id: 'axesHelper',
                                 checked: visualizer.axesHelper.obj.visible,
                                 text: "Axes",
                                 tooltip: "Toggle Axes on Warehouse"
-                            },
-                            {type: 'break'},
-                            {
+                            }, {type: 'break'}, {
                                 type: 'color',
                                 id: 'background',
                                 color: visualizer.scene.obj.background.getHexString(),
                                 text: "Background",
                                 tooltip: "Set Background Color"
-                            },
-                            {type: 'break'},
-                            // {
+                            }, {type: 'break'}, // {
                             //     type: 'check',
                             //     id: 'boundingBox',
                             //     checked: visualizer.boundingBox.obj.visible,
@@ -2628,15 +2512,15 @@ function myDataVisualizer() {
                             // },
                             // {type: 'break'},
                             {
-                                type: 'menu-radio', id: 'fov',
+                                type: 'menu-radio',
+                                id: 'fov',
                                 text: function (item) {
                                     return 'Camera Field of View: ' + item.selected.split("_")[1];
                                 },
                                 selected: "fov_" + visualizer.camera.fov,
                                 items: aFOV,
                                 tooltip: "Set Camera's Field of View"
-                            },
-                            // {
+                            }, // {
                             //     type: 'menu-radio', id: 'polarAngle',
                             //     text: function (item) {
                             //         return 'Polar Angel: ' + item.selected.split("_")[1];
@@ -2649,25 +2533,24 @@ function myDataVisualizer() {
                             //     tooltip: "Set Warehouse's Polar Angle"
                             // },
                             {
-                                type: 'menu-radio', id: 'zoomSpeed',
+                                type: 'menu-radio',
+                                id: 'zoomSpeed',
                                 text: function (item) {
                                     return 'Zoom Speed: ' + item.selected.split("_")[1];
                                 },
                                 selected: "zs_" + visualizer.controls.zoomSpeed,
                                 items: aZoomSpeed,
                                 tooltip: "Set Camera Zoom Speed"
-                            },
-                            {
-                                type: 'menu-radio', id: 'panSpeed',
+                            }, {
+                                type: 'menu-radio',
+                                id: 'panSpeed',
                                 text: function (item) {
                                     return 'Pan Speed: ' + item.selected.split("_")[1];
                                 },
                                 selected: "ps_" + visualizer.controls.panSpeed,
                                 items: aPanSpeed,
                                 tooltip: "Set Pan Speed"
-                            },
-                            {type: 'break'},
-                            // {
+                            }, {type: 'break'}, // {
                             //     type: 'check',
                             //     id: 'gridHelper',
                             //     checked: visualizer.gridHelper.obj.visible,
@@ -2856,8 +2739,7 @@ function myDataVisualizer() {
                         return row[searchKey] == keyValue
                     });
 
-                    if (layoutRow)
-                        layoutRow.visualObj.visible = true;    //Un-hide objects from the search
+                    if (layoutRow) layoutRow.visualObj.visible = true;    //Un-hide objects from the search
 
                     if (event.searchData) {
                         searches.push({field: searchKey, value: keyValue, operator: 'is'}); //http://w2ui.com/web/docs/1.5/w2grid.searchData
@@ -2866,8 +2748,7 @@ function myDataVisualizer() {
                         var grid2Row = grid2.records.find(function (record) {
                             return record[searchKey] == keyValue
                         });
-                        if (grid2Row != undefined)
-                            searches.push(grid2Row.recid);	//Find the recid in  grid2
+                        if (grid2Row != undefined) searches.push(grid2Row.recid);	//Find the recid in  grid2
                     }//else
 
                 }); // recIds
@@ -2908,9 +2789,7 @@ function myDataVisualizer() {
             var columnIndex = dataVisual.activeGridColumn.grid.getColumn(dataVisual.activeGridColumn.column, true);
             for (var i = 0; i < dataVisual.activeGridColumn.grid.columns.length; i++) {
 
-                dataVisual.activeGridColumn.grid.columns[i].style = i === columnIndex
-                    ? "color: #000000 !important; background-color: #b6d5ff !important;"
-                    : "";
+                dataVisual.activeGridColumn.grid.columns[i].style = i === columnIndex ? "color: #000000 !important; background-color: #b6d5ff !important;" : "";
             } //for
 
         } //fnGridSelectColumn
@@ -2958,10 +2837,7 @@ function myDataVisualizer() {
             var text = dataVisual.activeGridColumn.grid.columns.find(function (col) {
                 return col.field == column
             }).caption;
-            var columnText = (column == "recid" || isKey) ? ": " + text
-                : fnIsPresetColor(column) ? ""
-                    : fnIsPresetColor(dataVisual.colorPrefix + column) ? ": " + column
-                        : ": " + originalColumn + " " + text;
+            var columnText = (column == "recid" || isKey) ? ": " + text : fnIsPresetColor(column) ? "" : fnIsPresetColor(dataVisual.colorPrefix + column) ? ": " + column : ": " + originalColumn + " " + text;
 
 
             w2ui[dataVisual.warehouseName + "_scaleControlLayout"].set('left', {title: "Visualization Scale" + columnText});
@@ -3145,12 +3021,8 @@ function myDataVisualizer() {
                 var strColorRGB = colorScale(colorScaleObj.minScale);
             } //if
             else {
-                var columnValue = ["date", "time", "dateTime"].indexOf(dataVisual.dataTypes[column].type) != -1 ?
-                    fnFloatFormat(dataVisual, column, data[rowIndex][column]) :
-                    data[rowIndex][column];
-                var strColorRGB = dataVisual.dataTypes[column].type == "float" ?
-                    colorScale(columnValue) :
-                    colorScale(dataVisual.dataTypes[column].aUniqueCategories.indexOf(columnValue));
+                var columnValue = ["date", "time", "dateTime"].indexOf(dataVisual.dataTypes[column].type) != -1 ? fnFloatFormat(dataVisual, column, data[rowIndex][column]) : data[rowIndex][column];
+                var strColorRGB = dataVisual.dataTypes[column].type == "float" ? colorScale(columnValue) : colorScale(dataVisual.dataTypes[column].aUniqueCategories.indexOf(columnValue));
             } //else
 
             if (bColorVisual) {
@@ -3181,10 +3053,7 @@ function myDataVisualizer() {
             }) : null;
 
             return {
-                column: column,
-                dataType: dataType,
-                minScale: minScale,
-                maxScale: maxScale
+                column: column, dataType: dataType, minScale: minScale, maxScale: maxScale
             };
 
         } //fnGetColumnAttributes
@@ -3226,9 +3095,7 @@ function myDataVisualizer() {
             var interpolator = d3[fnGetD3Scales()[scaleIndex]];
 
             return {
-                fnCalcColor: d3.scaleSequential(interpolator).domain(domain),
-                minScale: minScale,
-                maxScale: maxScale
+                fnCalcColor: d3.scaleSequential(interpolator).domain(domain), minScale: minScale, maxScale: maxScale
             }
 
 
@@ -3335,24 +3202,22 @@ function fnGetAdjustedCanvas(canvasParent) {
 // 3D COLOR SCALES
 function fnGetD3Scales() {
     //https://github.com/d3/d3-scale-chromatic
-
-    /*
-	var  strScales = "interpolateRdYlGn,interpolateBrBG,interpolatePRGn,interpolatePiYG";
-	strScales += ",interpolatePuOr,interpolateRdBu";
-	strScales += ",interpolateRdGy,interpolateRdYlBu,interpolateSpectral";
-	strScales += ",interpolateBlues,interpolateGreens,interpolateGreys,interpolateOranges";
-	strScales += ",interpolatePurples,interpolateReds,interpolateBuGn,interpolateBuPu";
-	strScales += ",interpolateGnBu,interpolateOrRd,interpolatePuBuGn,interpolatePuBu,interpolatePuRd";
-	strScales += ",interpolateRdPu,interpolateYlGnBu,interpolateYlGn,interpolateYlOrBr,interpolateYlOrRd"
-	strScales += ",interpolateViridis,interpolateInferno,interpolateMagma"
-	strScales += ",interpolatePlasma,interpolateWarm,interpolateCool"
-	strScales += ",interpolateRainbow,interpolateSinebow";
-
-	var scales = strScales.replace(/\s/g,'').split(",");
-
-
-	return scales;
-	*/
+    //
+	// var  strScales = "interpolateRdYlGn,interpolateBrBG,interpolatePRGn,interpolatePiYG";
+	// strScales += ",interpolatePuOr,interpolateRdBu";
+	// strScales += ",interpolateRdGy,interpolateRdYlBu,interpolateSpectral";
+	// strScales += ",interpolateBlues,interpolateGreens,interpolateGreys,interpolateOranges";
+	// strScales += ",interpolatePurples,interpolateReds,interpolateBuGn,interpolateBuPu";
+	// strScales += ",interpolateGnBu,interpolateOrRd,interpolatePuBuGn,interpolatePuBu,interpolatePuRd";
+	// strScales += ",interpolateRdPu,interpolateYlGnBu,interpolateYlGn,interpolateYlOrBr,interpolateYlOrRd"
+	// strScales += ",interpolateViridis,interpolateInferno,interpolateMagma"
+	// strScales += ",interpolatePlasma,interpolateWarm,interpolateCool"
+	// strScales += ",interpolateRainbow,interpolateSinebow";
+    //
+	// var scales = strScales.replace(/\s/g,'').split(",");
+    //
+    //
+	// return scales;
 
     let colorSchemes = [];
 
@@ -3360,15 +3225,16 @@ function fnGetD3Scales() {
         .filter(k => k.startsWith("interpolate"))
         .filter(k => d3[k].prototype.constructor.toString().split("{")[0].split(",").length == 1)  //function(t){...}
         .forEach(k => {
-                try {
-                    const scheme = d3[k](1);
-                    if (typeof scheme == "string" && scheme.startsWith("rgb"))
-                        colorSchemes.push({fnColorScheme: d3[k], strColorScheme: k});
-                } catch (e) {
-                    //console.log(k);
-                }
+            try {
+                const scheme = d3[k](1);
+                if (typeof scheme == "string" && scheme.startsWith("rgb")) colorSchemes.push({
+                    fnColorScheme: d3[k],
+                    strColorScheme: k
+                });
+            } catch (e) {
+                //console.log(k);
             }
-        )
+        })
 
     return colorSchemes.map(c => c.strColorScheme);
 
@@ -3468,12 +3334,9 @@ function dataVisual() {
                         fnSetVisualProps(dataRow, i++, node, visualKey);
 
                         that.join.push({
-                            dataRow: dataRow,
-                            visualObj: node,
-                            storedScaleColors: {},		//Hash for Scale Coloring
+                            dataRow: dataRow, visualObj: node, storedScaleColors: {},		//Hash for Scale Coloring
                             selectionLink: dataRow[urlPrefix] ? {
-                                url: dataRow[urlPrefix],
-                                urlText: dataRow[urlPrefix]
+                                url: dataRow[urlPrefix], urlText: dataRow[urlPrefix]
                             } : {}
                         }); //push
 
@@ -3526,9 +3389,7 @@ function dataVisual() {
                     fnSetVisualProps(dataRow, i, mesh, visualKey);
 
                     that.join.push({
-                        dataRow: dataRow,
-                        visualObj: mesh,
-                        storedScaleColors: {},		//Hash for Scale Coloring
+                        dataRow: dataRow, visualObj: mesh, storedScaleColors: {},		//Hash for Scale Coloring
                         selectionLink: dataRow[urlPrefix] ? {url: dataRow[urlPrefix], urlText: dataRow[urlPrefix]} : {}
                     }); //push
                 } //if
@@ -3683,31 +3544,30 @@ function fnGetBackGroundColorInvert(backGroundColor) {
 */
 
 
-/*
-function b64toBlob(b64Data, contentType, sliceSize) {  
-  contentType = contentType || '';
-  sliceSize = sliceSize || 512;
+// function b64toBlob(b64Data, contentType, sliceSize) {
+//   contentType = contentType || '';
+//   sliceSize = sliceSize || 512;
+//
+//   var byteCharacters = atob(b64Data); //https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
+//   var byteArrays = [];
+//
+//   for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+// 	var slice = byteCharacters.slice(offset, offset + sliceSize);
+//
+// 	var byteNumbers = new Array(slice.length);
+// 	for (var i = 0; i < slice.length; i++) {
+// 	  byteNumbers[i] = slice.charCodeAt(i);
+// 	} //for
+//
+// 	var byteArray = new Uint8Array(byteNumbers);
+//
+// 	byteArrays.push(byteArray);
+//   } //for
+//
+//   var blob = new Blob(byteArrays, {type: contentType});
+//   return blob;
+// } //b64toBlob
 
-  var byteCharacters = atob(b64Data); //https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
-  var byteArrays = [];
-
-  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-	var slice = byteCharacters.slice(offset, offset + sliceSize);
-
-	var byteNumbers = new Array(slice.length);
-	for (var i = 0; i < slice.length; i++) {
-	  byteNumbers[i] = slice.charCodeAt(i);
-	} //for
-
-	var byteArray = new Uint8Array(byteNumbers);
-
-	byteArrays.push(byteArray);
-  } //for
-	
-  var blob = new Blob(byteArrays, {type: contentType});
-  return blob;
-} //b64toBlob	
-*/
 //https://stackoverflow.com/questions/9092125/how-to-debug-dynamically-loaded-javascript-with-jquery-in-the-browsers-debugg
 //# sourceURL=myDataVisualizer.js	
 
