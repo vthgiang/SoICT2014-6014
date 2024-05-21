@@ -94,6 +94,15 @@ router.use('/system-admin/privilege-api', require('./modules/system-admin/system
 router.use('/system-admin/root-role', require('./modules/system-admin/root-role/rootRole.route'));
 router.use('/system-admin/system-setting', require('./modules/system-admin/system-setting/systemSetting.route'));
 router.use('/system-admin/system-page', require('./modules/system-admin/system-page/systemPage.route'));
+// router.use('/system-admin/identity-service', require('./modules/identity.service/identity.service.route'));
+
+// Router service identity
+router.use('/authorization/authorize-service-consumer', require('./modules/authorization/authorize-service-consumer/authorize-service-consumer.route'));
+router.use('/authorization/external-policies', require('./modules/authorization/external-policies/external-policies.route'));
+router.use('/authorization/external-service-consumers', require('./modules/authorization/external-service-consumers/external-service-consumers.route'));
+router.use('/authorization/internal-policies', require('./modules/authorization/internal-policies/internal-policies.route'));
+router.use('/authorization/internal-service-identities', require('./modules/authorization/internal-service-identities/internal-service-identities.route'));
+router.use('/authorization/logging', require('./modules/authorization/logging/logging.route'));
 
 // Router Quản lý ủy quyền
 router.use('/delegation', require('./modules/delegation/delegation.route'));

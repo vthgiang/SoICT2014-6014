@@ -335,6 +335,56 @@ const LINKS = [
         components: getComponentsInLink('/apis-management'),
     },
     {
+        url: '/internal-policy-management',
+        description: 'Quản lý internal policy',
+        category: LINK_CATEGORY.RBAC.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/internal-policy-management')
+    },
+    {
+        url: '/external-policy-management',
+        description: 'Quản lý external policy',
+        category: LINK_CATEGORY.RBAC.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/external-policy-management')
+    },
+    {
+        url: '/internal-service-identity-management',
+        description: 'Quản lý định danh internal service',
+        category: LINK_CATEGORY.RBAC.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/internal-service-identity-management')
+    },
+    {
+        url: '/external-service-consumers-management',
+        description: 'Quản lý external service consumer',
+        category: LINK_CATEGORY.RBAC.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/external-service-consumers-management')
+    },
+    {
+        url: '/service-logging-management',
+        description: 'Quản lý service logging',
+        category: LINK_CATEGORY.RBAC.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/service-logging-management')
+    },
+    {
         url: '/apis-registration',
         description: 'Quản lý đăng ký sử dụng API của công ty',
         category: LINK_CATEGORY.RBAC.name,

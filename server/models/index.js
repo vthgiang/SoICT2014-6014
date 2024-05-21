@@ -128,6 +128,13 @@ module.exports = {
     // Delegation
     Delegation: require('./delegation/delegation.model'),
 
+    // Identity server
+    ExternalPolicy: require('./identity.service/external.policy.model'),
+    ExternalServiceConsumer: require('./identity.service/external.service.consumer.model'),
+    InternalPolicy: require('./identity.service/internal.policy.model'),
+    InternalServiceIdentity: require('./identity.service/internal.service.identity.model'),
+    LoggingRecord: require('./identity.service/logging.model'),
+
     // production-manufacturing
     ManufacturingMill: require('./production/manufacturing/manufacturingMill.model'),
     ManufacturingWorks: require('./production/manufacturing/manufacturingWorks.model'),

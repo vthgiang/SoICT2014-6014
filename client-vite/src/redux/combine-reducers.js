@@ -10,6 +10,11 @@ import { privilegeApis } from '../modules/system-admin/system-api/system-api-pri
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers'
 import { systemAdminPage, systemPage } from '../modules/system-admin/system-page/redux/reducers'
 import { systemSetting } from '../modules/system-admin/system-setting/redux/reducers'
+import { internalServiceIdentities } from '../modules/system-admin/internal-service-identity/redux/reducers';
+import { internalPolicies } from '../modules/system-admin/internal-policy/redux/reducers';
+import { externalPolicies } from '../modules/system-admin/external-policy/redux/reducers';
+import { serviceLogging } from '../modules/system-admin/service-logging/redux/reducers';
+import { externalServiceConsumers } from '../modules/super-admin/external-service-consumer/redux/reducers';
 
 import { apis } from '../modules/super-admin/api/api-management/redux/reducers'
 import { apiRegistration } from '../modules/super-admin/api/api-registration/redux/reducers'
@@ -201,6 +206,10 @@ const appReducer = combineReducers({
   rootRoles,
   systemComponents,
   privilegeApis,
+  internalServiceIdentities,
+  internalPolicies,
+  externalPolicies,
+  serviceLogging,
 
   // admin
   system,
@@ -215,6 +224,7 @@ const appReducer = combineReducers({
   component,
   department,
   modelConfiguration,
+  externalServiceConsumers,
 
   //---------------------------
   documents,
