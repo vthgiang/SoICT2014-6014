@@ -314,6 +314,9 @@ export default {
       manage_business_department: 'Phân vai trò đơn vị kinh doanh',
       manage_payment: 'Quản lý thu chi',
       manage_bank_account: 'Quản lý thông tin tài khoản ngân hàng',
+      marketing_campaign: 'Quản lý chiến dịch tiếp thị',
+      marketing_campaign_detail: 'Chi tiết chiến dịch tiếp thị',
+      marketing_channels_select: 'Chọn kênh chiến dịch tiếp thị',
 
       // Quản lý kế hoạch sản xuất
       manage_plans: 'Quản lý kế hoạch sản xuất',

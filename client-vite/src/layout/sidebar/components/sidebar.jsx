@@ -947,6 +947,11 @@ class SideBar extends Component {
                     name: 'menu.request_management',
                     icon: 'fa fa-file-text-o',
                     path: '/product-request-management/order'
+                  },
+                  {
+                    name: 'menu.marketing_campaign',
+                    icon: 'fa fa-file-text-o',
+                    path: '/marketing-campaign'
                   }
                 ]
               }}

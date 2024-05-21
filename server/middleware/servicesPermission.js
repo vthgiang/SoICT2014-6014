@@ -303,10 +303,7 @@ exports.links = [
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets', method: 'POST' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:id', method: 'PATCH' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:id', method: 'DELETE' },
-            {
-                path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:idUnitKpiSet/organizational-unit-kpis/:idUnitKpi',
-                method: 'DELETE',
-            },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:idUnitKpiSet/organizational-unit-kpis/:idUnitKpi', method: 'DELETE' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpis', method: 'POST' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpis/:id', method: 'PATCH' },
             { path: '/kpi/organizational-unit/management/organizational-unit-kpi-sets/:id/copy', method: 'POST' },
@@ -316,19 +313,10 @@ exports.links = [
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId', method: 'PATCH' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId', method: 'DELETE' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments', method: 'POST' },
-            {
-                path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId',
-                method: 'PATCH',
-            },
-            {
-                path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId',
-                method: 'DELETE',
-            },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId', method: 'PATCH' },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId', method: 'DELETE' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId:/files/:fileId', method: 'DELETE' },
-            {
-                path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId/files/:fileId',
-                method: 'DELETE',
-            },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId/files/:fileId', method: 'DELETE' },
 
             { path: '/kpi/employee/creation/employee-kpi-sets', method: 'GET' },
             { path: '/kpi/employee/creation/employee-kpi-sets', method: 'POST' },
@@ -346,14 +334,11 @@ exports.links = [
             { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId/child-comments', method: 'POST' },
             { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId', method: 'PATCH' },
             { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId', method: 'DELETE' },
-            {
-                path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId/files/:fileId',
-                method: 'DELETE',
-            },
+            { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId/files/:fileId', method: 'DELETE' },
             // Employee KPI management dashboard
             { path: '/kpi/employee/management/employee-kpi-sets/:id/copy', method: 'POST' },
 
-            // Employee KPI evaluate
+            // Employee KPI evaluate 
             { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets', method: 'GET' },
             { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id', method: 'GET' },
             { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id', method: 'PATCH' },
@@ -410,11 +395,14 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/evaluation/:evaluationId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/files/:fileId', method: 'PATCH' },
 
+
             //comment of task action
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments', method: 'POST' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments/:commentId', method: 'PATCH' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments/:commentId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments/files/:fileId', method: 'PATCH' },
+
+
 
             // task information
             { path: '/performtask/tasks/:taskId/task-informations', method: 'PATCH' },
@@ -470,6 +458,7 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/evaluate', method: 'POST' },
             // delete evaluation
             { path: '/performtask/tasks/:taskId/evaluations/:evaluationId', method: 'DELETE' },
+
 
             //task process
 
@@ -696,21 +685,21 @@ exports.links = [
             { path: '/plans/:id', method: 'GET' },
 
             //project
-            { path: '/projects/project', method: 'GET' },
-            { path: '/projects/project/:id', method: 'GET' },
-            { path: '/projects/project', method: 'POST' },
-            { path: '/projects/project/:id', method: 'PATCH' },
-            { path: '/projects/project/:id', method: 'DELETE' },
-            { path: '/projects/project/:id/getListTasksEval/:evalMonth', method: 'GET' },
-            { path: '/projects/project/salary-members', method: 'POST' },
-            { path: '/projects/project/change-requests', method: 'POST' },
-            { path: '/projects/project/change-requests/:projectId', method: 'GET' },
-            { path: '/projects/project/change-requests/update-lists', method: 'PATCH' },
-            { path: '/projects/project/change-requests/:id/:status', method: 'PATCH' },
-            { path: '/projects/project/project-phase', method: 'POST' },
-        ],
-    },
-    {
+            { path: "/projects/project", method: "GET" },
+            { path: "/projects/project/:id", method: "GET" },
+            { path: "/projects/project", method: "POST" },
+            { path: "/projects/project/:id", method: "PATCH" },
+            { path: "/projects/project/:id", method: "DELETE" },
+            { path: "/projects/project/:id/getListTasksEval/:evalMonth", method: "GET" },
+            { path: "/projects/project/salary-members", method: "POST" },
+            { path: "/projects/project/change-requests", method: "POST" },
+            { path: "/projects/project/change-requests/:projectId", method: "GET" },
+            { path: "/projects/project/change-requests/update-lists", method: "PATCH" },
+            { path: "/projects/project/change-requests/:id/:status", method: "PATCH" },
+            { path: "/projects/project/project-phase", method: "POST" },
+
+        ]
+    }, {
         url: '/system/settings',
         apis: ['@all'],
     },
@@ -1346,13 +1335,8 @@ exports.links = [
     },
     {
         url: '/analysis-manufacturing-performance',
-        apis: ['@all'],
-    },
-    {
-        url: '/detail-analysis-manufacturing-performance',
-        apis: ['@all'],
-    },
-    {
+        apis: ['@all']
+    }, {
         url: '/manage-manufacturing-works',
         apis: ['@all'],
     },
@@ -1382,6 +1366,14 @@ exports.links = [
     },
     {
         url: '/product-request-management/order',
+        apis: ['@all'],
+    },
+    {
+        url: '/marketing-campaign',
+        apis: ['@all'],
+    },
+    {
+        url: '/marketing-campaign-id',
         apis: ['@all'],
     },
     {

@@ -300,6 +300,16 @@ export default {
       manage_business_department: 'Business Department',
       manage_payment: 'Receipts And Payments',
       manage_bank_account: 'Bank Account',
+      marketing_campaign: 'Marketing Campaign',
+      marketing_campaign_detail: 'Marketing Campaign Detail',
+      marketing_name: 'Name',
+      marketing_time_start: 'Time start',
+      marketing_time_end: 'Time end',
+      marketing_goal: 'Goals',
+      marketing_channel: 'Channel',
+      marketing_cost: 'Costs',
+      marketing_action: 'Action',
+      marketing_channels_select: 'Select Channel',
 
       // QUẢN LÝ KẾ HOẠCH SẢN XUẤT
       manage_plans: 'Manage Plans',

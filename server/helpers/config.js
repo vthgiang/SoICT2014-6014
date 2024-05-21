@@ -1301,6 +1301,20 @@ const LINKS = [
         components: getComponentsInLink('/product-request-management/order'),
     },
     {
+        url: '/marketing-campaign',
+        description: 'Quản lý chiến dịch tiếp thị',
+        category: LINK_CATEGORY.KPI.name,
+        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+        components: getComponentsInLink('/marketing-campaign'),
+    },
+    {
+        url: '/marketing-campaign-id',
+        description: 'Quản lý chiến dịch tiếp thị',
+        category: LINK_CATEGORY.KPI.name,
+        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+        components: getComponentsInLink('/marketing-campaign-id'),
+    },
+    {
         url: '/manage-business-department',
         description: 'Phòng ban liên quan quản lý đơn hàng',
         category: LINK_CATEGORY.ORDER.name,

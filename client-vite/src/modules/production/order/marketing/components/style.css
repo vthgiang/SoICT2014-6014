@@ -1,0 +1,46 @@
+#parent-modal-title {
+  font-size: 14;
+  font-weight: 700;
+}
+
+.item {
+  border: 1px solid #eeeeee;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circular_progress_text_inside {
+  font-size: 48px;
+}
+
+.card_title {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-weight: bolder;
+}
+
+.linear_progress-first {
+  margin-top: 24px;
+}
+
+.linear_progress {
+  margin-bottom: 16px;
+}
+
+.linear_progress-title {
+  font-weight: bold;
+}
+
+.number_field_title {
+  font-size: 16px;
+}
+
+.number_field_text {
+  font-size: 20px;
+  font-weight: bold;
+}
