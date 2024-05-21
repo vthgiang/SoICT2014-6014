@@ -1555,4 +1555,52 @@ exports.links = [
         url: '/transportation-shipper-manage',
         apis: ['@all'],
     },
+    {
+        url: '/manage-transport3-dashboard',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-order',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-schedule',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-route',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-cost',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-issue',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-partner',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-vehicle',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-employee',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-statistic',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-mission',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-requirement',
+        apis: ['@all'],
+    }
 ];

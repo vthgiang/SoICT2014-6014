@@ -8,3 +8,4 @@ yarn.lock
 /logs
 /**/.env
 .idea
+micro-services/api-gateway-service/repository

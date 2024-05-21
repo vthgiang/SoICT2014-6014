@@ -163,6 +163,58 @@ const LINK_CATEGORY = {
         name: 'management-manufacturing-process',
         description: 'Trang quản lý quy trình công việc sản xuất',
     },
+  TRANSPORT3: {
+    name: 'manage-transport3',
+    description: 'Quản lý vận chuyển 3',
+  },
+  TRANSPORT3_DASHBOARD: {
+    name: 'manage-transport3-dashboard',
+    description: 'Dashboard vận chuyển 3',
+  },
+  TRANSPORT3_ORDER: {
+    name: 'manage-transport3-order',
+    description: 'Quản lý đơn hàng',
+  },
+  TRANSPORT3_SCHEDULE: {
+    name: 'manage-transport3-schedule',
+    description: 'Quản lý lịch trình',
+  },
+  TRANSPORT3_ROUTE: {
+    name: 'manage-transport3-route',
+    description: 'Quản lý tuyến đường',
+  },
+  TRANSPORT3_COST: {
+    name: 'manage-transport3-cost',
+    description: 'Quản lý chi phí',
+  },
+  TRANSPORT3_ISSUE: {
+    name: 'manage-transport3-issue',
+    description: 'Quản lý sự cố',
+  },
+  TRANSPORT3_PARTNER: {
+    name: 'manage-transport3-partner',
+    description: 'Quản lý đối tác',
+  },
+  TRANSPORT3_VEHICLE: {
+    name: 'manage-transport3-vehicle',
+    description: 'Quản lý phương tiện',
+  },
+  TRANSPORT3_EMPLOYEE: {
+    name: 'manage-transport3-employee',
+    description: 'Quản lý nhân viên',
+  },
+  TRANSPORT3_STATISTIC: {
+    name: 'manage-transport3-statistic',
+    description: 'Thống kê',
+  },
+  TRANSPORT3_MISSION: {
+    name: 'manage-transport3-mission',
+    description: 'Quản lý nhiệm vụ',
+  },
+  TRANSPORT3_REQUIREMENT: {
+    name: 'manage-transport3-requirement',
+    description: 'Quản lý yêu cầu',
+  },
 };
 
 const COMPONENTS = [
@@ -1804,6 +1856,164 @@ const LINKS = [
         description: 'Nhân viên giao hàng',
         category: LINK_CATEGORY.TRANSPORTATION.name,
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
+    },
+
+    // Quản lý vận chuyển 3
+    {
+        url: '/manage-transport3-dashboard',
+        description: 'Bảng tin vận chuyển',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-dashboard'),
+    },
+    {
+        url: '/manage-transport3-order',
+        description: 'Quản lý đơn hàng',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-order'),
+    },
+    {
+        url: '/manage-transport3-schedule',
+        description: 'Quản lý lịch trình',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-schedule'),
+    },
+    {
+        url: '/manage-transport3-route',
+        description: 'Quản lý tuyến đường',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-route'),
+    },
+    {
+        url: '/manage-transport3-cost',
+        description: 'Quản lý chi phí',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-cost'),
+    },
+    {
+        url: '/manage-transport3-issue',
+        description: 'Quản lý vấn đề',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-issue'),
+    },
+    {
+        url: '/manage-transport3-partner',
+        description: 'Quản lý đối tác',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-partner'),
+    },
+    {
+        url: '/manage-transport3-vehicle',
+        description: 'Quản lý phương tiện',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-vehicle'),
+    },
+    {
+        url: '/manage-transport3-employee',
+        description: 'Quản lý nhân viên',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-employee'),
+    },
+    {
+        url: '/manage-transport3-statistic',
+        description: 'Thống kê',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-statistic'),
+    },
+    {
+        url: '/manage-transport3-mission',
+        description: 'Quản lý nhiệm vụ',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-mission'),
+    },
+    {
+        url: '/manage-transport3-requirement',
+        description: 'Quản lý yêu cầu',
+        category: LINK_CATEGORY.TRANSPORT3.name,
+        roles: [
+          ROOT_ROLES.SUPER_ADMIN.name,
+          ROOT_ROLES.ADMIN.name,
+          ROOT_ROLES.MANAGER.name,
+          ROOT_ROLES.DEPUTY_MANAGER.name,
+          ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-transport3-requirement'),
     },
 
     // Quan li du an

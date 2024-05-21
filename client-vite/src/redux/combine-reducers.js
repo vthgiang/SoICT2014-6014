@@ -189,6 +189,12 @@ import { transportationCostManagement } from '../modules/transportation/cost/red
 
 import { newsFeeds } from '../modules/home/redux/reducers'
 
+// Transport 3
+import { orders } from '../modules/transport3/order/redux/reducers'
+import { employee as T3employee } from '../modules/transport3/employee/redux/reducers'
+import { vehicle as T3vehicle } from '../modules/transport3/vehicle/redux/reducers'
+import { schedule as T3schedule } from '../modules/transport3/schedule/redux/reducers'
+
 const appReducer = combineReducers({
   socket,
   // system
@@ -398,7 +404,13 @@ const appReducer = combineReducers({
   vehicle,
   journey,
   transportationCostManagement,
-  shipper
+  shipper,
+
+  // Transport 3
+  orders,
+  T3employee,
+  T3vehicle,
+  T3schedule
 })
 
 const rootReducer = (state, action) => {
