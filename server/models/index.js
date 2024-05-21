@@ -89,7 +89,8 @@ module.exports = {
     Category: require('./production/common-production/category.model'),
     Bill: require('./production/warehouse/bill.model'),
     ProductRequestManagement: require('./production/common-production/productRequestManagement.model'),
-
+    Layout: require('./production/warehouse/layout.model'),
+    InventoryWarehouse: require('./production/warehouse/inventoryWarehouse.model'),
     // Customer Management
     Customer: require('./customer-care/customer.model'),
     CustomerCare: require('./customer-care/customerCare.model'),
