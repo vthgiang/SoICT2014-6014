@@ -312,3 +312,11 @@ exports.remove = async (portal, id) => {
 
   return InternalServiceIdentity(connect(DB_CONNECTION, portal)).findByIdAndDelete(id);
 }
+
+exports.exists = async (portal, id) => {
+  const existent = await InternalServiceIdentity(connect(DB_CONNECTION, portal)).exists({
+    _id: id,
+  });
+
+  return existent;
+}

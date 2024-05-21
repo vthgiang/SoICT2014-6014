@@ -1930,6 +1930,7 @@ export default {
       delegateType: 'Type of delegation policy',
       delegateTypeRole: 'Role delegation policy',
       delegateTypeTask: 'Task delegation policy',
+      delegateTypeService: 'Service delegation policy',
       attribute_name: 'Attribute name',
       attribute_value: 'Attribute value',
       edit_delegator_attribute: 'Edit delegator attribute',
@@ -2072,6 +2073,7 @@ export default {
       delegateEndDate: 'Date revoked',
       delegateStatus: 'Status',
       delegateTypeTask: 'Task delegation',
+      delegateTypeService: 'Service delegation',
       delegateTypeRole: 'Role delegation',
       end_date_tbd: 'To be determined',
       search: 'Search',
@@ -2175,7 +2177,20 @@ export default {
       task_delegation_title_add: 'Add a task delegation',
       choose_delegateTaskName: 'Choose delegate task',
       no_blank_delegate_task: 'Delegate task must not be empty',
-
+      service_delegation_title: 'Service delegation',
+      choose_delegate_resources: 'Choose resources',
+      service_delegation_title_add: 'Add a service delegation',
+      service_delegation_title_edit: 'Edit a service delegation',
+      no_blank_delegate_resources: 'Delegate resources must not be empty',
+      delegatee_service: 'Delegatee Service',
+      delegator_service: 'Delegator Service',
+      choose_delegatee_service: 'Choose delegatee service',
+      choose_delegator_service: 'Choose delegator service',
+      delegate_resources: 'Delegate resources',
+      resource: {
+        url: 'URL',
+        action: 'Action'
+      },
       add_task_delegation_success:
         'Add a new task delegation successfully!\nYou will become an Informed employee of this task when delegation is activated',
       add_task_delegation_faile: 'Add a new task delegation failed!',

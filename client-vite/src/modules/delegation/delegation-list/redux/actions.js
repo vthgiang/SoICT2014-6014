@@ -1,19 +1,6 @@
 import { delegationConstants } from './constants'
 import { delegationServices } from './services'
 
-export const DelegationActions = {
-  getDelegations,
-  deleteDelegations,
-  createDelegation,
-  editDelegation,
-  revokeDelegation,
-  getDelegationsTask,
-  deleteTaskDelegations,
-  createTaskDelegation,
-  editTaskDelegation,
-  revokeTaskDelegation
-}
-
 function getDelegations(queryData) {
   return (dispatch) => {
     dispatch({
@@ -31,29 +18,6 @@ function getDelegations(queryData) {
       .catch((error) => {
         dispatch({
           type: delegationConstants.GET_ALL_DELEGATIONS_FAILURE,
-          error
-        })
-      })
-  }
-}
-
-function getDelegationsTask(queryData) {
-  return (dispatch) => {
-    dispatch({
-      type: delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST
-    })
-
-    delegationServices
-      .getDelegationsTask(queryData)
-      .then((res) => {
-        dispatch({
-          type: delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS,
-          payload: res.data.content
-        })
-      })
-      .catch((error) => {
-        dispatch({
-          type: delegationConstants.GET_ALL_DELEGATIONS_TASK_FAILURE,
           error
         })
       })
@@ -153,6 +117,29 @@ function editDelegation(id, data) {
   }
 }
 
+function getDelegationsTask(queryData) {
+  return (dispatch) => {
+    dispatch({
+      type: delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST
+    })
+
+    delegationServices
+      .getDelegationsTask(queryData)
+      .then((res) => {
+        dispatch({
+          type: delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: delegationConstants.GET_ALL_DELEGATIONS_TASK_FAILURE,
+          error
+        })
+      })
+  }
+}
+
 function deleteTaskDelegations(data) {
   return (dispatch) => {
     dispatch({
@@ -244,4 +231,138 @@ function editTaskDelegation(id, data) {
         })
       })
   }
+}
+
+function getDelegationsService(queryData) {
+  return (dispatch) => {
+    dispatch({
+      type: delegationConstants.GET_ALL_DELEGATIONS_SERVICE_REQUEST
+    })
+
+    delegationServices
+      .getDelegationsService(queryData)
+      .then((res) => {
+        dispatch({
+          type: delegationConstants.GET_ALL_DELEGATIONS_SERVICE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: delegationConstants.GET_ALL_DELEGATIONS_SERVICE_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+function deleteServiceDelegations(data) {
+  return (dispatch) => {
+    dispatch({
+      type: delegationConstants.DELETE_SERVICE_DELEGATION_REQUEST
+    })
+
+    delegationServices
+      .deleteServiceDelegations(data)
+      .then((res) => {
+        dispatch({
+          type: delegationConstants.DELETE_SERVICE_DELEGATION_SUCCESS,
+          payload: res.data.content,
+          delegationIds: data.delegationIds
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: delegationConstants.DELETE_SERVICE_DELEGATION_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+function revokeServiceDelegation(data) {
+  return (dispatch) => {
+    dispatch({
+      type: delegationConstants.REVOKE_SERVICE_DELEGATION_REQUEST
+    })
+
+    delegationServices
+      .revokeServiceDelegation(data)
+      .then((res) => {
+        dispatch({
+          type: delegationConstants.REVOKE_SERVICE_DELEGATION_SUCCESS,
+          payload: res.data.content,
+          delegationIds: data.delegationIds,
+          reason: data.reason
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: delegationConstants.REVOKE_SERVICE_DELEGATION_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+function createServiceDelegation(data) {
+  return (dispatch) => {
+    dispatch({
+      type: delegationConstants.CREATE_SERVICE_DELEGATION_REQUEST
+    })
+    delegationServices
+      .createServiceDelegation(data)
+      .then((res) => {
+        dispatch({
+          type: delegationConstants.CREATE_SERVICE_DELEGATION_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: delegationConstants.CREATE_SERVICE_DELEGATION_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+function editServiceDelegation(id, data) {
+  return (dispatch) => {
+    dispatch({
+      type: delegationConstants.EDIT_SERVICE_DELEGATION_REQUEST
+    })
+    delegationServices
+      .editServiceDelegation(id, data)
+      .then((res) => {
+        dispatch({
+          type: delegationConstants.EDIT_SERVICE_DELEGATION_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: delegationConstants.EDIT_SERVICE_DELEGATION_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+export const DelegationActions = {
+  getDelegations,
+  deleteDelegations,
+  createDelegation,
+  editDelegation,
+  revokeDelegation,
+  getDelegationsTask,
+  deleteTaskDelegations,
+  createTaskDelegation,
+  editTaskDelegation,
+  revokeTaskDelegation,
+  getDelegationsService,
+  deleteServiceDelegations,
+  createServiceDelegation,
+  editServiceDelegation,
+  revokeServiceDelegation
 }

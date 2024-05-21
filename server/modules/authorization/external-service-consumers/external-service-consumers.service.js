@@ -159,3 +159,10 @@ exports.remove = async (portal, id) => {
   return ExternalServiceConsumer(connect(DB_CONNECTION, portal)).findByIdAndDelete(id);
 }
 
+exports.exists = async (portal, id) => {
+  const existent = await ExternalServiceConsumer(connect(DB_CONNECTION, portal)).exists({
+    _id: id,
+  });
+
+  return existent;
+}

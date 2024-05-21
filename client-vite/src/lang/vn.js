@@ -926,7 +926,7 @@ export default {
           delete_title: 'Xóa dịch vụ nội bộ'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_internal_service_identity_success: 'Tạo mới dịch vụ nội bộ thành công',
         create_internal_service_identity_failure: 'Tạo mới dịch vụ nội bộ thất bại'
       },
@@ -954,7 +954,7 @@ export default {
           delete_title: 'Hủy sử dụng dịch vụ'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_external_service_consumer_success: 'Đăng ký sử dụng dịch vụ thành công',
         create_external_service_consumer_failure: 'Đăng ký sử dụng dịch vụ thất bại'
       },
@@ -985,7 +985,7 @@ export default {
           delete_title: 'Xóa chính sách'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_internal_policy_success: 'Thêm mới chính sách thành công',
         create_internal_policy_failure: 'Thêm mới chính sách thất bại'
       },
@@ -1015,7 +1015,7 @@ export default {
           delete_title: 'Xóa chính sách'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_external_policy_success: 'Thêm mới chính sách thành công',
         create_external_policy_failure: 'Thêm mới chính sách thất bại'
       },
@@ -1984,6 +1984,7 @@ export default {
       delegateType: 'Loại chính sách ủy quyền',
       delegateTypeRole: 'Chính sách ủy quyền vai trò',
       delegateTypeTask: 'Chính sách ủy quyền công việc',
+      delegateTypeService: 'Chính sách ủy quyền dịch vụ',
       edit_delegator_attribute: 'Chỉnh sửa thuộc tính người ủy quyền',
       edit_delegatee_attribute: 'Chỉnh sửa thuộc tính người nhận ủy quyền',
       edit_delegatedObject_attribute: 'Chỉnh sửa thuộc tính vai trò ủy quyền',
@@ -2123,6 +2124,7 @@ export default {
       delegateEndDate: 'Ngày thu hồi',
       delegateStatus: 'Trạng thái',
       delegateTypeTask: 'Ủy quyền công việc',
+      delegateTypeService: 'Ủy quyền dịch vụ',
       delegateTypeRole: 'Ủy quyền vai trò',
       end_date_tbd: 'Chưa xác định',
       search: 'Tìm kiếm',
@@ -2226,6 +2228,20 @@ export default {
       task_delegation_title_add: 'Thêm ủy quyền công việc',
       choose_delegateTaskName: 'Chọn công việc ủy quyền',
       no_blank_delegate_task: 'Công việc ủy quyền không được bỏ trống',
+      service_delegation_title: 'Ủy quyền dịch vụ',
+      choose_delegate_resources: 'Chọn tài nguyên',
+      service_delegation_title_add: 'Thêm ủy quyền dịch vụ',
+      service_delegation_title_edit: 'Chỉnh sửa ủy quyền dịch vụ',
+      no_blank_delegate_resources: 'Tài nguyên ủy quyền không được bỏ trống',
+      delegatee_service: 'Dịch vụ nhận ủy quyền',
+      delegator_service: 'Dịch vụ ủy quyền',
+      choose_delegatee_service: 'Chọn dịch vụ nhận ủy quyền',
+      choose_delegator_service: 'Chọn dịch vụ ủy quyền',
+      delegate_resources: 'Tài nguyên ủy quyền',
+      resource: {
+        url: 'URL',
+        action: 'Hành động'
+      },
 
       add_task_delegation_success: 'Thêm mới ủy quyền cho công việc thành công!\nBạn sẽ thành Người quan sát khi ủy quyền được kích hoạt',
       add_task_delegation_faile: 'Thêm mới ủy quyền cho công việc thất bại',
