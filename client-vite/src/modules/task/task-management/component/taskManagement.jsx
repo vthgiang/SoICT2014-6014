@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import Swal from 'sweetalert2'
+import cloneDeep from 'lodash/cloneDeep'
 import {
   DatePicker,
   ExportExcel,
@@ -19,7 +20,6 @@ import { getStorage } from '../../../../config'
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod'
 import { getProjectName } from '../../../../helpers/taskModuleHelpers'
 
-import cloneDeep from 'lodash/cloneDeep'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { ProjectActions } from '../../../project/projects/redux/actions'
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
@@ -35,11 +35,11 @@ import TaskListView from './taskListView'
 import TaskManagementImportForm from './taskManagementImportForm'
 
 const list_to_tree = (list) => {
-  let map = {},
-    node,
-    roots = [],
-    i,
-    newarr = []
+  const map = {}
+  let node
+  const roots = []
+  let i
+  const newarr = []
   for (i = 0; i < list.length; i += 1) {
     map[list[i]._id] = i // initialize the map
     list[i].children = [] // initialize the children
@@ -58,7 +58,7 @@ const list_to_tree = (list) => {
       roots.push(node)
     }
   }
-  let change = (arr) => {
+  const change = (arr) => {
     arr.map((item) => {
       newarr.push(item)
       change(item.children)
@@ -66,18 +66,18 @@ const list_to_tree = (list) => {
     })
     return newarr
   }
-  let flat = change(roots).map((x) => delete x.children && x)
+  const flat = change(roots).map((x) => delete x.children && x)
   return flat
 }
 
 const getId = (data) => {
   if (data && typeof data === 'object') return data._id
-  else return data
+  return data
 }
 
 const isIdValidInArr = (id, arr) => {
   if (!arr) return false
-  let result = arr.some((n) => n.id === id)
+  const result = arr.some((n) => n.id === id)
   return result
 }
 
@@ -101,11 +101,13 @@ function TaskManagement(props) {
     currentTaskIdDelegation
   } = state
 
+  console.log(data)
+
   function initState() {
-    let userId = getStorage('userId')
+    const userId = getStorage('userId')
     const tableId = 'tree-table-task-management'
     const defaultConfig = { limit: 20, hiddenColumns: ['3', '4', '5', '8', '9'] }
-    const limit = getTableConfiguration(tableId, defaultConfig).limit
+    const { limit } = getTableConfiguration(tableId, defaultConfig)
     // lấy giá trị từ dashboard công việc cá nhân
     const stateFromTaskDashboard = JSON.parse(localStorage.getItem('stateFromTaskDashboard'))
     localStorage.removeItem('stateFromTaskDashboard')
@@ -161,11 +163,11 @@ function TaskManagement(props) {
 
   useEffect(() => {
     const { perPage, currentPage } = state
-    let data = {
+    const data = {
       role: state.currentTab,
       unit: [],
       number: currentPage,
-      perPage: perPage,
+      perPage,
       status: state.status,
       priority: null,
       special: null,
@@ -209,13 +211,13 @@ function TaskManagement(props) {
   }
 
   const startTimer = async (taskId, overrideTSLog = 'no') => {
-    let userId = getStorage('userId')
-    let timer = {
+    const userId = getStorage('userId')
+    const timer = {
       creator: userId,
       overrideTSLog
     }
     props.startTimer(taskId, timer).catch((err) => {
-      let warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages]
+      const warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages]
       if (warning[0] === 'time_overlapping') {
         Swal.fire({
           title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
@@ -228,7 +230,7 @@ function TaskManagement(props) {
           cancelButtonText: 'Hủy'
         }).then((result) => {
           if (result.isConfirmed) {
-            let timer = {
+            const timer = {
               creator: userId,
               overrideTSLog: 'yes'
             }
@@ -248,9 +250,9 @@ function TaskManagement(props) {
   const handleDelete = async (id) => {
     const { tasks, translate } = props
     if (!Array.isArray(id)) {
-      let currentTasks = tasks.tasks.find((task) => task._id === id)
-      let progress = currentTasks.progress
-      let action = currentTasks.taskActions.filter((item) => item.creator) // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+      const currentTasks = tasks.tasks.find((task) => task._id === id)
+      const { progress } = currentTasks
+      const action = currentTasks.taskActions.filter((item) => item.creator) // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
       Swal.fire({
         title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
         icon: 'warning',
@@ -281,7 +283,7 @@ function TaskManagement(props) {
   }
 
   const handleGetDataPagination = (index) => {
-    let {
+    const {
       organizationalUnit,
       status,
       priority,
@@ -299,26 +301,26 @@ function TaskManagement(props) {
     } = state
 
     if (state.currentPage !== index) {
-      let data = {
+      const data = {
         role: state.currentTab,
         unit: organizationalUnit,
         number: index,
-        perPage: perPage,
-        status: status,
-        priority: priority,
-        special: special,
-        name: name,
-        startDate: startDate,
-        endDate: endDate,
-        responsibleEmployees: responsibleEmployees,
-        accountableEmployees: accountableEmployees,
-        creatorEmployees: creatorEmployees,
-        creatorTime: creatorTime,
-        projectSearch: projectSearch,
+        perPage,
+        status,
+        priority,
+        special,
+        name,
+        startDate,
+        endDate,
+        responsibleEmployees,
+        accountableEmployees,
+        creatorEmployees,
+        creatorTime,
+        projectSearch,
         startDateAfter: null,
         endDateBefore: null,
         aPeriodOfTime: false,
-        tags: tags
+        tags
       }
 
       props.getPaginateTasks(data)
@@ -331,7 +333,7 @@ function TaskManagement(props) {
   }
 
   const handleGetDataPerPage = (perPage) => {
-    let {
+    const {
       organizationalUnit,
       status,
       priority,
@@ -349,26 +351,26 @@ function TaskManagement(props) {
       tags
     } = state
 
-    let data = {
+    const data = {
       role: state.currentTab,
       unit: organizationalUnit,
       number: 1,
-      perPage: perPage,
-      status: status,
-      priority: priority,
-      special: special,
-      name: name,
-      startDate: startDate,
-      endDate: endDate,
-      responsibleEmployees: responsibleEmployees,
-      accountableEmployees: accountableEmployees,
-      creatorEmployees: creatorEmployees,
-      creatorTime: creatorTime,
-      projectSearch: projectSearch,
+      perPage,
+      status,
+      priority,
+      special,
+      name,
+      startDate,
+      endDate,
+      responsibleEmployees,
+      accountableEmployees,
+      creatorEmployees,
+      creatorTime,
+      projectSearch,
       startDateAfter: null,
       endDateBefore: null,
       aPeriodOfTime: false,
-      tags: tags
+      tags
     }
 
     props.getPaginateTasks(data)
@@ -376,13 +378,13 @@ function TaskManagement(props) {
     setState({
       ...state,
       currentPage: 1,
-      perPage: perPage
+      perPage
     })
   }
 
   function handleUpdateData() {
     const { translate } = props
-    let {
+    const {
       organizationalUnit,
       status,
       priority,
@@ -398,7 +400,8 @@ function TaskManagement(props) {
       projectSearch,
       tags
     } = state
-    let startMonth, endMonth
+    let startMonth
+    let endMonth
 
     if (startDate && endDate) {
       startMonth = new Date(startDate)
@@ -413,26 +416,26 @@ function TaskManagement(props) {
         confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
       })
     } else {
-      let data = {
+      const data = {
         role: state.currentTab,
         unit: organizationalUnit,
         number: 1,
-        perPage: perPage,
-        status: status,
-        priority: priority,
-        special: special,
-        name: name,
-        startDate: startDate,
-        endDate: endDate,
-        responsibleEmployees: responsibleEmployees,
-        accountableEmployees: accountableEmployees,
-        creatorEmployees: creatorEmployees,
-        creatorTime: creatorTime,
-        projectSearch: projectSearch,
+        perPage,
+        status,
+        priority,
+        special,
+        name,
+        startDate,
+        endDate,
+        responsibleEmployees,
+        accountableEmployees,
+        creatorEmployees,
+        creatorTime,
+        projectSearch,
         startDateAfter: null,
         endDateBefore: null,
         aPeriodOfTime: false,
-        tags: tags
+        tags
       }
 
       props.getPaginateTasks(data)
@@ -527,7 +530,7 @@ function TaskManagement(props) {
     if (value === '') {
       month = null
     } else {
-      month = value.slice(3, 7) + '-' + value.slice(0, 2)
+      month = `${value.slice(3, 7)}-${value.slice(0, 2)}`
     }
 
     setState((state) => {
@@ -543,7 +546,7 @@ function TaskManagement(props) {
     if (value === '') {
       month = null
     } else {
-      month = value.slice(3, 7) + '-' + value.slice(0, 2)
+      month = `${value.slice(3, 7)}-${value.slice(0, 2)}`
     }
 
     setState((state) => {
@@ -579,8 +582,8 @@ function TaskManagement(props) {
   }
 
   const handleShowTask = (e, data) => {
-    let id = data && data.node && data.node.original ? data.node.original._id : ''
-    let idValid = tasks?.tasks ? tasks.tasks.some((t) => t._id === id) : null
+    const id = data && data.node && data.node.original ? data.node.original._id : ''
+    const idValid = tasks?.tasks ? tasks.tasks.some((t) => t._id === id) : null
 
     if (id && idValid) {
       setState({
@@ -662,13 +665,12 @@ function TaskManagement(props) {
           <span style={{ color: '#333' }}>{translate('task.task_management.requested_to_close')}</span>
         </div>
       )
-    } else {
-      return (
-        <div>
-          <span style={{ color: statusColor }}>{formatStatus(translate, task.status)}</span>
-        </div>
-      )
     }
+    return (
+      <div>
+        <span style={{ color: statusColor }}>{formatStatus(translate, task.status)}</span>
+      </div>
+    )
   }
 
   const convertPriorityData = (priority) => {
@@ -698,11 +700,11 @@ function TaskManagement(props) {
   }
 
   const convertProgressData = (progress = 0, startDate, endDate) => {
-    let now = dayjs(new Date())
-    let end = dayjs(endDate)
-    let start = dayjs(startDate)
-    let period = end.diff(start)
-    let upToNow = now.diff(start)
+    const now = dayjs(new Date())
+    const end = dayjs(endDate)
+    const start = dayjs(startDate)
+    const period = end.diff(start)
+    const upToNow = now.diff(start)
     let barColor = ''
     if (now.diff(end) > 0) barColor = 'red'
     else if ((period * progress) / 100 - upToNow >= 0) barColor = 'lime'
@@ -712,15 +714,15 @@ function TaskManagement(props) {
         className='progress'
         style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: 'right', borderRadius: '3px', position: 'relative' }}
       >
-        <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
+        <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{`${progress}%`}</span>
         <div
           role='progressbar'
           className='progress-bar'
           aria-valuenow={progress}
           aria-valuemin={0}
           aria-valuemax={100}
-          style={{ width: `${progress + '%'}`, maxWidth: '100%', minWidth: '0%', backgroundColor: barColor }}
-        ></div>
+          style={{ width: `${`${progress}%`}`, maxWidth: '100%', minWidth: '0%', backgroundColor: barColor }}
+        />
       </div>
     )
   }
@@ -737,12 +739,11 @@ function TaskManagement(props) {
   const validateAction = (action) => {
     const { selectedData, data } = state
     if (selectedData.length === 0) return false
-    else
-      for (let i = 0; i < selectedData.length; i++) {
-        let actions = data.find((x) => x._id === selectedData[i])?.action
-        if (!actions || actions.length === 0) return false
-        else if (!actions.flat(2).includes(action)) return false
-      }
+    for (let i = 0; i < selectedData.length; i++) {
+      const actions = data.find((x) => x._id === selectedData[i])?.action
+      if (!actions || actions.length === 0) return false
+      if (!actions.flat(2).includes(action)) return false
+    }
     return true
   }
 
@@ -751,12 +752,12 @@ function TaskManagement(props) {
   useEffect(() => {
     if (!props?.tasks?.loadingPaginateTasks || !props?.project?.isLoading) {
       const currentTasks = cloneDeep(props.tasks.tasks)
-      let data = [],
-        dataTree = []
+      const data = []
+      let dataTree = []
 
       if (currentTasks && currentTasks.length) {
-        let idTaskProjectRoot = 'task-project-root'
-        for (let n in currentTasks) {
+        const idTaskProjectRoot = 'task-project-root'
+        for (const n in currentTasks) {
           data[n] = {
             ...currentTasks[n],
             rawData: currentTasks[n],
@@ -818,26 +819,26 @@ function TaskManagement(props) {
             project.data.list.map((p) => {
               return {
                 ...p,
-                id: 'pj' + p._id,
-                parent: 'pj' + getId(p.parent),
+                id: `pj${p._id}`,
+                parent: `pj${getId(p.parent)}`,
                 isTask: false
               }
             })
 
-        let convertDataTask = currentTasks
+        const convertDataTask = currentTasks
           ? currentTasks.map((t) => {
               return {
                 ...t,
-                id: 't' + t._id,
-                parent: 't' + getId(t.parent),
-                taskProject: 'pj' + getId(t.taskProject),
+                id: `t${t._id}`,
+                parent: `t${getId(t.parent)}`,
+                taskProject: `pj${getId(t.taskProject)}`,
                 isTask: true
               }
             })
           : []
 
-        let getDataTree = [...convertDataProject, ...convertDataTask]
-        let idProjectNull = 'project_null'
+        const getDataTree = [...convertDataProject, ...convertDataTask]
+        const idProjectNull = 'project_null'
         dataTree = [
           ...dataTree,
           {
@@ -850,9 +851,9 @@ function TaskManagement(props) {
           }
         ]
         for (let i = 0; i < getDataTree.length; i++) {
-          let node = getDataTree[i]
+          const node = getDataTree[i]
           if (node.parent || node.taskProject) {
-            //Có thông tin về dự án cha/công việc cha
+            // Có thông tin về dự án cha/công việc cha
             dataTree = [
               ...dataTree,
               {
@@ -870,35 +871,33 @@ function TaskManagement(props) {
                       : '#'
               }
             ]
-          } //Không có cả thông tin về dự án or công việc cha
-          else {
-            if (!node.code) {
-              //node này là một công việc - tại thời điểm này (17/12/2020) chỉ có dự án mới có mã code
-              dataTree = [
-                ...dataTree,
-                {
-                  ...node,
-                  id: node.id,
-                  icon: 'fa fa-file-text-o',
-                  text: node.name,
-                  state: { opened: true },
-                  parent: '#'
-                }
-              ]
-            } else {
-              //node này là một dự án
-              dataTree = [
-                ...dataTree,
-                {
-                  ...node,
-                  id: node.id,
-                  icon: 'glyphicon glyphicon-folder-open',
-                  text: node.name,
-                  state: { opened: true },
-                  parent: '#'
-                }
-              ]
-            }
+          } // Không có cả thông tin về dự án or công việc cha
+          else if (!node.code) {
+            // node này là một công việc - tại thời điểm này (17/12/2020) chỉ có dự án mới có mã code
+            dataTree = [
+              ...dataTree,
+              {
+                ...node,
+                id: node.id,
+                icon: 'fa fa-file-text-o',
+                text: node.name,
+                state: { opened: true },
+                parent: '#'
+              }
+            ]
+          } else {
+            // node này là một dự án
+            dataTree = [
+              ...dataTree,
+              {
+                ...node,
+                id: node.id,
+                icon: 'glyphicon glyphicon-folder-open',
+                text: node.name,
+                state: { opened: true },
+                parent: '#'
+              }
+            ]
           }
         }
       }
@@ -913,7 +912,7 @@ function TaskManagement(props) {
   }, [JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)])
 
   const checkHasComponent = (name) => {
-    let { auth } = props
+    const { auth } = props
     let result = false
     auth?.components?.length &&
       auth.components.forEach((component) => {
@@ -989,422 +988,420 @@ function TaskManagement(props) {
   let exportData
   if (state.currentTasks) exportData = convertDataToExportData(translate, state.currentTasks, translate('menu.task_management'))
   return (
-    <React.Fragment>
-      <div className='box'>
-        <div className='box-body qlcv'>
-          <div style={{ height: '40px', display: 'flex', justifyContent: 'space-between' }}>
-            <div>
-              <button
-                className='btn btn-primary'
-                type='button'
-                style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
-                title='Dạng bảng'
-                onClick={() => handleDisplayType('table')}
-              >
-                <i className='fa fa-table'></i> Dạng bảng
-              </button>
-              <button
-                className='btn btn-primary'
-                type='button'
-                style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
-                title='Dạng cây'
-                onClick={() => handleDisplayType('tree')}
-              >
-                <i className='fa fa-sitemap'></i> Dạng cây
-              </button>
-              <button
-                className='btn btn-primary'
-                type='button'
-                style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
-                title='Dạng danh sách'
-                onClick={() => handleDisplayType('list')}
-              >
-                <i className='fa fa-list'></i> Dạng danh sách
-              </button>
-              <button
-                className='btn btn-primary'
-                type='button'
-                style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
-                onClick={() => {
-                  window.$('#tasks-filter').slideToggle()
-                }}
-              >
-                <i className='fa fa-filter'></i> Lọc
-              </button>
-            </div>
+    <div className='box'>
+      <div className='box-body qlcv'>
+        <div style={{ height: '40px', display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            <button
+              className='btn btn-primary'
+              type='button'
+              style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+              title='Dạng bảng'
+              onClick={() => handleDisplayType('table')}
+            >
+              <i className='fa fa-table' /> Dạng bảng
+            </button>
+            <button
+              className='btn btn-primary'
+              type='button'
+              style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+              title='Dạng cây'
+              onClick={() => handleDisplayType('tree')}
+            >
+              <i className='fa fa-sitemap' /> Dạng cây
+            </button>
+            <button
+              className='btn btn-primary'
+              type='button'
+              style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+              title='Dạng danh sách'
+              onClick={() => handleDisplayType('list')}
+            >
+              <i className='fa fa-list' /> Dạng danh sách
+            </button>
+            <button
+              className='btn btn-primary'
+              type='button'
+              style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+              onClick={() => {
+                window.$('#tasks-filter').slideToggle()
+              }}
+            >
+              <i className='fa fa-filter' /> Lọc
+            </button>
+          </div>
 
-            <div style={{ display: 'flex', marginBottom: 6 }}>
-              {currentTab !== 'informed' && (
-                <React.Fragment>
-                  {checkHasComponent('button-import-task') ? (
-                    <div className='dropdown'>
-                      <button
-                        type='button'
-                        className='btn btn-success dropdown-toggler'
-                        data-toggle='dropdown'
-                        aria-expanded='true'
-                        title='Thêm'
-                      >
-                        {translate('task_template.add')}
-                      </button>
-                      <ul className='dropdown-menu pull-right'>
-                        <li>
-                          <a
-                            href='#'
-                            title='ImportForm'
-                            onClick={() => {
-                              handleAddTask('')
-                            }}
-                          >
-                            {translate('task_template.add')}
-                          </a>
-                        </li>
-                        <li>
-                          <a href='#' title='Import file excell' onClick={handleOpenModalImport}>
-                            {translate('task_template.import')}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  ) : (
+          <div style={{ display: 'flex', marginBottom: 6 }}>
+            {currentTab !== 'informed' && (
+              <>
+                {checkHasComponent('button-import-task') ? (
+                  <div className='dropdown'>
                     <button
                       type='button'
-                      onClick={() => {
-                        handleAddTask('')
-                      }}
-                      className='btn btn-success pull-right'
-                      title={translate('task.task_management.add_title')}
+                      className='btn btn-success dropdown-toggler'
+                      data-toggle='dropdown'
+                      aria-expanded='true'
+                      title='Thêm'
                     >
-                      {translate('task.task_management.add_task')}
+                      {translate('task_template.add')}
                     </button>
-                  )}
-                </React.Fragment>
-              )}
+                    <ul className='dropdown-menu pull-right'>
+                      <li>
+                        <a
+                          href='#'
+                          title='ImportForm'
+                          onClick={() => {
+                            handleAddTask('')
+                          }}
+                        >
+                          {translate('task_template.add')}
+                        </a>
+                      </li>
+                      <li>
+                        <a href='#' title='Import file excell' onClick={handleOpenModalImport}>
+                          {translate('task_template.import')}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                ) : (
+                  <button
+                    type='button'
+                    onClick={() => {
+                      handleAddTask('')
+                    }}
+                    className='btn btn-success pull-right'
+                    title={translate('task.task_management.add_title')}
+                  >
+                    {translate('task.task_management.add_task')}
+                  </button>
+                )}
+              </>
+            )}
 
-              {exportData && (
-                <ExportExcel id='list-task-employee' buttonName='Báo cáo' exportData={exportData} style={{ marginLeft: '10px' }} />
-              )}
-            </div>
-
-            <TaskManagementImportForm />
-            <TaskAddModal currentTasks={currentTasks && currentTasks.length !== 0 && list_to_tree(currentTasks)} parentTask={parentTask} />
+            {exportData && (
+              <ExportExcel id='list-task-employee' buttonName='Báo cáo' exportData={exportData} style={{ marginLeft: '10px' }} />
+            )}
           </div>
 
-          {selectedData && selectedData.length > 0 && (
-            <div className='form-inline' style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button
-                disabled={!validateAction('delete')}
-                style={{ margin: '5px' }}
-                type='button'
-                className='btn btn-danger pull-right'
-                title={translate('general.delete_option')}
-                onClick={() => handleDelete(selectedData)}
-              >
-                {translate('general.delete_option')}
-              </button>
-              <button
-                disabled={!(validateAction('store') || validateAction('restore'))}
-                style={{ margin: '5px' }}
-                type='button'
-                className='btn btn-info pull-right'
-                title={translate('task.task_management.edit_status_archived_of_task')}
-                onClick={() => handleStore(selectedData)}
-              >
-                {translate('task.task_management.edit_status_archived_of_task')}
-              </button>
-            </div>
-          )}
+          <TaskManagementImportForm />
+          <TaskAddModal currentTasks={currentTasks && currentTasks.length !== 0 && list_to_tree(currentTasks)} parentTask={parentTask} />
+        </div>
 
-          <div id='tasks-filter' className='form-inline' style={{ display: 'none' }}>
-            <div className='form-group'>
-              <label>{translate('task.task_management.department')}</label>
-              {units && (
-                <SelectMulti
-                  id='multiSelectUnit1'
-                  defaultValue={units.map((item) => item._id)}
-                  items={units.map((item) => {
-                    return { value: item._id, text: item.name }
-                  })}
-                  onChange={handleSelectOrganizationalUnit}
-                  options={{
-                    nonSelectedText: translate('task.task_management.select_department'),
-                    allSelectedText: translate(`task.task_management.select_all_department`)
-                  }}
-                ></SelectMulti>
-              )}
-            </div>
-            <div className='form-group'>
-              <label>{translate('task.task_management.status')}</label>
+        {selectedData && selectedData.length > 0 && (
+          <div className='form-inline' style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              disabled={!validateAction('delete')}
+              style={{ margin: '5px' }}
+              type='button'
+              className='btn btn-danger pull-right'
+              title={translate('general.delete_option')}
+              onClick={() => handleDelete(selectedData)}
+            >
+              {translate('general.delete_option')}
+            </button>
+            <button
+              disabled={!(validateAction('store') || validateAction('restore'))}
+              style={{ margin: '5px' }}
+              type='button'
+              className='btn btn-info pull-right'
+              title={translate('task.task_management.edit_status_archived_of_task')}
+              onClick={() => handleStore(selectedData)}
+            >
+              {translate('task.task_management.edit_status_archived_of_task')}
+            </button>
+          </div>
+        )}
+
+        <div id='tasks-filter' className='form-inline' style={{ display: 'none' }}>
+          <div className='form-group'>
+            <label>{translate('task.task_management.department')}</label>
+            {units && (
               <SelectMulti
-                id='multiSelectStatus'
-                value={status}
-                items={[
-                  { value: 'inprocess', text: translate('task.task_management.inprocess') },
-                  { value: 'wait_for_approval', text: translate('task.task_management.wait_for_approval') },
-                  { value: 'finished', text: translate('task.task_management.finished') },
-                  { value: 'delayed', text: translate('task.task_management.delayed') },
-                  { value: 'canceled', text: translate('task.task_management.canceled') }
-                ]}
-                onChange={handleSelectStatus}
+                id='multiSelectUnit1'
+                defaultValue={units.map((item) => item._id)}
+                items={units.map((item) => {
+                  return { value: item._id, text: item.name }
+                })}
+                onChange={handleSelectOrganizationalUnit}
                 options={{
-                  nonSelectedText: translate('task.task_management.select_status'),
-                  allSelectedText: translate('task.task_management.select_all_status')
+                  nonSelectedText: translate('task.task_management.select_department'),
+                  allSelectedText: translate(`task.task_management.select_all_department`)
                 }}
-              ></SelectMulti>
-            </div>
-            <div className='form-group'>
-              <label>{translate('task.task_management.priority')}</label>
-              <SelectMulti
-                id='multiSelectPriority'
-                defaultValue={[
-                  translate('task.task_management.urgent'),
-                  translate('task.task_management.high'),
-                  translate('task.task_management.standard'),
-                  translate('task.task_management.average'),
-                  translate('task.task_management.low')
-                ]}
-                items={[
-                  { value: '5', text: translate('task.task_management.urgent') },
-                  { value: '4', text: translate('task.task_management.high') },
-                  { value: '3', text: translate('task.task_management.standard') },
-                  { value: '2', text: translate('task.task_management.average') },
-                  { value: '1', text: translate('task.task_management.low') }
-                ]}
-                onChange={handleSelectPriority}
-                options={{
-                  nonSelectedText: translate('task.task_management.select_priority'),
-                  allSelectedText: translate('task.task_management.select_all_priority')
-                }}
-              ></SelectMulti>
-            </div>
-
-            <div className='form-group'>
-              <label>{translate('task.task_management.name')}</label>
-              <input
-                className='form-control'
-                type='text'
-                placeholder={translate('task.task_management.search_by_name')}
-                name='name'
-                onChange={(e) => handleChangeName(e)}
               />
-            </div>
+            )}
+          </div>
+          <div className='form-group'>
+            <label>{translate('task.task_management.status')}</label>
+            <SelectMulti
+              id='multiSelectStatus'
+              value={status}
+              items={[
+                { value: 'inprocess', text: translate('task.task_management.inprocess') },
+                { value: 'wait_for_approval', text: translate('task.task_management.wait_for_approval') },
+                { value: 'finished', text: translate('task.task_management.finished') },
+                { value: 'delayed', text: translate('task.task_management.delayed') },
+                { value: 'canceled', text: translate('task.task_management.canceled') }
+              ]}
+              onChange={handleSelectStatus}
+              options={{
+                nonSelectedText: translate('task.task_management.select_status'),
+                allSelectedText: translate('task.task_management.select_all_status')
+              }}
+            />
+          </div>
+          <div className='form-group'>
+            <label>{translate('task.task_management.priority')}</label>
+            <SelectMulti
+              id='multiSelectPriority'
+              defaultValue={[
+                translate('task.task_management.urgent'),
+                translate('task.task_management.high'),
+                translate('task.task_management.standard'),
+                translate('task.task_management.average'),
+                translate('task.task_management.low')
+              ]}
+              items={[
+                { value: '5', text: translate('task.task_management.urgent') },
+                { value: '4', text: translate('task.task_management.high') },
+                { value: '3', text: translate('task.task_management.standard') },
+                { value: '2', text: translate('task.task_management.average') },
+                { value: '1', text: translate('task.task_management.low') }
+              ]}
+              onChange={handleSelectPriority}
+              options={{
+                nonSelectedText: translate('task.task_management.select_priority'),
+                allSelectedText: translate('task.task_management.select_all_priority')
+              }}
+            />
+          </div>
 
-            <div className='form-group'>
-              <label>{translate('task.task_management.special')}</label>
-              <SelectMulti
-                id='multiSelectCharacteristic'
-                defaultValue={[translate('task.task_management.store'), translate('task.task_management.current_month')]}
-                items={[
-                  { value: 'stored', text: translate('task.task_management.stored') },
-                  { value: 'currentMonth', text: translate('task.task_management.current_month') },
-                  { value: 'request_to_close', text: 'Chưa phê duyệt kết thúc' }
-                ]}
-                onChange={handleSelectSpecial}
-                options={{
-                  nonSelectedText: translate('task.task_management.select_special'),
-                  allSelectedText: translate('task.task_management.select_all_special')
-                }}
-              ></SelectMulti>
-            </div>
+          <div className='form-group'>
+            <label>{translate('task.task_management.name')}</label>
+            <input
+              className='form-control'
+              type='text'
+              placeholder={translate('task.task_management.search_by_name')}
+              name='name'
+              onChange={(e) => handleChangeName(e)}
+            />
+          </div>
 
-            <div className='form-group'>
-              <label>{translate('task.task_management.role')}</label>
-              <SelectMulti
-                id='select-task-role'
-                items={[
-                  { value: 'responsible', text: translate('task.task_management.responsible') },
-                  { value: 'accountable', text: translate('task.task_management.accountable') },
-                  { value: 'consulted', text: translate('task.task_management.consulted') },
-                  { value: 'creator', text: translate('task.task_management.creator') },
-                  { value: 'informed', text: translate('task.task_management.informed') }
-                ]}
-                value={currentTab}
-                onChange={handleRoleChange}
-                options={{
-                  nonSelectedText: translate('task.task_management.select_role'),
-                  allSelectedText: translate('task.task_management.select_all_role')
-                }}
-              ></SelectMulti>
-            </div>
+          <div className='form-group'>
+            <label>{translate('task.task_management.special')}</label>
+            <SelectMulti
+              id='multiSelectCharacteristic'
+              defaultValue={[translate('task.task_management.store'), translate('task.task_management.current_month')]}
+              items={[
+                { value: 'stored', text: translate('task.task_management.stored') },
+                { value: 'currentMonth', text: translate('task.task_management.current_month') },
+                { value: 'request_to_close', text: 'Chưa phê duyệt kết thúc' }
+              ]}
+              onChange={handleSelectSpecial}
+              options={{
+                nonSelectedText: translate('task.task_management.select_special'),
+                allSelectedText: translate('task.task_management.select_all_special')
+              }}
+            />
+          </div>
 
-            <div className='form-group'>
-              <label>{translate('task.task_management.col_project')}</label>
-              {listProject && (
-                <SelectBox
-                  id='select-project-search'
-                  className='form-control select2'
-                  style={{ width: '100%' }}
-                  items={listProject}
-                  value={projectSearch}
-                  onChange={handleSelectTaskProject}
-                  multiple={true}
-                  options={{ placeholder: 'Chọn dự án' }}
-                />
-              )}
-            </div>
+          <div className='form-group'>
+            <label>{translate('task.task_management.role')}</label>
+            <SelectMulti
+              id='select-task-role'
+              items={[
+                { value: 'responsible', text: translate('task.task_management.responsible') },
+                { value: 'accountable', text: translate('task.task_management.accountable') },
+                { value: 'consulted', text: translate('task.task_management.consulted') },
+                { value: 'creator', text: translate('task.task_management.creator') },
+                { value: 'informed', text: translate('task.task_management.informed') }
+              ]}
+              value={currentTab}
+              onChange={handleRoleChange}
+              options={{
+                nonSelectedText: translate('task.task_management.select_role'),
+                allSelectedText: translate('task.task_management.select_all_role')
+              }}
+            />
+          </div>
 
-            {/* Người thực hiện */}
-            <div className='form-group'>
-              <label>{translate('task.task_management.responsible')}</label>
-              <input
-                className='form-control'
-                type='text'
-                placeholder={translate('task.task_management.search_by_employees')}
-                name='name'
-                onChange={(e) => handleChangeResponsibleEmployees(e)}
-              />
-            </div>
-
-            {/* Người phê duyệt */}
-            <div className='form-group'>
-              <label>{translate('task.task_management.accountable')}</label>
-              <input
-                className='form-control'
-                type='text'
-                placeholder={translate('task.task_management.search_by_employees')}
-                name='name'
-                onChange={(e) => handleChangeAccountableEmployees(e)}
-              />
-            </div>
-
-            {/* Người thiết lập */}
-            <div className='form-group'>
-              <label>{translate('task.task_management.creator')}</label>
-              <input
-                className='form-control'
-                type='text'
-                placeholder={translate('task.task_management.search_by_employees')}
-                name='name'
-                onChange={(e) => handleChangeCreatorEmployees(e)}
-              />
-            </div>
-
-            <div className='form-group'>
-              <label>{translate('task.task_management.start_date')}</label>
-              <DatePicker id='start-date' dateFormat='month-year' value={''} onChange={handleChangeStartDate} disabled={false} />
-            </div>
-
-            <div className='form-group'>
-              <label>{translate('task.task_management.end_date')}</label>
-              <DatePicker id='end-date' dateFormat='month-year' value={''} onChange={handleChangeEndDate} disabled={false} />
-            </div>
-
-            <div className='form-group'>
-              <label>{translate('task.task_management.creator_time')}</label>
+          <div className='form-group'>
+            <label>{translate('task.task_management.col_project')}</label>
+            {listProject && (
               <SelectBox
-                id='multiSelectCreatorTime'
+                id='select-project-search'
                 className='form-control select2'
                 style={{ width: '100%' }}
-                items={[
-                  { value: '', text: '--- Chọn ---' },
-                  { value: 'currentMonth', text: translate('task.task_management.current_month') },
-                  { value: 'currentWeek', text: translate('task.task_management.current_week') }
-                ]}
-                value={creatorTime}
-                onChange={handleSelectCreatorTime}
-                options={{ minimumResultsForSearch: 100 }}
-              ></SelectBox>
-            </div>
-
-            <div className='form-group'>
-              <label>Tags</label>
-              <InputTags id={`task-personal`} onChange={handleTaskTags} value={tags} />
-            </div>
-
-            <div className='form-group'>
-              <label></label>
-              <button type='button' className='btn btn-success' onClick={() => handleUpdateData()}>
-                {translate('task.task_management.search')}
-              </button>
-            </div>
+                items={listProject}
+                value={projectSearch}
+                onChange={handleSelectTaskProject}
+                multiple
+                options={{ placeholder: 'Chọn dự án' }}
+              />
+            )}
           </div>
 
-          {currentTaskId && <ModalPerform units={units} id={currentTaskId} taskName={state?.taskName ? state?.taskName : ''} />}
+          {/* Người thực hiện */}
+          <div className='form-group'>
+            <label>{translate('task.task_management.responsible')}</label>
+            <input
+              className='form-control'
+              type='text'
+              placeholder={translate('task.task_management.search_by_employees')}
+              name='name'
+              onChange={(e) => handleChangeResponsibleEmployees(e)}
+            />
+          </div>
 
-          {currentTaskIdAttribute && state.attributes && (
-            <AddAttributeForm
-              handleChangeAddRowAttribute={handleChangeAddRowAttribute}
-              i={state.i}
-              id={state.currentTaskIdAttribute}
-              attributeOwner={'taskAttributes'}
-              translation={'manage_policy.task'}
-              taskID={state.currentTaskIdAttribute}
-              taskAttributes={state.attributes}
+          {/* Người phê duyệt */}
+          <div className='form-group'>
+            <label>{translate('task.task_management.accountable')}</label>
+            <input
+              className='form-control'
+              type='text'
+              placeholder={translate('task.task_management.search_by_employees')}
+              name='name'
+              onChange={(e) => handleChangeAccountableEmployees(e)}
+            />
+          </div>
+
+          {/* Người thiết lập */}
+          <div className='form-group'>
+            <label>{translate('task.task_management.creator')}</label>
+            <input
+              className='form-control'
+              type='text'
+              placeholder={translate('task.task_management.search_by_employees')}
+              name='name'
+              onChange={(e) => handleChangeCreatorEmployees(e)}
+            />
+          </div>
+
+          <div className='form-group'>
+            <label>{translate('task.task_management.start_date')}</label>
+            <DatePicker id='start-date' dateFormat='month-year' value='' onChange={handleChangeStartDate} disabled={false} />
+          </div>
+
+          <div className='form-group'>
+            <label>{translate('task.task_management.end_date')}</label>
+            <DatePicker id='end-date' dateFormat='month-year' value='' onChange={handleChangeEndDate} disabled={false} />
+          </div>
+
+          <div className='form-group'>
+            <label>{translate('task.task_management.creator_time')}</label>
+            <SelectBox
+              id='multiSelectCreatorTime'
+              className='form-control select2'
+              style={{ width: '100%' }}
+              items={[
+                { value: '', text: '--- Chọn ---' },
+                { value: 'currentMonth', text: translate('task.task_management.current_month') },
+                { value: 'currentWeek', text: translate('task.task_management.current_week') }
+              ]}
+              value={creatorTime}
+              onChange={handleSelectCreatorTime}
+              options={{ minimumResultsForSearch: 100 }}
+            />
+          </div>
+
+          <div className='form-group'>
+            <label>Tags</label>
+            <InputTags id='task-personal' onChange={handleTaskTags} value={tags} />
+          </div>
+
+          <div className='form-group'>
+            <label />
+            <button type='button' className='btn btn-success' onClick={() => handleUpdateData()}>
+              {translate('task.task_management.search')}
+            </button>
+          </div>
+        </div>
+
+        {currentTaskId && <ModalPerform units={units} id={currentTaskId} taskName={state?.taskName ? state?.taskName : ''} />}
+
+        {currentTaskIdAttribute && state.attributes && (
+          <AddAttributeForm
+            handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+            i={state.i}
+            id={state.currentTaskIdAttribute}
+            attributeOwner='taskAttributes'
+            translation='manage_policy.task'
+            taskID={state.currentTaskIdAttribute}
+            taskAttributes={state.attributes}
+          />
+        )}
+
+        {user && user.organizationalUnitsOfUser && currentTaskIdDelegation && (
+          <TaskDelegation id={currentTaskIdDelegation} taskId={currentTaskIdDelegation} taskName={state.taskNameDelegation} />
+        )}
+        {/* Dạng bảng */}
+        <div id='tree-table-container' style={{ marginTop: '20px' }}>
+          {tasks?.loadingPaginateTasks ? (
+            <div className='table-info-panel'>{translate('general.loading')}</div>
+          ) : (
+            <TreeTable
+              tableId={tableId}
+              tableSetting
+              allowSelectAll
+              behaviour='show-children'
+              column={column}
+              data={data || []}
+              onSetNumberOfRowsPerPage={setLimit}
+              onSelectedRowsChange={onSelectedRowsChange}
+              viewWhenClickName
+              titleAction={{
+                edit: translate('task.task_management.action_edit'),
+                delete: translate('task.task_management.action_delete'),
+                store: translate('task.task_management.action_store'),
+                restore: translate('task.task_management.action_restore'),
+                add: translate('task.task_management.action_add'),
+                startTimer: translate('task.task_management.action_start_timer'),
+                addAttribute: translate('task.task_management.action_add_attribute'),
+                delegate: translate('task.task_management.action_delegate')
+              }}
+              funcEdit={handleShowModal}
+              funcAdd={handleAddTask}
+              funcStartTimer={startTimer}
+              funcStore={handleStore}
+              funcDelete={handleDelete}
+              funcAddAttribute={handleAddAttribute}
+              funcDelegate={handleDelegate}
             />
           )}
-
-          {user && user.organizationalUnitsOfUser && currentTaskIdDelegation && (
-            <TaskDelegation id={currentTaskIdDelegation} taskId={currentTaskIdDelegation} taskName={state.taskNameDelegation} />
-          )}
-          {/* Dạng bảng */}
-          <div id='tree-table-container' style={{ marginTop: '20px' }}>
-            {tasks?.loadingPaginateTasks ? (
-              <div className='table-info-panel'>{translate('general.loading')}</div>
-            ) : (
-              <TreeTable
-                tableId={tableId}
-                tableSetting={true}
-                allowSelectAll={true}
-                behaviour='show-children'
-                column={column}
-                data={data ? data : []}
-                onSetNumberOfRowsPerPage={setLimit}
-                onSelectedRowsChange={onSelectedRowsChange}
-                viewWhenClickName={true}
-                titleAction={{
-                  edit: translate('task.task_management.action_edit'),
-                  delete: translate('task.task_management.action_delete'),
-                  store: translate('task.task_management.action_store'),
-                  restore: translate('task.task_management.action_restore'),
-                  add: translate('task.task_management.action_add'),
-                  startTimer: translate('task.task_management.action_start_timer'),
-                  addAttribute: translate('task.task_management.action_add_attribute'),
-                  delegate: translate('task.task_management.action_delegate')
-                }}
-                funcEdit={handleShowModal}
-                funcAdd={handleAddTask}
-                funcStartTimer={startTimer}
-                funcStore={handleStore}
-                funcDelete={handleDelete}
-                funcAddAttribute={handleAddAttribute}
-                funcDelegate={handleDelegate}
-              />
-            )}
-          </div>
-
-          {/* Dạng cây */}
-          <div id='tasks-list-tree' style={{ display: 'none', marginTop: '30px' }}>
-            <Tree id='tasks-list-treeview' plugins={false} onChanged={handleShowTask} data={state?.dataTree ? state.dataTree : []} />
-          </div>
-
-          <div id='tasks-list' style={{ display: 'none', marginTop: '30px' }}>
-            {tasks?.loadingPaginateTasks ? (
-              <span>{translate('general.loading')}</span>
-            ) : currentTasks?.length ? (
-              <TaskListView
-                data={state.currentTasks}
-                project={project}
-                funcEdit={handleShowModal}
-                funcAdd={handleAddTask}
-                funcStartTimer={startTimer}
-                funcStore={handleStore}
-                funcDelete={handleDelete}
-              />
-            ) : (
-              <span>{translate('confirm.no_data')}</span>
-            )}
-          </div>
-
-          <PaginateBar
-            display={tasks.tasks?.length}
-            total={tasks.totalCount}
-            pageTotal={tasks.pages}
-            currentPage={currentPage}
-            func={handleGetDataPagination}
-          />
         </div>
+
+        {/* Dạng cây */}
+        <div id='tasks-list-tree' style={{ display: 'none', marginTop: '30px' }}>
+          <Tree id='tasks-list-treeview' plugins={false} onChanged={handleShowTask} data={state?.dataTree ? state.dataTree : []} />
+        </div>
+
+        <div id='tasks-list' style={{ display: 'none', marginTop: '30px' }}>
+          {tasks?.loadingPaginateTasks ? (
+            <span>{translate('general.loading')}</span>
+          ) : currentTasks?.length ? (
+            <TaskListView
+              data={state.currentTasks}
+              project={project}
+              funcEdit={handleShowModal}
+              funcAdd={handleAddTask}
+              funcStartTimer={startTimer}
+              funcStore={handleStore}
+              funcDelete={handleDelete}
+            />
+          ) : (
+            <span>{translate('confirm.no_data')}</span>
+          )}
+        </div>
+
+        <PaginateBar
+          display={tasks.tasks?.length}
+          total={tasks.totalCount}
+          pageTotal={tasks.pages}
+          currentPage={currentPage}
+          func={handleGetDataPagination}
+        />
       </div>
-    </React.Fragment>
+    </div>
   )
 }
 

@@ -5328,7 +5328,15 @@ export default {
           bandwidth: 'Bandwidth'
         },
         task_package_management: {
-          title: 'Task package management'
+          title: 'Task package management',
+          table: {
+            task_type: 'Task Type',
+            description: 'Description',
+            target: 'Target',
+            unit: 'Unit',
+            kpi_metric: 'Kpi Metric',
+            weight: 'Weight'
+          }
         }
       }
     },

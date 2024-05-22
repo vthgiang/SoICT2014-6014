@@ -354,6 +354,7 @@ exports.links = [
             { path: '/kpi/allocation/config-setting', method: 'GET' },
             { path: '/kpi/allocation/config-setting/:id', method: 'PATCH' },
             { path: '/kpi/allocation/config-setting/:id', method: 'PUT' },
+            { path: '/kpi/allocation/task-package', method: 'GET' },
 
             // Task-management
             { path: '/task/tasks', method: 'GET' },

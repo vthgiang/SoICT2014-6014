@@ -29,7 +29,7 @@ function TreeTable(props) {
   })
   const { checkAll, selectedRows } = state
 
-  let columnArr = column?.map((col) => col.name)
+  const columnArr = column?.map((col) => col.name)
   if (allowSelectAll) columnArr.unshift('selectAll')
 
   useDeepCompareEffect(() => {
@@ -37,7 +37,7 @@ function TreeTable(props) {
       // Cho phép sử dụng shift chọn nhiều check box
       window.$(`#${tableId}`).checkboxes('range', true)
       const checkBoxes = document.querySelectorAll('.tree-table-body input[type="checkbox"]')
-      let results = []
+      const results = []
 
       checkBoxes.forEach((checkbox) => {
         // Bắt sự kiện click checkbox
@@ -74,29 +74,29 @@ function TreeTable(props) {
    */
   const addScriptTreeTable = (showChildren = true) => {
     window.$(function () {
-      let $table = window.$(`#${tableId}`),
-        rows = $table.find('tr')
+      const $table = window.$(`#${tableId}`)
+      const rows = $table.find('tr')
 
       rows.each(function (index, row) {
-        let $row = window.$(row),
-          level = parseInt($row[0].getAttribute('data-level')),
-          id = $row[0].getAttribute('data-id'),
-          $columnName = $row.find('td[data-column="name"]'),
-          children = $table.find('tr[data-parent="' + id + '"]')
+        const $row = window.$(row)
+        const level = parseInt($row[0].getAttribute('data-level'))
+        const id = $row[0].getAttribute('data-id')
+        const $columnName = $row.find('td[data-column="name"]')
+        const children = $table.find(`tr[data-parent="${id}"]`)
 
         //  var tagSpan = $columnName.find("span").length;
-        let div = window
+        const div = window
           .$('<div/>')
           .removeAttr('style')
           .attr({
-            style: 'display: inline-block; margin-left: ' + (15 + 30 * (level - 1)) + 'px'
+            style: `display: inline-block; margin-left: ${15 + 30 * (level - 1)}px`
           })
 
         // Chức năng mở form view/edit khi bấm vào tên
         // Tắt chức năng này nếu viewWhenClickName khác true
         if (viewWhenClickName) {
           if (funcEdit || funcView) {
-            let a = window
+            const a = window
               .$('<a/>')
               .text(`${$columnName.text()}`)
               .click(() => {
@@ -107,7 +107,7 @@ function TreeTable(props) {
         } else div.html($columnName.text())
 
         if (children.length) {
-          let expander = window
+          const expander = window
             .$('<span />')
             .attr('class', `treegrid-expander glyphicon ${showChildren ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'}`)
             .html('')
@@ -117,7 +117,7 @@ function TreeTable(props) {
             showChildren ? children.show() : children.hide()
           }
           expander.on('click', function (e) {
-            let $target = window.$(e.target)
+            const $target = window.$(e.target)
             if ($target.hasClass('glyphicon-chevron-right')) {
               $target.removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down')
 
@@ -136,9 +136,9 @@ function TreeTable(props) {
 
       // Reverse hide all elements
       const reverseHide = (table, element) => {
-        let $element = window.$(element),
-          id = $element.data('id'),
-          children = table.find('tr[data-parent="' + id + '"]')
+        const $element = window.$(element)
+        const id = $element.data('id')
+        const children = table.find(`tr[data-parent="${id}"]`)
 
         if (children.length) {
           children.each(function (i, e) {
@@ -153,9 +153,9 @@ function TreeTable(props) {
 
       // Reverse show all elements
       const reverseShow = (table, element) => {
-        let $element = window.$(element),
-          id = $element.data('id'),
-          children = table.find('tr[data-parent="' + id + '"]')
+        const $element = window.$(element)
+        const id = $element.data('id')
+        const children = table.find(`tr[data-parent="${id}"]`)
 
         if (children.length) {
           children.each(function (i, e) {
@@ -176,10 +176,10 @@ function TreeTable(props) {
    * @param {*} data : Dữ liệu hiện thị trong bảng
    */
   const dataTreeTable = (column, data) => {
-    let keyColumn = column.map((col) => col.key)
-    let newarr = []
+    const keyColumn = column.map((col) => col.key)
+    const newarr = []
 
-    let map = {}
+    const map = {}
 
     for (let i = 0; i < data.length; i++) {
       map[data[i]._id] = i + 1 // khởi tạo map
@@ -192,25 +192,25 @@ function TreeTable(props) {
     }
 
     // Function chuyển đổi list thành tree
-    let listToTree = (items, parent_id = null, link = 'parent') =>
+    const listToTree = (items, parent_id = null, link = 'parent') =>
       items.filter((item) => item[link] === parent_id).map((item) => ({ ...item, children: listToTree(items, item._id) }))
 
     // Chuyển đổi dữ liệu truyền vào thành dạng tree trước khi gọi đệ quy
-    let list1 = data
+    const list1 = data
     data = listToTree(data)
 
-    let findData = (root, id) => {
-      let queue = []
+    const findData = (root, id) => {
+      const queue = []
       queue.push(root)
 
       while (queue.length !== 0) {
-        let item = queue.pop()
+        const item = queue.pop()
 
         if (item._id === id) {
           return true
         }
 
-        for (let k in item.children) {
+        for (const k in item.children) {
           queue.push(item.children[k])
         }
       }
@@ -218,10 +218,10 @@ function TreeTable(props) {
     }
 
     // Thêm các công việc không tìm được cha vào mảng data
-    let concatArray = []
-    for (let i in list1) {
+    const concatArray = []
+    for (const i in list1) {
       let flag = true
-      for (let j in data) {
+      for (const j in data) {
         if (findData(data[j], list1[i]._id)) {
           flag = false
           break
@@ -235,10 +235,10 @@ function TreeTable(props) {
 
     // Function đệ quy để thêm level tương ứng cho dữ liệu truyền vào đã được chuyển thành dạnh tree
     // Trả vể mảng là dữ liệu trước khi thực hiện function listToTree và dữ liệu này đã được sắp xếp
-    let convertData = (arr, level = 1) => {
+    const convertData = (arr, level = 1) => {
       if (arr !== undefined) {
         arr.map((item) => {
-          newarr.push({ ...item, level: level })
+          newarr.push({ ...item, level })
           convertData(item.children, level + 1)
           return true
         })
@@ -251,11 +251,11 @@ function TreeTable(props) {
 
     // Xoá bỏ dữ liệu dư thừa, sắp xếp dữ liệu của data truyền vào theo thứ tự các cột
     // Gộp nội dung cần hiện thị ở mỗi dòng của bảng thành 1 array với tên là row
-    for (let x in data) {
-      let node = data[x],
-        row = []
+    for (const x in data) {
+      const node = data[x]
+      let row = []
       row = keyColumn.map((x) => {
-        for (let n in node) {
+        for (const n in node) {
           if (n === x) return node[n]
         }
       })
@@ -264,7 +264,7 @@ function TreeTable(props) {
         parent: node.parent,
         action: node.action,
         level: node.level,
-        row: row,
+        row,
         attributes: node.attributes
       }
     }
@@ -361,7 +361,7 @@ function TreeTable(props) {
 
   const handleCheckAll = () => {
     const checkBoxes = document.querySelectorAll('.tree-table-body input[type="checkbox"]')
-    let results = []
+    const results = []
 
     checkBoxes.forEach((checkbox) => {
       if (!checkAll) {
@@ -413,7 +413,7 @@ function TreeTable(props) {
     }
     lastChecked.current = e.target
 
-    let results = []
+    const results = []
 
     // Cập nhật checked
     if (checkBoxes?.length > 0) {
@@ -446,7 +446,7 @@ function TreeTable(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       {tableSetting ? (
         rowPerPage ? (
           <DataTableSetting
@@ -474,7 +474,7 @@ function TreeTable(props) {
           <tr id='tree' key={`tree-table-head-${tableId}`}>
             {allowSelectAll && (
               <th className='col-fixed not-sort' style={{ width: 45 }}>
-                <input type='checkbox' checked={checkAll && data.length > 0} onChange={() => handleCheckAll()}></input>
+                <input type='checkbox' checked={checkAll && data.length > 0} onChange={() => handleCheckAll()} />
               </th>
             )}
             {column.length !== 0 && column.map((col, index) => <th key={index}>{col.name}</th>)}
@@ -487,7 +487,7 @@ function TreeTable(props) {
                 <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
                   {allowSelectAll && (
                     <td>
-                      <input type='checkbox' defaultChecked={false} value={rows._id}></input>
+                      <input type='checkbox' defaultChecked={false} value={rows._id} />
                     </td>
                   )}
                   {rows.row.map((x, index) =>
@@ -511,9 +511,9 @@ function TreeTable(props) {
                                 data-target={`#actionTask${rows._id}`}
                                 style={{ border: 'none', background: 'none' }}
                               >
-                                <i className='fa fa-ellipsis-v'></i>
+                                <i className='fa fa-ellipsis-v' />
                               </button>
-                              <div id={`actionTask${rows._id}`} className='collapse'>
+                              <div id={`actionTask${rows._id}`} className='collapse' style={{ visibility: 'unset' }}>
                                 {x.map((y, index) =>
                                   !Array.isArray(y) ? (
                                     <React.Fragment key={index}>{showActionColumn(y, rows._id)}</React.Fragment>
@@ -539,7 +539,7 @@ function TreeTable(props) {
         </tbody>
       </table>
       {dataTreeTable(column, data).length === 0 && <div className='table-info-panel'>{translate('confirm.no_data')}</div>}
-    </React.Fragment>
+    </>
   )
 }
 
@@ -549,8 +549,8 @@ function mapState(state) {
 }
 
 function areEqual(prevProps, nextProps) {
-  let prevData = prevProps.data.map((o) => o.rawData)
-  let nextData = nextProps.data.map((o) => o.rawData)
+  const prevData = prevProps.data.map((o) => o.rawData)
+  const nextData = nextProps.data.map((o) => o.rawData)
   return _isEqual(prevData, nextData)
 }
 

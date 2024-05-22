@@ -20,7 +20,7 @@ const getConfigSettingData = async (request, response) => {
         });
     } catch (error) {
         Logger.error(email, `Get kpi allocation's config setting`, portal);
-        response.status(200).json({
+        response.status(401).json({
             success: false,
             messages: ['get_kpi_allocation_config_setting_fail'],
             content: error,
@@ -46,7 +46,7 @@ const updateConfigSettingData = async (request, response) => {
         });
     } catch (error) {
         Logger.error(email, `Update kpi allocation's config setting`, portal);
-        response.status(200).json({
+        response.status(401).json({
             success: false,
             messages: ['update_kpi_allocation_config_setting_fail'],
             content: error,

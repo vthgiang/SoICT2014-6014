@@ -34,6 +34,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@hapi/joi": "^16.1.8",
     "archiver": "^5.1.0",
     "array-to-tree": "^3.3.2",
@@ -68,6 +69,7 @@
     "jsonwebtoken": "^8.5.1",
     "list-to-tree": "^2.2.3",
     "lodash": "^4.17.21",
+    "mathjs": "^12.4.2",
     "moment": "^2.25.3",
     "mongodb": "^4.2.2",
     "mongoose": "^5.11.15",

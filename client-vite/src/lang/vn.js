@@ -5381,7 +5381,15 @@ export default {
           bandwidth: 'Độ rộng băng tần'
         },
         task_package_management: {
-          title: 'Quản lý tập nhiệm vụ'
+          title: 'Quản lý tập nhiệm vụ',
+          table: {
+            task_type: 'Loại nhiệm vụ',
+            description: 'Mô tả',
+            target: 'Chỉ tiêu',
+            unit: 'Unit',
+            kpi_metric: 'Kpi Metric',
+            weight: 'Trọng số'
+          }
         }
       }
     },

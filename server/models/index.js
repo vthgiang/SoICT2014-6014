@@ -36,6 +36,7 @@ module.exports = {
     OrganizationalUnitKpiSetTemplate: require('./kpi/organizationalUnitKpiSetTemplate.model'),
     OrganizationalUnitKpiTemplate: require('./kpi/organizationalUnitKpiTemplate.model'),
     AllocationConfigSetting: require('./kpi/allocationConfigSetting.model'),
+    TaskPackageAllocation: require('./kpi/taskPackageAllocation.model'),
 
     Notification: require('./notification/notification.model'),
     ManualNotification: require('./notification/manualNotification.model'),

@@ -1,11 +1,7 @@
-import React, { Component, useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-
-import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components/index'
-
 import { ListProject } from './listProject'
-import { CategoryProject } from './categoryProject'
 
 function ManagementTableProject(props) {
   return <ListProject />

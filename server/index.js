@@ -69,6 +69,7 @@ router.use('/kpi/organizational-unit/dashboard', require('./modules/kpi/organiza
 router.use('/kpi/organizational-unit/management', require('./modules/kpi/organizational-unit/management/management.route'));
 router.use('/kpi/template', require('./modules/kpi/template/template.route'));
 router.use('/kpi/allocation', require('./modules/kpi/kpi-allocation/config-setting/configSetting.route'));
+router.use('/kpi/allocation/task-package', require('./modules/kpi/kpi-allocation/task-package/taskPackage.route'))
 
 router.use('/notifications', require('./modules/notification/notification.route'));
 
