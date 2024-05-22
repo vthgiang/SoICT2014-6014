@@ -83,7 +83,7 @@ function DelegationCreateFormService(props) {
 
   const regenerateTimeAndCode = () => {
     const currentTime = formatTime(roundToNearestHour(new Date()))
-    const code = generateCode('UQCV')
+    const code = generateCode('UQDV')
     const result = ValidationHelper.validateName(translate, code, 6, 255)
 
     setState((state) => {
