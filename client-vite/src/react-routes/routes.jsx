@@ -697,6 +697,101 @@ class Routes extends Component {
                         component={ApiRegistrationEmployee}
                     />
                     <PrivateRoute
+                        isLoading={false}
+                        key={"internal-service-identity-management"}
+                        arrPage={[
+                            {
+                                link: "/internal-service-identity-management",
+                                name: "manage_internal_service_identity",
+                                icon: "fa fa-cube",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/internal-service-identity-management"}
+                        path={"/internal-service-identity-management"}
+                        pageName={"manage_internal_service_identity"}
+                        layout={Layout}
+                        component={InternalServiceIdentityManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"external-service-consumers-management"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/external-service-consumers-management",
+                                name: "manage_external_service_consumers",
+                                icon: "fa fa-object-group",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/external-service-consumers-management"}
+                        path={"/external-service-consumers-management"}
+                        pageName={"manage_external_service_consumers"}
+                        layout={Layout}
+                        component={ExternalServiceConsumerManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"internal-policy-management"}
+                        arrPage={[
+                            {
+                                link: "/internal-policy-management",
+                                name: "manage_internal_policies",
+                                icon: "fa fa-cube",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/internal-policy-management"}
+                        path={"/internal-policy-management"}
+                        pageName={"manage_internal_policies"}
+                        layout={Layout}
+                        component={InternalPolicyManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"external-policy-management"}
+                        arrPage={[
+                            {
+                                link: "/external-policy-management",
+                                name: "manage_external_policies",
+                                icon: "fa fa-cube",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/external-policy-management"}
+                        path={"/external-policy-management"}
+                        pageName={"manage_external_policies"}
+                        layout={Layout}
+                        component={ExternalPolicyManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"service-logging-management"}
+                        arrPage={[
+                            {
+                                link: "/service-logging-management",
+                                name: "manage_service_logging",
+                                icon: "fa fa-cube",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/service-logging-management"}
+                        path={"/service-logging-management"}
+                        pageName={"manage_service_logging"}
+                        layout={Layout}
+                        component={ServiceLoggingManagement}
+                    />
+                    <PrivateRoute
                         isLoading={this.props.department.isLoading}
                         key={'departments-management'}
                         arrPage={[
