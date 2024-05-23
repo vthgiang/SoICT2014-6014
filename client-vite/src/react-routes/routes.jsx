@@ -61,21 +61,6 @@ const ListEducation = lazy(() => import('../modules/training/education-program/c
 const TrainingPlan = lazy(() => import('../modules/training/course/components/course'))
 const CourseOfUser = lazy(() => import('../modules/training/course/user/components/course'))
 
-const OrganizationalUnitKpiCreateForAdmin = lazy(
-  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin')
-)
-const OrganizationalUnitKpiCreate = lazy(() => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate'))
-const OrganizationalUnitKpiDashboard = lazy(
-  () => import('../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard')
-)
-const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview'))
-const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation'))
-const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
-const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
-
-// const SearchEmployeeForPackage = lazy(
-//   () => import('../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage')
-// )
 const CareerPosition = lazy(() => import('../modules/human-resource/career/component'))
 const SearchKeyEmployee = lazy(() => import('../modules/human-resource/profile/employee-management/components/searchKeyEmployees'))
 const Certificate = lazy(() => import('../modules/human-resource/certificate/component'))
