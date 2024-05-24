@@ -1,21 +1,15 @@
 import { sendRequest } from '../../../../helpers/requestHelper'
 
-export const MajorService = {
-  getListMajor,
-  createMajor,
-  editMajor,
-  deleteMajor
-}
 /**
  * Lấy danh sách kỷ luật
  * @data : Dữ liệu key tìm kiếm
  */
-function getListMajor(data) {
+function getListMajor(data = undefined) {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/majors/major`,
       method: 'GET',
-      params: {
+      params: data !== undefined && {
         name: data.name,
         page: data.page,
         limit: data.limit
@@ -80,4 +74,11 @@ function deleteMajor(data) {
     true,
     'human_resource.major'
   )
+}
+
+export const MajorService = {
+  getListMajor,
+  createMajor,
+  editMajor,
+  deleteMajor
 }

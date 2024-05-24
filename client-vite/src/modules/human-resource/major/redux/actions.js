@@ -1,20 +1,12 @@
-import { dispatch } from 'd3-dispatch'
 import { MajorConstant } from './constants'
 
 import { MajorService } from './services'
-
-export const MajorActions = {
-  getListMajor,
-  createMajor,
-  editMajor,
-  deleteMajor
-}
 
 /**
  * Lấy danh sách kỷ luật
  * @data : Dữ liệu key tìm kiếm
  */
-function getListMajor(data) {
+function getListMajor(data = undefined) {
   return (dispatch) => {
     dispatch({
       type: MajorConstant.GET_MAJOR_REQUEST
@@ -108,4 +100,11 @@ function deleteMajor(data) {
         })
       })
   }
+}
+
+export const MajorActions = {
+  getListMajor,
+  createMajor,
+  editMajor,
+  deleteMajor
 }

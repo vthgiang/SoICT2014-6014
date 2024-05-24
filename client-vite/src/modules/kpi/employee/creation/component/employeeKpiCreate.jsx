@@ -17,23 +17,23 @@ import { ModalCreateEmployeeKpi } from './employeeKpiAddTargetModal'
 import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal'
 import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal'
 
-import { Comment, DatePicker, SelectBox, SlimScroll, ToolTip } from '../../../../../../src/common-components'
+import { Comment, DatePicker, SelectBox, SlimScroll, ToolTip } from '../../../../../common-components'
 import { getStorage } from '../../../../../config'
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper'
 
-var translate = ''
+const translate = ''
 function CreateEmployeeKpiSet(props) {
   const { createEmployeeKpiSet, user, createKpiUnit, department } = props
 
-  let idUser = getStorage('userId')
-  var translate = props.translate
+  const idUser = getStorage('userId')
+  const { translate } = props
 
-  let d = new Date(),
-    currentMonth = d.getMonth() + 1,
-    year = d.getFullYear()
+  const d = new Date()
+  let currentMonth = d.getMonth() + 1
+  const year = d.getFullYear()
 
   if (currentMonth < 10) {
-    currentMonth = '0' + currentMonth
+    currentMonth = `0${currentMonth}`
   }
   const [state, setState] = useState({
     employeeKpiSet: {
@@ -90,7 +90,7 @@ function CreateEmployeeKpiSet(props) {
 
     props.getEmployeeKpiSet({
       roleId: currentRole,
-      month: month
+      month
     })
     // return true;
   }, [])
@@ -137,12 +137,10 @@ function CreateEmployeeKpiSet(props) {
     if (currentKPIUnit) {
       if (currentKPIUnit.status === 1) {
         return true
-      } else {
-        return false
       }
-    } else {
       return false
     }
+    return false
   }
 
   const handleStartOrganizationalUnitKpi = () => {
@@ -202,7 +200,7 @@ function CreateEmployeeKpiSet(props) {
     }
   }
 
-  /**Thay đổi người phê duyệt tập KPI này */
+  /** Thay đổi người phê duyệt tập KPI này */
   const handleApproverChange = (value) => {
     setState({
       ...state,
@@ -216,12 +214,12 @@ function CreateEmployeeKpiSet(props) {
   const handleChangeDate = (value) => {
     let month = value
     if (value !== '') {
-      month = value.slice(3, 7) + '-' + value.slice(0, 2)
+      month = `${value.slice(3, 7)}-${value.slice(0, 2)}`
     }
 
     setState({
       ...state,
-      month: month
+      month
     })
   }
 
@@ -231,27 +229,27 @@ function CreateEmployeeKpiSet(props) {
     if (month && month !== '') {
       props.getEmployeeKpiSet({
         roleId: currentRole,
-        month: month
+        month
       })
       props.getCurrentKPIUnit(currentRole, null, month)
     }
   }
 
-  /**Lưu người phê duyệt của tập KPI này */
+  /** Lưu người phê duyệt của tập KPI này */
   const handleSaveEditEmployeeKpiSet = (id) => {
     setState({
       ...state,
       editing: !state.editing
     })
 
-    let { employeeKpiSet } = state
+    const { employeeKpiSet } = state
     if (employeeKpiSet.approver) {
-      //&& kpipersonal.creater
+      // && kpipersonal.creater
       props.editEmployeeKpiSet(id, employeeKpiSet)
     }
   }
 
-  /**Hủy thay đổi thời gian của tập kpi này */
+  /** Hủy thay đổi thời gian của tập kpi này */
   const handleCancelEditEmployeeKpiSet = () => {
     setState({
       ...state,
@@ -260,13 +258,13 @@ function CreateEmployeeKpiSet(props) {
   }
 
   function formatDate(date) {
-    let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
-    if (month.length < 2) month = '0' + month
-    if (day.length < 2) day = '0' + day
+    if (month.length < 2) month = `0${month}`
+    if (day.length < 2) day = `0${day}`
 
     return [month, year].join('-')
   }
@@ -292,7 +290,7 @@ function CreateEmployeeKpiSet(props) {
     }
   }
 
-  /**Xóa tập KPI cá nhân này */
+  /** Xóa tập KPI cá nhân này */
   const handleDeleteEmployeeKpi = (employeeKpiSetId, employeeKpiSetStatus, employeeKpiId, employeeKpiStatus) => {
     if (employeeKpiSetStatus === 0) {
       if (employeeKpiStatus === 1) {
@@ -333,12 +331,12 @@ function CreateEmployeeKpiSet(props) {
     }
   }
 
-  /**thay đổi thời gian của tậpKPI này */
+  /** thay đổi thời gian của tậpKPI này */
   const handleEditEmployeeKpi = async (employeeKpiSetStatus, id, employeeKpi) => {
     await setState({
       ...state,
-      id: id,
-      employeeKpi: employeeKpi
+      id,
+      employeeKpi
     })
 
     if (employeeKpiSetStatus === 0) {
@@ -379,11 +377,14 @@ function CreateEmployeeKpiSet(props) {
   const handleCheckEmployeeKpiStatus = (employeeKpiStatus) => {
     if (employeeKpiStatus === null) {
       return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.not_approved')
-    } else if (employeeKpiStatus === 0) {
+    }
+    if (employeeKpiStatus === 0) {
       return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.edit_request')
-    } else if (employeeKpiStatus === 1) {
+    }
+    if (employeeKpiStatus === 1) {
       return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.activated')
-    } else if (employeeKpiStatus === 2) {
+    }
+    if (employeeKpiStatus === 2) {
       return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.not_finished')
     }
   }
@@ -393,29 +394,31 @@ function CreateEmployeeKpiSet(props) {
       return (
         <span style={{ fontWeight: 'bold' }}>
           {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.setting_up')}{' '}
-          <i className='fa fa-cogs' style={{ fontSize: '16px' }}></i>
+          <i className='fa fa-cogs' style={{ fontSize: '16px' }} />
         </span>
       )
-    } else if (employeeKpiSetStatus === 1) {
+    }
+    if (employeeKpiSetStatus === 1) {
       return (
         <span style={{ fontWeight: 'bold' }} className='text-danger'>
           {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.awaiting_approval')}{' '}
-          <i className='fa fa-hourglass-half' style={{ fontSize: '16px' }}></i>
+          <i className='fa fa-hourglass-half' style={{ fontSize: '16px' }} />
         </span>
       )
-    } else if (employeeKpiSetStatus === 2) {
+    }
+    if (employeeKpiSetStatus === 2) {
       return (
         <span style={{ fontWeight: 'bold' }} className='text-success'>
           {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.activated')}{' '}
-          <i className='fa fa-check-circle' style={{ fontSize: '16px' }}></i>
+          <i className='fa fa-check-circle' style={{ fontSize: '16px' }} />
         </span>
       )
     }
   }
 
-  /**Yêu cầu phê duyệt tập KPI này */
+  /** Yêu cầu phê duyệt tập KPI này */
   const handleRequestApproveEmployeeKpiSet = (kpipersonal) => {
-    let totalWeight = kpipersonal.kpis.map((item) => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)
+    const totalWeight = kpipersonal.kpis.map((item) => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)
     if (totalWeight === 100) {
       Swal.fire({
         title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval_kpi.approve'),
@@ -463,7 +466,12 @@ function CreateEmployeeKpiSet(props) {
     }
   }
 
-  let unitList, currentUnit, currentKPI, currentKPILoading, userdepartments, organizationalUnitsOfUser
+  let unitList
+  let currentUnit
+  let currentKPI
+  let currentKPILoading
+  let userdepartments
+  let organizationalUnitsOfUser
 
   if (user) {
     unitList = user.organizationalUnitsOfUser
@@ -481,14 +489,14 @@ function CreateEmployeeKpiSet(props) {
     }
   }
 
-  let parentKpi = createKpiUnit && createKpiUnit.currentKPI
+  const parentKpi = createKpiUnit && createKpiUnit.currentKPI
 
   if (createEmployeeKpiSet) {
     currentKPI = createEmployeeKpiSet.currentKPI
     currentKPILoading = createEmployeeKpiSet.currentKPILoading
   }
-  let managers = [],
-    existManagers = []
+  let managers = []
+  const existManagers = []
 
   if (user?.userdepartments) {
     managers = getEmployeeSelectBoxItems([user.userdepartments], true, false, false)
@@ -514,7 +522,7 @@ function CreateEmployeeKpiSet(props) {
         if (!existManagers?.includes(item?.userId?.id)) {
           temp.value.push({
             value: item?.userId?.id,
-            text: item?.userId?.name + ' (' + department.unit.managers[0]?.name + ')'
+            text: `${item?.userId?.name} (${department.unit.managers[0]?.name})`
           })
         }
       })
@@ -556,20 +564,20 @@ function CreateEmployeeKpiSet(props) {
                 <div style={{ marginLeft: '-10px', marginBottom: '10px' }}>
                   {/* Chỉnh sửa thông tin của tập KPI này */}
                   {editing ? (
-                    <React.Fragment>
+                    <>
                       <a
                         className='btn btn-app'
                         onClick={() => handleSaveEditEmployeeKpiSet(currentKPI._id)}
                         title={translate('kpi.evaluation.employee_evaluation.save_result')}
                       >
-                        <i className='fa fa-save' style={{ fontSize: '16px' }}></i>
+                        <i className='fa fa-save' style={{ fontSize: '16px' }} />
                         {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.save')}
                       </a>
                       <a className='btn btn-app' onClick={() => handleCancelEditEmployeeKpiSet()} title='Hủy bỏ chỉnh sửa'>
-                        <i className='fa fa-ban' style={{ fontSize: '16px' }}></i>
+                        <i className='fa fa-ban' style={{ fontSize: '16px' }} />
                         {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.cancel')}
                       </a>
-                    </React.Fragment>
+                    </>
                   ) : (
                     <a
                       className='btn btn-app'
@@ -580,7 +588,7 @@ function CreateEmployeeKpiSet(props) {
                       }
                       title='Chỉnh sửa thông tin chung'
                     >
-                      <i className='fa fa-edit' style={{ fontSize: '16px' }}></i>
+                      <i className='fa fa-edit' style={{ fontSize: '16px' }} />
                       {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.edit')}
                     </a>
                   )}
@@ -591,7 +599,7 @@ function CreateEmployeeKpiSet(props) {
                     onClick={() => handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status)}
                     title='Xóa KPI tháng'
                   >
-                    <i className='fa fa-trash' style={{ fontSize: '16px' }}></i>
+                    <i className='fa fa-trash' style={{ fontSize: '16px' }} />
                     {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.delete')}
                   </a>
 
@@ -607,7 +615,7 @@ function CreateEmployeeKpiSet(props) {
                         : () => handleStartOrganizationalUnitKpi()
                     }
                   >
-                    <i className='fa fa-plus-circle' style={{ fontSize: '16px' }}></i>
+                    <i className='fa fa-plus-circle' style={{ fontSize: '16px' }} />
                     {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_target')}
                   </a>
 
@@ -623,12 +631,12 @@ function CreateEmployeeKpiSet(props) {
                           : () => handleStartOrganizationalUnitKpi()
                       }
                     >
-                      <i className='fa fa-external-link-square' style={{ fontSize: '16px' }}></i>
+                      <i className='fa fa-external-link-square' style={{ fontSize: '16px' }} />
                       {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval')}
                     </a>
                   ) : (
                     <a className='btn btn-app' onClick={() => handleCancelApproveEmployeeKpiSet(currentKPI)}>
-                      <i className='fa fa-minus-square' style={{ fontSize: '16px' }}></i>
+                      <i className='fa fa-minus-square' style={{ fontSize: '16px' }} />
                       {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.cancel_request_approval')}
                     </a>
                   )}
@@ -654,7 +662,7 @@ function CreateEmployeeKpiSet(props) {
                     <div className='form-group'>
                       <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                       <SelectBox
-                        id={`createEmployeeKpiSet`}
+                        id='createEmployeeKpiSet'
                         className='form-control select2'
                         style={{ width: '40%' }}
                         items={managers}
@@ -680,7 +688,7 @@ function CreateEmployeeKpiSet(props) {
                   </div>
                 )}
 
-                {/*Tổng trọng số */}
+                {/* Tổng trọng số */}
                 {!editing && (
                   <div>
                     <span>
@@ -801,7 +809,7 @@ function CreateEmployeeKpiSet(props) {
                                   <a
                                     style={{ color: '#FFC107', fontSize: '16px' }}
                                     title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.edit')}
-                                    data-target={`editEmployeeKpi`}
+                                    data-target='editEmployeeKpi'
                                     data-toggle='modal'
                                     data-backdrop='static'
                                     data-keyboard='false'
@@ -811,14 +819,14 @@ function CreateEmployeeKpiSet(props) {
                                         : () => handleStartOrganizationalUnitKpi()
                                     }
                                   >
-                                    <i className='fa fa-edit'></i>
+                                    <i className='fa fa-edit' />
                                   </a>
 
                                   {item.type !== 0 ? (
                                     // <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>
                                     <ToolTip
-                                      type={'icon_tooltip'}
-                                      materialIcon={'notification_important'}
+                                      type='icon_tooltip'
+                                      materialIcon='notification_important'
                                       dataTooltip={[
                                         translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')
                                       ]}
@@ -833,7 +841,7 @@ function CreateEmployeeKpiSet(props) {
                                           : () => handleStartOrganizationalUnitKpi()
                                       }
                                     >
-                                      <i className='fa fa-trash'></i>
+                                      <i className='fa fa-trash' />
                                     </a>
                                   )}
                                 </td>
@@ -890,7 +898,7 @@ function CreateEmployeeKpiSet(props) {
                           data-backdrop='static'
                           data-keyboard='false'
                         >
-                          <i className='fa fa-calendar-plus-o' style={{ fontSize: '16px' }}></i>
+                          <i className='fa fa-calendar-plus-o' style={{ fontSize: '16px' }} />
                           {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {formatDate(month)}
                         </a>
                         <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit} month={month} managers={managers} />
@@ -905,7 +913,7 @@ function CreateEmployeeKpiSet(props) {
                           data-keyboard='false'
                           onClick={() => handleStartOrganizationalUnitKpi()}
                         >
-                          <i className='fa fa-calendar-plus-o' style={{ fontSize: '16px' }}></i>
+                          <i className='fa fa-calendar-plus-o' style={{ fontSize: '16px' }} />
                           {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {formatDate(month)}
                         </a>
                       </span>
@@ -921,22 +929,24 @@ function CreateEmployeeKpiSet(props) {
                           data-backdrop='static'
                           data-keyboard='false'
                         >
-                          <i className='fa fa-copy' style={{ fontSize: '16px' }}></i>Sao chép KPI đơn vị cha
+                          <i className='fa fa-copy' style={{ fontSize: '16px' }} />
+                          Sao chép KPI đơn vị cha
                         </a>
                         <ModalCopyKPIUnit
                           kpiId={parentKpi && parentKpi._id}
                           idunit={currentUnit && currentUnit._id}
                           kpiunit={parentKpi}
-                          editMonth={true}
+                          editMonth
                           monthDefault={month}
                           approverDefault={managers}
-                          type={'copy-parent-kpi-to-employee'}
+                          type='copy-parent-kpi-to-employee'
                         />
                       </span>
                     ) : (
                       <span>
                         <a className='btn btn-app' onClick={() => handleStartOrganizationalUnitKpi()}>
-                          <i className='fa fa-copy' style={{ fontSize: '16px' }}></i>Sao chép KPI đơn vị cha
+                          <i className='fa fa-copy' style={{ fontSize: '16px' }} />
+                          Sao chép KPI đơn vị cha
                         </a>
                       </span>
                     )}

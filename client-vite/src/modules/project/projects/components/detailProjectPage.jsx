@@ -1,27 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components'
 import { withTranslate } from 'react-redux-multilingual'
+import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components'
 import { ProjectActions } from '../redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions'
-import TableTasksProject from './tableTasksProject'
-import GanttTasksProject from './ganttTasksProject'
 import { getStorage } from '../../../../config'
-import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from './functionHelper'
+import { getCurrentProjectDetails } from './functionHelper'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
-import ModalAddTaskSchedule from '../../scheduling-projects/components/modalAddTaskSchedule'
-import ProjectEditForm from './editProject'
-import moment from 'moment'
-import { TaskProjectAddModal } from '../../../task/task-project/component/taskProjectAddModal'
 import TabProjectInfo from './tabProjectInfo'
 import TabChangeRequestProject from './tabChangeRequestProject'
 import { ChangeRequestActions } from '../../change-requests/redux/actions'
 import { ProjectPhaseActions } from '../../project-phase/redux/actions'
-import { TaskAddModal } from '../../../task/task-management/component/taskAddModal'
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
 import TabProjectTasksList from './tabProjectTasksList'
 
-const ProjectDetailPage = (props) => {
+function ProjectDetailPage(props) {
   const { translate, project, user, tasks, projectPhase } = props
   const userId = getStorage('userId')
   // const [projectDetail, setProjectDetail] = useState(getCurrentProjectDetails(project));

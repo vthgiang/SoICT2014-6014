@@ -3,13 +3,10 @@ import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import parse from 'html-react-parser'
 import Swal from 'sweetalert2'
-
 import { configQuillEditor, convertImageBase64ToFile } from './configQuillEditor'
 import { ToolbarQuillEditor } from './toolbarQuillEditor'
 import { SlimScroll } from '../slim-scroll/slimScroll'
-
 import { AuthActions } from '../../../modules/auth/redux/actions'
-
 import './quillEditor.css'
 
 class QuillEditor extends Component {
@@ -48,7 +45,7 @@ class QuillEditor extends Component {
         quill.container.firstChild.innerHTML = quillValueDefault
       }
       if (quill?.container) {
-        let imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
+        const imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
         if (imgs?.length > 0) {
           imgs.map((item) => {
             this.props.downloadFile(item.getAttribute('src'), item.getAttribute('src'), false)
@@ -64,8 +61,8 @@ class QuillEditor extends Component {
       quill.on('text-change', (e) => {
         this.setHeightContainer(id, maxHeight)
 
-        let imgs,
-          imageSources = []
+        let imgs
+        const imageSources = []
         let selection = quill.getSelection()?.index
 
         if (quill?.container) {
@@ -75,10 +72,10 @@ class QuillEditor extends Component {
           if (imgs && imgs.length !== 0) {
             imgs = imgs.map((item, index) => {
               imageSources.push({
-                originalName: 'image' + index,
+                originalName: `image${index}`,
                 url: item.getAttribute('src')
               })
-              item.src = 'image' + index
+              item.src = `image${index}`
               return item
             })
           }
@@ -96,9 +93,10 @@ class QuillEditor extends Component {
 
         if (insert === ' ' || insert === '\n') {
           // Handle event type space and enter
-          let text, temp
+          let text
+          let temp
           if (insert === '\n') {
-            selection = selection + 1
+            selection += 1
           }
           temp = selection - 2
 
@@ -117,7 +115,7 @@ class QuillEditor extends Component {
             quill.insertText(temp + 1, text, 'link', text)
           } else if (text?.endsWith('@gmail.com') || text?.endsWith('@sis.hust.edu.vn')) {
             quill.deleteText(temp + 1, selection - temp - 2)
-            quill.insertText(temp + 1, text, 'link', 'mailto:' + text)
+            quill.insertText(temp + 1, text, 'link', `mailto:${text}`)
 
             // Remove attr target for link email
             window.$('.ql-editor a').map(function () {
@@ -133,7 +131,7 @@ class QuillEditor extends Component {
             quill.insertText(selection, insert, 'link', insert)
           } else if (insert?.endsWith('@gmail.com') || insert?.endsWith('@sis.hust.edu.vn')) {
             quill.deleteText(selection, insert.length)
-            quill.insertText(selection, insert, 'link', 'mailto:' + insert)
+            quill.insertText(selection, insert, 'link', `mailto:${insert}`)
 
             // Remove attr target for link email
             window.$('.ql-editor a').map(function () {
@@ -160,7 +158,7 @@ class QuillEditor extends Component {
 
       // Custom insert table
       window.$(`#insert-tabletoolbar${id}`).click(() => {
-        let table = quill.getModule('table')
+        const table = quill.getModule('table')
         table.insertTable(3, 3)
       })
 
@@ -185,12 +183,12 @@ class QuillEditor extends Component {
     }
 
     this.setState({
-      quill: quill
+      quill
     })
     this.setHeightContainer(id, maxHeight)
   }
 
-  shouldComponentUpdate = (nextProps, nextState) => {
+  shouldComponentUpdate(nextProps, nextState) {
     const { auth } = this.props
     const { enableEdit, quillValueDefault } = this.props
     const { quill } = nextState
@@ -212,7 +210,7 @@ class QuillEditor extends Component {
       }
 
       if (quill?.container) {
-        let imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
+        const imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
         if (imgs?.length > 0) {
           imgs.map((item) => {
             this.props.downloadFile(item.getAttribute('src'), item.getAttribute('src'), false)
@@ -250,7 +248,7 @@ class QuillEditor extends Component {
       if (imgs?.length > 0) {
         imgs = imgs.map((img) => {
           if (auth?.showFiles?.length > 0) {
-            let image = auth.showFiles.filter((item) => item.fileName === img.getAttribute('src'))
+            const image = auth.showFiles.filter((item) => item.fileName === img.getAttribute('src'))
             if (image?.[0]?.file) {
               img.src = image[0].file
             }
@@ -263,9 +261,7 @@ class QuillEditor extends Component {
       if (JSON.stringify(this.props.dataDriver) !== JSON.stringify(nextProps.dataDriver)) {
         let dataText = ''
         for (let i = 0; i < this.props.dataDriver.length; i++) {
-          dataText =
-            dataText +
-            `<p>${this.props.dataDriver[i].name} : <a href="${this.props.dataDriver[i].url} " target="_blank">${this.props.dataDriver[i].url}</a></p>`
+          dataText += `<p>${this.props.dataDriver[i].name} : <a href="${this.props.dataDriver[i].url} " target="_blank">${this.props.dataDriver[i].url}</a></p>`
         }
         if (quill.root.innerHTML === '<p><br></p>') {
           quill.root.innerHTML = dataText
@@ -282,6 +278,7 @@ class QuillEditor extends Component {
     SlimScroll.removeVerticalScrollStyleCSS(`editor-container${id}`)
     SlimScroll.addVerticalScrollStyleCSS(`editor-container${id}`, maxHeight, true)
   }
+
   render() {
     const {
       isText = false,
@@ -298,9 +295,9 @@ class QuillEditor extends Component {
       table = true
     } = this.props
     return (
-      <React.Fragment>
+      <>
         {!isText ? (
-          <React.Fragment>
+          <>
             {toolbar && (
               <ToolbarQuillEditor
                 id={`toolbar${id}`}
@@ -334,11 +331,11 @@ class QuillEditor extends Component {
                 </div>
               )}
             </div>
-          </React.Fragment>
+          </>
         ) : (
           parse(quillValueDefault)
         )}
-      </React.Fragment>
+      </>
     )
   }
 }

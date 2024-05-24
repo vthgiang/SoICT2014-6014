@@ -15,23 +15,19 @@ exports.searchCertificate = async (portal, params) => {
             ...keySearch,
             name: {
                 $regex: params.certificateName,
-                $options: "i",
+                $options: 'i',
             },
         };
     }
 
     if (params.limit === undefined && params.page === undefined) {
-        let data = await Certificate(connect(DB_CONNECTION, portal)).find(
-            keySearch
-        );
+        let data = await Certificate(connect(DB_CONNECTION, portal)).find(keySearch);
         return {
             listCertificate: data,
             totalList: data.length,
         };
     } else {
-        let data = await Certificate(connect(DB_CONNECTION, portal)).find(
-            keySearch
-        );
+        let data = await Certificate(connect(DB_CONNECTION, portal)).find(keySearch);
         listCertificate = await Certificate(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .sort({
@@ -44,6 +40,14 @@ exports.searchCertificate = async (portal, params) => {
             totalList: data.length,
         };
     }
+};
+
+exports.getAllCertificates = async (portal) => {
+    const data = await Certificate(connect(DB_CONNECTION, portal)).find({});
+
+    console.log(data);
+
+    return data;
 };
 
 /**

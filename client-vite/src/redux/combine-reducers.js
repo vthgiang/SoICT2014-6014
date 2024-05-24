@@ -10,11 +10,11 @@ import { privilegeApis } from '../modules/system-admin/system-api/system-api-pri
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers'
 import { systemAdminPage, systemPage } from '../modules/system-admin/system-page/redux/reducers'
 import { systemSetting } from '../modules/system-admin/system-setting/redux/reducers'
-import { internalServiceIdentities } from '../modules/system-admin/internal-service-identity/redux/reducers';
-import { internalPolicies } from '../modules/system-admin/internal-policy/redux/reducers';
-import { externalPolicies } from '../modules/system-admin/external-policy/redux/reducers';
-import { serviceLogging } from '../modules/system-admin/service-logging/redux/reducers';
-import { externalServiceConsumers } from '../modules/super-admin/external-service-consumer/redux/reducers';
+import { internalServiceIdentities } from '../modules/system-admin/internal-service-identity/redux/reducers'
+import { internalPolicies } from '../modules/system-admin/internal-policy/redux/reducers'
+import { externalPolicies } from '../modules/system-admin/external-policy/redux/reducers'
+import { serviceLogging } from '../modules/system-admin/service-logging/redux/reducers'
+import { externalServiceConsumers } from '../modules/super-admin/external-service-consumer/redux/reducers'
 
 import { apis } from '../modules/super-admin/api/api-management/redux/reducers'
 import { apiRegistration } from '../modules/super-admin/api/api-registration/redux/reducers'
@@ -71,6 +71,7 @@ import { tasktemplates } from '../modules/task/task-template/redux/reducers'
 
 // kpi allocation
 import { configManagementReducer } from '../modules/kpi/kpi-allocation/config-management/redux/reducers'
+import { taskPackageManagementReducer } from '../modules/kpi/kpi-allocation/task-package-management/redux/reducers'
 
 import { dashboardEvaluationEmployeeKpiSet } from '../modules/kpi/evaluation/dashboard/redux/reducers'
 
@@ -283,7 +284,8 @@ const appReducer = combineReducers({
 
   // kpi allocation unit
   kpiAllocation: combineReducers({
-    configManagementReducer
+    configManagementReducer,
+    taskPackageManagementReducer
   }),
 
   // asset

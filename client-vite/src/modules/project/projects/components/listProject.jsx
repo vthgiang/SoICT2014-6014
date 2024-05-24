@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
+import _cloneDeep from 'lodash/cloneDeep'
+import Swal from 'sweetalert2'
+import dayjs from 'dayjs'
 import { TreeTable, PaginateBar, ToolTip, SelectMulti, DatePicker } from '../../../../common-components'
 import ProjectCreateForm from './createProject'
 import ProjectEditForm from './editProject'
@@ -9,17 +12,14 @@ import { ProjectActions } from '../redux/actions'
 import { ProjectPhaseActions } from '../../project-phase/redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { getStorage } from '../../../../config'
-import { checkIfAbleToCRUDProject, renderLongList, renderProjectTypeText } from './functionHelper'
+import { checkIfAbleToCRUDProject, renderProjectTypeText } from './functionHelper'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import _cloneDeep from 'lodash/cloneDeep'
-import Swal from 'sweetalert2'
-import dayjs from 'dayjs'
 
 function ListProject(props) {
   const tableId = 'project-table'
   const defaultConfig = { limit: 5, hiddenColumns: [] }
-  const limit = getTableConfiguration(tableId, defaultConfig).limit
+  const { limit } = getTableConfiguration(tableId, defaultConfig)
   // Khởi tạo state
   const [state, setState] = useState({
     projectName: '',
@@ -60,10 +60,10 @@ function ListProject(props) {
   }, [])
 
   useEffect(() => {
-    let data = []
+    const data = []
     if (user?.isLoading === false && project?.isLoading === false) {
-      let currentProjects = _cloneDeep(project.data.paginate) // Sao chép ra mảng mới
-      for (let n in currentProjects) {
+      const currentProjects = _cloneDeep(project.data.paginate) // Sao chép ra mảng mới
+      for (const n in currentProjects) {
         data[n] = {
           ...currentProjects[n],
           rawData: currentProjects[n],
@@ -88,25 +88,25 @@ function ListProject(props) {
 
       setState({
         ...state,
-        data: data
+        data
       })
     }
   }, [user?.isLoading, project?.isLoading, JSON.stringify(project.data.paginate)])
 
   // Sau khi add project mới hoặc edit project thì call lại tất cả list project
   const handleAfterCreateProject = () => {
-    let data = {
+    const data = {
       calledId: 'paginate',
-      projectName: projectName,
-      projectType: projectType,
-      endDate: endDate,
-      startDate: startDate,
-      page: page,
-      perPage: perPage,
-      creatorEmployee: creatorEmployee,
-      responsibleEmployees: responsibleEmployees,
-      projectManager: projectManager,
-      userId: userId
+      projectName,
+      projectType,
+      endDate,
+      startDate,
+      page,
+      perPage,
+      creatorEmployee,
+      responsibleEmployees,
+      projectManager,
+      userId
     }
     props.getProjectsDispatch(data)
   }
@@ -160,7 +160,7 @@ function ListProject(props) {
     if (value === '') {
       month = null
     } else {
-      month = value.slice(3, 7) + '-' + value.slice(0, 2)
+      month = `${value.slice(3, 7)}-${value.slice(0, 2)}`
     }
 
     setState((state) => {
@@ -176,7 +176,7 @@ function ListProject(props) {
     if (value === '') {
       month = null
     } else {
-      month = value.slice(3, 7) + '-' + value.slice(0, 2)
+      month = `${value.slice(3, 7)}-${value.slice(0, 2)}`
     }
 
     setState((state) => {
@@ -188,18 +188,18 @@ function ListProject(props) {
   }
 
   const setPage = (pageNumber) => {
-    let data = {
+    const data = {
       calledId: 'paginate',
-      projectName: projectName,
-      projectType: projectType,
-      endDate: endDate,
-      startDate: startDate,
+      projectName,
+      projectType,
+      endDate,
+      startDate,
       page: pageNumber,
-      perPage: perPage,
-      creatorEmployee: creatorEmployee,
-      responsibleEmployees: responsibleEmployees,
-      projectManager: projectManager,
-      userId: userId
+      perPage,
+      creatorEmployee,
+      responsibleEmployees,
+      projectManager,
+      userId
     }
 
     setState({
@@ -211,18 +211,18 @@ function ListProject(props) {
   }
 
   const setLimit = (number) => {
-    let data = {
+    const data = {
       calledId: 'paginate',
-      projectName: projectName,
-      projectType: projectType,
-      endDate: endDate,
-      startDate: startDate,
+      projectName,
+      projectType,
+      endDate,
+      startDate,
       page: 1,
       perPage: number,
-      creatorEmployee: creatorEmployee,
-      responsibleEmployees: responsibleEmployees,
-      projectManager: projectManager,
-      userId: userId
+      creatorEmployee,
+      responsibleEmployees,
+      projectManager,
+      userId
     }
 
     setState({
@@ -260,21 +260,21 @@ function ListProject(props) {
 
   // Xoá dự án
   const handleDelete = (id) => {
-    let data = {
+    const data = {
       calledId: 'paginate',
-      projectName: projectName,
-      projectType: projectType,
-      endDate: endDate,
-      startDate: startDate,
+      projectName,
+      projectType,
+      endDate,
+      startDate,
       page: project && project.lists && project.lists.length === 1 ? page - 1 : page,
-      perPage: perPage,
-      creatorEmployee: creatorEmployee,
-      responsibleEmployees: responsibleEmployees,
-      projectManager: projectManager,
-      userId: userId
+      perPage,
+      creatorEmployee,
+      responsibleEmployees,
+      projectManager,
+      userId
     }
 
-    let currentProject = project.data.paginate.find((p) => p?._id === id)
+    const currentProject = project.data.paginate.find((p) => p?._id === id)
     Swal.fire({
       title: `Bạn có chắc chắn muốn xóa dự án "${currentProject.name}"?`,
       icon: 'warning',
@@ -297,7 +297,8 @@ function ListProject(props) {
   }
 
   const handleUpdateData = () => {
-    let startMonth, endMonth
+    let startMonth
+    let endMonth
     if (startDate && endDate) {
       startMonth = new Date(startDate)
       endMonth = new Date(endDate)
@@ -311,18 +312,18 @@ function ListProject(props) {
         confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
       })
     } else {
-      let data = {
+      const data = {
         calledId: 'paginate',
-        projectName: projectName,
-        endDate: endDate,
-        startDate: startDate,
-        projectType: projectType,
+        projectName,
+        endDate,
+        startDate,
+        projectType,
         page: 1,
-        perPage: perPage,
-        creatorEmployee: creatorEmployee,
-        responsibleEmployees: responsibleEmployees,
-        projectManager: projectManager,
-        userId: userId
+        perPage,
+        creatorEmployee,
+        responsibleEmployees,
+        projectManager,
+        userId
       }
 
       props.getProjectsDispatch(data)
@@ -334,7 +335,7 @@ function ListProject(props) {
   }
 
   // Khởi tạo danh sách các cột
-  let column = [
+  const column = [
     { name: translate('project.name'), key: 'name' },
     { name: translate('project.projectType'), key: 'projectType' },
     { name: translate('project.startDate'), key: 'startDate' },
@@ -347,7 +348,7 @@ function ListProject(props) {
   const totalPage = project && Math.ceil(project.data.totalDocs / perPage)
 
   return (
-    <React.Fragment>
+    <>
       <ProjectDetailForm
         projectDetailId={projectDetail && projectDetail._id}
         projectDetail={projectDetail}
@@ -372,12 +373,12 @@ function ListProject(props) {
               <button
                 className='btn btn-primary'
                 type='button'
-                style={{marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+                style={{ marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
                 onClick={() => {
                   window.$('#projects-filter').slideToggle()
                 }}
               >
-                <i className='fa fa-filter'></i> {translate('general.filter')}{' '}
+                <i className='fa fa-filter' /> {translate('general.filter')}{' '}
               </button>
             </div>
 
@@ -423,7 +424,7 @@ function ListProject(props) {
                 ]}
                 onChange={handleSelectProjectType}
                 options={{ nonSelectedText: translate('project.select_type'), allSelectedText: translate('project.select_all_type') }}
-              ></SelectMulti>
+              />
             </div>
 
             {/* Thành viên dự án */}
@@ -465,17 +466,17 @@ function ListProject(props) {
             {/* Ngày bắt đầu */}
             <div className='form-group'>
               <label>{translate('project.col_start_time')}</label>
-              <DatePicker id='start-date' dateFormat='month-year' value={''} onChange={handleChangeStartDate} disabled={false} />
+              <DatePicker id='start-date' dateFormat='month-year' value='' onChange={handleChangeStartDate} disabled={false} />
             </div>
 
             {/* Ngày kết thúc */}
             <div className='form-group'>
               <label>{translate('project.col_expected_end_time')}</label>
-              <DatePicker id='end-date' dateFormat='month-year' value={''} onChange={handleChangeEndDate} disabled={false} />
+              <DatePicker id='end-date' dateFormat='month-year' value='' onChange={handleChangeEndDate} disabled={false} />
             </div>
 
             <div className='form-group'>
-              <label></label>
+              <label />
               <button type='button' className='btn btn-success' onClick={() => handleUpdateData()}>
                 {translate('project.search')}
               </button>
@@ -485,9 +486,9 @@ function ListProject(props) {
           <div className='qlcv StyleScrollDiv StyleScrollDiv-y' style={{ maxHeight: '600px' }}>
             <TreeTable
               behaviour='show-children'
-              tableSetting={true}
+              tableSetting
               tableId={tableId}
-              viewWhenClickName={true}
+              viewWhenClickName
               column={column}
               data={data}
               onSetNumberOfRowsPerPage={setLimit}
@@ -501,65 +502,9 @@ function ListProject(props) {
               funcDelete={handleDelete}
             />
           </div>
-          {/* <table id={tableId} className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>{translate('project.name')}</th>
-                                <th>Hình thức quản lý</th>
-                                <th>{translate('project.creator')}</th>
-                                <th>{translate('project.manager')}</th>
-                                <th>{translate('project.member')}</th>
-                                <th style={{ width: "120px", textAlign: "center" }}>
-                                    {translate('table.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={[
-                                            translate('project.name'),
-                                            'Hình thức quản lý',
-                                            translate('project.creator'),
-                                            translate('project.manager'),
-                                            translate('project.member'),
-                                        ]}
-                                        setLimit={setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {(lists && lists.length !== 0) &&
-                                lists.map((projectItem, index) => {
-                                    // console.log('projectItem?.creator?.name', projectItem?.creator?.name, 'projectItem?.responsibleEmployees', projectItem?.responsibleEmployees);
-                                    return (
-                                        <tr key={index}>
-                                            <td style={{ color: '#385898' }}>{projectItem?.name}</td>
-                                            <td>{renderProjectTypeText(projectItem?.projectType)}</td>
-                                            <td>{projectItem?.creator?.name}</td>
-                                            <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                            <td style={{ maxWidth: 450 }}>{renderLongList(projectItem?.responsibleEmployees.map(o => o.name))}</td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem?._id)}><i className="material-icons">visibility</i></a>
-                                                {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem?._id)}><i className="material-icons">edit</i></a>}
-                                                {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <DeleteNotification
-                                                    content={translate('project.delete')}
-                                                    data={{
-                                                        id: projectItem?._id,
-                                                        info: projectItem?.name
-                                                    }}
-                                                    func={handleDelete}
-                                                />}
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                                )
-                            }
-                        </tbody>
-                    </table> */}
-
-          {/* PaginateBar */}
 
           <PaginateBar
-            pageTotal={totalPage ? totalPage : 0}
+            pageTotal={totalPage || 0}
             currentPage={page}
             display={data && data.length !== 0 && data.length}
             total={project && project.data.totalDocs}
@@ -567,7 +512,7 @@ function ListProject(props) {
           />
         </div>
       </div>
-    </React.Fragment>
+    </>
   )
 }
 
