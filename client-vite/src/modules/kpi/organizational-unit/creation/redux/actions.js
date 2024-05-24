@@ -1,28 +1,6 @@
 import { createUnitKpiConstants } from './constants'
 import { createUnitKpiServices } from './services'
 
-export const createUnitKpiActions = {
-  getCurrentKPIUnit,
-  editKPIUnit,
-  deleteKPIUnit,
-  deleteTargetKPIUnit,
-  getKPIParent,
-  getAllOrganizationalUnitKpiSetByTime,
-  getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
-  addTargetKPIUnit,
-  editTargetKPIUnit,
-  addKPIUnit,
-
-  createComment,
-  editComment,
-  deleteComment,
-  createChildComment,
-  editChildComment,
-  deleteChildComment,
-  deleteFileComment,
-  deleteFileChildComment
-}
-
 /**
  * Get organizational unit kpi set
  * @param {*} organizationalUnitId
@@ -431,4 +409,26 @@ function deleteFileChildComment(fileId, childCommentId, commentId, setKpiId) {
         })
       })
   }
+}
+
+export const createUnitKpiActions = {
+  getCurrentKPIUnit,
+  editKPIUnit,
+  deleteKPIUnit,
+  deleteTargetKPIUnit,
+  getKPIParent,
+  getAllOrganizationalUnitKpiSetByTime,
+  getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
+  addTargetKPIUnit,
+  editTargetKPIUnit,
+  addKPIUnit,
+
+  createComment,
+  editComment,
+  deleteComment,
+  createChildComment,
+  editChildComment,
+  deleteChildComment,
+  deleteFileComment,
+  deleteFileChildComment
 }

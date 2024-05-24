@@ -2,18 +2,11 @@ import { CertificateConstant } from './constants'
 
 import { CertificateService } from './services'
 
-export const CertificateActions = {
-  getListCertificate,
-  createCertificate,
-  editCertificate,
-  deleteCertificate
-}
-
 /**
  * Lấy danh sách kỷ luật
  * @data : Dữ liệu key tìm kiếm
  */
-function getListCertificate(data) {
+function getListCertificate(data = undefined) {
   return (dispatch) => {
     dispatch({
       type: CertificateConstant.GET_CERTIFICATE_REQUEST
@@ -107,4 +100,11 @@ function deleteCertificate(data) {
         })
       })
   }
+}
+
+export const CertificateActions = {
+  getListCertificate,
+  createCertificate,
+  editCertificate,
+  deleteCertificate
 }

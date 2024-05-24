@@ -7,17 +7,17 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/das
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions'
 
 const formatDate = (date) => {
-  var d = new Date(date),
-    month = '' + (d.getMonth() + 1),
-    day = '' + d.getDate(),
-    year = d.getFullYear()
+  const d = new Date(date)
+  let month = `${d.getMonth() + 1}`
+  let day = `${d.getDate()}`
+  const year = d.getFullYear()
 
   if (month.length < 2) {
-    month = '0' + month
+    month = `0${month}`
   }
 
   if (day.length < 2) {
-    day = '0' + day
+    day = `0${day}`
   }
 
   return [month, year].join('-')
@@ -25,7 +25,7 @@ const formatDate = (date) => {
 
 /** Thay đổi ngày tháng */
 const convertMMYYtoYYMM = (value) => {
-  return value.slice(3, 7) + '-' + value.slice(0, 2)
+  return `${value.slice(3, 7)}-${value.slice(0, 2)}`
 }
 
 function EmployeeCreateKpiAutoModal(props) {
@@ -43,10 +43,10 @@ function EmployeeCreateKpiAutoModal(props) {
   const { employees, employeeIds, idUnit, date, formula } = state
 
   const handleClickCheck = (id) => {
-    let employee = employees
-    let employeeIds = []
+    const employee = employees
+    const employeeIds = []
     employee[id].check = !employee[id].check
-    for (let key in employee) {
+    for (const key in employee) {
       if (employee[key].check) {
         employeeIds.push(employee[key].id)
       }
@@ -66,12 +66,12 @@ function EmployeeCreateKpiAutoModal(props) {
   }
 
   const handleSubmit = () => {
-    let data = {
+    const data = {
       employees: employeeIds,
       approver: localStorage.getItem('userId'),
-      month: month,
+      month,
       organizationalUnit: organizationalUnitId,
-      formula: formula
+      formula
     }
 
     props.createEmployeeKpiSetAuto(data)
@@ -93,12 +93,12 @@ function EmployeeCreateKpiAutoModal(props) {
     }
   }, [idUnit, date])
 
-  //Get data employee
+  // Get data employee
   useEffect(() => {
     if (createKpiUnit?.currentKPI) {
       const employeeOfUnit = {}
-      let employeeIds = []
-      for (let item of createKpiUnit.currentKPI.employeeImportances) {
+      const employeeIds = []
+      for (const item of createKpiUnit.currentKPI.employeeImportances) {
         employeeOfUnit[item?.employee?.id] = {
           id: item?.employee?.id,
           name: item?.employee?.name,
@@ -109,109 +109,107 @@ function EmployeeCreateKpiAutoModal(props) {
       setState({
         ...state,
         employees: employeeOfUnit,
-        employeeIds: employeeIds
+        employeeIds
       })
     }
   }, [createKpiUnit])
   return (
-    <React.Fragment>
-      <DialogModal
-        modalID='employee-create-kpi-auto'
-        isLoading={false}
-        formID='form-employee-create-kpi-auto'
-        title={`Tự động thiết lập KPI nhân viên`}
-        msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
-        msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
-        func={handleSubmit}
-        hasNote={false}
-        disableSubmit={false}
+    <DialogModal
+      modalID='employee-create-kpi-auto'
+      isLoading={false}
+      formID='form-employee-create-kpi-auto'
+      title='Tự động thiết lập KPI nhân viên'
+      msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
+      msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
+      func={handleSubmit}
+      hasNote={false}
+      disableSubmit={false}
+    >
+      {/* Form khởi tạo KPI đơn vị */}
+      <form
+        id='form-employee-create-kpi-auto'
+        onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}
       >
-        {/* Form khởi tạo KPI đơn vị */}
-        <form
-          id='form-employee-create-kpi-auto'
-          onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}
-        >
-          <div className='row' style={{ marginBottom: 10 }}>
-            <div className='col-md-12'>
-              {/**Công thức tính của mẫu công việc */}
-              <div className=''>
-                <label className='control-label' htmlFor='inputFormula'>
-                  Công thức tính tỉ lệ hoàn thành KPI
-                </label>
-                <br />
-                <input
-                  style={{ width: '100%', margin: '10px 0px' }}
-                  type='text'
-                  className='form-control'
-                  id='inputFormula'
-                  placeholder='(employeePoint * progressPoint * resultPoint) / 10000'
-                  value={formula}
-                  onChange={handleChangeFormula}
-                />
-                <div>
-                  <span style={{ fontWeight: 800 }}> Ví dụ: </span>
-                  (employeePoint * progressPoint * resultPoint) / 10000
-                </div>
-                <div>
-                  <span style={{ fontWeight: 800 }}>Tham số:</span>
-                </div>
-                <div>
-                  <span style={{ fontWeight: 600 }}>employeePoint</span> - Điểm đánh giá nhân viên
-                </div>
-                <div>
-                  <span style={{ fontWeight: 600 }}>progressPoint</span> - Điểm quá trình
-                </div>
-                <div>
-                  <span style={{ fontWeight: 600 }}>resultPoint</span> - Điểm kết quả
-                </div>
+        <div className='row' style={{ marginBottom: 10 }}>
+          <div className='col-md-12'>
+            {/** Công thức tính của mẫu công việc */}
+            <div className=''>
+              <label className='control-label' htmlFor='inputFormula'>
+                Công thức tính tỉ lệ hoàn thành KPI
+              </label>
+              <br />
+              <input
+                style={{ width: '100%', margin: '10px 0px' }}
+                type='text'
+                className='form-control'
+                id='inputFormula'
+                placeholder='(employeePoint * progressPoint * resultPoint) / 10000'
+                value={formula}
+                onChange={handleChangeFormula}
+              />
+              <div>
+                <span style={{ fontWeight: 800 }}> Ví dụ: </span>
+                (employeePoint * progressPoint * resultPoint) / 10000
+              </div>
+              <div>
+                <span style={{ fontWeight: 800 }}>Tham số:</span>
+              </div>
+              <div>
+                <span style={{ fontWeight: 600 }}>employeePoint</span> - Điểm đánh giá nhân viên
+              </div>
+              <div>
+                <span style={{ fontWeight: 600 }}>progressPoint</span> - Điểm quá trình
+              </div>
+              <div>
+                <span style={{ fontWeight: 600 }}>resultPoint</span> - Điểm kết quả
               </div>
             </div>
           </div>
-          {idUnit && date && !createKpiUnit.currentKPI ? (
-            <div>Đơn vị chưa thiết lập KPI</div>
-          ) : (
-            <div>
-              <label className='control-label' htmlFor='inputFormula' style={{ marginBottom: 10 }}>
-                Danh sách nhân viên{' '}
-              </label>
-              <br />
-              <table className='table table-hover table-bordered'>
-                <thead>
-                  <tr>
-                    <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>
-                      {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}
-                    </th>
-                    <th title={translate('kpi.evaluation.employee_evaluation.name')}>
-                      {translate('kpi.evaluation.employee_evaluation.name')}
-                    </th>
-                    {/* <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th> */}
-                    <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>Chọn</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {employees &&
-                    Object.values(employees).map((item, index) => (
-                      <tr key={organizationalUnitId + index}>
-                        <td style={{ width: '20px' }}>{index + 1}</td>
-                        <td>{item.name}</td>
-                        <td>
-                          <input
-                            type='checkbox'
-                            checked={employees[item.id].check}
-                            onClick={() => {
-                              handleClickCheck(item.id)
-                            }}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </form>
-      </DialogModal>
-    </React.Fragment>
+        </div>
+        {idUnit && date && !createKpiUnit.currentKPI ? (
+          <div>Đơn vị chưa thiết lập KPI</div>
+        ) : (
+          <div>
+            <label className='control-label' htmlFor='inputFormula' style={{ marginBottom: 10 }}>
+              Danh sách nhân viên{' '}
+            </label>
+            <br />
+            <table className='table table-hover table-bordered'>
+              <thead>
+                <tr>
+                  <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>
+                    {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}
+                  </th>
+                  <th title={translate('kpi.evaluation.employee_evaluation.name')}>
+                    {translate('kpi.evaluation.employee_evaluation.name')}
+                  </th>
+                  {/* <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th> */}
+                  <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>Chọn</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employees &&
+                  Object.values(employees).map((item, index) => (
+                    <tr key={organizationalUnitId + index}>
+                      <td style={{ width: '20px' }}>{index + 1}</td>
+                      <td>{item.name}</td>
+                      <td>
+                        <input
+                          type='checkbox'
+                          checked={employees[item.id].check}
+                          onClick={() => {
+                            handleClickCheck(item.id)
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </form>
+    </DialogModal>
   )
 }
 

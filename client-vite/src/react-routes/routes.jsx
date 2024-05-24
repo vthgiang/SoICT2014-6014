@@ -91,6 +91,12 @@ const KPIPersonalEvaluate = lazy(() => import('../modules/kpi/employee/managemen
 const EmployeeKpiManagement = lazy(() => import('../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement'))
 const EmployeeKpiEvaluationDashboard = lazy(() => import('../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard'))
 
+// allocation
+const AffectedFactorManagement = lazy(() => import('../modules/kpi/kpi-allocation/affected-factor-management/component/index'))
+const AllocationManagement = lazy(() => import('../modules/kpi/kpi-allocation/allocation-management/component/index'))
+const ConfigManagement = lazy(() => import('../modules/kpi/kpi-allocation/config-management/component/index'))
+const TaskPackageManagement = lazy(() => import('../modules/kpi/kpi-allocation/task-package-management/component/index'))
+
 const TaskManagement = lazy(() => import('../modules/task/task-management/component/taskManagement'))
 const TaskManagementOfUnit = lazy(() => import('../modules/task/task-management/component/taskManagementOfUnit'))
 const TaskComponent = lazy(() => import('../modules/task/task-perform/component/taskComponent'))

@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { getListTaskPackage } = require('./taskPackage.controller');
+const { getListTaskPackage, getListTaskType, addTaskType, addTask } = require('./taskPackage.controller');
 const { auth } = require(`../../../../middleware`);
 
 // Lấy thông tin tập nhiệm vụ
 router.get('/', auth, getListTaskPackage);
+router.post('/', auth, addTask)
 
-// // Update thông tin cấu hình giải thuật phân bổ KPI
-// router.patch('/config-setting/:id', auth, updateConfigSettingData);
-
-// // Tạo mới thông tin cấu hình giải thuật phân bổ KPI
-// router.put('/config-setting/:id', auth, createConfigSettingData);
+router.get('/task-type', auth, getListTaskType);
+router.post('/task-type', auth, addTaskType);
 
 module.exports = router;

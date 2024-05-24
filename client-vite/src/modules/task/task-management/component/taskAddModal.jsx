@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { DialogModal, QuillEditor, convertImageBase64ToFile } from '../../../../common-components'
+import { DialogModal, convertImageBase64ToFile } from '../../../../common-components'
 import { getStorage } from '../../../../config'
 import { ProjectActions } from '../../../project/projects/redux/actions'
 import { taskManagementActions } from '../redux/actions'
@@ -42,26 +42,26 @@ function TaskAddModal(props) {
   }
 
   const convertDateTime = (date, time) => {
-    let splitter = date.split('-')
-    let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`
+    const splitter = date.split('-')
+    const strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`
     return new Date(strDateTime)
   }
 
   const handleSubmit = async () => {
     const { newTask } = state
-    let startDateTask = convertDateTime(newTask.startDate, newTask.startTime)
-    let endDateTask = convertDateTime(newTask.endDate, newTask.endTime)
-    let imageDescriptions = convertImageBase64ToFile(newTask?.imgs)
+    const startDateTask = convertDateTime(newTask.startDate, newTask.startTime)
+    const endDateTask = convertDateTime(newTask.endDate, newTask.endTime)
+    const imageDescriptions = convertImageBase64ToFile(newTask?.imgs)
 
-    let data = {
+    const data = {
       ...newTask,
       name: newTask?.name ? newTask.name.trim() : newTask?.name,
       startDate: startDateTask,
       endDate: endDateTask,
-      taskProject: projectId ? projectId : newTask.taskProject,
+      taskProject: projectId || newTask.taskProject,
       imgs: null
     }
-    let formData = new FormData()
+    const formData = new FormData()
 
     formData.append('data', JSON.stringify(data))
 
@@ -100,27 +100,25 @@ function TaskAddModal(props) {
   }
 
   return (
-    <React.Fragment>
-      <DialogModal
-        size='100'
-        modalID={`addNewTask-${id}`}
-        isLoading={false}
-        formID={`form-add-new-task-${id}`}
-        func={handleSubmit}
-        title={translate('task.task_management.add_new_task')}
-        disableSubmit={!isFormValidated()}
-      >
-        <AddTaskForm
-          quillId={props.id}
-          handleChangeTaskData={onChangeTaskData}
-          id={id}
-          task={task}
-          parentTask={parentTask}
-          currentTasks={currentTasks}
-          projectIdFromDetailProject={projectId}
-        />
-      </DialogModal>
-    </React.Fragment>
+    <DialogModal
+      size='100'
+      modalID={`addNewTask-${id}`}
+      isLoading={false}
+      formID={`form-add-new-task-${id}`}
+      func={handleSubmit}
+      title={translate('task.task_management.add_new_task')}
+      disableSubmit={!isFormValidated()}
+    >
+      <AddTaskForm
+        quillId={props.id}
+        handleChangeTaskData={onChangeTaskData}
+        id={id}
+        task={task}
+        parentTask={parentTask}
+        currentTasks={currentTasks}
+        projectIdFromDetailProject={projectId}
+      />
+    </DialogModal>
   )
 }
 

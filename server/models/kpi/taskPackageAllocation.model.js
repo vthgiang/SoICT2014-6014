@@ -4,6 +4,9 @@ const { ObjectId } = mongoose.Types;
 
 // Create Schema
 const TaskPackageAllocationSchema = new Schema({
+    name: {
+        type: String,
+    },
     description: {
         type: String,
     },
@@ -29,6 +32,22 @@ const TaskPackageAllocationSchema = new Schema({
     weight: {
         type: Number,
     },
+    taskTypeId: {
+        type: ObjectId,
+        ref: 'TaskType',
+    },
+    requireCertificates: [
+        {
+            type: ObjectId,
+            ref: 'Certificate',
+        },
+    ],
+    requireMajors: [
+        {
+            type: ObjectId,
+            ref: 'Major',
+        },
+    ],
     // TODO: Add affected factor and assign resource? or exp
 });
 

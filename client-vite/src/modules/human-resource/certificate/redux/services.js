@@ -1,21 +1,15 @@
 import { sendRequest } from '../../../../helpers/requestHelper'
 
-export const CertificateService = {
-  getListCertificate,
-  createCertificate,
-  editCertificate,
-  deleteCertificate
-}
 /**
  * Lấy danh sách kỷ luật
  * @data : Dữ liệu key tìm kiếm
  */
-function getListCertificate(data) {
+function getListCertificate(data = undefined) {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/certificates`,
       method: 'GET',
-      params: {
+      params: data !== undefined && {
         name: data.name,
         page: data.page,
         limit: data.limit
@@ -80,4 +74,11 @@ function deleteCertificate(data) {
     true,
     'human_resource.certificate'
   )
+}
+
+export const CertificateService = {
+  getListCertificate,
+  createCertificate,
+  editCertificate,
+  deleteCertificate
 }

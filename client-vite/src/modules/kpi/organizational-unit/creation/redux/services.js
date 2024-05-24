@@ -1,27 +1,4 @@
-import { getStorage } from '../../../../../config'
 import { sendRequest } from '../../../../../helpers/requestHelper'
-
-export const createUnitKpiServices = {
-  getCurrentKPIUnit,
-  getKPIParent,
-  getAllOrganizationalUnitKpiSetByTime,
-  getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
-  addKPIUnit,
-  editKPIUnit,
-  deleteKPIUnit,
-  addTargetKPIUnit,
-  editTargetKPIUnit,
-  deleteTargetKPIUnit,
-
-  createComment,
-  editComment,
-  deleteComment,
-  createChildComment,
-  editChildComment,
-  deleteChildComment,
-  deleteFileComment,
-  deleteFileChildComment
-}
 
 /**
  * Get organizational unit kpi set
@@ -305,4 +282,26 @@ function deleteFileChildComment(fileId, childCommentId, commentId, setKpiId) {
     false,
     true
   )
+}
+
+export const createUnitKpiServices = {
+  getCurrentKPIUnit,
+  getKPIParent,
+  getAllOrganizationalUnitKpiSetByTime,
+  getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
+  addKPIUnit,
+  editKPIUnit,
+  deleteKPIUnit,
+  addTargetKPIUnit,
+  editTargetKPIUnit,
+  deleteTargetKPIUnit,
+
+  createComment,
+  editComment,
+  deleteComment,
+  createChildComment,
+  editChildComment,
+  deleteChildComment,
+  deleteFileComment,
+  deleteFileChildComment
 }

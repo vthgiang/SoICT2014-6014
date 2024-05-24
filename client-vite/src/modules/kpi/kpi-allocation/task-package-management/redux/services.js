@@ -12,6 +12,47 @@ const getTaskPackagesData = () => {
   )
 }
 
+const getTaskTypeData = () => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/kpi/allocation/task-package/task-type`,
+      method: 'GET'
+    },
+    false,
+    false,
+    'kpi'
+  )
+}
+
+const addTaskTypeData = (payload) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/kpi/allocation/task-package/task-type`,
+      method: 'POST',
+      data: payload
+    },
+    true,
+    true,
+    'kpi'
+  )
+}
+
+const addTaskData = (payload) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/kpi/allocation/task-package`,
+      method: 'POST',
+      data: payload
+    },
+    true,
+    true,
+    'kpi'
+  )
+}
+
 export const TaskPackageManagementService = {
-  getTaskPackagesData
+  getTaskPackagesData,
+  getTaskTypeData,
+  addTaskTypeData,
+  addTaskData
 }

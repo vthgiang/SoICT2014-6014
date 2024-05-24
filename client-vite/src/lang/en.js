@@ -114,11 +114,11 @@ export default {
       manage_policy_authorization: 'Manage Authorization Policies',
       manage_policy_delegation: 'Manage Delegation Policies',
       manage_component: 'Manage permissions on page',
-      manage_internal_service_identity: "Manage Internal Service Identity",
-      manage_internal_policies: "Manage Internal Policy",
-      manage_external_policies: "Manage External Policy",
-      manage_external_service_consumers: "Manage External Service Consumer",
-      manage_service_logging: "Manage Service Log",
+      manage_internal_service_identity: 'Manage Internal Service Identity',
+      manage_internal_policies: 'Manage Internal Policy',
+      manage_external_policies: 'Manage External Policy',
+      manage_external_service_consumers: 'Manage External Service Consumer',
+      manage_service_logging: 'Manage Service Log',
       manage_api: 'Manage API',
       manage_delegation: 'Manage Delegation',
       delegation_list: 'Delegation list',
@@ -849,133 +849,133 @@ export default {
       },
 
       internal_service_identity: {
-        add: "Add new internal service identity",
-        view: "View internal service identity",
-        edit: "Edit internal service identity",
-        delete: "Delete internal service identity",
+        add: 'Add new internal service identity',
+        view: 'View internal service identity',
+        edit: 'Edit internal service identity',
+        delete: 'Delete internal service identity',
 
         table: {
-            no: "No.",
-            name: "Name",
-            apiPrefix: "API Prefix",
-            description: "Description",
-            clientId: "Client ID",
-            clientSecret: "Client secret",
-            internalPolicies: "Internal policies",
-            externalPolicies: "External policies",
-            method: "Method",
+          no: 'No.',
+          name: 'Name',
+          apiPrefix: 'API Prefix',
+          description: 'Description',
+          clientId: 'Client ID',
+          clientSecret: 'Client secret',
+          internalPolicies: 'Internal policies',
+          externalPolicies: 'External policies',
+          method: 'Method'
         },
 
         modal: {
-            create_title: 'Create an internal service identity',
-            view_title: "View internal service identity",
-            update_title: 'Update an internal service identity',
-            delete_title: 'Delete an internal service identity'
+          create_title: 'Create an internal service identity',
+          view_title: 'View internal service identity',
+          update_title: 'Update an internal service identity',
+          delete_title: 'Delete an internal service identity'
         },
 
-        //Thông điệp trả về từ server
+        // Thông điệp trả về từ server
         create_internal_service_identity_success: 'Create internal service identity successfully',
         create_internal_service_identity_failure: 'Can not create internal service identity'
       },
 
       external_service_consumer: {
-          add: "Add new external service consumer",
-          view: "View external service consumer",
-          edit: "Edit external service consumer",
-          delete: "Delete external service consumer",
+        add: 'Add new external service consumer',
+        view: 'View external service consumer',
+        edit: 'Edit external service consumer',
+        delete: 'Delete external service consumer',
 
-          table: {
-              no: "No.",
-              name: "Name",
-              attributes: "Attributes",
-              clientId: "Client ID",
-              clientSecret: "Client secret",
-              description: "Description",
-              method: "Method",
-          },
+        table: {
+          no: 'No.',
+          name: 'Name',
+          attributes: 'Attributes',
+          clientId: 'Client ID',
+          clientSecret: 'Client secret',
+          description: 'Description',
+          method: 'Method'
+        },
 
-          modal: {
-              create_title: 'Create an external service consumer',
-              view_title: "View external service consumer",
-              update_title: 'Update an external service consumer',
-              delete_title: 'Delete an external service consumer'
-          },
+        modal: {
+          create_title: 'Create an external service consumer',
+          view_title: 'View external service consumer',
+          update_title: 'Update an external service consumer',
+          delete_title: 'Delete an external service consumer'
+        },
 
-          //Thông điệp trả về từ server
-          create_external_service_consumer_success: 'Create external service consumer successfully',
-          create_external_service_consumer_failure: 'Can not create external service consumer'
+        // Thông điệp trả về từ server
+        create_external_service_consumer_success: 'Create external service consumer successfully',
+        create_external_service_consumer_failure: 'Can not create external service consumer'
       },
 
       internal_policy: {
-          add: "Add new internal policy",
-          view: "View internal policy",
-          edit: "Edit internal policy",
-          delete: "Delete internal policy",
+        add: 'Add new internal policy',
+        view: 'View internal policy',
+        edit: 'Edit internal policy',
+        delete: 'Delete internal policy',
 
-          table: {
-              no: "No.",
-              name: "Name",
-              description: "Description",
-              effect: "Effect",
-              actions: "Actions",
-              resources: "Resources",
-              status: "Status",
-              effectiveStartTime: "Effective start time",
-              effectiveEndTime: "Effective end time",
-              method: "Method",
-          },
+        table: {
+          no: 'No.',
+          name: 'Name',
+          description: 'Description',
+          effect: 'Effect',
+          actions: 'Actions',
+          resources: 'Resources',
+          status: 'Status',
+          effectiveStartTime: 'Effective start time',
+          effectiveEndTime: 'Effective end time',
+          method: 'Method'
+        },
 
-          modal: {
-              create_title: 'Create an internal policy',
-              view_title: "View internal policy",
-              update_title: 'Update an internal policy',
-              delete_title: 'Delete an internal policy'
-          },
+        modal: {
+          create_title: 'Create an internal policy',
+          view_title: 'View internal policy',
+          update_title: 'Update an internal policy',
+          delete_title: 'Delete an internal policy'
+        },
 
-          //Thông điệp trả về từ server
-          create_internal_policy_success: 'Create internal policy successfully',
-          create_internal_policy_failure: 'Can not create internal policy'
+        // Thông điệp trả về từ server
+        create_internal_policy_success: 'Create internal policy successfully',
+        create_internal_policy_failure: 'Can not create internal policy'
       },
 
       external_policy: {
-          add: "Add new external policy",
-          view: "View external policy",
-          edit: "Edit external policy",
-          delete: "Delete external policy",
+        add: 'Add new external policy',
+        view: 'View external policy',
+        edit: 'Edit external policy',
+        delete: 'Delete external policy',
 
-          table: {
-              no: "No.",
-              name: "Name",
-              description: "Description",
-              effect: "Effect",
-              actions: "Actions",
-              resources: "Resources",
-              enabled: "Enabled",
-              condition: "Condition",
-              method: "Method",
-          },
+        table: {
+          no: 'No.',
+          name: 'Name',
+          description: 'Description',
+          effect: 'Effect',
+          actions: 'Actions',
+          resources: 'Resources',
+          enabled: 'Enabled',
+          condition: 'Condition',
+          method: 'Method'
+        },
 
-          modal: {
-              create_title: 'Create an external policy',
-              view_title: "View external policy",
-              update_title: 'Update an external policy',
-              delete_title: 'Delete an external policy'
-          },
+        modal: {
+          create_title: 'Create an external policy',
+          view_title: 'View external policy',
+          update_title: 'Update an external policy',
+          delete_title: 'Delete an external policy'
+        },
 
-          //Thông điệp trả về từ server
-          create_external_policy_success: 'Create external policy successfully',
-          create_external_policy_failure: 'Can not create external policy'
+        // Thông điệp trả về từ server
+        create_external_policy_success: 'Create external policy successfully',
+        create_external_policy_failure: 'Can not create external policy'
       },
 
       service_logging: {
-          table: {
-              no: "No.",
-              type: "Type",
-              target: "Target",
-              status: "Status",
-              payload: "Payload",
-              timestamp: "Timestamp",
-          },
+        table: {
+          no: 'No.',
+          type: 'Type',
+          target: 'Target',
+          status: 'Status',
+          payload: 'Payload',
+          timestamp: 'Timestamp'
+        }
       },
 
       system_page: {
@@ -5331,11 +5331,36 @@ export default {
           title: 'Task package management',
           table: {
             task_type: 'Task Type',
+            name: 'Task name',
             description: 'Description',
             target: 'Target',
             unit: 'Unit',
             kpi_metric: 'Kpi Metric',
-            weight: 'Weight'
+            weight: 'Weight',
+            start_date: 'Start date',
+            end_date: 'End date',
+            duration: 'Duration',
+            pre_tasks: 'Previous task',
+            sub_tasks: 'Sub task',
+            requirements: 'requirements',
+            affected_factors: 'Affected factors'
+          },
+          add_model: {
+            model_name: 'Add new task package',
+            task_type_label: 'Task Type',
+            task_name: 'Task Name',
+            task_description: 'Task description',
+            start_date: 'Start date',
+            end_date: 'End date',
+            duration: 'Duration',
+            target: 'Target',
+            unit: 'Unit',
+            task_kpi_detail: 'Ánh xạ task sang kpi',
+            goal: 'KPI cần ánh xạ',
+            weight: 'Weight',
+            resource_requirement: 'Resource requirement',
+            require_certificate: 'Require certificate',
+            require_major: 'Require major'
           }
         }
       }

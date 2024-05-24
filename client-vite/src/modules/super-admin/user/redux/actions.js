@@ -1,26 +1,6 @@
 import { UserServices } from './services'
 import { UserConstants } from './constants'
 
-export const UserActions = {
-  get,
-  getRoleSameDepartment,
-  getAllUserOfCompany,
-  getAllUserOfDepartment,
-  getAllUserSameDepartment,
-  getDepartmentOfUser,
-  getChildrenOfOrganizationalUnitsAsTree,
-  getAllUserInAllUnitsOfCompany,
-  getAllEmployeeOfUnitByRole,
-  getAllEmployeeOfUnitByIds,
-  getAllUsersWithRole,
-  edit,
-  create,
-  destroy,
-  importUsers,
-  sendEmailResetPasswordUser,
-  createUserAttribute
-}
-
 /**
  * Lấy danh sách tất cả user trong 1 công ty
  */
@@ -465,4 +445,24 @@ function createUserAttribute(data) {
         })
       })
   }
+}
+
+export const UserActions = {
+  get,
+  getRoleSameDepartment,
+  getAllUserOfCompany,
+  getAllUserOfDepartment,
+  getAllUserSameDepartment,
+  getDepartmentOfUser,
+  getChildrenOfOrganizationalUnitsAsTree,
+  getAllUserInAllUnitsOfCompany,
+  getAllEmployeeOfUnitByRole,
+  getAllEmployeeOfUnitByIds,
+  getAllUsersWithRole,
+  edit,
+  create,
+  destroy,
+  importUsers,
+  sendEmailResetPasswordUser,
+  createUserAttribute
 }

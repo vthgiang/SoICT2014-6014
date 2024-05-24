@@ -113,11 +113,11 @@ export default {
       manage_policy_authorization: 'Chính sách phân quyền',
       manage_policy_delegation: 'Chính sách ủy quyền',
       manage_component: 'Quản lý phân quyền trên các trang',
-      manage_internal_service_identity: "Quản lý dịch vụ",
-      manage_internal_policies: "Quản lý chính sách phân quyền dịch vụ nội bộ",
-      manage_external_policies: "Quản lý chính sách phân quyền sử dụng dịch vụ nội bộ",
-      manage_external_service_consumers: "Quản lý sử dụng dịch vụ",
-      manage_service_logging: "Quản lý log dịch vụ",
+      manage_internal_service_identity: 'Quản lý dịch vụ',
+      manage_internal_policies: 'Quản lý chính sách phân quyền dịch vụ nội bộ',
+      manage_external_policies: 'Quản lý chính sách phân quyền sử dụng dịch vụ nội bộ',
+      manage_external_service_consumers: 'Quản lý sử dụng dịch vụ',
+      manage_service_logging: 'Quản lý log dịch vụ',
       manage_api: 'Quản lý API',
       manage_delegation: 'Quản lý ủy quyền',
       delegation_list: 'Danh sách ủy quyền',
@@ -902,28 +902,28 @@ export default {
       },
 
       internal_service_identity: {
-        add: "Thêm mới dịch vụ nội bộ",
-        view: "Thông tin chi tiết dịch vụ",
-        edit: "Sửa thông tin dịch vụ",
-        delete: "Xóa dịch vụ",
+        add: 'Thêm mới dịch vụ nội bộ',
+        view: 'Thông tin chi tiết dịch vụ',
+        edit: 'Sửa thông tin dịch vụ',
+        delete: 'Xóa dịch vụ',
 
         table: {
-            no: "STT",
-            name: "Tên dịch vụ",
-            apiPrefix: "Tiền tố API",
-            description: "Mô tả",
-            clientId: "Mã định danh dịch vụ",
-            clientSecret: "Mã bí mật dịch vụ",
-            internalPolicies: "Chính sách nội bộ",
-            externalPolicies: "Chính sách phân quyền dịch vụ bên ngoài",
-            method: "Hành động",
+          no: 'STT',
+          name: 'Tên dịch vụ',
+          apiPrefix: 'Tiền tố API',
+          description: 'Mô tả',
+          clientId: 'Mã định danh dịch vụ',
+          clientSecret: 'Mã bí mật dịch vụ',
+          internalPolicies: 'Chính sách nội bộ',
+          externalPolicies: 'Chính sách phân quyền dịch vụ bên ngoài',
+          method: 'Hành động'
         },
 
         modal: {
-            create_title: 'Tạo mới dịch vụ nội bộ',
-            view_title: "Chi tiết dịch vụ nội bộ",
-            update_title: 'Cập nhật dịch vụ nội bộ',
-            delete_title: 'Xóa dịch vụ nội bộ'
+          create_title: 'Tạo mới dịch vụ nội bộ',
+          view_title: 'Chi tiết dịch vụ nội bộ',
+          update_title: 'Cập nhật dịch vụ nội bộ',
+          delete_title: 'Xóa dịch vụ nội bộ'
         },
 
         //Thông điệp trả về từ server
@@ -932,103 +932,103 @@ export default {
       },
 
       external_service_consumer: {
-          add: "Đăng ký sử dụng dịch vụ",
-          view: "Thông tin sử dụng dịch vụ",
-          edit: "Sửa thông tin sử dụng dịch vụ",
-          delete: "Hủy sử dụng dịch vụ",
+        add: 'Đăng ký sử dụng dịch vụ',
+        view: 'Thông tin sử dụng dịch vụ',
+        edit: 'Sửa thông tin sử dụng dịch vụ',
+        delete: 'Hủy sử dụng dịch vụ',
 
-          table: {
-              no: "STT",
-              name: "Tên thực thể sử dụng dịch vụ",
-              attributes: "Thuộc tính",
-              clientId: "Mã định danh",
-              clientSecret: "Mã bí mật",
-              description: "Mô tả",
-              method: "Hành động",
-          },
+        table: {
+          no: 'STT',
+          name: 'Tên thực thể sử dụng dịch vụ',
+          attributes: 'Thuộc tính',
+          clientId: 'Mã định danh',
+          clientSecret: 'Mã bí mật',
+          description: 'Mô tả',
+          method: 'Hành động'
+        },
 
-          modal: {
-              create_title: 'Đăng ký sử dụng dịch vụ',
-              view_title: "Thông tin sử dụng dịch vụ",
-              update_title: 'Sửa thông tin sử dụng dịch vụ',
-              delete_title: 'Hủy sử dụng dịch vụ'
-          },
+        modal: {
+          create_title: 'Đăng ký sử dụng dịch vụ',
+          view_title: 'Thông tin sử dụng dịch vụ',
+          update_title: 'Sửa thông tin sử dụng dịch vụ',
+          delete_title: 'Hủy sử dụng dịch vụ'
+        },
 
-          //Thông điệp trả về từ server
-          create_external_service_consumer_success: 'Đăng ký sử dụng dịch vụ thành công',
-          create_external_service_consumer_failure: 'Đăng ký sử dụng dịch vụ thất bại'
+        //Thông điệp trả về từ server
+        create_external_service_consumer_success: 'Đăng ký sử dụng dịch vụ thành công',
+        create_external_service_consumer_failure: 'Đăng ký sử dụng dịch vụ thất bại'
       },
 
       internal_policy: {
-          add: "Thêm mới chính sách",
-          view: "Chi tiết chính sách",
-          edit: "Cập nhật chính sách",
-          delete: "Xóa chính sách",
+        add: 'Thêm mới chính sách',
+        view: 'Chi tiết chính sách',
+        edit: 'Cập nhật chính sách',
+        delete: 'Xóa chính sách',
 
-          table: {
-              no: "No.",
-              name: "Tên chính sách",
-              description: "Mô tả",
-              effect: "Tác động",
-              actions: "Hành động",
-              resources: "Tài nguyên",
-              status: "Trạng thái",
-              effectiveStartTime: "Ngày bắt đầu hiệu lực",
-              effectiveEndTime: "Ngày kết thúc hiệu lực",
-              method: "Hành động",
-          },
+        table: {
+          no: 'No.',
+          name: 'Tên chính sách',
+          description: 'Mô tả',
+          effect: 'Tác động',
+          actions: 'Hành động',
+          resources: 'Tài nguyên',
+          status: 'Trạng thái',
+          effectiveStartTime: 'Ngày bắt đầu hiệu lực',
+          effectiveEndTime: 'Ngày kết thúc hiệu lực',
+          method: 'Hành động'
+        },
 
-          modal: {
-              create_title: 'Thêm mới chính sách',
-              view_title: "Chi tiết chính sách",
-              update_title: 'Cập nhật chính sách',
-              delete_title: 'Xóa chính sách'
-          },
+        modal: {
+          create_title: 'Thêm mới chính sách',
+          view_title: 'Chi tiết chính sách',
+          update_title: 'Cập nhật chính sách',
+          delete_title: 'Xóa chính sách'
+        },
 
-          //Thông điệp trả về từ server
-          create_internal_policy_success: 'Thêm mới chính sách thành công',
-          create_internal_policy_failure: 'Thêm mới chính sách thất bại'
+        //Thông điệp trả về từ server
+        create_internal_policy_success: 'Thêm mới chính sách thành công',
+        create_internal_policy_failure: 'Thêm mới chính sách thất bại'
       },
 
       external_policy: {
-          add: "Thêm mới chính sách",
-          view: "Chi tiết chính sách",
-          edit: "Cập nhật chính sách",
-          delete: "Xóa chính sách",
+        add: 'Thêm mới chính sách',
+        view: 'Chi tiết chính sách',
+        edit: 'Cập nhật chính sách',
+        delete: 'Xóa chính sách',
 
-          table: {
-              no: "No.",
-              name: "Tên chính sách",
-              description: "Mô tả",
-              effect: "Tác động",
-              actions: "Hành động",
-              resources: "Tài nguyên",
-              enabled: "Trạng thái kích hoạt",
-              condition: "Điều kiện",
-              method: "Hành động",
-          },
+        table: {
+          no: 'No.',
+          name: 'Tên chính sách',
+          description: 'Mô tả',
+          effect: 'Tác động',
+          actions: 'Hành động',
+          resources: 'Tài nguyên',
+          enabled: 'Trạng thái kích hoạt',
+          condition: 'Điều kiện',
+          method: 'Hành động'
+        },
 
-          modal: {
-              create_title: 'Thêm mới chính sách',
-              view_title: "Chi tiết chính sách",
-              update_title: 'Cập nhật chính sách',
-              delete_title: 'Xóa chính sách'
-          },
+        modal: {
+          create_title: 'Thêm mới chính sách',
+          view_title: 'Chi tiết chính sách',
+          update_title: 'Cập nhật chính sách',
+          delete_title: 'Xóa chính sách'
+        },
 
-          //Thông điệp trả về từ server
-          create_external_policy_success: 'Thêm mới chính sách thành công',
-          create_external_policy_failure: 'Thêm mới chính sách thất bại'
+        //Thông điệp trả về từ server
+        create_external_policy_success: 'Thêm mới chính sách thành công',
+        create_external_policy_failure: 'Thêm mới chính sách thất bại'
       },
 
       service_logging: {
-          table: {
-              no: "No.",
-              type: "Loại log",
-              target: "Mục tiêu",
-              status: "Trạng thái",
-              payload: "Dữ liệu",
-              timestamp: "Thời gian",
-          },
+        table: {
+          no: 'No.',
+          type: 'Loại log',
+          target: 'Mục tiêu',
+          status: 'Trạng thái',
+          payload: 'Dữ liệu',
+          timestamp: 'Thời gian'
+        }
       },
 
       system_page: {
@@ -1742,7 +1742,7 @@ export default {
       add: 'Thêm',
       add_title: 'Thêm tài khoản người dùng mới',
       add_common: 'Nhập tay',
-      import: 'Thêm dữ liệu từ file',
+      import: 'Thêm dữ liệu từ Chỉnh sửa thông tin tài khoản người dùng',
       import_title: 'Thêm dữ liệu người dùng từ file',
       info: 'Thông tin về tài khoản người dùng',
       edit: 'Chỉnh sửa thông tin tài khoản người dùng',
@@ -5384,11 +5384,36 @@ export default {
           title: 'Quản lý tập nhiệm vụ',
           table: {
             task_type: 'Loại nhiệm vụ',
+            name: 'Tên nhiệm vụ',
             description: 'Mô tả',
             target: 'Chỉ tiêu',
-            unit: 'Unit',
+            unit: 'Đơn vị',
             kpi_metric: 'Kpi Metric',
-            weight: 'Trọng số'
+            weight: 'Trọng số',
+            start_date: 'Ngày bắt đầu',
+            end_date: 'Ngày kết thúc',
+            duration: 'Tổng thời gian làm',
+            pre_tasks: 'Những nhiệm vụ cần thực hiện trước',
+            sub_tasks: 'Những nhiệm vụ thực hiện sau',
+            requirements: 'Yêu cầu nhiệm vụ',
+            affected_factors: 'Yếu tố ảnh hưởng'
+          },
+          add_model: {
+            model_name: 'Thêm tập nhiệm vụ mới',
+            task_type_label: 'Loại nhiệm vụ',
+            task_name: 'Nhiệm vụ',
+            task_description: 'Mô tả nhiệm vụ',
+            start_date: 'Ngày bắt đầu',
+            end_date: 'Ngày kết thúc',
+            duration: 'Tổng thời gian làm',
+            target: 'Chỉ tiêu',
+            unit: 'Đơn vị',
+            task_kpi_detail: 'Ánh xạ task sang kpi',
+            goal: 'KPI cần ánh xạ',
+            weight: 'Trọng số',
+            resource_requirement: 'Yêu cầu về người thực hiện',
+            require_certificate: 'Yêu cầu về chứng chỉ',
+            require_major: 'Yêu cầu về bằng cấp'
           }
         }
       }

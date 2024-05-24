@@ -1,78 +1,103 @@
 const Logger = require(`../../../../logs`);
 const TaskPackageService = require('./taskPackage.service');
+const TaskTypeService = require('./taskType.service');
 
-// /**
-//  * Get list task package
-//  */
-const getListTaskPackage = async (request, response) => {
+const getListTaskType = async (request, response) => {
+    const { company, email } = request.user;
+    const portal = request.portal;
     try {
-        const { company, email } = request.user
-        const portal = request.portal
         const company_id = company._id;
-        console.log(123)
-
+        const result = await TaskTypeService.getListTaskType(company_id, portal);
+        Logger.info(email, `Get kpi allocation's task type`, portal);
+        response.status(200).json({
+            success: true,
+            messages: ['get_kpi_allocation_task_type_success'],
+            content: result,
+        });
     } catch (error) {
-        Logger.error(email, `Get list task package`, portal)
+        Logger.error(email, `Get list task package`, portal);
+        response.status(401).json({
+            success: false,
+            messages: ['get_kpi_allocation_task_type_fail'],
+            content: error,
+        });
+    }
+};
+
+const addTaskType = async (request, response) => {
+    const { company, email } = request.user;
+    const portal = request.portal;
+    const payload = request.body;
+    try {
+        const company_id = company._id;
+        const result = await TaskTypeService.addTaskType(company_id, portal, payload);
+        Logger.info(email, `Add kpi allocation's task type`, portal);
+        response.status(200).json({
+            success: true,
+            messages: ['add_kpi_allocation_task_type_success'],
+            content: result,
+        });
+    } catch (error) {
+        Logger.error(email, `Add list task package`, portal);
+        response.status(401).json({
+            success: false,
+            messages: ['add_kpi_allocation_task_type_fail'],
+            content: error,
+        });
+    }
+};
+
+const getListTaskPackage = async (request, response) => {
+    const { company, email } = request.user;
+    const portal = request.portal;
+
+    try {
+        const company_id = company._id;
+
+        const result = await TaskPackageService.getAllTaskPackage(company_id, portal);
+        Logger.info(email, `Get task package success`, portal);
+        response.status(200).json({
+            success: true,
+            messages: ['get_kpi_allocation_task_package_success'],
+            content: result,
+        });
+    } catch (error) {
+        Logger.error(email, `Get list task package`, portal);
         response.status(401).json({
             success: false,
             messages: ['get_list_task_package_fail'],
-            content: error
-        })
+            content: error,
+        });
     }
-}
-// const getConfigSettingData = async (request, response) => {
-//     try {
-//         const { company, email } = request.user;
-//         const portal = request.portal;
-//         const company_id = company._id;
+};
 
-//         const result = await ConfigSettingService.getConfigSettingData(company_id, portal);
-//         Logger.info(email, `Get kpi allocation's config setting`, portal);
-//         response.status(200).json({
-//             success: true,
-//             messages: ['get_kpi_allocation_config_setting_success'],
-//             content: result[0],
-//         });
-//     } catch (error) {
-//         Logger.error(email, `Get kpi allocation's config setting`, portal);
-//         response.status(401).json({
-//             success: false,
-//             messages: ['get_kpi_allocation_config_setting_fail'],
-//             content: error,
-//         });
-//     }
-// };
+const addTask = async (request, response) => {
+    const { company, email } = request.user;
+    const portal = request.portal;
+    const payload = request.body;
 
-// const updateConfigSettingData = async (request, response) => {
-//     try {
-//         const payload = request.body;
-//         const { isReset, ...updates } = payload;
-//         const { id } = request.params;
-//         const portal = request.portal;
-//         const { email } = request.user;
-
-//         const result = await ConfigSettingService.updateConfigSettingData(id, updates, portal);
-
-//         Logger.info(email, `Update kpi allocation's config setting`, portal);
-//         response.status(200).json({
-//             success: true,
-//             messages: isReset === true ? ['reset_kpi_allocation_config_setting_success'] : ['update_kpi_allocation_config_setting_success'],
-//             content: result[0],
-//         });
-//     } catch (error) {
-//         Logger.error(email, `Update kpi allocation's config setting`, portal);
-//         response.status(401).json({
-//             success: false,
-//             messages: ['update_kpi_allocation_config_setting_fail'],
-//             content: error,
-//         });
-//     }
-// };
-
-// const createConfigSettingData = async (request, response) => {
-//     console.log(123);
-// };
+    try {
+        const company_id = company._id;
+        const result = await TaskPackageService.addTaskDetail(company_id, portal, payload)
+        Logger.info(email, `Add kpi allocation's task`, portal);
+        response.status(200).json({
+            success: true,
+            messages: ['add_kpi_allocation_task_success'],
+            content: result,
+        });
+    } catch (error) {
+        Logger.error(email, `Add task package`, portal);
+        response.status(401).json({
+            success: false,
+            messages: ['add_kpi_allocation_task_fail'],
+            content: error,
+        });
+    }
+};
 
 module.exports = {
     getListTaskPackage,
+    getListTaskType,
+    addTaskType,
+    addTask,
 };

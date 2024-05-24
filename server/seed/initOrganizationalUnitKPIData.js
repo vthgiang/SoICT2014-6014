@@ -14,6 +14,8 @@ const {
     OrganizationalUnit,
     Task,
     TaskPackageAllocation,
+    TaskType,
+    Company,
 } = require('../models');
 
 require('dotenv').config();
@@ -42,6 +44,10 @@ const initSampleCompanyDB = async () => {
                   useFindAndModify: false,
               };
     const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`, connectOptions);
+    const systemDB = mongoose.createConnection(
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
+        connectOptions
+    );
     if (!vnistDB) throw 'DB vnist cannot connect';
     console.log('DB vnist connected');
 
@@ -60,6 +66,8 @@ const initSampleCompanyDB = async () => {
         if (!db.models.OrganizationalUnit) OrganizationalUnit(db);
         if (!db.models.Task) Task(db);
         if (!db.models.TaskPackageAllocation) TaskPackageAllocation(db);
+        if (!db.models.TaskType) TaskType(db);
+        if (!db.models.Company) Company(db);
 
         console.log('models_list', db.models);
     };
@@ -2308,7 +2316,36 @@ const initSampleCompanyDB = async () => {
 
     console.log('Khởi tạo xong dữ liệu gói nhiệm vụ phân bổ KPI');
 
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU TẬP NHIỆM VỤ PHÂN BỔ KPI
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+    console.log('Khởi tạo dữ liệu tập nhiệm vụ phân bổ KPI');
+
+    const vnist = await Company(systemDB).findOne({
+        shortName: 'vnist',
+    });
+
+    await TaskType(vnistDB).insertMany([
+        {
+            name: 'Theo dõi hàng xuất nhập tồn',
+            company_id: vnist._id,
+        },
+        {
+            name: 'Theo dõi những mặt hàng khó bán, bán chậm, lên phương án để giảm hàng tồn kho',
+            company_id: vnist._id,
+        },
+        {
+            name: 'Theo dõi những mặt hàng hư hỏng đổi trả bảo hành',
+            company_id: vnist._id,
+        },
+    ]);
+
+    console.log('Khởi tạo xong dữ liệu tập nhiệm vụ phân bổ KPI');
+
     vnistDB.close();
+    systemDB.close();
 
     console.log('End init sample company database!');
 };
