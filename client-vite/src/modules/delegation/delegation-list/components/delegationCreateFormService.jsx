@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { withTranslate } from 'react-redux-multilingual'
 import dayjs from 'dayjs'
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker } from '../../../../common-components'
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker, SelectMulti } from '../../../../common-components'
 import ValidationHelper from '../../../../helpers/validationHelper'
 import { DelegationActions } from '../redux/actions'
 import { InternalServiceIdentityActions } from '../../../system-admin/internal-service-identity/redux/actions'
@@ -11,7 +11,7 @@ import { ExternalServiceConsumerActions } from '../../../super-admin/external-se
 import { DelegationFormValidator } from './delegationFormValidator'
 import './selectLink.css'
 import { generateCode } from '../../../../helpers/generateCode'
-import { SystemApiActions } from '../../../system-admin/system-api/system-api-management/redux/actions'
+import { sendRequest } from '../../../../helpers/requestHelper'
 
 function DelegationCreateFormService(props) {
   const [state, setState] = useState({
@@ -33,7 +33,8 @@ function DelegationCreateFormService(props) {
     delegationStart: '',
     delegationEnd: '',
     // delegatePolicy: '',
-    delegateResources: [],
+    delegateApis: [],
+    apisServiceCanAccess: [],
     allServices: []
   })
   const {
@@ -49,13 +50,14 @@ function DelegationCreateFormService(props) {
     delegationEnd,
     // delegatePolicy,
     // errorDelegatePolicy,
-    delegateResources,
-    errorDelegateResources,
+    delegateApis,
+    errorDelegateApis,
+    apisServiceCanAccess,
     allServices
   } = state
 
-  const { translate, systemApis, internalServiceIdentities, externalServiceConsumers } = props
-  const { getSystemApis, getInternalServiceIdentities, getExternalServiceConsumers, createServiceDelegation } = props
+  const { internalServiceIdentities, externalServiceConsumers } = props
+  const { translate, getInternalServiceIdentities, getExternalServiceConsumers, createServiceDelegation } = props
 
   const convertDateTime = (date, time) => {
     const splitter = date.split('-')
@@ -125,10 +127,6 @@ function DelegationCreateFormService(props) {
   }
 
   useEffect(() => {
-    getSystemApis({
-      page: 1,
-      perPage: 10000
-    })
     getInternalServiceIdentities({
       page: 1,
       perPage: 1000
@@ -138,6 +136,26 @@ function DelegationCreateFormService(props) {
       perPage: 1000
     })
   }, [])
+
+  const SERVICE_IDENTITY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/authorization/internal-service-identities`
+  useEffect(() => {
+    if (delegator) {
+      sendRequest(
+        {
+          url: `${SERVICE_IDENTITY_BASE_API_URL}/internal-service-identities/get-api-service-can-access/${delegator}`,
+          method: 'GET'
+        },
+        false,
+        false,
+        'system_admin.internal_service_identity'
+      ).then((res) => {
+        setState({
+          ...state,
+          apisServiceCanAccess: res.data.content
+        })
+      })
+    }
+  }, [delegator])
 
   useEffect(() => {
     if (internalServiceIdentities?.listInternalServiceIdentity && externalServiceConsumers?.listExternalServiceConsumer) {
@@ -163,12 +181,9 @@ function DelegationCreateFormService(props) {
       delegator,
       delegatee,
       delegationStart: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
-      delegationEnd: delegationEnd != '' ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
+      delegationEnd: delegationEnd !== '' ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
       // delegatePolicy: delegatePolicy,
-      delegateResources: delegateResources.map((id) => {
-        const api = systemApis.listPaginateApi.find((api) => api._id == id)
-        return { url: api.path, action: api.method }
-      })
+      delegateApis
     }
     if (isFormValidated() && delegationName) {
       return createServiceDelegation([data])
@@ -266,24 +281,24 @@ function DelegationCreateFormService(props) {
   //   return msg === undefined
   // }
 
-  const validateDelegateResources = (value, willUpdateState) => {
+  const validateDelegateApis = (value, willUpdateState) => {
     let msg
     if (!value || value.length == 0) {
-      msg = translate('manage_delegation.no_blank_delegate_resources')
+      msg = translate('manage_delegation.no_blank_delegate_apis')
     }
 
     if (willUpdateState) {
       setState({
         ...state,
-        delegateResources: value,
-        errorDelegateResources: msg
+        delegateApis: value,
+        errorDelegateApis: msg
       })
     }
     return msg === undefined
   }
 
-  const handleDelegateResources = (value) => {
-    validateDelegateResources(value, true)
+  const handleDelegateApis = (value) => {
+    validateDelegateApis(value, true)
   }
 
   const validateServiceStartDate = (value, willUpdateState = true) => {
@@ -446,29 +461,33 @@ function DelegationCreateFormService(props) {
         </div>
 
         <div className='row form-group'>
-          {/* Chọn resources */}
+          {/* Chọn apis */}
           <div
             style={{ marginBottom: '0px' }}
-            className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegateResources === undefined ? '' : 'has-error'}`}
+            className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegateApis === undefined ? '' : 'has-error'}`}
           >
             <label>
-              {translate('manage_delegation.choose_delegate_resources')}
+              {translate('manage_delegation.choose_delegate_apis')}
               <span className='text-red'>*</span>
             </label>
-            {systemApis?.listPaginateApi && (
-              <SelectBox
-                id='select-resources-create'
+            {apisServiceCanAccess && (
+              <SelectMulti
+                id='select-apis-create'
                 className='form-control select2'
-                style={{ width: '100%' }}
-                items={systemApis?.listPaginateApi?.map((api) => {
+                multiple='multiple'
+                options={{
+                  nonSelectedText: translate('manage_delegation.choose_delegate_apis'),
+                  allSelectedText: translate('manage_delegation.select_all_apis'),
+                  enableFilter: true,
+                  placeholder: translate('manage_delegation.choose_delegate_apis')
+                }}
+                onChange={handleDelegateApis}
+                items={apisServiceCanAccess.map((api) => {
                   return { value: api._id, text: `${api.path} - ${api.method}` }
                 })}
-                multiple
-                options={{ placeholder: translate('manage_delegation.choose_delegate_resources') }}
-                onChange={handleDelegateResources}
               />
             )}
-            <ErrorLabel content={errorDelegateResources} />
+            <ErrorLabel content={errorDelegateApis} />
           </div>
         </div>
 
@@ -581,13 +600,12 @@ function DelegationCreateFormService(props) {
 }
 
 function mapState(state) {
-  const { auth, user, policyDelegation, systemApis, internalServiceIdentities, externalServiceConsumers } = state
-  return { auth, user, policyDelegation, systemApis, internalServiceIdentities, externalServiceConsumers }
+  const { auth, user, policyDelegation, internalServiceIdentities, externalServiceConsumers } = state
+  return { auth, user, policyDelegation, internalServiceIdentities, externalServiceConsumers }
 }
 
 const actions = {
   // getPolicies: PolicyActions.getPolicies,
-  getSystemApis: SystemApiActions.getSystemApis,
   getInternalServiceIdentities: InternalServiceIdentityActions.getInternalServiceIdentities,
   getExternalServiceConsumers: ExternalServiceConsumerActions.getExternalServiceConsumers,
   createServiceDelegation: DelegationActions.createServiceDelegation

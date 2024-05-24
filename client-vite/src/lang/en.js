@@ -2090,6 +2090,7 @@ export default {
       choose_delegate_links: 'Select links',
       choose_revoke: 'Automatic revocation',
       select_all_links: 'Select all links',
+      select_all_apis: 'Select all APIs',
       edit: 'Edit this delegation',
       delete: 'Delete this delegation',
       delete_success: 'Delete role delegation successfully!',
@@ -2178,16 +2179,16 @@ export default {
       choose_delegateTaskName: 'Choose delegate task',
       no_blank_delegate_task: 'Delegate task must not be empty',
       service_delegation_title: 'Service delegation',
-      choose_delegate_resources: 'Choose resources',
+      choose_delegate_apis: 'Choose API',
       service_delegation_title_add: 'Add a service delegation',
       service_delegation_title_edit: 'Edit a service delegation',
-      no_blank_delegate_resources: 'Delegate resources must not be empty',
+      no_blank_delegate_apis: 'Delegate API must not be empty',
       delegatee_service: 'Delegatee Service',
       delegator_service: 'Delegator Service',
       choose_delegatee_service: 'Choose delegatee service',
       choose_delegator_service: 'Choose delegator service',
-      delegate_resources: 'Delegate resources',
-      resource: {
+      delegate_apis: 'Delegate API',
+      api: {
         url: 'URL',
         action: 'Action'
       },

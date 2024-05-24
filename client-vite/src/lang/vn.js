@@ -2140,6 +2140,7 @@ export default {
       choose_delegatee: 'Chọn người nhận ủy quyền',
       choose_delegate_links: 'Chọn trang',
       select_all_links: 'Chọn tất cả trang',
+      select_all_apis: 'Chọn tất API',
       choose_revoke: 'Thu hồi ủy quyền tự động',
       edit: 'Chỉnh sửa thông tin ủy quyền',
       delete: 'Xóa ủy quyền',
@@ -2229,16 +2230,16 @@ export default {
       choose_delegateTaskName: 'Chọn công việc ủy quyền',
       no_blank_delegate_task: 'Công việc ủy quyền không được bỏ trống',
       service_delegation_title: 'Ủy quyền dịch vụ',
-      choose_delegate_resources: 'Chọn tài nguyên',
+      choose_delegate_apis: 'Chọn API',
       service_delegation_title_add: 'Thêm ủy quyền dịch vụ',
       service_delegation_title_edit: 'Chỉnh sửa ủy quyền dịch vụ',
-      no_blank_delegate_resources: 'Tài nguyên ủy quyền không được bỏ trống',
+      no_blank_delegate_apis: 'API ủy quyền không được bỏ trống',
       delegatee_service: 'Dịch vụ nhận ủy quyền',
       delegator_service: 'Dịch vụ ủy quyền',
       choose_delegatee_service: 'Chọn dịch vụ nhận ủy quyền',
       choose_delegator_service: 'Chọn dịch vụ ủy quyền',
-      delegate_resources: 'Tài nguyên ủy quyền',
-      resource: {
+      delegate_apis: 'API ủy quyền',
+      api: {
         url: 'URL',
         action: 'Hành động'
       },

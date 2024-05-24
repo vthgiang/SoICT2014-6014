@@ -3,14 +3,14 @@ import { connect } from 'react-redux'
 
 import { withTranslate } from 'react-redux-multilingual'
 import dayjs from 'dayjs'
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker } from '../../../../common-components'
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker, SelectMulti } from '../../../../common-components'
 import ValidationHelper from '../../../../helpers/validationHelper'
 import { DelegationActions } from '../redux/actions'
 import { InternalServiceIdentityActions } from '../../../system-admin/internal-service-identity/redux/actions'
 import { ExternalServiceConsumerActions } from '../../../super-admin/external-service-consumer/redux/actions'
 import { DelegationFormValidator } from './delegationFormValidator'
 import './selectLink.css'
-import { SystemApiActions } from '../../../system-admin/system-api/system-api-management/redux/actions'
+import { sendRequest } from '../../../../helpers/requestHelper'
 
 function DelegationEditFormService(props) {
   const [state, setState] = useState({
@@ -33,7 +33,8 @@ function DelegationEditFormService(props) {
     delegationStart: '',
     delegationEnd: '',
     // delegatePolicy: '',
-    delegateResources: [],
+    delegateApis: [],
+    apisServiceCanAccess: [],
     allServices: []
   })
   const {
@@ -50,32 +51,26 @@ function DelegationEditFormService(props) {
     delegationEnd,
     // delegatePolicy,
     // errorDelegatePolicy,
-    delegateResources,
-    errorDelegateResources,
+    delegateApis,
+    errorDelegateApis,
+    apisServiceCanAccess,
     allServices
   } = state
 
-  const { translate, systemApis, internalServiceIdentities, externalServiceConsumers } = props
-  const { getSystemApis, getInternalServiceIdentities, getExternalServiceConsumers, editServiceDelegation } = props
+  const { translate, internalServiceIdentities, externalServiceConsumers } = props
+  const { getInternalServiceIdentities, getExternalServiceConsumers, editServiceDelegation } = props
 
   useEffect(() => {
     if (props.delegationID !== state.delegationID) {
-      let newDelegateResources = []
-      if (systemApis?.listPaginateApi) {
-        newDelegateResources = (props.delegateResources ?? []).map((resource) => {
-          const api = systemApis.listPaginateApi.find((x) => x.path == resource.url && x.method == resource.action)
-          return api?._id
-        })
-      }
       setState({
         ...state,
         delegationID: props.delegationID,
         delegationName: props.delegationName,
         description: props.description,
-        delegator: props.delegator?._id,
-        delegatee: props.delegatee?._id,
+        delegator: props.delegator?._id ?? props.delegator,
+        delegatee: props.delegatee?._id ?? props.delegatee,
         delegateType: props.delegateType,
-        delegateResources: newDelegateResources,
+        delegateApis: props.delegateApis,
         status: props.status,
         delegateDuration: {
           startDate: formatDate(props.startDate),
@@ -112,10 +107,6 @@ function DelegationEditFormService(props) {
   }
 
   useEffect(() => {
-    getSystemApis({
-      page: 1,
-      perPage: 10000
-    })
     getInternalServiceIdentities({
       page: 1,
       perPage: 1000
@@ -125,6 +116,26 @@ function DelegationEditFormService(props) {
       perPage: 1000
     })
   }, [])
+
+  const SERVICE_IDENTITY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/authorization/internal-service-identities`
+  useEffect(() => {
+    if (delegator) {
+      sendRequest(
+        {
+          url: `${SERVICE_IDENTITY_BASE_API_URL}/internal-service-identities/get-api-service-can-access/${delegator._id ?? delegator}`,
+          method: 'GET'
+        },
+        false,
+        false,
+        'system_admin.internal_service_identity'
+      ).then((res) => {
+        setState({
+          ...state,
+          apisServiceCanAccess: res.data.content
+        })
+      })
+    }
+  }, [delegator])
 
   useEffect(() => {
     if (internalServiceIdentities?.listInternalServiceIdentity && externalServiceConsumers?.listExternalServiceConsumer) {
@@ -175,10 +186,7 @@ function DelegationEditFormService(props) {
       delegationStart: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
       delegationEnd: delegationEnd != '' ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
       // delegatePolicy: delegatePolicy,
-      delegateResources: delegateResources.map((id) => {
-        const api = systemApis.listPaginateApi.find((api) => api._id == id)
-        return { url: api.path, action: api.method }
-      })
+      delegateApis
     }
     if (isFormValidated() && delegationName) {
       return editServiceDelegation(delegationID, data)
@@ -277,7 +285,7 @@ function DelegationEditFormService(props) {
   //   return msg === undefined
   // }
 
-  const validateDelegateResources = (value, willUpdateState) => {
+  const validateDelegateApis = (value, willUpdateState) => {
     let msg
     if (!value || value.length == 0) {
       msg = translate('manage_delegation.no_blank_delegate_task')
@@ -286,15 +294,15 @@ function DelegationEditFormService(props) {
     if (willUpdateState) {
       setState({
         ...state,
-        delegateResources: value,
-        errorDelegateResources: msg
+        delegateApis: value,
+        errorDelegateApis: msg
       })
     }
     return msg === undefined
   }
 
-  const handleDelegateResources = (value) => {
-    validateDelegateResources(value, true)
+  const handleDelegateApis = (value) => {
+    validateDelegateApis(value, true)
   }
 
   const validateServiceStartDate = (value, willUpdateState = true) => {
@@ -457,30 +465,34 @@ function DelegationEditFormService(props) {
         </div>
 
         <div className='row form-group'>
-          {/* Chọn resources */}
+          {/* Chọn apis */}
           <div
             style={{ marginBottom: '0px' }}
-            className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegateResources === undefined ? '' : 'has-error'}`}
+            className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegateApis === undefined ? '' : 'has-error'}`}
           >
             <label>
-              {translate('manage_delegation.choose_delegate_resources')}
+              {translate('manage_delegation.choose_delegate_apis')}
               <span className='text-red'>*</span>
             </label>
-            {systemApis?.listPaginateApi && (
-              <SelectBox
-                id='select-resources-edit'
+            {apisServiceCanAccess && (
+              <SelectMulti
+                id='select-apis-edit'
                 className='form-control select2'
-                style={{ width: '100%' }}
-                items={systemApis?.listPaginateApi?.map((api) => {
+                multiple='multiple'
+                options={{
+                  nonSelectedText: translate('manage_delegation.choose_delegate_apis'),
+                  allSelectedText: translate('manage_delegation.select_all_apis'),
+                  enableFilter: true,
+                  placeholder: translate('manage_delegation.choose_delegate_apis')
+                }}
+                onChange={handleDelegateApis}
+                value={delegateApis}
+                items={apisServiceCanAccess.map((api) => {
                   return { value: api._id, text: `${api.path} - ${api.method}` }
                 })}
-                multiple
-                value={delegateResources}
-                options={{ placeholder: translate('manage_delegation.choose_delegate_resources') }}
-                onChange={handleDelegateResources}
               />
             )}
-            <ErrorLabel content={errorDelegateResources} />
+            <ErrorLabel content={errorDelegateApis} />
           </div>
         </div>
 
@@ -601,7 +613,6 @@ function mapState(state) {
 
 const actions = {
   // getPolicies: PolicyActions.getPolicies,
-  getSystemApis: SystemApiActions.getSystemApis,
   getInternalServiceIdentities: InternalServiceIdentityActions.getInternalServiceIdentities,
   getExternalServiceConsumers: ExternalServiceConsumerActions.getExternalServiceConsumers,
   editServiceDelegation: DelegationActions.editServiceDelegation

@@ -24,7 +24,7 @@ function DelegationDetailInfoService(props) {
       description: props.description,
       delegator: props.delegator,
       delegatee: props.delegatee,
-      delegateResources: props.delegateResources,
+      delegateApis: props.delegateApis,
       status: props.status,
       startDate: props.startDate,
       endDate: props.endDate,
@@ -71,7 +71,7 @@ function DelegationDetailInfoService(props) {
             description={state.description}
             delegator={state.delegator}
             delegatee={state.delegatee}
-            delegateResources={state.delegateResources}
+            delegateApis={state.delegateApis}
             status={state.status}
             startDate={state.startDate}
             endDate={state.endDate}

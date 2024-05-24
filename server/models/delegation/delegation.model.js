@@ -33,15 +33,9 @@ const DelegationSchema = new Schema({
         type: String,
         enum: ['Role', 'Task', 'Service'], // tên model tương ứng - không đổi về dạng chữ thường
     },
-    delegateResources: [
-        {
-            url: String,
-            action: {
-                type: String,
-                enum: ['GET', 'PATCH', 'POST', 'DELETE']
-            }
-        }
-    ],
+    delegateApis: [{
+        type: Schema.Types.ObjectId,
+    }],
     delegateTask: {
         // 5. Task ủy ủy quyền
         type: Schema.Types.ObjectId,

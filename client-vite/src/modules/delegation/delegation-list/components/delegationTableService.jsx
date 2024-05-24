@@ -184,7 +184,7 @@ function DelegationTableService(props) {
         delegator={currentRow && currentRow.delegator}
         delegatee={currentRow && currentRow.delegatee}
         delegateType={currentRow && currentRow.delegateType}
-        delegateResources={currentRow && currentRow.delegateResources}
+        delegateApis={currentRow && currentRow.delegateApis}
         status={currentRow && currentRow.status}
         startDate={currentRow && currentRow.startDate}
         endDate={currentRow && currentRow.endDate}
@@ -198,8 +198,7 @@ function DelegationTableService(props) {
         delegator={currentRowDetail && currentRowDetail.delegator}
         delegatee={currentRowDetail && currentRowDetail.delegatee}
         delegateType={currentRowDetail && currentRowDetail.delegateType}
-        delegateResources={currentRowDetail && currentRowDetail.delegateResources}
-        delegateService={currentRowDetail && currentRowDetail.delegateService}
+        delegateApis={currentRowDetail && currentRowDetail.delegateApis}
         status={currentRowDetail && currentRowDetail.status}
         startDate={currentRowDetail && currentRowDetail.startDate}
         endDate={currentRowDetail && currentRowDetail.endDate}

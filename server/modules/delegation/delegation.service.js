@@ -21,6 +21,7 @@ const PolicyService = require('../super-admin/policy/policy.service');
 const NotificationServices = require(`../notification/notification.service`);
 const InternalServiceIdentityServices = require('../../../server/modules/authorization/internal-service-identities/internal-service-identities.service');
 const ExternalServiceConsumer = require('../../../server/modules/authorization/external-service-consumers/external-service-consumers.service');
+const { SystemApiServices } = require('../system-admin/system-api/system-api-management/systemApi.service');
 
 // Tạo mới mảng Ví dụ
 exports.createDelegation = async (portal, data, logs = []) => {
@@ -1710,6 +1711,11 @@ exports.getNewlyCreateServiceDelegation = async (id, data, portal) => {
 }
 
 exports.createServiceDelegation = async (portal, data, logs = []) => {
+    const { systemApis } = await SystemApiServices.getSystemApis({
+        page: 1,
+        perPage: 10000
+      });
+
     const filterValidDelegationArray = async (array) => {
         let resArray = [];
         if (array.length > 0) {
@@ -1737,20 +1743,20 @@ exports.createServiceDelegation = async (portal, data, logs = []) => {
         });
     };
 
-    const isServiceCanAccessResources = (service, resources) => {
-        if (!resources || !resources.length) return true;
+    const isServiceCanAccessResources = (service, apis) => {
+        if (!apis || !apis.length) return true;
         
         let parttern = service.apiPrefix;
         parttern = new RegExp(`^${parttern.replace(/\*/g, '.*')}`);
-        for (let i = 0; i < resources.length; i++){
-            const resource = resources[i];
+        for (let i = 0; i < apis.length; i++){
+            const resource = systemApis.find((x) => x.id == apis[i]);
 
-            if (parttern.test(resource.url)) continue;
+            if (parttern.test(resource.path)) continue;
 
             const internalPolicies = service.internalPolicies.filter(
                 (policy) =>
-                    doesPolicyContainResource(policy.resources, resource.url) &&
-                    policy.actions.includes(resource.action) &&
+                    doesPolicyContainResource(policy.resources, resource.path) &&
+                    policy.actions.includes(resource.method) &&
                     policy.effectiveStartTime.getTime() <= Date.now() &&
                     policy.effectiveEndTime.getTime() >= Date.now(),
                 );
@@ -1780,7 +1786,7 @@ exports.createServiceDelegation = async (portal, data, logs = []) => {
 
             const delegator = await InternalServiceIdentityServices.findOne(portal, delArray[i].delegator);
 
-            if (!isServiceCanAccessResources(delegator, delArray[i].delegateResources)){
+            if (!isServiceCanAccessResources(delegator, delArray[i].delegateApis)){
                 throw ["delegator_can_not_access_resources"];
             }
 
@@ -1802,7 +1808,7 @@ exports.createServiceDelegation = async (portal, data, logs = []) => {
                 startDate: delArray[i].delegationStart,
                 endDate: delArray[i].delegationEnd,
                 status: isToday(new Date(delArray[i].delegationStart)) ? "activated" : "pending",
-                delegateResources: delArray[i].delegateResources,
+                delegateApis: delArray[i].delegateApis,
                 // delegatePolicy: ,
                 logs: logs
             });

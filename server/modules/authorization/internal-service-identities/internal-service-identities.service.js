@@ -5,6 +5,7 @@ const { InternalServiceIdentity, LoggingRecord } = require("../../../models");
 const InternalPolicyService = require(`../internal-policies/internal-policies.service`);
 const ExternalPolicyService = require(`../external-policies/external-policies.service`);
 const LoggingService = require('../logging/logging.service');
+const { SystemApiServices } = require('../../system-admin/system-api/system-api-management/systemApi.service');
 const crypto = require('crypto');
 const LoggingType = {
   CREATE_INTERNAL_SERVICE_IDENTITY: 'CREATE_INTERNAL_SERVICE_IDENTITY',
@@ -319,4 +320,48 @@ exports.exists = async (portal, id) => {
   });
 
   return existent;
+}
+
+exports.getApiServiceCanAccess = async (portal, id) => {
+  const { systemApis } = await SystemApiServices.getSystemApis({
+    page: 1,
+    perPage: 10000
+  });
+  const service = await this.findOne(portal, id);
+
+  const doesPolicyContainResource = (
+    policyResources,
+    resource,
+  ) => {
+    return policyResources.some((r) => {
+      const regex = new RegExp(`^${r.replace(/\*/g, '.*')}$`);
+      return regex.test(resource);
+    });
+  };
+
+  const isServiceCanAccessApi = (service, api) => {
+    const internalPolicies = service.internalPolicies.filter(
+      (policy) =>
+        doesPolicyContainResource(policy.resources, api.path) &&
+        policy.actions.includes(api.method) &&
+        policy.effectiveStartTime.getTime() <= Date.now() &&
+        policy.effectiveEndTime.getTime() >= Date.now(),
+      );
+    if (internalPolicies.length > 0 && internalPolicies.every((policy) => policy.effect === 'Allow'))
+      return true;
+
+    return false;
+  }
+
+  let canAccessApis = [];
+
+  let parttern = service.apiPrefix;
+  parttern = new RegExp(`^${parttern.replace(/\*/g, '.*')}`);
+  for (let i = 0; i < systemApis.length; i++){
+    const api = systemApis[i];
+    if (parttern.test(api.path) || isServiceCanAccessApi(service, api))
+      canAccessApis.push(api);
+  }
+
+  return canAccessApis;
 }
