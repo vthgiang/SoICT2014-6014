@@ -30,13 +30,13 @@ const MarketingCampaignDetail = (props) => {
   const layout = [
     // { i: 'a', x: 0, y: 0, w: 1, h: 2, static: true },
     // { i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4 },
-    { i: 'a', x: 4, y: 0, w: 6, h: 8, minW: 2, maxW: 10 },
-    { i: 'b', x: 4, y: 0, w: 6, h: 8, minW: 2, maxW: 10 },
-    { i: 'c1', x: 4, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'c2', x: 4, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'd', x: 4, y: 0, w: 3, h: 6, minW: 2, maxW: 6 },
-    { i: 'e', x: 4, y: 0, w: 3, h: 6, minW: 2, maxW: 6 },
-    { i: 'g', x: 4, y: 0, w: 3, h: 6, minW: 2, maxW: 6 }
+    { i: 'g', x: 0, y: 0, w: 3, h: 6, minW: 2, maxW: 6 },
+    { i: 'e', x: 3, y: 0, w: 3, h: 6, minW: 2, maxW: 6 },
+    { i: 'd', x: 6, y: 0, w: 3, h: 6, minW: 2, maxW: 6 },
+    { i: 'c2', x: 9, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
+    { i: 'c1', x: 9, y: 3, w: 3, h: 3, minW: 2, maxW: 6 },
+    { i: 'b', x: 0, y: 9, w: 6, h: 8, minW: 2, maxW: 10 },
+    { i: 'a', x: 6, y: 9, w: 6, h: 8, minW: 2, maxW: 10 }
   ]
 
   const data = {
@@ -128,42 +128,22 @@ const MarketingCampaignDetail = (props) => {
 
   return (
     <>
-      <GridLayout className='layout' layout={layout} cols={12} rowHeight={30} width={1200} compactType={'horizontal'}>
-        <div key='a' className='item'>
-          <Line options={optionsLine} data={data3} />;
-        </div>
-        <div key='b' className='item'>
-          <Bar options={optionsBar} data={data2} />;
-        </div>
-        <div key='c1' className='item'>
-          <AttachMoneyIcon
-            sx={{
-              color: '#1976d2',
-              fontSize: '48px',
-              marginRight: '8px'
-            }}
-          />
+      <GridLayout className='layout' layout={layout} cols={12} rowHeight={30} width={1200} compactType={'vertical'}>
+        <div key='g' className='item'>
           <div>
-            <div className='number_field_title'> Total spent</div>
-            <div className='number_field_text'>10.000.000 VND</div>
+            <div className='card_title'>ROIM</div>
+            <CircularProgress
+              determinate
+              value={80}
+              sx={{
+                '--CircularProgress-size': '160px',
+                '--CircularProgress-trackThickness': '10px',
+                '--CircularProgress-progressThickness': '7px'
+              }}
+            >
+              <div className='circular_progress_text_inside'>40%</div>
+            </CircularProgress>
           </div>
-        </div>
-        <div key='c2' className='item'>
-          <VisibilityIcon
-            sx={{
-              color: '#1976d2',
-              fontSize: '40px',
-              marginLeft: '-12px',
-              marginRight: '4px'
-            }}
-          />
-          <div>
-            <div className='number_field_title'> Total impressions</div>
-            <div className='number_field_text'>15.500</div>
-          </div>
-        </div>
-        <div key='d' className='item'>
-          <Doughnut data={data} />
         </div>
         <div key='e' className='item'>
           <div>
@@ -207,21 +187,41 @@ const MarketingCampaignDetail = (props) => {
             </div>
           </div>
         </div>
-        <div key='g' className='item'>
+        <div key='d' className='item'>
+          <Doughnut data={data} />
+        </div>
+        <div key='c2' className='item'>
+          <VisibilityIcon
+            sx={{
+              color: '#1976d2',
+              fontSize: '40px',
+              marginLeft: '-12px',
+              marginRight: '4px'
+            }}
+          />
           <div>
-            <div className='card_title'>ROIM</div>
-            <CircularProgress
-              determinate
-              value={80}
-              sx={{
-                '--CircularProgress-size': '160px',
-                '--CircularProgress-trackThickness': '10px',
-                '--CircularProgress-progressThickness': '7px'
-              }}
-            >
-              <div className='circular_progress_text_inside'>40%</div>
-            </CircularProgress>
+            <div className='number_field_title'> Total impressions</div>
+            <div className='number_field_text'>15.500</div>
           </div>
+        </div>
+        <div key='c1' className='item'>
+          <AttachMoneyIcon
+            sx={{
+              color: '#1976d2',
+              fontSize: '48px',
+              marginRight: '8px'
+            }}
+          />
+          <div>
+            <div className='number_field_title'> Total spent</div>
+            <div className='number_field_text'>10.000.000 VND</div>
+          </div>
+        </div>
+        <div key='b' className='item'>
+          <Bar options={optionsBar} data={data2} />;
+        </div>
+        <div key='a' className='item'>
+          <Line options={optionsLine} data={data3} />;
         </div>
       </GridLayout>
     </>

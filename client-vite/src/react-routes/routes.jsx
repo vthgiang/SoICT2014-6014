@@ -67,22 +67,6 @@ const ProjectTemplateManagement = lazy(() => import('../modules/bidding/project-
 const BidDashboard = lazy(() => import('../modules/bidding/bidding-dashboard/component'))
 const TagManagement = lazy(() => import('../modules/bidding/tags/component'))
 
-const OrganizationalUnitKpiCreateForAdmin = lazy(
-  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin')
-)
-const OrganizationalUnitKpiCreate = lazy(() => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate'))
-const OrganizationalUnitKpiDashboard = lazy(
-  () => import('../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard')
-)
-const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview'))
-const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation'))
-const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
-const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
-
-// const SearchEmployeeForPackage = lazy(
-//   () => import('../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage')
-// )
-
 const CreateEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/creation/component/employeeKpiCreate'))
 const KPIPersonalManager = lazy(() => import('../modules/kpi/employee/management/component/employeeKpiManagement'))
 const DashBoardEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/dashboard/component/employeeKpiDashboard'))
@@ -3151,6 +3135,50 @@ class Routes extends Component {
             pageName='request_management'
             layout={Layout}
             component={OrderRequestManagement}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key='order-marketing'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/marketing-campaign',
+                name: 'marketing_campaign',
+                icon: 'fa fa-bandcamp'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/marketing-campaign'
+            path='/marketing-campaign'
+            pageName='marketing_campaign'
+            layout={Layout}
+            component={MarketingCampaign}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key='order-marketing-detail'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/marketing-campaign',
+                name: 'marketing_campaign',
+                icon: 'fa fa-bandcamp'
+              },
+              {
+                link: '/marketing-campaign-id',
+                name: 'marketing_campaign_detail',
+                icon: 'fa fa-bars'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/marketing-campaign-id'
+            path='/marketing-campaign-id'
+            pageName='marketing_campaign_detail'
+            layout={Layout}
+            component={MarketingCampaignDetail}
           />
 
           {/* Plans Management */}
