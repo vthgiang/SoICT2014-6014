@@ -10,4 +10,3 @@ router.patch('/external-service-consumers/:id', auth, ExternalServiceConsumersCo
 router.delete('/external-service-consumers/:id', auth, ExternalServiceConsumersController.remove);
 
 module.exports = router;
-

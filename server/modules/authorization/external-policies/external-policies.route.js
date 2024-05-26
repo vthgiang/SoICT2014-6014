@@ -10,4 +10,3 @@ router.patch('/external-policies/:id', auth, ExternalPoliciesController.update);
 router.delete('/external-policies/:id', auth, ExternalPoliciesController.remove);
 
 module.exports = router;
-
