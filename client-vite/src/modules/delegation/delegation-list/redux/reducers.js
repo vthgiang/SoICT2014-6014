@@ -1,7 +1,7 @@
 import { delegationConstants } from './constants'
 
-var findIndex = (array, id) => {
-  var result = -1
+const findIndex = (array, id) => {
+  let result = -1
   array.forEach((value, index) => {
     if (value._id === id) {
       result = index
@@ -23,29 +23,39 @@ export function delegation(state = initialState, action) {
   let index = -1
   switch (action.type) {
     case delegationConstants.GET_ALL_DELEGATIONS_REQUEST:
-    case delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST:
     case delegationConstants.DELETE_DELEGATION_REQUEST:
     case delegationConstants.REVOKE_DELEGATION_REQUEST:
     case delegationConstants.CREATE_DELEGATION_REQUEST:
     case delegationConstants.EDIT_DELEGATION_REQUEST:
+    case delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST:
     case delegationConstants.DELETE_TASK_DELEGATION_REQUEST:
     case delegationConstants.REVOKE_TASK_DELEGATION_REQUEST:
     case delegationConstants.CREATE_TASK_DELEGATION_REQUEST:
     case delegationConstants.EDIT_TASK_DELEGATION_REQUEST:
+    case delegationConstants.GET_ALL_DELEGATIONS_SERVICE_REQUEST:
+    case delegationConstants.DELETE_SERVICE_DELEGATION_REQUEST:
+    case delegationConstants.REVOKE_SERVICE_DELEGATION_REQUEST:
+    case delegationConstants.CREATE_SERVICE_DELEGATION_REQUEST:
+    case delegationConstants.EDIT_SERVICE_DELEGATION_REQUEST:
       return {
         ...state,
         isLoading: true
       }
     case delegationConstants.GET_ALL_DELEGATIONS_FAILURE:
-    case delegationConstants.GET_ALL_DELEGATIONS_TASK_FAILURE:
     case delegationConstants.DELETE_DELEGATION_FAILURE:
     case delegationConstants.REVOKE_DELEGATION_FAILURE:
     case delegationConstants.CREATE_DELEGATION_FAILURE:
     case delegationConstants.EDIT_DELEGATION_FAILURE:
+    case delegationConstants.GET_ALL_DELEGATIONS_TASK_FAILURE:
     case delegationConstants.DELETE_TASK_DELEGATION_FAILURE:
     case delegationConstants.REVOKE_TASK_DELEGATION_FAILURE:
     case delegationConstants.CREATE_TASK_DELEGATION_FAILURE:
     case delegationConstants.EDIT_TASK_DELEGATION_FAILURE:
+    case delegationConstants.GET_ALL_DELEGATIONS_SERVICE_FAILURE:
+    case delegationConstants.DELETE_SERVICE_DELEGATION_FAILURE:
+    case delegationConstants.REVOKE_SERVICE_DELEGATION_FAILURE:
+    case delegationConstants.CREATE_SERVICE_DELEGATION_FAILURE:
+    case delegationConstants.EDIT_SERVICE_DELEGATION_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -56,13 +66,6 @@ export function delegation(state = initialState, action) {
         ...state,
         lists: action.payload.data,
         totalList: action.payload.totalList,
-        isLoading: false
-      }
-    case delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS:
-      return {
-        ...state,
-        listsTask: action.payload.data,
-        totalListTask: action.payload.totalList,
         isLoading: false
       }
     case delegationConstants.DELETE_DELEGATION_SUCCESS:
@@ -95,6 +98,13 @@ export function delegation(state = initialState, action) {
         ...state,
         isLoading: false
       }
+    case delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS:
+      return {
+        ...state,
+        listsTask: action.payload.data,
+        totalListTask: action.payload.totalList,
+        isLoading: false
+      }
     case delegationConstants.DELETE_TASK_DELEGATION_SUCCESS:
       return {
         ...state,
@@ -120,6 +130,43 @@ export function delegation(state = initialState, action) {
       index = findIndex(state.listsTask, action.payload[0])
       if (index !== -1) {
         state.listsTask[index] = action.payload[1]
+      }
+      return {
+        ...state,
+        isLoading: false
+      }
+    case delegationConstants.GET_ALL_DELEGATIONS_SERVICE_SUCCESS:
+      return {
+        ...state,
+        listsService: action.payload.data,
+        totalListService: action.payload.totalList,
+        isLoading: false
+      }
+    case delegationConstants.DELETE_SERVICE_DELEGATION_SUCCESS:
+      return {
+        ...state,
+        listsService: state.listsService.filter((delegation) => !action.delegationIds.includes(delegation?._id)),
+        isLoading: false
+      }
+    case delegationConstants.REVOKE_SERVICE_DELEGATION_SUCCESS:
+      index = findIndex(state.listsService, action.payload._id)
+      if (index !== -1) {
+        state.listsService[index] = action.payload
+      }
+      return {
+        ...state,
+        isLoading: false
+      }
+    case delegationConstants.CREATE_SERVICE_DELEGATION_SUCCESS:
+      return {
+        ...state,
+        listsService: [...state.listsService, ...action.payload],
+        isLoading: false
+      }
+    case delegationConstants.EDIT_SERVICE_DELEGATION_SUCCESS:
+      index = findIndex(state.listsService, action.payload[0])
+      if (index !== -1) {
+        state.listsService[index] = action.payload[1]
       }
       return {
         ...state,

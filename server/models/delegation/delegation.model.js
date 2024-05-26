@@ -9,20 +9,33 @@ const DelegationSchema = new Schema({
         required: true
     },
     delegator: {
-        // 2. Id user ủy quyền
+        // 2. Id user/service ủy quyền
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        refPath: 'delegatorModel'
+    },
+    delegatorModel: {
+        type: String,
+        enum: ['User', 'InternalServiceIdentity', 'ExternalServiceConsumer'],
+        default: 'User'
     },
     delegatee: {
-        // 3. Id user nhận ủy quyền
+        // 3. Id user/service nhận ủy quyền
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        refPath: 'delegateeModel'
+    },
+    delegateeModel: {
+        type: String,
+        enum: ['User', 'InternalServiceIdentity', 'ExternalServiceConsumer'],
+        default: 'User'
     },
     delegateType: {
         //  4. Loại ủy quyền
         type: String,
-        enum: ['Role', 'Task'], // tên model tương ứng - không đổi về dạng chữ thường
+        enum: ['Role', 'Task', 'Service'], // tên model tương ứng - không đổi về dạng chữ thường
     },
+    delegateApis: [{
+        type: Schema.Types.ObjectId,
+    }],
     delegateTask: {
         // 5. Task ủy ủy quyền
         type: Schema.Types.ObjectId,

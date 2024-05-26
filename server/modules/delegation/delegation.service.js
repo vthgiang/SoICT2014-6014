@@ -19,6 +19,9 @@ const schedule = require('node-schedule');
 const taskTemplateModel = require('../../models/task/taskTemplate.model');
 const PolicyService = require('../super-admin/policy/policy.service');
 const NotificationServices = require(`../notification/notification.service`);
+const InternalServiceIdentityServices = require('../../../server/modules/authorization/internal-service-identities/internal-service-identities.service');
+const ExternalServiceConsumer = require('../../../server/modules/authorization/external-service-consumers/external-service-consumers.service');
+const { SystemApiServices } = require('../system-admin/system-api/system-api-management/systemApi.service');
 
 // Tạo mới mảng Ví dụ
 exports.createDelegation = async (portal, data, logs = []) => {
@@ -1638,3 +1641,273 @@ exports.sendNotification = async (portal, delegation, type, auto = false) => {
 
 }
 
+exports.getDelegationsService = async (portal, data) => {
+    let keySearch = { delegateType: data.delegateType };
+    if (data?.delegationName?.length > 0) {
+        keySearch = {
+            ...keySearch,
+            delegationName: {
+                $regex: data.delegationName,
+                $options: "i"
+            }
+        }
+    }
+
+    let page, perPage;
+    page = data?.page ? Number(data.page) : 1;
+    perPage = data?.perPage ? Number(data.perPage) : 20;
+
+    let totalList = await Delegation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate([
+            { path: 'delegator', select: '_id name' },
+            { path: 'delegatee', select: '_id name' },
+        ])
+        .skip((page - 1) * perPage)
+        .limit(perPage);
+
+    return {
+        data: delegations,
+        totalList
+    }
+}
+
+// Lấy ra Ví dụ theo id
+exports.getServiceDelegationById = async (portal, id) => {
+    let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: id }).populate([
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegator', select: '_id name' }
+    ]);
+    if (delegation) {
+        return delegation;
+    }
+    return -1;
+}
+
+exports.getNewlyCreateServiceDelegation = async (id, data, portal) => {
+    let oldDelegation = await this.getServiceDelegationById(portal, id);
+    const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: data.delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+    let updatedDelegation = -1;
+    if (oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !== data.delegationName.trim().toLowerCase().replace(/ /g, "")) {
+        if (checkDelegationCreated) {
+            throw ['delegation_name_exist'];
+        }
+    } else {
+        data.notCheckName = true
+    }
+
+    if (oldDelegation.delegator._id.toString() !== data.delegator.toString() ||
+        oldDelegation.delegatee._id.toString() !== data.delegatee.toString()
+        // || !arrayEquals(oldDelegation.delegateTaskRoles, data.delegateTaskRoles)
+    ) {
+        data.notCheck = false;
+    } else {
+        data.notCheck = true;
+    }
+
+    updatedDelegation = await this.createServiceDelegation(portal, [data], oldDelegation.logs);
+
+    return updatedDelegation[0];
+}
+
+exports.createServiceDelegation = async (portal, data, logs = []) => {
+    const { systemApis } = await SystemApiServices.getSystemApis({
+        page: 1,
+        perPage: 10000
+      });
+
+    const filterValidDelegationArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+            for (let i = 0; i < array.length; i++) {
+                const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: array[i].delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+                if (checkDelegationCreated && !array[i].notCheck && !array[i].notCheckName) {
+                    throw ['delegation_name_exist'];
+                }
+                if (array[i]) resArray = [...resArray, array[i]];
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    const doesPolicyContainResource = (
+        policyResources,
+        resource,
+    ) => {
+        return policyResources.some((r) => {
+            const regex = new RegExp(`^${r.replace(/\*/g, '.*')}$`);
+            return regex.test(resource);
+        });
+    };
+
+    const isServiceCanAccessResources = (service, apis) => {
+        if (!apis || !apis.length) return true;
+        
+        let parttern = service.apiPrefix;
+        parttern = new RegExp(`^${parttern.replace(/\*/g, '.*')}`);
+        for (let i = 0; i < apis.length; i++){
+            const resource = systemApis.find((x) => x.id == apis[i]);
+
+            if (parttern.test(resource.path)) continue;
+
+            const internalPolicies = service.internalPolicies.filter(
+                (policy) =>
+                    doesPolicyContainResource(policy.resources, resource.path) &&
+                    policy.actions.includes(resource.method) &&
+                    policy.effectiveStartTime.getTime() <= Date.now() &&
+                    policy.effectiveEndTime.getTime() >= Date.now(),
+                );
+            if (internalPolicies.length > 0 && internalPolicies.every((policy) => policy.effect === 'Allow'))
+                continue;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    const delArray = await filterValidDelegationArray(data);
+    const newDelegations = [];
+    if (delArray && delArray.length !== 0) {
+        for (let i = 0; i < delArray.length; i++) {
+            if (delArray[i].delegator == delArray[i].delegatee) {
+                throw ["delegator_same_delegatee"];
+            }
+            if (!isToday(new Date(delArray[i].delegationStart)) && compareDate(new Date(delArray[i].delegationStart), new Date()) < 0) {
+                throw ["start_date_past"]
+            }
+
+            if (delArray[i].delegationEnd != null && compareDate(new Date(delArray[i].delegationEnd), new Date()) < 0) {
+                throw ["end_date_past"]
+            }
+
+            const delegator = await InternalServiceIdentityServices.findOne(portal, delArray[i].delegator);
+
+            if (!isServiceCanAccessResources(delegator, delArray[i].delegateApis)){
+                throw ["delegator_can_not_access_resources"];
+            }
+
+            const isInternalService = await InternalServiceIdentityServices.exists(portal, delArray[i].delegatee);
+            const isExternalConsumer = await ExternalServiceConsumer.exists(portal, delArray[i].delegatee);
+
+            if (!isInternalService && !isExternalConsumer){
+                throw ["delegatee_not_found"];
+            }
+
+            let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
+                delegationName: delArray[i].delegationName,
+                description: delArray[i].description,
+                delegator: delArray[i].delegator,
+                delegatorModel: 'InternalServiceIdentity',
+                delegatee: delArray[i].delegatee,
+                delegateeModel: isInternalService ? 'InternalServiceIdentity' : 'ExternalServiceConsumer',
+                delegateType: "Service",
+                startDate: delArray[i].delegationStart,
+                endDate: delArray[i].delegationEnd,
+                status: isToday(new Date(delArray[i].delegationStart)) ? "activated" : "pending",
+                delegateApis: delArray[i].delegateApis,
+                // delegatePolicy: ,
+                logs: logs
+            });
+
+            newDelegations.push(newDelegation);
+
+            if (!isToday(new Date(delArray[i].delegationStart))) {
+                await this.autoActivateServiceDelegation(newDelegation, portal);
+            }
+
+            if (newDelegation.endDate != null) {
+                await this.autoRevokeServiceDelegation(newDelegation, portal);
+            }
+        }
+    }
+
+    return newDelegations;
+}
+
+exports.autoActivateServiceDelegation = async (delegation, portal) => {
+    const date = new Date(delegation.startDate);
+    const job = schedule.scheduleJob("Activate_" + delegation._id, date, async function () {
+        const currentDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegation._id });
+        currentDelegation.status = "activated"
+        currentDelegation.logs.push(
+            {
+                createdAt: new Date(),
+                user: null,
+                content: delegation.delegationName,
+                time: new Date(delegation.startDate),
+                category: "activate"
+            })
+        await currentDelegation.save();
+    });
+
+    return job;
+}
+
+exports.autoRevokeServiceDelegation = async (delegation, portal) => {
+    const date = new Date(delegation.startDate);
+    const job = schedule.scheduleJob("Revoke_" + delegation._id, date, async function () {
+        const currentDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegation._id });
+        currentDelegation.status = "revoked"
+        currentDelegation.logs.push(
+            {
+                createdAt: new Date(),
+                user: null,
+                content: delegation.delegationName,
+                time: new Date(delegation.startDate),
+                category: "revoke"
+            })
+        await currentDelegation.save();
+    });
+
+    return job;
+}
+
+exports.deleteServiceDelegation = async (portal, delegationIds) => {
+    let delegationDeletes = [];
+    for (let i=0; i<delegationIds.length; i++){
+        const delegationId = delegationIds[i];
+        if (schedule.scheduledJobs['Revoke_' + delegationId]) {
+            schedule.scheduledJobs['Revoke_' + delegationId].cancel()
+        }
+    
+        if (schedule.scheduledJobs['Activate_' + delegationId]) {
+            schedule.scheduledJobs['Activate_' + delegationId].cancel()
+        }
+    
+        let delegationDelete = await Delegation(connect(DB_CONNECTION, portal))
+            .deleteOne({ _id: delegationId });
+
+        delegationDeletes.push(delegationDelete);
+    }
+
+    return delegationDeletes;
+}
+
+exports.revokeServiceDelegation = async (portal, delegationId, reason) => {
+    let delegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationId });
+
+    delegation.status = "revoked";
+    delegation.revokeReason = !reason ? null : reason;
+    delegation.revokedDate = new Date();
+
+    if (schedule.scheduledJobs['Revoke_' + delegation._id]) {
+        schedule.scheduledJobs['Revoke_' + delegation._id].cancel()
+    }
+    if (schedule.scheduledJobs['Activate_' + delegation._id]) {
+        schedule.scheduledJobs['Activate_' + delegation._id].cancel()
+    }
+
+    await delegation.save();
+
+    let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationId }).populate([
+        { path: 'delegatee', select: '_id name' },
+        // { path: 'delegatePolicy', select: '_id policyName' },
+        { path: 'delegator', select: '_id name' },
+    ]);
+
+    return newDelegation;
+}

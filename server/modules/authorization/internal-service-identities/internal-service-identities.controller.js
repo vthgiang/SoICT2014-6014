@@ -100,3 +100,23 @@ exports.remove = async (req, res) => {
       });
   }
 }
+
+exports.getApiServiceCanAccess = async (req, res) => {
+  try {
+    const result = await InternalServiceIdentitiesService.getApiServiceCanAccess(req.portal ?? req.header.portal ?? req.body.portal, req.params.id);
+
+    await Logger.info(req.body.email ?? '', 'get_api_service_can_access_success');
+    res.status(200).json({
+        success: true,
+        messages: ['get_api_service_can_access_success'],
+        content: result
+    });
+  } catch (error) {
+      await Logger.error(req.body.email ?? '', 'get_api_service_can_access_faile');
+      res.status(400).json({
+          success: false,
+          messages: Array.isArray(error) ? error : ['get_api_service_can_access_faile'],
+          content: error
+      });
+  }
+}

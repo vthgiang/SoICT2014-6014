@@ -53,6 +53,35 @@ exports.createTaskDelegation = async (req, res) => {
     }
 }
 
+exports.createServiceDelegation = async (req, res) => {
+    try {
+        let newDelegations = await DelegationService.createServiceDelegation(req.portal, req.body);
+        let result = [];
+        for (let i=0; i<newDelegations.length; i++){
+            const newDelegation = await DelegationService.saveLog(req.portal, newDelegations[i], req.user?._id, 
+                newDelegations[i].delegationName, "create", newDelegations[i].createdAt)
+            result.push(newDelegation);
+        }
+
+        await Log.info(req.user.email, 'add_service_delegation_success', req.portal);
+
+        res.status(201).json({
+            success: true,
+            messages: ["add_service_delegation_success"],
+            content: result
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "add_service_delegation_faile", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ["add_service_delegation_faile"],
+            content: error.message
+        })
+    }
+}
+
 // Lấy ra đầy đủ thông tin tất cả các dịch vụ
 exports.getDelegations = async (req, res) => {
     try {
@@ -77,7 +106,28 @@ exports.getDelegations = async (req, res) => {
     }
 }
 
+exports.getDelegationsService = async (req, res) => {
+    try {
+        let data = await DelegationService.getDelegationsService(req.portal, req.query);
 
+        await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_all_delegations_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_all_delegations_fail"],
+            content: error.message
+        });
+    }
+}
 
 exports.getDelegationsReceive = async (req, res) => {
     try {
@@ -373,6 +423,85 @@ exports.revokeTaskDelegation = async (req, res) => {
     }
 }
 
+exports.editServiceDelegation = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let data = req.body;
+        let updatedDelegation = await DelegationService.getNewlyCreateServiceDelegation(id, data, req.portal);
+
+        if (updatedDelegation !== -1) {
+            DelegationService.cancelJobDelegation(id)
+            await DelegationService.deleteServiceDelegation(req.portal, [id]);
+            updatedDelegation = await DelegationService.saveLog(req.portal, updatedDelegation, req.user?._id, updatedDelegation.delegationName, "edit", updatedDelegation.createdAt)
+            await Log.info(req.user?.email, "edit_service_delegation_success", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_service_delegation_success"],
+                content: [id, updatedDelegation]
+            });
+        } else {
+            throw ["delegation_is_invalid"];
+        }
+
+    } catch (error) {
+        await Log.error(req.user?.email, "edit_service_delegation_faile", req.portal);
+        console.log(error)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ["edit_service_delegation_faile"],
+            content: error.message
+        });
+    }
+}
+
+exports.deleteServiceDelegations = async (req, res) => {
+    try {
+        let deletedDelegations = await DelegationService.deleteServiceDelegation(req.portal, req.body.delegationIds);
+        if (deletedDelegations) {
+            await Log.info(req.user?.email, "delete_service_delegation_success", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["delete_service_delegation_success"],
+                content: deletedDelegations
+            });
+        } else {
+            throw ["delegation_is_invalid"];
+        }
+    } catch (error) {
+        await Log.error(req.user?.email, "delete_service_delegation_faile", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["delete_service_delegation_faile"],
+            content: error.message
+        });
+    }
+}
+
+exports.revokeServiceDelegation = async (req, res) => {
+    try {
+        let revokedDelegation = await DelegationService.revokeServiceDelegation(req.portal, req.body.delegationId, req.body.reason);
+        revokedDelegation = await DelegationService.saveLog(req.portal, revokedDelegation, req.user?._id, revokedDelegation.delegationName, "revoke", revokedDelegation.revokedDate)
+
+        if (revokedDelegation) {
+            await Log.info(req.user?.email, "revoke_service_delegation_success", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["revoke_service_delegation_success"],
+                content: revokedDelegation
+            });
+        } else {
+            throw ["delegation_is_invalid"];
+        }
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "revoke_service_delegation_faile", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["revoke_service_delegation_faile"],
+            content: error.message
+        });
+    }
+}
 // Lấy ra tên của tất cả các Ví dụ
 exports.getOnlyDelegationName = async (req, res) => {
     try {
