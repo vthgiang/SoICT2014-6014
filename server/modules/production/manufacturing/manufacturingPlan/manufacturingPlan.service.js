@@ -83,34 +83,37 @@ const createTaskFromPlan = async (id, portal) => {
     let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById(id);
     await Promise.all(manufacturingPlan.manufacturingCommands.map(async (command) => {
         const manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(command);
-        const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById(manufacturingCommand.workOrders[0].manufacturingMill);
-        const manufacturingWork = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(manufacturingMill.manufacturingWorks);
-        const organizationalUnitId = manufacturingWork.organizationalUnit;
-
-        await Promise.all(manufacturingCommand.workOrders.map(async (wo) => {
-            let newTask = {
-                name: `Công đoạn ${wo.operation} - ${manufacturingCommand.code}`,
-                description: 'Công việc tạo tự động từ lệnh sản xuất',
-                quillDescriptionDefault: '',
-                startDate: convertDateTime(wo.startDate, wo.startHour),
-                endDate: convertDateTime(wo.endDate, wo.endHour),
-                priority: 3,
-                responsibleEmployees: wo.responsibles,
-                accountableEmployees: manufacturingCommand.accountables,
-                consultedEmployees: manufacturingCommand.accountables,
-                informedEmployees: manufacturingCommand.accountables,
-                creator: manufacturingPlan.creator,
-                organizationalUnit: organizationalUnitId,
-                collaboratedWithOrganizationalUnits: [],
-                taskTemplate: '664889f4955c55194419c779',
-                parent: '',
-                taskProject: '',
-                tags: [],
-                taskOutputs: [],
-                imgs: null
-            } 
-            await TaskService.createTask(portal, newTask);
-        }))
+        
+        if (manufacturingCommand.taskTemplate) {
+            const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById(manufacturingCommand.workOrders[0].manufacturingMill);
+            const manufacturingWork = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(manufacturingMill.manufacturingWorks);
+            const organizationalUnitId = manufacturingWork.organizationalUnit;
+            
+            await Promise.all(manufacturingCommand.workOrders.map(async (wo) => {
+                let newTask = {
+                    name: `Công đoạn ${wo.operation} - ${manufacturingCommand.code}`,
+                    description: 'Công việc tạo tự động từ lệnh sản xuất',
+                    quillDescriptionDefault: '',
+                    startDate: convertDateTime(wo.startDate, wo.startHour),
+                    endDate: convertDateTime(wo.endDate, wo.endHour),
+                    priority: 3,
+                    responsibleEmployees: wo.responsibles,
+                    accountableEmployees: manufacturingCommand.accountables,
+                    consultedEmployees: manufacturingCommand.accountables,
+                    informedEmployees: manufacturingCommand.accountables,
+                    creator: manufacturingPlan.creator,
+                    organizationalUnit: organizationalUnitId,
+                    collaboratedWithOrganizationalUnits: [],
+                    taskTemplate: manufacturingCommand.taskTemplate,
+                    parent: '',
+                    taskProject: '',
+                    tags: [],
+                    taskOutputs: [],
+                    imgs: null
+                } 
+                await TaskService.createTask(portal, newTask);
+            }))
+        }
     }))
 }
 
@@ -406,6 +409,14 @@ exports.getApproversOfPlan = async (portal, currentRole) => {
     // Dùng service bên users để lấy ra tất cả các users trong mảng roles
 
     let users = await UserService.getUsersByRolesArray(portal, roles);
+
+    // Xóa các bản ghi trùng nhau trong TH một user có 2 role có thể approver
+    users = users.filter((user, index, self) =>
+        index === self.findIndex((u) => (
+            u.userId._id === user.userId._id
+        ))
+    );
+    console.log(users)
     return { users }
 }
 

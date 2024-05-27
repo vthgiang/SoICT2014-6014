@@ -5196,7 +5196,7 @@ const initSampleCompanyDB = async () => {
 
             approvers: [
                 {
-                    approver: users[3]._id,
+                    approver: users[0]._id,
                 },
             ],
             creator: users[13]._id,
