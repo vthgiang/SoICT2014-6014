@@ -416,7 +416,6 @@ exports.getApproversOfPlan = async (portal, currentRole) => {
             u.userId._id === user.userId._id
         ))
     );
-    console.log(users)
     return { users }
 }
 
