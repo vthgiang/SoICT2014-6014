@@ -44,3 +44,71 @@
   font-size: 20px;
   font-weight: bold;
 }
+
+.time-campaign-manage-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust the gap between elements as needed */
+}
+
+.form-control-static {
+  margin-right: 10px; /* Optional: Adjust margin for spacing */
+  margin-left: 10px;
+}
+
+.date-picker {
+  width: 150px; /* Set the width of the date picker */
+}
+
+.campaign-manage-minicard {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Căn chỉnh các phần tử theo chiều dọc */
+  /* gap: 10px; Khoảng cách giữa các phần tử */
+  padding: 10px; /* Khoảng đệm xung quanh container */
+  width: 200px; /* Chiều rộng cố định của container */
+}
+
+.campaign-manage-minicard-label {
+  font-size: 1em; /* Kích thước chữ của nhãn */
+}
+
+.campaign-manage-minicard-number {
+  font-size: 2em;
+  color: #333; /* Màu chữ của số liệu */
+}
+
+.campaign-manage-minicard-down {
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  color: red; /* Màu chữ của phần trăm */
+}
+
+.campaign-manage-minicard-up {
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  color: green; /* Màu chữ của phần trăm */
+}
+
+.campaign-manage-minicard-icon {
+  margin-right: 5px; /* Khoảng cách giữa biểu tượng và phần trăm */
+}
+
+.campaign-manage-top-campaign {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; Căn chỉnh các phần tử theo chiều dọc */
+  /* gap: 10px; Khoảng cách giữa các phần tử */
+  /* padding: 10px; Khoảng đệm xung quanh container */
+}
+
+.campaign-manage-top-campaign-title {
+  display: flex;
+  align-items: center;
+}
+
+.campaign-manage-top-campaign-label {
+  font-size: 1.8em;
+}
