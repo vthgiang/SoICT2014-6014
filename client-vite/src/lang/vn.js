@@ -5134,6 +5134,7 @@ export default {
           copy_kpi_unit: 'Sao chép KPI đơn vị',
           employee_importance: 'Độ quan trọng nhân viên',
           organizational_unit_importance: 'Độ quan trọng đơn vị con',
+          organizational_unit_kpi_allocation: 'Phân bổ Kpi công ty',
 
           // Nhóm dành cho trọng số
           weight_total: 'Tổng trọng số',
