@@ -18,6 +18,13 @@ const DeliveryScheduleSchema = new Schema(
                 }                  
             }
         ],
+        //1: Chưa giao
+        //2: Đang giao
+        //3: Đã giao
+        //4: Thất bại
+        status: {
+            type: Number
+        },
         shippers: [{
             type: Schema.Types.ObjectId,
             ref: "Employee",

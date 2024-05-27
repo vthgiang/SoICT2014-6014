@@ -231,15 +231,6 @@ app.use('/transport-process', require('./modules/production/transport/transportP
 app.use('/transport-department', require('./modules/production/transport/transportDepartment/transportDepartment.route'));
 
 // transportation module
-<<<<<<< Updated upstream
-app.use('/transportation/vehicle', require('./modules/transportation/vehicle/vehicle.route'));
-app.use('/transportation/delivery-plan', require('./modules/transportation/delivery-plan/deliveryPlan.route'));
-app.use('/transportation/journeys', require('./modules/transportation/journey/journey.route'));
-app.use('/transportation/shippers', require('./modules/transportation/shipper-report/shipperReport.route'));
-app.use('/transportation/costs', require('./modules/transportation/cost/transportationCost.route'));
-app.use('/transportation/cost-formula', require('./modules/transportation/cost-formula/costFormula.route'));
-app.use('/transportation/manage-shipper', require('./modules/transportation/manage-shipper/manageShipper.route'));
-=======
 app.use("/transportation/vehicle", require("./modules/transportation/vehicle/vehicle.route"));
 app.use("/transportation/delivery-plan", require("./modules/transportation/delivery-plan/deliveryPlan.route"));
 app.use("/transportation/journeys", require("./modules/transportation/journey/journey.route"));
@@ -248,7 +239,6 @@ app.use("/transportation/costs", require("./modules/transportation/cost/transpor
 app.use("/transportation/cost-formula", require("./modules/transportation/cost-formula/costFormula.route"));
 app.use("/transportation/manage-shipper", require("./modules/transportation/manage-shipper/manageShipper.route"));
 app.use("/transportation/dashboard", require("./modules/transportation/dashboard/dashboard.route"));
->>>>>>> Stashed changes
 
 // transport3
 app.use('/transport3', require('./modules/transport3/order/order.route'));

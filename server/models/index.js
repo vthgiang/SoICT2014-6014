@@ -203,4 +203,5 @@ module.exports = {
     Transport3Employee: require('./transport3/transport3Employee.model'),
     Transport3Vehicle: require('./transport3/transport3Vehicle.model'),
     Transport3Schedule: require('./transport3/transport3Schedule.model'),
+    DeliverySchedule: require('./transportation/delivery-plan/deliverySchedule.model')
 };

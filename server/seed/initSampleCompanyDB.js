@@ -84,6 +84,8 @@ const {
     TransportVehicle,
     TransportPlan,
     TransportSchedule,
+    DeliverySchedule,
+    ProductRequestManagement,
     SuppliesPurchaseRequest,
     Supplies,
     PurchaseInvoice,
@@ -238,6 +240,8 @@ const initSampleCompanyDB = async () => {
         if (!db.models.TransportPlan) TransportPlan(db);
         if (!db.models.TransportSchedule) TransportSchedule(db);
         if (!db.models.AllocationConfigSetting) AllocationConfigSetting(db);
+        if (!db.models.DeliverySchedule) DeliverySchedule(db);
+        if (!db.models.ProductRequestManagement) ProductRequestManagement(db);
 
         // console.log("models_list", db.models);
     };
@@ -8041,6 +8045,81 @@ const initSampleCompanyDB = async () => {
     });
 
     console.log('Khởi tạo xong cấu hình giải thuật cho giải thuật phân bổ KPI');
+
+        /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU QUẢN LÝ YÊU CẦU VẬN CHUYỂN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+      console.log('Khởi tạo quản lý yêu cầu vận chuyển');
+
+      await ProductRequestManagement(vnistDB).create({
+        code: 'GHA123',
+        creator: [new ObjectId('664b013089db9c86025cef5c')],
+        approvers: [{ // Người phê duyệt
+            information: [{
+                approver: [new ObjectId('664b013089db9c86025cef5f')],
+                approvedTime: new Date('2024-05-20T07:45:44.691Z'),
+                note: ''
+            }],
+            approveType: 3
+        }],
+        refuser: { // Người từ chối yêu cầu
+            refuser: null,
+            refuserTime: new Date('2024-05-20T07:45:44.691Z'),
+            note: ''
+        },
+    
+        goods: [{
+            good: [new ObjectId('664b013289db9c86025cf62a')],
+            quantity: 1,
+            lots: [{
+                lot: listLot[0]._id,
+                quantity: 0,
+                returnQuantity: 0,
+                note: ''
+            }],
+        }],
+        manufacturingWork: manufacturingWorks[0]._id,
+        stock: [new ObjectId('664b013289db9c86025cf63b')],
+        toStock: null,
+        requestingDepartment: null,
+        orderUnit: null,
+        supplier: [new ObjectId('664b013289db9c86025cf6f6')],
+        customer: new ObjectId('664b064a73be139a586b851d'),
+        requestType: 1,
+        type: 1,
+    
+        desiredTime: null,
+        status: 1,
+        description: '',
+        purchaseOrder: null,
+        saleOrder: null,
+        bill: null
+      })
+  
+      console.log('Khởi tạo xong kế hoạch vận chuyển');
+
+
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU KẾ HOẠCH VẬN CHUYỂN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+      console.log('Khởi tạo kế hoạch vận chuyển');
+
+      await DeliverySchedule(vnistDB).create({
+        code: 'Kế hoạch 01',
+        carrierDate: new Date('2024-05-20T07:45:44.691Z'),
+        orders: [new ObjectId('664b086a174b9b9ec20ec536') ],
+        status: 3,
+        shippers: [new ObjectId('664affa60f190284e84a640b')],
+        estimatedDeliveryDate: new Date('2024-05-20T07:45:44.691Z'),
+        actualDeliveryDate: new Date('2024-05-20T07:45:44.691Z'),
+        estimatedOntime: 1
+      })
+  
+      console.log('Khởi tạo xong kế hoạch vận chuyển');
 
     /*---------------------------------------------------------------------------------------------
         -----------------------------------------------------------------------------------------------
