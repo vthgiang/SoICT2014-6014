@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-
-import { createUnitKpiActions } from '../redux/actions.js'
-
+import { createUnitKpiActions } from '../redux/actions'
 import { DialogModal, ErrorLabel } from '../../../../../common-components'
 import ValidationHelper from '../../../../../helpers/validationHelper'
 
 function OrganizationalUnitImportancesModal(props) {
-  const { translate, createKpiUnit, dashboardEvaluationEmployeeKpiSet } = props
+  const { translate, createKpiUnit } = props
   const { organizationalUnit, organizationalUnitId, month } = props
 
   const [organizationalUnitImportancesState, setOrganizationalUnitImportancesState] = useState(null)
@@ -24,8 +22,8 @@ function OrganizationalUnitImportancesModal(props) {
   useEffect(() => {
     // Khởi tạo dữ liệu table độ quan trọng nhân viên
     if (!organizationalUnitImportancesState && createKpiUnit?.currentKPI) {
-      let currentKpiUnit,
-        organizationalUnits = []
+      let currentKpiUnit
+      let organizationalUnits = []
 
       currentKpiUnit = createKpiUnit.currentKPI
       if (currentKpiUnit) {
@@ -43,7 +41,11 @@ function OrganizationalUnitImportancesModal(props) {
 
     // Cập nhât dữ liệu table khi thêm đơn vị con mới
     if (organizationalUnitImportancesState && organizationalUnit && updateOrganizationalUnit) {
-      let organizationalUnitChildren, currentKPI, listOrganizationalUnitImportances, organizationalUnitImportancesStateTemp, unit
+      let organizationalUnitChildren
+      let currentKPI
+      let listOrganizationalUnitImportances
+      let organizationalUnitImportancesStateTemp
+      let unit
       organizationalUnitImportancesStateTemp = organizationalUnitImportancesState
       unit = organizationalUnitImportancesState.map((item) => item?.value)
 
@@ -85,25 +87,25 @@ function OrganizationalUnitImportancesModal(props) {
   })
 
   const formatDate = (date) => {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
     if (month.length < 2) {
-      month = '0' + month
+      month = `0${month}`
     }
 
     if (day.length < 2) {
-      day = '0' + day
+      day = `0${day}`
     }
 
     return [month, year].join('-')
   }
 
   const handleChangeImportance = (e, organizationalUnit) => {
-    let value = e.target.value
-    let validation = ValidationHelper.validateNumberInput(translate, value, 0, 100)
+    const { value } = e.target
+    const validation = ValidationHelper.validateNumberInput(translate, value, 0, 100)
 
     let organizationalUnitImportancesStateTemp = organizationalUnitImportancesState
     organizationalUnitImportancesStateTemp = organizationalUnitImportancesStateTemp.map((item) => {
@@ -114,9 +116,8 @@ function OrganizationalUnitImportancesModal(props) {
           errorOnImportance: validation.message,
           status: validation.status
         }
-      } else {
-        return item
       }
+      return item
     })
     setOrganizationalUnitImportancesState(organizationalUnitImportancesStateTemp)
   }
@@ -131,7 +132,8 @@ function OrganizationalUnitImportancesModal(props) {
 
   const handleSubmit = () => {
     const { createKpiUnit } = props
-    let data, currentKPI
+    let data
+    let currentKPI
 
     if (createKpiUnit) {
       currentKPI = createKpiUnit.currentKPI
@@ -158,64 +160,62 @@ function OrganizationalUnitImportancesModal(props) {
   }
 
   return (
-    <React.Fragment>
-      <DialogModal
-        modalID='organizational-unit-importances'
-        isLoading={false}
-        formID='form-organizational-unit-importances'
-        title={`Độ quan trọng đơn vị con của ${organizationalUnit && organizationalUnit.name} tháng ${formatDate(month)}`}
-        msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
-        msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
-        func={handleSubmit}
-        hasNote={false}
-        disableSubmit={isFormValidated()}
+    <DialogModal
+      modalID='organizational-unit-importances'
+      isLoading={false}
+      formID='form-organizational-unit-importances'
+      title={`Độ quan trọng đơn vị con của ${organizationalUnit && organizationalUnit.name} tháng ${formatDate(month)}`}
+      msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
+      msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
+      func={handleSubmit}
+      hasNote={false}
+      disableSubmit={isFormValidated()}
+    >
+      {/* Form khởi tạo KPI đơn vị */}
+      <form
+        id='form-organizational-unit-importances'
+        onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}
       >
-        {/* Form khởi tạo KPI đơn vị */}
-        <form
-          id='form-organizational-unit-importances'
-          onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}
-        >
-          <button className='btn btn-primary pull-right' style={{ marginBottom: '15px' }} onClick={(e) => handleUpdateEmployee(e)}>
-            Cập nhật đơn vị con mới
-          </button>
+        <button className='btn btn-primary pull-right' style={{ marginBottom: '15px' }} onClick={(e) => handleUpdateEmployee(e)}>
+          Cập nhật đơn vị con mới
+        </button>
 
-          <table className='table table-hover table-bordered'>
-            <thead>
-              <tr>
-                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>
-                  {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}
-                </th>
-                <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>
-                  {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {organizationalUnitImportancesState &&
-                organizationalUnitImportancesState.length !== 0 &&
-                organizationalUnitImportancesState.map((item, index) => (
-                  <tr key={item.value + organizationalUnitId + index}>
-                    <td style={{ width: '40px' }}>{index + 1}</td>
-                    <td>{item.text}</td>
-                    <td className={`form-group ${!item?.errorOnImportance ? '' : 'has-error'}`}>
-                      <input
-                        type='number'
-                        min='0'
-                        max='100'
-                        onChange={(e) => handleChangeImportance(e, item?.value)}
-                        defaultValue={item.importance}
-                        style={{ width: '60px', textAlign: 'center' }}
-                      />
-                      <ErrorLabel content={item?.errorOnImportance} />
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </form>
-      </DialogModal>
-    </React.Fragment>
+        <table className='table table-hover table-bordered'>
+          <thead>
+            <tr>
+              <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>
+                {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}
+              </th>
+              <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
+              <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>
+                {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {organizationalUnitImportancesState &&
+              organizationalUnitImportancesState.length !== 0 &&
+              organizationalUnitImportancesState.map((item, index) => (
+                <tr key={item.value + organizationalUnitId + index}>
+                  <td style={{ width: '40px' }}>{index + 1}</td>
+                  <td>{item.text}</td>
+                  <td className={`form-group ${!item?.errorOnImportance ? '' : 'has-error'}`}>
+                    <input
+                      type='number'
+                      min='0'
+                      max='100'
+                      onChange={(e) => handleChangeImportance(e, item?.value)}
+                      defaultValue={item.importance}
+                      style={{ width: '60px', textAlign: 'center' }}
+                    />
+                    <ErrorLabel content={item?.errorOnImportance} />
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </form>
+    </DialogModal>
   )
 }
 

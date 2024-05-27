@@ -5070,6 +5070,7 @@ export default {
           copy_kpi_unit: 'Copy KPI Unit',
           employee_importance: 'Employee importances',
           organizational_unit_importance: 'Children organizational unit importances',
+          organizational_unit_kpi_allocation: 'Allocation Goal kpi into unit kpi',
 
           // Nhóm dành cho trọng số
           weight_total: 'Weight total',
