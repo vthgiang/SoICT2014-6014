@@ -16,6 +16,7 @@ const initShipperFormulaIndex = async () => {
             user: process.env.DB_USERNAME,
             pass: process.env.DB_PASSWORD
         } : {
+            
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,

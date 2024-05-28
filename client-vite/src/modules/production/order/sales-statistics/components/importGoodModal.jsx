@@ -156,8 +156,8 @@ function ImportGoodModal(props) {
 
       setState({
         ...state,
-        importData: value, // show ra :))
-        importShowData: valueShow, // Luuw db
+        importData: value, 
+        importShowData: valueShow, 
         rowError: rowError,
         checkFileImport: checkFileImport
       })
