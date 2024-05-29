@@ -29,6 +29,7 @@
     "init-total-order": "node seed/initTotalOrder.js",
     "init-inventory": "node seed/initInventory.js",
     "init-sales-order": "node seed/initSalesOrder",
+    "sync-db-auth": "node seed/syncDBAuth.js",
     "y-init": "yarn db && yarn sc",
     "y-init-full": "yarn db && yarn sc && yarn sp && yarn shr",
     "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js",
