@@ -270,6 +270,7 @@ const PrivilegeApiManagement = lazy(
   () => import('../modules/system-admin/system-api/system-api-privilege/components/privilegeApiManagement')
 )
 const ManageRequester = lazy(() => import('../modules/system-admin/requester-management/components'))
+const ManageResource = lazy(() => import('../modules/system-admin/resource-management/components'))
 const InternalServiceIdentityManagement = lazy(() => import('../modules/system-admin/internal-service-identity/components'))
 const ExternalServiceConsumerManagement = lazy(() => import('../modules/super-admin/external-service-consumer/components'))
 const InternalPolicyManagement = lazy(() => import('../modules/system-admin/internal-policy/components'))
@@ -619,6 +620,29 @@ class Routes extends Component {
             pageName='manage_requester'
             layout={Layout}
             component={ManageRequester}
+          />
+          <PrivateRoute
+            isLoading={this.props.resource.isLoading}
+            key='resources-management'
+            arrPage={[
+              {
+                requester: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                requester: '/resources-management',
+                name: 'manage_resource',
+                icon: 'fa fa-link'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/resources-management'
+            path='/resources-management'
+            pageName='manage_resource'
+            layout={Layout}
+            component={ManageResource}
           />
           <PrivateRoute
             isLoading={this.props.attribute.isLoading}
