@@ -39,6 +39,7 @@ app.use('/upload/user-guide/bill', express.static('upload/user-guide/bill'));
 const router = express.Router();
 
 router.use('/auth', require('./modules/auth/auth.route'));
+router.use('/auth-service', require('./modules/auth-service/auth.route'));
 
 router.use('/annualLeave', require('./modules/human-resource/annual-leave/annualLeave.route'));
 router.use('/commendation', require('./modules/human-resource/commendation/commendation.route'));

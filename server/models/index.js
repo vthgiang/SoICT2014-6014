@@ -4,6 +4,7 @@ module.exports = {
     User: require('./auth/user.model'),
     UserRole: require('./auth/userRole.model'),
     Policy: require('./auth/policy.model'),
+    Service: require('./auth-service/service.model'),
 
     Document: require('./document/document.model'),
     DocumentCategory: require('./document/documentCategory.model'),
