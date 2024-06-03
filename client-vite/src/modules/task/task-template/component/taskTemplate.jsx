@@ -2,18 +2,17 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
+import Swal from 'sweetalert2'
+import parse from 'html-react-parser'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { RoleActions } from '../../../super-admin/role/redux/actions'
 import { taskTemplateActions } from '../redux/actions'
-import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components'
-import { ExportExcel } from '../../../../common-components'
-import Swal from 'sweetalert2'
-import { ModalAddTaskTemplate } from './addTaskTemplateModal'
+import { PaginateBar, SelectMulti, DataTableSetting, ExportExcel } from '../../../../common-components'
+import ModalAddTaskTemplate from './addTaskTemplateModal'
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal'
 import { ModalEditTaskTemplate } from './editTaskTemplateModal'
 import { TaskTemplateImportForm } from './taskTemplateImportForm'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import parse from 'html-react-parser'
 import './tasktemplate.css'
 
 class TaskTemplate extends Component {
@@ -21,7 +20,7 @@ class TaskTemplate extends Component {
     super(props)
     const tableId = 'table-task-template'
     const defaultConfig = { limit: 10 }
-    const limit = getTableConfiguration(tableId, defaultConfig).limit
+    const { limit } = getTableConfiguration(tableId, defaultConfig)
 
     this.state = {
       status: 'start',
@@ -35,7 +34,7 @@ class TaskTemplate extends Component {
   }
 
   componentDidMount() {
-    let { currentPage, perPage, unit, name, currentRole } = this.state
+    const { currentPage, perPage, unit, name, currentRole } = this.state
     this.props.getDepartment()
     this.props.getTaskTemplateByUser(currentPage, perPage, unit, name)
     this.props.show(currentRole)
@@ -45,10 +44,10 @@ class TaskTemplate extends Component {
     const { translate, tasktemplates, user } = this.props
     const { currentPage, currentEditRow, currentViewRow, currentEditRowId, tableId } = this.state
 
-    var listTaskTemplates,
-      pageTotal,
-      units = [],
-      currentUnit
+    let listTaskTemplates
+    let pageTotal
+    let units = []
+    let currentUnit
 
     if (tasktemplates.pageTotal) {
       pageTotal = tasktemplates.pageTotal
@@ -70,7 +69,7 @@ class TaskTemplate extends Component {
     if (tasktemplates.isLoading === false) {
       list = tasktemplates.items
     }
-    let exportData = this.convertDataToExportData(list)
+    const exportData = this.convertDataToExportData(list)
 
     return (
       <div className='box'>
@@ -80,9 +79,9 @@ class TaskTemplate extends Component {
 
           <TaskTemplateImportForm />
           <ExportExcel id='export-taskTemplate' exportData={exportData} style={{ marginLeft: 5 }} />
-          {/**Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
+          {/** Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
           {this.checkHasComponent('create-task-template-button') && (
-            <React.Fragment>
+            <>
               <ModalAddTaskTemplate />
               <div className='form-inline'>
                 <div className='dropdown pull-right' style={{ marginBottom: 15 }}>
@@ -121,10 +120,10 @@ class TaskTemplate extends Component {
                   </ul>
                 </div>
               </div>
-            </React.Fragment>
+            </>
           )}
 
-          {/**Các ô input để nhập điều kiện tìm mẫu công việc */}
+          {/** Các ô input để nhập điều kiện tìm mẫu công việc */}
           <div className='form-inline'>
             <div className='form-group'>
               <label className='form-control-static'>{translate('task_template.name')}</label>
@@ -153,7 +152,7 @@ class TaskTemplate extends Component {
                     nonSelectedText: translate('task_template.select_all_units'),
                     allSelectedText: translate(`task.task_management.select_all_department`)
                   }}
-                ></SelectMulti>
+                />
               )}
               <button type='button' className='btn btn-success' title='Tìm tiếm mẫu công việc' onClick={this.handleUpdateData}>
                 {translate('task_template.search')}
@@ -167,7 +166,7 @@ class TaskTemplate extends Component {
             setLimit={this.setLimit}
           />
 
-          {/**Table chứa các mẫu công việc trong 1 trang */}
+          {/** Table chứa các mẫu công việc trong 1 trang */}
           <table className='table table-bordered table-striped table-hover' id={tableId}>
             <thead>
               <tr>
@@ -205,9 +204,9 @@ class TaskTemplate extends Component {
                               <i className='material-icons'>view_list</i>
                             </a>
 
-                            {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
+                            {/** Check quyền xem có được xóa hay sửa mẫu công việc không */}
                             {this.checkPermisson(item?.organizationalUnit?.managers, item?.creator?._id) && (
-                              <React.Fragment>
+                              <>
                                 <a
                                   href="cursor:{'pointer'}"
                                   onClick={() => this.handleEdit(item)}
@@ -224,7 +223,7 @@ class TaskTemplate extends Component {
                                 >
                                   <i className='material-icons'></i>
                                 </a>
-                              </React.Fragment>
+                              </>
                             )}
                           </td>
                         </tr>
@@ -241,8 +240,8 @@ class TaskTemplate extends Component {
   }
 
   getPriority = (value) => {
-    let priority = Number(value)
-    let { translate } = this.props
+    const priority = Number(value)
+    const { translate } = this.props
     switch (priority) {
       case 1:
         return translate('task.task_management.low')
@@ -260,15 +259,15 @@ class TaskTemplate extends Component {
   }
 
   handleChangeTaskTemplateName = (e) => {
-    let { value } = e.target
+    const { value } = e.target
     this.setState({
       name: value
     })
   }
 
-  /**Cập nhật số dòng trên một trang hiển thị */
+  /** Cập nhật số dòng trên một trang hiển thị */
   setLimit = (limit) => {
-    let { perPage, unit, name } = this.state
+    const { perPage, unit, name } = this.state
     if (limit !== perPage) {
       this.setState({
         perPage: limit,
@@ -279,7 +278,13 @@ class TaskTemplate extends Component {
   }
 
   myFunction = () => {
-    var input, filter, table, tr, td, i, txtValue
+    let input
+    let filter
+    let table
+    let tr
+    let td
+    let i
+    let txtValue
     input = document.getElementById('myInput')
     filter = input.value.toLowerCase()
     table = document.getElementById('myTable')
@@ -297,10 +302,10 @@ class TaskTemplate extends Component {
     }
   }
 
-  /**Khi người dùng chuyển trang, update data của trang mới đó */
+  /** Khi người dùng chuyển trang, update data của trang mới đó */
   handleGetDataPagination = async (number) => {
-    let { currentPage, perPage, name } = this.state
-    let units = window.$('#multiSelectUnit').val()
+    const { currentPage, perPage, name } = this.state
+    const units = window.$('#multiSelectUnit').val()
     if (currentPage !== number) {
       this.setState({
         currentPage: number
@@ -309,17 +314,17 @@ class TaskTemplate extends Component {
     }
   }
 
-  /**Khi có hành động thay đổi data(thêm sửa xóa 1 mẫu công việc...), Hiển thị dữ liệu về trang 1 */
+  /** Khi có hành động thay đổi data(thêm sửa xóa 1 mẫu công việc...), Hiển thị dữ liệu về trang 1 */
   handleUpdateData = () => {
-    let { perPage, name } = this.state
-    let units = window.$('#multiSelectUnit').val()
+    const { perPage, name } = this.state
+    const units = window.$('#multiSelectUnit').val()
     this.setState({
       currentPage: 1
     })
     this.props.getTaskTemplateByUser(1, perPage, units, name)
   }
 
-  /**Xoa tasktemplate theo id */
+  /** Xoa tasktemplate theo id */
   handleDelete = (id, numberOfUse) => {
     const { translate } = this.props
     if (numberOfUse === 0) {
@@ -334,7 +339,7 @@ class TaskTemplate extends Component {
         if (res.value) {
           this.props.deleteTaskTemplateById(id)
 
-          var test = window.$('#multiSelectUnit').val()
+          const test = window.$('#multiSelectUnit').val()
           this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, '')
         }
       })
@@ -350,8 +355,8 @@ class TaskTemplate extends Component {
 
   checkPermisson = (managerCurrentUnit, creatorId) => {
     if (!managerCurrentUnit || !creatorId) return false
-    let currentRole = localStorage.getItem('currentRole')
-    for (let i in managerCurrentUnit) {
+    const currentRole = localStorage.getItem('currentRole')
+    for (const i in managerCurrentUnit) {
       if (currentRole === managerCurrentUnit[i]) {
         return true
       }
@@ -363,18 +368,18 @@ class TaskTemplate extends Component {
   }
 
   checkHasComponent = (name) => {
-    var { auth } = this.props
-    var result = false
+    const { auth } = this.props
+    let result = false
     auth.components.forEach((component) => {
       if (component.name === name) result = true
     })
     return result
   }
 
-  /**Hiển thị số thứ tự của trang đang xem ở paginate bar */
+  /** Hiển thị số thứ tự của trang đang xem ở paginate bar */
   setPage = async (number) => {
-    let { currentPage, perPage, name } = this.state
-    let units = window.$('#multiSelectUnit').val()
+    const { currentPage, perPage, name } = this.state
+    const units = window.$('#multiSelectUnit').val()
     if (currentPage !== number) {
       this.setState({
         currentPage: number
@@ -383,7 +388,7 @@ class TaskTemplate extends Component {
     }
   }
 
-  /**Mở modal xem thông tin chi tiết 1 mẫu công việc */
+  /** Mở modal xem thông tin chi tiết 1 mẫu công việc */
   handleView = async (taskTemplateId) => {
     await this.setState({
       currentViewRow: taskTemplateId
@@ -391,7 +396,7 @@ class TaskTemplate extends Component {
     window.$('#modal-view-tasktemplate').modal('show')
   }
 
-  /**Mở modal chỉnh sửa 1 mẫu công việc */
+  /** Mở modal chỉnh sửa 1 mẫu công việc */
   handleEdit = async (taskTemplate) => {
     await this.setState({
       currentEditRow: taskTemplate,
@@ -400,13 +405,13 @@ class TaskTemplate extends Component {
     window.$('#modal-edit-task-template').modal('show')
   }
 
-  /**Mở modal import file excel */
+  /** Mở modal import file excel */
   handImportFile = (event) => {
     event.preventDefault()
     window.$('#modal_import_file').modal('show')
   }
 
-  /**Mở modal thêm mới 1 mẫu công việc */
+  /** Mở modal thêm mới 1 mẫu công việc */
   handleAddTaskTemplate = (event) => {
     event.preventDefault()
     window.$('#modal-add-task-template-undefined').modal('show')
@@ -419,14 +424,14 @@ class TaskTemplate extends Component {
       for (let k = 0; k < data.length; k++) {
         const { auth, role } = this.props
         let annunciator
-        let x = data[k]
+        const x = data[k]
         let length = 0
-        let actionName = [],
-          actionDescription = [],
-          mandatory = []
+        const actionName = []
+        const actionDescription = []
+        const mandatory = []
 
         if (!role.isLoading && !auth.isLoading) {
-          annunciator = auth.user.name + role.item ? ' - ' + role.item.name : ''
+          annunciator = auth.user.name + role.item ? ` - ${role.item.name}` : ''
         }
         if (x.taskActions) {
           if (x.taskActions.length > length) {
@@ -442,10 +447,10 @@ class TaskTemplate extends Component {
             }
           }
         }
-        let infomationName = [],
-          type = [],
-          infomationDescription = [],
-          filledByAccountableEmployeesOnly = []
+        const infomationName = []
+        const type = []
+        const infomationDescription = []
+        const filledByAccountableEmployeesOnly = []
         if (x.taskInformations) {
           if (x.taskInformations.length > length) {
             length = x.taskInformations.length
@@ -465,12 +470,12 @@ class TaskTemplate extends Component {
         if (x.numberOfUse !== 0) {
           numberOfUse = x.numberOfUse
         }
-        let collaboratedWithOrganizationalUnits = [],
-          readByEmployees = [],
-          responsibleEmployees = [],
-          accountableEmployees = [],
-          consultedEmployees = [],
-          informedEmployees = []
+        let collaboratedWithOrganizationalUnits = []
+        let readByEmployees = []
+        let responsibleEmployees = []
+        let accountableEmployees = []
+        let consultedEmployees = []
+        let informedEmployees = []
 
         if (x.readByEmployees && x.readByEmployees[0]) {
           readByEmployees = x.readByEmployees.map((item) => item.name)
@@ -501,7 +506,7 @@ class TaskTemplate extends Component {
           STT: k + 1,
           name: x.name,
           description: x.description,
-          numberOfUse: numberOfUse,
+          numberOfUse,
           readByEmployees: readByEmployees[0],
           responsibleEmployees: responsibleEmployees.join(', '),
           accountableEmployees: accountableEmployees.join(', '),
@@ -510,7 +515,7 @@ class TaskTemplate extends Component {
           organizationalUnits: x.organizationalUnit && x.organizationalUnit.name,
           collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
           creator: x.creator && x.creator.email,
-          annunciator: annunciator,
+          annunciator,
           priority: this.getPriority(x.priority),
           formula: x.formula,
           actionName: actionName[0],
@@ -554,7 +559,7 @@ class TaskTemplate extends Component {
       }
     }
 
-    let exportData = {
+    const exportData = {
       fileName: 'Bảng thống kê mẫu công việc',
       dataSheets: [
         {

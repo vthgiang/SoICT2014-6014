@@ -1,22 +1,39 @@
-import React, { Component, useEffect, useState } from 'react'
-import { withTranslate } from 'react-redux-multilingual'
-import { connect } from 'react-redux'
-
+import React, { useEffect, useState } from 'react'
+import { useTranslate, withTranslate } from 'react-redux-multilingual'
+import { connect, useDispatch } from 'react-redux'
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions'
-import { taskTemplateActions } from '../redux/actions'
-import { InformationForm } from '../component/informationsTemplate'
-import { ActionForm } from '../component/actionsTemplate'
+import { InformationForm } from './informationsTemplate'
+import { ActionForm } from './actionsTemplate'
 import { SelectBox, ErrorLabel, QuillEditor } from '../../../../common-components'
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper'
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator'
 import { getStorage } from '../../../../config'
 import ValidationHelper from '../../../../helpers/validationHelper'
+import MappingTaskTemplateIntoListTasks from './mappingTaskTemplateIntoListTasks'
+import { createUnitKpiActions } from '../../../kpi/organizational-unit/creation/redux/actions'
+import { taskTemplateActions } from '../redux/actions'
 
-import parse from 'html-react-parser'
-
-function AddTaskTemplate(props) {
-  let userId = getStorage('userId')
+function AddTaskTemplate({
+  isProcess,
+  handleChangeName,
+  onChangeTemplateData,
+  getRoleSameDepartment,
+  handleChangeResponsible,
+  handleChangeAccountable,
+  id,
+  user,
+  info,
+  savedTaskAsTemplate,
+  savedTaskId,
+  savedTaskItem,
+  getDepartment,
+  onChangeListMappingTask,
+  onChangeIsMappingTask
+}) {
+  const userId = getStorage('userId')
+  const dispatch = useDispatch()
+  const translate = useTranslate()
 
   const [state, setState] = useState({
     newTemplate: {
@@ -35,57 +52,37 @@ function AddTaskTemplate(props) {
       taskActions: [],
       taskInformations: []
     },
-    showMore: props.isProcess ? false : true,
+    showMore: !isProcess,
     currentRole: localStorage.getItem('currentRole')
   })
 
+  const [isShowMappingTaskTemplates, setIsShowMappingTaskTemplates] = useState(false)
+
+  const handleIsShowMappingTaskTemplates = ($event) => {
+    setIsShowMappingTaskTemplates($event.target.checked)
+    onChangeIsMappingTask($event.target.checked)
+  }
+
   useEffect(() => {
-    // props.getDepartment(); // => user.organizationalUnitsOfUser
-    // props.getAllUserOfCompany(); // => user.usercompanys
-    props.getRoleSameDepartment(localStorage.getItem('currentRole')) // => user.roledepartments
-    props.getDepartmentsThatUserIsManager() // => department.departmentsThatUserIsManager
-    props.getAllUserInAllUnitsOfCompany() // => user.usersInUnitsOfCompany
-  }, [])
+    dispatch(UserActions.getRoleSameDepartment(localStorage.getItem('currentRole')))
+    dispatch(DepartmentActions.getDepartmentsThatUserIsManager())
+    dispatch(UserActions.getAllUserInAllUnitsOfCompany())
+    dispatch(createUnitKpiActions.getKPIParent({ roleId: localStorage.getItem('currentRole') }))
+  }, [dispatch])
 
   const handleTaskTemplateName = (e) => {
-    let { value } = e.target
-    let { isProcess, translate } = props
-    isProcess && props.handleChangeName(value)
-    let { message } = ValidationHelper.validateName(translate, value, 1, 255)
-    let { newTemplate } = state
+    const { value } = e.target
+    if (isProcess) handleChangeName(value)
+    const { message } = ValidationHelper.validateName(translate, value, 1, 255)
+    const { newTemplate } = state
     newTemplate.name = value
     newTemplate.errorOnName = message
-    props.onChangeTemplateData(newTemplate)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
     })
   }
-
-  //for analysis
-  const handleTaskTempLateClassName = (value) => {
-    let singleValue = value[0]; // SelectBox một lựa chọn
-    let { newTemplate } = state;
-    newTemplate.class = singleValue
-    props.onChangeTemplateData(newTemplate)
-    setState({
-      ...state,
-      newTemplate
-    });
-    // props.handleChangeClassName(singleValue)
-  }
-
-  // handleTaskTemplateDesc = (e) => {
-  //     let { value } = e.target;
-  //     let { isProcess, translate } = props
-  //     isProcess && props.handleChangeName(value);
-  //     let { message } = ValidationHelper.validateName(translate, value, 1, 255);
-  //     let { newTemplate } = state;
-  //     newTemplate.description = value;
-  //     newTemplate.errorDescription = message;
-  //     props.onChangeTemplateData(newTemplate);
-  //     setState({ newTemplate });
-  // }
 
   const handleTaskTemplateDesc = (value, imgs) => {
     setState((state) => {
@@ -98,16 +95,16 @@ function AddTaskTemplate(props) {
       }
     })
 
-    props.onChangeTemplateData(state.newTemplate)
+    onChangeTemplateData(state.newTemplate)
   }
 
   const handleTaskTemplateFormula = (event) => {
-    let value = event.target.value
+    const { value } = event.target
     validateTaskTemplateFormula(value, true)
   }
 
   const validateTaskTemplateFormula = (value, willUpdateState = true) => {
-    let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value)
+    const msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value)
 
     if (willUpdateState) {
       state.newTemplate.formula = value
@@ -118,17 +115,17 @@ function AddTaskTemplate(props) {
         }
       })
     }
-    props.onChangeTemplateData(state.newTemplate)
+    onChangeTemplateData(state.newTemplate)
     return msg === undefined
   }
 
   const handleTaskTemplateNumberOfDaysTaken = (event) => {
-    let value = event.target.value
+    const { value } = event.target
     validateTaskTemplateNumberOfDaysTaken(value, true)
   }
 
   const validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 0)
+    const { message } = ValidationHelper.validateNumberInputMin(translate, value, 0)
 
     if (willUpdateState) {
       state.newTemplate.numberOfDaysTaken = value
@@ -139,15 +136,15 @@ function AddTaskTemplate(props) {
         }
       })
     }
-    props.onChangeTemplateData(state.newTemplate)
+    onChangeTemplateData(state.newTemplate)
     return message === undefined
   }
 
   const handleChangeTaskPriority = (e) => {
-    let { newTemplate } = state
-    let { value } = e.target
+    const { newTemplate } = state
+    const { value } = e.target
     newTemplate.priority = value
-    props.onChangeTemplateData(newTemplate)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -155,22 +152,22 @@ function AddTaskTemplate(props) {
   }
 
   const handleTaskTemplateUnit = (value) => {
-    let singleValue = value[0] // SelectBox một lựa chọn
+    const singleValue = value[0] // SelectBox một lựa chọn
     if (validateTaskTemplateUnit(singleValue, true)) {
       const { department } = props
       if (department !== undefined && department.departmentsThatUserIsManager !== undefined) {
         // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
-        let dept = department.departmentsThatUserIsManager.find((item) => item._id === singleValue)
+        const dept = department.departmentsThatUserIsManager.find((item) => item._id === singleValue)
         if (dept) {
-          props.getRoleSameDepartment(dept.managers)
+          getRoleSameDepartment(dept.managers)
         }
       }
     }
   }
 
   const validateTaskTemplateUnit = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
-    let newData = {
+    const { message } = ValidationHelper.validateEmpty(translate, value)
+    const newData = {
       // update lại unit, và reset các selection phía sau
       ...state.newTemplate,
       organizationalUnit: value,
@@ -190,15 +187,15 @@ function AddTaskTemplate(props) {
           newTemplate: newData
         }
       })
-      props.onChangeTemplateData(newData)
+      onChangeTemplateData(newData)
     }
     return message === undefined
   }
 
   const handleChangeCollaboratedWithOrganizationalUnits = (value) => {
-    let { newTemplate } = state
+    const { newTemplate } = state
     newTemplate.collaboratedWithOrganizationalUnits = value
-    props.onChangeTemplateData(newTemplate)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -206,9 +203,9 @@ function AddTaskTemplate(props) {
   }
 
   const handleTaskTemplateRead = (value) => {
-    let { newTemplate } = state
+    const { newTemplate } = state
     newTemplate.readByEmployees = value
-    props.onChangeTemplateData(newTemplate)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -216,10 +213,10 @@ function AddTaskTemplate(props) {
   }
 
   const handleTaskTemplateResponsible = (value) => {
-    let { newTemplate } = state
+    const { newTemplate } = state
     newTemplate.responsibleEmployees = value
-    props.isProcess && props.handleChangeResponsible(value)
-    props.onChangeTemplateData(newTemplate)
+    isProcess && handleChangeResponsible(value)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -227,10 +224,10 @@ function AddTaskTemplate(props) {
   }
 
   const handleTaskTemplateAccountable = async (value) => {
-    let { newTemplate } = state
+    const { newTemplate } = state
     newTemplate.accountableEmployees = value
-    props.isProcess && props.handleChangeAccountable(value)
-    props.onChangeTemplateData(newTemplate)
+    isProcess && handleChangeAccountable(value)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -238,9 +235,9 @@ function AddTaskTemplate(props) {
   }
 
   const handleTaskTemplateConsult = (value) => {
-    let { newTemplate } = state
+    const { newTemplate } = state
     newTemplate.consultedEmployees = value
-    props.onChangeTemplateData(newTemplate)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -248,9 +245,9 @@ function AddTaskTemplate(props) {
   }
 
   const handleTaskTemplateInform = (value) => {
-    let { newTemplate } = state
+    const { newTemplate } = state
     newTemplate.informedEmployees = value
-    props.onChangeTemplateData(newTemplate)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -258,9 +255,9 @@ function AddTaskTemplate(props) {
   }
 
   const handleTaskActionsChange = (data) => {
-    let { newTemplate } = state
+    const { newTemplate } = state
     newTemplate.taskActions = data
-    props.onChangeTemplateData(newTemplate)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -268,9 +265,9 @@ function AddTaskTemplate(props) {
   }
 
   const handleTaskInformationsChange = (data) => {
-    let { newTemplate } = state
+    const { newTemplate } = state
     newTemplate.taskInformations = data
-    props.onChangeTemplateData(newTemplate)
+    onChangeTemplateData(newTemplate)
     setState({
       ...state,
       newTemplate
@@ -278,13 +275,8 @@ function AddTaskTemplate(props) {
   }
 
   useEffect(() => {
-    const { department, user } = props
-    const { newTemplate } = state
-
     // dùng cho chức năng tạo task process
-    if (props.isProcess && props.id !== state.id) {
-      let { info, listOrganizationalUnit } = props
-
+    if (isProcess && id !== state.id) {
       let defaultUnit
       if (user && user.organizationalUnitsOfUser)
         defaultUnit = user.organizationalUnitsOfUser.find(
@@ -298,7 +290,7 @@ function AddTaskTemplate(props) {
       setState((state) => {
         return {
           ...state,
-          id: props.id,
+          id,
           newTemplate: {
             organizationalUnit: info && info.organizationalUnit ? info.organizationalUnit : defaultUnit?._id,
             collaboratedWithOrganizationalUnits:
@@ -317,45 +309,43 @@ function AddTaskTemplate(props) {
             taskActions: info && info.taskActions ? info.taskActions : [],
             taskInformations: info && info.taskInformations ? info.taskInformations : []
           },
-          showMore: props.isProcess ? false : true
+          showMore: !isProcess
         }
       })
     }
-  }, [props.id]) // JSON.stringify(state.newTemplate)
+  }, [id]) // JSON.stringify(state.newTemplate)
 
-  //dùng cho chức năng lưu task thành template
+  // dùng cho chức năng lưu task thành template
   useEffect(() => {
-    if (props.savedTaskAsTemplate && props.savedTaskId !== state.savedTaskId) {
+    if (savedTaskAsTemplate && savedTaskId !== state.savedTaskId) {
       setState((state) => {
         return {
           ...state,
-          savedTaskId: props.savedTaskId,
-          id: props.savedTaskId,
-          savedTaskAsTemplate: props.savedTaskAsTemplate,
+          savedTaskId,
+          id: savedTaskId,
+          savedTaskAsTemplate,
           newTemplate: {
-            organizationalUnit: props.savedTaskItem.organizationalUnit._id,
-            collaboratedWithOrganizationalUnits: props.savedTaskItem.collaboratedWithOrganizationalUnits.map(
-              (e) => e.organizationalUnit._id
-            ),
-            name: props.savedTaskItem.name,
-            // readByEmployees: props.savedTaskItem.readByEmployees,
-            responsibleEmployees: props.savedTaskItem.responsibleEmployees.map((e) => e._id),
-            accountableEmployees: props.savedTaskItem.accountableEmployees.map((e) => e._id),
-            consultedEmployees: props.savedTaskItem.consultedEmployees.map((e) => e._id),
-            informedEmployees: props.savedTaskItem.informedEmployees.map((e) => e._id),
-            description: props.savedTaskItem.description,
-            quillDescriptionDefault: props.savedTaskItem.description,
-            // numberOfDaysTaken: props.savedTaskItem.numberOfDaysTaken,
-            formula: props.savedTaskItem.formula,
-            priority: props.savedTaskItem.priority,
-            taskActions: props.savedTaskItem.taskActions.map((e) => {
+            organizationalUnit: savedTaskItem.organizationalUnit._id,
+            collaboratedWithOrganizationalUnits: savedTaskItem.collaboratedWithOrganizationalUnits.map((e) => e.organizationalUnit._id),
+            name: savedTaskItem.name,
+            // readByEmployees: savedTaskItem.readByEmployees,
+            responsibleEmployees: savedTaskItem.responsibleEmployees.map((e) => e._id),
+            accountableEmployees: savedTaskItem.accountableEmployees.map((e) => e._id),
+            consultedEmployees: savedTaskItem.consultedEmployees.map((e) => e._id),
+            informedEmployees: savedTaskItem.informedEmployees.map((e) => e._id),
+            description: savedTaskItem.description,
+            quillDescriptionDefault: savedTaskItem.description,
+            // numberOfDaysTaken: savedTaskItem.numberOfDaysTaken,
+            formula: savedTaskItem.formula,
+            priority: savedTaskItem.priority,
+            taskActions: savedTaskItem.taskActions.map((e) => {
               return {
                 mandatory: e.mandatory,
                 name: e.name ? e.name : e.description,
                 description: e.description
               }
             }),
-            taskInformations: props.savedTaskItem.taskInformations.map((e) => {
+            taskInformations: savedTaskItem.taskInformations.map((e) => {
               return {
                 filledByAccountableEmployeesOnly: e.filledByAccountableEmployeesOnly,
                 code: e.code,
@@ -382,13 +372,13 @@ function AddTaskTemplate(props) {
     }
 
     if (!user.organizationalUnitsOfUser) {
-      props.getDepartment() // => user.organizationalUnitsOfUser
+      getDepartment() // => user.organizationalUnitsOfUser
     }
 
     // Khi truy vấn lấy các đơn vị mà user là manager đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
-    if (!props.isProcess && newTemplate.organizationalUnit === '' && user?.organizationalUnitsOfUser) {
+    if (!isProcess && newTemplate.organizationalUnit === '' && user?.organizationalUnitsOfUser) {
       // Tìm unit mà currentRole của user đang thuộc về
-      let defaultUnit = user.organizationalUnitsOfUser.find(
+      const defaultUnit = user.organizationalUnitsOfUser.find(
         (item) =>
           item.managers.includes(state.currentRole) ||
           item.deputyManagers.includes(state.currentRole) ||
@@ -405,11 +395,9 @@ function AddTaskTemplate(props) {
             }
           }
         })
-        // props.getChildrenOfOrganizationalUnits(defaultUnit._id); // => user.usersOfChildrenOrganizationalUnit
-        // Sẽ cập nhật lại state nên không cần render
       }
     }
-  }, [props.savedTaskId, props?.user.isLoading, props.isProcess]) // JSON.stringify(state.newTemplate) , props?.user.isLoading
+  }, [savedTaskId, user.isLoading, isProcess]) // JSON.stringify(state.newTemplate) , props?.user.isLoading
 
   const clickShowMore = () => {
     setState((state) => {
@@ -420,35 +408,20 @@ function AddTaskTemplate(props) {
     })
   }
 
-  var units,
-    taskActions,
-    taskInformations,
-    listRole,
-    usercompanys,
-    userdepartments,
-    departmentsThatUserIsManager,
-    listRoles = []
-  const { savedTaskAsTemplate, newTemplate, showMore, accountableEmployees, responsibleEmployees, id } = state
-  const { department, user, translate, tasktemplates, isProcess } = props
-  if (newTemplate.taskActions) taskActions = newTemplate.taskActions
-  if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations
+  let listRole
+  let listRoles = []
+  const { newTemplate } = state
 
-  if (user.organizationalUnitsOfUser) {
-    units = user.organizationalUnitsOfUser
-  }
-  if (department.departmentsThatUserIsManager) {
-    departmentsThatUserIsManager = department.departmentsThatUserIsManager
-  }
   if (user.usersInUnitsOfCompany) {
     listRole = user.usersInUnitsOfCompany
-    for (let x in listRole) {
+    for (const x in listRole) {
       listRoles.push(Object.values(listRole[x].managers))
       listRoles.push(Object.values(listRole[x].deputyManagers))
       listRoles.push(Object.values(listRole[x].employees))
     }
     listRole = []
-    for (let x in listRoles) {
-      for (let i in listRoles[x]) {
+    for (const x in listRoles) {
+      for (const i in listRoles[x]) {
         if (listRole.indexOf(listRoles[x][i]) === -1) {
           listRole = listRole.concat(listRoles[x][i])
         }
@@ -457,28 +430,17 @@ function AddTaskTemplate(props) {
     listRoles = listRole
   }
 
-  // if (user.usercompanys) usercompanys = user.usercompanys;
-  if (user.userdepartments) userdepartments = user.userdepartments
-
-  // var usersOfChildrenOrganizationalUnit;
-  // if (user && user.usersOfChildrenOrganizationalUnit) {
-  //     usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
-  // }
-  var usersInUnitsOfCompany
+  let usersInUnitsOfCompany
   if (user && user.usersInUnitsOfCompany) {
     usersInUnitsOfCompany = user.usersInUnitsOfCompany
   }
 
-  var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany)
-  // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+  const allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany)
 
   return (
-    <React.Fragment>
-      {/**Form chứa các thông tin của 1 task template */}
-
+    <>
       <div className='row'>
         <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-          {/**Tên mẫu công việc */}
           <div className={`form-group ${state.newTemplate.errorOnName === undefined ? '' : 'has-error'}`}>
             <label className='control-label'>
               {translate('task_template.name')} <span style={{ color: 'red' }}>*</span>
@@ -487,106 +449,95 @@ function AddTaskTemplate(props) {
               type='Name'
               className='form-control'
               placeholder={translate('task_template.name')}
-              value={newTemplate.name}
+              value={state.newTemplate.name}
               onChange={handleTaskTemplateName}
             />
             <ErrorLabel content={state.newTemplate.errorOnName} />
           </div>
-          <div className={`form-group`} >
-            <label className="control-label">Lớp công việc <span style={{ color: "red" }}>*</span></label>
-            {props.analysisData.class && <SelectBox
-              id={`class-name-select-box-${id}`}
-              className="form-control select2"
-              style={{ width: "100%" }}
-              items={
-                [
+
+          {/* <div className='form-group'>
+            <label className='control-label'>
+              Lớp công việc <span style={{ color: 'red' }}>*</span>
+            </label>
+            {props.analysisData.class && (
+              <SelectBox
+                id={`class-name-select-box-${id}`}
+                className='form-control select2'
+                style={{ width: '100%' }}
+                items={[
                   { value: 1, text: 'Loại 1: Chịu ảnh hưởng bởi con người' },
                   { value: 2, text: 'Loại 2: Chịu ảnh hưởng bởi con người và thiết bị' },
                   { value: 3, text: 'Loại 3: Chịu ảnh hưởng của sản phẩm và thiết bị' },
-                  { value: 4, text: 'Loại 4: Chịu ảnh hưởng của môi trường' },
+                  { value: 4, text: 'Loại 4: Chịu ảnh hưởng của môi trường' }
+                ]}
+                value={newTemplate.class}
+                onChange={handleTaskTempLateClassName}
+                multiple={false}
+              />
+            )}
+          </div> */}
 
-                ]
-              }
-              value={newTemplate.class}
-              onChange={handleTaskTempLateClassName}
-              multiple={false}
-
-            />}
-          </div>
-
-          {/**Đơn vị(phòng ban) của Task template*/}
           <div
             className={`form-group ${state.newTemplate.errorOnUnit === undefined ? '' : 'has-error'}`}
             style={{ marginLeft: 0, marginRight: 0 }}
           >
             <label className='control-label'>{translate('task_template.unit')}</label>
-            {usersInUnitsOfCompany !== undefined && newTemplate.organizationalUnit !== '' && (
+            {user.usersInUnitsOfCompany !== undefined && state.newTemplate.organizationalUnit !== '' && (
               <SelectBox
-                id={`unit-select-box-${id}`}
+                id={`unit-select-box-${state.id}`}
                 className='form-control select2'
                 style={{ width: '100%' }}
-                items={usersInUnitsOfCompany.map((x) => {
-                  return { value: x.id, text: x.department }
-                })}
-                value={newTemplate.organizationalUnit}
+                items={user.usersInUnitsOfCompany.map((x) => ({ value: x.id, text: x.department }))}
+                value={state.newTemplate.organizationalUnit}
                 onChange={handleTaskTemplateUnit}
                 multiple={false}
-                // value={newTemplate.organizationalUnit}
               />
             )}
           </div>
 
-          {/* Chọn đơn vị phối hợp công việc */}
-          {usersInUnitsOfCompany && (
+          {user.usersInUnitsOfCompany && (
             <div className='form-group'>
               <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
               <SelectBox
-                id={`multiSelectUnitThatHaveCollaboratedTemplate-${id}`}
-                lassName='form-control select2'
+                id={`multiSelectUnitThatHaveCollaboratedTemplate-${state.id}`}
+                className='form-control select2'
                 style={{ width: '100%' }}
-                items={usersInUnitsOfCompany
-                  .filter((item) => String(item.id) !== String(newTemplate.organizationalUnit))
-                  .map((x) => {
-                    return { text: x.department, value: x.id }
-                  })}
+                items={user.usersInUnitsOfCompany
+                  .filter((item) => String(item.id) !== String(state.newTemplate.organizationalUnit))
+                  .map((x) => ({ text: x.department, value: x.id }))}
                 options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
                 onChange={handleChangeCollaboratedWithOrganizationalUnits}
-                value={newTemplate.collaboratedWithOrganizationalUnits}
-                multiple={true}
+                value={state.newTemplate.collaboratedWithOrganizationalUnits}
+                multiple
               />
             </div>
           )}
         </div>
 
-        {/**Những Role có quyền xem mẫu công việc này*/}
         {!isProcess && (
           <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
             <div className={`form-group ${state.newTemplate.errorOnRead === undefined ? '' : 'has-error'}`}>
               <label className='control-label'>{translate('task_template.permission_view')} </label>
               {listRoles && (
                 <SelectBox
-                  id={`read-select-box-${id}`}
+                  id={`read-select-box-${state.id}`}
                   className='form-control select2'
                   style={{ width: '100%' }}
-                  items={listRoles.map((x) => {
-                    return { value: x._id, text: x.name }
-                  })}
-                  value={newTemplate.readByEmployees}
+                  items={listRoles.map((x) => ({ value: x._id, text: x.name }))}
+                  value={state.newTemplate.readByEmployees}
                   onChange={handleTaskTemplateRead}
-                  multiple={true}
-                  options={{ placeholder: `${translate('task_template.permission_view')}` }}
+                  multiple
+                  options={{ placeholder: translate('task_template.permission_view') }}
                 />
               )}
-              {/* <ErrorLabel content={state.newTemplate.errorOnRead} /> */}
             </div>
           </div>
         )}
 
         <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-          {/**Độ ưu tiên mẫu công việc */}
           <div className='form-group'>
             <label className='control-label'>{translate('task.task_management.priority')}</label>
-            <select className='form-control' value={newTemplate.priority} onChange={handleChangeTaskPriority}>
+            <select className='form-control' value={state.newTemplate.priority} onChange={handleChangeTaskPriority}>
               <option value={5}>{translate('task.task_management.urgent')}</option>
               <option value={4}>{translate('task.task_management.high')}</option>
               <option value={3}>{translate('task.task_management.standard')}</option>
@@ -596,102 +547,95 @@ function AddTaskTemplate(props) {
           </div>
         </div>
 
-        {/* Mô tả công việc */}
         <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-          <div className={`form-group`}>
+          <div className='form-group'>
             <label className='control-label'>{translate('task.task_management.detail_description')}</label>
             <QuillEditor
-              id={`task-template-add-modal-quill-${id}`}
+              id={`task-template-add-modal-quill-${state.id}`}
               table={false}
               embeds={false}
               getTextData={handleTaskTemplateDesc}
               maxHeight={80}
-              quillValueDefault={newTemplate.quillDescriptionDefault}
+              quillValueDefault={state.newTemplate.quillDescriptionDefault}
               placeholder={translate('task_template.description')}
             />
           </div>
         </div>
       </div>
-      {/* </div> */}
 
       <div className='row'>
         <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-          {/**Người chịu trách nhiệm mẫu công việc */}
           <div className='form-group'>
             <label className='control-label'>{translate('task_template.performer')}</label>
             {allUnitsMember && (
               <SelectBox
-                id={isProcess ? `responsible-select-box-${id}` : 'responsible-select-box'}
+                id={isProcess ? `responsible-select-box-${state.id}` : 'responsible-select-box'}
                 className='form-control select2'
                 style={{ width: '100%' }}
                 items={allUnitsMember}
-                value={newTemplate.responsibleEmployees}
+                value={state.newTemplate.responsibleEmployees}
                 onChange={handleTaskTemplateResponsible}
-                multiple={true}
-                options={{ placeholder: `${translate('task_template.performer')}` }}
+                multiple
+                options={{ placeholder: translate('task_template.performer') }}
               />
             )}
           </div>
-          {/**Người phê duyệt mẫu công việc */}
           <div className='form-group'>
             <label className='control-label'>{translate('task_template.approver')}</label>
             {allUnitsMember && (
               <SelectBox
-                id={isProcess ? `accountable-select-box-${id}` : 'accountable-select-box'}
+                id={isProcess ? `accountable-select-box-${state.id}` : 'accountable-select-box'}
                 className='form-control select2'
                 style={{ width: '100%' }}
                 items={allUnitsMember}
-                value={newTemplate.accountableEmployees}
+                value={state.newTemplate.accountableEmployees}
                 onChange={handleTaskTemplateAccountable}
-                multiple={true}
-                options={{ placeholder: `${translate('task_template.approver')}` }}
+                multiple
+                options={{ placeholder: translate('task_template.approver') }}
               />
             )}
           </div>
 
-          {showMore && (
-            <div>
-              {/**Người tư vấn trong mẫu công việc */}
+          {state.showMore && (
+            <>
               <div className='form-group'>
                 <label className='control-label'>{translate('task_template.consultant')}</label>
                 {allUnitsMember && (
                   <SelectBox
-                    id={isProcess ? `consulted-select-box-${id}` : 'consulted-select-box'}
+                    id={isProcess ? `consulted-select-box-${state.id}` : 'consulted-select-box'}
                     className='form-control select2'
                     style={{ width: '100%' }}
                     items={allUnitsMember}
-                    value={newTemplate.consultedEmployees}
+                    value={state.newTemplate.consultedEmployees}
                     onChange={handleTaskTemplateConsult}
-                    multiple={true}
-                    options={{ placeholder: `${translate('task_template.consultant')}` }}
+                    multiple
+                    options={{ placeholder: translate('task_template.consultant') }}
                   />
                 )}
               </div>
-              {/**Người quan sát mẫu công việc */}
               <div className='form-group'>
                 <label className='control-label'>{translate('task_template.observer')}</label>
                 {allUnitsMember && (
                   <SelectBox
-                    id={isProcess ? `informed-select-box-${id}` : 'informed-select-box'}
+                    id={isProcess ? `informed-select-box-${state.id}` : 'informed-select-box'}
                     className='form-control select2'
                     style={{ width: '100%' }}
                     items={allUnitsMember}
-                    value={newTemplate.informedEmployees}
+                    value={state.newTemplate.informedEmployees}
                     onChange={handleTaskTemplateInform}
-                    multiple={true}
-                    options={{ placeholder: `${translate('task_template.observer')}` }}
+                    multiple
+                    options={{ placeholder: translate('task_template.observer') }}
                   />
                 )}
               </div>
-            </div>
+            </>
           )}
         </div>
 
-        {showMore && (
-          <div>
+        {state.showMore && (
+          <>
             {isProcess && (
               <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-                {/**Số ngày hoàn thành công việc dự kiến */}
                 <div className={`form-group ${state.newTemplate.errorOnNumberOfDaysTaken === undefined ? '' : 'has-error'}`}>
                   <label className='control-label' htmlFor='inputNumberOfDaysTaken'>
                     {translate('task_template.numberOfDaysTaken')}
@@ -700,8 +644,8 @@ function AddTaskTemplate(props) {
                     type='number'
                     className='form-control'
                     id='inputNumberOfDaysTaken'
-                    value={newTemplate.numberOfDaysTaken}
-                    placeholder={'Nhập số ngày hoàn thành dự kiến'}
+                    value={state.newTemplate.numberOfDaysTaken}
+                    placeholder='Nhập số ngày hoàn thành dự kiến'
                     onChange={handleTaskTemplateNumberOfDaysTaken}
                   />
                   <ErrorLabel content={state.newTemplate.errorOnNumberOfDaysTaken} />
@@ -709,7 +653,6 @@ function AddTaskTemplate(props) {
               </div>
             )}
             <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-              {/**Công thức tính của mẫu công việc */}
               <div className={`form-group ${state.newTemplate.errorOnFormula === undefined ? '' : 'has-error'}`}>
                 <label className='control-label' htmlFor='inputFormula'>
                   {translate('task_template.formula')}
@@ -719,7 +662,7 @@ function AddTaskTemplate(props) {
                   className='form-control'
                   id='inputFormula'
                   placeholder='progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100'
-                  value={newTemplate.formula}
+                  value={state.newTemplate.formula}
                   onChange={handleTaskTemplateFormula}
                 />
                 <ErrorLabel content={state.newTemplate.errorOnFormula} />
@@ -759,21 +702,24 @@ function AddTaskTemplate(props) {
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
-      {showMore && (
+
+      {state.showMore && (
         <div className='row'>
-          {/**Các hoạt động trong mẫu công việc */}
           <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-            <ActionForm initialData={taskActions} onDataChange={handleTaskActionsChange} savedTaskAsTemplate={savedTaskAsTemplate} />
+            <ActionForm
+              initialData={state.newTemplate.taskActions}
+              onDataChange={handleTaskActionsChange}
+              savedTaskAsTemplate={state.savedTaskAsTemplate}
+            />
           </div>
-          {/**Các thông tin cần có mẫu công việc */}
           <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
             <InformationForm
-              initialData={taskInformations}
+              initialData={state.newTemplate.taskInformations}
               onDataChange={handleTaskInformationsChange}
-              savedTaskAsTemplate={savedTaskAsTemplate}
+              savedTaskAsTemplate={state.savedTaskAsTemplate}
             />
           </div>
         </div>
@@ -782,20 +728,39 @@ function AddTaskTemplate(props) {
       {isProcess && (
         <div>
           <a style={{ cursor: 'pointer' }} onClick={clickShowMore}>
-            {showMore ? (
+            {state.showMore ? (
               <span>
-                Show less <i className='fa fa-angle-double-up'></i>
+                Show less <i className='fa fa-angle-double-up' />
               </span>
             ) : (
               <span>
-                Show more <i className='fa fa-angle-double-down'></i>
+                Show more <i className='fa fa-angle-double-down' />
               </span>
             )}
           </a>
           <br />
         </div>
       )}
-    </React.Fragment>
+
+      <div className='row'>
+        <div className='form-check form-switch col-sm-12 pb-[16px]'>
+          <input
+            className='form-check-input'
+            type='checkbox'
+            role='switch'
+            id='flexSwitchCheckDefault'
+            checked={isShowMappingTaskTemplates}
+            onChange={handleIsShowMappingTaskTemplates}
+          />
+          <label className='form-check-label' htmlFor='flexSwitchCheckDefault'>
+            Ánh xạ mẫu công việc ra tập các công việc
+          </label>
+        </div>
+        {isShowMappingTaskTemplates && (
+          <MappingTaskTemplateIntoListTasks isProcess={isProcess} onChangeListMappingTask={onChangeListMappingTask} />
+        )}
+      </div>
+    </>
   )
 }
 
@@ -808,11 +773,9 @@ function mapState(state) {
 const actionCreators = {
   addNewTemplate: taskTemplateActions.addTaskTemplate,
   getDepartment: UserActions.getDepartmentOfUser,
-  // getAllUserOfCompany: UserActions.getAllUserOfCompany,
   getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
   getRoleSameDepartment: UserActions.getRoleSameDepartment,
   getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager,
-  // getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
   getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
 }
 const connectedAddTaskTemplate = connect(mapState, actionCreators)(withTranslate(AddTaskTemplate))

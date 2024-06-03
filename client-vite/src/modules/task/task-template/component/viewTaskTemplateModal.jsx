@@ -1,12 +1,11 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-
 import { DialogModal } from '../../../../common-components'
 import { taskTemplateActions } from '../redux/actions'
 import { ViewTaskTemplate } from './viewTaskTemplate'
 
-const ModalViewTaskTemplate = (props) => {
+function ModalViewTaskTemplate(props) {
   const [state, setState] = useState()
 
   useEffect(() => {
@@ -16,18 +15,16 @@ const ModalViewTaskTemplate = (props) => {
   const { taskTemplate } = props.tasktemplates
 
   return (
-    <React.Fragment>
-      <DialogModal
-        size='75'
-        modalID='modal-view-tasktemplate'
-        isLoading={false}
-        formID='form-view-tasktemplate'
-        title={taskTemplate && taskTemplate.name}
-        hasSaveButton={false}
-      >
-        <ViewTaskTemplate taskTemplate={taskTemplate} isProcess={false} />
-      </DialogModal>
-    </React.Fragment>
+    <DialogModal
+      size='75'
+      modalID='modal-view-tasktemplate'
+      isLoading={false}
+      formID='form-view-tasktemplate'
+      title={taskTemplate && taskTemplate.name}
+      hasSaveButton={false}
+    >
+      <ViewTaskTemplate taskTemplate={taskTemplate} isProcess={false} />
+    </DialogModal>
   )
 }
 

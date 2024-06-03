@@ -5,7 +5,6 @@ import { withTranslate } from 'react-redux-multilingual'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import { performTaskAction } from '../redux/actions'
-import { taskManagementActions } from '../../task-management/redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { RoleActions } from '../../../super-admin/role/redux/actions'
 
@@ -21,7 +20,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper'
 import { ShowMoreShowLess, QuillEditor } from '../../../../common-components'
 
 import { TaskAddModal } from '../../task-management/component/taskAddModal'
-import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal'
+import ModalAddTaskTemplate from '../../task-template/component/addTaskTemplateModal'
 import { RequestToCloseTaskModal } from './requestToCloseTaskModal'
 
 import { ROOT_ROLE } from '../../../../helpers/constants'

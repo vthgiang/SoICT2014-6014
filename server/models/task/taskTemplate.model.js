@@ -1,18 +1,19 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoosePaginate = require("mongoose-paginate-v2");
+const mongoosePaginate = require('mongoose-paginate-v2');
+const { ObjectId } = mongoose.Types;
 
 // Model quản lý dữ liệu của một mẫu công việc
 const TaskTemplateSchema = new Schema(
     {
         organizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: "OrganizationalUnit",
+            ref: 'OrganizationalUnit',
         },
         collaboratedWithOrganizationalUnits: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "OrganizationalUnit",
+                ref: 'OrganizationalUnit',
             },
         ],
         name: {
@@ -20,10 +21,10 @@ const TaskTemplateSchema = new Schema(
         },
         creator: {
             type: Schema.Types.ObjectId,
-            ref: "User",
+            ref: 'User',
         },
         priority: {
-            // 1: Thấp, 2: Trung Bình, 3: Tiêu chuẩn, 4: Cao, 5: Khẩn cấp 
+            // 1: Thấp, 2: Trung Bình, 3: Tiêu chuẩn, 4: Cao, 5: Khẩn cấp
             type: Number,
         },
         numberOfDaysTaken: {
@@ -72,44 +73,38 @@ const TaskTemplateSchema = new Schema(
                 },
                 type: {
                     type: String,
-                    enum: [
-                        "text",
-                        "boolean",
-                        "date",
-                        "number",
-                        "set_of_values",
-                    ],
+                    enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
                 },
             },
         ],
         readByEmployees: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "Role",
+                ref: 'Role',
             },
         ],
         responsibleEmployees: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "User",
+                ref: 'User',
             },
         ],
         accountableEmployees: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "User",
+                ref: 'User',
             },
         ],
         consultedEmployees: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "User",
+                ref: 'User',
             },
         ],
         informedEmployees: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "User",
+                ref: 'User',
             },
         ],
         description: {
@@ -126,6 +121,39 @@ const TaskTemplateSchema = new Schema(
             type: Number,
             default: 0,
         },
+        isMappingTask: {
+            type: Boolean,
+            default: false,
+        },
+        listMappingTask: [
+            {
+                taskName: {
+                    type: String,
+                },
+                taskDescription: {
+                    type: String,
+                },
+                durations: {
+                    type: Number,
+                },
+                startDate: {
+                    type: Date,
+                },
+                endDate: {
+                    type: Date,
+                },
+                target: {
+                    type: Number,
+                },
+                unit: {
+                    type: String,
+                },
+                organizationalUnitKpi: {
+                    type: ObjectId,
+                    ref: 'OrganizationalUnitKpi',
+                },
+            },
+        ],
     },
     {
         timestamps: true,
@@ -135,7 +163,6 @@ const TaskTemplateSchema = new Schema(
 TaskTemplateSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.TaskTemplate)
-        return db.model("TaskTemplate", TaskTemplateSchema);
+    if (!db.models.TaskTemplate) return db.model('TaskTemplate', TaskTemplateSchema);
     return db.models.TaskTemplate;
 };

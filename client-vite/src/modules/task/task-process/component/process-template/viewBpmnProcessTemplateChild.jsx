@@ -1,28 +1,24 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { getStorage } from '../../../../../config'
 import { withTranslate } from 'react-redux-multilingual'
-
-import { DialogModal, SelectBox } from '../../../../../common-components'
+import BpmnModeler from 'bpmn-js/lib/Modeler'
+import { getStorage } from '../../../../../config'
+import { DialogModal } from '../../../../../common-components'
 import { UserActions } from '../../../../super-admin/user/redux/actions'
 import { TaskProcessActions } from '../../redux/actions'
-import { ViewTaskTemplate } from '../../../task-template/component/viewTaskTemplate'
-
-import BpmnViewer from 'bpmn-js'
-import BpmnModeler from 'bpmn-js/lib/Modeler'
 import customModule from '../custom-task-process-template'
 import { ViewProcessTemplateChild } from './viewProcessTemplateChild'
+import { ViewTaskTemplate } from '../../../task-template/component/viewTaskTemplate'
 
-var zlevel = 1
+let zlevel = 1
 function areEqual(prevProps, nextProps) {
   if (prevProps.idProcess === nextProps.idProcess) {
     return true
-  } else {
-    return false
   }
+  return false
 }
 function ModalViewBpmnProcessTemplateChild(props) {
-  let { data } = props
+  const { data } = props
   const [state, setState] = useState({
     userId: getStorage('userId'),
     currentRole: getStorage('currentRole'),
@@ -54,8 +50,8 @@ function ModalViewBpmnProcessTemplateChild(props) {
   //     });
   // }
   const interactPopup = (event) => {
-    var element = event.element
-    let nameStr = element.type.split(':')
+    const { element } = event
+    const nameStr = element.type.split(':')
     setState((state) => {
       if (element.type === 'bpmn:SubProcess') {
         return {
@@ -67,7 +63,8 @@ function ModalViewBpmnProcessTemplateChild(props) {
           taskName: element.businessObject.name,
           id: `${element.businessObject.id}`
         }
-      } else if (
+      }
+      if (
         element.type !== 'bpmn:Collaboration' &&
         element.type !== 'bpmn:Process' &&
         element.type !== 'bpmn:StartEvent' &&
@@ -84,9 +81,8 @@ function ModalViewBpmnProcessTemplateChild(props) {
           taskName: element.businessObject.name,
           id: `${element.businessObject.id}`
         }
-      } else {
-        return { ...state, showInfo: false, showInfoProcess: false, type: element.type, name: '', id: element.businessObject.id }
       }
+      return { ...state, showInfo: false, showInfoProcess: false, type: element.type, name: '', id: element.businessObject.id }
     })
   }
   useEffect(() => {
@@ -95,7 +91,7 @@ function ModalViewBpmnProcessTemplateChild(props) {
     // console.log(modeler);
     // modeler.attachTo('#' + generateId);
 
-    let eventBus = modeler.get('eventBus')
+    const eventBus = modeler.get('eventBus')
 
     eventBus.on('shape.move.start', 100000, () => {
       return false
@@ -105,24 +101,24 @@ function ModalViewBpmnProcessTemplateChild(props) {
   useEffect(() => {
     // console.log("2");
     if (props.idProcess != state.idProcess) {
-      let info = {}
-      let infoTask = props.tasks // TODO task list
-      for (let i in infoTask) {
+      const info = {}
+      const infoTask = props.tasks // TODO task list
+      for (const i in infoTask) {
         info[`${infoTask[i].code}`] = infoTask[i]
       }
-      let infoTemplate = {}
-      let infoProcessTemplates = props.processTemplates // TODO task list
-      for (let i in infoProcessTemplates) {
+      const infoTemplate = {}
+      const infoProcessTemplates = props.processTemplates // TODO task list
+      for (const i in infoProcessTemplates) {
         infoTemplate[`${infoProcessTemplates[i].code}`] = infoProcessTemplates[i]
       }
-      modeler.attachTo('#' + generateId)
+      modeler.attachTo(`#${generateId}`)
       modeler.importXML(props.xmlDiagram)
       setState({
         ...state,
         idProcess: props.idProcess,
         showInfo: false,
-        info: info,
-        infoTemplate: infoTemplate,
+        info,
+        infoTemplate,
         processName: props.processName ? props.processName : '',
         xmlDiagram: props.xmlDiagram
       })
@@ -178,9 +174,9 @@ function ModalViewBpmnProcessTemplateChild(props) {
   }
 
   const handleZoomOut = async () => {
-    let zstep = 0.2
-    let canvas = modeler.get('canvas')
-    let eventBus = modeler.get('eventBus')
+    const zstep = 0.2
+    const canvas = modeler.get('canvas')
+    const eventBus = modeler.get('eventBus')
 
     // set initial zoom level
     canvas.zoom(zlevel, 'auto')
@@ -193,14 +189,14 @@ function ModalViewBpmnProcessTemplateChild(props) {
   }
 
   const handleZoomReset = () => {
-    let canvas = modeler.get('canvas')
+    const canvas = modeler.get('canvas')
     canvas.zoom('fit-viewport')
   }
 
   const handleZoomIn = async () => {
-    let zstep = 0.2
-    let canvas = modeler.get('canvas')
-    let eventBus = modeler.get('eventBus')
+    const zstep = 0.2
+    const canvas = modeler.get('canvas')
+    const eventBus = modeler.get('eventBus')
 
     // set initial zoom level
     canvas.zoom(zlevel, 'auto')
@@ -220,83 +216,81 @@ function ModalViewBpmnProcessTemplateChild(props) {
   const { listOrganizationalUnit } = props
   const { name, id, idProcess, info, showInfo, selectedView, showInfoProcess, infoTemplate } = state
   return (
-    <React.Fragment>
-      <DialogModal
-        size='100'
-        modalID={`modal-view-process`}
-        isLoading={false}
-        formID='form-task-process'
-        title={props.processName}
-        hasSaveButton={false}
-      >
-        <div>
-          <div className='nav-tabs-custom' style={{ boxShadow: 'none', MozBoxShadow: 'none', WebkitBoxShadow: 'none', marginBottom: 0 }}>
-            <div className='tab-content' style={{ padding: 0, marginTop: -15 }}>
-              <div className={selectedView !== 'process' ? 'active tab-pane' : 'tab-pane'} id='process-view'>
-                <div className=''>
-                  {/* Quy trình công việc */}
-                  <div className={`contain-border ${showInfo || showInfoProcess ? 'col-md-8' : 'col-md-12'}`}>
-                    <div id={generateId}></div>
-                    <div className='row'>
-                      <div className='io-zoom-controls'>
-                        <ul className='io-zoom-reset io-control io-control-list'>
-                          <li>
-                            <a style={{ cursor: 'pointer' }} title='Reset zoom' onClick={handleZoomReset}>
-                              <i className='fa fa-crosshairs'></i>
-                            </a>
-                          </li>
-                          <li>
-                            <a style={{ cursor: 'pointer' }} title='Zoom in' onClick={handleZoomIn}>
-                              <i className='fa fa-plus'></i>
-                            </a>
-                          </li>
-                          <li>
-                            <a style={{ cursor: 'pointer' }} title='Zoom out' onClick={handleZoomOut}>
-                              <i className='fa fa-minus'></i>
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
+    <DialogModal
+      size='100'
+      modalID='modal-view-process'
+      isLoading={false}
+      formID='form-task-process'
+      title={props.processName}
+      hasSaveButton={false}
+    >
+      <div>
+        <div className='nav-tabs-custom' style={{ boxShadow: 'none', MozBoxShadow: 'none', WebkitBoxShadow: 'none', marginBottom: 0 }}>
+          <div className='tab-content' style={{ padding: 0, marginTop: -15 }}>
+            <div className={selectedView !== 'process' ? 'active tab-pane' : 'tab-pane'} id='process-view'>
+              <div className=''>
+                {/* Quy trình công việc */}
+                <div className={`contain-border ${showInfo || showInfoProcess ? 'col-md-8' : 'col-md-12'}`}>
+                  <div id={generateId} />
+                  <div className='row'>
+                    <div className='io-zoom-controls'>
+                      <ul className='io-zoom-reset io-control io-control-list'>
+                        <li>
+                          <a style={{ cursor: 'pointer' }} title='Reset zoom' onClick={handleZoomReset}>
+                            <i className='fa fa-crosshairs' />
+                          </a>
+                        </li>
+                        <li>
+                          <a style={{ cursor: 'pointer' }} title='Zoom in' onClick={handleZoomIn}>
+                            <i className='fa fa-plus' />
+                          </a>
+                        </li>
+                        <li>
+                          <a style={{ cursor: 'pointer' }} title='Zoom out' onClick={handleZoomOut}>
+                            <i className='fa fa-minus' />
+                          </a>
+                        </li>
+                      </ul>
                     </div>
                   </div>
-                  <div className={`right-content ${showInfo || showInfoProcess ? 'col-md-4' : undefined}`}>
-                    {showInfo && (
-                      <div>
-                        {/* <div>
+                </div>
+                <div className={`right-content ${showInfo || showInfoProcess ? 'col-md-4' : undefined}`}>
+                  {showInfo && (
+                    <div>
+                      {/* <div>
                                                         <h1>Option {name}</h1>
                                                     </div> */}
-                        <ViewTaskTemplate
-                          isProcess={true}
-                          taskTemplate={info?.[`${id}`]}
-                          // listUser={listUser}
-                        />
-                      </div>
-                    )}
+                      <ViewTaskTemplate
+                        isProcess
+                        taskTemplate={info?.[`${id}`]}
+                        // listUser={listUser}
+                      />
+                    </div>
+                  )}
 
-                    {showInfoProcess && (
-                      <div>
-                        {/* <div>
+                  {showInfoProcess && (
+                    <div>
+                      {/* <div>
                                                     <h1>Option {name}</h1>
                                                 </div> */}
-                        <ViewProcessTemplateChild
-                          id={id}
-                          infoTemplate={infoTemplate && infoTemplate[`${id}`] && infoTemplate[`${id}`]}
-                          // handleDataProcessTempalte={handleDataProcessTempalte}
-                          // setBpmnProcess={setBpmnProcess}
-                          // handleChangeName={handleChangeName} // cập nhật tên vào diagram
-                          // handleChangeViewerBpmn={handleChangeViewerBpmn} // cập nhật hiển thi diagram
-                          // handleChangeManagerBpmn={handleChangeManagerBpmn} // cập nhật hiển thị diagram
-                        />
-                      </div>
-                    )}
-                  </div>
+                      <ViewProcessTemplateChild
+                        id={id}
+                        infoTemplate={infoTemplate && infoTemplate[`${id}`] && infoTemplate[`${id}`]}
+                        // handleDataProcessTempalte={handleDataProcessTempalte}
+                        // setBpmnProcess={setBpmnProcess}
+                        // handleChangeName={handleChangeName} // cập nhật tên vào diagram
+                        // handleChangeViewerBpmn={handleChangeViewerBpmn} // cập nhật hiển thi diagram
+                        // handleChangeManagerBpmn={handleChangeManagerBpmn} // cập nhật hiển thị diagram
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </DialogModal>
-    </React.Fragment>
+      </div>
+    </DialogModal>
   )
 }
 

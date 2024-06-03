@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import { withTranslate } from 'react-redux-multilingual'
+import moment from 'moment'
+import Swal from 'sweetalert2'
+import parse from 'html-react-parser'
+import dayjs from 'dayjs'
 import { performTaskAction } from '../../task-perform/redux/actions'
 import { taskManagementActions } from '../../task-management/redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions'
@@ -11,38 +16,33 @@ import { CollaboratedWithOrganizationalUnits } from '../../task-perform/componen
 
 import { ModalEditTaskByResponsibleEmployeeProject } from './modalEditTaskByResponsibleEmployeeProject'
 import { ModalEditTaskByAccountableEmployeeProject } from './modalEditTaskByAccountableEmployeeProject'
-import { EvaluationProjectModal } from './evaluationProjectModal'
 import { getStorage } from '../../../../config'
 import { SelectFollowingTaskModal } from '../../task-perform/component/selectFollowingTaskModal'
-import { withTranslate } from 'react-redux-multilingual'
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper'
 import { ShowMoreShowLess } from '../../../../common-components'
-import moment from 'moment'
-import Swal from 'sweetalert2'
-import parse from 'html-react-parser'
 
 import { TaskAddModal } from '../../task-management/component/taskAddModal'
-import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal'
+import ModalAddTaskTemplate from '../../task-template/component/addTaskTemplateModal'
 
 import { ProjectActions } from '../../../project/projects/redux/actions'
 import { ProjectPhaseActions } from '../../../project/project-phase/redux/actions'
 import { ROOT_ROLE } from '../../../../helpers/constants'
-import dayjs from 'dayjs'
 import { RequestToCloseProjectTaskModal } from './requestToCloseProjectTaskModal'
 import { ModalRequestEditProjectTaskEmployee } from './modalRequestEditProjectTaskEmployee'
 import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../../project/projects/components/functionHelper'
 import { ModalRequestChangeStatusProjectTask } from './modalRequestChangeStatusProjectTask'
+
 class DetailProjectTaskTab extends Component {
   constructor(props) {
     super(props)
 
-    let { translate } = this.props
-    var idUser = getStorage('userId')
-    let currentRole = getStorage('currentRole')
+    const { translate } = this.props
+    const idUser = getStorage('userId')
+    const currentRole = getStorage('currentRole')
 
-    let currentDate = new Date()
-    let currentYear = currentDate.getFullYear()
-    let currentMonth = currentDate.getMonth()
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear()
+    const currentMonth = currentDate.getMonth()
 
     this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 }
 
@@ -68,15 +68,15 @@ class DetailProjectTaskTab extends Component {
       dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
       showMore: {},
 
-      currentMonth: currentYear + '-' + (currentMonth + 1),
-      nextMonth: currentMonth > 10 ? currentYear + 1 + '-' + (currentMonth - 10) : currentYear + '-' + (currentMonth + 2),
-      dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
+      currentMonth: `${currentYear}-${currentMonth + 1}`,
+      nextMonth: currentMonth > 10 ? `${currentYear + 1}-${currentMonth - 10}` : `${currentYear}-${currentMonth + 2}`,
+      dueForEvaluationOfTask: `${currentYear}-${currentMonth + 1}-${7}`
     }
 
     this.props.getAllUserInAllUnitsOfCompany()
   }
 
-  shouldComponentUpdate = (nextProps, nextState) => {
+  shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.id !== this.state.id) {
       this.setState((state) => {
         return {
@@ -94,69 +94,68 @@ class DetailProjectTaskTab extends Component {
       if (!nextProps.user.usersInUnitsOfCompany) return false
       if (!nextProps.tasks.task) {
         return false
-      } else {
-        // Dữ liệu đã về
-        let task = nextProps.task
-
-        if (task && task.organizationalUnit) this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id)
-
-        let roles = []
-        if (task) {
-          let userId = getStorage('userId')
-          let tmp = task.responsibleEmployees.find((item) => item._id === userId)
-          if (tmp) {
-            roles.push(this.ROLE.RESPONSIBLE)
-          }
-
-          tmp = task.accountableEmployees && task.accountableEmployees.find((item) => item._id === userId)
-          if (tmp) {
-            roles.push(this.ROLE.ACCOUNTABLE)
-          }
-
-          tmp = task.consultedEmployees && task.consultedEmployees.find((item) => item._id === userId)
-          if (tmp) {
-            roles.push(this.ROLE.CONSULTED)
-          }
-
-          tmp = task.informedEmployees && task.informedEmployees.find((item) => item._id === userId)
-          if (tmp) {
-            roles.push(this.ROLE.INFORMED)
-          }
-
-          if (
-            checkIfAbleToCRUDProject({
-              project: this.props.project,
-              user: this.props.user,
-              currentProjectId: task.taskProject,
-              isInsideProject: true
-            })
-          ) {
-            roles.push(this.ROLE.PROJECT_MANAGER)
-          }
-
-          if (userId === task.creator._id) {
-            roles.push(this.ROLE.CREATOR)
-          }
-        }
-
-        let currentRole
-        if (roles.length > 0) {
-          currentRole = roles[0].value
-          if (this.props.onChangeTaskRole) {
-            this.props.onChangeTaskRole(currentRole)
-          }
-        }
-
-        this.setState((state) => {
-          return {
-            ...state,
-            dataStatus: this.DATA_STATUS.FINISHED,
-            roles: roles,
-            currentRole: roles.length > 0 ? roles[0].value : null
-          }
-        })
-        return false
       }
+      // Dữ liệu đã về
+      const { task } = nextProps
+
+      if (task && task.organizationalUnit) this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id)
+
+      const roles = []
+      if (task) {
+        const userId = getStorage('userId')
+        let tmp = task.responsibleEmployees.find((item) => item._id === userId)
+        if (tmp) {
+          roles.push(this.ROLE.RESPONSIBLE)
+        }
+
+        tmp = task.accountableEmployees && task.accountableEmployees.find((item) => item._id === userId)
+        if (tmp) {
+          roles.push(this.ROLE.ACCOUNTABLE)
+        }
+
+        tmp = task.consultedEmployees && task.consultedEmployees.find((item) => item._id === userId)
+        if (tmp) {
+          roles.push(this.ROLE.CONSULTED)
+        }
+
+        tmp = task.informedEmployees && task.informedEmployees.find((item) => item._id === userId)
+        if (tmp) {
+          roles.push(this.ROLE.INFORMED)
+        }
+
+        if (
+          checkIfAbleToCRUDProject({
+            project: this.props.project,
+            user: this.props.user,
+            currentProjectId: task.taskProject,
+            isInsideProject: true
+          })
+        ) {
+          roles.push(this.ROLE.PROJECT_MANAGER)
+        }
+
+        if (userId === task.creator._id) {
+          roles.push(this.ROLE.CREATOR)
+        }
+      }
+
+      let currentRole
+      if (roles.length > 0) {
+        currentRole = roles[0].value
+        if (this.props.onChangeTaskRole) {
+          this.props.onChangeTaskRole(currentRole)
+        }
+      }
+
+      this.setState((state) => {
+        return {
+          ...state,
+          dataStatus: this.DATA_STATUS.FINISHED,
+          roles,
+          currentRole: roles.length > 0 ? roles[0].value : null
+        }
+      })
+      return false
     }
     return true
   }
@@ -191,13 +190,13 @@ class DetailProjectTaskTab extends Component {
   }
 
   startTimer = async (taskId, overrideTSLog = 'no') => {
-    let userId = getStorage('userId')
-    let timer = {
+    const userId = getStorage('userId')
+    const timer = {
       creator: userId,
       overrideTSLog
     }
     this.props.startTimer(taskId, timer).catch((err) => {
-      let warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages]
+      const warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages]
       if (warning[0] === 'time_overlapping') {
         Swal.fire({
           title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
@@ -210,7 +209,7 @@ class DetailProjectTaskTab extends Component {
           cancelButtonText: 'Hủy'
         }).then((result) => {
           if (result.isConfirmed) {
-            let timer = {
+            const timer = {
               creator: userId,
               overrideTSLog: 'yes'
             }
@@ -233,21 +232,21 @@ class DetailProjectTaskTab extends Component {
   formatStatus = (data) => {
     const { translate } = this.props
     if (data === 'inprocess') return translate('task.task_management.inprocess')
-    else if (data === 'wait_for_approval') return translate('task.task_management.wait_for_approval')
-    else if (data === 'finished') return translate('task.task_management.finished')
-    else if (data === 'delayed') return translate('task.task_management.delayed')
-    else if (data === 'canceled') return translate('task.task_management.canceled')
+    if (data === 'wait_for_approval') return translate('task.task_management.wait_for_approval')
+    if (data === 'finished') return translate('task.task_management.finished')
+    if (data === 'delayed') return translate('task.task_management.delayed')
+    if (data === 'canceled') return translate('task.task_management.canceled')
   }
 
   // convert ISODate to String dd-mm-yyyy
   formatDate(date) {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
+    const d = new Date(date)
+    let month = `${d.getMonth() + 1}`
+    let day = `${d.getDate()}`
+    const year = d.getFullYear()
 
-    if (month.length < 2) month = '0' + month
-    if (day.length < 2) day = '0' + day
+    if (month.length < 2) month = `0${month}`
+    if (day.length < 2) day = `0${day}`
 
     return [day, month, year].join('-')
   }
@@ -275,7 +274,7 @@ class DetailProjectTaskTab extends Component {
       }
     })
 
-    let modalId = `#modal-request-close-task-${id}`
+    const modalId = `#modal-request-close-task-${id}`
     window.$(modalId).modal('show')
   }
 
@@ -353,6 +352,7 @@ class DetailProjectTaskTab extends Component {
       }
     })
   }
+
   changeRole = (role) => {
     this.setState((state) => {
       return {
@@ -373,11 +373,12 @@ class DetailProjectTaskTab extends Component {
   checkConfirmTask = (task) => {
     const { currentUser } = this.state
 
-    let checkConfirmOtherUser = false,
-      checkConfirmCurrentUser = false,
-      listEmployee,
-      listEmployeeNotConfirm = []
-    let confirmedByEmployeesId, listEmployeeId
+    let checkConfirmOtherUser = false
+    let checkConfirmCurrentUser = false
+    let listEmployee
+    let listEmployeeNotConfirm = []
+    let confirmedByEmployeesId
+    let listEmployeeId
 
     if (task && task.responsibleEmployees && task.accountableEmployees && task.consultedEmployees && task.confirmedByEmployees) {
       listEmployee = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees)
@@ -394,9 +395,8 @@ class DetailProjectTaskTab extends Component {
       idArray = idArray.map((item, index, array) => {
         if (array.indexOf(item) === index) {
           return index
-        } else {
-          return false
         }
+        return false
       })
       idArray = idArray.filter((item) => listEmployeeNotConfirm[item])
       listEmployeeNotConfirm = idArray.map((item) => {
@@ -415,9 +415,9 @@ class DetailProjectTaskTab extends Component {
     listEmployeeNotConfirm = listEmployeeNotConfirm.filter((item) => item.active)
 
     return {
-      listEmployeeNotConfirm: listEmployeeNotConfirm,
-      checkConfirmCurrentUser: checkConfirmCurrentUser,
-      checkConfirmOtherUser: checkConfirmOtherUser,
+      listEmployeeNotConfirm,
+      checkConfirmCurrentUser,
+      checkConfirmOtherUser,
       checkConfirm: checkConfirmOtherUser || checkConfirmCurrentUser
     }
   }
@@ -425,9 +425,9 @@ class DetailProjectTaskTab extends Component {
   /** Kiểm tra hoạt động chưa có đánh giá */
   checkEvaluationTaskAction = (task) => {
     if (task) {
-      let { taskActions } = task
+      const { taskActions } = task
       if (taskActions) {
-        let rated = taskActions.filter((task) => task.rating === -1)
+        const rated = taskActions.filter((task) => task.rating === -1)
         return {
           checkEvaluationTaskAction: rated.length !== 0,
           numberOfTaskActionNotEvaluate: rated.length
@@ -443,12 +443,12 @@ class DetailProjectTaskTab extends Component {
   checkEvaluationTaskAndKpiLink = (task) => {
     const { currentMonth, nextMonth } = this.state
 
-    let evaluations = [],
-      checkEvaluationTask = false
-    let listEmployeeNotKpiLink = [],
-      responsibleEmployeesNotKpiLink = [],
-      accountableEmployeesNotKpiLink = [],
-      consultedEmployeesNotKpiLink = []
+    let evaluations = []
+    let checkEvaluationTask = false
+    let listEmployeeNotKpiLink = []
+    let responsibleEmployeesNotKpiLink = []
+    let accountableEmployeesNotKpiLink = []
+    let consultedEmployeesNotKpiLink = []
 
     if (task && task.evaluations) {
       evaluations = task.evaluations.filter(
@@ -522,9 +522,8 @@ class DetailProjectTaskTab extends Component {
     idArray = idArray.map((item, index, array) => {
       if (array.indexOf(item) === index) {
         return index
-      } else {
-        return false
       }
+      return false
     })
     idArray = idArray.filter((item) => listEmployeeNotKpiLink[item])
     listEmployeeNotKpiLink = idArray.map((item) => {
@@ -533,9 +532,9 @@ class DetailProjectTaskTab extends Component {
     listEmployeeNotKpiLink = listEmployeeNotKpiLink.filter((item) => item.active)
 
     return {
-      checkEvaluationTask: checkEvaluationTask,
+      checkEvaluationTask,
       checkKpiLink: listEmployeeNotKpiLink.length !== 0,
-      listEmployeeNotKpiLink: listEmployeeNotKpiLink
+      listEmployeeNotKpiLink
     }
   }
 
@@ -543,11 +542,11 @@ class DetailProjectTaskTab extends Component {
   checkDeadlineForEvaluation = (task) => {
     const { dueForEvaluationOfTask, currentMonth } = this.state
 
-    let checkDeadlineForEvaluation = false,
-      deadlineForEvaluation,
-      evaluations
-    let currentDate = new Date()
-    let lastMonth = currentDate.getFullYear() + '-' + currentDate.getMonth()
+    let checkDeadlineForEvaluation = false
+    let deadlineForEvaluation
+    let evaluations
+    const currentDate = new Date()
+    const lastMonth = `${currentDate.getFullYear()}-${currentDate.getMonth()}`
 
     if (task && task.evaluations) {
       // Check evaluations tháng trước
@@ -563,28 +562,26 @@ class DetailProjectTaskTab extends Component {
 
           if (deadlineForEvaluation < 1) {
             if (deadlineForEvaluation * 24 < 1) {
-              deadlineForEvaluation =
-                Math.floor(deadlineForEvaluation * 24 * 60) + ` ${this.props.translate('task.task_management.warning_minutes')}`
+              deadlineForEvaluation = `${Math.floor(deadlineForEvaluation * 24 * 60)} ${this.props.translate('task.task_management.warning_minutes')}`
             } else {
-              deadlineForEvaluation =
-                Math.floor(deadlineForEvaluation * 24) + ` ${this.props.translate('task.task_management.warning_hours')}`
+              deadlineForEvaluation = `${Math.floor(deadlineForEvaluation * 24)} ${this.props.translate('task.task_management.warning_hours')}`
             }
           } else {
-            deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ` ${this.props.translate('task.task_management.warning_days')}`
+            deadlineForEvaluation = `${Math.floor(deadlineForEvaluation)} ${this.props.translate('task.task_management.warning_days')}`
           }
         }
       }
     }
 
     return {
-      checkDeadlineForEvaluation: checkDeadlineForEvaluation,
-      deadlineForEvaluation: deadlineForEvaluation
+      checkDeadlineForEvaluation,
+      deadlineForEvaluation
     }
   }
 
   /** Kiểm tra đơn vị chưa xác nhận phân công công việc */
   checkConfirmAssginOfOrganizationalUnit = (task) => {
-    let unitHasNotConfirm = []
+    const unitHasNotConfirm = []
 
     if (task && task.collaboratedWithOrganizationalUnits) {
       if (task.collaboratedWithOrganizationalUnits.length !== 0) {
@@ -598,7 +595,7 @@ class DetailProjectTaskTab extends Component {
 
     return {
       checkConfirm: unitHasNotConfirm.length !== 0,
-      unitHasNotConfirm: unitHasNotConfirm
+      unitHasNotConfirm
     }
   }
 
@@ -608,13 +605,13 @@ class DetailProjectTaskTab extends Component {
       item.hoursSpent = 0
     })
 
-    for (let i in timesheetLogs) {
-      let log = timesheetLogs[i]
-      let startedAt = new Date(log.startedAt)
-      let stoppedAt = new Date(log.stoppedAt)
+    for (const i in timesheetLogs) {
+      const log = timesheetLogs[i]
+      const startedAt = new Date(log.startedAt)
+      const stoppedAt = new Date(log.stoppedAt)
 
       if (startedAt.getTime() >= new Date(startDate).getTime() && stoppedAt.getTime() <= new Date(endDate).getTime()) {
-        let { creator, duration } = log
+        const { creator, duration } = log
         let check = true
         let newResults = []
 
@@ -626,13 +623,12 @@ class DetailProjectTaskTab extends Component {
               employee: item.employee._id,
               hoursSpent: duration + item.hoursSpent
             }
-          } else {
-            return item
           }
+          return item
         })
 
         if (check) {
-          let employeeHoursSpent = {
+          const employeeHoursSpent = {
             employee: creator,
             hoursSpent: duration
           }
@@ -644,7 +640,7 @@ class DetailProjectTaskTab extends Component {
       }
     }
 
-    let data = {
+    const data = {
       evaluateId: evaluate._id,
       timesheetLogs: results.map((item) => {
         return {
@@ -669,9 +665,9 @@ class DetailProjectTaskTab extends Component {
   setSelectBoxOfUserSameDepartmentCollaborated = (task) => {
     const { user } = this.props
     const { currentUser } = this.state
-    let usersInUnitsOfCompany,
-      unitThatCurrentUserIsManager,
-      employeeSelectBox = []
+    let usersInUnitsOfCompany
+    let unitThatCurrentUserIsManager
+    let employeeSelectBox = []
 
     if (user) {
       usersInUnitsOfCompany = user.usersInUnitsOfCompany
@@ -680,12 +676,12 @@ class DetailProjectTaskTab extends Component {
     if (usersInUnitsOfCompany && usersInUnitsOfCompany.length !== 0) {
       unitThatCurrentUserIsManager = usersInUnitsOfCompany.filter((unit) => {
         let check = false
-        let unitCollaborated =
+        const unitCollaborated =
           task?.collaboratedWithOrganizationalUnits?.length > 0 &&
           task.collaboratedWithOrganizationalUnits.map((item) => item.organizationalUnit && item.organizationalUnit?._id)
 
         if (unitCollaborated?.length > 0 && unitCollaborated.includes(unit.id) && unit.managers) {
-          let employee = Object.values(unit.managers)
+          const employee = Object.values(unit.managers)
           if (employee && employee.length !== 0) {
             employee.map((employee) => {
               employee.members &&
@@ -717,16 +713,16 @@ class DetailProjectTaskTab extends Component {
   }
 
   remindEvaluateTaskOnThisMonth = (task) => {
-    let startDate = new Date(task?.startDate)
-    let endDate = new Date(task?.endDate)
+    const startDate = new Date(task?.startDate)
+    const endDate = new Date(task?.endDate)
 
-    let endOfMonth = new moment().endOf('month').toDate()
-    let today = new Date()
+    const endOfMonth = new moment().endOf('month').toDate()
+    const today = new Date()
     let check
 
     // kiểm tra đánh giá tháng hiện tại
-    let denta = Math.abs(endOfMonth.getTime() - today.getTime())
-    let dentaDate = denta / (24 * 60 * 60 * 1000)
+    const denta = Math.abs(endOfMonth.getTime() - today.getTime())
+    const dentaDate = denta / (24 * 60 * 60 * 1000)
 
     if (dentaDate <= 7) {
       check = true
@@ -784,23 +780,23 @@ class DetailProjectTaskTab extends Component {
     const currentProjectTasks = this.props.tasks && this.props.tasks.tasksByProject
     const currentProjectPhase = this.props.projectPhase && this.props.projectPhase.phases
     const currentProjectMilestone = this.props.projectPhase && this.props.projectPhase.milestones
-    let codeInProcess,
-      typeOfTask,
-      statusTask,
-      checkInactive = true,
-      evaluations,
-      evalList = []
+    let codeInProcess
+    let typeOfTask
+    let statusTask
+    let checkInactive = true
+    let evaluations
+    let evalList = []
     // Các biến dùng trong phần Nhắc Nhở
-    let warning = false,
-      checkEvaluate,
-      checkConfirmTask,
-      checkEvaluationTaskAction,
-      checkEvaluationTaskAndKpiLink,
-      checkDeadlineForEvaluation,
-      checkConfirmAssginOfOrganizationalUnit
+    let warning = false
+    let checkEvaluate
+    let checkConfirmTask
+    let checkEvaluationTaskAction
+    let checkEvaluationTaskAndKpiLink
+    let checkDeadlineForEvaluation
+    let checkConfirmAssginOfOrganizationalUnit
     // Các biến dùng cho biểu đồ đóng góp thời gian
-    let hoursSpentOfEmployeeInTask,
-      hoursSpentOfEmployeeInEvaluation = {}
+    let hoursSpentOfEmployeeInTask
+    const hoursSpentOfEmployeeInEvaluation = {}
     // Các biến check trưởng đơn vị phối hợp
     let employeeCollaboratedWithUnitSelectBox
 
@@ -813,7 +809,7 @@ class DetailProjectTaskTab extends Component {
     if (task) {
       codeInProcess = task.codeInProcess
       if (codeInProcess) {
-        let splitter = codeInProcess.split('_')
+        const splitter = codeInProcess.split('_')
         typeOfTask = splitter[0]
       }
     }
@@ -831,19 +827,19 @@ class DetailProjectTaskTab extends Component {
       checkInactive = task.inactiveEmployees && task.inactiveEmployees.indexOf(currentUser) === -1
     } // return true if user is active user
     if (task && task.evaluations && task.evaluations.length !== 0) {
-      evaluations = task.evaluations //.reverse()
+      evaluations = task.evaluations // .reverse()
     }
 
     // thêm giá trị prevDate vào evaluation
     if (evaluations && evaluations.length > 0) {
       for (let i = 0; i < evaluations.length; i++) {
         let prevEval
-        let startDate = task.startDate
+        const { startDate } = task
         let prevDate = startDate
-        let splitter = this.formatDate(evaluations[i].evaluatingMonth).split('-')
+        const splitter = this.formatDate(evaluations[i].evaluatingMonth).split('-')
 
-        let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0])
-        let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0])
+        const dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0])
+        const dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0])
         let newMonth = dateOfPrevEval.getMonth() - 1
         if (newMonth < 0) {
           newMonth += 12
@@ -852,8 +848,8 @@ class DetailProjectTaskTab extends Component {
         dateOfPrevEval.setDate(15)
         dateOfPrevEval.setMonth(newMonth)
 
-        let monthOfPrevEval = dateOfPrevEval.getMonth()
-        let yearOfPrevEval = dateOfPrevEval.getFullYear()
+        const monthOfPrevEval = dateOfPrevEval.getMonth()
+        const yearOfPrevEval = dateOfPrevEval.getFullYear()
 
         prevEval = evaluations.find(
           (e) => monthOfPrevEval === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()
@@ -861,7 +857,7 @@ class DetailProjectTaskTab extends Component {
         if (prevEval) {
           prevDate = prevEval.evaluatingMonth
         } else {
-          let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
+          const strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
           // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
           if (
             !(
@@ -874,7 +870,7 @@ class DetailProjectTaskTab extends Component {
             prevDate = moment(strPrevMonth, 'MM-YYYY').endOf('month').toDate()
           }
         }
-        evalList.push({ ...evaluations[i], prevDate: prevDate })
+        evalList.push({ ...evaluations[i], prevDate })
       }
     }
 
@@ -902,10 +898,10 @@ class DetailProjectTaskTab extends Component {
     if (task && task.hoursSpentOnTask) {
       hoursSpentOfEmployeeInTask = {}
       for (let i = 0; i < task.timesheetLogs.length; i++) {
-        let tsheetlog = task.timesheetLogs[i]
+        const tsheetlog = task.timesheetLogs[i]
 
         if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
-          let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0
+          const times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0
 
           if (tsheetlog.acceptLog) {
             hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration
@@ -950,11 +946,11 @@ class DetailProjectTaskTab extends Component {
     const projectDetail = getCurrentProjectDetails(this.props.project, task?.taskProject)
 
     return (
-      <React.Fragment>
+      <>
         {showToolbar && (
           <div style={{ marginLeft: '-10px' }}>
             <a className='btn btn-app' onClick={this.refresh} title='Refresh'>
-              <i className='fa fa-refresh' style={{ fontSize: '16px' }} aria-hidden='true'></i>
+              <i className='fa fa-refresh' style={{ fontSize: '16px' }} aria-hidden='true' />
               {translate('task.task_management.detail_refresh')}
             </a>
 
@@ -964,14 +960,14 @@ class DetailProjectTaskTab extends Component {
                 onClick={() => this.handleShowEdit(id, currentRole, checkHasAccountable)}
                 title='Chỉnh sửa thông tin chung'
               >
-                <i className='fa fa-edit' style={{ fontSize: '16px' }}></i>
+                <i className='fa fa-edit' style={{ fontSize: '16px' }} />
                 {translate('task.task_management.detail_edit')}
               </a>
             )}
             {currentRole === 'accountable' && task && statusTask !== 'finished' && checkHasAccountable && (
-              <a className='btn btn-app' onClick={() => this.handleShowChangeRequestEditTask(id)} title={'Yêu cầu cập nhật nguồn lực'}>
-                <i className='fa fa-wrench' style={{ fontSize: '16px' }}></i>
-                {'Yêu cầu cập nhật nguồn lực'}
+              <a className='btn btn-app' onClick={() => this.handleShowChangeRequestEditTask(id)} title='Yêu cầu cập nhật nguồn lực'>
+                <i className='fa fa-wrench' style={{ fontSize: '16px' }} />
+                Yêu cầu cập nhật nguồn lực
               </a>
             )}
             {task &&
@@ -981,13 +977,13 @@ class DetailProjectTaskTab extends Component {
               currentRole === 'accountable' &&
               checkInactive &&
               checkHasAccountable && (
-                <a className='btn btn-app' onClick={() => this.handleShowChangeStatusTask(id)} title={'Yêu cầu hoãn huỷ'}>
-                  <i className='fa fa-power-off' style={{ fontSize: '16px' }}></i>
-                  {'Yêu cầu hoãn huỷ'}
+                <a className='btn btn-app' onClick={() => this.handleShowChangeStatusTask(id)} title='Yêu cầu hoãn huỷ'>
+                  <i className='fa fa-power-off' style={{ fontSize: '16px' }} />
+                  Yêu cầu hoãn huỷ
                 </a>
               )}
             {performtasks?.task?.status !== 'finished' && (
-              <React.Fragment>
+              <>
                 {(currentRole === 'consulted' || currentRole === 'responsible' || currentRole === 'accountable') && checkInactive && (
                   <a
                     className='btn btn-app'
@@ -995,11 +991,11 @@ class DetailProjectTaskTab extends Component {
                     title='Bắt đầu thực hiện công việc'
                     disabled={performtasks.currentTimer}
                   >
-                    <i className='fa fa-clock-o' style={{ fontSize: '16px' }} aria-hidden='true'></i>
+                    <i className='fa fa-clock-o' style={{ fontSize: '16px' }} aria-hidden='true' />
                     {translate('task.task_management.detail_start_timer')}
                   </a>
                 )}
-              </React.Fragment>
+              </>
             )}
 
             {/* {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
@@ -1029,9 +1025,9 @@ class DetailProjectTaskTab extends Component {
               (currentRole === 'responsible' || currentRole === 'accountable') &&
               checkInactive &&
               checkHasAccountable && (
-                <a className='btn btn-app' onClick={() => this.handleShowRequestCloseTask(id)} title={'Đánh giá kết thúc công việc'}>
-                  <i className='fa fa-calendar-check-o' style={{ fontSize: '16px' }}></i>
-                  {'Đánh giá kết thúc công việc'}
+                <a className='btn btn-app' onClick={() => this.handleShowRequestCloseTask(id)} title='Đánh giá kết thúc công việc'>
+                  <i className='fa fa-calendar-check-o' style={{ fontSize: '16px' }} />
+                  Đánh giá kết thúc công việc
                 </a>
               )}
 
@@ -1041,7 +1037,7 @@ class DetailProjectTaskTab extends Component {
                 onClick={() => this.handleOpenTaskAgain(id)}
                 title={translate('task.task_perform.open_task_again')}
               >
-                <i className='fa fa-rocket' style={{ fontSize: '16px' }}></i>
+                <i className='fa fa-rocket' style={{ fontSize: '16px' }} />
                 {translate('task.task_perform.open_task_again')}
               </a>
             )}
@@ -1056,7 +1052,7 @@ class DetailProjectTaskTab extends Component {
                 aria-expanded='false'
                 aria-controls='info'
               >
-                <i className='fa fa-info' style={{ fontSize: '16px' }}></i>
+                <i className='fa fa-info' style={{ fontSize: '16px' }} />
                 {translate('task.task_management.detail_hide_info')}
               </a>
             ) : (
@@ -1069,7 +1065,7 @@ class DetailProjectTaskTab extends Component {
                 aria-expanded='false'
                 aria-controls='info'
               >
-                <i className='fa fa-info' style={{ fontSize: '16px' }}></i>
+                <i className='fa fa-info' style={{ fontSize: '16px' }} />
                 {translate('task.task_management.detail_show_info')}
               </a>
             )}
@@ -1077,7 +1073,7 @@ class DetailProjectTaskTab extends Component {
             {roles && roles.length > 1 && (
               <div className='dropdown' style={{ margin: '10px 0px 0px 10px', display: 'inline-block' }}>
                 <a className='btn btn-app' style={{ margin: '-10px 0px 0px 0px' }} data-toggle='dropdown'>
-                  <i className='fa fa-user' style={{ fontSize: '16px' }}></i>
+                  <i className='fa fa-user' style={{ fontSize: '16px' }} />
                   {translate('task.task_management.detail_choose_role')}
                 </a>
                 <ul className='dropdown-menu'>
@@ -1149,7 +1145,7 @@ class DetailProjectTaskTab extends Component {
                     <strong>{translate('task.task_management.not_confirm')}:</strong>
                     {checkConfirmTask.listEmployeeNotConfirm.length !== 0 &&
                       checkConfirmTask.listEmployeeNotConfirm.map((item, index) => {
-                        let seperator = index !== 0 ? ', ' : ''
+                        const seperator = index !== 0 ? ', ' : ''
                         return (
                           <span key={index}>
                             {seperator}
@@ -1202,7 +1198,7 @@ class DetailProjectTaskTab extends Component {
                     {checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm &&
                       checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm.length !== 0 &&
                       checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm.map((item, index) => {
-                        let seperator = index !== 0 ? ', ' : ''
+                        const seperator = index !== 0 ? ', ' : ''
                         return (
                           <span key={index}>
                             {seperator}
@@ -1250,7 +1246,7 @@ class DetailProjectTaskTab extends Component {
                 </div>
                 <div>
                   <strong>{translate('task.task_management.detail_time')}:</strong> {this.formatTime(task && task.startDate)}{' '}
-                  <i className='fa fa-fw fa-caret-right'></i> {this.formatTime(task && task.endDate)}{' '}
+                  <i className='fa fa-fw fa-caret-right' /> {this.formatTime(task && task.endDate)}{' '}
                 </div>
                 {/* <div><strong>{translate('task.task_management.unit_manage_task')}:</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div> */}
                 {/* <div>
@@ -1303,7 +1299,7 @@ class DetailProjectTaskTab extends Component {
                 {/* Mô tả công việc */}
                 <div>
                   <strong>{translate('task.task_management.detail_description')}:</strong>
-                  <ShowMoreShowLess id={'task-description'} isHtmlElement={true} characterLimit={200}>
+                  <ShowMoreShowLess id='task-description' isHtmlElement characterLimit={200}>
                     {task && parse(task.description)}
                   </ShowMoreShowLess>
                 </div>
@@ -1323,7 +1319,7 @@ class DetailProjectTaskTab extends Component {
                       task.responsibleEmployees &&
                       task.responsibleEmployees.length !== 0 &&
                       task.responsibleEmployees.map((item, index) => {
-                        let seperator = index !== 0 ? ', ' : ''
+                        const seperator = index !== 0 ? ', ' : ''
                         if (task.inactiveEmployees.indexOf(item._id) !== -1) {
                           // tìm thấy item._id
                           return (
@@ -1334,14 +1330,13 @@ class DetailProjectTaskTab extends Component {
                               </strike>
                             </span>
                           )
-                        } else {
-                          return (
-                            <span key={index}>
-                              {seperator}
-                              {item.name}
-                            </span>
-                          )
                         }
+                        return (
+                          <span key={index}>
+                            {seperator}
+                            {item.name}
+                          </span>
+                        )
                       })}
                   </span>
                   <br />
@@ -1353,7 +1348,7 @@ class DetailProjectTaskTab extends Component {
                       task.accountableEmployees &&
                       task.accountableEmployees.length !== 0 &&
                       task.accountableEmployees.map((item, index) => {
-                        let seperator = index !== 0 ? ', ' : ''
+                        const seperator = index !== 0 ? ', ' : ''
                         if (task.inactiveEmployees.indexOf(item._id) !== -1) {
                           // tìm thấy item._id
                           return (
@@ -1364,14 +1359,13 @@ class DetailProjectTaskTab extends Component {
                               </strike>
                             </span>
                           )
-                        } else {
-                          return (
-                            <span key={index}>
-                              {seperator}
-                              {item.name}
-                            </span>
-                          )
                         }
+                        return (
+                          <span key={index}>
+                            {seperator}
+                            {item.name}
+                          </span>
+                        )
                       })}
                   </span>
                   <br />
@@ -1384,7 +1378,7 @@ class DetailProjectTaskTab extends Component {
                         {task &&
                           task.consultedEmployees.length !== 0 &&
                           task.consultedEmployees.map((item, index) => {
-                            let seperator = index !== 0 ? ', ' : ''
+                            const seperator = index !== 0 ? ', ' : ''
                             if (task.inactiveEmployees.indexOf(item._id) !== -1) {
                               // tìm thấy item._id
                               return (
@@ -1395,14 +1389,13 @@ class DetailProjectTaskTab extends Component {
                                   </strike>
                                 </span>
                               )
-                            } else {
-                              return (
-                                <span key={index}>
-                                  {seperator}
-                                  {item.name}
-                                </span>
-                              )
                             }
+                            return (
+                              <span key={index}>
+                                {seperator}
+                                {item.name}
+                              </span>
+                            )
                           })}
                       </span>
                       <br />
@@ -1416,7 +1409,7 @@ class DetailProjectTaskTab extends Component {
                         {task &&
                           task.informedEmployees.length !== 0 &&
                           task.informedEmployees.map((item, index) => {
-                            let seperator = index !== 0 ? ', ' : ''
+                            const seperator = index !== 0 ? ', ' : ''
                             if (task.inactiveEmployees.indexOf(item._id) !== -1) {
                               // tìm thấy item._id
                               return (
@@ -1427,14 +1420,13 @@ class DetailProjectTaskTab extends Component {
                                   </strike>
                                 </span>
                               )
-                            } else {
-                              return (
-                                <span key={index}>
-                                  {seperator}
-                                  {item.name}
-                                </span>
-                              )
                             }
+                            return (
+                              <span key={index}>
+                                {seperator}
+                                {item.name}
+                              </span>
+                            )
                           })}
                       </span>
                       <br />
@@ -1458,16 +1450,18 @@ class DetailProjectTaskTab extends Component {
                       <div key={keyEva} className='description-box'>
                         <h4>
                           {translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.startDate)}{' '}
-                          <i className='fa fa-fw fa-caret-right'></i> {this.formatDate(eva.endDate)}
+                          <i className='fa fa-fw fa-caret-right' /> {this.formatDate(eva.endDate)}
                         </h4>
                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeShowMoreEvalItem(eva._id)}>
                           {showMore[eva._id] ? (
                             <p>
-                              Nhấn chuột để ẩn chi tiết&nbsp;&nbsp;<i className='fa fa-angle-double-up'></i>
+                              Nhấn chuột để ẩn chi tiết&nbsp;&nbsp;
+                              <i className='fa fa-angle-double-up' />
                             </p>
                           ) : (
                             <p>
-                              Nhấn chuột để xem chi tiết&nbsp;&nbsp;<i className='fa fa-angle-double-down'></i>
+                              Nhấn chuột để xem chi tiết&nbsp;&nbsp;
+                              <i className='fa fa-angle-double-down' />
                             </p>
                           )}
                         </a>
@@ -1495,18 +1489,17 @@ class DetailProjectTaskTab extends Component {
                                             {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}
                                           </li>
                                         )
-                                      } else {
-                                        return (
-                                          <li key={index}>
-                                            {res.employee && res.employee.name}: &nbsp;&nbsp;{' '}
-                                            {res.automaticPoint !== null && res.automaticPoint !== undefined
-                                              ? res.automaticPoint
-                                              : translate('task.task_management.detail_not_auto')}{' '}
-                                            - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} -{' '}
-                                            {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}
-                                          </li>
-                                        )
                                       }
+                                      return (
+                                        <li key={index}>
+                                          {res.employee && res.employee.name}: &nbsp;&nbsp;{' '}
+                                          {res.automaticPoint !== null && res.automaticPoint !== undefined
+                                            ? res.automaticPoint
+                                            : translate('task.task_management.detail_not_auto')}{' '}
+                                          - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} -{' '}
+                                          {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}
+                                        </li>
+                                      )
                                     })
                                   ) : (
                                     <li>{translate('task.task_management.detail_not_eval')}</li>
@@ -1589,18 +1582,16 @@ class DetailProjectTaskTab extends Component {
                                 }
                                 title='Cập nhật thời gian bấm giờ'
                               >
-                                Nhấn chuột để cập nhật dữ liệu <i className='fa fa-fw fa-clock-o'></i>
+                                Nhấn chuột để cập nhật dữ liệu <i className='fa fa-fw fa-clock-o' />
                               </a>
                             )}
                             {eva.results.length !== 0 &&
                               hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth] &&
                               JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]) !== '{}' && (
-                                <React.Fragment>
-                                  <HoursSpentOfEmployeeChart
-                                    refs={'evaluationBox' + eva.evaluatingMonth}
-                                    data={hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]}
-                                  />
-                                </React.Fragment>
+                                <HoursSpentOfEmployeeChart
+                                  refs={`evaluationBox${eva.evaluatingMonth}`}
+                                  data={hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]}
+                                />
                               )}
                           </div>
                         )}
@@ -1639,7 +1630,7 @@ class DetailProjectTaskTab extends Component {
           <ModalEditTaskByAccountableEmployeeProject
             id={id}
             task={task && task}
-            hasAccountable={true}
+            hasAccountable
             role={currentRole}
             title={translate('task.task_management.detail_acc_edit')}
             perform={`edit-${currentRole}`}
@@ -1684,7 +1675,7 @@ class DetailProjectTaskTab extends Component {
           // (id && showCopy === `copy-task-${id}`) &&
           <TaskAddModal id={`copy-task-${id}`} task={task} />
         }
-        {showSaveAsTemplate && <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={showSaveAsTemplate} />}
+        {showSaveAsTemplate && <ModalAddTaskTemplate savedTaskAsTemplate savedTaskItem={task} savedTaskId={showSaveAsTemplate} />}
 
         {id && showRequestClose === id && (currentRole === 'responsible' || currentRole === 'accountable') && checkHasAccountable && (
           <RequestToCloseProjectTaskModal id={id} task={task && task} role={currentRole} hasAccountable={checkHasAccountable} />
@@ -1696,7 +1687,7 @@ class DetailProjectTaskTab extends Component {
             currentProjectTasks={currentProjectTasks && currentProjectTasks}
           />
         )}
-      </React.Fragment>
+      </>
     )
   }
 }
@@ -1707,7 +1698,7 @@ function mapStateToProps(state) {
 }
 
 const actionGetState = {
-  //dispatchActionToProps
+  // dispatchActionToProps
   getTaskById: performTaskAction.getTaskById,
   getSubTask: taskManagementActions.getSubTask,
   startTimer: performTaskAction.startTimerTask,

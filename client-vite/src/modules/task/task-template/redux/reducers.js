@@ -1,8 +1,9 @@
-import { taskTemplateConstants } from '../redux/constants'
+import { taskTemplateConstants } from './constants'
 
 export function tasktemplates(state = {}, action) {
   switch (action.type) {
     case taskTemplateConstants.GETALL_TEMPLATE_REQUEST:
+      // case
       return {
         ...state,
         isLoading: true
@@ -11,7 +12,7 @@ export function tasktemplates(state = {}, action) {
     case taskTemplateConstants.GETALL_TEMPLATE_SUCCESS:
       return {
         ...state,
-        items: action.payload.content.templates,
+        listTemplatesAll: action.payload,
         isLoading: false
       }
 
@@ -146,7 +147,7 @@ export function tasktemplates(state = {}, action) {
       }
     case taskTemplateConstants.IMPORT_TEMPLATE_SUCCESS:
       let item = [...state.items]
-      for (let i in action.payload.content) {
+      for (const i in action.payload.content) {
         item = [...item, action.payload.content[i]]
       }
       return {

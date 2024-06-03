@@ -1,16 +1,6 @@
 import { taskTemplateConstants } from './constants'
-//import { alertActions } from "./AlertActions";
+// import { alertActions } from "./AlertActions";
 import { taskTemplateService } from './services'
-export const taskTemplateActions = {
-  getAll,
-  getAllTaskTemplateByRole,
-  getAllTaskTemplateByUser,
-  getTaskTemplateById,
-  addTaskTemplate,
-  editTaskTemplate,
-  deleteTaskTemplateById,
-  importTaskTemplate
-}
 
 /** Get all tasktemplate */
 function getAll() {
@@ -81,7 +71,7 @@ function addTaskTemplate(taskTemplate) {
 
     taskTemplateService.addNewTaskTemplate(taskTemplate).then(
       (res) => dispatch({ type: taskTemplateConstants.ADDNEW_TEMPLATE_SUCCESS, payload: res.data }),
-      (error) => dispatch({ type: taskTemplateConstants.ADDNEW_TEMPLATE_FAILURE })
+      () => dispatch({ type: taskTemplateConstants.ADDNEW_TEMPLATE_FAILURE })
     )
   }
 }
@@ -121,4 +111,15 @@ function importTaskTemplate(data) {
       (error) => dispatch({ type: taskTemplateConstants.IMPORT_TEMPLATE_FAILURE })
     )
   }
+}
+
+export const taskTemplateActions = {
+  getAll,
+  getAllTaskTemplateByRole,
+  getAllTaskTemplateByUser,
+  getTaskTemplateById,
+  addTaskTemplate,
+  editTaskTemplate,
+  deleteTaskTemplateById,
+  importTaskTemplate
 }
