@@ -29,8 +29,8 @@ exports.getAllTaskTemplates = async (req, res) => {
 
 /**
  * Lấy mẫu công việc theo id
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.getTaskTemplate = async (req, res) => {
     try {
@@ -56,8 +56,8 @@ exports.getTaskTemplate = async (req, res) => {
 
 /**
  * Tạo một mẫu công việc
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.createTaskTemplate = async (req, res) => {
     try {
@@ -81,8 +81,8 @@ exports.createTaskTemplate = async (req, res) => {
 
 /**
  * Xóa một mẫu công việc
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.deleteTaskTemplate = async (req, res) => {
     try {
@@ -107,8 +107,8 @@ exports.deleteTaskTemplate = async (req, res) => {
 
 /**
  * Sửa 1 mẫu công việc
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.editTaskTemplate = async (req, res) => {
     try {
@@ -132,13 +132,13 @@ exports.editTaskTemplate = async (req, res) => {
 }
 /**
  * Import file Exel
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.importTaskTemplate = async (req, res) => {
     try {
         let data = await TaskTemplateService.importTaskTemplate(req.portal, req.body, req.user._id);
-        
+
         await Logger.info(req.user.email, 'import_task_template', req.portal);
         res.status(200).json({
             success: true,

@@ -1,17 +1,6 @@
 import { getStorage } from '../../../../config'
 import { sendRequest } from '../../../../helpers/requestHelper'
 
-export const taskTemplateService = {
-  getAll,
-  getById,
-  getAllTaskTemplateByRole,
-  getAllTaskTemplateByUser,
-  addNewTaskTemplate,
-  editTaskTemplate,
-  deleteTaskTemplateById,
-  importTaskTemplate
-}
-
 /** get all task template */
 function getAll() {
   return sendRequest(
@@ -81,13 +70,13 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name)
 /** add new task template */
 function addNewTaskTemplate(newTaskTemplate) {
   const id = getStorage('userId')
-  newTaskTemplate = { ...newTaskTemplate, creator: id }
+  const payload = { ...newTaskTemplate, creator: id }
 
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/task/task-templates`,
       method: 'POST',
-      data: newTaskTemplate
+      data: payload
     },
     true,
     true,
@@ -133,4 +122,15 @@ function importTaskTemplate(data) {
     true,
     'task.task_template'
   )
+}
+
+export const taskTemplateService = {
+  getAll,
+  getById,
+  getAllTaskTemplateByRole,
+  getAllTaskTemplateByUser,
+  addNewTaskTemplate,
+  editTaskTemplate,
+  deleteTaskTemplateById,
+  importTaskTemplate,
 }

@@ -1,41 +1,24 @@
-import React, { Component, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
-import { taskTemplateActions } from '../redux/actions'
+import { useTranslate, withTranslate } from 'react-redux-multilingual'
 import parse from 'html-react-parser'
 
-const ViewTaskTemplate = (props) => {
-  const [state, setState] = useState({ showMore: false })
-
-  const clickShowMore = () => {
-    setState((state) => {
-      return {
-        ...state,
-        showMore: !state.showMore
-      }
-    })
-  }
+function ViewTaskTemplate({ isProcess, taskTemplate, listUser }) {
+  const [showMore] = useState(false)
+  const translate = useTranslate()
 
   const formatTypeInfo = (type) => {
-    let { translate } = props
-
     if (type === 'text') return translate('task_template.text')
-    else if (type === 'number') return translate('task_template.number')
-    else if (type === 'date') return translate('task_template.date')
-    else if (type === 'boolean') return 'Boolean'
-    else if (type === 'set_of_values') return translate('task_template.value_set')
+    if (type === 'number') return translate('task_template.number')
+    if (type === 'date') return translate('task_template.date')
+    if (type === 'boolean') return 'Boolean'
+    if (type === 'set_of_values') return translate('task_template.value_set')
+    return ''
   }
 
-  console.log('\n\n=======VIEW=========\n\n')
-  const { translate, department } = props
-  const { isProcess, data, taskTemplate, listUser } = props // data là props dữ liệu của process được chọn nếu đây là process
-  const { showMore } = state
-  let processTemplate = data
-  console.log('processTemplate', taskTemplate)
-  let listUserAccountable = [],
-    listUserResponsible = []
-  let organizationalUnitProcess, collaboratedWithOrganizationalUnitsProcess
-  let priority = ''
+  const listUserAccountable = []
+  const listUserResponsible = []
+
   if (isProcess) {
     if (listUser) {
       listUser.forEach((x) => {
@@ -51,38 +34,36 @@ const ViewTaskTemplate = (props) => {
     }
   }
 
-  let organizationalUnit = taskTemplate?.organizationalUnit?.name
-  let collaboratedWithOrganizationalUnits = taskTemplate?.collaboratedWithOrganizationalUnits
-  let accountableEmployees = isProcess ? listUserAccountable : taskTemplate?.accountableEmployees
-  let responsibleEmployees = isProcess ? listUserResponsible : taskTemplate?.responsibleEmployees
+  const organizationalUnit = taskTemplate?.organizationalUnit?.name
+  const collaboratedWithOrganizationalUnits = taskTemplate?.collaboratedWithOrganizationalUnits
+  const accountableEmployees = isProcess ? listUserAccountable : taskTemplate?.accountableEmployees
+  const responsibleEmployees = isProcess ? listUserResponsible : taskTemplate?.responsibleEmployees
 
-  switch (taskTemplate?.priority) {
-    case 1:
-      priority = translate('task.task_management.low')
-      break
-    case 2:
-      priority = translate('task.task_management.average')
-      break
-    case 3:
-      priority = translate('task.task_management.standard')
-      break
-    case 4:
-      priority = translate('task.task_management.high')
-      break
-    case 5:
-      priority = translate('task.task_management.urgent')
-      break
-  }
+  const priority = useMemo(() => {
+    switch (taskTemplate?.priority) {
+      case 1:
+        return translate('task.task_management.low')
+      case 2:
+        return translate('task.task_management.average')
+      case 3:
+        return translate('task.task_management.standard')
+      case 4:
+        return translate('task.task_management.high')
+      case 5:
+        return translate('task.task_management.urgent')
+      default:
+        return ''
+    }
+  }, [taskTemplate?.priority, translate])
 
   return (
-    <React.Fragment>
+    <>
       {/* Modal Body */}
       <div className='row row-equal-height' style={{ marginTop: -25 }}>
         <div className={`${isProcess ? 'col-lg-12 col-sm-12' : 'col-xs-12 col-sm-12 col-md-6 col-lg-6'}`} style={{ padding: 10 }}>
           <div className='description-box' style={{ height: '100%' }}>
             <h4>{translate('task_template.general_information')}</h4>
 
-            {/**Các thông tin của mẫu công việc */}
             <div>
               <strong>{translate('task_template.unit')}:</strong>
               <span>{organizationalUnit}</span>
@@ -93,16 +74,20 @@ const ViewTaskTemplate = (props) => {
               </div>
             )}
             {collaboratedWithOrganizationalUnits && (
-              <ul>{collaboratedWithOrganizationalUnits && collaboratedWithOrganizationalUnits.map((e) => <li>{e.name}</li>)}</ul>
+              <ul>
+                {collaboratedWithOrganizationalUnits.map((e) => (
+                  <li key={e._id}>{e.name}</li>
+                ))}
+              </ul>
             )}
             <div>
               <strong>{translate('task_template.description')}:</strong>
-              <span>{parse(taskTemplate?.description)}</span>
+              <span dangerouslySetInnerHTML={{ __html: taskTemplate?.description }} />
             </div>
 
             <div>
               <strong>{translate('task.task_management.priority')}:</strong>
-              <span>{taskTemplate && priority}</span>
+              <span>{priority}</span>
             </div>
 
             <div>
@@ -147,83 +132,76 @@ const ViewTaskTemplate = (props) => {
             <h4>{translate('task_template.roles')}</h4>
             <div>
               {!isProcess && (
-                <React.Fragment>
-                  {/**Người được xem mẫu công việc */}
+                <>
                   <div>
                     <strong>{translate('task_template.permission_view')}</strong>
                   </div>
                   <div>
                     <ul>
                       {taskTemplate?.readByEmployees &&
-                        taskTemplate?.readByEmployees.map((item, index) => {
-                          return <li key={index}>{item && item.name}</li>
-                        })}
+                        taskTemplate?.readByEmployees.map((item, index) => <li key={index}>{item && item.name}</li>)}
                     </ul>
                   </div>
-                </React.Fragment>
+                </>
               )}
-              {/**Người thực hiện mẫu công việc */}
               {responsibleEmployees && responsibleEmployees.length > 0 && (
-                <React.Fragment>
+                <>
                   <div>
                     <strong>{translate('task_template.performer')}</strong>
                   </div>
                   <div>
                     <ul>
-                      {responsibleEmployees.map((item, index) => {
-                        return <li key={index}>{item && item.name}</li>
-                      })}
+                      {responsibleEmployees.map((item, index) => (
+                        <li key={index}>{item && item.name}</li>
+                      ))}
                     </ul>
                   </div>
-                </React.Fragment>
+                </>
               )}
 
-              {/**Người phê duyệt mẫu công việc */}
               {accountableEmployees && accountableEmployees.length > 0 && (
-                <React.Fragment>
+                <>
                   <div>
                     <strong>{translate('task_template.approver')}</strong>
                   </div>
                   <div>
                     <ul>
-                      {accountableEmployees.map((item, index) => {
-                        return <li key={index}>{item && item.name}</li>
-                      })}
+                      {accountableEmployees.map((item, index) => (
+                        <li key={index}>{item && item.name}</li>
+                      ))}
                     </ul>
                   </div>
-                </React.Fragment>
+                </>
               )}
               {showMore}
-              {/**Người quan sát mẫu công việc */}
               {taskTemplate?.consultedEmployees && taskTemplate?.consultedEmployees.length > 0 && (
-                <React.Fragment>
+                <>
                   <div>
                     <strong>{translate('task_template.observer')}</strong>
                   </div>
                   <div>
                     <ul>
-                      {taskTemplate?.consultedEmployees.map((item, index) => {
-                        return <li key={index}>{item && item.name}</li>
-                      })}
+                      {taskTemplate?.consultedEmployees.map((item, index) => (
+                        <li key={index}>{item && item.name}</li>
+                      ))}
                     </ul>
                   </div>
-                </React.Fragment>
+                </>
               )}
 
-              {/**Người quan sát mẫu công việc */}
               {taskTemplate?.informedEmployees && taskTemplate?.informedEmployees.length > 0 && (
-                <React.Fragment>
+                <>
                   <div>
                     <strong>{translate('task_template.consultant')}</strong>
                   </div>
                   <div>
                     <ul>
-                      {taskTemplate?.informedEmployees.map((item, index) => {
-                        return <li key={index}>{item && item.name}</li>
-                      })}
+                      {taskTemplate?.informedEmployees.map((item, index) => (
+                        <li key={index}>{item && item.name}</li>
+                      ))}
                     </ul>
                   </div>
-                </React.Fragment>
+                </>
               )}
             </div>
           </div>
@@ -235,13 +213,12 @@ const ViewTaskTemplate = (props) => {
           <div className='description-box' style={{ height: '100%' }}>
             <h4>{translate('task_template.activity_list')}</h4>
 
-            {/**Các hoạt động mẫu công việc */}
             {!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0 ? (
               <strong>{translate('task_template.no_data')}</strong>
             ) : (
-              taskTemplate?.taskActions.map((item, index, array) => (
-                <div style={{ padding: '5px 30px' }}>
-                  <div className='task-item' key={index}>
+              taskTemplate?.taskActions.map((item, index) => (
+                <div style={{ padding: '5px 30px' }} key={index}>
+                  <div className='task-item'>
                     <p>
                       <b className='number'>{index + 1}</b>
                       <span className='content'>
@@ -260,45 +237,92 @@ const ViewTaskTemplate = (props) => {
           <div className='description-box' style={{ height: '100%' }}>
             <h4>{translate('task_template.information_list')}</h4>
 
-            {/**Các trường thông tin mẫu công việc */}
-            <div>
-              {!taskTemplate?.taskInformations || taskTemplate?.taskInformations.length === 0 ? (
-                <strong>{translate('task_template.no_data')}</strong>
-              ) : (
-                taskTemplate?.taskInformations.map((item, index) => (
-                  <div key={index}>
-                    <strong>{item.name}</strong>
-                    <ul>
-                      <li>
-                        <strong>{translate('task_template.code')}:</strong> {item.code}
-                      </li>
-                      <li>
-                        <strong>{translate('task_template.datatypes')}:</strong> {formatTypeInfo(item.type)}
-                      </li>
-                      {item.filledByAccountableEmployeesOnly && <li>{translate('task_template.manager_fill')}</li>}
-                      <li>
-                        <strong>{translate('task_template.description')}:</strong>
-                        {parse(item.description)}
-                      </li>
-                    </ul>
-                  </div>
-                ))
-              )}
-            </div>
+            {!taskTemplate?.taskInformations || taskTemplate?.taskInformations.length === 0 ? (
+              <strong>{translate('task_template.no_data')}</strong>
+            ) : (
+              taskTemplate?.taskInformations.map((item, index) => (
+                <div key={index}>
+                  <strong>{item.name}</strong>
+                  <ul>
+                    <li>
+                      <strong>{translate('task_template.code')}:</strong> {item.code}
+                    </li>
+                    <li>
+                      <strong>{translate('task_template.datatypes')}:</strong> {formatTypeInfo(item.type)}
+                    </li>
+                    {item.filledByAccountableEmployeesOnly && <li>{translate('task_template.manager_fill')}</li>}
+                    <li>
+                      <strong>{translate('task_template.description')}:</strong>
+                      {parse(item.description)}
+                    </li>
+                  </ul>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
-    </React.Fragment>
+
+      <div className='row row-equal-height'>
+        <div className={`${isProcess ? 'col-lg-12 col-sm-12' : 'col-xs-12 col-sm-12 col-md-12 col-lg-12'}`} style={{ padding: 10 }}>
+          <div className='description-box' style={{ height: '100%' }}>
+            <h4>Danh sách các nhiệm vụ được ánh xạ bởi mẫu công việc</h4>
+
+            {!taskTemplate?.isMappingTask ? (
+              <strong>Không có nhiệm vụ được ánh xạ bởi mẫu công việc này</strong>
+            ) : (
+              <table className='table table-hover table-striped table-bordered'>
+                <thead>
+                  <tr>
+                    <th className='col-fixed'>STT</th>
+                    <th title='Tên nhiệm vụ'>Tên nhiệm vụ</th>
+                    <th title='Mô tả'>Mô tả nhiệm vụ</th>
+                    <th title='Khối lượng nhiệm vụ'>Khối lượng nhiệm vụ</th>
+                    <th title='Đơn vị nhiệm vụ'>Đơn vị nhiệm vụ</th>
+                    <th title='Ngày bắt đầ'>Ngày bắt đầu</th>
+                    <th title='Ngày kết thúc'>Ngày kết thúc</th>
+                    <th title='Thời gian tối đa hoàn thành'>Thời gian tối đa hoàn thành</th>
+                  </tr>
+                </thead>
+                {console.log(taskTemplate)}
+
+                {taskTemplate?.listMappingTask?.length === 0 ? (
+                  <tr>
+                    <td colSpan={9}>
+                      <center>{translate('task_template.no_data')}</center>
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {taskTemplate.listMappingTask.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.taskName}</td>
+                          <td dangerouslySetInnerHTML={{ __html: item.taskDescription }} />
+                          <td>{item.target}</td>
+                          <td>{item.unit}</td>
+                          <td>{item.startDate}</td>
+                          <td>{item.endDate}</td>
+                          <td>{item.durations} h</td>
+                        </tr>
+                      )
+                    })}
+                  </>
+                )}
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 
 function mapState(state) {
-  const { tasktemplates, department } = state
-  return { tasktemplates, department }
+  const { tasktemplates } = state
+  return { tasktemplates }
 }
 
-const actionCreators = {
-  getTaskTemplate: taskTemplateActions.getTaskTemplateById
-}
-const connectedViewTaskTemplate = connect(mapState, actionCreators)(withTranslate(ViewTaskTemplate))
+const connectedViewTaskTemplate = connect(mapState)(withTranslate(ViewTaskTemplate))
 export { connectedViewTaskTemplate as ViewTaskTemplate }

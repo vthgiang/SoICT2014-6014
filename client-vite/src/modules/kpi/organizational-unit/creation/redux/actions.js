@@ -331,7 +331,6 @@ function createChildComment(setKpiId, commentId, data) {
 }
 
 function editChildComment(setKpiId, commentId, childCommentId, data) {
-  console.log(data)
   return (dispatch) => {
     dispatch({ type: createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_REQUEST })
     createUnitKpiServices

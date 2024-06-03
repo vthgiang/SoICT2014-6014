@@ -1415,7 +1415,7 @@ const actionCreators = {
   editArchivedOfTask: performTaskAction.editArchivedOfTask,
   getDepartment: UserActions.getDepartmentOfUser,
   startTimer: performTaskAction.startTimerTask,
-  deleteTaskById: taskManagementActions._delete,
+  deleteTaskById: taskManagementActions.deleteTask,
   getAllDepartment: DepartmentActions.get,
   getProjectsDispatch: ProjectActions.getProjectsDispatch,
   getTaskById: performTaskAction.getTaskById

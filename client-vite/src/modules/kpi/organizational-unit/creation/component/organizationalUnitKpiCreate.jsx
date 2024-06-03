@@ -344,6 +344,13 @@ function OrganizationalUnitKpiCreate(props) {
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Đồng ý'
         })
+      case 'kpi_allocation':
+        return Swal.fire({
+          title: 'KPI đã được kích hoạt, bạn không thể sử dụng chức năng này',
+          type: 'warning',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Đồng ý'
+        })
       default:
         return null
     }
@@ -652,11 +659,11 @@ function OrganizationalUnitKpiCreate(props) {
                   {/* Phân bổ KPI phòng ban xuống kpi đơn vị */}
                   {selectBoxUnit?.filter((item) => item?.id === currentKPI?.organizationalUnit?._id)?.[0]?.children && (
                     <span>
-                      {checkEmittingPermission(currentKPI && currentKPI.organizationalUnit) ? (
+                      {checkEmittingPermission(currentKPI && currentKPI.organizationalUnit) && (
                         <span>
                           {currentKPI.status === 1 ? (
-                            <a className='btn btn-app' onClick={() => swalOfUnitKpi('edit_organizational_unit_importance')}>
-                              <i className='fa fa-university' style={{ fontSize: '16px' }} />
+                            <a className='btn btn-app' onClick={() => swalOfUnitKpi('kpi_allocation')}>
+                              <i className='fa fa-pie-chart' style={{ fontSize: '16px' }} />
                               {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.organizational_unit_kpi_allocation')}
                             </a>
                           ) : (
@@ -679,13 +686,6 @@ function OrganizationalUnitKpiCreate(props) {
                               /> */}
                             </span>
                           )}
-                        </span>
-                      ) : (
-                        <span>
-                          <a className='btn btn-app' onClick={() => swalEdittingPermission()}>
-                            <i className='fa fa-university' style={{ fontSize: '16px' }} />
-                            {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.organizational_unit_kpi_allocation')}
-                          </a>
                         </span>
                       )}
                     </span>

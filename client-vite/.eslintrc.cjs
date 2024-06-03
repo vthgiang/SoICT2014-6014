@@ -47,6 +47,7 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'react/prop-types': 'off',
     'react-hooks/exhaustive-deps': 'off',
-    'jsx-a11y/label-has-associated-control': 'off'
+    'jsx-a11y/label-has-associated-control': 'off',
+    'react/no-array-index-key': 'off'
   }
 }
