@@ -1,15 +1,14 @@
 import React from "react";
-import ShipperManagementTable from './shipperManagementTable'
+import EmployeeTable from './employeeTable.jsx'
 
 
-function ShipperTransportation() {
+export default function Employee(){
     return (
         <div className="box" style={{ minHeight: "450px" }}>
             <div className="box-body">
-                <ShipperManagementTable/>
+                <EmployeeTable/>
             </div>
         </div>
     );
 }
 
-export default ShipperTransportation;
