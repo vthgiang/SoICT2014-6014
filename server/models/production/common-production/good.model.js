@@ -181,6 +181,9 @@ const GoodSchema = new Schema({
     pricePerBaseUnit: {
         type: Number
     },
+    productionCost: {
+        type: Number
+    },
     salesPriceVariance: {
         type: Number
     }
