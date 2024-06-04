@@ -1,27 +1,55 @@
-import { orderConstants } from './constants'
-import { orderServices } from './services'
+import { OrderConstants } from './constants'
+import * as OrderServices from './services'
 
-export const orderActions = {
-  getAllOrder: (query) => {
-    return (dispatch) => {
-      dispatch({
-        type: orderConstants.GET_ALL_ORDER_REQUEST
+const getAdressFromLatLng = (lat, lng) => {
+  return (dispatch) => {
+    dispatch({ type: OrderConstants.GET_ADDRESS_FROM_LAT_LNG_REQUEST })
+    OrderServices.getAddressFromLatLng(lat, lng)
+      .then((res) => {
+        dispatch({
+          type: OrderConstants.GET_ADDRESS_FROM_LAT_LNG_SUCCESS,
+          payload: res.data.display_name
+        })
       })
-
-      orderServices
-        .getAllOrder(query)
-        .then((res) => {
-          dispatch({
-            type: orderConstants.GET_ALL_ORDER_SUCCESS,
-            payload: res.data
-          })
-        })
-        .catch((error) => {
-          dispatch({
-            type: orderConstants.GET_ALL_ORDER_FAILURE,
-            error
-          })
-        })
-    }
+      .catch((err) => {
+        dispatch({ type: OrderConstants.GET_ADDRESS_FROM_LAT_LNG_FAILURE })
+      })
   }
+}
+
+const createNewOrder = (data) => {
+  return (dispatch) => {
+    dispatch({ type: OrderConstants.CREATE_ORDER_REQUEST })
+    OrderServices.createNewOrder(data)
+      .then((res) => {
+        dispatch({
+          type: OrderConstants.CREATE_ORDER_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({ type: OrderConstants.CREATE_ORDER_FAILURE })
+      })
+  }
+}
+
+const getAllOrder = (query) => {
+  return (dispatch) => {
+    dispatch({ type: OrderConstants.GET_ALL_ORDER_REQUEST })
+    OrderServices.getAllOrder(query)
+      .then((res) => {
+        dispatch({
+          type: OrderConstants.GET_ALL_ORDER_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({ type: OrderConstants.GET_ALL_ORDER_FAILURE })
+      })
+  }
+}
+export const OrderActions = {
+  getAdressFromLatLng,
+  createNewOrder,
+  getAllOrder
 }
