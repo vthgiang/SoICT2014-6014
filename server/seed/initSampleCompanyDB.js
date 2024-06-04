@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Terms = require('../helpers/config');
 const linksPermission = require('../middleware/servicesPermission').links;
-
+const categoryChild = require('./CategoryChild.json')
+const listProducts = require('./ListProduct.json')
 const {
     Component,
     RoleType,
@@ -98,22 +99,22 @@ const initSampleCompanyDB = async () => {
     let connectOptions =
         process.env.DB_AUTHENTICATION === 'true'
             ? {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-                  user: process.env.DB_USERNAME,
-                  pass: process.env.DB_PASSWORD,
-                  auth: {
-                      authSource: 'admin',
-                  },
-              }
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+                user: process.env.DB_USERNAME,
+                pass: process.env.DB_PASSWORD,
+                auth: {
+                    authSource: 'admin',
+                },
+            }
             : {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-              };
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+            };
     const systemDB = mongoose.createConnection(
         `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
         connectOptions
@@ -122,22 +123,22 @@ const initSampleCompanyDB = async () => {
     let connectVNISTOptions =
         process.env.DB_AUTHENTICATION === 'true'
             ? {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-                  user: process.env.DB_USERNAME,
-                  pass: process.env.DB_PASSWORD,
-                  auth: {
-                      authSource: 'admin',
-                  },
-              }
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+                user: process.env.DB_USERNAME,
+                pass: process.env.DB_PASSWORD,
+                auth: {
+                    authSource: 'admin',
+                },
+            }
             : {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-              };
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+            };
     const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`, connectVNISTOptions);
     await Configuration(systemDB).insertMany([
         {
@@ -4530,13 +4531,46 @@ const initSampleCompanyDB = async () => {
             description: 'Thuốc dạng cốm',
         },
     ]);
-
+    var listCategoryChild1 = categoryChild.map((subCat) => {
+        return {
+            ...subCat,
+            parent: listCategory[0]._id  // Gán _id của danh mục cha đầu tiên cho tất cả danh mục con, bạn có thể thay đổi điều này nếu muốn phân biệt
+        };
+    });
+    await Category(vnistDB).insertMany(listCategoryChild1);
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU HÀNG HÓA
       -----------------------------------------------------------------------------------------------
       ----------------------------------------------------------------------------------------------- */
+
+
     console.log('Khởi tạo dữ liệu hàng hóa');
+    let newProducts = [];
+
+    listProducts.forEach(product => {
+        let newProduct = {
+            company: vnist._id,
+            name: product.name,
+            code: product.code,
+            type: 'material',
+            baseUnit: 'Chiếc',
+            unit: [],
+            sourceType: '1',
+            quantity: 20,
+            description: product.description
+        };
+
+        let category = listCategoryChild1.find(category => category.code === product.categories_id);
+        if (category) {
+            newProduct.category = category._id;
+        }
+
+        newProducts.push(newProduct);
+    });
+
+    // Now you can save newProducts to your database
+    await Good(vnistDB).insertMany(newProducts);
     var listGood = await Good(vnistDB).insertMany([
         {
             company: vnist._id,
@@ -4703,6 +4737,7 @@ const initSampleCompanyDB = async () => {
             salesPriceVariance: 10000,
         },
     ]);
+
     console.log('Khởi tạo xong danh sách hàng hóa');
 
     /*---------------------------------------------------------------------------------------------
