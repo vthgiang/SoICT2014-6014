@@ -237,6 +237,12 @@ app.use('/transportation/costs', require('./modules/transportation/cost/transpor
 app.use('/transportation/cost-formula', require('./modules/transportation/cost-formula/costFormula.route'));
 app.use('/transportation/manage-shipper', require('./modules/transportation/manage-shipper/manageShipper.route'));
 
+// transport3
+app.use('/transport3', require('./modules/transport3/order/order.route'));
+app.use('/transport3', require('./modules/transport3/employee/employee.route'));
+app.use('/transport3', require('./modules/transport3/vehicle/vehicle.route'));
+app.use('/transport3', require('./modules/transport3/schedule/schedule.route'));
+
 app.use(router);
 
 // Cập nhật các api mới nhất
