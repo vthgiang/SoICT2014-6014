@@ -67,6 +67,17 @@ const ProjectTemplateManagement = lazy(() => import('../modules/bidding/project-
 const BidDashboard = lazy(() => import('../modules/bidding/bidding-dashboard/component'))
 const TagManagement = lazy(() => import('../modules/bidding/tags/component'))
 
+const OrganizationalUnitKpiCreateForAdmin = lazy(
+  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin')
+)
+const OrganizationalUnitKpiCreate = lazy(() => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate'))
+const OrganizationalUnitKpiDashboard = lazy(
+  () => import('../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard')
+)
+const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview'))
+const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation'))
+const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
+const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
 const CreateEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/creation/component/employeeKpiCreate'))
 const KPIPersonalManager = lazy(() => import('../modules/kpi/employee/management/component/employeeKpiManagement'))
 const DashBoardEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/dashboard/component/employeeKpiDashboard'))
