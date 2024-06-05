@@ -8,90 +8,75 @@ const Transport3ScheduleSchema = new Schema(
     code: {
       type: String
     },
-    customer: {
+    orders: [{
+      order: {
+        type: Schema.Types.ObjectId,
+        ref: 'Transport3Order'
+      },
+      // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
+      status: {
+        type: Number
+      },
+      // thời gian dự kiến đến
+      estimateTimeArrive: {
+        type: Date
+      },
+      // thời gian đến
+      timeArrive: {
+        type: Date
+      },
+      // thời gian dự kiến phục vụ
+      estimateTimeService: {
+        type: Date
+      },
+      // thời gian phục vụ
+      timeService: {
+        type: Date
+      },
+      // thời gian bắt đầu vận chuyển đơn hàng này
+      beginTime: {
+        type: Date
+      },
+      // thời gian dự kiến đến động
+      dynamicEstimatedTime: {
+        type: Date
+      },
+      // khoảng cách từ depot đến địa chỉ giao hàng
+      // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
+      distance: {
+        type: Number
+      }
+    }],
+    vehicles: {
       type: Schema.Types.ObjectId,
-      ref: 'Customer'
+      ref: 'Transport3Vehicle'
     },
-    customerPhone: {
-      type: String
+    depot: {
+      type: Schema.Types.ObjectId,
+      ref: 'Stock'
     },
-    address: {
-      type: String
-    },
-    lat: {
+    employee: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Transport3Employee'
+    }],
+    // 1. Chưa thực hiện; 2 Đang thực hiện; 3. Đã hoàn thành
+    status: {
       type: Number
     },
-    lng: {
-      type: Number
+    beginTime: {
+      type: Date
     },
-    deliveryTime: {
+    endTime: {
       type: Date
     },
     note: {
       type: String
-    },
-    noteAddress: {
-      type: String
-    },
-    priority: {
-      type: Number
-    },
-    // status: 1: chờ xác nhận, 2: đã xác nhận, 3: đã giao hàng
-    status: {
-      type: Number
-    },
-    stockIn: {
-      stock: {
-        type: Schema.Types.ObjectId,
-        ref: 'Stock'
-      },
-      stockName: {
-        type: String
-      },
-      stockAddress: {
-        type: String
-      }
-    },
-    stockOut: {
-      stock: {
-        type: Schema.Types.ObjectId,
-        ref: 'Stock'
-      },
-      stockName: {
-        type: String
-      },
-      stockAddress: {
-        type: String
-      }
-    },
-    transportType: {
-      type: Number
-    },
-    goods: [
-      {
-        good: {
-          type: Schema.Types.ObjectId,
-          ref: 'Good'
-        },
-        code: {
-          type: String
-        },
-        goodName: {
-          type: String
-        },
-        baseUnit: {
-          type: String
-        },
-        quantity: {
-          type: Number
-        },
-      },
-    ],
+    }
   },
   {
     timestamps: true,
-  }
-);
+  })
+;
 
 Transport3ScheduleSchema.plugin(mongoosePaginate);
 

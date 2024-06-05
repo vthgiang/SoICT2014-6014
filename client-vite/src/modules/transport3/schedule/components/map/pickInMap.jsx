@@ -3,7 +3,7 @@ import {TileLayer, useMap} from 'react-leaflet';
 import React, {useEffect, useState} from 'react';
 
 const PickInMap = (props) => {
-  let {lat, lng, listOrders} = props;
+  let {lat, lng, listOrders, listVehicle, listStocks} = props;
   const [marker, setMarker] = useState([]);
   const map = useMap();
 
@@ -43,7 +43,7 @@ const PickInMap = (props) => {
       }
     }
     // draw line between orders
-    props.listVehicle.forEach(async (vehicle, index) => {
+    listVehicle.forEach(async (vehicle, index) => {
       let orders = props.schedule[vehicle._id]?.orders;
       !orders && (orders = []);
       for (let i = 0; i < orders.length - 1; i++) {
@@ -54,6 +54,7 @@ const PickInMap = (props) => {
     });
     map.fitBounds(listOrders.map(order => [order.lat, order.lng]));
   }, [props.state])
+
   useEffect(() => {
     let list = listOrders.map(order => L.marker([order.lat, order.lng],
       {
@@ -66,6 +67,16 @@ const PickInMap = (props) => {
           iconSize: [40, 40]
         })
       }));
+    let stockMarker = listStocks.map(stock => stock.lat && L.marker([stock.lat, stock.lng],
+      {
+        title: `${stock.code} - Kho ${stock.name} - ${stock.address}`,
+        icon: L.icon({
+          iconUrl: '/image/warehouse.png',
+          iconSize: [40, 40]
+        })
+      }));
+    stockMarker = stockMarker.filter(marker => marker);
+    list = list.concat(stockMarker);
     setMarker(list);
     map.fitBounds(list.map(marker => marker.getLatLng()));
   }, []);

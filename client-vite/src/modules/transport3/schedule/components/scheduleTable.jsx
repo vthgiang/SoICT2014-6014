@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {connect} from 'react-redux'
+import {connect, useDispatch} from 'react-redux'
 import {withTranslate} from 'react-redux-multilingual'
 
 //Helper Function
@@ -13,12 +13,17 @@ import {
 } from '@common-components'
 import {getTableConfiguration} from '@helpers/tableConfiguration'
 import ScheduleCreateForm from './scheduleCreateForm';
+import {ScheduleActions} from '@modules/transport3/schedule/redux/actions';
 
 function ScheduleTable(props) {
   const TableId = 'schedule-table'
   const defaultConfig = {limit: 5}
   const Limit = getTableConfiguration(TableId, defaultConfig).limit
 
+  let dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(ScheduleActions.getAllStocksWithLatlng())
+  }, [])
   const [state, setState] = useState({
     page: 1,
     code: generateCode('SC_'),

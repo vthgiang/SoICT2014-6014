@@ -13,19 +13,19 @@ const getAllSchedule = () => {
   }
 }
 
-const getNearestDepot = (lat, lng) => {
+const getAllStocksWithLatlng = () => {
   return async (dispatch) => {
-    dispatch({ type: ScheduleConstants.GET_NEAREST_DEPOT_REQUEST })
+    dispatch({ type: ScheduleConstants.GET_SCHEDULE_WITH_LATLNG_REQUEST })
     try {
-      const res = await ScheduleServices.getNearestDepot(lat, lng)
-      dispatch({ type: ScheduleConstants.GET_NEAREST_DEPOT_SUCCESS, payload: res.data })
+      const res = await ScheduleServices.getAllStocksWithLatlng()
+      dispatch({ type: ScheduleConstants.GET_SCHEDULE_WITH_LATLNG_SUCCESS, payload: res.data })
     } catch (error) {
-      dispatch({ type: ScheduleConstants.GET_NEAREST_DEPOT_FAILURE })
+      dispatch({ type: ScheduleConstants.GET_SCHEDULE_WITH_LATLNG_FAILURE })
     }
   }
 }
 
 export const ScheduleActions = {
   getAllSchedule,
-  getNearestDepot
+  getAllStocksWithLatlng
 }

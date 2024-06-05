@@ -4,17 +4,50 @@ import {useDispatch, useSelector} from 'react-redux';
 import PickInMap from '@modules/transport3/schedule/components/map/pickInMap';
 import {MapContainer, useMap} from 'react-leaflet';
 import PickForVehicle from '@modules/transport3/schedule/components/map/pickForVehicle';
+import {StockActions} from '@modules/production/warehouse/stock-management/redux/actions.js';
+import {OpenStreetMapProvider} from 'leaflet-geosearch';
 
 const SchedulePickLocation = (props) => {
   const [state, setState] = useState({
+    listStocks: [],
     schedule: {},
+    nearestDepots: [],
     lat: 21,
     lng: 105
   })
+
+  const provider = new OpenStreetMapProvider({
+    params: {
+      countrycodes: 'vn',
+      addressdetails: 1
+    }
+  });
+
+  let dispatch = useDispatch();
   let listOrders = useSelector(state => state.orders.listOrders)
     .filter(order => order.status === 2 && order.transportType !== 3 && props.orders.includes(order._id));
   let listVehicle = useSelector(state => state.T3vehicle.listVehicle)
     .filter(vehicle => props.vehicles.includes(vehicle._id));
+  let listStocks = useSelector(state => state.stocks).listStocks;
+  useEffect(() => {
+    state.listStocks && setState({
+        ...state,
+        listStocks: listStocks
+    })
+  }, []);
+
+  useEffect(() => {
+    listStocks.forEach(async (stock) => {
+      if (stock.lat)
+        return;
+      let stockLocation = await provider.search({query: stock.address});
+      stock.lat = stockLocation[0].y;
+      stock.lng = stockLocation[0].x;
+    })
+  }, [state.listStocks])
+  useEffect(() => {
+    dispatch(StockActions.getAllStocks())
+  }, []);
   const transportType = {
     1: 'Giao hàng',
     2: 'Nhận hàng'
@@ -74,6 +107,18 @@ const SchedulePickLocation = (props) => {
     })
   }
 
+  const handleSetNearestDepot = (vehicleId, stockId) => {
+    let nearestDepots = state.nearestDepots;
+    if (nearestDepots.find(nearestDepot => nearestDepot.vehicle === vehicleId)) {
+      nearestDepots = nearestDepots.filter(nearestDepot => nearestDepot.vehicle !== vehicleId);
+    }
+    nearestDepots.push({vehicle: vehicleId, stock: stockId});
+    setState({
+      ...state,
+      nearestDepots: nearestDepots
+    })
+  }
+
   return (
     <>
       <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{height: '100vh'}}>
@@ -97,6 +142,7 @@ const SchedulePickLocation = (props) => {
             <legend className="scheduler-border">Bản đồ</legend>
             <MapContainer zoom={11} style={{height: '100%'}}>
               <PickInMap lat={state.lat} lng={state.lng} listOrders={listOrders} listVehicle={listVehicle}
+                         listStocks={listStocks}
                          schedule={state.schedule} state={state}/>
             </MapContainer>
           </fieldset>
@@ -104,13 +150,17 @@ const SchedulePickLocation = (props) => {
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{padding: 10}}>
           <fieldset className="scheduler-border">
             <legend className="scheduler-border">Danh sách xe</legend>
-            {listVehicle.map(vehicle => (
+            {listVehicle.map((vehicle) => (
               <PickForVehicle
+                key={vehicle._id}
                 listOrders={listOrders}
+                listStocks={listStocks}
                 currentVehicle={vehicle}
                 schedule={state.schedule}
+                state={state}
                 handleOrderChange={handleOrderChange}
                 handleDeleteVehicle={handleDeleteVehicle}
+                handleSetNearestDepot={handleSetNearestDepot}
               />
             ))}
           </fieldset>

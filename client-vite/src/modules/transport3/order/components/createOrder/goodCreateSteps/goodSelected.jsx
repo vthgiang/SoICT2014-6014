@@ -66,18 +66,11 @@ function GoodSelected(props) {
           <input type='text' className='form-control' value={goodName} disabled='true' />
         </div>
 
-        <div className='form-group'>
-          <label>
-            Đơn vị tính
-            <span className='attention'> * </span>
-          </label>
-          <input type='text' className='form-control' value={baseUnit} disabled='true' />
-        </div>
       </div>
       <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{padding: 10, height: '100%'}}>
         <div className="form-group">
           <label>
-            Số lượng còn trong kho
+            Số lượng hiện có
             <span className="attention"> * </span>
           </label>
           <input type="text" className="form-control"

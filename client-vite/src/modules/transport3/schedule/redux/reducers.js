@@ -3,7 +3,7 @@ import { ScheduleConstants } from './constants'
 const initState = {
   isLoading: false,
   listSchedules: [],
-  depot: {}
+  listStocsWithLatLng: []
 }
 
 export function schedule(state = initState, action) {
@@ -24,18 +24,33 @@ export function schedule(state = initState, action) {
         ...state,
         isLoading: false
       }
-    case ScheduleConstants.GET_NEAREST_DEPOT_REQUEST:
+    case ScheduleConstants.CREATE_SCHEDULE_REQUEST:
       return {
         ...state,
         isLoading: true
       }
-    case ScheduleConstants.GET_NEAREST_DEPOT_SUCCESS:
+    case ScheduleConstants.CREATE_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.CREATE_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_SCHEDULE_WITH_LATLNG_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.GET_SCHEDULE_WITH_LATLNG_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        depot: action.payload
+        listStocsWithLatLng: action.payload
       }
-    case ScheduleConstants.GET_NEAREST_DEPOT_FAILURE:
+    case ScheduleConstants.GET_SCHEDULE_WITH_LATLNG_FAILURE:
       return {
         ...state,
         isLoading: false
