@@ -87,6 +87,9 @@ const SalesOrderSchema = new Schema({
         salesPriceVariance: {
             type: Number
         },
+        productionCost: {
+            type: Number
+        },
         quantity: {
             type: Number,
             // required: true
