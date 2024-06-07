@@ -4,6 +4,7 @@ const Terms = require('../helpers/config');
 const linksPermission = require('../middleware/servicesPermission').links;
 const categoryChild = require('./CategoryChild.json')
 const listProducts = require('./ListProduct.json')
+const marketingCampaign = require('./MarketingCampaign.json')
 const {
     Component,
     RoleType,
@@ -48,6 +49,7 @@ const {
     Bill,
     Category,
     Good,
+    MarketingCampaign,
 
     Tax,
     ServiceLevelAgreement,
@@ -200,7 +202,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.Lot) Lot(db);
         if (!db.models.Category) Category(db);
         if (!db.models.Good) Good(db);
-
+        if (!db.models.MarketingCampaign) MarketingCampaign(db);
         if (!db.models.Tax) Tax(db);
         if (!db.models.ServiceLevelAgreement) ServiceLevelAgreement(db);
         if (!db.models.Discount) Discount(db);
@@ -4538,6 +4540,14 @@ const initSampleCompanyDB = async () => {
         };
     });
     await Category(vnistDB).insertMany(listCategoryChild1);
+
+
+    var marketing=marketingCampaign.map((subCat) => {
+        return {
+            ...subCat,
+        };
+    });
+    await MarketingCampaign(vnistDB).insertMany(marketing);
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU HÀNG HÓA
