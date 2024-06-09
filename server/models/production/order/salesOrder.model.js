@@ -300,6 +300,10 @@ const SalesOrderSchema = new Schema({
             require: true
         }
     },
+    marketingCampaign: {
+        type: Schema.Types.ObjectId,
+        ref: 'MarketingCampaign'
+    },
     quote: { //Được lập từ báo giá nếu có
         type: Schema.Types.ObjectId,
         ref: 'Quote',
