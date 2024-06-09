@@ -1,26 +1,24 @@
 //My Warehouse Visualizer
 const appVersion = "1.1";
+var warehouseList = ["Small"];
 let timeOutVar = null;																												//Used by Color Scale Slider and mdvScales
-
 const pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 5px;';   												//Panel styling
 
 let languageIndex = 0;																												//Initially set to English(0)
-
+// const warehouseList = ["Small","Medium","Large"];
 let parentLayout, appLayout; 																										//Global Reference to Application Layout child to parentLayout
 
-const appWarehouses = [{warehouseName: "Upload..."}, {warehouseName: "CSV URLs..."}];													//Array of objects for demo and uploaded visuals
-
+// const appWarehouses = [{warehouseName: "Upload..."}, {warehouseName: "CSV URLs..."}];													//Array of objects for demo and uploaded visuals
+const appWarehouses = [];
 const initalBackgroundColor = "#d9dccb";
 let edgeMaterial;
 
 $(document).ready(function () {
 
     warehouseList.forEach(function (warehouse) {  																					//demos
-
         appWarehouses.push({
             warehouseName: warehouse, layoutData: null, inventoryData: null
         });
-
     });
 
     $('#3dwarehouse').css({"margin": "0px", "position": "absolute", width: "100%", "height": "100%"});																								// https://github.com/vitmalina/w2ui/issues/105#issuecomment-17793381
@@ -28,7 +26,14 @@ $(document).ready(function () {
         .css({"position": "absolute", width: "85%", "height": "100%"})
         .appendTo('#3dwarehouse');
 
-
+    // Auto vào trong warehouse Small
+    setTimeout(function () {
+        const warehouseItem = parentLayout.get("main").toolbar.get('warehouse');
+        const smallWarehouseIndex = warehouseItem.items.findIndex(item => item.text === 'Small');
+        if (smallWarehouseIndex !== -1) {
+            parentLayout.get("main").toolbar.click('warehouse:' + smallWarehouseIndex);
+        }
+    });
     parentLayout = $().w2layout({
         name: "parentLayout", box: appDiv, panels: [{
             type: 'main', size: "100%", resizable: false, style: pstyle, toolbar: {
@@ -86,29 +91,40 @@ $(document).ready(function () {
 
                             case "warehouse":   //Find programmatically with: w2ui.toolbar.items.find(function(item) {return item.id == "warehouse"}).selected
 
-                                var vDropDown = this.items.find(function (item) {
+                                // const vDropDown = this.items.find(function (item) {
+                                //     return item.id === "warehouse"
+                                // });
+                                // const selected = vDropDown.selected;
+                                // if (vDropDown.selected <= 1) {
+                                //     vDropDown.selected = vDropDown.lastSelected;
+                                //     vDropDown.lastSelected = selected;
+                                //     switch (selected) {
+                                //         case -1:
+                                //         case  0:
+                                //             fnGetFileUploads();
+                                //             break;
+                                //         case  1:
+                                //             fnGetCsvUrls();
+                                //             break;
+                                //     } //switch
+                                // } //if
+                                // else {
+                                //     w2utils.lock(document.body, {spinner: true, opacity: 0});
+                                //     vDropDown.lastSelected = selected;
+                                //     vDropDown.text = "Warehouse: " + vDropDown.items[selected].text;
+                                //     fnShowMyWarehouseVisualizerDemo();
+                                // } //else
+                                const vDropDown = this.items.find(function (item) {
                                     return item.id === "warehouse"
                                 });
-                                var selected = vDropDown.selected;
-                                if (vDropDown.selected <= 1) {
-                                    vDropDown.selected = vDropDown.lastSelected;
-                                    vDropDown.lastSelected = selected;
-                                    switch (selected) {
-                                        case -1:
-                                        case  0:
-                                            fnGetFileUploads();
-                                            break;
-                                        case  1:
-                                            fnGetCsvUrls();
-                                            break;
-                                    } //switch
-                                } //if
-                                else {
+                                const selected = vDropDown.selected;
+                                console.log(vDropDown.items[0].text)
+                                if (vDropDown.selected >= 0) {
                                     w2utils.lock(document.body, {spinner: true, opacity: 0});
                                     vDropDown.lastSelected = selected;
                                     vDropDown.text = "Warehouse: " + vDropDown.items[selected].text;
                                     fnShowMyWarehouseVisualizerDemo();
-                                } //else
+                                }
                                 break;
 
                             case "toggleVisualGrid":
@@ -238,7 +254,7 @@ function fnShowMyWarehouseVisualizerDemo() {
         return item.id == "warehouse"
     }).selected;
 
-    if (warehouseIndex <= 0) {   																										//Show Demo Instructions
+    if (warehouseIndex < 0) {   																										//Show Demo Instructions
         parentLayout.content("main", "<div id='demoInstructions'></div");
         $("#demoInstructions").load("demoInstructions.html");
         parentLayout.get("main").toolbar.disable("toggleAnalyzer"); // Can't click button Toggle Inventory Grid
@@ -255,6 +271,7 @@ function fnShowMyWarehouseVisualizerDemo() {
 
     var warehouseName = appWarehouses[warehouseIndex].warehouseName;
     if (!appWarehouses[warehouseIndex].layoutData) {
+        // Get data layout warehouse from server
         getData('layout').then((response) => {  // get layout warehouse from server
             console.log(response)
             const warehouseScene = {scene: fnBuildWarehouse(response)};
@@ -262,6 +279,8 @@ function fnShowMyWarehouseVisualizerDemo() {
         }).catch((error) => {
             console.log(error)
         })
+
+        // get data inventory warehouse from server
         function fnLoadWarehouseData(warehouseName, warehouseScene, layoutData) {
             getData('inventory-warehouse').then((response) => {  // get inventory warehouse from server
                 fnShowWarehouse(warehouseName, warehouseScene, response, layoutData);
@@ -269,8 +288,7 @@ function fnShowMyWarehouseVisualizerDemo() {
                 console.log(error)
             })
         } // fnLoadWarehouseData
-    }
-    else {
+    } else {
         var warehouseScene = {scene: fnBuildWarehouse(appWarehouses[warehouseIndex].layoutData)};
         if (warehouseScene) {
             fnShowWarehouse(warehouseName, warehouseScene, appWarehouses[warehouseIndex].inventoryData, appWarehouses[warehouseIndex].layoutData); // inventoryData: file json sản phẩm trong kho, layoutData: file json layout kho
@@ -329,16 +347,18 @@ function fnShowMyWarehouseVisualizerDemo() {
         edgeMaterial = new THREE.LineBasicMaterial({
             color: fnGetBackGroundColorInvert(initalBackgroundColor), transparent: true, opacity: 0.2
         }); // 0xffffff Can't control linewidth: https://threejs.org/docs/index.html#api/materials/LineBasicMaterial.linewidth
-// -------------------------------------------------------------
-        const material = new THREE.LineBasicMaterial( { color: 'red',  transparent: true, opacity: 1, linewidth: 10, } );
-        const points = [];
-        points.push( new THREE.Vector3( 180, 0, 2274 ) );
-        points.push( new THREE.Vector3( 100, 0, 954 ) );
-        points.push( new THREE.Vector3( 10, 0, 678 ) );
 
-        const geometry = new THREE.BufferGeometry().setFromPoints( points );
-        const line = new THREE.Line( geometry, material );
-        warehouse.add( line );
+// 3D route
+// -------------------------------------------------------------
+        const material = new THREE.LineBasicMaterial({color: 'red', transparent: true, opacity: 1, linewidth: 10,});
+        const points = [];
+        points.push(new THREE.Vector3(180, 0, 2274));
+        points.push(new THREE.Vector3(100, 0, 954));
+        points.push(new THREE.Vector3(10, 0, 678));
+
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(geometry, material);
+        warehouse.add(line);
 // -------------------------------------------------------------
 
         //Re-use unique geometries.
@@ -1889,6 +1909,7 @@ function myDataVisualizer() {
 
         } // fnGetDataTypes
 
+
         function fnBuildGrid(dataVisual, visualizer, gridType) {
 
             var dataGridProps = fnGetGridProperties(dataVisual, visualizer, gridType);
@@ -1924,7 +1945,7 @@ function myDataVisualizer() {
 
                 columns.push({
                     field: "recid",
-                    caption: gridType == "visual" ? "Layout Row" : "Inventory Row",
+                    caption: gridType == "visual" ? "Layout Row" : "Inventory_Row",
                     sortable: true,
                     searchable: true,
                     hidden: false,
@@ -2117,7 +2138,60 @@ function myDataVisualizer() {
                     records: gridRecords,
                     header: dataVisual[gridType + "Name"],
                     show: {
-                        toolbar: true, toolbarReload: false, footer: true, selectColumn: true, //header: true,
+                        toolbar: true,
+                        toolbarReload: false,
+                        footer: true,
+                        selectColumn: true,
+                        toolbarEdit: true,
+                        //header: true,
+
+                    },
+
+                    onEdit: function (event) {
+                        // Lấy dữ liệu từ hàng hiện tại
+                        var record = this.get(event.recid);
+
+                        // Tạo form với các trường tương ứng với các cột trong hàng
+                        var formHTML = '<form id="editForm" style="display: flex; flex-direction: column; gap: 10px; width: auto; height: auto;">';
+                        for (var field in record) {
+                            if (field !== 'recid') { // Bỏ qua trường 'recid'
+                                formHTML += '<div style="display: flex; flex-direction: column;">';
+                                formHTML += '<label for="' + field + '" style="font-weight: bold;">' + field + ':</label>';
+                                formHTML += '<input type="text" id="' + field + '" name="' + field + '" value="' + record[field] + '" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">';
+                                formHTML += '</div>';
+                            }
+                        }
+                        formHTML += '</form>';
+
+                        // Hiển thị form trong một cửa sổ popup
+                        w2popup.open({
+                            title: 'Edit record',
+                            width: 600,
+                            height: 800,
+                            body: formHTML,
+                            buttons: '<button class="w2ui-btn" style="margin-right: 10px; background-color: #4CAF50; color: #4e77c5; border: none; cursor: pointer; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; transition-duration: 0.4s;" onclick="saveFormData()">Save</button> <button class="w2ui-btn" style="background-color: #f44336; color: #da6969; border: none; cursor: pointer; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; transition-duration: 0.4s;" onclick="w2popup.close();">Cancel</button>'
+                        });
+
+                        window.saveFormData = function() {
+                            var form = document.getElementById('editForm');
+                            var formData = new FormData(form);
+                            var dataObject = {};
+
+                            for (var pair of formData.entries()) {
+                                dataObject[pair[0]] = pair[1];
+                            }
+
+                            // Cập nhật dữ liệu trực tiếp vào grid
+                            var grid = w2ui[dataVisual.warehouseName + "_dataGrid"];
+                            var record = grid.get(event.recid);
+                            for (var field in dataObject) {
+                                if (record.hasOwnProperty(field)) {
+                                    record[field] = dataObject[field]; // Cập nhật dữ liệu mới
+                                }
+                            }
+                            grid.refresh(); // Làm mới toàn bộ grid
+                            w2popup.close();
+                        }
 
                     },
 
@@ -2301,12 +2375,14 @@ function myDataVisualizer() {
                             text: "Visualize Grid",
                             checked: false,
                             tooltip: 'Visualize Data on Grid'
-                        }, {type: 'break'}, {
-                            type: 'button',
-                            id: 'downloadDataButton',
-                            text: "Download Data",
-                            tooltip: 'Download .csv file of current data grid'
-                        }, // {type: 'break'},
+                        }
+                            // , {type: 'break'}, {
+                            //     type: 'button',
+                            //     id: 'downloadDataButton',
+                            //     text: "Download Data",
+                            //     tooltip: 'Download .csv file of current data grid'
+                            // }
+                            // {type: 'break'},
                             // {type: 'button', id: 'downloadGLTFButton', text: "Download glTF", tooltip: 'Download .gltf file of warehouse with embedded data'}
 
                         ],
@@ -3203,21 +3279,21 @@ function fnGetAdjustedCanvas(canvasParent) {
 function fnGetD3Scales() {
     //https://github.com/d3/d3-scale-chromatic
     //
-	// var  strScales = "interpolateRdYlGn,interpolateBrBG,interpolatePRGn,interpolatePiYG";
-	// strScales += ",interpolatePuOr,interpolateRdBu";
-	// strScales += ",interpolateRdGy,interpolateRdYlBu,interpolateSpectral";
-	// strScales += ",interpolateBlues,interpolateGreens,interpolateGreys,interpolateOranges";
-	// strScales += ",interpolatePurples,interpolateReds,interpolateBuGn,interpolateBuPu";
-	// strScales += ",interpolateGnBu,interpolateOrRd,interpolatePuBuGn,interpolatePuBu,interpolatePuRd";
-	// strScales += ",interpolateRdPu,interpolateYlGnBu,interpolateYlGn,interpolateYlOrBr,interpolateYlOrRd"
-	// strScales += ",interpolateViridis,interpolateInferno,interpolateMagma"
-	// strScales += ",interpolatePlasma,interpolateWarm,interpolateCool"
-	// strScales += ",interpolateRainbow,interpolateSinebow";
+    // var  strScales = "interpolateRdYlGn,interpolateBrBG,interpolatePRGn,interpolatePiYG";
+    // strScales += ",interpolatePuOr,interpolateRdBu";
+    // strScales += ",interpolateRdGy,interpolateRdYlBu,interpolateSpectral";
+    // strScales += ",interpolateBlues,interpolateGreens,interpolateGreys,interpolateOranges";
+    // strScales += ",interpolatePurples,interpolateReds,interpolateBuGn,interpolateBuPu";
+    // strScales += ",interpolateGnBu,interpolateOrRd,interpolatePuBuGn,interpolatePuBu,interpolatePuRd";
+    // strScales += ",interpolateRdPu,interpolateYlGnBu,interpolateYlGn,interpolateYlOrBr,interpolateYlOrRd"
+    // strScales += ",interpolateViridis,interpolateInferno,interpolateMagma"
+    // strScales += ",interpolatePlasma,interpolateWarm,interpolateCool"
+    // strScales += ",interpolateRainbow,interpolateSinebow";
     //
-	// var scales = strScales.replace(/\s/g,'').split(",");
+    // var scales = strScales.replace(/\s/g,'').split(",");
     //
     //
-	// return scales;
+    // return scales;
 
     let colorSchemes = [];
 
