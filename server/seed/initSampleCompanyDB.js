@@ -4453,6 +4453,14 @@ const initSampleCompanyDB = async () => {
             status: 1,
             teamLeader: users[19]._id,
         },
+        {
+            code: 'XSX202404012',
+            name: 'Xưởng may',
+            description: 'Xưởng may quần áo của nhà máy sản xuất thời trang',
+            manufacturingWorks: manufacturingWorks[0]._id,
+            status: 1,
+            teamLeader: users[19]._id,
+        },
     ];
 
     const manufacturingMills = await ManufacturingMill(vnistDB).insertMany(manufacturingMillsData);
@@ -4558,97 +4566,75 @@ const initSampleCompanyDB = async () => {
       ----------------------------------------------------------------------------------------------- */
 
 
-    console.log('Khởi tạo dữ liệu hàng hóa');
-    let newProducts = [];
-
-    listProducts.forEach(product => {
-        let newProduct = {
-            company: vnist._id,
-            name: product.name,
-            code: product.code,
-            type: 'material',
-            baseUnit: 'Chiếc',
-            unit: [],
-            sourceType: '1',
-            quantity: 20,
-            description: product.description
-        };
-
-        let category = listCategoryChild1.find(category => category.code === product.categories_id);
-        if (category) {
-            newProduct.category = category._id;
-        }
-
-        newProducts.push(newProduct);
-    });
+    
 
     // Now you can save newProducts to your database
-    await Good(vnistDB).insertMany(newProducts);
-    const BATCH_SIZE = 10000; // Số lượng bản ghi trong mỗi lô
-    const CONCURRENCY_LIMIT = 5; // Số lượng kết nối song song
+    
+    // const BATCH_SIZE = 10000; // Số lượng bản ghi trong mỗi lô
+    // const CONCURRENCY_LIMIT = 5; // Số lượng kết nối song song
 
-    async function insertSalesOrdersInBatches(saleOrders, newProducts, marketing) {
-        let listSales = [];
-        let batchPromises = [];
+    // async function insertSalesOrdersInBatches(saleOrders, newProducts, marketing) {
+    //     let listSales = [];
+    //     let batchPromises = [];
 
-        for (let i = 0; i < saleOrders.length; i++) {
-            let salesOrder = saleOrders[i];
-            let product = newProducts.find(product => product.code === salesOrder.product_id);
-            let marketingcampaign = marketing.find(marketing => marketing.code === salesOrder.campaign_id);
+    //     for (let i = 0; i < saleOrders.length; i++) {
+    //         let salesOrder = saleOrders[i];
+    //         let product = newProducts.find(product => product.code === salesOrder.product_id);
+    //         let marketingcampaign = marketing.find(marketing => marketing.code === salesOrder.campaign_id);
 
-            let newSaleOrder = {
-                status: salesOrder.status,
-                date: salesOrder.date,
-                goods: [{
-                    good: product._id,
-                    pricePerBaseUnit: salesOrder.price,
-                    quantity: salesOrder.orders,
-                    productionCost: salesOrder.purchase_price
-                }],
-                approvers: [{
-                    approveAt: salesOrder.date,
-                    status: 2
-                }],
-                marketingCampaign: marketingcampaign._id,
-            };
+    //         let newSaleOrder = {
+    //             status: salesOrder.status,
+    //             date: salesOrder.date,
+    //             goods: [{
+    //                 good: product._id,
+    //                 pricePerBaseUnit: salesOrder.price,
+    //                 quantity: salesOrder.orders,
+    //                 productionCost: salesOrder.purchase_price
+    //             }],
+    //             approvers: [{
+    //                 approveAt: salesOrder.date,
+    //                 status: 2
+    //             }],
+    //             marketingCampaign: marketingcampaign._id,
+    //         };
 
-            listSales.push(newSaleOrder);
+    //         listSales.push(newSaleOrder);
 
-            // Khi đạt đến BATCH_SIZE hoặc khi đến bản ghi cuối cùng
-            if (listSales.length === BATCH_SIZE || i === saleOrders.length - 1) {
-                batchPromises.push(insertBatch(listSales));
-                listSales = []; // Reset danh sách cho lô tiếp theo
+    //         // Khi đạt đến BATCH_SIZE hoặc khi đến bản ghi cuối cùng
+    //         if (listSales.length === BATCH_SIZE || i === saleOrders.length - 1) {
+    //             batchPromises.push(insertBatch(listSales));
+    //             listSales = []; // Reset danh sách cho lô tiếp theo
 
-                // Nếu đạt đến giới hạn kết nối song song, chờ cho các kết nối hoàn thành
-                if (batchPromises.length >= CONCURRENCY_LIMIT) {
-                    await Promise.all(batchPromises);
-                    batchPromises = [];
-                }
-            }
-        }
+    //             // Nếu đạt đến giới hạn kết nối song song, chờ cho các kết nối hoàn thành
+    //             if (batchPromises.length >= CONCURRENCY_LIMIT) {
+    //                 await Promise.all(batchPromises);
+    //                 batchPromises = [];
+    //             }
+    //         }
+    //     }
 
-        // Chờ tất cả các batch còn lại hoàn thành
-        await Promise.all(batchPromises);
-        console.log('All data inserted');
-    }
+    //     // Chờ tất cả các batch còn lại hoàn thành
+    //     await Promise.all(batchPromises);
+    //     console.log('All data inserted');
+    // }
 
-    async function insertBatch(batch) {
-        try {
-            await SalesOrder(vnistDB).insertMany(batch);
-            console.log('Inserted batch of size:', batch.length);
-        } catch (error) {
-            console.error('Error inserting batch:', error);
-        }
-    }
+    // async function insertBatch(batch) {
+    //     try {
+    //         await SalesOrder(vnistDB).insertMany(batch);
+    //         console.log('Inserted batch of size:', batch.length);
+    //     } catch (error) {
+    //         console.error('Error inserting batch:', error);
+    //     }
+    // }
 
-    // Gọi hàm chính để chèn dữ liệu
-    insertSalesOrdersInBatches(saleOrders, newProducts, marketing)
-        .then(() => {
-            console.log('All data inserted');
-        })
-        .catch((err) => {
-            console.error('Error inserting data:', err);
-        });
+    // // Gọi hàm chính để chèn dữ liệu
+    // insertSalesOrdersInBatches(saleOrders, newProducts, marketing)
+    //     .then(() => {
+    //         console.log('All data inserted');
+    //     })
+    //     .catch((err) => {
+    //         console.error('Error inserting data:', err);
+    //     });
 
     var listGood = await Good(vnistDB).insertMany([
         {
@@ -4699,6 +4685,18 @@ const initSampleCompanyDB = async () => {
             quantity: 10,
             description: 'Công cụ dụng cụ thuốc thú y',
         },
+        {
+            company: vnist._id,
+            category: listCategory[2]._id,
+            name: 'Vải may quần áo, giày',
+            code: 'VT001',
+            type: 'material',
+            baseUnit: 'kg',
+            unit: [],
+            sourceType: '1',
+            quantity: 20000,
+            description: 'Nguyên liệu may quần áo, giày',
+        }
     ]);
 
     var listProduct = await Good(vnistDB).insertMany([
@@ -4713,11 +4711,11 @@ const initSampleCompanyDB = async () => {
             quantity: 20,
             materials: [
                 {
-                    good: listGood[0]._id,
+                    good: listGood[4]._id,
                     quantity: 5,
                 },
                 {
-                    good: listGood[1]._id,
+                    good: listGood[4]._id,
                     quantity: 3,
                 },
             ],
@@ -4816,7 +4814,48 @@ const initSampleCompanyDB = async () => {
             salesPriceVariance: 10000,
         },
     ]);
+    
+    console.log('Khởi tạo dữ liệu hàng hóa');
+    let newProducts = [];
 
+    listProducts.forEach(product => {
+        let newProduct = {
+            company: vnist._id,
+            name: product.name,
+            code: product.code,
+            type: 'product',
+            baseUnit: 'Chiếc',
+            unit: [],
+            sourceType: '1',
+            quantity: 20,
+            description: product.description,
+            materials: [
+                {
+                    good: listGood[4]._id,
+                    quantity: 5,
+                }
+            ],
+            numberExpirationDate: 800,
+            manufacturingMills: [
+                {
+                    manufacturingMill: manufacturingMills[12]._id,
+                    productivity: 100,
+                    personNumber: 3,
+                },
+                
+            ],
+            pricePerBaseUnit: product.pricePerBaseUnit,
+            salesPriceVariance: 9000,
+        };
+
+        let category = listCategoryChild1.find(category => category.code === product.categories_id);
+        if (category) {
+            newProduct.category = category._id;
+        }
+
+        newProducts.push(newProduct);
+    });
+    await Good(vnistDB).insertMany(newProducts);
     console.log('Khởi tạo xong danh sách hàng hóa');
 
     /*---------------------------------------------------------------------------------------------
@@ -7924,13 +7963,102 @@ const initSampleCompanyDB = async () => {
             TẠO DỮ LIỆU ĐƠN BÁN HÀNG
         -----------------------------------------------------------------------------------------------
         ----------------------------------------------------------------------------------------------- */
-    // console.log("Khởi tạo dữ liệu đơn bán hàng");
-    // var listSalesOrder = await SalesOrder(vnistDB).insertMany([
-    //     {
-
-    //     },
-    // ]);
-    // console.log("Khởi tạo xong danh sách đơn bán hàng");
+    /*---------------------------------------------------------------------------------------------
+        -----------------------------------------------------------------------------------------------
+            TẠO DỮ LIỆU ĐƠN BÁN HÀNG
+        -----------------------------------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------------- */
+        console.log("Khởi tạo dữ liệu đơn bán hàng");
+        var listSalesOrder = await SalesOrder(vnistDB).insertMany([
+            {
+                code: "DA_20240608.236431",
+                status: 3,
+                creator: users[1]._id,
+                customer: listCustomers[1]._id,
+                customerName: listCustomers[1].name,
+                customerPhone: listCustomers[1].mobilephoneNumber,
+                customerAddress: listCustomers[1].address,
+                customerRepresent: listCustomers[1].represent,
+                customerTaxNumber: listCustomers[1].taxNumber,
+                customerEmail: listCustomers[1].email,
+                approvers: [{
+                    approver: users[1]._id,
+                    status: 2
+                }],
+                priority: 1,
+                goods: [
+                    {
+                        good: listProduct[0]._id,
+                        pricePerBaseUnit: 60000,
+                        pricePerBaseUnitOrigin: listProduct[0].pricePerBaseUnit,
+                        salesPriceVariance: listProduct[0].salesPriceVariance,
+                        quantity: 12,
+                        serviceLevelAgreements: [
+                            {
+                                descriptions: [
+                                    "Đóng gói đúng quy trình",
+                                    "Sản phẩm đi đầu về chất lượng",
+                                ],
+                                _id: listServiceLevelAgreements[0]._id,
+                                title: "Chất lượng sản phẩm đi đầu",
+                            },
+                        ],
+                        taxs: [
+                            {
+                                _id: listTaxs[0]._id,
+                                code: listTaxs[0]._id,
+                                name: "VAT",
+                                description: listTaxs[0]._id,
+                                percent: 5,
+                            },
+                        ],
+                        discounts: [],
+                        amount: 720000,
+                        amountAfterDiscount: 720000,
+                        amountAfterTax: 792000,
+                    },
+                ],
+                discounts: [
+                    {
+                        _id: listDistcounts[5]._id,
+                        code: listDistcounts[5].code,
+                        type: listDistcounts[5].type,
+                        formality: listDistcounts[5].formality,
+                        name: listDistcounts[5].name,
+                        effectiveDate: listDistcounts[5].effectiveDate,
+                        expirationDate: listDistcounts[5].expirationDate,
+                        maximumFreeShippingCost: 20000,
+                    },
+                    {
+                        _id: listDistcounts[6]._id,
+                        code: listDistcounts[6].code,
+                        type: listDistcounts[6].type,
+                        formality: listDistcounts[6].formality,
+                        name: listDistcounts[6].name,
+                        effectiveDate: listDistcounts[6].effectiveDate,
+                        expirationDate: listDistcounts[6].expirationDate,
+                        discountedPercentage: 10,
+                    },
+                    {
+                        _id: listDistcounts[7]._id,
+                        code: listDistcounts[7].code,
+                        type: listDistcounts[7].type,
+                        formality: listDistcounts[7].formality,
+                        name: listDistcounts[7].name,
+                        effectiveDate: listDistcounts[7].effectiveDate,
+                        expirationDate: listDistcounts[7].expirationDate,
+                        loyaltyCoin: 1000,
+                    },
+                ],
+                shippingFee: 100000,
+                deliveryTime: "2020-12-18T00:00:00.000Z",
+                coin: 500,
+                paymentAmount: 871500,
+                note: "Khách hàng quen thuộc",
+                
+            },  
+        ]);
+        console.log("Khởi tạo xong danh sách đơn bán hàng");
 
     /*---------------------------------------------------------------------------------------------
    -----------------------------------------------------------------------------------------------
