@@ -1,29 +1,29 @@
-import { PaymentConstants } from './constants';
-import { PaymentServices } from './services';
+import { MarketingCampaignConstants } from './constants';
+import { MarketingCampaignServices } from './services';
 
-export const PaymentActions = {
-    createPayment,
+export const MarketingCampaignActions = {
+    createMarketingCampaign,
     getAllPayments,
     getPaymentDetail,
     getPaymentForOrder
 }
 
-function createPayment (data) {
+function createMarketingCampaign (data) {
     return (dispatch) => {
-        dispatch({
-            type: PaymentConstants.CREATE_PAYMENT_REQUEST
+           ({
+            type: MarketingCampaignConstants.CREATE_PAYMENT_REQUEST
         });
 
-        PaymentServices.createPayment(data)
+        MarketingCampaignServices.createPayment(data)
         .then((res) => {
             dispatch({
-                type: PaymentConstants.CREATE_PAYMENT_SUCCESS,
+                type: MarketingCampaignConstants.CREATE_PAYMENT_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: PaymentConstants.CREATE_PAYMENT_FAILURE,
+                type: MarketingCampaignConstants.CREATE_PAYMENT_FAILURE,
                 error
             })
         })
@@ -33,19 +33,19 @@ function createPayment (data) {
 function getAllPayments (queryData) {
     return (dispatch) => {
         dispatch({
-            type: PaymentConstants.GET_ALL_PAYMENTS_REQUEST
+            type: MarketingCampaignConstants.GET_ALL_PAYMENTS_REQUEST
         })
 
-        PaymentServices.getAllPayments(queryData)
+        MarketingCampaignServices.getAllPayments(queryData)
         .then((res) => {
             dispatch({
-                type: PaymentConstants.GET_ALL_PAYMENTS_SUCCESS,
+                type: MarketingCampaignConstants.GET_ALL_PAYMENTS_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: PaymentConstants.GET_ALL_PAYMENTS_FAILURE
+                type: MarketingCampaignConstants.GET_ALL_PAYMENTS_FAILURE
             })
         })
     }
@@ -57,7 +57,7 @@ function getPaymentDetail (id) {
             type: PaymentConstants.GET_PAYMENT_DETAIL_REQUEST
         })
 
-        PaymentServices.getPaymentDetail(id)
+        MarketingCampaignServices.getPaymentDetail(id)
         .then((res) => {
             dispatch({
                 type: PaymentConstants.GET_PAYMENT_DETAIL_SUCCESS,
@@ -78,7 +78,7 @@ function getPaymentForOrder({ orderId, orderType }) {
             type: PaymentConstants.GET_PAYMENT_FOR_ORDER_REQUEST
         })
 
-        PaymentServices.getPaymentForOrder({ orderId, orderType })
+        MarketingCampaignServices.getPaymentForOrder({ orderId, orderType })
         .then((res) => {
             dispatch({
                 type: PaymentConstants.GET_PAYMENT_FOR_ORDER_SUCCESS,
