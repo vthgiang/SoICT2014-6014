@@ -37,9 +37,9 @@ function ManufacturingCommand(props) {
                 )}
               </div>
               <div className='tab-pane' id='manufacturing-command-list'>
-                {/* {activeTab === 1 && (
+                {activeTab === 1 && (
                   <ManufacturingCommandManagementTable />
-                )} */}
+                )}
               </div>
             </div>
         </div>

@@ -7047,6 +7047,9 @@ export default {
         routing_description: 'Quy trình sản xuất áp dụng để sản xuất ra sản phẩm này',
         choose_routing: 'Chọn quy trình sản xuất',
         error_routing: 'Vui lòng chọn quy trình sản xuất',
+        task_template: 'Mẫu công việc',
+        task_template_description: 'Chọn mẫu công việc sử dụng cho lệnh sản xuất này',
+        choose_task_template: 'Chọn mẫu công việc',
         operation: 'Công đoạn',
         hourProduction: 'Sản lượng mỗi giờ',
         worker_num: 'Số công nhân'
@@ -7203,7 +7206,6 @@ export default {
         passed_num: 'SL đạt yêu cầu',
         error_list: 'Danh sách lỗi',
         error_name: 'Tên lỗi',
-        // quantity: 'Số lượng',
         qc_status: {
           1: {
             color: 'orange',

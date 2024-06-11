@@ -14,6 +14,7 @@ import { LotActions } from '../../../../warehouse/inventory-management/redux/act
 import { UserActions } from '../../../../../super-admin/user/redux/actions'
 import { compareLteDate, formatToTimeZoneDate } from '../../../../../../helpers/formatDate'
 import { workScheduleActions } from '../../../work-schedule/redux/actions'
+import { taskTemplateActions } from '../../../../../task/task-template/redux/actions'
 
 const NewPlanCreateForm = (props) => {
   const { translate } = props
@@ -53,11 +54,16 @@ const NewPlanCreateForm = (props) => {
 
   useEffect(() => {
     const getData = async () => {
+      const perPage = 5
+      const currentPage = 1
+      const unit = []
+      const name = ''
       await props.getAllUserOfCompany()
       const currentRole = localStorage.getItem('currentRole')
       await props.getSalesOrdersByManufacturingWorks(currentRole)
       await props.getAllApproversOfPlan(currentRole)
       await props.getGoodByManageWorkRole(currentRole)
+      await props.getTaskTemplateByUser(currentPage, perPage, unit, name)
     }
     getData()
   }, [])
@@ -453,6 +459,8 @@ const mapDispatchToProps = {
   getGoodByManageWorkRole: GoodActions.getGoodByManageWorkRole,
   getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
   createManufacturingPlan: manufacturingPlanActions.createManufacturingPlan,
+  getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm))

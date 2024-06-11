@@ -61,6 +61,10 @@ const ManufacturingCommandSchema = new Schema({
             type: Number
         },
     }],
+    taskTemplate: {
+        type: Schema.Types.ObjectId,
+        ref: "TaskTemplate"
+    },
     creator: { // Người tạo
         type: Schema.Types.ObjectId,
         ref: "User"
