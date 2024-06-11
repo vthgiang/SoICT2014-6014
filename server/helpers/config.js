@@ -1240,9 +1240,10 @@ const LINKS = [
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
         components: getComponentsInLink('/storage-management'),
     },
+    
     {
-        url: '/manage-sales-order',
-        description: 'Đơn hàng kinh doanh',
+        url: '/manage-profit',
+        description: 'Lợi nhuận',
         category: LINK_CATEGORY.ORDER.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -1251,7 +1252,7 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-        components: getComponentsInLink('/manage-sales-order'),
+        components: getComponentsInLink('/manage-profit'),
     },
     {
         url: '/manage-purchase-order',
@@ -1291,6 +1292,44 @@ const LINKS = [
             ROOT_ROLES.EMPLOYEE.name,
         ],
         components: getComponentsInLink('/manage-sales-order-dashboard'),
+    },
+    {
+        url: '/sales-statistics',
+        description: 'Thống kê doanh số bán hàng',
+        category: LINK_CATEGORY.ORDER.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.MANAGER.name,
+            ROOT_ROLES.DEPUTY_MANAGER.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/sales-statistics'),
+    },
+    {
+        url: '/manage-sales-order',
+        description: 'Đơn bán hàng',
+        category: LINK_CATEGORY.ORDER.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.MANAGER.name,
+            ROOT_ROLES.DEPUTY_MANAGER.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-sales-order'),
+    },{
+        url: '/forecast-sales-order',
+        description: 'Đơn bán hàng',
+        category: LINK_CATEGORY.ORDER.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.MANAGER.name,
+            ROOT_ROLES.DEPUTY_MANAGER.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/forecast-sales-order'),
     },
     {
         url: '/manage-discount',

@@ -1233,6 +1233,14 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/sales-statistics',
+        apis: ['@all'],
+    },
+    {
+        url: '/forecast-sales-order',
+        apis: ['@all'],
+    },
+    {
         url: '/manage-purchase-order',
         apis: ['@all'],
     },
@@ -1242,6 +1250,10 @@ exports.links = [
     },
     {
         url: '/manage-sales-order-dashboard',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-profit',
         apis: ['@all'],
     },
     {

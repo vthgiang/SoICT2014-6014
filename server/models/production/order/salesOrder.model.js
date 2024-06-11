@@ -87,6 +87,9 @@ const SalesOrderSchema = new Schema({
         salesPriceVariance: {
             type: Number
         },
+        productionCost: {
+            type: Number
+        },
         quantity: {
             type: Number,
             // required: true
@@ -296,6 +299,10 @@ const SalesOrderSchema = new Schema({
             default: false,
             require: true
         }
+    },
+    marketingCampaign: {
+        type: Schema.Types.ObjectId,
+        ref: 'MarketingCampaign'
     },
     quote: { //Được lập từ báo giá nếu có
         type: Schema.Types.ObjectId,

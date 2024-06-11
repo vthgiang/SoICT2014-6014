@@ -909,6 +909,21 @@ class SideBar extends Component {
                     path: '/manage-sales-order'
                   },
                   {
+                    name: 'menu.sales_statistics',
+                    icon: 'fa fa-dollar',
+                    path: '/sales-statistics'
+                  },
+                  {
+                    name: 'menu.forecast_sales_order',
+                    icon: 'fa fa-dollar',
+                    path: '/forecast-sales-order'
+                  },
+                  {
+                    name: 'menu.manage_profit',
+                    icon: 'fa fa-money',
+                    path: '/manage-profit'
+                  },
+                  {
                     name: 'menu.manage_purchase_order',
                     icon: 'fa fa-shopping-cart',
                     path: '/manage-purchase-order'

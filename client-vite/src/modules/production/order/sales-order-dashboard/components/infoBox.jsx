@@ -62,6 +62,22 @@ function InfoBox(props) {
           </div>
         </div>
       </div>
+
+      
+      <div className='col-md-4 col-sm-6 col-xs-6'>
+        <div className='info-box with-border'>
+          <span className='info-box-icon bg-red'>
+            <i className='fa fa-hand-o-right'></i>
+          </span>
+          <div className='info-box-content' title='Tổng tiền mua hàng'>
+            <span className='info-box-text'>Lợi nhuận</span>
+            <span className='info-box-number'>NaN vnđ</span>
+            <a href={`/manage-profit `} target='_blank'>
+              Xem thêm <i className='fa fa-arrow-circle-right'></i>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

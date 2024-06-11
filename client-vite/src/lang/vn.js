@@ -305,6 +305,9 @@ export default {
       // QUẢN LÝ ĐƠN HÀNG
       manage_orders: 'Quản lý đơn hàng',
       manage_sales_order: 'Đơn bán hàng',
+      forecast_sales_order: 'Dự báo doanh số',
+      sales_statistics: 'Thống kê doanh số',
+      manage_profit: 'Lợi nhuận',
       manage_purchase_order: 'Đơn mua nguyên vật liệu',
       manage_sales_order_dashboard: 'Thống kê bán hàng',
       manage_quote: 'Báo giá',

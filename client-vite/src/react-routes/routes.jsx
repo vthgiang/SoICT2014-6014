@@ -162,6 +162,9 @@ const CrmUnitConfiguration = lazy(() => import('../modules/crm/crmUnitConfigurat
 // orders
 const PurchaseOrder = lazy(() => import('../modules/production/order/purchase-order/components'))
 const SalesOrder = lazy(() => import('../modules/production/order/sales-order/components'))
+const Profit= lazy(() => import('../modules/production/order/profit/components'))
+const SalesStatistics = lazy(() => import('../modules/production/order/sales-statistics/components'))
+const Forecast = lazy(() => import('../modules/production/order/forecast/components'))
 const Discount = lazy(() => import('../modules/production/order/discount/components'))
 const Quote = lazy(() => import('../modules/production/order/quote/components'))
 const SalesOrderDashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
@@ -2954,6 +2957,63 @@ class Routes extends Component {
             pageName='manage_sales_order'
             layout={Layout}
             component={SalesOrder}
+          />
+          <PrivateRoute
+            isLoading={this.props.salesOrders.isLoading}
+            key={'/sales-statistics'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/sales-statistics',
+                name: 'sales_statistics',
+                icon: 'fa fa-address-card'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/sales-statistics'}
+            path={'/sales-statistics'}
+            pageName={'sales_statistics'}
+            layout={Layout}
+            component={SalesStatistics}
+          />
+          <PrivateRoute
+            isLoading={this.props.salesOrders.isLoading}
+            key={'/forecast-sales-order'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/forecast-sales-order',
+                name: 'forecast_sales_order',
+                icon: 'fa fa-address-card'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/forecast-sales-order'}
+            path={'/forecast-sales-order'}
+            pageName={'forecast_sales_order'}
+            layout={Layout}
+            component={Forecast}
+          />
+          <PrivateRoute
+            isLoading={this.props.salesOrders.isLoading}
+            key={'/manage-profit'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-money' },
+              {
+                link: '/manage-profit',
+                name: 'manage_profit',
+                icon: 'fa fa-address-card'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-profit'}
+            path={'/manage-profit'}
+            pageName={'manage_profit'}
+            layout={Layout}
+            component={Profit}
           />
 
           <PrivateRoute

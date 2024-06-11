@@ -291,6 +291,9 @@ export default {
       // QUẢN LÝ ĐƠN HÀNG
       manage_orders: 'Manage Order',
       manage_sales_order: 'Sales Order',
+      forecast_sales_order: 'Forecast Sales Order',
+      sales_statistics: 'Sales Statistics',
+      manage_profit: 'Profit',
       manage_purchase_order: 'Purchase Order',
       manage_quote: 'Quote',
       manage_sales_order_dashboard: 'Sales Order Statistics',
