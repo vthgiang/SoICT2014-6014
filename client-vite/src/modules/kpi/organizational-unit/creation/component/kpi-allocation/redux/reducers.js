@@ -24,7 +24,7 @@ const initState = {
   isLoading: false
 }
 
-export function configManagementReducer(state = initState, action) {
+export function configParametersReducer(state = initState, action) {
   switch (action.type) {
     case ConfigManagementConstant.GET_CONFIG_SETTING_DATA_REQUEST:
     case ConfigManagementConstant.UPDATE_CONFIG_SETTING_DATA_REQUEST:

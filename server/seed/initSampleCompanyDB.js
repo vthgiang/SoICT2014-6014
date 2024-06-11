@@ -1150,15 +1150,390 @@ const initSampleCompanyDB = async () => {
         employees: [nvKhoTQB._id, keToanKhoTQB._id],
         parent: bophankho._id,
     });
-    // console.log(
-    //     "Đã tạo dữ liệu phòng ban: ",
-    //     Directorate,
-    //     departments,
-    //     nhamaythuocbot,
-    //     nhamaythuocnuoc,
-    //     nhamaythucphamchucnang,
-    //     phongkehoach
-    // );
+
+    /**
+     * 7. Tạo dữ liệu các phòng ban cho công ty VNIST, workspace thứ 2
+     */
+    const users2 = await User(vnistDB).insertMany([
+        {
+            name: 'Trần Hữu Hiến',
+            email: 'thh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Bùi Mạnh Dũng',
+            email: 'bmd.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Nguyễn Thị Minh Châu',
+            email: 'ntmc.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Nguyễn Mạnh Hiếu',
+            email: 'nmh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Trịnh Phú Quang',
+            email: 'tpq.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Ngô Văn Thức',
+            email: 'nvt.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Nguyễn Tài Khoa',
+            email: 'ntk.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Dương Đức Huy',
+            email: 'ddh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Lê Bá Trọng',
+            email: 'lbt.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Đinh Huy Dương',
+            email: 'dhd.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Lê Đàm Quân',
+            email: 'ldq.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Nguyễn Minh Chiến',
+            email: 'nmc.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Chu Văn Thành',
+            email: 'cvt.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Nguyễn Hoàng Thương',
+            email: 'nht.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Dương Đăng Quang',
+            email: 'ddq.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Nguyễn Khánh Duy',
+            email: 'nkd.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Tô Duy Tường',
+            email: 'tdt.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Trần Tiến Đạt',
+            email: 'ttd.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Lâm Anh Quân',
+            email: 'laq.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Hoàng Sĩ Vương',
+            email: 'hsv.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Nguyễn Vũ Thục Anh',
+            email: 'nvta.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Lê Quang Minh',
+            email: 'lqm.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+    ]);
+
+    //Khởi tạo Role cho bộ phận kinh doanh
+    const thanhVienPhongKinhDoanh2 = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: 'Thành viên phòng kinh doanh công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const phoPhongPhongKinhDoanh2 = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, thanhVienPhongKinhDoanh2._id],
+        name: 'Phó phòng phòng kinh doanh công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const giamDocPhongKinhDoanh2 = await Role(vnistDB).create({
+        parents: [roleManager._id, thanhVienPhongKinhDoanh2._id, phoPhongPhongKinhDoanh2._id],
+        name: 'Giám đốc phòng kinh doanh công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+    //Kết thúc phần khởi tạo role cho bộ phận kinh doanh
+
+    //Khởi tạo Role cho phòng chăm sóc khách hàng
+    const thanhVienPhongChamSocKhachHang2 = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: 'Thành viên phòng chăm sóc khách hàng công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const phoPhongPhongChamSocKhachHang2 = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, thanhVienPhongChamSocKhachHang2._id],
+        name: 'Phó phòng phòng chăm sóc khách hàng công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const giamDocPhongChamSocKhachHang2 = await Role(vnistDB).create({
+        parents: [roleManager._id, thanhVienPhongChamSocKhachHang2._id, phoPhongPhongChamSocKhachHang2._id],
+        name: 'Trưởng phòng phòng chăm sóc khách hàng công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+    //Kết thúc phần khởi tạo role cho phòng chăm sóc khách hàng
+
+    //Khởi tạo Role cho phòng nhân sự
+    const thanhVienPhongNhanSu2 = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: 'Thành viên phòng nhân sự công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const phoPhongPhongNhanSu2 = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, thanhVienPhongNhanSu2._id],
+        name: 'Phó phòng phòng nhân sự công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const giamDocPhongNhanSu2 = await Role(vnistDB).create({
+        parents: [roleManager._id, thanhVienPhongNhanSu2._id, phoPhongPhongNhanSu2._id],
+        name: 'Trưởng phòng phòng nhân sự công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+    //Kết thúc phần khởi tạo role cho phòng nhân sự
+
+    //Khởi tạo Role cho phòng kế hoạch
+    const thanhVienPhongKeHoach2 = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: 'Thành viên phòng kế hoạch công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const phoPhongPhongKeHoach2 = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, thanhVienPhongKeHoach2._id],
+        name: 'Phó phòng phòng kế hoạch công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const giamDocPhongKeHoach2 = await Role(vnistDB).create({
+        parents: [roleManager._id, thanhVienPhongKeHoach2._id, phoPhongPhongKeHoach2._id],
+        name: 'Trưởng phòng phòng kế hoạch công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+    //Kết thúc phần khởi tạo role cho phòng kế hoạch
+
+    //Khởi tạo Role cho giám đốc
+    const thanhVienBanGiamDoc2 = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: 'Thành viên ban giám đốc công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const phoGiamDoc2 = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, thanhVienBanGiamDoc2._id],
+        name: 'Phó giám đốc công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+
+    const giamDoc2 = await Role(vnistDB).create({
+        parents: [roleManager._id, thanhVienBanGiamDoc2._id, phoGiamDoc2._id],
+        name: 'Giám đốc công ty VNIST 2',
+        type: roleChucDanh._id,
+    });
+    //Kết thúc phần khởi tạo role cho giám đốc
+
+    const Directorate2 = await OrganizationalUnit(vnistDB).create({
+        // Khởi tạo ban giám đốc công ty
+        name: 'Ban giám đốc công ty VNIST 2',
+        description: 'Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam Second',
+        managers: [giamDoc2._id],
+        deputyManagers: [phoGiamDoc2._id],
+        employees: [thanhVienBanGiamDoc2._id],
+        parent: null,
+    });
+
+    // Khởi tạo cơ cấu tổ chức bộ phận kinh doanh
+    const boPhanKinhDoanh2 = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: 'Bộ phận kinh doanh công ty VNIST 2',
+            description: 'Bao gồm các phòng ban kinh doanh',
+            managers: [giamDocPhongKinhDoanh2._id],
+            deputyManagers: [phoPhongPhongKinhDoanh2._id],
+            employees: [thanhVienPhongKinhDoanh2._id],
+            parent: Directorate2._id,
+        },
+    ]);
+    // Khởi tạo cơ cấu tổ chức bộ phận CSKH
+    const phongChamSocKhachHang2 = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: 'Phòng Chăm sóc khách hàng công ty VNIST 2',
+            description: 'Phòng chăm sóc khách hàng công ty VNIST 2',
+            managers: [giamDocPhongChamSocKhachHang2._id],
+            parent: Directorate2._id,
+            deputyManagers: [phoPhongPhongChamSocKhachHang2._id],
+            employees: [thanhVienPhongChamSocKhachHang2._id],
+        },
+    ]);
+
+    const phongNhanSu2 = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: 'Phòng Nhân sự công ty VNIST 2',
+            description: 'Phòng Nhân sự công ty VNIST 2',
+            managers: [giamDocPhongNhanSu2._id],
+            parent: Directorate2._id,
+            deputyManagers: [phoPhongPhongNhanSu2._id],
+            employees: [thanhVienPhongNhanSu2._id],
+        },
+    ]);
+
+    const phongKeHoach2 = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: 'Phòng Kế hoạch công ty VNIST 2',
+            description: 'Phòng Kế hoạch công ty VNIST 2',
+            managers: [giamDocPhongKeHoach2._id],
+            parent: Directorate2._id,
+            deputyManagers: [phoPhongPhongKeHoach2._id],
+            employees: [thanhVienPhongKeHoach2._id],
+        },
+    ]);
+
+    await UserRole(vnistDB).insertMany([
+        {
+            userId: users2[0]._id,
+            roleId: giamDocPhongChamSocKhachHang2._id,
+        },
+        {
+            userId: users2[1]._id,
+            roleId: phoPhongPhongChamSocKhachHang2._id,
+        },
+        {
+            userId: users2[2]._id,
+            roleId: thanhVienPhongChamSocKhachHang2._id,
+        },
+        {
+            userId: users2[3]._id,
+            roleId: thanhVienPhongChamSocKhachHang2._id,
+        },
+        {
+            userId: users2[4]._id,
+            roleId: thanhVienPhongChamSocKhachHang2._id,
+        },
+        {
+            userId: users2[5]._id,
+            roleId: giamDocPhongNhanSu2._id,
+        },
+        {
+            userId: users2[6]._id,
+            roleId: phoPhongPhongNhanSu2._id,
+        },
+        {
+            userId: users2[7]._id,
+            roleId: thanhVienPhongNhanSu2._id,
+        },
+        {
+            userId: users2[8]._id,
+            roleId: thanhVienPhongNhanSu2._id,
+        },
+        {
+            userId: users2[9]._id,
+            roleId: thanhVienPhongNhanSu2._id,
+        },
+        {
+            userId: users2[10]._id,
+            roleId: giamDocPhongKinhDoanh2._id,
+        },
+        {
+            userId: users2[11]._id,
+            roleId: phoPhongPhongKinhDoanh2._id,
+        },
+        {
+            userId: users2[12]._id,
+            roleId: thanhVienPhongKinhDoanh2._id,
+        },
+        {
+            userId: users2[13]._id,
+            roleId: thanhVienPhongKinhDoanh2._id,
+        },
+        {
+            userId: users2[14]._id,
+            roleId: thanhVienPhongKinhDoanh2._id,
+        },
+        {
+            userId: users2[15]._id,
+            roleId: thanhVienPhongKinhDoanh2._id,
+        },
+        {
+            userId: users2[16]._id,
+            roleId: giamDocPhongKeHoach2._id,
+        },
+        {
+            userId: users2[17]._id,
+            roleId: phoPhongPhongKeHoach2._id,
+        },
+        {
+            userId: users2[18]._id,
+            roleId: thanhVienPhongKeHoach2._id,
+        },
+        {
+            userId: users2[19]._id,
+            roleId: thanhVienPhongKeHoach2._id,
+        },
+        {
+            userId: users2[20]._id,
+            roleId: thanhVienPhongKeHoach2._id,
+        },
+        {
+            userId: users2[21]._id,
+            roleId: thanhVienPhongKeHoach2._id,
+        },
+    ]);
 
     /**
      * 8. Tạo link cho các trang web của công ty VNIST

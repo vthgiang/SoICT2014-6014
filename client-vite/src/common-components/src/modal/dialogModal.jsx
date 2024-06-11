@@ -48,16 +48,16 @@ class DialogModal extends Component {
   }
 
   handleSubmitClient = () => {
-    const { closeOnSave = true, resetOnSave = false, afterSave } = this.props;
-    this.props.func();
+    const { closeOnSave = true, resetOnSave = false, afterSave } = this.props
+    this.props.func()
     if (closeOnSave) {
-        this.closeModal(resetOnSave);
+      this.closeModal(resetOnSave)
     }
 
     if (afterSave !== undefined) {
-        afterSave()
+      afterSave()
     }
-}
+  }
 
   render() {
     const { translate } = this.props
@@ -90,69 +90,67 @@ class DialogModal extends Component {
     )
 
     return (
-      <React.Fragment>
+      <div
+        id={modalID}
+        className='modal fade'
+        tabIndex={!noTabIndex ? -1 : ''}
+        role='dialog'
+        aria-labelledby='myModalLabel'
+        aria-hidden='true'
+      >
         <div
-          id={modalID}
-          className='modal fade'
-          tabIndex={!noTabIndex ? -1 : ''}
-          role='dialog'
-          aria-labelledby='myModalLabel'
-          aria-hidden='true'
+          className={`modal-dialog modal-size-${size}`}
+          style={
+            maxWidth
+              ? marginTop
+                ? { marginTop: `${marginTop}px`, maxWidth: `${maxWidth}px` }
+                : { maxWidth: `${maxWidth}px`, marginTop: 'unset' }
+              : marginTop
+                ? { marginTop: `${marginTop}px`, maxWidth: 'unset' }
+                : { marginTop: 'unset', maxWidth: 'unset' }
+          }
         >
-          <div
-            className={`modal-dialog modal-size-${size}`}
-            style={
-              maxWidth
-                ? marginTop
-                  ? { marginTop: marginTop + 'px', maxWidth: maxWidth + 'px' }
-                  : { maxWidth: maxWidth + 'px', marginTop: 'unset' }
-                : marginTop
-                  ? { marginTop: marginTop + 'px', maxWidth: 'unset' }
-                  : { marginTop: 'unset', maxWidth: 'unset' }
-            }
-          >
-            <div className='modal-content'>
-              <div className='modal-header' style={styleCustom}>
-                <button
-                  type='button'
-                  className='close'
-                  onClick={() => {
-                    this.closeModal(resetOnClose)
-                    this.setState({ isClose: !isClose }, () => {
-                      if (receiveEventClose) this.props.receiveEventClose(isClose)
-                    })
-                  }}
-                >
-                  &times;
-                </button>
-                <h4 className='modal-title text-center threedots'>
-                  {title} &nbsp; {isLoading && <Loading />}
-                </h4>
-              </div>
-              <div className='modal-body text-left' style={bodyStyle}>
-                {this.props.children}
-              </div>
-              <div className='modal-footer'>
-                <div className='row'>
-                  <div className='col-xs-8 col-sm-8 col-md-8 col-lg-8'>{hasNote ? (note ? note : defaultNote) : ''}</div>
-                  <div className='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
-                    {hasSaveButton && (
-                      <button type='button' disabled={disableSubmit} className='btn btn-success' onClick={this.save}>
-                        {saveText || translate('form.save')}
-                      </button>
-                    )}
-                    {hasCloseButton && (
-                      <button type='button' className='btn btn-danger' onClick={() => this.closeModal(resetOnClose)}>
-                        {translate('form.close')}
-                      </button>
-                    )}
-                  </div>
+          <div className='modal-content'>
+            <div className='modal-header' style={styleCustom}>
+              <button
+                type='button'
+                className='close'
+                onClick={() => {
+                  this.closeModal(resetOnClose)
+                  this.setState({ isClose: !isClose }, () => {
+                    if (receiveEventClose) this.props.receiveEventClose(isClose)
+                  })
+                }}
+              >
+                &times;
+              </button>
+              <h4 className='modal-title text-center threedots'>
+                {title} &nbsp; {isLoading && <Loading />}
+              </h4>
+            </div>
+            <div className='modal-body text-left' style={bodyStyle}>
+              {this.props.children}
+            </div>
+            <div className='modal-footer'>
+              <div className='row'>
+                <div className='col-xs-8 col-sm-8 col-md-8 col-lg-8'>{hasNote ? note || defaultNote : ''}</div>
+                <div className='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
+                  {hasSaveButton && (
+                    <button type='button' disabled={disableSubmit} className='btn btn-success' onClick={this.save}>
+                      {saveText || translate('form.save')}
+                    </button>
+                  )}
+                  {hasCloseButton && (
+                    <button type='button' className='btn btn-danger' onClick={() => this.closeModal(resetOnClose)}>
+                      {translate('form.close')}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </React.Fragment>
+      </div>
     )
   }
 }

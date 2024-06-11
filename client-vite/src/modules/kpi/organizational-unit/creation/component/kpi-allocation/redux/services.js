@@ -1,4 +1,4 @@
-import { sendRequest } from '../../../../../helpers/requestHelper'
+import { sendRequest } from '../../../../../../../helpers/requestHelper'
 
 const getConfigSettingData = () => {
   return sendRequest(
@@ -25,7 +25,7 @@ const updateConfigSettingData = (_id, payload) => {
   )
 }
 
-export const ConfigManagementServices = {
+export const ConfigParametersServices = {
   getConfigSettingData,
   updateConfigSettingData
 }

@@ -1,10 +1,10 @@
 import { ConfigManagementConstant } from './constants'
-import { ConfigManagementServices } from './services'
+import { ConfigParametersServices } from './services'
 
 const getConfigSettingData = () => {
   return (dispatch) => {
     dispatch({ type: ConfigManagementConstant.GET_CONFIG_SETTING_DATA_REQUEST })
-    ConfigManagementServices.getConfigSettingData()
+    ConfigParametersServices.getConfigSettingData()
       .then((response) => {
         dispatch({
           type: ConfigManagementConstant.GET_CONFIG_SETTING_DATA_REQUEST_SUCCESS,
@@ -22,7 +22,7 @@ const getConfigSettingData = () => {
 const updateConfigSettingData = (_id, payload) => {
   return (dispatch) => {
     dispatch({ type: ConfigManagementConstant.UPDATE_CONFIG_SETTING_DATA_REQUEST })
-    ConfigManagementServices.updateConfigSettingData(_id, payload)
+    ConfigParametersServices.updateConfigSettingData(_id, payload)
       .then((response) => {
         dispatch({
           type: ConfigManagementConstant.UPDATE_CONFIG_SETTING_DATA_REQUEST_SUCCESS,
@@ -44,7 +44,7 @@ const updateConfigSetting = (key, value) => {
   }
 }
 
-export const ConfigManagementAction = {
+export const ConfigParametersAction = {
   getConfigSettingData,
   updateConfigSetting,
   updateConfigSettingData

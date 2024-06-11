@@ -1,11 +1,12 @@
-import { useTranslate } from 'react-redux-multilingual'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DialogModal, SelectBox } from '../../../../../../common-components'
 import { taskTemplateActions } from '../../../../../task/task-template/redux/actions'
+import AllocationResult from './allocationResult'
+import ProgressTitle from './progressTitle'
+import ConfigParameters from './configParameters'
 
 function AllocationToOrganizationalUnit({ month, currentKPI }) {
-  const translate = useTranslate()
   const [listUnit, setListUnit] = useState([])
   const [selectedValue, setSelectedValue] = useState([])
   const [listUnitKpi, setListUnitKpi] = useState([])
@@ -112,8 +113,6 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
       }
       return item
     })
-
-    // console.log(updateList)
     setListUnitKpi(updateList)
   }
 
@@ -124,156 +123,205 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
     return listItem.kpis.reduce((sum, kpi) => sum + Number(kpi.kpiWeight), 0)
   }
 
+  const handleStartAllocation = async () => {
+    try {
+      // setIsLoading(true)
+      // setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+      // setIsLoading(false)
+    }
+  }
+
+  const [steps, setSteps] = useState([
+    {
+      label: 'Thiết lập thông tin',
+      active: true,
+      disabled: false
+    },
+    {
+      label: 'Thiết lập tham số',
+      active: false,
+      disabled: true
+    },
+    {
+      label: 'Review kết quả',
+      active: false,
+      disabled: true
+    },
+    {
+      label: 'Xác nhận kết quả',
+      active: false,
+      disabled: true
+    }
+  ])
+  const [step, setStep] = useState(0)
+
+  const setCurrentStep = async (e, currentStep) => {
+    e.preventDefault()
+
+    const newSteps = steps.map((stepItem, index) => {
+      return {
+        ...stepItem,
+        active: index <= currentStep
+      }
+    })
+
+    setStep(currentStep)
+    setSteps(newSteps)
+  }
+
   return (
     <DialogModal
       modalID='allocation-kpi-into-unit'
-      size='50'
+      size='100'
       isLoading={false}
       formID='form-allocation-kpi-into-unit'
       title={`Phân bổ KPI cho các phòng ban tháng ${month}`}
-      //   msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
-      //   msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
-      //   func={handleSubmit}
       hasNote={false}
-      //   disableSubmit={isFormValidated()}
     >
-      <div className='mb-[8px]'>Lựa chọn bộ phận để phân bổ</div>
-      <SelectBox
-        id='user-role-form'
-        className='form-control select2'
-        style={{ width: '100%' }}
-        items={listUnit}
-        onChange={handleChangeSelectedValue}
-        value={selectedValue}
-        multiple
-      />
-      <div className='flex gap-[16px] my-[8px]'>
-        <button type='button' className='btn btn-success' onClick={() => handleSelectAll()}>
-          Selected all
-        </button>
-        <button type='button' className='btn btn-primary' onClick={() => handleClearAll()}>
-          Clear all selected value
-        </button>
-      </div>
+      <ProgressTitle setCurrentStep={setCurrentStep} steps={steps} step={step} />
 
-      <div className='form-group'>
-        <div className='text-bold mb-[16px]'>Danh sách mục tiêu KPI phân bổ</div>
-        {listUnitKpi.map((item, index) => {
-          return (
-            <fieldset className='scheduler-border' key={index}>
-              <legend className='scheduler-border'>Phòng ban: {item.text}</legend>
-              <div className='form-group'>
-                <div>Danh sách KPI đơn vi</div>
-                <span>Tổng trọng số: {calculateKpiWeightSumForUnit(item)} / 100</span>
-                <table className='table table-hover table-striped table-bordered'>
-                  <thead>
-                    <tr>
-                      <th className='col-fixed'>STT</th>
-                      <th title='Tên nhiệm vụ'>Tên mục tiêu</th>
-                      <th title='Mô tả'>Mục tiêu cha</th>
-                      <th title='Khối lượng nhiệm vụ'>Tiêu chí đánh giá</th>
-                      <th title='Đơn vị nhiệm vụ'>Chỉ tiêu</th>
-                      <th title='Ngày bắt đầ'>Trọng số</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {item.kpis.map((kpi, indexKpi) => {
-                      return (
-                        <tr key={indexKpi}>
-                          <td>{indexKpi + 1}</td>
-                          <td>{kpi.name}</td>
-                          <td>{kpi.name}</td>
-                          <td
-                            dangerouslySetInnerHTML={{
-                              __html: kpi.criteria
-                            }}
-                          />
-                          <td>{kpi.target ? 'N/A' : 'Hoàn thành mục tiêu'}</td>
-                          <td>
-                            <input
-                              type='number'
-                              className='form-control'
-                              onChange={(event) => onChangeKpiWeightEachUnit(event, item, kpi._id)}
-                              value={kpi.kpiWeight}
-                            />
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-                <span>Danh sách task ánh xạ</span>
-                <table className='table table-hover table-striped table-bordered'>
-                  <thead>
-                    <tr>
-                      <th className='col-fixed'>STT</th>
-                      <th title='Tên nhiệm vụ'>Tên nhiệm vụ</th>
-                      <th title='Mô tả'>Ánh xạ KPI đơn vị</th>
-                      <th title='Khối lượng nhiệm vụ'>Trọng số</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {item.taskTemplates.length === 0 ? (
-                      <tr>
-                        <td colSpan={9}>
-                          <center>Bạn cần tao mẫu công việc</center>
-                        </td>
-                      </tr>
-                    ) : (
-                      item.taskTemplates.map((taskTemplate, taskTemplateIndex) => {
-                        return taskTemplate.listMappingTask.map((task, taskIndex) => {
-                          return (
-                            <tr key={taskIndex}>
-                              <td>{taskIndex + 1}</td>
-                              <td>{task.taskName}</td>
-                              <td>{task.organizationalUnitKpi.name}</td>
-                              <td>
-                                <input
-                                  type='number'
-                                  className='form-control'
-                                  onChange={(event) => onChangeTaskWeightMappingKPI(event, item, task.organizationalUnitKpi._id, task._id)}
-                                  value={task.taskWeight}
+      {step === 0 && (
+        <div className='box box-default'>
+          <div className='box-header with-border text-center'>
+            <b style={{ fontSize: '24px' }}>Thiết lập thông tin</b>
+          </div>
+          <div className='box-body'>
+            <div className='m-[4px]'>
+              <div className='mb-[8px] text-bold'>Lựa chọn bộ phận để phân bổ</div>
+              <SelectBox
+                id='user-role-form'
+                className='form-control select2'
+                style={{ width: '100%' }}
+                items={listUnit}
+                onChange={handleChangeSelectedValue}
+                value={selectedValue}
+                multiple
+              />
+              <div className='flex gap-[16px] my-[8px]'>
+                <button type='button' className='btn btn-success' onClick={() => handleSelectAll()}>
+                  Selected all
+                </button>
+                <button type='button' className='btn btn-primary' onClick={() => handleClearAll()}>
+                  Clear all selected value
+                </button>
+              </div>
+            </div>
+
+            <div className='form-group m-[4px]'>
+              {listUnitKpi.length !== 0 && <div className='text-bold mb-[16px]'>Danh sách mục tiêu KPI phân bổ</div>}
+              {listUnitKpi.map((item, index) => {
+                return (
+                  <fieldset className='scheduler-border' key={index}>
+                    <legend className='scheduler-border'>Phòng ban: {item.text}</legend>
+                    <div className='form-group'>
+                      <div>Danh sách KPI đơn vi</div>
+                      <span>Tổng trọng số: {calculateKpiWeightSumForUnit(item)} / 100</span>
+                      <table className='table table-hover table-striped table-bordered'>
+                        <thead>
+                          <tr>
+                            <th className='col-fixed'>STT</th>
+                            <th title='Tên nhiệm vụ'>Tên mục tiêu</th>
+                            <th title='Mô tả'>Mục tiêu cha</th>
+                            <th title='Khối lượng nhiệm vụ'>Tiêu chí đánh giá</th>
+                            <th title='Đơn vị nhiệm vụ'>Chỉ tiêu</th>
+                            <th title='Ngày bắt đầ'>Trọng số</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {item.kpis.map((kpi, indexKpi) => {
+                            return (
+                              <tr key={indexKpi}>
+                                <td>{indexKpi + 1}</td>
+                                <td>{kpi.name}</td>
+                                <td>{kpi.name}</td>
+                                <td
+                                  dangerouslySetInnerHTML={{
+                                    __html: kpi.criteria
+                                  }}
                                 />
+                                <td>{kpi.target ? 'N/A' : 'Hoàn thành mục tiêu'}</td>
+                                <td>
+                                  <input
+                                    type='number'
+                                    className='form-control'
+                                    onChange={(event) => onChangeKpiWeightEachUnit(event, item, kpi._id)}
+                                    value={kpi.kpiWeight}
+                                  />
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                      <span>Danh sách task ánh xạ</span>
+                      <table className='table table-hover table-striped table-bordered'>
+                        <thead>
+                          <tr>
+                            <th className='col-fixed'>STT</th>
+                            <th title='Tên nhiệm vụ'>Tên nhiệm vụ</th>
+                            <th title='Mô tả'>Ánh xạ KPI đơn vị</th>
+                            <th title='Khối lượng nhiệm vụ'>Trọng số</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {item.taskTemplates.length === 0 ? (
+                            <tr>
+                              <td colSpan={9}>
+                                <center>Bạn cần tao mẫu công việc</center>
                               </td>
                             </tr>
-                          )
-                        })
-                      })
-                    )}
-                    {/* {item.kpis.map((kpi, indexKpi) => {
-                      return (
-                        <tr key={indexKpi}>
-                          <td>{indexKpi + 1}</td>
-                          <td>{kpi.name}</td>
-                          <td>{kpi.name}</td>
-                          <td
-                            dangerouslySetInnerHTML={{
-                              __html: kpi.criteria
-                            }}
-                          />
-                          <td>{kpi.target ? 'N/A' : 'Hoàn thành mục tiêu'}</td>
-                          <td>
-                            <input
-                              type='number'
-                              className='form-control'
-                              onChange={(event) => onChangeKpiWeightEachUnit(event, item, kpi._id)}
-                              value={kpi.kpiWeight}
-                            />
-                          </td>
-                        </tr>
-                      )
-                    })} */}
-                  </tbody>
-                </table>
-              </div>
-            </fieldset>
-          )
-        })}
-      </div>
+                          ) : (
+                            item.taskTemplates.map((taskTemplate, taskTemplateIndex) => {
+                              return taskTemplate.listMappingTask.map((task, taskIndex) => {
+                                return (
+                                  <tr key={taskIndex}>
+                                    <td>{taskIndex + 1}</td>
+                                    <td>{task.taskName}</td>
+                                    <td>{task.organizationalUnitKpi.name}</td>
+                                    <td>
+                                      <input
+                                        type='number'
+                                        className='form-control'
+                                        onChange={(event) =>
+                                          onChangeTaskWeightMappingKPI(event, item, task.organizationalUnitKpi._id, task._id)
+                                        }
+                                        value={task.taskWeight}
+                                      />
+                                    </td>
+                                  </tr>
+                                )
+                              })
+                            })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </fieldset>
+                )
+              })}
+            </div>
+          </div>
 
-      {/* <button type='button' className='btn btn-primary my-[8px]'>
-        Kiểm tra các trưởng phòng ban đã khởi tạo tậ
-      </button> */}
+          <div className='box-footer text-center flex justify-center gap-[16px]'>
+            <button
+              type='button'
+              className='btn btn-primary my-[8px]'
+              onClick={(event) => {
+                setCurrentStep(event, 1)
+                handleStartAllocation()
+              }}
+            >
+              Tinh chỉnh tham số
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 1 && <ConfigParameters />}
+
+      {step === 2 && <AllocationResult />}
     </DialogModal>
   )
 }
