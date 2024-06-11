@@ -4,10 +4,6 @@ const mongoosePaginate = require('mongoose-paginate-v2')
 
 const MarketingCampaignSchema = new Schema(
   {
-    code:{
-        type: String,
-        required: true,
-    },
     cost: {
         type: Number,
     },
@@ -20,7 +16,7 @@ const MarketingCampaignSchema = new Schema(
       
     },
     status: {
-      type: Number,
+      type: Boolean,
       default: 0,
     }
   },
