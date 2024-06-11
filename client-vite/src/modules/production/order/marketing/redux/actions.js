@@ -1,13 +1,6 @@
 import { MarketingCampaignConstants } from './constants';
 import { MarketingCampaignServices } from './services';
 
-export const MarketingCampaignActions = {
-    createMarketingCampaign,
-    getAllPayments,
-    getPaymentDetail,
-    getPaymentForOrder
-}
-
 function createMarketingCampaign (data) {
     return (dispatch) => {
            ({
@@ -91,4 +84,11 @@ function getPaymentForOrder({ orderId, orderType }) {
             })
         })
     }
+}
+
+export const MarketingCampaignActions = {
+    createMarketingCampaign,
+    getAllPayments,
+    getPaymentDetail,
+    getPaymentForOrder
 }
