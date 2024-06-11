@@ -268,21 +268,7 @@ const ManageRoleDefault = lazy(() => import('../modules/system-admin/root-role/c
 const ComponentsDefaultManagement = lazy(() => import('../modules/system-admin/system-component/components'))
 const ManageSystem = lazy(() => import('../modules/super-admin/system/components'))
 const DashboardUnitForAdmin = lazy(() => import('../modules/dashboard-unit/components/dashboardUnitForAdmin'))
-const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
-const OrganizationalUnitKpiCreateForAdmin = lazy(
-  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin.jsx')
-)
-const OrganizationalUnitKpiCreate = lazy(
-  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate.jsx')
-)
 
-const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation.jsx'))
-
-const OrganizationalUnitKpiDashboard = lazy(
-  () => import('../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard.jsx')
-)
-const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
-const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview'))
 class Routes extends Component {
   render() {
     const { auth, company, user, role, link, component, department, employeesManager } = this.props
