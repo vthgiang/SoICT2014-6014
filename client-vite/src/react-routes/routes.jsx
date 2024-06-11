@@ -4043,6 +4043,191 @@ class Routes extends Component {
             component={CarrierAllTimesTransportMission} // component ứng với trang, tạo ở bước 1
           />
 
+          {/* Quản lý vận chuyển 2*/}
+          <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-dashboard"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-dashboard",
+                                name: "manage_transportation_dashboard",
+                                icon: "fa fa-dashboard",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-dashboard"}
+                        path={"/transportation-dashboard"}
+                        pageName={"manage_transportation"}
+                        layout={Layout}
+                        component={DashBoardTransportationUnit}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-route-init"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-route-init",
+                                name: "manage_transportation_init_route",
+                                icon: "fa fa-road",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-route-init"}
+                        path={"/transportation-route-init"}
+                        pageName={"manage_transportation_init_route"}
+                        layout={Layout}
+                        component={InitializationType}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-list-journey"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-list-journey",
+                                name: "manage_transportation_list_journey",
+                                icon: "fa fa-list-alt",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-list-journey"}
+                        path={"/transportation-list-journey"}
+                        pageName={"manage_transportation_list_journey"}
+                        layout={Layout}
+                        component={Journeys}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-info-vehicles"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-info-vehicles",
+                                name: "manage_transportation_vehicles",
+                                icon: "fa fa-car",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-info-vehicles"}
+                        path={"/transportation-info-vehicles"}
+                        pageName={"manage_transportation_vehicles"}
+                        layout={Layout}
+                        component={VehiclesTransportation}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-test-api-shipper"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-test-api-shipper",
+                                name: "manage_transportation_test_api_shipper",
+                                icon: "fa fa-circle-o",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-test-api-shipper"}
+                        path={"/transportation-test-api-shipper"}
+                        pageName={"manage_transportation_test_api_shipper"}
+                        layout={Layout}
+                        component={ShipperDeliveryReport}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-delivery-detail"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-list-journey",
+                                name: "manage_transportation_list_journey",
+                                icon: "fa fa-list-alt",
+                            },
+                            {
+                                link: "/transportation-delivery-detail",
+                                name: "manage_transportation_delivery_detail",
+                                icon: "fa fa-circle-o",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-delivery-detail"}
+                        path={"/transportation-delivery-detail"}
+                        pageName={"manage_transportation_delivery_detail"}
+                        layout={Layout}
+                        component={DetailSolution}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-journey-detail"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-list-journey",
+                                name: "manage_transportation_list_journey",
+                                icon: "fa fa-list-alt",
+                            },
+                            {
+                                link: "/transportation-journey-detail",
+                                name: "manage_transportation_journey_detail",
+                                icon: "fa fa-circle-o",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-journey-detail"}
+                        path={"/transportation-journey-detail"}
+                        pageName={"manage_transportation_journey_detail"}
+                        layout={Layout}
+                        component={DetailJourney}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-cost-manage"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-cost-manage",
+                                name: "manage_transportation_cost",
+                                icon: "fa fa-usd",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-cost-manage"}
+                        path={"/transportation-cost-manage"}
+                        pageName={"manage_transportation_cost"}
+                        layout={Layout}
+                        component={TransportationCost}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"transportation-shipper-manage"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/transportation-shipper-manage",
+                                name: "manage_transportation_shipper",
+                                icon: "fa fa-user-circle-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/transportation-shipper-manage"}
+                        path={"/transportation-shipper-manage"}
+                        pageName={"manage_transportation_shipper"}
+                        layout={Layout}
+                        component={ShipperInfo}
+                    />
+
           {/* Quản lý dự án */}
           <PrivateRoute
             isLoading={false}
