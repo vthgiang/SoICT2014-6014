@@ -1,171 +1,106 @@
-import React, { Component, useState } from 'react'
-import { connect } from 'react-redux'
+import React, { useReducer } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { GoodActions } from '../redux/actions'
 import { configGood, importGoodTemplate } from './fileConfigurationImportGood'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components'
 
-function ImportGoodModal(props) {
-  const [state, setState] = useState({
-    configData: configGood,
-    limit: 100,
-    page: 0
-  })
+const initialState = {
+  configData: configGood,
+  limit: 100,
+  page: 0,
+  importData: [],
+  importShowData: [],
+  rowError: [],
+  checkFileImport: false
+}
 
-  const { translate } = props
-  const { configData, importData, rowError, checkFileImport, limit, page } = state
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_CONFIG_DATA':
+      return { ...state, configData: action.payload, importData: [] }
+    case 'SET_IMPORT_DATA':
+      return { ...state, importData: action.payload.importData, importShowData: action.payload.importShowData, rowError: action.payload.rowError, checkFileImport: action.payload.checkFileImport }
+    case 'SET_CHECK_FILE_IMPORT':
+      return { ...state, checkFileImport: action.payload }
+    default:
+      return state
+  }
+}
+
+function ImportGoodModal({ translate }) {
+  const dispatch = useDispatch()
+  const [state, dispatchLocal] = useReducer(reducer, initialState)
+  const { list } = useSelector(state => state.Good)
+
   const save = () => {
-    const { importShowData } = state
-    props.importGood(importShowData)
+    dispatch(GoodActions.importGood(state.importShowData))
   }
 
   const handleChangeConfig = (value) => {
-    setState({
-      ...state,
-      configData: value,
-      importData: []
-    })
+    dispatchLocal({ type: 'SET_CONFIG_DATA', payload: value })
   }
 
   const convertDataExport = (dataExport) => {
-    for (let i = 0; i < dataExport.dataSheets.length; i++) {
-      for (let j = 0; j < dataExport.dataSheets[i].tables.length; j++) {
-        let datas = []
-        let data = dataExport.dataSheets[i].tables[j].data
-
-        for (let index = 0; index < data.length; index++) {
-          let dataTemporary = data[index]
-          let out = {
-            STT: dataTemporary.code ? index + 1 : null,
-            code: dataTemporary.code,
-            name: dataTemporary.name,
-            category: dataTemporary.category,
-            baseUnit: dataTemporary.baseUnit,
-            description: dataTemporary.description,
-            numberExpirationDate: dataTemporary.numberExpirationDate,
-            pricePerBaseUnit: dataTemporary.pricePerBaseUnit,
-            salesPriceVariance: dataTemporary.salesPriceVariance,
-            sourceType: dataTemporary.sourceType,
-            type: dataTemporary.type
-          }
-          datas = [...datas, out]
-        }
-        dataExport.dataSheets[i].tables[j].data = datas
-      }
-    }
-
+    dataExport.dataSheets.forEach(sheet => {
+      sheet.tables.forEach(table => {
+        table.data = table.data.map((data, index) => ({
+          STT: data.code ? index + 1 : null,
+          ...data
+        }))
+      })
+    })
     return dataExport
   }
 
   const checkGoodCode = (code, list) => {
-    let checkCode
-    if (list?.length) {
-      checkCode = list.filter((o) => o?.code === code?.toString()?.trim())
-    }
-    if (checkCode?.length) return -1
+    return list?.some(o => o?.code?.toString()?.trim() === code?.toString()?.trim()) ? -1 : undefined
   }
 
   const handleImportExcel = (value, checkFileImport) => {
-    const { list } = props
-    let values = [],
-      valueShow = [],
-      index = -1
-
-    for (let i = 0; i < value.length; i++) {
-      const valueTemporary = value[i]
-      if (valueTemporary.name) {
-        index = index + 1
-        values = [
-          ...values,
-          {
-            STT: index + 1,
-            code: valueTemporary.code,
-            name: valueTemporary.name,
-            category: valueTemporary.category,
-            baseUnit: valueTemporary.baseUnit,
-            description: valueTemporary.description,
-            numberExpirationDate: valueTemporary.numberExpirationDate,
-            pricePerBaseUnit: valueTemporary.pricePerBaseUnit,
-            salesPriceVariance: valueTemporary.salesPriceVariance,
-            sourceType: valueTemporary.sourceType,
-            type: valueTemporary.type
-          }
-        ]
-        valueShow = [
-          ...valueShow,
-          {
-            code: valueTemporary.code,
-            name: valueTemporary.name,
-            category: valueTemporary.category,
-            baseUnit: valueTemporary.baseUnit,
-            description: valueTemporary.description,
-            numberExpirationDate: valueTemporary.numberExpirationDate,
-            pricePerBaseUnit: valueTemporary.pricePerBaseUnit,
-            salesPriceVariance: valueTemporary.salesPriceVariance,
-            sourceType: valueTemporary.sourceType,
-            type: valueTemporary.type
-          }
-        ]
-      } else {
-        if (index >= 0) {
-          let out = {
-            STT: '',
-            code: '',
-            name: '',
-            category: '',
-            baseUnit: '',
-            description: '',
-            numberExpirationDate: '',
-            pricePerBaseUnit: '',
-            salesPriceVariance: '',
-            sourceType: '',
-            type: ''
-          }
-          values = [...values, out]
-        }
+    let values = value.reduce((acc, cur, i) => {
+      if (cur.name) {
+        acc.push({
+          STT: acc.length + 1,
+          ...cur
+        })
+      } else if (acc.length > 0) {
+        acc.push({
+          STT: '',
+          code: '',
+          name: '',
+          category: '',
+          baseUnit: '',
+          description: '',
+          numberExpirationDate: '',
+          pricePerBaseUnit: '',
+          salesPriceVariance: '',
+          sourceType: '',
+          type: ''
+        })
       }
-    }
-    value = values
+      return acc
+    }, [])
+
+    let valueShow = values.filter(item => item.name)
 
     if (checkFileImport) {
       let rowError = []
-      for (let i = 0; i < value.length; i++) {
-        let x = value[i],
-          errorAlert = []
-        const checkCode = value.filter((obj) => obj?.code?.toString()?.trim() === value[i]?.code?.toString()?.trim())
-        if (x.name === null || x.code === null || (value[i]?.code && checkCode?.length > 1) || checkGoodCode(x.code, list) === -1) {
-          rowError = [...rowError, i + 1]
-          x = { ...x, error: true }
-        }
-        if (x.code === null) {
-          errorAlert = [...errorAlert, 'Mã hàng hóa không được để trống']
-        }
-        if (x.name === null) {
-          errorAlert = [...errorAlert, 'Tên hàng hóa không được để trống']
-        }
-        if (value[i]?.code && checkCode?.length > 1) {
-          errorAlert = [...errorAlert, 'Mã hàng hóa trong file trùng lặp']
-        }
-        if (checkGoodCode(x.code, list) === -1) {
-          errorAlert = [...errorAlert, 'Mã hàng hóa đã tồn tại trên hệ thống']
-        }
-
-        x = { ...x, errorAlert: errorAlert }
-        value[i] = x
-      }
-
-      setState({
-        ...state,
-        importData: value, 
-        importShowData: valueShow, 
-        rowError: rowError,
-        checkFileImport: checkFileImport
+      values = values.map((item, i) => {
+        let errorAlert = []
+        if (!item.code) errorAlert.push('Mã hàng hóa không được để trống')
+        if (!item.name) errorAlert.push('Tên hàng hóa không được để trống')
+        if (value.filter(obj => obj?.code?.toString()?.trim() === item.code?.toString()?.trim()).length > 1) errorAlert.push('Mã hàng hóa trong file trùng lặp')
+        if (checkGoodCode(item.code, list) === -1) errorAlert.push('Mã hàng hóa đã tồn tại trên hệ thống')
+        if (errorAlert.length > 0) rowError.push(i + 1)
+        return { ...item, error: errorAlert.length > 0, errorAlert }
+      })
+      dispatchLocal({
+        type: 'SET_IMPORT_DATA',
+        payload: { importData: values, importShowData: valueShow, rowError, checkFileImport }
       })
     } else {
-      setState({
-        ...state,
-        checkFileImport: checkFileImport
-      })
+      dispatchLocal({ type: 'SET_CHECK_FILE_IMPORT', payload: checkFileImport })
     }
   }
 
@@ -182,11 +117,11 @@ function ImportGoodModal(props) {
         size={75}
       >
         <form className='form-group' id={`form_import_good`}>
-          <ConFigImportFile id='import_good_config' configData={configData} scrollTable={false} handleChangeConfig={handleChangeConfig} />
+          <ConFigImportFile id='import_good_config' configData={state.configData} scrollTable={false} handleChangeConfig={handleChangeConfig} />
           <div className='row'>
             <div className='form-group col-md-6 col-xs-6'>
               <label>{translate('human_resource.choose_file')}</label>
-              <ImportFileExcel configData={configData} handleImportExcel={handleImportExcel} />
+              <ImportFileExcel configData={state.configData} handleImportExcel={handleImportExcel} />
             </div>
             <div className='form-group col-md-6 col-xs-6'>
               <label></label>
@@ -195,13 +130,13 @@ function ImportGoodModal(props) {
             <div className='form-group col-md-12 col-xs-12'>
               <ShowImportData
                 id='import_good_show_data'
-                configData={configData}
-                importData={importData}
-                rowError={rowError}
+                configData={state.configData}
+                importData={state.importData}
+                rowError={state.rowError}
                 scrollTable={true}
-                checkFileImport={checkFileImport}
-                limit={limit}
-                page={page}
+                checkFileImport={state.checkFileImport}
+                limit={state.limit}
+                page={state.page}
               />
             </div>
           </div>
@@ -211,12 +146,4 @@ function ImportGoodModal(props) {
   )
 }
 
-function mapState(state) {
-  const { Good } = state
-  return { Good }
-}
-const actions = {
-  importGood: GoodActions.importGood
-}
-
-export default connect(mapState, actions)(withTranslate(ImportGoodModal))
+export default withTranslate(ImportGoodModal)

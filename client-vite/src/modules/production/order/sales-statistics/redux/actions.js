@@ -2,171 +2,97 @@ import { GoodServices } from './services'
 import { LotServices } from '../../../warehouse/inventory-management/redux/services'
 import { GoodConstants } from './constants'
 
-export const GoodActions = {
-  getGoodsByType,
-  getAllGoods,
-  getAllGoodsByType,
-  getAllGoodsByCategory,
-  getGoodDetail,
-  deleteGood,
-  getItemsForGood,
-  getGoodByManageWorkRole,
-  getManufacturingWorksByProductId,
-  getNumberGoods,
-  importGood
-}
-
-function getGoodsByType(data = undefined) {
+const getGoodsByType = (data = undefined) => {
   if (data !== undefined && data.limit !== undefined && data.page !== undefined) {
     return (dispatch) => {
-      dispatch({
-        type: GoodConstants.PAGINATE_GOOD_BY_TYPE_REQUEST
-      })
+      dispatch({ type: GoodConstants.PAGINATE_GOOD_BY_TYPE_REQUEST })
       GoodServices.getGoodsByType(data)
         .then((res) => {
-          dispatch({
-            type: GoodConstants.PAGINATE_GOOD_BY_TYPE_SUCCESS,
-            payload: res.data.content
-          })
+          dispatch({ type: GoodConstants.PAGINATE_GOOD_BY_TYPE_SUCCESS, payload: res.data.content })
         })
         .catch((err) => {
-          dispatch({
-            type: GoodConstants.PAGINATE_GOOD_BY_TYPE_FAILURE,
-            error: err
-          })
+          dispatch({ type: GoodConstants.PAGINATE_GOOD_BY_TYPE_FAILURE, error: err })
         })
     }
   }
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GET_GOOD_BY_TYPE_REQUEST
-    })
+    dispatch({ type: GoodConstants.GET_GOOD_BY_TYPE_REQUEST })
     GoodServices.getGoodsByType(data)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.GET_GOOD_BY_TYPE_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.GET_GOOD_BY_TYPE_SUCCESS, payload: res.data.content })
       })
       .catch((err) => {
-        dispatch({
-          type: GoodConstants.GET_GOOD_BY_TYPE_FAILURE,
-          error: err
-        })
+        dispatch({ type: GoodConstants.GET_GOOD_BY_TYPE_FAILURE, error: err })
       })
   }
 }
 
-function getAllGoods(data) {
+const getAllGoods = (data) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GETALL_GOODS_REQUEST
-    })
+    dispatch({ type: GoodConstants.GETALL_GOODS_REQUEST })
     GoodServices.getAllGoods(data)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.GETALL_GOODS_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.GETALL_GOODS_SUCCESS, payload: res.data.content })
       })
       .catch((err) => {
-        dispatch({
-          type: GoodConstants.GETALL_GOODS_FAILURE,
-          error: err
-        })
+        dispatch({ type: GoodConstants.GETALL_GOODS_FAILURE, error: err })
       })
   }
 }
 
-function getAllGoodsByType(data) {
+const getAllGoodsByType = (data) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GETALL_GOOD_BY_TYPE_REQUEST
-    })
+    dispatch({ type: GoodConstants.GETALL_GOOD_BY_TYPE_REQUEST })
     GoodServices.getAllGoodsByType(data)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.GETALL_GOOD_BY_TYPE_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.GETALL_GOOD_BY_TYPE_SUCCESS, payload: res.data.content })
       })
       .catch((err) => {
-        dispatch({
-          type: GoodConstants.GETALL_GOOD_BY_TYPE_FAILURE,
-          error: err
-        })
+        dispatch({ type: GoodConstants.GETALL_GOOD_BY_TYPE_FAILURE, error: err })
       })
   }
 }
 
-function getAllGoodsByCategory(id) {
+const getAllGoodsByCategory = (id) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GETALL_GOOD_BY_CATEGORY_REQUEST
-    })
+    dispatch({ type: GoodConstants.GETALL_GOOD_BY_CATEGORY_REQUEST })
     GoodServices.getAllGoodsByCategory(id)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.GETALL_GOOD_BY_CATEGORY_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.GETALL_GOOD_BY_CATEGORY_SUCCESS, payload: res.data.content })
       })
       .catch((err) => {
-        dispatch({
-          type: GoodConstants.GETALL_GOOD_BY_CATEGORY_FAILURE,
-          error: err
-        })
+        dispatch({ type: GoodConstants.GETALL_GOOD_BY_CATEGORY_FAILURE, error: err })
       })
   }
 }
 
-
-
-function getGoodDetail(id) {
+const getGoodDetail = (id) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GET_GOOD_DETAIL_REQUEST
-    })
+    dispatch({ type: GoodConstants.GET_GOOD_DETAIL_REQUEST })
     GoodServices.getGoodDetail(id)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.GET_GOOD_DETAIL_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.GET_GOOD_DETAIL_SUCCESS, payload: res.data.content })
       })
       .catch((err) => {
-        dispatch({
-          type: GoodConstants.GET_GOOD_DETAIL_FAILURE,
-          error: err
-        })
+        dispatch({ type: GoodConstants.GET_GOOD_DETAIL_FAILURE, error: err })
       })
   }
 }
 
-
-
-function deleteGood(id) {
+const deleteGood = (id) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.DELETE_GOOD_REQUEST
-    })
+    dispatch({ type: GoodConstants.DELETE_GOOD_REQUEST })
     GoodServices.deleteGood(id)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.DELETE_GOOD_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.DELETE_GOOD_SUCCESS, payload: res.data.content })
       })
       .catch((err) => {
-        dispatch({
-          type: GoodConstants.UPDATE_GOOD_FAILURE,
-          error: err
-        })
+        dispatch({ type: GoodConstants.UPDATE_GOOD_FAILURE, error: err })
       })
   }
 }
 
-function getTaxByGoodsId(goodId) {
+const getTaxByGoodsId = (goodId) => {
   return new Promise((resolve, reject) => {
     GoodServices.getTaxByGoodsId(goodId)
       .then((res) => {
@@ -178,7 +104,7 @@ function getTaxByGoodsId(goodId) {
   })
 }
 
-function getSlaByGoodsId(goodId) {
+const getSlaByGoodsId = (goodId) => {
   return new Promise((resolve, reject) => {
     GoodServices.getSlaByGoodsId(goodId)
       .then((res) => {
@@ -190,7 +116,7 @@ function getSlaByGoodsId(goodId) {
   })
 }
 
-function getDiscountByGoodsId(goodId) {
+const getDiscountByGoodsId = (goodId) => {
   return new Promise((resolve, reject) => {
     GoodServices.getDiscountByGoodsId(goodId)
       .then((res) => {
@@ -202,7 +128,7 @@ function getDiscountByGoodsId(goodId) {
   })
 }
 
-function getManufacturingWorksByProductIdPromise(goodId) {
+const getManufacturingWorksByProductIdPromise = (goodId) => {
   return new Promise((resolve, reject) => {
     GoodServices.getManufacturingWorksByProductId(goodId)
       .then((res) => {
@@ -214,7 +140,7 @@ function getManufacturingWorksByProductIdPromise(goodId) {
   })
 }
 
-function getInventoryByGoodIdPromise(data) {
+const getInventoryByGoodIdPromise = (data) => {
   return new Promise((resolve, reject) => {
     LotServices.getInventoryByGoodIds(data)
       .then((res) => {
@@ -226,11 +152,9 @@ function getInventoryByGoodIdPromise(data) {
   })
 }
 
-function getItemsForGood(goodId) {
+const getItemsForGood = (goodId) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GET_ITEMS_FOR_GOOD_REQUEST
-    })
+    dispatch({ type: GoodConstants.GET_ITEMS_FOR_GOOD_REQUEST })
     Promise.all([
       getTaxByGoodsId(goodId),
       getSlaByGoodsId(goodId),
@@ -252,93 +176,73 @@ function getItemsForGood(goodId) {
         })
       })
       .catch((err) => {
-        dispatch({
-          type: GoodConstants.GET_ITEMS_FOR_GOOD_FAILURE,
-          error: err
-        })
+        dispatch({ type: GoodConstants.GET_ITEMS_FOR_GOOD_FAILURE, error: err })
       })
   }
 }
 
-function getGoodByManageWorkRole(roleId) {
+const getGoodByManageWorkRole = (roleId) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_REQUEST
-    })
+    dispatch({ type: GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_REQUEST })
     GoodServices.getGoodByManageWorkRole(roleId)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_SUCCESS, payload: res.data.content })
       })
       .catch((error) => {
-        dispatch({
-          type: GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_FAILURE,
-          error
-        })
+        dispatch({ type: GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_FAILURE, error })
       })
   }
 }
 
-function getManufacturingWorksByProductId(productId) {
+const getManufacturingWorksByProductId = (productId) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_REQUEST
-    })
+    dispatch({ type: GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_REQUEST })
     GoodServices.getManufacturingWorksByProductId(productId)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_SUCCESS, payload: res.data.content })
       })
       .catch((error) => {
-        dispatch({
-          type: GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_FAILURE,
-          error
-        })
+        dispatch({ type: GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_FAILURE, error })
       })
   }
 }
 
-function getNumberGoods() {
+const getNumberGoods = () => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.GET_NUMBER_GOODS_REQUEST
-    })
+    dispatch({ type: GoodConstants.GET_NUMBER_GOODS_REQUEST })
     GoodServices.getNumberGoods()
       .then((res) => {
-        dispatch({
-          type: GoodConstants.GET_NUMBER_GOODS_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.GET_NUMBER_GOODS_SUCCESS, payload: res.data.content })
       })
       .catch((error) => {
-        dispatch({
-          type: GoodConstants.GET_NUMBER_GOODS_FAILURE,
-          error
-        })
+        dispatch({ type: GoodConstants.GET_NUMBER_GOODS_FAILURE, error })
       })
   }
 }
 
-function importGood(data) {
+const importGood = (data) => {
   return (dispatch) => {
-    dispatch({
-      type: GoodConstants.IMPORT_GOOD_REQUEST
-    })
+    dispatch({ type: GoodConstants.IMPORT_GOOD_REQUEST })
     GoodServices.importGood(data)
       .then((res) => {
-        dispatch({
-          type: GoodConstants.IMPORT_GOOD_SUCCESS,
-          payload: res.data.content
-        })
+        dispatch({ type: GoodConstants.IMPORT_GOOD_SUCCESS, payload: res.data.content })
       })
       .catch((err) => {
-        dispatch({
-          type: GoodConstants.IMPORT_GOOD_FAILURE
-        })
+        dispatch({ type: GoodConstants.IMPORT_GOOD_FAILURE })
       })
   }
+}
+
+export const GoodActions = {
+  getGoodsByType,
+  getAllGoods,
+  getAllGoodsByType,
+  getAllGoodsByCategory,
+  getGoodDetail,
+  deleteGood,
+  getItemsForGood,
+  getGoodByManageWorkRole,
+  getManufacturingWorksByProductId,
+  getNumberGoods,
+  importGood
 }
