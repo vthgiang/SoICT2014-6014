@@ -197,4 +197,11 @@ module.exports = {
     CostFormula: require('./transportation/cost/costFormula.model'),
     Driver: require('./transportation/driver/driver.model'),
     ShipperSalary: require('./transportation/driver/shipperSalary.model'),
+
+    // Transport 3
+    Transport3Order: require('./transport3/transport3Order.model'),
+    Transport3Employee: require('./transport3/transport3Employee.model'),
+    Transport3Vehicle: require('./transport3/transport3Vehicle.model'),
+    Transport3Schedule: require('./transport3/transport3Schedule.model'),
+    DeliverySchedule: require('./transportation/delivery-plan/deliverySchedule.model')
 };

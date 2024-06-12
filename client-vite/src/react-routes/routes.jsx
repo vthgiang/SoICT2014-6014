@@ -67,6 +67,18 @@ const ProjectTemplateManagement = lazy(() => import('../modules/bidding/project-
 const BidDashboard = lazy(() => import('../modules/bidding/bidding-dashboard/component'))
 const TagManagement = lazy(() => import('../modules/bidding/tags/component'))
 
+const OrganizationalUnitKpiCreateForAdmin = lazy(
+  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin')
+)
+const OrganizationalUnitKpiCreate = lazy(() => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate'))
+const OrganizationalUnitKpiDashboard = lazy(
+  () => import('../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard')
+)
+const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview'))
+const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation'))
+const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
+const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
+
 const CreateEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/creation/component/employeeKpiCreate'))
 const KPIPersonalManager = lazy(() => import('../modules/kpi/employee/management/component/employeeKpiManagement'))
 const DashBoardEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/dashboard/component/employeeKpiDashboard'))
@@ -150,7 +162,7 @@ const CrmUnitConfiguration = lazy(() => import('../modules/crm/crmUnitConfigurat
 // orders
 const PurchaseOrder = lazy(() => import('../modules/production/order/purchase-order/components'))
 const SalesOrder = lazy(() => import('../modules/production/order/sales-order/components'))
-const Profit= lazy(() => import('../modules/production/order/profit/components'))
+const Profit = lazy(() => import('../modules/production/order/profit/components'))
 const SalesStatistics = lazy(() => import('../modules/production/order/sales-statistics/components'))
 const Forecast = lazy(() => import('../modules/production/order/forecast/components'))
 const Discount = lazy(() => import('../modules/production/order/discount/components'))
@@ -218,6 +230,13 @@ const TransportationCost = lazy(() => import('../modules/transportation/cost/com
 const ShipperInfo = lazy(() => import('../modules/transportation/shipper/components/info-management/index'))
 const ShipperDeliveryReport = lazy(() => import('../modules/transportation/shipper/components/delivery-report/index'))
 
+// Quản lý vận chuyển 3
+const DashBoardtransport3Unit = lazy(() => import('../modules/transport3/dashboard/components'))
+const OrderTransport3 = lazy(() => import('../modules/transport3/order/components'))
+const ScheduleTransport3 = lazy(() => import('../modules/transport3/schedule/components'))
+const EmployeeTransport3 = lazy(() => import('../modules/transport3/employee/components'))
+const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/components'))
+
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 const Project = lazy(() => import('../modules/project/projects/components/index'))
@@ -249,21 +268,7 @@ const ManageRoleDefault = lazy(() => import('../modules/system-admin/root-role/c
 const ComponentsDefaultManagement = lazy(() => import('../modules/system-admin/system-component/components'))
 const ManageSystem = lazy(() => import('../modules/super-admin/system/components'))
 const DashboardUnitForAdmin = lazy(() => import('../modules/dashboard-unit/components/dashboardUnitForAdmin'))
-const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
-const OrganizationalUnitKpiCreateForAdmin = lazy(
-  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin.jsx')
-)
-const OrganizationalUnitKpiCreate = lazy(
-  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate.jsx')
-)
 
-const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation.jsx'))
-
-const OrganizationalUnitKpiDashboard = lazy(
-  () => import('../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard.jsx')
-)
-const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
-const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview'))
 class Routes extends Component {
   render() {
     const { auth, company, user, role, link, component, department, employeesManager } = this.props
@@ -3642,6 +3647,247 @@ class Routes extends Component {
             component={ManufacturingRequestManagement}
           />
 
+          {/* Quản lý vận chuyển 3 */}
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-dashboard'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-dashboard',
+                name: 'manage_transport3_dashboard',
+                icon: 'fa fa-dashboard'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-dashboard'}
+            path={'/manage-transport3-dashboard'}
+            pageName={'manage_transport3_dashboard'}
+            layout={Layout}
+            component={DashBoardtransport3Unit}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-order'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-order',
+                name: 'manage_transport3_order',
+                icon: 'fa fa-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-order'}
+            path={'/manage-transport3-order'}
+            pageName={'manage_transport3_order'}
+            layout={Layout}
+            component={OrderTransport3}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-schedule'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-schedule',
+                name: 'manage_transport3_schedule',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-schedule'}
+            path={'/manage-transport3-schedule'}
+            pageName={'manage_transport3_schedule'}
+            layout={Layout}
+            component={ScheduleTransport3}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-route'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-route',
+                name: 'manage_transport3_route',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-route'}
+            path={'/manage-transport3-route'}
+            pageName={'manage_transport3_route'}
+            layout={Layout}
+            component={DashBoardtransport3Unit}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-cost'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-cost',
+                name: 'manage_transport3_cost',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-cost'}
+            path={'/manage-transport3-cost'}
+            pageName={'manage_transport3_cost'}
+            layout={Layout}
+            component={DashBoardtransport3Unit}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-issue'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-issue',
+                name: 'manage_transport3_issue',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-issue'}
+            path={'/manage-transport3-issue'}
+            pageName={'manage_transport3_issue'}
+            layout={Layout}
+            component={DashBoardtransport3Unit}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-partner'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-partner',
+                name: 'manage_transport3_partner',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-partner'}
+            path={'/manage-transport3-partner'}
+            pageName={'manage_transport3_partner'}
+            layout={Layout}
+            component={DashBoardtransport3Unit}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-vehicle'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-vehicle',
+                name: 'manage_transport3_vehicle',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-vehicle'}
+            path={'/manage-transport3-vehicle'}
+            pageName={'manage_transport3_vehicle'}
+            layout={Layout}
+            component={VehicleTransport3}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-employee'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-employee',
+                name: 'manage_transport3_employee',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-employee'}
+            path={'/manage-transport3-employee'}
+            pageName={'manage_transport3_employee'}
+            layout={Layout}
+            component={EmployeeTransport3}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-statistic'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-statistic',
+                name: 'manage_transport3_statistic',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-statistic'}
+            path={'/manage-transport3-statistic'}
+            pageName={'manage_transport3_statistic'}
+            layout={Layout}
+            component={DashBoardtransport3Unit}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-mission'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-mission',
+                name: 'manage_transport3_mission',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-mission'}
+            path={'/manage-transport3-mission'}
+            pageName={'manage_transport3_mission'}
+            layout={Layout}
+            component={DashBoardtransport3Unit}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-transport3-requirement'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-transport3-requirement',
+                name: 'manage_transport3_requirement',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-transport3-requirement'}
+            path={'/manage-transport3-requirement'}
+            pageName={'manage_transport3_requirement'}
+            layout={Layout}
+            component={DashBoardtransport3Unit}
+          />
+
           {/* Transport Management */}
 
           <PrivateRoute
@@ -3795,6 +4041,191 @@ class Routes extends Component {
             pageName='carrier_all_times_transport_mission'
             layout={Layout}
             component={CarrierAllTimesTransportMission} // component ứng với trang, tạo ở bước 1
+          />
+
+          {/* Quản lý vận chuyển 2*/}
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-dashboard'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-dashboard',
+                name: 'manage_transportation_dashboard',
+                icon: 'fa fa-dashboard'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-dashboard'}
+            path={'/transportation-dashboard'}
+            pageName={'manage_transportation'}
+            layout={Layout}
+            component={DashBoardTransportationUnit}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-route-init'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-route-init',
+                name: 'manage_transportation_init_route',
+                icon: 'fa fa-road'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-route-init'}
+            path={'/transportation-route-init'}
+            pageName={'manage_transportation_init_route'}
+            layout={Layout}
+            component={InitializationType}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-list-journey'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-list-journey',
+                name: 'manage_transportation_list_journey',
+                icon: 'fa fa-list-alt'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-list-journey'}
+            path={'/transportation-list-journey'}
+            pageName={'manage_transportation_list_journey'}
+            layout={Layout}
+            component={Journeys}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-info-vehicles'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-info-vehicles',
+                name: 'manage_transportation_vehicles',
+                icon: 'fa fa-car'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-info-vehicles'}
+            path={'/transportation-info-vehicles'}
+            pageName={'manage_transportation_vehicles'}
+            layout={Layout}
+            component={VehiclesTransportation}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-test-api-shipper'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-test-api-shipper',
+                name: 'manage_transportation_test_api_shipper',
+                icon: 'fa fa-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-test-api-shipper'}
+            path={'/transportation-test-api-shipper'}
+            pageName={'manage_transportation_test_api_shipper'}
+            layout={Layout}
+            component={ShipperDeliveryReport}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-delivery-detail'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-list-journey',
+                name: 'manage_transportation_list_journey',
+                icon: 'fa fa-list-alt'
+              },
+              {
+                link: '/transportation-delivery-detail',
+                name: 'manage_transportation_delivery_detail',
+                icon: 'fa fa-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-delivery-detail'}
+            path={'/transportation-delivery-detail'}
+            pageName={'manage_transportation_delivery_detail'}
+            layout={Layout}
+            component={DetailSolution}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-journey-detail'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-list-journey',
+                name: 'manage_transportation_list_journey',
+                icon: 'fa fa-list-alt'
+              },
+              {
+                link: '/transportation-journey-detail',
+                name: 'manage_transportation_journey_detail',
+                icon: 'fa fa-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-journey-detail'}
+            path={'/transportation-journey-detail'}
+            pageName={'manage_transportation_journey_detail'}
+            layout={Layout}
+            component={DetailJourney}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-cost-manage'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-cost-manage',
+                name: 'manage_transportation_cost',
+                icon: 'fa fa-usd'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-cost-manage'}
+            path={'/transportation-cost-manage'}
+            pageName={'manage_transportation_cost'}
+            layout={Layout}
+            component={TransportationCost}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'transportation-shipper-manage'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/transportation-shipper-manage',
+                name: 'manage_transportation_shipper',
+                icon: 'fa fa-user-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/transportation-shipper-manage'}
+            path={'/transportation-shipper-manage'}
+            pageName={'manage_transportation_shipper'}
+            layout={Layout}
+            component={ShipperInfo}
           />
 
           {/* Quản lý dự án */}

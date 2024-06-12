@@ -1,9 +1,9 @@
 import { sendRequest } from '../../../../../helpers/requestHelper'
 
-function createPayment(data) {
+function createMarketingCampaign(data) {
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/payment`,
+      url: `${process.env.REACT_APP_SERVER}/marketing-campaign`,
       method: 'POST',
       data
     },
@@ -52,8 +52,8 @@ function getPaymentForOrder({ orderId, orderType }) {
   )
 }
 
-export const PaymentServices = {
-  createPayment,
+export const MarketingCampaignServices = {
+  createMarketingCampaign,
   getAllPayments,
   getPaymentDetail,
   getPaymentForOrder

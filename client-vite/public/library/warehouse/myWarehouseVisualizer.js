@@ -2138,60 +2138,7 @@ function myDataVisualizer() {
                     records: gridRecords,
                     header: dataVisual[gridType + "Name"],
                     show: {
-                        toolbar: true,
-                        toolbarReload: false,
-                        footer: true,
-                        selectColumn: true,
-                        toolbarEdit: true,
-                        //header: true,
-
-                    },
-
-                    onEdit: function (event) {
-                        // Lấy dữ liệu từ hàng hiện tại
-                        var record = this.get(event.recid);
-
-                        // Tạo form với các trường tương ứng với các cột trong hàng
-                        var formHTML = '<form id="editForm" style="display: flex; flex-direction: column; gap: 10px; width: auto; height: auto;">';
-                        for (var field in record) {
-                            if (field !== 'recid') { // Bỏ qua trường 'recid'
-                                formHTML += '<div style="display: flex; flex-direction: column;">';
-                                formHTML += '<label for="' + field + '" style="font-weight: bold;">' + field + ':</label>';
-                                formHTML += '<input type="text" id="' + field + '" name="' + field + '" value="' + record[field] + '" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">';
-                                formHTML += '</div>';
-                            }
-                        }
-                        formHTML += '</form>';
-
-                        // Hiển thị form trong một cửa sổ popup
-                        w2popup.open({
-                            title: 'Edit record',
-                            width: 600,
-                            height: 800,
-                            body: formHTML,
-                            buttons: '<button class="w2ui-btn" style="margin-right: 10px; background-color: #4CAF50; color: #4e77c5; border: none; cursor: pointer; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; transition-duration: 0.4s;" onclick="saveFormData()">Save</button> <button class="w2ui-btn" style="background-color: #f44336; color: #da6969; border: none; cursor: pointer; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; transition-duration: 0.4s;" onclick="w2popup.close();">Cancel</button>'
-                        });
-
-                        window.saveFormData = function () {
-                            var form = document.getElementById('editForm');
-                            var formData = new FormData(form);
-                            var dataObject = {};
-
-                            for (var pair of formData.entries()) {
-                                dataObject[pair[0]] = pair[1];
-                            }
-
-                            // Cập nhật dữ liệu trực tiếp vào grid
-                            var grid = w2ui[dataVisual.warehouseName + "_dataGrid"];
-                            var record = grid.get(event.recid);
-                            for (var field in dataObject) {
-                                if (record.hasOwnProperty(field)) {
-                                    record[field] = dataObject[field]; // Cập nhật dữ liệu mới
-                                }
-                            }
-                            grid.refresh(); // Làm mới toàn bộ grid
-                            w2popup.close();
-                        }
+                        toolbar: true, toolbarReload: false, footer: true, selectColumn: true, //header: true,
 
                     },
 

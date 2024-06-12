@@ -67,8 +67,6 @@ function getAllGoodsByCategory(id) {
   )
 }
 
-
-
 function getGoodDetail(id) {
   return sendRequest(
     {
@@ -80,8 +78,6 @@ function getGoodDetail(id) {
     'manage_warehouse.good_management'
   )
 }
-
-
 
 function deleteGood(id) {
   return sendRequest(

@@ -40,7 +40,8 @@ const ProductRequestManagementSchema = new Schema({
     refuser: { // Người từ chối yêu cầu
         refuser: {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            default: null
         },
         refuserTime: {
             type: Date
@@ -86,15 +87,18 @@ const ProductRequestManagementSchema = new Schema({
     },
     toStock: { // Nếu là luân chuyển hàng thì là kho tiếp nhận
         type: Schema.Types.ObjectId,
-        ref: 'Stock'
+        ref: 'Stock',
+        default: null,
     },
     requestingDepartment: { // Phòng ban yêu cầu
         type: Schema.Types.ObjectId,
-        ref: 'OrganizationalUnit'
+        ref: 'OrganizationalUnit',
+        default: null,
     },
     orderUnit: {// Bộ phận đơn hàng
         type: Schema.Types.ObjectId,
-        ref: "OrganizationalUnit"
+        ref: "OrganizationalUnit",
+        default: null,
     },
     supplier: { // nhà cung cấp
         type: Schema.Types.ObjectId,
@@ -122,7 +126,8 @@ const ProductRequestManagementSchema = new Schema({
     },
 
     desiredTime: { // Thời gian mong muốn nhận hàng hoặc nhập hàng
-        type: String
+        type: String,
+        default: null,
     },
     /*yêu cầu mua hàng gửi từ sản xuất : requestType = 1, type = 1
     1: chờ phê duyệt, 2: đã gửi đến bộ phận mua hàng, 3: đã phê duyệt mua hàng, 4. Đã tạo đơn mua hàng
@@ -172,15 +177,18 @@ const ProductRequestManagementSchema = new Schema({
     },
     purchaseOrder: { // Mã đơn mua hàng
         type: Schema.Types.ObjectId,
-        ref: "PurchaseOrder"
+        ref: "PurchaseOrder",
+        default: null,
     },
     saleOrder: { // Mã đơn bán hàng
         type: Schema.Types.ObjectId,
-        ref: "SalesOrder"
+        ref: "SalesOrder",
+        default: null,
     },
     bill: { // Mã phiếu trong kho
         type: Schema.Types.ObjectId,
-        ref: "Bill"
+        ref: "Bill",
+        default: null,
     },
 }, {
     // Thời gian tạo, sửa yêu cầu

@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const mongoosePaginate = require('mongoose-paginate-v2')
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const MarketingCampaignSchema = new Schema(
   {
-    code:{
-        type: String,
-        required: true,
+    code: {
+      type: String,
+      required: true,
     },
     cost: {
-        type: Number,
+      type: Number,
     },
     channel: {
       type: String,
@@ -17,17 +17,16 @@ const MarketingCampaignSchema = new Schema(
 
     name: {
       type: String,
-      
     },
     status: {
       type: Number,
       default: 0,
-    }
+    },
   },
   {
     timestamps: true,
   }
-)
+);
 
 MarketingCampaignSchema.plugin(mongoosePaginate);
 

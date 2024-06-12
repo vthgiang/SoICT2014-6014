@@ -360,6 +360,21 @@ export default {
       project_report: 'Báo cáo dự án',
       project_evaluation: 'Thống kê đánh giá',
 
+      // Quản lý vận chuyển 3
+      manage_transport3: 'Quản lý vận chuyển',
+      manage_transport3_dashboard: 'Bảng tin quản lý vận chuyển',
+      manage_transport3_order: 'Quản lý vận đơn',
+      manage_transport3_schedule: 'Lập lịch vận chuyển',
+      manage_transport3_route: 'Quản lý lịch trình',
+      manage_transport3_cost: 'Quản lý chi phí',
+      manage_transport3_issue: 'Xử lý sự cố',
+      manage_transport3_partner: 'Quản lý đối tác vận chuyển',
+      manage_transport3_vehicle: 'Quản lý đội xe',
+      manage_transport3_employee: 'Quản lý nhân viên',
+      manage_transport3_statistic: 'Thống kê cá nhân',
+      manage_transport3_mission: 'Vận đơn của tôi',
+      manage_transport3_requirement: 'Yêu cầu xử lý sự cố',
+
       // Quản lý vận chuyển
       manage_transport: 'Quản lý vận chuyển',
       manage_transport_requirements: 'Yêu cầu vận chuyển',
@@ -3462,7 +3477,6 @@ export default {
         select_incident_type: 'Chọn loại sự cố',
         select_all_incident_type: 'Chọn tất cả loại sự cố',
 
-        disposal_date: 'Ngày thanh lý',
         disposal_type: 'Hình thức thanh lý',
         disposal_price: 'Giá trị thanh lý',
         disposal_content: 'Nội dung thanh lý',
@@ -7033,6 +7047,9 @@ export default {
         routing_description: 'Quy trình sản xuất áp dụng để sản xuất ra sản phẩm này',
         choose_routing: 'Chọn quy trình sản xuất',
         error_routing: 'Vui lòng chọn quy trình sản xuất',
+        task_template: 'Mẫu công việc',
+        task_template_description: 'Chọn mẫu công việc sử dụng cho lệnh sản xuất này',
+        choose_task_template: 'Chọn mẫu công việc',
         operation: 'Công đoạn',
         hourProduction: 'Sản lượng mỗi giờ',
         worker_num: 'Số công nhân'
@@ -7189,7 +7206,6 @@ export default {
         passed_num: 'SL đạt yêu cầu',
         error_list: 'Danh sách lỗi',
         error_name: 'Tên lỗi',
-        // quantity: 'Số lượng',
         qc_status: {
           1: {
             color: 'orange',

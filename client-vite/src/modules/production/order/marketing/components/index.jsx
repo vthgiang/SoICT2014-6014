@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { Button } from '@mui/material'
 import * as React from 'react'
+import { useState, useRef } from 'react';
 import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -22,12 +23,19 @@ import './style.css'
 import { SelectBox, DatePicker } from '../../../../../common-components'
 import GridLayout from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
+import { MarketingCampaignActions } from '../redux/actions'
+import Switch from '@mui/material/Switch';
 
 import './style.css'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered'
+import BatchPredictionIcon from '@mui/icons-material/BatchPrediction';
+import InfoIcon from '@mui/icons-material/Info';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import * as XLSX from 'xlsx';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -41,6 +49,9 @@ import {
   Legend
 } from 'chart.js'
 import { Bar, Doughnut } from 'react-chartjs-2'
+import { sendRequest } from '../../../../../helpers/requestHelper';
+import moment from 'moment';
+import { toast } from 'react-toastify';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
@@ -79,6 +90,16 @@ const rows_campaign = [
   createData('Chiến dịch Sale hè 2023', '88,398.1M', '91200', '11,222,556', '20', '24,891M'),
   createData('Chiến dịch Valentine 2023', '90,202.8M', '88000', '11,002,089', '11', '30,2M')
 ]
+function createDataCampaign(name, timestart, channel, cost, status) {
+  return { name, timestart, channel, cost, status}
+}
+const rows_campaign_manage = [
+  createDataCampaign('Chiến dịch Tết 2024', '4-6-2023', 'Facebook', '120,256M'),
+  createDataCampaign('Quý 4 2023 ', '5-7-2023', 'Facebook', '60,234M'),
+  createDataCampaign('Chiến dịch giáng sinh 2023', '12-12-2023', 'Facebook', '50,356M'),
+  createDataCampaign('Chiến dịch Sale hè 2023', '12-12-2023', 'Facebook', '24,891M'),
+  createDataCampaign('Chiến dịch Valentine 2023', '12-12-2023', 'Facebook', '30,2M')
+]
 const style = {
   position: 'absolute',
   top: '50%',
@@ -103,9 +124,6 @@ ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, PointElemen
 
 const MarketingCampaign = (props) => {
   const layout = [
-    // { i: 'a', x: 0, y: 0, w: 1, h: 2, static: true },
-    // { i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4 },
-
     { i: 'a', x: 0, y: 0, w: 3, h: 3, minW: 0, maxW: 6 },
     { i: 'b', x: 3, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
     { i: 'c', x: 6, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
@@ -126,8 +144,28 @@ const MarketingCampaign = (props) => {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const [openForecast, setOpenForecast] = React.useState(false)
+  const handleOpenForecast = () => setOpenForecast(true)
+  const handleCloseForecast = () => setOpenForecast(false)
+  const [openEdit, setOpenEdit] = React.useState(false)
+  const handleOpenEdit = (item) => {
+    setOpenEdit(true);
+    setEditMarketing(item)
+  }
+  const handleCloseEdit = () => setOpenEdit(false)
+  const [editMarketing, setEditMarketing] = React.useState({});
+  const [content, setContent] = React.useState('');
+
+  const handleButtonClick = (buttonType) => {
+    if (buttonType === 'button1') {
+      setContent('upload');
+    } else if (buttonType === 'button2') {
+      setContent('Nút 2');
+    }
+  };
   const { translate } = props
   const labels = ['Facebook', 'Google', 'Tiktok']
+  // const labelSwitch = { inputProps: { 'aria-label': 'Open/Close' } };
   const data_channel_ROIM = {
     labels,
     datasets: [
@@ -173,6 +211,164 @@ const MarketingCampaign = (props) => {
       }
     ]
   }
+
+  const options = [
+    { value: 'Facebook', text: 'Facebook' },
+    { value: 'Tiktok', text: 'Tiktok' },
+    { value: 'Google', text: 'Google' }
+  ]
+
+  const [marketingCampaign, setMarketingCampaign] = React.useState([])
+  const [name, setName] = React.useState('')
+  const [cost, setCost] = React.useState('')
+  const [channel, setChannel] = React.useState('Facebook')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const data = {cost, channel, name}
+
+    console.log(data);
+    const response =  await sendRequest(
+        {
+          url: `${process.env.REACT_APP_SERVER}/marketing-campaign`,
+          method: 'POST',
+          data
+        },
+        false,
+        false,
+        'marketing'
+      )
+
+      if(response.status === 201) {
+        setName('');
+        setCost('');
+        setChannel('Facebook');
+        fetchMarketingCampaign(); 
+      }
+
+  }
+  //  const data =  MarketingCampaignServices.createMarketingCampaign({name, cost, channel})
+
+   // onchange states
+   const [excelFile, setExcelFile] = useState(null);
+   const [typeError, setTypeError] = useState(null);
+ 
+   // submit state
+   const [excelData, setExcelData] = useState(null);
+ 
+   // onchange event
+   const handleFile=(e)=>{
+     let fileTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','text/csv'];
+     let selectedFile = e.target.files[0];
+     if(selectedFile){
+       if(selectedFile&&fileTypes.includes(selectedFile.type)){
+         setTypeError(null);
+         let reader = new FileReader();
+         reader.readAsArrayBuffer(selectedFile);
+         reader.onload=(e)=>{
+           setExcelFile(e.target.result);
+         }
+       }
+       else{
+         setTypeError('Please select only excel file types');
+         setExcelFile(null);
+       }
+     }
+     else{
+       console.log('Please select your file');
+     }
+   }
+   
+   // submit event
+   const handleFileSubmit=(e)=>{
+     e.preventDefault();
+     if(excelFile!==null){
+       const workbook = XLSX.read(excelFile,{type: 'buffer'});
+       const worksheetName = workbook.SheetNames[0];
+       const worksheet = workbook.Sheets[worksheetName];
+       const data = XLSX.utils.sheet_to_json(worksheet);
+       setExcelData(data.slice(0,10));
+     }
+   }
+
+   const fetchMarketingCampaign = async () => {
+    const response = await sendRequest(
+      {
+        url: `${process.env.REACT_APP_SERVER}/marketing-campaign`,
+        method: 'GET',
+      },
+      false,
+      false,
+      'marketing'
+    ) 
+    if(response.status === 200) {
+      setMarketingCampaign(response.data.content)
+    }
+   }
+ 
+   React.useEffect(()=> {
+    fetchMarketingCampaign()
+   },[])
+
+   const handleChangeChanel = (e) =>{
+    console.log(e);
+    setChannel(e[0])
+   }
+
+   const deleteCampaign =  async (id) => {
+    const response =   await sendRequest(
+      {
+        url: `${process.env.REACT_APP_SERVER}/marketing-campaign/${id}`,
+        method: 'DELETE',
+      },
+      false,
+      false,
+      'marketing'
+    )
+    if(response.status === 200){
+      fetchMarketingCampaign()
+    }
+   }
+   const changeStatusMarketingCampaign =  async (id) => {
+    const response =   await sendRequest(
+      {
+        url: `${process.env.REACT_APP_SERVER}/marketing-campaign/change-status/${id}`,
+        method: 'PUT',
+      },
+      false,
+      false,
+      'marketing'
+    )
+    if(response.status === 200){
+      fetchMarketingCampaign()
+    }
+   }
+
+   const handleEditChange = (field, value) => {
+    setEditMarketing(prev => ({ 
+        ...prev, 
+        [field]: value 
+    }));
+};
+
+   const handleSubmitEdit = async (e) => {
+    e.preventDefault();
+    console.log(editMarketing);
+    const response =  await sendRequest(
+      {
+        url: `${process.env.REACT_APP_SERVER}/marketing-campaign/${editMarketing._id}`,
+        method: 'PUT',
+        data: editMarketing
+      },
+      false,
+      false,
+      'marketing'
+    )
+    if(response.status === 200){
+      fetchMarketingCampaign()
+      setOpenEdit(false)
+    }
+   }
 
   return (
     <>
@@ -324,6 +520,7 @@ const MarketingCampaign = (props) => {
           l
         </div> */}
       </GridLayout>
+
       <div className='campaign-manage-top-campaign-title'>
         <FormatListNumberedIcon
           sx={{
@@ -362,89 +559,250 @@ const MarketingCampaign = (props) => {
                 <StyledTableCell>{row.transactions}</StyledTableCell>
                 <StyledTableCell>{row.revenue}</StyledTableCell>
                 <StyledTableCell>
-                  <Link to='/marketing-campaign-id'>See more</Link>
+                  <BatchPredictionIcon
+                  sx={{
+                    height: '24px',
+                    width: '24px',
+                    color: 'green',
+                    marginRight: '10px'
+                  }}
+                  />
+                  <Link to='/marketing-campaign-id'>
+                   <InfoIcon 
+                      sx={{
+                        height: '24px',
+                        width: '24px',
+                        color: '#1976d2'
+                      }}
+                   />
+                  </Link>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <ColorButton onClick={handleOpen} sx={{ marginBottom: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
-        Thêm chiến dịch
+
+      <ColorButton onClick={handleOpen} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
+        Quản lý chiến dịch 
       </ColorButton>
       <Modal open={open} onClose={handleClose} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
-        <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
+        <Box sx={{ ...style, width: 1000, maxHeight: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
           <h3 id='parent-modal-title'>Thêm chiến dịch</h3>
-          <div className='row'>
+          <div>
+          <TableContainer component={Paper} sx={{ minWidth: 700, maxHeight: 500, overflowY: scroll }}>
+        <Table sx={{ minWidth: 700, maxHeight: 500, overflowY: scroll }} aria-label='customized table'>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#asad' }}>
+              <StyledTableCell>Name </StyledTableCell>
+              <StyledTableCell>
+                  Time start
+              </StyledTableCell>
+              <StyledTableCell>Channel</StyledTableCell>
+              <StyledTableCell>Cost</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
+              <StyledTableCell>Action</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {marketingCampaign.map((row) => (
+              <StyledTableRow key={row.name}>
+                <StyledTableCell component='th' scope='row'>
+                  {row.name}
+                </StyledTableCell>
+                <StyledTableCell>{moment(row.createdAt).format('YYYY-MM-DD') }</StyledTableCell>
+                <StyledTableCell>{row.channel}</StyledTableCell>
+                <StyledTableCell>{row.cost}</StyledTableCell>
+                 <StyledTableCell> 
+                  <label className="switch">
+                   <input type="checkbox" checked={!row.status} onChange={()=>changeStatusMarketingCampaign(row._id)} />
+                   <span className="slider round"></span>
+                  </label>
+                  </StyledTableCell>
+                <StyledTableCell>
+                  <EditIcon
+                  onClick={() => handleOpenEdit(row)}
+                  sx={{
+                    height: '24px',
+                    width: '24px',
+                    color: '#ffc10a',
+                    marginRight: '10px',
+                  }}
+                  />
+       
+                  <Link to='/marketing-campaign-id'>
+                   <InfoIcon 
+                      sx={{
+                        height: '24px',
+                        width: '24px',
+                        color: '#1976d2'
+                      }}
+                   />
+                  </Link>
+                  <DeleteIcon
+                  sx={{
+                    height: '24px',
+                    width: '24px',
+                    marginLeft: '10px',
+                    color: 'red'
+                  }}
+                  onClick={()=> deleteCampaign(row._id)}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+          <Modal open={openEdit} onClose={handleCloseEdit} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
+      <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
+      <form className='row'>
             <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
               <div className='form-group'>
                 <label className='form-control-static'>Tên chiến dịch</label>
                 <input
                   type='text'
                   className='form-control'
-                  // value={code} onChange={handleCodeChange}
+                  value={editMarketing.name} 
+                  onChange={(e) =>handleEditChange('name',e.target.value)}
                   placeholder='Quý 1 2024'
                   autoComplete='off'
                 />
               </div>
-              <div className={`form-group`}>
+              <div className='form-group'>
                 <label>{translate('menu.marketing_channels_select')}</label>
                 <SelectBox
-                  id={`select-good-issue-create-material`}
+                  id={`select-good-issue-create-material-select2`}
                   className='form-control select2'
                   style={{ width: '100%' }}
-                  // value={good.goodId}
-                  // items={this.getMaterialArr()}
-                  // onChange={this.handleGoodChange}
+                  value={editMarketing.channel}
+                  items={options}
+                  onChange={(e) => handleEditChange('channel', e[0])}
                   multiple={false}
-                />
-              </div>
-              <div className='form-group'>
-                <label className='form-control-static'>Từ</label>
-
-                <DatePicker
-                  id={`time-campaign-from`}
-                  // value={createdAt}
-                  // onChange={handleCreatedAtChange}
-                  disabled={false}
                 />
               </div>
             </div>
             <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
               <div className='form-group'>
-                <label className='form-control-static'>Mục tiêu</label>
+                <label>Chi phí</label>
                 <input
                   type='text'
                   className='form-control'
-                  // value={code} onChange={handleCodeChange}
-                  placeholder='ROI 50%'
+                  value={editMarketing.cost}
+                  onChange={(e) =>handleEditChange('cost',e.target.value)}
+                  placeholder='1000$'
                   autoComplete='off'
                 />
               </div>
+            </div>
+            <button onClick={handleSubmitEdit}>Sửa</button>
+          </form>
+      </Box>
+      </Modal>
+        </Table>
+      </TableContainer>
+          </div>
+
+          <form className='row' onSubmit={handleSubmit}>
+            <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+              <div className='form-group'>
+                <label className='form-control-static'>Tên chiến dịch</label>
+                <input
+                  type='text'
+                  className='form-control'
+                  value={name} 
+                  onChange={(e) =>setName(e.target.value)}
+                  placeholder='Quý 1 2024'
+                  autoComplete='off'
+                />
+              </div>
+              <div className='form-group'>
+                <label>{translate('menu.marketing_channels_select')}</label>
+                <SelectBox
+                  id={`select-good-issue-create-material`}
+                  className='form-control select2'
+                  style={{ width: '100%' }}
+                  value={channel}
+                  items={options}
+                  onChange={handleChangeChanel}
+                  multiple={false}
+                />
+              </div>
+            
+            </div>
+            <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
               <div className='form-group'>
                 <label>Chi phí</label>
                 <input
                   type='text'
                   className='form-control'
-                  // value={code} onChange={handleCodeChange}
+                  value={cost}
+                  onChange={(e) =>{ setCost(e.target.value); }}
                   placeholder='1000$'
                   autoComplete='off'
                 />
               </div>
-
-              <div className='form-group'>
-                <label className='form-control-static'>Đến</label>
-
-                <DatePicker
-                  id={`time-campaign-to`}
-                  // value={createdAt}
-                  // onChange={handleCreatedAtChange}
-                  disabled={false}
-                />
-              </div>
             </div>
-          </div>
+            <button onClick={handleSubmit}>Thêm</button>
+          </form>
         </Box>
+      </Modal>
+      <ColorButton onClick={handleOpenForecast} sx={{ marginBottom: 2, marginTop: 2, marginLeft: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
+        Dự báo 
+      </ColorButton>
+      <Modal open={openForecast} onClose={handleCloseForecast} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
+      <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
+      <ColorButton  onClick={() => handleButtonClick('button1')} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
+        Dự báo phản hồi người dùng
+      </ColorButton>
+      <ColorButton onClick={() => handleButtonClick('button2')} sx={{ marginBottom: 2, marginTop: 2, marginLeft:8, fontSize: 14, color: '#ffff' }} variant='contained'>
+        Dự báo lợi nhuận từ tiếp thị
+      </ColorButton>
+      
+      
+      {content === 'upload' && (
+        <div >
+          <h3>Upload & View Excel Sheets</h3>
+
+          {/* form */}
+          <form onSubmit={handleFileSubmit}>
+            <input type="file" required onChange={handleFile}/>
+            <button type="submit" >UPLOAD</button>
+            {typeError && (
+              <div  role="alert">{typeError}</div>
+            )}
+          </form>
+
+          {/* view data */}
+          <div >
+            {excelData ? (
+              <div>
+                <table >
+                  <thead>
+                    <tr>
+                      {Object.keys(excelData[0]).map((key) => (
+                        <th key={key}>{key}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {excelData.map((individualExcelData, index) => (
+                      <tr key={index}>
+                        {Object.keys(individualExcelData).map((key) => (
+                          <td key={key}>{individualExcelData[key]}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div>No File is uploaded yet!</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {content === 'Nút 2' && <div>Nút 2</div>}
+      </Box>
       </Modal>
     </>
   )

@@ -120,8 +120,6 @@ function getAllGoodsByCategory(id) {
   }
 }
 
-
-
 function getGoodDetail(id) {
   return (dispatch) => {
     dispatch({
@@ -142,8 +140,6 @@ function getGoodDetail(id) {
       })
   }
 }
-
-
 
 function deleteGood(id) {
   return (dispatch) => {

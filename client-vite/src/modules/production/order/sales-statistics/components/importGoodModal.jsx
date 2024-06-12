@@ -156,8 +156,8 @@ function ImportGoodModal(props) {
 
       setState({
         ...state,
-        importData: value, 
-        importShowData: valueShow, 
+        importData: value,
+        importShowData: valueShow,
         rowError: rowError,
         checkFileImport: checkFileImport
       })
