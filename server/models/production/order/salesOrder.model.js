@@ -11,8 +11,9 @@ const SalesOrderSchema = new Schema({
         //2: Đã phê duyệt
         //3: Yêu cầu sản xuất, 
         //4: Đã lập kế hoạch sản xuất
-        //5: Đã yêu cầu sản xuất
-        //6: Đang giao hàng , 7: Đã giao hàng, 
+        //5: Đã yêu cầu xuất kho
+        //6: Đang giao hàng ,
+        //7: Đã giao hàng,
         //8: Đã hủy
         type: Number,
         enum: [1, 2, 3, 4, 5, 6, 7, 8],

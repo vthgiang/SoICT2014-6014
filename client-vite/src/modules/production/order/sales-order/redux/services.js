@@ -29,7 +29,7 @@ function createNewSalesOrder(data) {
 }
 
 function getAllSalesOrders(queryData) {
-  return sendRequest(
+    return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/sales-order`,
       method: 'GET',
@@ -39,6 +39,7 @@ function getAllSalesOrders(queryData) {
     true,
     'manage_order.sales_order'
   )
+
 }
 
 function editSalesOrder(id, data) {

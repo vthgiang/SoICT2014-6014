@@ -389,6 +389,7 @@ function SalesOrderDetailForm(props) {
                       salesOrderDetail.goods.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
+                          {/*<td>{item.code}</td>*/}
                           <td>{item.good ? item.good.code : ''}</td>
                           <td>{item.good ? item.good.name : ''}</td>
                           <td>{item.good ? item.good.baseUnit : ''}</td>

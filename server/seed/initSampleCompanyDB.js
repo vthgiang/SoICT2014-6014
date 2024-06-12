@@ -4791,8 +4791,10 @@ const initSampleCompanyDB = async () => {
         newProducts.push(newProduct);
     });
     await Good(vnistDB).insertMany(newProducts);
+    const list_goods = await Good(vnistDB).insertMany(newProducts);
     console.log('Khởi tạo xong danh sách hàng hóa');
-    
+    const list_goods_in_stock = await Good(vnistDB).find({});
+
 
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
@@ -4821,23 +4823,29 @@ const initSampleCompanyDB = async () => {
                 },
             ],
             status: '1',
-            goods: [
-                {
-                    good: listGood[0]._id,
-                    maxQuantity: 100,
-                    minQuantity: 10,
-                },
-                {
-                    good: listGood[1]._id,
-                    maxQuantity: 200,
-                    minQuantity: 30,
-                },
-                {
-                    good: listProduct[0]._id,
-                    maxQuantity: 100,
-                    minQuantity: 10,
-                },
-            ],
+            goods: 
+            // [
+            //     {
+            //         good: listGood[0]._id,
+            //         maxQuantity: 100,
+            //         minQuantity: 10,
+            //     },
+            //     {
+            //         good: listGood[1]._id,
+            //         maxQuantity: 200,
+            //         minQuantity: 30,
+            //     },
+            //     {
+            //         good: listProduct[0]._id,
+            //         maxQuantity: 100,
+            //         minQuantity: 10,
+            //     },
+            // ],
+            Array.from({ length: 300 }, (_, index) => ({
+                good: list_goods_in_stock[index]._id,
+                maxQuantity: 1000,
+                minQuantity: 10,
+            }))
         },
         {
             company: vnist._id,
@@ -5082,23 +5090,32 @@ const initSampleCompanyDB = async () => {
             capacity: 200,
             contained: 0,
             child: [],
-            enableGoods: [
-                {
-                    good: listGood[0]._id,
-                    contained: 0,
-                    capacity: 200,
-                },
-                {
-                    good: listGood[1]._id,
-                    contained: 0,
-                    capacity: 300,
-                },
-                {
-                    good: listProduct[1]._id,
-                    contained: 0,
-                    capacity: 100,
-                },
-            ],
+            enableGoods: 
+            // [
+            //     {
+            //         good: listGood[0]._id,
+            //         contained: 0,
+            //         capacity: 200,
+            //     },
+            //     {
+            //         good: listGood[1]._id,
+            //         contained: 0,
+            //         capacity: 300,
+            //     },
+            //     {
+            //         good: listProduct[1]._id,
+            //         contained: 0,
+            //         capacity: 100,
+            //     },
+            //     {
+            //         good: list_goods[1]._id
+            //     }
+            // ],
+            Array.from({ length: 300 }, (_, index) => ({
+                good: list_goods[index]._id,
+                contained: 500,
+                capacity: 1000,
+            }))
         },
         {
             code: 'T2',

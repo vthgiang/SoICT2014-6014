@@ -36,6 +36,19 @@ const InventoryWarehouseSchema = new Schema({
     },
     link_: {
         type: String
+    },
+    good: {
+        type: Schema.Types.ObjectId,
+        ref: 'Good',
+        require: false
+    },
+    contained: {
+        type: Number,
+        default: 0
+    },
+    capacity: {
+        type: Number,
+        default: 0
     }
 });
 
