@@ -99,10 +99,7 @@
     "react-image-crop": "^11.0.5",
     "react-innertext": "^1.1.5",
     "react-lazyload": "^3.0.0",
-<<<<<<< HEAD
     "react-leaflet": "^4.2.1",
-=======
->>>>>>> 397a1b650 (add module transportation from qlcv)
     "react-mathjax2": "^0.0.2",
     "react-moment": "^1.1.3",
     "react-multi-carousel": "^2.8.2",
