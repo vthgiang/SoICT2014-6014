@@ -126,17 +126,13 @@ const ProductRequestManagementSchema = new Schema({
     },
 
     desiredTime: { // Thời gian mong muốn nhận hàng hoặc nhập hàng
-<<<<<<< HEAD
         type: String,
         default: null,
-=======
-        type: String
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     /*yêu cầu mua hàng gửi từ sản xuất : requestType = 1, type = 1
     1: chờ phê duyệt, 2: đã gửi đến bộ phận mua hàng, 3: đã phê duyệt mua hàng, 4. Đã tạo đơn mua hàng
     5: Chờ phê duyệt yêu cầu,
-    6: Đã gửi yêu cầu nhập kho, 7: Đã phê duyệt yêu cầu nhập kho, 8: Đang tiến hành nhập kho 9: Đã hoàn thành nhập kho, 
+    6: Đã gửi yêu cầu nhập kho, 7: Đã phê duyệt yêu cầu nhập kho, 8: Đang tiến hành nhập kho 9: Đã hoàn thành nhập kho,
     10: Đã hủy yêu cầu mua hàng, 11: Đã hủy yêu cầu nhập kho
     */
     /* Yêu cầu nhập kho từ sản xuất: requestType = 1, type = 2
@@ -171,12 +167,12 @@ const ProductRequestManagementSchema = new Schema({
     Yêu cầu vận chuyển: requestType = 6
     1. chờ phê duyệt đề nghị vận chuyển, 2. đã phê duyệt đề nghị vận chuyển, sẵn sàng lập lịch; 3. đang tiến hành vận chuyển,
     4. Vận chuyển thành công;  5. Vận chuyển thất bại; 6. Bị từ chối yêu cầu vận chuyển
-    */ 
+    */
     status: {
         type: Number,
         default: 1
     },
-    description: { // Mô tả phiếu đề nghị mua 
+    description: { // Mô tả phiếu đề nghị mua
         type: String
     },
     purchaseOrder: { // Mã đơn mua hàng

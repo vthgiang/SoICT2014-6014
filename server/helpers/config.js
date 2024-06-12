@@ -112,21 +112,12 @@ const LINK_CATEGORY = {
         description: 'Quản lý sản xuất',
     },
     TRANSPORT: {
-<<<<<<< HEAD
         name: 'transport-management',
         description: 'Quản lý vận chuyển',
     },
     TRANSPORTATION: {
         name: 'manage-transportation',
         description: 'Quản lý vận chuyển 2',
-=======
-        name: "transport-management",
-        description: "Quản lý vận chuyển",
-    },
-    TRANSPORTATION: {
-        name: "manage-transportation",
-        description: "Quản lý vận chuyển 2"
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     PROJECT: {
         name: 'projects-manager',
@@ -145,7 +136,6 @@ const LINK_CATEGORY = {
         description: 'Quản lý đấu thầu',
     },
     RISK: {
-<<<<<<< HEAD
         name: 'risk-management',
         description: 'Quản lý rủi ro',
     },
@@ -323,77 +313,6 @@ const LINKS = [
         url: '/home',
         description: `Trang chủ công ty`,
         category: LINK_CATEGORY.COMMON.name,
-=======
-        name: "risk-management",
-        description: "Quản lý rủi ro"
-    },
-    RISK_DISTRIBUTION: {
-        name: "risk-distribution",
-        description: "Mạng Bayes"
-    },
-    TASK_PERT: {
-        name: "task-pert",
-        description: "Xác suất thành công của quy trình"
-    },
-    EXPRIMENTAL_ANALYSIS: {
-        name: "exprimental-analysis",
-        description: "Đánh giá thực nghiệm"
-    },
-    RISK_RESPONSE_PLAN: {
-        name: "risk-response-plan",
-        description: "Quản lý biện pháp ứng phó rủi ro"
-    },
-    BAYESIAN_NETWORK_CONFIG: {
-        name: "bayesian-network-config",
-        description: "Cấu hình mạng Bayes"
-    },
-    MANUFACTURING_PROCESS: {
-        name: "management-manufacturing-process",
-        description: "Trang quản lý quy trình công việc sản xuất"
-    }
-};
-
-const COMPONENTS = [
-    {
-        name: "create-notification",
-        description: "Tạo thông báo mới",
-        roles: [ROOT_ROLES.ADMIN.name, ROOT_ROLES.SUPER_ADMIN.name],
-        links: ["/notifications"],
-    },
-    {
-        name: "create-task-template-button",
-        description: "Button thêm mới mẫu công việc",
-        roles: [ROOT_ROLES.MANAGER.name],
-        links: ["/task-template"],
-    },
-    {
-        name: "refresh-kpi-unit-in-dashboard",
-        description: "Button làm mới biểu đồ thống kê KPI giữa các đơn vị",
-        roles: [ROOT_ROLES.MANAGER.name],
-        links: ["/kpi-units/dashboard", "/dashboard-all-unit"],
-    },
-    {
-        name: "create-task-process-button",
-        description: "Button thêm mới mẫu quy trình công việc",
-        roles: [ROOT_ROLES.MANAGER.name],
-        links: ["/task-process-template"],
-    },
-    {
-        name: "create-asset",
-        description: "Button thêm mới tài sản",
-        roles: [ROOT_ROLES.MANAGER.name],
-        links: ["/employee-manage-info-asset", "/manage-info-asset"],
-    },
-    {
-        name: "select-manufacturing-works",
-        description: "Select Box chọn nhà máy sản xuất",
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        links: ["/manage-work-schedule"],
-    },
-    {
-        name: "create-manufacturing-plan",
-        description: "Button tạo kế hoạch sản xuất",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
             ROOT_ROLES.ADMIN.name,
@@ -401,70 +320,11 @@ const COMPONENTS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/home'),
     },
     {
         url: '/notifications',
         description: 'Thông báo',
-=======
-        links: ["/manage-manufacturing-plan"],
-    },
-    {
-        name: "create-stock-button",
-        description: "Button thêm mới kho",
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        links: ["/stock-management"],
-    },
-    {
-        name: "create-quote",
-        description: "Button thêm mới kho",
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        links: ["/manage-quote"],
-    },
-    {
-        name: "create-sales-order",
-        description: "Button thêm mới kho",
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        links: ["/manage-sales-order"],
-    },
-    {
-        name: "view-sales-order-dashboard",
-        description: "Button thêm mới kho",
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        links: ["/manage-sales-order-dashboard"],
-    },
-    {
-        name: "view-pie-chart-purchasing",
-        description: "Xem biều đồ phiếu mua hàng theo trạng thái",
-        roles: [],
-        links: ["/manufacturing-dashboard"],
-    },
-    {
-        name: "create-transport-plan",
-        description: "Tạo kế hoạch vận chuyển",
-        roles: [],
-        links: ["/manage-transport-plan"],
-    },
-    {
-        name: "button-import-task",
-        description: "Button import công việc",
-        roles: [ROOT_ROLES.ADMIN.name],
-        links: ["/task-management"],
-    },
-];
-
-const getComponentsInLink = (link) => {
-    return COMPONENTS
-        .filter(component => component.links.indexOf(link) !== -1)
-        .map(component => component.name);
-}
-
-const LINKS = [
-    {
-        url: "/home",
-        description: `Trang chủ công ty`,
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.COMMON.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -473,36 +333,14 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/notifications'),
-=======
-        components: getComponentsInLink("/home"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/notifications",
         description: "Thông báo",
         category: LINK_CATEGORY.COMMON.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
         components: getComponentsInLink('/manage-configuration'),
-=======
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/notifications"),
-    },
-    {
-        url: "/manage-configuration",
-        description: "Cấu hình hệ thống",
-        category: LINK_CATEGORY.COMMON.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/manage-configuration"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
 
     {
@@ -510,11 +348,7 @@ const LINKS = [
         description: "Quản lý sao lưu - phục hồi dữ liệu",
         category: LINK_CATEGORY.RBAC.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/system-management'),
-=======
-        components: getComponentsInLink("/system-management"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
 
     {
@@ -522,40 +356,27 @@ const LINKS = [
         description: "Quản lý cơ cấu tổ chức",
         category: LINK_CATEGORY.RBAC.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/departments-management'),
-=======
-        components: getComponentsInLink("/departments-management"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/users-management",
         description: "Quản lý người dùng",
         category: LINK_CATEGORY.RBAC.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/users-management'),
-=======
-        components: getComponentsInLink("/users-management"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/roles-management",
         description: "Quản lý phân quyền",
         category: LINK_CATEGORY.RBAC.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/roles-management'),
-=======
-        components: getComponentsInLink("/roles-management"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/links-management",
         description: "Quản lý trang web của công ty",
         category: LINK_CATEGORY.RBAC.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/links-management'),
     },
     {
@@ -628,43 +449,12 @@ const LINKS = [
         category: LINK_CATEGORY.RBAC.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name, ROOT_ROLES.MANAGER, ROOT_ROLES.DEPUTY_MANAGER, ROOT_ROLES.EMPLOYEE],
         components: getComponentsInLink('/apis-registration-employee'),
-=======
-        components: getComponentsInLink("/links-management"),
-    },
-    {
-        url: "/apis-management",
-        description: "Quản lý API web của công ty",
-        category: LINK_CATEGORY.RBAC.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/apis-management"),
-    },
-    {
-        url: "/apis-registration",
-        description: "Quản lý đăng ký sử dụng API của công ty",
-        category: LINK_CATEGORY.RBAC.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/apis-registration"),
-    },
-    {
-        url: "/apis-registration-employee",
-        description: "Quản lý đăng ký sử dụng API của nhân viên",
-        category: LINK_CATEGORY.RBAC.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER,
-            ROOT_ROLES.DEPUTY_MANAGER,
-            ROOT_ROLES.EMPLOYEE,
-        ],
-        components: getComponentsInLink("/apis-registration-employee"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/components-management",
         description: "Quản lý các thành phần UI trên trang web của công ty",
         category: LINK_CATEGORY.RBAC.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/components-management'),
     },
 
@@ -707,62 +497,20 @@ const LINKS = [
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
         components: getComponentsInLink('/hr-add-employee'),
-=======
-        components: getComponentsInLink("/components-management"),
-    },
-
-    {
-        url: "/documents-management",
-        description: "Quản lý tài liệu biểu mẫu",
-        category: LINK_CATEGORY.DOCUMENT.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-    },
-    {
-        url: "/documents/organizational-unit",
-        description: "Quản lý tài liệu biểu mẫu của đơn vị",
-        category: LINK_CATEGORY.DOCUMENT.name,
-        roles: [ROOT_ROLES.MANAGER.name],
-    },
-    {
-        url: "/documents",
-        description: "Tài liệu",
-        category: LINK_CATEGORY.DOCUMENT.name,
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-    },
-
-    {
-        url: "/hr-manage-work-plan",
-        description: "Quản lý kế hoạch làm việc",
-        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-        roles: [ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/hr-manage-work-plan"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-manage-field",
         description: "Quản lý ngành nghề/ lĩnh vực",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-list-employee'),
-=======
-        components: getComponentsInLink("/hr-manage-field"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-add-employee",
         description: "Thêm mới nhân viên",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-manage-department'),
-=======
-        components: getComponentsInLink("/hr-add-employee"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-list-employee",
@@ -782,164 +530,92 @@ const LINKS = [
         url: "/hr-update-employee",
         description: "Cập nhật thông tin cá nhân của nhân viên",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name, ROOT_ROLES.EMPLOYEE.name],
         components: getComponentsInLink('/hr-update-employee'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/hr-update-employee"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-detail-employee",
         description: "Thông tin cá nhân của nhân viên",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name, ROOT_ROLES.EMPLOYEE.name],
         components: getComponentsInLink('/hr-detail-employee'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/hr-detail-employee"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-annual-leave-personal",
         description: "Nghỉ phép",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name, ROOT_ROLES.EMPLOYEE.name],
         components: getComponentsInLink('/hr-annual-leave-personal'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/hr-annual-leave-personal"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/dashboard-personal",
         description: "Bảng tin cá nhân",
         category: LINK_CATEGORY.COMMON.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name, ROOT_ROLES.EMPLOYEE.name],
         components: getComponentsInLink('/dashboard-personal'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/dashboard-personal"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/dashboard-unit",
         description: "Bảng tin đơn vị",
         category: LINK_CATEGORY.COMMON.name,
         roles: [ROOT_ROLES.MANAGER.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/dashboard-unit'),
-=======
-        components: getComponentsInLink("/dashboard-unit"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/dashboard-all-unit",
         description: "Bảng tin đơn vị toàn công ty",
         category: LINK_CATEGORY.COMMON.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/dashboard-all-unit'),
-=======
-        components: getComponentsInLink("/dashboard-all-unit"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-manage-leave-application",
         description: "Quản lý đơn xin nghỉ đơn vị",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-manage-leave-application'),
-=======
-        components: getComponentsInLink("/hr-manage-leave-application"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-salary-employee",
         description: "Quản lý lương nhân viên",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-salary-employee'),
-=======
-        components: getComponentsInLink("/hr-salary-employee"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-annual-leave",
         description: "Quản lý nghỉ phép của nhân viên",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-annual-leave'),
-=======
-        components: getComponentsInLink("/hr-annual-leave"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-discipline",
         description: "Quản lý khen thưởng, kỷ luật",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-discipline'),
-=======
-        components: getComponentsInLink("/hr-discipline"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-dashboard-employee",
         description: "Dashboard nhân sự",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-dashboard-employee'),
-=======
-        components: getComponentsInLink("/hr-dashboard-employee"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-time-keeping",
         description: "Quản lý chấm công",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-time-keeping'),
-=======
-        components: getComponentsInLink("/hr-time-keeping"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/employees-infomation",
         description: "Thông tin nhân viên",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name, ROOT_ROLES.MANAGER.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/employees-infomation'),
-=======
-        components: getComponentsInLink("/employees-infomation"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
 
     {
@@ -947,71 +623,42 @@ const LINKS = [
         description: "Quản lý đào tạo",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-trainning-course'),
-=======
-        components: getComponentsInLink("/hr-trainning-course"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-account",
         description: "Thông tin tài khoản ",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-account'),
-=======
-        components: getComponentsInLink("/hr-account"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-training-plan",
         description: "Kế hoạch đào tạo",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-training-plan'),
-=======
-        components: getComponentsInLink("/hr-training-plan"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-training-plan-employee",
         description: "Kế hoạch đào tạo",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.EMPLOYEE.name, ROOT_ROLES.DEPUTY_MANAGER.name],
         components: getComponentsInLink('/hr-training-plan-employee'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-        ],
-        components: getComponentsInLink("/hr-training-plan-employee"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/hr-list-education",
         description: "Chương trình đào tạo bắt buộc",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/hr-list-education'),
-=======
-        components: getComponentsInLink("/hr-list-education"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/get-employee-dashboard-data",
         description: "Lấy thông tin bảng tin nhân sự",
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         component: getComponentsInLink('/hr-list-education'),
-=======
-        component: getComponentsInLink("/hr-list-education"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
 
     // phần link phục vụ cho nhân sự gói thầu
@@ -1029,59 +676,8 @@ const LINKS = [
         components: getComponentsInLink('/hr-list-major'),
     },
     {
-<<<<<<< HEAD
         url: '/hr-list-career-position',
         description: 'Danh sách vị trí công việc',
-=======
-        url: "/hr-list-career-position",
-        description: "Danh sách vị trí công việc",
-        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-        roles: [ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/hr-list-career-position"),
-    },
-    {
-        url: "/hr-list-bidding-package",
-        description: "Danh sách gói thầu",
-        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/hr-list-bidding-package"),
-    },
-    {
-        url: "/hr-list-certificate",
-        description: "Danh sách bằng cấp - chứng chỉ",
-        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/hr-list-certificate"),
-    },
-    {
-        url: "/hr-search-for-package",
-        description: "Tìm kiếm nhân sự gói thầu",
-        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/hr-search-for-package"),
-    },
-    {
-        url: "/hr-management-package",
-        description: "Quản lí thông tin gói thầu",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [ROOT_ROLES.ADMIN.name],
         components: getComponentsInLink('/hr-list-career-position'),
@@ -1233,10 +829,6 @@ const LINKS = [
         components: getComponentsInLink('/tags-management'),
     },
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 397a1b650 (add module transportation from qlcv)
     // KPI
     {
         url: '/kpi-units/create-for-admin',
@@ -1498,33 +1090,15 @@ const LINKS = [
         url: "/employee-manage-info-asset",
         description: "Quản lý thông tin tài sản",
         category: LINK_CATEGORY.ASSET.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name, ROOT_ROLES.EMPLOYEE.name],
         components: getComponentsInLink('/employee-manage-info-asset'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/employee-manage-info-asset"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/employee-manage-asset-use-request",
         description: "Quản lý đăng kí sử dụng tài sản",
         category: LINK_CATEGORY.ASSET.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name, ROOT_ROLES.EMPLOYEE.name],
         components: getComponentsInLink('/employee-manage-asset-use-request'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/employee-manage-asset-use-request"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
 
     /**
@@ -1535,112 +1109,42 @@ const LINKS = [
         description: "Dashboard quản lý vật tư",
         category: LINK_CATEGORY.SUPPIES.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/dashboard-supplies'),
-=======
-        components: getComponentsInLink("/dashboard-supplies"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/manage-supplies",
         description: "Quản lý vật tư tiêu hao",
         category: LINK_CATEGORY.SUPPIES.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-supplies'),
-=======
-        components: getComponentsInLink("/manage-supplies"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/manage-purchase-invoice",
         description: "Quản lý hóa đơn mua vật tư",
         category: LINK_CATEGORY.SUPPIES.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-purchase-invoice'),
-=======
-        components: getComponentsInLink("/manage-purchase-invoice"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/manage-allocation-history",
         description: "Quản lý lịch sử cấp phát vật tư",
         category: LINK_CATEGORY.SUPPIES.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-allocation-history'),
-=======
-        components: getComponentsInLink("/manage-allocation-history"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/manage-supplies-request",
         description: "Quản lý yêu cầu mua sắm vật tư",
         category: LINK_CATEGORY.SUPPIES.name,
         roles: [ROOT_ROLES.ADMIN.name],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-supplies-request'),
-=======
-        components: getComponentsInLink("/manage-supplies-request"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: "/supplies-purchase-request",
         description: "Đăng ký mua vật tư",
         category: LINK_CATEGORY.SUPPIES.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name, ROOT_ROLES.EMPLOYEE.name],
         components: getComponentsInLink('/supplies-purchase-request'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/supplies-purchase-request"),
-    },
-
-    {
-        url: "/asset-purchase-request",
-        description: "Đăng ký mua sắm tài sản",
-        category: LINK_CATEGORY.ASSET.name,
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/asset-purchase-request"),
-    },
-    {
-        url: "/asset-use-request",
-        description: "Đăng ký sử dụng tài sản",
-        category: LINK_CATEGORY.ASSET.name,
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/asset-use-request"),
-    },
-    {
-        url: "/manage-assigned-asset",
-        description: "Quản lý tài sản được bàn giao",
-        category: LINK_CATEGORY.ASSET.name,
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/manage-assigned-asset"),
-    },
-    {
-        url: "/view-building-list",
-        description: "Xem danh sách mặt bằng",
-        category: LINK_CATEGORY.ASSET.name,
-        roles: [ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/view-building-list"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
 
     {
@@ -1676,17 +1180,8 @@ const LINKS = [
         url: "/task-report",
         description: "Quản lý báo cáo công việc",
         category: LINK_CATEGORY.REPORT.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.DEPUTY_MANAGER.name, ROOT_ROLES.EMPLOYEE.name],
         components: getComponentsInLink('/task-report'),
-=======
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink("/task-report"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
 
     {
@@ -2058,10 +1553,6 @@ const LINKS = [
         //     components: getComponentsInLink('/crm/crmUnitConfiguration')
         // },
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 397a1b650 (add module transportation from qlcv)
         // {
         //     url: "/manage-plans",
         //     description: "Quản lý đơn hàng",
@@ -2247,11 +1738,6 @@ const LINKS = [
         ],
         components: getComponentsInLink("/manage-examples-hooks-3"),
     },
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 397a1b650 (add module transportation from qlcv)
     {
         url: '/manage-manufacturing-plan',
         description: 'Quản lý kế hoạch sản xuất',
@@ -2349,28 +1835,8 @@ const LINKS = [
         url: '/product-request-management/manufacturing',
         description: 'Quản lý đề nghị',
         category: LINK_CATEGORY.MANUFACTURING.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
         components: getComponentsInLink('/product-request-management/manufacturing'),
-=======
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name
-        ],
-        components: getComponentsInLink('/product-request-management/manufacturing')
-    },
-    {
-        url: "/manage-transport-requirement",
-        description: "Quản lý yêu cầu vận chuyển",
-        category: LINK_CATEGORY.TRANSPORT.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.EMPLOYEE.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.MANAGER.name,
-        ],
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: '/manage-transport-requirement',
@@ -2383,10 +1849,6 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.MANAGER.name,
         ],
-<<<<<<< HEAD
-=======
-        components: getComponentsInLink("/manage-transport-plan"),
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: '/manage-transport-plan',
@@ -2399,28 +1861,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.MANAGER.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-transport-plan'),
     },
     {
         url: '/manage-transport-schedule',
         description: 'Quản lý lệnh vận chuyển',
-=======
-    },
-    {
-        url: "/manage-transport-vehicle",
-        description: "Phương tiện vận chuyển",
-        category: LINK_CATEGORY.TRANSPORT.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER.name,
-        ],
-    },
-    {
-        url: "/manage-transport-route",
-        description: "Hành trình vận chuyển",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.TRANSPORT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -2434,11 +1879,7 @@ const LINKS = [
         url: '/manage-transport-vehicle',
         description: 'Phương tiện vận chuyển',
         category: LINK_CATEGORY.TRANSPORT.name,
-<<<<<<< HEAD
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name, ROOT_ROLES.MANAGER.name],
-=======
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     {
         url: '/manage-transport-route',
@@ -2448,7 +1889,6 @@ const LINKS = [
             ROOT_ROLES.SUPER_ADMIN.name,
             ROOT_ROLES.ADMIN.name,
             ROOT_ROLES.EMPLOYEE.name,
-<<<<<<< HEAD
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.MANAGER.name,
         ],
@@ -2694,30 +2134,6 @@ const LINKS = [
     },
 
     // Quan li du an
-=======
-        ],
-    },
-    // {
-    //     url: "/carrier-all-times-transport-mission",
-    //     description: "Nhiệm vụ vận chuyển mỗi ngày",
-    //     category: LINK_CATEGORY.TRANSPORT.name,
-    //     roles: [
-    //         ROOT_ROLES.SUPER_ADMIN.name,
-    //         ROOT_ROLES.ADMIN.name
-    //     ]
-    // },
-
-    // Quản lý vận chuyển 2
-    {
-        url: "/transportation-dashboard",
-        description: "Bảng tin đơn vị vận chuyển",
-        category: LINK_CATEGORY.TRANSPORTATION.name,
-        roles: [
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.ADMIN.name,
-        ]
-    },
->>>>>>> 397a1b650 (add module transportation from qlcv)
     {
         url: "/transportation-route-init",
         description: "Đơn vận chuyển",
@@ -2899,13 +2315,8 @@ const LINKS = [
     },
 
     {
-<<<<<<< HEAD
         url: '/manage-plans',
         description: 'Quản lý đơn hàng',
-=======
-        url: "/manage-plans",
-        description: "Quản lý đơn hàng",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PLAN.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -2914,19 +2325,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-plans'),
     },
     {
         url: '/manage-examples-1',
         description: 'Quản lý Ví dụ 1',
-=======
-        components: getComponentsInLink("/manage-plans"),
-    },
-    {
-        url: "/manage-examples-1",
-        description: "Quản lý Ví dụ 1",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.EXAMPLE.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -2935,19 +2338,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-examples-1'),
     },
     {
         url: '/manage-examples-2',
         description: 'Quản lý Ví dụ 2',
-=======
-        components: getComponentsInLink("/manage-examples-1"),
-    },
-    {
-        url: "/manage-examples-2",
-        description: "Quản lý Ví dụ 2",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.MANUFACTURING.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -2956,19 +2351,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-examples-2'),
     },
     {
         url: '/manage-examples-hooks-1',
         description: 'Quản lý Ví dụ Hooks 1',
-=======
-        components: getComponentsInLink("/manage-examples-2"),
-    },
-    {
-        url: "/manage-examples-hooks-1",
-        description: "Quản lý Ví dụ Hooks 1",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.EXAMPLE.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -2977,19 +2364,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-examples-hooks-1'),
     },
     {
         url: '/manage-examples-hooks-2',
         description: 'Quản lý Ví dụ Hooks 2',
-=======
-        components: getComponentsInLink("/manage-examples-hooks-1"),
-    },
-    {
-        url: "/manage-examples-hooks-2",
-        description: "Quản lý Ví dụ Hooks 2",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.EXAMPLE.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -2998,7 +2377,6 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-examples-hooks-2'),
     },
     {
@@ -3068,82 +2446,6 @@ const LINKS = [
     {
         url: '/manage-transport-requirement',
         description: 'Quản lý yêu cầu vận chuyển',
-=======
-        components: getComponentsInLink("/manage-examples-hooks-2"),
-    },
-    {
-        url: "/manage-manufacturing-plan",
-        description: "Quản lý kế hoạch sản xuất",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/manage-manufacturing-plan"),
-    },
-    {
-        url: "/manage-manufacturing-command",
-        description: "Quản lý lệnh sản xuất",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-        ],
-        components: getComponentsInLink("/manage-manufacturing-command"),
-    },
-    {
-        url: "/manage-work-schedule",
-        description: "Quản lý lịch sản xuất",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/manage-work-schedule"),
-    },
-    {
-        url: "/manage-purchasing-request",
-        description: "Quản lý phiếu đề nghị mua hàng",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/manage-purchasing-request"),
-    },
-    {
-        url: "/manufacturing-dashboard",
-        description: "Dashboard Quản lý sản xuất",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/manufacturing-dashboard"),
-    },
-    {
-        url: "/analysis-manufacturing-performance",
-        description: "Phân tích hiệu suất sản xuất",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/analysis-manufacturing-performance"),
-    },
-    {
-        url: "/manage-manufacturing-works",
-        description: "Quản lý nhà máy sản xuất",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/manage-manufacturing-works"),
-    },
-    {
-        url: "/manage-manufacturing-mill",
-        description: "Quản lý xưởng sản xuất",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/manage-manufacturing-mill"),
-    },
-    {
-        url: "/manage-manufacturing-lot",
-        description: "Quản lý lô sản xuất",
-        category: LINK_CATEGORY.MANUFACTURING.name,
-        roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-        components: getComponentsInLink("/manage-manufacturing-lot"),
-    },
-    // Quan li van chuyen transport
-    {
-        url: "/manage-transport-requirement",
-        description: "Quản lý yêu cầu vận chuyển",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.TRANSPORT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3154,13 +2456,8 @@ const LINKS = [
         ],
     },
     {
-<<<<<<< HEAD
         url: '/manage-transport-plan',
         description: 'Quản lý kế hoạch vận chuyển',
-=======
-        url: "/manage-transport-plan",
-        description: "Quản lý kế hoạch vận chuyển",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.TRANSPORT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3169,19 +2466,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.MANAGER.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/manage-transport-plan'),
     },
     {
         url: '/manage-transport-schedule',
         description: 'Quản lý lệnh vận chuyển',
-=======
-        components: getComponentsInLink("/manage-transport-plan"),
-    },
-    {
-        url: "/manage-transport-schedule",
-        description: "Quản lý lệnh vận chuyển",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.TRANSPORT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3192,7 +2481,6 @@ const LINKS = [
         ],
     },
     {
-<<<<<<< HEAD
         url: '/manage-transport-vehicle',
         description: 'Phương tiện vận chuyển',
         category: LINK_CATEGORY.TRANSPORT.name,
@@ -3201,20 +2489,6 @@ const LINKS = [
     {
         url: '/manage-transport-route',
         description: 'Hành trình vận chuyển',
-=======
-        url: "/manage-transport-vehicle",
-        description: "Phương tiện vận chuyển",
-        category: LINK_CATEGORY.TRANSPORT.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER.name,
-        ],
-    },
-    {
-        url: "/manage-transport-route",
-        description: "Hành trình vận chuyển",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.TRANSPORT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3225,32 +2499,16 @@ const LINKS = [
         ],
     },
     {
-<<<<<<< HEAD
         url: '/manage-transport-department',
         description: 'Phân vai trò đơn vị vận chuyển',
-=======
-        url: "/manage-transport-department",
-        description: "Phân vai trò đơn vị vận chuyển",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.TRANSPORT.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
     },
     {
-<<<<<<< HEAD
         url: '/carrier-today-transport-mission',
         description: 'Nhiệm vụ vận chuyển ngày hôm nay',
         category: LINK_CATEGORY.TRANSPORT.name,
         roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name, ROOT_ROLES.EMPLOYEE.name],
-=======
-        url: "/carrier-today-transport-mission",
-        description: "Nhiệm vụ vận chuyển ngày hôm nay",
-        category: LINK_CATEGORY.TRANSPORT.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     // {
     //     url: "/carrier-all-times-transport-mission",
@@ -3263,13 +2521,8 @@ const LINKS = [
     // },
     // Quan li du an
     {
-<<<<<<< HEAD
         url: '/project/projects-list',
         description: 'Danh sách dự án',
-=======
-        url: "/project/projects-list",
-        description: "Danh sách dự án",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PROJECT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3278,19 +2531,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/project/projects-list'),
     },
     {
         url: '/project/project-details',
         description: 'Chi tiết dự án',
-=======
-        components: getComponentsInLink("/project/projects-list"),
-    },
-    {
-        url: "/project/project-details",
-        description: "Chi tiết dự án",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PROJECT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3299,19 +2544,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/project/project-details'),
     },
     {
         url: '/project/phases-list',
         description: 'Danh sách giai đoạn dự án',
-=======
-        components: getComponentsInLink("/project/project-details"),
-    },
-    {
-        url: "/project/phases-list",
-        description: "Danh sách giai đoạn dự án",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PROJECT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3320,19 +2557,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/project/phases-list'),
     },
     {
         url: '/project/phase-details',
         description: 'Chi tiết giai đoạn dự án',
-=======
-        components: getComponentsInLink("/project/phases-list"),
-    },
-    {
-        url: "/project/phase-details",
-        description: "Chi tiết giai đoạn dự án",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PROJECT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3341,19 +2570,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/project/phase-details'),
     },
     {
         url: '/project/tasks-list',
         description: 'Danh sách công việc dự án',
-=======
-        components: getComponentsInLink("/project/phase-details"),
-    },
-    {
-        url: "/project/tasks-list",
-        description: "Danh sách công việc dự án",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PROJECT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3362,19 +2583,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/project/tasks-list'),
     },
     {
         url: '/project/issues-list',
         description: 'Danh sách vấn đề phát sinh dự án',
-=======
-        components: getComponentsInLink("/project/tasks-list"),
-    },
-    {
-        url: "/project/issues-list",
-        description: "Danh sách vấn đề phát sinh dự án",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PROJECT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3383,19 +2596,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/project/issues-list'),
     },
     {
         url: '/project/project-report',
         description: 'Danh sách báo cáo',
-=======
-        components: getComponentsInLink("/project/issues-list"),
-    },
-    {
-        url: "/project/project-report",
-        description: "Danh sách báo cáo",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PROJECT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3404,19 +2609,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/project/project-report'),
     },
     {
         url: '/project/project-evaluation',
         description: 'Danh sách đánh giá dự án',
-=======
-        components: getComponentsInLink("/project/project-report"),
-    },
-    {
-        url: "/project/project-evaluation",
-        description: "Danh sách đánh giá dự án",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.PROJECT.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3425,18 +2622,8 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/project/project-evaluation'),
     },
-=======
-        components: getComponentsInLink("/project/project-evaluation"),
-    },
-
-
-
-
-
->>>>>>> 397a1b650 (add module transportation from qlcv)
 
     {
         url: '/user-guide',
@@ -3449,18 +2636,11 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
         components: getComponentsInLink('/user-guide'),
     },
     {
         url: '/time-sheet-log/all',
         description: 'Thống kê lịch sử bấm giờ tất cả thành viên trong công ty',
-=======
-        components: getComponentsInLink("/user-guide"),
-    },
-    {
-        url: "/time-sheet-log/all",
-        description: "Thống kê lịch sử bấm giờ tất cả thành viên trong công ty",
         category: LINK_CATEGORY.TASK.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3469,21 +2649,6 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-        components: getComponentsInLink('/time-sheet-log/all')
-    },
-    {
-        url: "/personal-time-sheet-log",
-        description: "Thống kê bấm giờ cá nhân",
->>>>>>> 397a1b650 (add module transportation from qlcv)
-        category: LINK_CATEGORY.TASK.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.MANAGER.name,
-            ROOT_ROLES.DEPUTY_MANAGER.name,
-            ROOT_ROLES.EMPLOYEE.name,
-        ],
-<<<<<<< HEAD
         components: getComponentsInLink('/time-sheet-log/all'),
     },
     {
@@ -3502,13 +2667,6 @@ const LINKS = [
     {
         url: '/risk',
         description: 'module risk',
-=======
-        component: getComponentsInLink('/personal-time-sheet-log')
-    },
-    {
-        url: "/risk",
-        description: "module risk",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         category: LINK_CATEGORY.RISK.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
@@ -3518,14 +2676,9 @@ const LINKS = [
             ROOT_ROLES.EMPLOYEE.name,
         ],
         // components: getComponentsInLink('/risk')
-<<<<<<< HEAD
     },
     {
         url: '/riskDistribution',
-=======
-    }, {
-        url: "/riskDistribution",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         description: LINK_CATEGORY.RISK_DISTRIBUTION.description,
         category: LINK_CATEGORY.RISK_DISTRIBUTION.name,
         roles: [
@@ -3536,14 +2689,9 @@ const LINKS = [
             ROOT_ROLES.EMPLOYEE.name,
         ],
         // components: getComponentsInLink('/risk')
-<<<<<<< HEAD
     },
     {
         url: '/taskPert',
-=======
-    }, {
-        url: "/taskPert",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         description: LINK_CATEGORY.TASK_PERT.description,
         category: LINK_CATEGORY.TASK_PERT.name,
         roles: [
@@ -3554,14 +2702,9 @@ const LINKS = [
             // ROOT_ROLES.EMPLOYEE.name,
         ],
         // components: getComponentsInLink('/risk')
-<<<<<<< HEAD
     },
     {
         url: '/exprimentalAnalysis',
-=======
-    }, {
-        url: "/exprimentalAnalysis",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         description: LINK_CATEGORY.EXPRIMENTAL_ANALYSIS.description,
         category: LINK_CATEGORY.EXPRIMENTAL_ANALYSIS.name,
         roles: [
@@ -3571,14 +2714,9 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             // ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
     },
     {
         url: '/riskResponsePlan',
-=======
-    }, {
-        url: "/riskResponsePlan",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         description: LINK_CATEGORY.RISK_RESPONSE_PLAN.description,
         category: LINK_CATEGORY.RISK_RESPONSE_PLAN.name,
         roles: [
@@ -3588,14 +2726,9 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             // ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
     },
     {
         url: '/bayesianNetworkConfig',
-=======
-    }, {
-        url: "/bayesianNetworkConfig",
->>>>>>> 397a1b650 (add module transportation from qlcv)
         description: LINK_CATEGORY.BAYESIAN_NETWORK_CONFIG.description,
         category: LINK_CATEGORY.BAYESIAN_NETWORK_CONFIG.name,
         roles: [
@@ -3605,11 +2738,7 @@ const LINKS = [
             ROOT_ROLES.DEPUTY_MANAGER.name,
             // ROOT_ROLES.EMPLOYEE.name,
         ],
-<<<<<<< HEAD
     },
-=======
-    }
->>>>>>> 397a1b650 (add module transportation from qlcv)
 ];
 
 module.exports = {

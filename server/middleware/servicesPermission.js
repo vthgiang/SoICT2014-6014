@@ -1575,16 +1575,11 @@ exports.links = [
     },
     {
         url: '/majors',
-<<<<<<< HEAD
         apis: ['@all'],
-=======
-        apis: ['@all']
->>>>>>> 397a1b650 (add module transportation from qlcv)
     },
     // Manage transportation
     {
         url: '/transportation-dashboard',
-<<<<<<< HEAD
         apis: ['@all'],
     },
     {
@@ -1667,40 +1662,4 @@ exports.links = [
         url: '/manage-transport3-requirement',
         apis: ['@all'],
     }
-=======
-        apis: ['@all']
-    },
-    {
-        url: '/transportation-route-init',
-        apis: ['@all']
-    },
-    {
-        url: '/transportation-list-journey',
-        apis: ['@all']
-    },
-    {
-        url: '/transportation-info-vehicles',
-        apis: ['@all']
-    },
-    {
-        url: '/transportation-test-api-shipper',
-        apis: ['@all']
-    },
-    {
-        url: '/transportation-delivery-detail',
-        apis: ['@all']
-    },
-    {
-        url: '/transportation-journey-detail',
-        apis: ['@all']
-    },
-    {
-        url: '/transportation-cost-manage',
-        apis: ['@all']
-    },
-    {
-        url: '/transportation-shipper-manage',
-        apis: ['@all']
-    },
->>>>>>> 397a1b650 (add module transportation from qlcv)
 ];
