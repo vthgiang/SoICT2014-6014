@@ -29,7 +29,8 @@
     "init-inventory-warehouse-data": "node seed/initInventoryWarehouseData.js",
     "y-init": "yarn db && yarn sc",
     "y-init-full": "yarn db && yarn sc && yarn sp && yarn shr",
-    "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js"
+    "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js",
+    "init-kpi-vnist-2": "node seed/initOrganizationalUnitKPIDataVnist2.js"
   },
   "keywords": [],
   "author": "",

@@ -1287,6 +1287,24 @@ const initSampleCompanyDB = async () => {
             password: hash,
             company: vnist._id,
         },
+        {
+            name: 'Lê Thanh Giang',
+            email: 'ltg.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Uông Hồng Minh',
+            email: 'vtk.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
+        {
+            name: 'Đinh Thị Ngọc Anh',
+            email: 'dtna.vnist@gmail.com',
+            password: hash,
+            company: vnist._id,
+        },
     ]);
 
     //Khởi tạo Role cho bộ phận kinh doanh
@@ -1532,6 +1550,18 @@ const initSampleCompanyDB = async () => {
         {
             userId: users2[21]._id,
             roleId: thanhVienPhongKeHoach2._id,
+        },
+        {
+            userId: users2[22]._id,
+            roleId: giamDoc2._id,
+        },
+        {
+            userId: users2[23]._id,
+            roleId: phoGiamDoc2._id,
+        },
+        {
+            userId: users2[24]._id,
+            roleId: thanhVienBanGiamDoc2._id,
         },
     ]);
 
@@ -4971,7 +5001,7 @@ const initSampleCompanyDB = async () => {
 
     await MarketingEffective(vnistDB).insertMany(listMarketingEffective);
 
-    
+
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU HÀNG HÓA
@@ -4982,7 +5012,7 @@ const initSampleCompanyDB = async () => {
 
 
     // Now you can save newProducts to your database
-    
+
 
     var listGood = await Good(vnistDB).insertMany([
         {
@@ -5209,7 +5239,7 @@ const initSampleCompanyDB = async () => {
     });
     await Good(vnistDB).insertMany(newProducts);
     console.log('Khởi tạo xong danh sách hàng hóa');
-    
+
 
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
@@ -7362,8 +7392,8 @@ const initSampleCompanyDB = async () => {
     var listBusinessDepartments = await BusinessDepartment(vnistDB).insertMany([{}]);
     console.log('Khởi tạo xong cấu hình đơn vị kinh doanh');
 
-    
-    
+
+
     console.log("Khởi tạo dữ liệu đơn bán hàng");
     const BATCH_SIZE = 10000; // Số lượng bản ghi trong mỗi lô
     const CONCURRENCY_LIMIT = 5; // Số lượng kết nối song song
@@ -7373,12 +7403,12 @@ const initSampleCompanyDB = async () => {
     async function insertSalesOrdersInBatches(saleOrders, newProducts, listMarketing) {
         let listSales = [];
         let batchPromises = [];
-    
+
         for (let i = 0; i < saleOrders.length; i++) {
             let salesOrder = saleOrders[i];
             let product = newProducts.find(product => product.code === salesOrder.product_id);
             let marketingCampaign = listMarketing.find(marketing => marketing.code == salesOrder.campaign_id);
-            
+
             let customer = getRandomElement(listCustomers);
             let user = getRandomElement(users)
             let newSaleOrder = {
@@ -8554,7 +8584,7 @@ const initSampleCompanyDB = async () => {
             refuserTime: new Date('2024-05-20T07:45:44.691Z'),
             note: ''
         },
-    
+
         goods: [{
             good: [new ObjectId('664b013289db9c86025cf62a')],
             quantity: 1,
@@ -8574,7 +8604,7 @@ const initSampleCompanyDB = async () => {
         customer: new ObjectId('664b064a73be139a586b851d'),
         requestType: 1,
         type: 1,
-    
+
         desiredTime: null,
         status: 1,
         description: '',
@@ -8582,8 +8612,8 @@ const initSampleCompanyDB = async () => {
         saleOrder: null,
         bill: null
       })
-  
-    //   console.log('Khởi tạo xong kế hoạch vận chuyển');
+
+      console.log('Khởi tạo xong kế hoạch vận chuyển');
 
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
@@ -8604,7 +8634,7 @@ const initSampleCompanyDB = async () => {
             salary: 8000000
           }
         ])
-     
+
         console.log('Khởi tạo xong nhân viên vận chuyển');
 
     /*---------------------------------------------------------------------------------------------
@@ -8876,7 +8906,7 @@ const initSampleCompanyDB = async () => {
                 dynamicEstimatedTime: null,
                 // khoảng cách từ depot đến địa chỉ giao hàng
                 // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
-                distance: 120, 
+                distance: 120,
                 //Dự báo khả năng giao hàng đúng hạn
                 estimatedOntime: 1
               }],
@@ -8909,7 +8939,7 @@ const initSampleCompanyDB = async () => {
                 dynamicEstimatedTime: null,
                 // khoảng cách từ depot đến địa chỉ giao hàng
                 // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
-                distance: 134, 
+                distance: 134,
                 //Dự báo khả năng giao hàng đúng hạn
                 estimatedOntime: 1
               },
@@ -8931,7 +8961,7 @@ const initSampleCompanyDB = async () => {
                 dynamicEstimatedTime: null,
                 // khoảng cách từ depot đến địa chỉ giao hàng
                 // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
-                distance: 134, 
+                distance: 134,
                 //Dự báo khả năng giao hàng đúng hạn
                 estimatedOntime: 1
               }],
@@ -8963,7 +8993,7 @@ const initSampleCompanyDB = async () => {
     //     actualDeliveryDate: new Date('2024-05-20T07:45:44.691Z'),
     //     estimatedOntime: 1
     //   })
-  
+
     //   console.log('Khởi tạo xong kế hoạch vận chuyển');
 
     /*---------------------------------------------------------------------------------------------
@@ -8972,8 +9002,8 @@ const initSampleCompanyDB = async () => {
         -----------------------------------------------------------------------------------------------
         ----------------------------------------------------------------------------------------------- */
 
-    
-    
+
+
     // var listSalesOrder = await SalesOrder(vnistDB).insertMany([
     //     {
     //         code: "DA_20240608.236431",
