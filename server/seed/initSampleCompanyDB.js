@@ -91,6 +91,10 @@ const {
     PurchaseInvoice,
     AllocationHistory,
     AllocationConfigSetting,
+    Transport3Employee,
+    Transport3Order,
+    Transport3Schedule,
+    Transport3Vehicle
 } = require('../models');
 const { ObjectId } = require('mongodb');
 
@@ -239,6 +243,10 @@ const initSampleCompanyDB = async () => {
         if (!db.models.TransportRequirement) TransportRequirement(db);
         if (!db.models.TransportPlan) TransportPlan(db);
         if (!db.models.TransportSchedule) TransportSchedule(db);
+        if (!db.models.Transport3Employee) Transport3Employee(db);
+        if (!db.models.Transport3Order) Transport3Order(db);
+        if (!db.models.Transport3Schedule) Transport3Schedule(db);
+        if (!db.models.Transport3Vehicle) Transport3Vehicle(db);
         if (!db.models.AllocationConfigSetting) AllocationConfigSetting(db);
         if (!db.models.DeliverySchedule) DeliverySchedule(db);
         if (!db.models.ProductRequestManagement) ProductRequestManagement(db);
@@ -8098,28 +8106,202 @@ const initSampleCompanyDB = async () => {
         bill: null
       })
   
-      console.log('Khởi tạo xong kế hoạch vận chuyển');
+    //   console.log('Khởi tạo xong kế hoạch vận chuyển');
 
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU NHÂN VIÊN VẬN CHUYỂN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+      const transport3Employee = await Transport3Employee(vnistDB).create([
+          {
+            code: "NV_01",
+            employee: users[5]._id,
+            certificate: "Bằng lái xe hạng A2",
+            salary: 8000000
+          },
+          {
+            code: "NV_02",
+            employee: users[5]._id,
+            certificate: "Bằng lái xe hạng B1",
+            salary: 8000000
+          }
+        ])
+     
+        console.log('Khởi tạo xong nhân viên vận chuyển');
 
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU ĐƠN HÀNG
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+      const transport3Order = await Transport3Order(vnistDB).create([
+        {
+            code: "Order01",
+            customer: listCustomers[0]._id,
+            customerPhone: listCustomers[0].mobilephoneNumber,
+            address: listCustomers[0].address,
+            lat: 20.9896839,
+            lng: 105.6693152,
+            deliveryTime: new Date('2024-05-20T07:45:44.691Z'),
+            note: "",
+            noteAddress: "",
+            priority: 1,
+            // status: 1: chờ xác nhận, 2: đã xác nhận, 3: đã giao hàng
+            status: 2,
+            stockIn: {
+                stock: listStock[1]._id,
+                stockName: listStock[1].name,
+                stockAddress: listStock[1].address
+            },
+            stockOut: {
+                stock: listStock[0]._id,
+                stockName: listStock[0].name,
+                stockAddress: listStock[0].address
+            },
+            transportType: 1,
+            goods: [
+                {
+                  good: listGood[0]._id,
+                  code: "G01",
+                  goodName: listGood[0].name,
+                  baseUnit: null,
+                  quantity: 5,
+                }
+            ]
+        },
+        {
+            code: "Order02",
+            customer: listCustomers[1]._id,
+            customerPhone: listCustomers[1].mobilephoneNumber,
+            address: listCustomers[1].address,
+            lat: 20.9896839,
+            lng: 105.6693152,
+            deliveryTime: new Date('2024-05-20T07:45:44.691Z'),
+            note: "",
+            noteAddress: "",
+            priority: 1,
+            // status: 1: chờ xác nhận, 2: đã xác nhận, 3: đã giao hàng
+            status: 2,
+            stockIn: {
+                stock: listStock[1]._id,
+                stockName: listStock[1].name,
+                stockAddress: listStock[1].address
+            },
+            stockOut: {
+                stock: listStock[0]._id,
+                stockName: listStock[0].name,
+                stockAddress: listStock[0].address
+            },
+            transportType: 1,
+            goods: [
+                {
+                  good: listGood[0]._id,
+                  code: "G01",
+                  goodName: listGood[0].name,
+                  baseUnit: null,
+                  quantity: 5,
+                },
+                {
+                  good: listGood[1]._id,
+                  code: "G02",
+                  goodName: listGood[1].name,
+                  baseUnit: null,
+                  quantity: 2,
+                }
+            ]
+        }
+      ])
+      console.log('Khởi tạo xong dữ liệu đơn hàng');
+
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU PHƯƠNG TIỆN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+    const transport3Vehicle = await Transport3Vehicle(vnistDB).create([
+        {
+            code: "VHC01",
+            asset: listAsset[6]._id,
+              // Trọng tải xe
+            tonnage: 1000,
+              // Thể tích thùng xe
+            volume: 8.58,
+              // Rộng, cao , sâu của thùng xe
+            width: 1.65,
+            height: 1.65,
+            depth: 3.15,
+              // Mức tiêu thụ nhiên liệu của xe/1km
+            averageGasConsume: 0.06,
+              // Trung bình chi phí vận chuyển của xe
+            traverageFeeTransport: 800000,
+              // Tốc độ tối thiểu
+            minVelocity: 0,
+              // Tốc độ tối đa
+            maxVelocity: 80
+        }
+    ])
+    console.log('Khởi tạo xong dữ liệu phương tiện');
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU KẾ HOẠCH VẬN CHUYỂN
       -----------------------------------------------------------------------------------------------
       ----------------------------------------------------------------------------------------------- */
-      console.log('Khởi tạo kế hoạch vận chuyển');
-
-      await DeliverySchedule(vnistDB).create({
-        code: 'Kế hoạch 01',
-        carrierDate: new Date('2024-05-20T07:45:44.691Z'),
-        orders: [new ObjectId('664b086a174b9b9ec20ec536') ],
-        status: 3,
-        shippers: [new ObjectId('664affa60f190284e84a640b')],
-        estimatedDeliveryDate: new Date('2024-05-20T07:45:44.691Z'),
-        actualDeliveryDate: new Date('2024-05-20T07:45:44.691Z'),
-        estimatedOntime: 1
-      })
-  
+      await Transport3Schedule(vnistDB).create([
+        {
+            code: "KH01",
+            orders: [{
+                order: transport3Order[0]._id,
+                // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
+                status: 1,
+                // thời gian dự kiến đến
+                estimateTimeArrive: new Date('2024-05-26T07:45:44.691Z'),
+                // thời gian đến
+                timeArrive: new Date('2024-05-25T07:45:44.691Z'),
+                // thời gian dự kiến phục vụ
+                estimateTimeService: new Date('2024-05-22T07:45:44.691Z'),
+                // thời gian phục vụ
+                timeService: new Date('2024-05-22T08:45:44.691Z'),
+                // thời gian bắt đầu vận chuyển đơn hàng này
+                beginTime: new Date('2024-05-22T09:45:44.691Z'),
+                // thời gian dự kiến đến động
+                dynamicEstimatedTime: null,
+                // khoảng cách từ depot đến địa chỉ giao hàng
+                // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
+                distance: 120, 
+                //Dự báo khả năng giao hàng đúng hạn
+                estimatedOntime: 1
+              }],
+              vehicles: transport3Vehicle[0]._id,
+              depot: listStock[0]._id,
+              employee: transport3Employee[0]._id,
+              // 1. Chưa thực hiện; 2 Đang thực hiện; 3. Đã hoàn thành
+              status: 1,
+              beginTime: new Date('2024-05-22T09:45:44.691Z'),
+              endTime: new Date('2024-05-25T10:45:44.691Z'),
+              note: ""
+        }
+      ])
       console.log('Khởi tạo xong kế hoạch vận chuyển');
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU KẾ HOẠCH VẬN CHUYỂN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+    //   console.log('Khởi tạo kế hoạch vận chuyển');
+
+    //   await DeliverySchedule(vnistDB).create({
+    //     code: 'Kế hoạch 01',
+    //     carrierDate: new Date('2024-05-20T07:45:44.691Z'),
+    //     orders: [new ObjectId('664b086a174b9b9ec20ec536') ],
+    //     status: 3,
+    //     shippers: [new ObjectId('664affa60f190284e84a640b')],
+    //     estimatedDeliveryDate: new Date('2024-05-20T07:45:44.691Z'),
+    //     actualDeliveryDate: new Date('2024-05-20T07:45:44.691Z'),
+    //     estimatedOntime: 1
+    //   })
+  
+    //   console.log('Khởi tạo xong kế hoạch vận chuyển');
 
     /*---------------------------------------------------------------------------------------------
         -----------------------------------------------------------------------------------------------

@@ -45,6 +45,10 @@ const Transport3ScheduleSchema = new Schema(
       // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
       distance: {
         type: Number
+      }, 
+      //Dự báo khả năng giao hàng đúng hạn
+      estimatedOntime: {
+        type: Number
       }
     }],
     vehicles: {
