@@ -5,9 +5,10 @@ const initialState = {
     isLoading: false,
     error: null,
     totalList: 0,
+    onTimeDeliveryData: 0
 }
 
-export function transportationDashboard(state = initialState, action) {
+export function dashboard(state = initialState, action) {
     switch (action.type) {
         case transportationConstants.GET_ALL_DATA_REQUEST:
             return {
@@ -24,6 +25,17 @@ export function transportationDashboard(state = initialState, action) {
                 ...state,
                 externalSessionId: action.payload,
                 isLoading: false,
+            }
+        case transportationConstants.GET_ON_TIME_DELIVERY_RATE:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_ON_TIME_DELIVERY_RATE_SUCCESS:
+            console.log(action.payload)
+            return {
+                onTimeDeliveryData: action.payload,
+                isLoading: false
             }
         default:
             return state

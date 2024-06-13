@@ -1,16 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import moment from 'moment';
+import { DashboardActions } from '../../redux/actions';
 
 function OnTimeDeliveryChart (props) {
-
+    const dispatch = useDispatch()
+    const T3Dashboard = useSelector((state) => state.T3dashboard)
     const ontimeDeliveryChart = useRef(null);
     useEffect(() => {
         pieChart();
     });
+
+    useEffect(() => {
+        dispatch(DashboardActions.getOntimeDeliveryRate())
+    },[dispatch]);
+
+
 
     // Khởi tạo PieChart bằng C3
     const pieChart = () => {
@@ -19,13 +27,19 @@ function OnTimeDeliveryChart (props) {
             data: {
                 x: 'x',
                 columns: [
-                    ['x', moment().subtract(6, "months").format("MM-YYYY"), moment().subtract(5, "months").format("MM-YYYY"), moment().subtract(4, "months").format("MM-YYYY"), moment().subtract(3, "months").format("MM-YYYY"), moment().subtract(2, "months").format("MM-YYYY"), moment().subtract(1, "months").format("MM-YYYY") , moment().format("MM-YYYY")],
-                    ['onTimeDelivery', 94,60,35,50,85,57,50
+                    ['x', moment().subtract(6, "days").format("DD-MM"), moment().subtract(5, "days").format("DD-MM"), moment().subtract(4, "days").format("DD-MM"), moment().subtract(3, "days").format("DD-MM"), moment().subtract(2, "days").format("DD-MM"), moment().subtract(1, "days").format("DD-MM") , moment().format("DD-MM")],
+                    ['actualOntimeDeliveryRate', 94,60,35,50,85,57,T3Dashboard.onTimeDeliveryData
+                    ],
+                    ['estimatedOntimeDeliveryRate', 30,50,25,60,47,56,50
+                    ],
+                    ['plannedOntimeDeliveryRate', 32,52,24,62,43,52,44
                     ],
                 ],
                 type: 'spline',
                 names: {
-                    'onTimeDelivery': "Tỉ lệ giao hàng đúng hạn",
+                    'actualOntimeDeliveryRate': "Tỉ lệ giao hàng đúng hạn thực tế",
+                    'estimatedOntimeDeliveryRate': "Tỉ lệ giao hàng đúng hạn dự kiến",
+                    'plannedOntimeDeliveryRate': "Tỉ lệ giao hàng đúng hạn kế hoạch",
                 }
             },
             padding: {
@@ -43,7 +57,7 @@ function OnTimeDeliveryChart (props) {
             },
 
             color: {
-                pattern: ['#0793de', '#f5b105']
+                pattern: ['#0793de', '#f5b105', '#000000']
             },
 
             tooltip: {
@@ -65,6 +79,8 @@ function OnTimeDeliveryChart (props) {
         <React.Fragment>
             {/* <button onClick={() => props.getCostOfAllJourney({})}>Test</button> */}
             <section ref={ontimeDeliveryChart}></section>
+            {console.log(T3Dashboard)}
+            ABC
         </React.Fragment>
     );
 }

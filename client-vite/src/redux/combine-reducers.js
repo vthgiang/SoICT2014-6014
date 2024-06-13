@@ -200,6 +200,7 @@ import { orders } from '../modules/transport3/order/redux/reducers'
 import { employee as T3employee } from '../modules/transport3/employee/redux/reducers'
 import { vehicle as T3vehicle } from '../modules/transport3/vehicle/redux/reducers'
 import { schedule as T3schedule } from '../modules/transport3/schedule/redux/reducers'
+import { dashboard as T3dashboard} from '../modules/transport3/dashboard/redux/reducers'
 
 const appReducer = combineReducers({
   socket,
@@ -422,7 +423,8 @@ const appReducer = combineReducers({
   orders,
   T3employee,
   T3vehicle,
-  T3schedule
+  T3schedule,
+  T3dashboard
 })
 
 const rootReducer = (state, action) => {
