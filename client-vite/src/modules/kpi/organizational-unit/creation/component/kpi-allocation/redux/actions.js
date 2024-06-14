@@ -44,10 +44,10 @@ const updateConfigSetting = (key, value) => {
   }
 }
 
-const handleStartAllocation = () => {
+const handleStartAllocation = (payload) => {
   return (dispatch) => {
     dispatch({ type: ConfigManagementConstant.HANDLE_START_ALLOCATION_REQUEST })
-    ConfigParametersServices.startAllocation()
+    ConfigParametersServices.startAllocation(payload)
       .then((response) => {
         dispatch({
           type: ConfigManagementConstant.HANDLE_START_ALLOCATION_REQUEST_SUCCESS,

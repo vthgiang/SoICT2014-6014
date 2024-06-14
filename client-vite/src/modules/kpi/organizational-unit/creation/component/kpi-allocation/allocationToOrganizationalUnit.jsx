@@ -13,6 +13,7 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
   const [listUnitKpi, setListUnitKpi] = useState([])
   const dispatch = useDispatch()
   const taskTemplates = useSelector((state) => state.tasktemplates)
+  const configData = useSelector((state) => state.configParametersReducer)
 
   useEffect(() => {
     const { organizationalUnitImportances } = currentKPI
@@ -73,6 +74,10 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
 
   const handleChangeSelectedValue = (value) => {
     setSelectedValue(value)
+  }
+
+  const isAbleToClearAll = () => {
+    return selectedValue.length !== 0
   }
 
   const onChangeKpiWeightEachUnit = (event, unit, kpiId) => {
@@ -163,8 +168,40 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
   }
 
   const handleStartAllocation = () => {
-    console.log(123)
-    dispatch(ConfigParametersAction.handleStartAllocation())
+    // console.log(configData)
+    const payload = {
+      configData,
+      kpiData: listUnitKpi
+    }
+    dispatch(ConfigParametersAction.handleStartAllocation(payload))
+  }
+
+  const calculateKpiTaskWeight = (item, kpiId) => {
+    const totalWeight = item.taskTemplates.reduce((acc, taskTemplate) => {
+      if (taskTemplate.isMappingTask && Array.isArray(taskTemplate.listMappingTask)) {
+        const matchingTasks = taskTemplate.listMappingTask.filter((task) => task.organizationalUnitKpi._id === kpiId)
+        const matchingTasksWeight = matchingTasks.reduce((weightAcc, task) => weightAcc + parseInt(task.taskWeight || 0, 10), 0)
+        return acc + matchingTasksWeight
+      }
+      return acc
+    }, 0)
+
+    return totalWeight
+  }
+
+  const isValidScore = (score) => {
+    return score === 100
+  }
+
+  const isAllDataValid = () => {
+    return listUnitKpi.every((item) => {
+      const totalWeight = item.kpis.reduce((acc, kpi) => acc + parseInt(kpi.kpiWeight || 0, 10), 0)
+      if (totalWeight !== 100) return false
+
+      return true
+
+      // return item.kpis.every((kpi) => calculateKpiTaskWeight(item, kpi._id) === 100)
+    })
   }
 
   return (
@@ -199,7 +236,7 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
                 <button type='button' className='btn btn-success' onClick={() => handleSelectAll()}>
                   Selected all
                 </button>
-                <button type='button' className='btn btn-primary' onClick={() => handleClearAll()}>
+                <button type='button' className='btn btn-primary' onClick={() => handleClearAll()} disabled={!isAbleToClearAll()}>
                   Clear all selected value
                 </button>
               </div>
@@ -214,10 +251,12 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
                     <div className='form-group'>
                       <div>Danh sách KPI đơn vi</div>
                       <span>Tổng trọng số: {calculateKpiWeightSumForUnit(item)} / 100</span>
+                      <span className={`${isValidScore(calculateKpiWeightSumForUnit(item)) ? 'text-success' : 'text-danger'} font-bold`}>
+                        {isValidScore(calculateKpiWeightSumForUnit(item)) ? ' - Thoả mãn' : ' - Chưa thoả mãn'}
+                      </span>
                       <table className='table table-hover table-striped table-bordered'>
                         <thead>
                           <tr>
-                            <th className='col-fixed'>STT</th>
                             <th title='Tên nhiệm vụ'>Tên mục tiêu</th>
                             <th title='Mô tả'>Mục tiêu cha</th>
                             <th title='Khối lượng nhiệm vụ'>Tiêu chí đánh giá</th>
@@ -229,7 +268,6 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
                           {item.kpis.map((kpi, indexKpi) => {
                             return (
                               <tr key={indexKpi}>
-                                <td>{indexKpi + 1}</td>
                                 <td>{kpi.name}</td>
                                 <td>{kpi.name}</td>
                                 <td
@@ -251,11 +289,28 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
                           })}
                         </tbody>
                       </table>
-                      <span>Danh sách task ánh xạ</span>
+                      <div className='mt-5'>Danh sách nhiệm vụ ánh xạ</div>
+                      <div className='mb-3'>Tổng trọng số:</div>
+                      <ol className='list-decimal list-inside space-y-2 pb-5 px-5 rounded-lg'>
+                        {item.kpis.map((kpi, kpiIndex) => {
+                          if (kpi.target !== null)
+                            return (
+                              <li className='text-gray-700' key={kpiIndex}>
+                                {kpi.target !== null && kpi.name}: {calculateKpiTaskWeight(item, kpi._id)} / 100
+                                <span
+                                  className={`${isValidScore(calculateKpiTaskWeight(item, kpi._id)) ? 'text-success' : 'text-danger'} font-bold`}
+                                >
+                                  {isValidScore(calculateKpiTaskWeight(item, kpi._id)) ? ' - Thoả mãn' : ' - Chưa thoả mãn'}
+                                </span>
+                              </li>
+                            )
+                          return null
+                        })}
+                      </ol>
+
                       <table className='table table-hover table-striped table-bordered'>
                         <thead>
                           <tr>
-                            <th className='col-fixed'>STT</th>
                             <th title='Tên nhiệm vụ'>Tên nhiệm vụ</th>
                             <th title='Mô tả'>Ánh xạ KPI đơn vị</th>
                             <th title='Khối lượng nhiệm vụ'>Trọng số</th>
@@ -273,7 +328,6 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
                               return taskTemplate.listMappingTask.map((task, taskIndex) => {
                                 return (
                                   <tr key={taskIndex}>
-                                    <td>{taskIndex + 1}</td>
                                     <td>{task.taskName}</td>
                                     <td>{task.organizationalUnitKpi.name}</td>
                                     <td>
@@ -307,6 +361,7 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
               onClick={(event) => {
                 setCurrentStep(event, 1)
               }}
+              disabled={!isAllDataValid()}
             >
               Tinh chỉnh tham số
             </button>

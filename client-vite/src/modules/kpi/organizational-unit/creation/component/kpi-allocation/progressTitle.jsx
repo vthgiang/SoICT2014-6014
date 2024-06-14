@@ -18,7 +18,7 @@ function ProgressTitle({ setCurrentStep, steps, step }) {
               key={index}
               className='timeline-contain'
               onClick={(e) => setCurrentStep(e, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
+              // onKeyDown={(e) => handleKeyDown(e, index)}
               tabIndex={0}
               role='button'
             >

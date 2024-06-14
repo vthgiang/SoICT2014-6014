@@ -58,7 +58,7 @@ function ConfigParameters({ handleStartAllocation }) {
             <b style={{ fontSize: '24px' }}>{translate('kpi.kpi_allocation.config_management.config_component')}</b>
           </div>
           <div className='box-body'>
-            <div className='flex flex-col'>
+            {/* <div className='flex flex-col'>
               <label className='ml-[15px]'>{translate('kpi.kpi_allocation.config_management.automatic')}</label>
               <div className='flex items-center mb-[16px]'>
                 <div className='col-xs-12 col-sm-12 col-md-12 col-12'>
@@ -76,12 +76,13 @@ function ConfigParameters({ handleStartAllocation }) {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            {isAutomatic === 'off' && <ConfigParametersForm />}
+            {/* {isAutomatic === 'off' && <ConfigParametersForm />} */}
+            <ConfigParametersForm />
           </div>
           <div className='box-footer text-center flex justify-center gap-[16px]'>
-            {isAutomatic === 'off' && (
+            {/* {isAutomatic === 'off' && (
               <>
                 <button type='button' className='btn btn-success' onClick={handleUpdateData}>
                   Cập nhật
@@ -90,7 +91,13 @@ function ConfigParameters({ handleStartAllocation }) {
                   Reset thay đổi
                 </button>
               </>
-            )}
+            )} */}
+            {/* <button type='button' className='btn btn-success' onClick={handleUpdateData}>
+              Cập nhật
+            </button>
+            <button type='button' className='btn btn-success' onClick={handleResetData}>
+              Reset thay đổi
+            </button> */}
             <button type='button' className='btn btn-success' onClick={() => handleStartAllocation()}>
               Bắt đầu phân bổ
             </button>

@@ -62,8 +62,9 @@ const handleStartAllocation = async (request, response) => {
     try {
         const portal = request.portal;
         const { email } = request.user;
+        const { configData, kpiData } = request.body;
 
-        const result = await ConfigSettingService.handleStartAllocation(portal);
+        const result = await ConfigSettingService.handleStartAllocation(portal, kpiData);
 
         Logger.info(email, `Allocation success`, portal);
         response.status(200).json({
@@ -72,7 +73,7 @@ const handleStartAllocation = async (request, response) => {
             content: result.content,
         });
     } catch (error) {
-        Logger.error(email, `Allocation`, portal);
+        // Logger.error(email, `Allocation`, portal);
         response.status(401).json({
             success: false,
             messages: ['allocation_fail'],
