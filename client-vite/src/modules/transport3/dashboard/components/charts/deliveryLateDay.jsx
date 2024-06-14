@@ -1,16 +1,46 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import moment from 'moment';
+import { DashboardActions } from '../../redux/actions';
 
 function DeliveryLateDay (props) {
+    const dispatch = useDispatch()
+    const T3Dashboard = useSelector((state) => state.T3dashboard)
+
+    useEffect(() => {
+        dispatch(DashboardActions.getDeliveryLateDayAveragePerMonth())
+    },[dispatch]);
 
     const DeliveryLateDay = useRef(null);
     useEffect(() => {
         pieChart();
     });
+
+    const listMonth = () => {
+        const arr = ['x']
+        const currentDate = new Date()
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentYear = currentDate.getFullYear();
+
+        const monthList = Array.from({length: currentMonth}, (_, i) => {
+            const month = (i + 1).toString().padStart(2, '0');
+            return `${month}-${currentYear}`
+        })
+
+        return arr.concat(monthList)
+    }
+
+    const generateDeliveryLateDayAverage = () => {
+        const arr = ['deliveryLateDayAverage']
+
+        const formatData = T3Dashboard.deliveryLateDayAverage.map((item) => {
+            return item.lateDayAverage
+        })
+        return arr.concat(formatData)
+    }
 
     // Khởi tạo PieChart bằng C3
     const pieChart = () => {
@@ -19,9 +49,8 @@ function DeliveryLateDay (props) {
             data: {
                 x: 'x',
                 columns: [
-                    ['x', moment().subtract(6, "days").format("DD-MM"), moment().subtract(5, "days").format("DD-MM"), moment().subtract(4, "days").format("DD-MM"), moment().subtract(3, "days").format("DD-MM"), moment().subtract(2, "days").format("DD-MM"), moment().subtract(1, "days").format("DD-MM") , moment().format("DD-MM")],
-                    ['deliveryLateDayAverage', 1,3,2,5,7,2,4
-                    ],
+                    listMonth(),
+                    generateDeliveryLateDayAverage(),
                 ],
                 type: 'spline',
                 names: {
@@ -65,6 +94,7 @@ function DeliveryLateDay (props) {
         <React.Fragment>
             {/* <button onClick={() => props.getCostOfAllJourney({})}>Test</button> */}
             <section ref={DeliveryLateDay}></section>
+            {console.log(T3Dashboard)}
         </React.Fragment>
     );
 }

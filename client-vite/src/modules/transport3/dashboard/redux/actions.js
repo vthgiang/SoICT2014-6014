@@ -20,4 +20,63 @@ const getOntimeDeliveryRate = () => {
     }
 }
 
-export const DashboardActions = {getOntimeDeliveryRate}
+const getOnTimeDeliveryRatesPerMonth = () => {
+  return (dispatch) => {
+      dispatch({ type: transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH })
+    DashboardService.getOnTimeDeliveryRatesPerMonth()
+      .then((response) => {
+        dispatch({
+          type: transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS,
+          payload: response.data.content
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH_FAILED
+        })
+      })
+  }
+}
+
+const getEstimatedOnTimeDeliveryRatesPerMonth = () => {
+  return (dispatch) => {
+      dispatch({ type: transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH })
+    DashboardService.getEstimatedOnTimeDeliveryRatesPerMonth()
+      .then((response) => {
+        dispatch({
+          type: transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS,
+          payload: response.data.content
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH_FAILED
+        })
+      })
+  }
+}
+
+const getDeliveryLateDayAveragePerMonth = () => {
+  return (dispatch) => {
+      dispatch({ type: transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH })
+    DashboardService.getDeliveryLateDayAveragePerMonth()
+      .then((response) => {
+        dispatch({
+          type: transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH_SUCCESS,
+          payload: response.data.content
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH_FAILED
+        })
+      })
+  }
+}
+
+export const DashboardActions = {
+  getOntimeDeliveryRate,
+  getOnTimeDeliveryRatesPerMonth,
+  getEstimatedOnTimeDeliveryRatesPerMonth,
+  getDeliveryLateDayAveragePerMonth
+}

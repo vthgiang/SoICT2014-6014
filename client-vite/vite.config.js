@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   return {
     define: {
       'process.env.REACT_APP_SERVER': JSON.stringify(env.REACT_APP_SERVER),
-      'process.env.REACT_APP_SERVICE_IDENTITY_SERVER': JSON.stringify(env.REACT_APP_SERVICE_IDENTITY_SERVER)
+      'process.env.REACT_APP_SERVICE_IDENTITY_SERVER': JSON.stringify(env.REACT_APP_SERVICE_IDENTITY_SERVER),
       'process.env.REACT_APP_EXTERNAL_SYSTEM_PASSWORD': JSON.stringify(env.REACT_APP_EXTERNAL_SYSTEM_PASSWORD),
       'process.env.REACT_APP_EXTERNAL_SYSTEM_USERNAME': JSON.stringify(env.REACT_APP_EXTERNAL_SYSTEM_USERNAME),
       'process.env.REACT_APP_GOOGLE_MAP_API_KEY': JSON.stringify(env.REACT_APP_GOOGLE_MAP_API_KEY),

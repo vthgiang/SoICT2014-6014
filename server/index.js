@@ -252,7 +252,7 @@ app.use('/transport3', require('./modules/transport3/order/order.route'));
 app.use('/transport3', require('./modules/transport3/employee/employee.route'));
 app.use('/transport3', require('./modules/transport3/vehicle/vehicle.route'));
 app.use('/transport3', require('./modules/transport3/schedule/schedule.route'));
-app.use('/transport3', require('./modules/transport3/ontime/ontimePredict.route'))
+app.use('/transport3', require('./modules/transport3/ontime/ontimePredict.route'));
 
 // transportation module
 app.use("/transportation/vehicle", require("./modules/transportation/vehicle/vehicle.route"));

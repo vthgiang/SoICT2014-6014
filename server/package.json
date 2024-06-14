@@ -27,8 +27,6 @@
     "init-bayes-dataset": "node seed/initBayesDataset.js",
     "init-layout-warehouse-data": "node seed/initLayoutWarehouseData.js",
     "init-inventory-warehouse-data": "node seed/initInventoryWarehouseData.js",
-    "init-bayes-dataset": "node seed/initBayesDataset.js",
-    "init-bayes-dataset": "node seed/initBayesDataset.js",
     "y-init": "yarn db && yarn sc",
     "y-init-full": "yarn db && yarn sc && yarn sp && yarn shr",
     "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js"

@@ -15,25 +15,57 @@ function OnTimeDeliveryChart (props) {
     });
 
     useEffect(() => {
-        dispatch(DashboardActions.getOntimeDeliveryRate())
+        dispatch(DashboardActions.getOnTimeDeliveryRatesPerMonth())
+        dispatch(DashboardActions.getEstimatedOnTimeDeliveryRatesPerMonth())
     },[dispatch]);
 
 
 
     // Khởi tạo PieChart bằng C3
+    const listMonth = () => {
+        const arr = ['x']
+        const currentDate = new Date()
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentYear = currentDate.getFullYear();
+
+        const monthList = Array.from({length: currentMonth}, (_, i) => {
+            const month = (i + 1).toString().padStart(2, '0');
+            return `${month}-${currentYear}`
+        })
+
+        return arr.concat(monthList)
+    }
+
+    const generateActualOntimeRate = () => {
+        const arr = ['actualOntimeDeliveryRate']
+
+        const formatData = T3Dashboard.onTimeDeliveryData.map((item) => {
+            return item.onTimeRate
+        })
+
+        return arr.concat(formatData)
+    }
+
+    const generateEstimatedOntimeRate = () => {
+        const arr = ['estimatedOntimeDeliveryRate']
+
+        const formatData = T3Dashboard.estimatedOnTimeDeliveryData.map((item) => {
+            return item.onTimeRate
+        })
+
+        return arr.concat(formatData)
+    }
+
     const pieChart = () => {
         let chart = c3.generate({
             bindto: ontimeDeliveryChart.current,
             data: {
                 x: 'x',
                 columns: [
-                    ['x', moment().subtract(6, "days").format("DD-MM"), moment().subtract(5, "days").format("DD-MM"), moment().subtract(4, "days").format("DD-MM"), moment().subtract(3, "days").format("DD-MM"), moment().subtract(2, "days").format("DD-MM"), moment().subtract(1, "days").format("DD-MM") , moment().format("DD-MM")],
-                    ['actualOntimeDeliveryRate', 94,60,35,50,85,57,T3Dashboard.onTimeDeliveryData
-                    ],
-                    ['estimatedOntimeDeliveryRate', 30,50,25,60,47,56,50
-                    ],
-                    ['plannedOntimeDeliveryRate', 32,52,24,62,43,52,44
-                    ],
+                    listMonth(),
+                    generateActualOntimeRate(),
+                    generateEstimatedOntimeRate(),
+                    ['plannedOntimeDeliveryRate', 80,80,80,80,80,80],
                 ],
                 type: 'spline',
                 names: {
@@ -79,8 +111,6 @@ function OnTimeDeliveryChart (props) {
         <React.Fragment>
             {/* <button onClick={() => props.getCostOfAllJourney({})}>Test</button> */}
             <section ref={ontimeDeliveryChart}></section>
-            {console.log(T3Dashboard)}
-            ABC
         </React.Fragment>
     );
 }

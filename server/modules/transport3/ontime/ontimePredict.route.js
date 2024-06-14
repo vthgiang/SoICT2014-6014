@@ -4,7 +4,10 @@ const OntimePredictController = require('./ontimePredict.controller');
 const { auth } = require(`../../../middleware`);
 
 router.get('/ontimeRate', auth, OntimePredictController.getOnTimeDeliveryRates);
+router.get('/ontimeRatePerMonth', auth, OntimePredictController.getOnTimeDeliveryRatesPerMonth);
 router.get('/estimatedOntimeRate', auth, OntimePredictController.getEstimatedOnTimeDeliveryRates);
+router.get('/estimatedOntimeRatePerMonth', auth, OntimePredictController.getEstimatedOnTimeDeliveryRatesPerMonth);
 router.get('/deliveryLateDayAverage', auth, OntimePredictController.getDeliveryLateDayAverage);
+router.get('/deliveryLateDayAveragePerMonth', auth, OntimePredictController.getDeliveryLateDayAveragePerMonth);
 
 module.exports = router;
