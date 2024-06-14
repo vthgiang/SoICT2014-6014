@@ -7165,12 +7165,10 @@ const initSampleCompanyDB = async () => {
   ) {
     let listSales = [];
     let batchPromises = [];
-
+    let products_in_stock = await Good(vnistDB).find({})
     for (let i = 0; i < saleOrders.length; i++) {
       let salesOrder = saleOrders[i];
-      let product = newProducts.find(
-        (product) => product.code === salesOrder.product_id
-      );
+      let product = products_in_stock.find(product => product.code === String(salesOrder.product_id));
       let marketingCampaign = listMarketing.find(
         (marketing) => marketing.code == salesOrder.campaign_id
       );
@@ -7203,7 +7201,6 @@ const initSampleCompanyDB = async () => {
             productionCost: salesOrder.purchase_price,
             pricePerBaseUnitOrigin: product.pricePerBaseUnit,
             salesPriceVariance: product.salesPriceVariance,
-            quantity: salesOrder.orders,
             serviceLevelAgreements: [
               {
                 descriptions: [
