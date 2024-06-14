@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslate } from 'react-redux-multilingual'
 import { Box, Tab, Tabs } from '@mui/material'
-import PropTypes from 'prop-types'
 import KpiAllocationEachUnitResult from './kpiAllocationEachUnitResult'
 
 function CustomTabPanel(props) {
@@ -13,12 +12,6 @@ function CustomTabPanel(props) {
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   )
-}
-
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired
 }
 
 function a11yProps(index) {

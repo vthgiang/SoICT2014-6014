@@ -5,6 +5,7 @@ import { taskTemplateActions } from '../../../../../task/task-template/redux/act
 import AllocationResult from './allocationResult'
 import ProgressTitle from './progressTitle'
 import ConfigParameters from './configParameters'
+import { ConfigParametersAction } from './redux/actions'
 
 function AllocationToOrganizationalUnit({ month, currentKPI }) {
   const [listUnit, setListUnit] = useState([])
@@ -123,16 +124,6 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
     return listItem.kpis.reduce((sum, kpi) => sum + Number(kpi.kpiWeight), 0)
   }
 
-  const handleStartAllocation = async () => {
-    try {
-      // setIsLoading(true)
-      // setIsLoading(false)
-    } catch (error) {
-      console.log(error)
-      // setIsLoading(false)
-    }
-  }
-
   const [steps, setSteps] = useState([
     {
       label: 'Thiết lập thông tin',
@@ -169,6 +160,11 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
 
     setStep(currentStep)
     setSteps(newSteps)
+  }
+
+  const handleStartAllocation = () => {
+    console.log(123)
+    dispatch(ConfigParametersAction.handleStartAllocation())
   }
 
   return (
@@ -310,7 +306,6 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
               className='btn btn-primary my-[8px]'
               onClick={(event) => {
                 setCurrentStep(event, 1)
-                handleStartAllocation()
               }}
             >
               Tinh chỉnh tham số
@@ -319,7 +314,7 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
         </div>
       )}
 
-      {step === 1 && <ConfigParameters />}
+      {step === 1 && <ConfigParameters handleStartAllocation={handleStartAllocation} />}
 
       {step === 2 && <AllocationResult />}
     </DialogModal>

@@ -58,8 +58,32 @@ const createConfigSettingData = async (request, response) => {
     console.log(123);
 };
 
+const handleStartAllocation = async (request, response) => {
+    try {
+        const portal = request.portal;
+        const { email } = request.user;
+
+        const result = await ConfigSettingService.handleStartAllocation(portal);
+
+        Logger.info(email, `Allocation success`, portal);
+        response.status(200).json({
+            success: true,
+            messages: ['allocation_success'],
+            content: result.content,
+        });
+    } catch (error) {
+        Logger.error(email, `Allocation`, portal);
+        response.status(401).json({
+            success: false,
+            messages: ['allocation_fail'],
+            content: error,
+        });
+    }
+};
+
 module.exports = {
     getConfigSettingData,
     updateConfigSettingData,
     createConfigSettingData,
+    handleStartAllocation,
 };

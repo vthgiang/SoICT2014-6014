@@ -25,7 +25,20 @@ const updateConfigSettingData = (_id, payload) => {
   )
 }
 
+const startAllocation = () => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/kpi/allocation/start`,
+      method: 'POST'
+    },
+    true,
+    true,
+    'kpi'
+  )
+}
+
 export const ConfigParametersServices = {
   getConfigSettingData,
-  updateConfigSettingData
+  updateConfigSettingData,
+  startAllocation
 }

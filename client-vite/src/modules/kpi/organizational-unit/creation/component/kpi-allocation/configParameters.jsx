@@ -5,7 +5,7 @@ import { SelectBox } from '../../../../../../common-components'
 import ConfigParametersForm from './configParametersForm'
 import { ConfigParametersAction } from './redux/actions'
 
-function ConfigParameters() {
+function ConfigParameters({ handleStartAllocation }) {
   const translate = useTranslate()
   const configData = useSelector((state) => state.configParametersReducer)
   const { numberGeneration, solutionSize, hmcr, par, bandwidth, alpha, beta, gamma, isAutomatically, defaultSetting, _id } = configData
@@ -80,16 +80,21 @@ function ConfigParameters() {
 
             {isAutomatic === 'off' && <ConfigParametersForm />}
           </div>
-          {isAutomatic === 'off' && (
-            <div className='box-footer text-center flex justify-center gap-[16px]'>
-              <button type='button' className='btn btn-success' onClick={handleUpdateData}>
-                Cập nhật
-              </button>
-              <button type='button' className='btn btn-success' onClick={handleResetData}>
-                Reset thay đổi
-              </button>
-            </div>
-          )}
+          <div className='box-footer text-center flex justify-center gap-[16px]'>
+            {isAutomatic === 'off' && (
+              <>
+                <button type='button' className='btn btn-success' onClick={handleUpdateData}>
+                  Cập nhật
+                </button>
+                <button type='button' className='btn btn-success' onClick={handleResetData}>
+                  Reset thay đổi
+                </button>
+              </>
+            )}
+            <button type='button' className='btn btn-success' onClick={() => handleStartAllocation()}>
+              Bắt đầu phân bổ
+            </button>
+          </div>
         </div>
       </div>
     </div>
