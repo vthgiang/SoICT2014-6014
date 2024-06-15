@@ -50,7 +50,7 @@ exports.find = async (portal, queryParams = {}) => {
   };
 }
 
-enrich = (resource) => {
+const enrich = (resource) => {
   let enrichResource = {
     id: resource.id,
     name: resource.name,
@@ -89,11 +89,10 @@ exports.findOne = async (portal, id) => {
     throw [`resource_${id}_not_found`];
   }
 
-  const resource = await Resource(connect(DB_CONNECTION, portal)).findById(id);
+  const resource = await Resource(connect(DB_CONNECTION, portal)).findById(id).populate('refId');
 
   return enrich(resource);
 }
-
 
 exports.updateAttributes = async (portal, id, data) => {
   const existent = await Resource(connect(DB_CONNECTION, portal)).exists({
