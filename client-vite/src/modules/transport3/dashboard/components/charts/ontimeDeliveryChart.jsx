@@ -5,8 +5,9 @@ import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import moment from 'moment';
 import { DashboardActions } from '../../redux/actions';
+import { withRouter } from 'react-router-dom';
 
-function OnTimeDeliveryChart (props) {
+function OnTimeDeliveryChart(props) {
     const dispatch = useDispatch()
     const T3Dashboard = useSelector((state) => state.T3dashboard)
     const ontimeDeliveryChart = useRef(null);
@@ -17,7 +18,7 @@ function OnTimeDeliveryChart (props) {
     useEffect(() => {
         dispatch(DashboardActions.getOnTimeDeliveryRatesPerMonth())
         dispatch(DashboardActions.getEstimatedOnTimeDeliveryRatesPerMonth())
-    },[dispatch]);
+    }, [dispatch]);
 
 
 
@@ -28,7 +29,7 @@ function OnTimeDeliveryChart (props) {
         const currentMonth = currentDate.getMonth() + 1;
         const currentYear = currentDate.getFullYear();
 
-        const monthList = Array.from({length: currentMonth}, (_, i) => {
+        const monthList = Array.from({ length: currentMonth }, (_, i) => {
             const month = (i + 1).toString().padStart(2, '0');
             return `${month}-${currentYear}`
         })
@@ -56,6 +57,11 @@ function OnTimeDeliveryChart (props) {
         return arr.concat(formatData)
     }
 
+    const redirectToDetailPage = () => {
+        // Thực hiện chuyển hướng đến trang thông tin orders
+        props.history.push('/manage-transport3-order');
+    };
+
     const pieChart = () => {
         let chart = c3.generate({
             bindto: ontimeDeliveryChart.current,
@@ -65,7 +71,7 @@ function OnTimeDeliveryChart (props) {
                     listMonth(),
                     generateActualOntimeRate(),
                     generateEstimatedOntimeRate(),
-                    ['plannedOntimeDeliveryRate', 80,80,80,80,80,80],
+                    ['plannedOntimeDeliveryRate', 80, 80, 80, 80, 80, 80],
                 ],
                 type: 'spline',
                 names: {
@@ -110,15 +116,28 @@ function OnTimeDeliveryChart (props) {
     return (
         <React.Fragment>
             {/* <button onClick={() => props.getCostOfAllJourney({})}>Test</button> */}
-            <section ref={ontimeDeliveryChart}></section>
+            {/* <section ref={ontimeDeliveryChart}></section> */}
+            <section ref={ontimeDeliveryChart}>
+            </section>
+            <button
+                style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: '10', // Để đảm bảo nút hiển thị trước biểu đồ
+                }}
+                onClick={redirectToDetailPage}
+            >
+                Chi tiết
+            </button>
         </React.Fragment>
     );
 }
 
 
 function mapState(state) {
-    
-}
 
-const connectedOnTimeDeliveryChart = connect(mapState)(withTranslate(OnTimeDeliveryChart));
+}
+// const connectedOnTimeDeliveryChart = connect(mapState)(withTranslate(OnTimeDeliveryChart));
+const connectedOnTimeDeliveryChart = connect(mapState)(withTranslate(withRouter(OnTimeDeliveryChart)));
 export { connectedOnTimeDeliveryChart as OnTimeDeliveryChart };

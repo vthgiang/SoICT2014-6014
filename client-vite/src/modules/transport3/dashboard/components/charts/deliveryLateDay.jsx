@@ -5,6 +5,7 @@ import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import moment from 'moment';
 import { DashboardActions } from '../../redux/actions';
+import { withRouter } from 'react-router-dom';
 
 function DeliveryLateDay (props) {
     const dispatch = useDispatch()
@@ -41,6 +42,11 @@ function DeliveryLateDay (props) {
         })
         return arr.concat(formatData)
     }
+
+    const redirectToDetailPage = () => {
+        // Thực hiện chuyển hướng đến trang thông tin orders
+        props.history.push('/manage-transport3-order');
+    };
 
     // Khởi tạo PieChart bằng C3
     const pieChart = () => {
@@ -94,7 +100,18 @@ function DeliveryLateDay (props) {
         <React.Fragment>
             {/* <button onClick={() => props.getCostOfAllJourney({})}>Test</button> */}
             <section ref={DeliveryLateDay}></section>
-            {console.log(T3Dashboard)}
+            <button
+                style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: '10', // Để đảm bảo nút hiển thị trước biểu đồ
+                }}
+                onClick={redirectToDetailPage}
+            >
+                Chi tiết
+            </button>
+            {/* {console.log(T3Dashboard)} */}
         </React.Fragment>
     );
 }
@@ -104,5 +121,6 @@ function mapState(state) {
     
 }
 
-const connectedDeliveryLateDay = connect(mapState)(withTranslate(DeliveryLateDay));
+// const connectedDeliveryLateDay = connect(mapState)(withTranslate(DeliveryLateDay));
+const connectedDeliveryLateDay = connect(mapState)(withTranslate(withRouter(DeliveryLateDay)));
 export { connectedDeliveryLateDay as DeliveryLateDay };

@@ -11,7 +11,6 @@ import { TransportationCostChart } from "./charts/costChart";
 import { OnTimeDeliveryChart } from "./charts/ontimeDeliveryChart";
 import { JourneyActions } from "../../../transportation/scheduling/tracking-route/redux/actions";
 import { DeliveryLateDay } from "./charts/deliveryLateDay";
-import { DashboardActions } from '../redux/actions';
 
 function GeneralStatistic(props) {
 
