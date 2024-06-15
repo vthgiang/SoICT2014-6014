@@ -33,8 +33,7 @@ exports.find = async (portal, queryParams = {}) => {
   const requesters = await Requester(connect(DB_CONNECTION, portal))
     .find(query)
     .skip((page - 1) * perPage)
-    .limit(perPage)
-    .populate('refId');
+    .limit(perPage);
 
   const totalRequesters = await Requester(connect(DB_CONNECTION, portal)).countDocuments(
     query,
