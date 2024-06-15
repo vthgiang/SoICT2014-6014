@@ -243,7 +243,8 @@ const OrderTransport3 = lazy(() => import('../modules/transport3/order/component
 const ScheduleTransport3 = lazy(() => import('../modules/transport3/schedule/components'))
 const EmployeeTransport3 = lazy(() => import('../modules/transport3/employee/components'))
 const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/components'))
-
+const RouteTransport3 = lazy(() => import('../modules/transport3/route/components'))
+const IssueTransport3 = lazy(() => import('../modules/transport3/issue/components'))
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 const Project = lazy(() => import("../modules/project/projects/components/index"))
@@ -3690,7 +3691,7 @@ class Routes extends Component {
             path='/manage-transport3-dashboard'
             pageName='manage_transport3_dashboard'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={DashBoardTransportationUnit}
           />
 
           <PrivateRoute
@@ -3750,7 +3751,7 @@ class Routes extends Component {
             path='/manage-transport3-route'
             pageName='manage_transport3_route'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={RouteTransport3}
           />
 
           <PrivateRoute
@@ -3770,7 +3771,7 @@ class Routes extends Component {
             path='/manage-transport3-cost'
             pageName='manage_transport3_cost'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={TransportationCost}
           />
 
           <PrivateRoute
@@ -3790,7 +3791,7 @@ class Routes extends Component {
             path='/manage-transport3-issue'
             pageName='manage_transport3_issue'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={IssueTransport3}
           />
 
           <PrivateRoute

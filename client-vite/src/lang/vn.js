@@ -90,6 +90,11 @@ export default {
       get_all_unit_dashboard_data_fail: 'Lấy dữ liệu bảng tin doanh nghiệp thất bại'
     },
 
+    transport3: {
+      schedule: {
+        create_schedule_success: 'Tạo lịch vận chuyển thành công'
+      }
+    },
     menu: {
       home: 'Trang chủ',
       /** Quản lý rủi ro */

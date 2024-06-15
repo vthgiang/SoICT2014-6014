@@ -38,8 +38,8 @@ exports.getAllVehicleTransport3 = async (portal, query, currentRole, companyId) 
     };
   }));
 
-  vehicles = await Transport3Vehicle(connect(DB_CONNECTION, portal)).find({}).skip((page - 1) * perPage).limit(parseInt(perPage));
-  return vehicle_assets;
+  vehicles = await Transport3Vehicle(connect(DB_CONNECTION, portal)).find({}).populate('asset').skip((page - 1) * perPage).limit(parseInt(perPage));
+  return vehicles;
 }
 
 // Sửa thông tin phương tiện vận chuyển 3

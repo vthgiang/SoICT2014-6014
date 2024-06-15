@@ -17,7 +17,7 @@ export function vehicle(state = initialState, action) {
     case vehicleConstants.GET_ALL_VEHICLE_SUCCESS:
       return {
         ...state,
-        listVehicle: action.payload.data,
+        listVehicle: action.payload,
         isLoading: false
       }
     case vehicleConstants.GET_ALL_VEHICLE_FAILURE:

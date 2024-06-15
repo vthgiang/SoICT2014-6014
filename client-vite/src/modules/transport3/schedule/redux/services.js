@@ -33,4 +33,18 @@ const getAllStocksWithLatlng = async () => {
   }
   return res
 }
-export { getAllSchedule, getAllStocksWithLatlng }
+
+const createSchedule = (data) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/schedule`,
+      method: 'POST',
+      data
+    },
+    true,
+    true,
+    'transport3.schedule'
+  )
+}
+
+export { getAllSchedule, getAllStocksWithLatlng, createSchedule }

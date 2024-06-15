@@ -7,11 +7,12 @@ const {
 } = require(`../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
 const userService = require('../../super-admin/user/user.service');
-// Tạo mới 1 vận đơn
+
 exports.getAllEmployeeTransport3 = async (portal, query, currentRole) => {
   const {page, limit} = query;
 
   let usersInDepartmentOfRole = await userService.getAllEmployeeOfUnitByRole(portal, currentRole);
+  console.log('usersInDepartmentOfRole', usersInDepartmentOfRole)
   let emailsInCompany = usersInDepartmentOfRole?.map((user) => user.userId.email);
   let employeesInDepartmentOfRole = await Employee(connect(DB_CONNECTION, portal)).find({emailInCompany: {$in: emailsInCompany}});
   let employees = await Transport3Employee(connect(DB_CONNECTION, portal)).find({}).populate('employee');
@@ -32,7 +33,7 @@ exports.getAllEmployeeTransport3 = async (portal, query, currentRole) => {
   // filter lists not include in employees list _id
   let notConfirm = lists.filter((employee) => {
     return !employees.some((employeeTransport3) => {
-      return employee._id.toString() === employeeTransport3.employee._id.toString();
+      return employee._id.toString() === employeeTransport3.employee?._id.toString();
     });
   });
 

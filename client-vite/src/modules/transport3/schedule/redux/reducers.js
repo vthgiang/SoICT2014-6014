@@ -2,6 +2,8 @@ import { ScheduleConstants } from './constants'
 
 const initState = {
   isLoading: false,
+  isAutoScheduling: false,
+  listAutoSchedules: null,
   listSchedules: [],
   listStocsWithLatLng: []
 }
@@ -54,6 +56,24 @@ export function schedule(state = initState, action) {
       return {
         ...state,
         isLoading: false
+      }
+    case ScheduleConstants.AUTO_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        isAutoScheduling: true,
+        listAutoSchedules: null
+      }
+    case ScheduleConstants.AUTO_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        isAutoScheduling: false,
+        listAutoSchedules: ['']
+      }
+    case ScheduleConstants.AUTO_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isAutoScheduling: false,
+        listAutoSchedules: []
       }
     default:
       return state

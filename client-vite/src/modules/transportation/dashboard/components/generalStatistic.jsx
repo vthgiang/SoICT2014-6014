@@ -130,7 +130,15 @@ function GeneralStatistic(props) {
     let lists = [];
 
     // const totalPage = example && Math.ceil(requestManagements.totalDocs / perPage);
-
+    const handleChangeModule = (value) => {
+        localStorage.setItem('module-tranport', value);
+        if(value == 1){
+          // navigate to transportation dashboard
+          window.location.href = '/transportation-dashboard';
+        }else{
+          window.location.href = '/manage-transport3-dashboard';
+        }
+    }
     return (
         <React.Fragment>
             {/* Chỉ số tổng hợp ở đầu trang */}
@@ -149,6 +157,17 @@ function GeneralStatistic(props) {
                                 />
                             </div>
                             <button type="button" className="btn btn-success">{translate('general.search')}</button>
+
+                          <label style={{ width: "auto", marginLeft: "60%" }}>Chọn module</label>
+                          <SelectBox
+                            id={`select-module-tranport`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={[{ value: '1', text: 'Transportation' }, { value: '2', text: 'Transport 3' }]}
+                            onChange={handleChangeModule}
+                            value={localStorage.getItem('module-tranport') ? localStorage.getItem('module-tranport') : '1'}
+                            multiple={false}
+                          />
                         </div>
                     </div>
 
