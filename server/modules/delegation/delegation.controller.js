@@ -1,121 +1,63 @@
 const DelegationService = require('./delegation.service');
 const Log = require(`../../logs`);
+const { createDelegationHandler } = require('./delegation-service/delegation.handler.factory');
 
-// Thêm mới một ví dụ
+const checkValidDelegateType = (delegateType) => {
+    return ['Role', 'Task', 'Resource'].includes(delegateType);
+}
+
 exports.createDelegation = async (req, res) => {
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
+        res.status(400).json({
+            success: false,
+            messages: [`delegation_type_invalid`]
+        })
+        return;
+    }
     try {
-        let newDelegation = await DelegationService.createDelegation(req.portal, req.body);
+        const delegationHandler = createDelegationHandler(delegateType);
+        const newDelegation = await delegationHandler.createDelegation(req.portal, req.body[0]);
 
-        newDelegation = await DelegationService.saveLog(req.portal, newDelegation, newDelegation.delegator, newDelegation.delegationName, "create", newDelegation.createdAt)
-        await DelegationService.sendNotification(req.portal, newDelegation, "create")
-        await Log.info(req.user.email, 'CREATED_NEW_DELEGATION', req.portal);
+        const delegation = await delegationHandler.saveLog(req.portal, newDelegation, newDelegation.delegator, newDelegation.name, 'create', newDelegation.createdAt)
+        await delegationHandler.sendNotification(req.portal, newDelegation._id, 'create')
+        await Log.info(req.user.email, `created_new_${delegateType}_delegation`, req.portal);
 
         res.status(201).json({
             success: true,
-            messages: ["add_success"],
-            content: newDelegation
+            messages: [`add_${delegateType}_delegation_success`],
+            content: delegation
         });
     } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "CREATED_NEW_DELEGATION", req.portal);
+        await Log.error(req.user.email, `created_new_${delegateType}_delegation`, req.portal);
 
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ["add_fail"],
+            messages: Array.isArray(error) ? error : [`add_${delegateType}_delegation_fail`],
             content: error.message
         })
     }
 }
 
-exports.createTaskDelegation = async (req, res) => {
-    try {
-        let newDelegation = await DelegationService.createTaskDelegation(req.portal, req.body);
-
-        newDelegation = await DelegationService.saveLog(req.portal, newDelegation, newDelegation.delegator, newDelegation.delegationName, "create", newDelegation.createdAt)
-        await DelegationService.sendNotification(req.portal, newDelegation, "create")
-
-        await Log.info(req.user.email, 'add_task_delegation_success', req.portal);
-
-        res.status(201).json({
-            success: true,
-            messages: ["add_task_delegation_success"],
-            content: newDelegation
-        });
-    } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "add_task_delegation_faile", req.portal);
-
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ["add_task_delegation_faile"],
-            content: error.message
-        })
-    }
-}
-
-exports.createServiceDelegation = async (req, res) => {
-    try {
-        let newDelegations = await DelegationService.createServiceDelegation(req.portal, req.body);
-        let result = [];
-        for (let i=0; i<newDelegations.length; i++){
-            const newDelegation = await DelegationService.saveLog(req.portal, newDelegations[i], req.user?._id, 
-                newDelegations[i].delegationName, "create", newDelegations[i].createdAt)
-            result.push(newDelegation);
-        }
-
-        await Log.info(req.user.email, 'add_service_delegation_success', req.portal);
-
-        res.status(201).json({
-            success: true,
-            messages: ["add_service_delegation_success"],
-            content: result
-        });
-    } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "add_service_delegation_faile", req.portal);
-
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ["add_service_delegation_faile"],
-            content: error.message
-        })
-    }
-}
-
-// Lấy ra đầy đủ thông tin tất cả các dịch vụ
 exports.getDelegations = async (req, res) => {
-    try {
-        let data = await DelegationService.getDelegations(req.portal, req.query);
-
-        await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
-
-        res.status(200).json({
-            success: true,
-            messages: ["get_all_delegations_success"],
-            content: data
-        });
-    } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
-
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
         res.status(400).json({
             success: false,
-            messages: ["get_all_delegations_fail"],
-            content: error.message
-        });
+            messages: [`delegation_type_invalid`]
+        })
+        return;
     }
-}
-
-exports.getDelegationsService = async (req, res) => {
     try {
-        let data = await DelegationService.getDelegationsService(req.portal, req.query);
+        const delegationHandler = createDelegationHandler(delegateType);
+        const delegations = await delegationHandler.getDelegations(req.portal, req.query);
 
-        await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+        await Log.info(req.user.email, `got_all_${delegateType}_delegations`, req.portal);
 
         res.status(200).json({
             success: true,
-            messages: ["get_all_delegations_success"],
-            content: data
+            messages: [`get_all_${delegateType}_delegations_success`],
+            content: delegations
         });
     } catch (error) {
         console.log(error)
@@ -123,129 +65,65 @@ exports.getDelegationsService = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_all_delegations_fail"],
+            messages: [`get_all_${delegateType}_delegations_fail`],
             content: error.message
         });
     }
 }
 
 exports.getDelegationsReceive = async (req, res) => {
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
+        res.status(400).json({
+            success: false,
+            messages: [`delegation_type_invalid`]
+        })
+        return;
+    }
     try {
-        let data = await DelegationService.getDelegationsReceive(req.portal, req.query);
-
-        await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+        const delegationHandler = createDelegationHandler(delegateType);
+        const delegations = await delegationHandler.getDelegationsReceive(req.portal, req.query);
+        await Log.info(req.user.email, `got_all_${delegateType}_delegations`, req.portal);
 
         res.status(200).json({
             success: true,
-            messages: ["get_all_delegations_success"],
-            content: data
+            messages: [`get_all_${delegateType}_delegations_success`],
+            content: delegations
         });
     } catch (error) {
         console.log(error)
-        await Log.error(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+        await Log.error(req.user.email, `get_all_${delegateType}_delegations`, req.portal);
 
         res.status(400).json({
             success: false,
-            messages: ["get_all_delegations_fail"],
+            messages: [`got_all_${delegateType}_delegations_fail`],
             content: error.message
         });
     }
 }
 
-exports.getDelegationsReceiveTask = async (req, res) => {
-    try {
-        let data = await DelegationService.getDelegationsReceiveTask(req.portal, req.query);
-
-        await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
-
-        res.status(200).json({
-            success: true,
-            messages: ["get_all_delegations_success"],
-            content: data
-        });
-    } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
-
-        res.status(400).json({
-            success: false,
-            messages: ["get_all_delegations_fail"],
-            content: error.message
-        });
-    }
-}
-
-exports.rejectDelegation = async (req, res) => {
-    try {
-        let rejectedDelegation = await DelegationService.rejectDelegation(req.portal, req.body.delegationId, req.body.reason);
-        rejectedDelegation = await DelegationService.saveLog(req.portal, rejectedDelegation, rejectedDelegation.delegatee, rejectedDelegation.delegationName, "reject", new Date())
-        await DelegationService.sendNotification(req.portal, rejectedDelegation, "reject")
-
-        if (rejectedDelegation) {
-            await Log.info(req.user.email, "REJECTED_DELEGATION", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: rejectedDelegation.delegateType == "Role" ? ["reject_success"] : ["reject_task_delegation_success"],
-                content: rejectedDelegation
-            });
-        } else {
-            throw Error("Delegation is invalid");
-        }
-    } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "REJECTED_DELEGATION", req.portal);
-        res.status(400).json({
-            success: false,
-            messages: rejectedDelegation.delegateType == "Role" ? ["reject_fail"] : ["reject_task_delegation_faile"],
-            content: error.message
-        });
-    }
-}
-
-exports.confirmDelegation = async (req, res) => {
-    try {
-        let confirmedDelegation = await DelegationService.confirmDelegation(req.portal, req.body.delegationId);
-        confirmedDelegation = await DelegationService.saveLog(req.portal, confirmedDelegation, confirmedDelegation.delegatee, confirmedDelegation.delegationName, "confirm", new Date())
-        await DelegationService.sendNotification(req.portal, confirmedDelegation, "confirm")
-
-        if (confirmedDelegation) {
-            await Log.info(req.user.email, "CONFIRMED_DELEGATION", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: confirmedDelegation.delegateType == "Role" ? ["confirm_success"] : ["confirm_task_delegation_success"],
-                content: confirmedDelegation
-            });
-        } else {
-            throw Error("Delegation is invalid");
-        }
-    } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "CONFIRMED_DELEGATION", req.portal);
-        res.status(400).json({
-            success: false,
-            messages: confirmedDelegation.delegateType == "Role" ? ["confirm_fail"] : ["confirm_task_delegation_faile"],
-            content: error.message
-        });
-    }
-}
-
-//  Lấy ra Ví dụ theo id
 exports.getDelegationById = async (req, res) => {
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
+        res.status(400).json({
+            success: false,
+            messages: [`delegation_type_invalid`]
+        })
+        return;
+    }
     try {
+        const delegationHandler = createDelegationHandler(delegateType);
         let { id } = req.params;
-        let delegation = await DelegationService.getDelegationById(req.portal, id);
-        if (delegation !== -1) {
-            await Log.info(req.user.email, "GET_DELEGATION_BY_ID", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["get_delegation_by_id_success"],
-                content: delegation
-            });
-        } else {
-            throw Error("delegation is invalid")
-        }
+        let delegation = await delegationHandler.getDelegationById(req.portal, id);
+        await Log.info(req.user.email, "get_delegation_by_id", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_delegation_by_id_success"],
+            content: delegation
+        });
     } catch (error) {
-        await Log.error(req.user.email, "GET_DELEGATION_BY_ID", req.portal);
+        console.log(error)
+        await Log.error(req.user.email, "get_delegation_by_id", req.portal);
 
         res.status(400).json({
             success: false,
@@ -255,271 +133,168 @@ exports.getDelegationById = async (req, res) => {
     }
 }
 
-// Sửa Ví dụ
+exports.rejectDelegation = async (req, res) => {
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
+        res.status(400).json({
+            success: false,
+            messages: [`delegation_type_invalid`]
+        })
+        return;
+    }
+    try {
+        const delegationHandler = createDelegationHandler(delegateType);
+        let rejectedDelegation = await delegationHandler.rejectDelegation(req.portal, req.body.delegationId, req.body.reason);
+        rejectedDelegation = await delegationHandler.saveLog(req.portal, rejectedDelegation, rejectedDelegation.delegatee, rejectedDelegation.name, 'reject', new Date());
+        await delegationHandler.sendNotification(req.portal, rejectedDelegation._id, 'reject');
+
+        await Log.info(req.user.email, `rejected_${delegateType}_delegation`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: [`reject_${delegateType}_delegation_success`],
+            content: rejectedDelegation
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, `rejected_${delegateType}_delegation`, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: [`reject_${delegateType}_delegation_fail`],
+            content: error.message
+        });
+    }
+}
+
+exports.confirmDelegation = async (req, res) => {
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
+        res.status(400).json({
+            success: false,
+            messages: [`delegation_type_invalid`]
+        })
+        return;
+    }
+    try {
+        const delegationHandler = createDelegationHandler(delegateType);
+
+        let confirmedDelegation = await delegationHandler.confirmDelegation(req.portal, req.body.delegationId);
+        confirmedDelegation = await delegationHandler.saveLog(req.portal, confirmedDelegation, confirmedDelegation.delegatee, confirmedDelegation.delegationName, 'confirm', new Date())
+        await delegationHandler.sendNotification(req.portal, confirmedDelegation, 'confirm')
+
+        await Log.info(req.user.email, `confirmed_${delegateType}_delegation`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: [`confirm_${delegateType}_delegation_success`],
+            content: confirmedDelegation
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, `confirmed_${delegateType}_delegation`, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: [`confirm_${delegateType}_delegation_fail`],
+            content: error.message
+        });
+    }
+}
+
 exports.editDelegation = async (req, res) => {
-    try {
-        let { id } = req.params;
-        let data = req.body;
-        let updatedDelegation = await DelegationService.getNewlyCreateDelegation(id, data, req.portal);
-        await DelegationService.sendNotification(req.portal, updatedDelegation, "create")
-
-        if (updatedDelegation !== -1) {
-            DelegationService.cancelJobDelegation(id)
-            await DelegationService.revokeDelegation(req.portal, [id]);
-            await DelegationService.deleteDelegations(req.portal, [id]);
-            updatedDelegation = await DelegationService.saveLog(req.portal, updatedDelegation, updatedDelegation.delegator, updatedDelegation.delegationName, "edit", updatedDelegation.createdAt)
-            await Log.info(req.user.email, "UPDATED_DELEGATION", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["edit_delegation_success"],
-                content: [id, updatedDelegation]
-            });
-        } else {
-            throw Error("Delegation is invalid");
-        }
-
-    } catch (error) {
-        await Log.error(req.user.email, "UPDATED_DELEGATION", req.portal);
-        console.log(error)
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ["edit_delegation_fail"],
+            messages: [`delegation_type_invalid`]
+        })
+        return;
+    }
+    try {
+        const delegationHandler = createDelegationHandler(delegateType);
+        let { id } = req.params;
+        let data = req.body;
+        let updatedDelegation = await delegationHandler.getNewlyCreateDelegation(id, data, req.portal);
+        updatedDelegation = await delegationHandler.saveLog(req.portal, updatedDelegation, updatedDelegation.delegator, updatedDelegation.name, 'edit', updatedDelegation.createdAt)
+        await Log.info(req.user.email, `edited_${delegateType}_delegation`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: [`edit_${delegateType}_delegation_success`],
+            content: [id, updatedDelegation]
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, `edited_${delegateType}_delegation`, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: [`edit_${delegateType}_delegation_fail`],
             content: error.message
         });
     }
 }
 
-exports.editTaskDelegation = async (req, res) => {
-    try {
-        let { id } = req.params;
-        let data = req.body;
-        let updatedDelegation = await DelegationService.getNewlyCreateTaskDelegation(id, data, req.portal);
-        await DelegationService.sendNotification(req.portal, updatedDelegation, "create")
-
-        if (updatedDelegation !== -1) {
-            DelegationService.cancelJobDelegation(id)
-            await DelegationService.revokeTaskDelegation(req.portal, [id]);
-            await DelegationService.deleteTaskDelegation(req.portal, [id]);
-            updatedDelegation = await DelegationService.saveLog(req.portal, updatedDelegation, updatedDelegation.delegator, updatedDelegation.delegationName, "edit", updatedDelegation.createdAt)
-            await Log.info(req.user.email, "edit_task_delegation_success", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["edit_task_delegation_success"],
-                content: [id, updatedDelegation]
-            });
-        } else {
-            throw Error("Delegation is invalid");
-        }
-
-    } catch (error) {
-        await Log.error(req.user.email, "edit_task_delegation_faile", req.portal);
-        console.log(error)
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ["edit_task_delegation_faile"],
-            content: error.message
-        });
-    }
-}
-
-// Xóa Ví dụ
 exports.deleteDelegations = async (req, res) => {
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
+        res.status(400).json({
+            success: false,
+            messages: [`delegation_type_invalid`]
+        })
+        return;
+    }
     try {
-        let deletedDelegation = await DelegationService.deleteDelegations(req.portal, req.body.delegationIds);
+        const delegationHandler = createDelegationHandler(delegateType);
+
+        let deletedDelegation = await delegationHandler.deleteDelegations(req.portal, req.body.delegationIds);
         if (deletedDelegation) {
-            await Log.info(req.user.email, "DELETED_DELEGATION", req.portal);
+            await Log.info(req.user.email, `deleted_${delegateType}_delegations`, req.portal);
             res.status(200).json({
                 success: true,
-                messages: ["delete_success"],
+                messages: [`delete_${delegateType}_success`],
                 content: deletedDelegation
             });
         } else {
-            throw Error("Delegation is invalid");
+            throw Error('Delegation is invalid');
         }
     } catch (error) {
-        await Log.error(req.user.email, "DELETED_DELEGATION", req.portal);
+        console.log(error)
+        await Log.error(req.user.email, `deleted_${delegateType}_delegations`, req.portal);
         res.status(400).json({
             success: false,
-            messages: ["delete_fail"],
+            messages: [`delete_${delegateType}_fail`],
             content: error.message
         });
     }
 }
 
 exports.revokeDelegation = async (req, res) => {
+    const delegateType = req.query.delegateType ?? '';
+    if (!checkValidDelegateType(delegateType)) {
+        res.status(400).json({
+            success: false,
+            messages: [`delegation_type_invalid`]
+        })
+        return;
+    }
     try {
-        let revokedDelegation = await DelegationService.revokeDelegation(req.portal, req.body.delegationIds, req.body.reason);
-        revokedDelegation = await DelegationService.saveLog(req.portal, revokedDelegation, revokedDelegation.delegator, revokedDelegation.delegationName, "revoke", revokedDelegation.revokedDate)
-        await DelegationService.sendNotification(req.portal, revokedDelegation, "revoke")
+        const delegationHandler = createDelegationHandler(delegateType);
+        let revokedDelegation = await delegationHandler.revokeDelegation(req.portal, req.body.delegationIds, req.body.reason);
+        revokedDelegation = await delegationHandler.saveLog(req.portal, revokedDelegation, revokedDelegation.delegator, revokedDelegation.delegationName, 'revoke', revokedDelegation.revokedDate)
+        await delegationHandler.sendNotification(req.portal, revokedDelegation, 'revoke')
 
         if (revokedDelegation) {
-            await Log.info(req.user.email, "REVOKED_DELEGATION", req.portal);
+            await Log.info(req.user.email, `revoked_${delegateType}_delegations`, req.portal);
             res.status(200).json({
                 success: true,
-                messages: ["revoke_success"],
+                messages: ['revoke_success'],
                 content: revokedDelegation
             });
         } else {
-            throw Error("Delegation is invalid");
+            throw Error('Delegation is invalid');
         }
     } catch (error) {
         console.log(error)
-        await Log.error(req.user.email, "REVOKED_DELEGATION", req.portal);
+        await Log.error(req.user.email, `revoked_${delegateType}_delegations`, req.portal);
         res.status(400).json({
             success: false,
-            messages: ["revoke_fail"],
-            content: error.message
-        });
-    }
-}
-
-exports.deleteTaskDelegations = async (req, res) => {
-    try {
-        let deletedDelegation = await DelegationService.deleteTaskDelegation(req.portal, req.body.delegationIds);
-        if (deletedDelegation) {
-            await Log.info(req.user.email, "delete_task_delegation_success", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["delete_task_delegation_success"],
-                content: deletedDelegation
-            });
-        } else {
-            throw Error("Delegation is invalid");
-        }
-    } catch (error) {
-        await Log.error(req.user.email, "delete_task_delegation_faile", req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ["delete_task_delegation_faile"],
-            content: error.message
-        });
-    }
-}
-
-exports.revokeTaskDelegation = async (req, res) => {
-    try {
-        let revokedDelegation = await DelegationService.revokeTaskDelegation(req.portal, req.body.delegationIds, req.body.reason);
-        revokedDelegation = await DelegationService.saveLog(req.portal, revokedDelegation, revokedDelegation.delegator, revokedDelegation.delegationName, "revoke", revokedDelegation.revokedDate)
-        await DelegationService.sendNotification(req.portal, revokedDelegation, "revoke")
-
-        if (revokedDelegation) {
-            await Log.info(req.user.email, "revoke_task_delegation_success", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["revoke_task_delegation_success"],
-                content: revokedDelegation
-            });
-        } else {
-            throw Error("Delegation is invalid");
-        }
-    } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "revoke_task_delegation_faile", req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ["revoke_task_delegation_faile"],
-            content: error.message
-        });
-    }
-}
-
-exports.editServiceDelegation = async (req, res) => {
-    try {
-        let { id } = req.params;
-        let data = req.body;
-        let updatedDelegation = await DelegationService.getNewlyCreateServiceDelegation(id, data, req.portal);
-
-        if (updatedDelegation !== -1) {
-            DelegationService.cancelJobDelegation(id)
-            await DelegationService.deleteServiceDelegation(req.portal, [id]);
-            updatedDelegation = await DelegationService.saveLog(req.portal, updatedDelegation, req.user?._id, updatedDelegation.delegationName, "edit", updatedDelegation.createdAt)
-            await Log.info(req.user?.email, "edit_service_delegation_success", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["edit_service_delegation_success"],
-                content: [id, updatedDelegation]
-            });
-        } else {
-            throw ["delegation_is_invalid"];
-        }
-
-    } catch (error) {
-        await Log.error(req.user?.email, "edit_service_delegation_faile", req.portal);
-        console.log(error)
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ["edit_service_delegation_faile"],
-            content: error.message
-        });
-    }
-}
-
-exports.deleteServiceDelegations = async (req, res) => {
-    try {
-        let deletedDelegations = await DelegationService.deleteServiceDelegation(req.portal, req.body.delegationIds);
-        if (deletedDelegations) {
-            await Log.info(req.user?.email, "delete_service_delegation_success", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["delete_service_delegation_success"],
-                content: deletedDelegations
-            });
-        } else {
-            throw ["delegation_is_invalid"];
-        }
-    } catch (error) {
-        await Log.error(req.user?.email, "delete_service_delegation_faile", req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ["delete_service_delegation_faile"],
-            content: error.message
-        });
-    }
-}
-
-exports.revokeServiceDelegation = async (req, res) => {
-    try {
-        let revokedDelegation = await DelegationService.revokeServiceDelegation(req.portal, req.body.delegationId, req.body.reason);
-        revokedDelegation = await DelegationService.saveLog(req.portal, revokedDelegation, req.user?._id, revokedDelegation.delegationName, "revoke", revokedDelegation.revokedDate)
-
-        if (revokedDelegation) {
-            await Log.info(req.user?.email, "revoke_service_delegation_success", req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["revoke_service_delegation_success"],
-                content: revokedDelegation
-            });
-        } else {
-            throw ["delegation_is_invalid"];
-        }
-    } catch (error) {
-        console.log(error)
-        await Log.error(req.user.email, "revoke_service_delegation_faile", req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ["revoke_service_delegation_faile"],
-            content: error.message
-        });
-    }
-}
-// Lấy ra tên của tất cả các Ví dụ
-exports.getOnlyDelegationName = async (req, res) => {
-    try {
-        let data;
-        data = await DelegationService.getOnlyDelegationName(req.portal, req.query);
-
-        await Log.info(req.user.email, "GET_ONLY_NAME_ALL_DELEGATIONS", req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ["get_only_name_all_delegations_success"],
-            content: data
-        });
-    } catch (error) {
-        await Log.error(req.user.email, "GET_ONLY_NAME_ALL_DELEGATIONS", req.portal);
-
-        res.status(400).json({
-            success: false,
-            messages: ["get_only_name_all_delegations_fail"],
+            messages: ['revoke_fail'],
             content: error.message
         });
     }
