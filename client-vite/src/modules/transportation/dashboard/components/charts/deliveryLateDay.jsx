@@ -5,9 +5,9 @@ import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import moment from 'moment';
 
-function VehiclesStatusChart (props) {
+function DeliveryLateDay (props) {
 
-    const vehiclesStatusChart = useRef(null);
+    const DeliveryLateDay = useRef(null);
     useEffect(() => {
         pieChart();
     });
@@ -15,20 +15,17 @@ function VehiclesStatusChart (props) {
     // Khởi tạo PieChart bằng C3
     const pieChart = () => {
         let chart = c3.generate({
-            bindto: vehiclesStatusChart.current,
+            bindto: DeliveryLateDay.current,
             data: {
                 x: 'x',
                 columns: [
                     ['x', moment().subtract(6, "days").format("DD-MM"), moment().subtract(5, "days").format("DD-MM"), moment().subtract(4, "days").format("DD-MM"), moment().subtract(3, "days").format("DD-MM"), moment().subtract(2, "days").format("DD-MM"), moment().subtract(1, "days").format("DD-MM") , moment().format("DD-MM")],
-                    ['vehiclesPerformance', 94,60,35,50,85,57,50
+                    ['deliveryLateDayAverage', 1,3,2,5,7,2,4
                     ],
-                    ['fillRate', 30,50,25,60,47,56,50
-                ],
                 ],
                 type: 'spline',
                 names: {
-                    'vehiclesPerformance': "Hiệu suất sử dụng",
-                    'fillRate': "Tỉ lệ lấp đầy",
+                    'deliveryLateDayAverage': "Số ngày trễ hạn trung bình",
                 }
             },
             padding: {
@@ -41,12 +38,12 @@ function VehiclesStatusChart (props) {
                     type: 'category',
                 },
                 y: {
-                    label: '%'
+                    label: 'days'
                 }
             },
 
             color: {
-                pattern: ['#0793de', '#f5b105']
+                pattern: ['#0793de']
             },
 
             tooltip: {
@@ -67,7 +64,7 @@ function VehiclesStatusChart (props) {
     return (
         <React.Fragment>
             {/* <button onClick={() => props.getCostOfAllJourney({})}>Test</button> */}
-            <section ref={vehiclesStatusChart}></section>
+            <section ref={DeliveryLateDay}></section>
         </React.Fragment>
     );
 }
@@ -77,5 +74,5 @@ function mapState(state) {
     
 }
 
-const connectedVehiclesStatusChart = connect(mapState)(withTranslate(VehiclesStatusChart));
-export { connectedVehiclesStatusChart as VehiclesStatusChart };
+const connectedDeliveryLateDay = connect(mapState)(withTranslate(DeliveryLateDay));
+export { connectedDeliveryLateDay as DeliveryLateDay };

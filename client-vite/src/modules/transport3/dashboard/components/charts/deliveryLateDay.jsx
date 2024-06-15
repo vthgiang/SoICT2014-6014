@@ -7,29 +7,26 @@ import moment from 'moment';
 import { DashboardActions } from '../../redux/actions';
 import { withRouter } from 'react-router-dom';
 
-function OnTimeDeliveryChart(props) {
+function DeliveryLateDay (props) {
     const dispatch = useDispatch()
     const T3Dashboard = useSelector((state) => state.T3dashboard)
-    const ontimeDeliveryChart = useRef(null);
+
+    useEffect(() => {
+        dispatch(DashboardActions.getDeliveryLateDayAveragePerMonth())
+    },[dispatch]);
+
+    const DeliveryLateDay = useRef(null);
     useEffect(() => {
         pieChart();
     });
 
-    useEffect(() => {
-        dispatch(DashboardActions.getOnTimeDeliveryRatesPerMonth())
-        dispatch(DashboardActions.getEstimatedOnTimeDeliveryRatesPerMonth())
-    }, [dispatch]);
-
-
-
-    // Khởi tạo PieChart bằng C3
     const listMonth = () => {
         const arr = ['x']
         const currentDate = new Date()
         const currentMonth = currentDate.getMonth() + 1;
         const currentYear = currentDate.getFullYear();
 
-        const monthList = Array.from({ length: currentMonth }, (_, i) => {
+        const monthList = Array.from({length: currentMonth}, (_, i) => {
             const month = (i + 1).toString().padStart(2, '0');
             return `${month}-${currentYear}`
         })
@@ -37,23 +34,12 @@ function OnTimeDeliveryChart(props) {
         return arr.concat(monthList)
     }
 
-    const generateActualOntimeRate = () => {
-        const arr = ['actualOntimeDeliveryRate']
+    const generateDeliveryLateDayAverage = () => {
+        const arr = ['deliveryLateDayAverage']
 
-        const formatData = T3Dashboard.onTimeDeliveryData.map((item) => {
-            return item.onTimeRate
+        const formatData = T3Dashboard.deliveryLateDayAverage.map((item) => {
+            return item.lateDayAverage
         })
-
-        return arr.concat(formatData)
-    }
-
-    const generateEstimatedOntimeRate = () => {
-        const arr = ['estimatedOntimeDeliveryRate']
-
-        const formatData = T3Dashboard.estimatedOnTimeDeliveryData.map((item) => {
-            return item.onTimeRate
-        })
-
         return arr.concat(formatData)
     }
 
@@ -62,22 +48,19 @@ function OnTimeDeliveryChart(props) {
         props.history.push('/manage-transport3-order');
     };
 
+    // Khởi tạo PieChart bằng C3
     const pieChart = () => {
         let chart = c3.generate({
-            bindto: ontimeDeliveryChart.current,
+            bindto: DeliveryLateDay.current,
             data: {
                 x: 'x',
                 columns: [
                     listMonth(),
-                    generateActualOntimeRate(),
-                    generateEstimatedOntimeRate(),
-                    ['plannedOntimeDeliveryRate', 80, 80, 80, 80, 80, 80],
+                    generateDeliveryLateDayAverage(),
                 ],
                 type: 'spline',
                 names: {
-                    'actualOntimeDeliveryRate': "Tỉ lệ giao hàng đúng hạn thực tế",
-                    'estimatedOntimeDeliveryRate': "Tỉ lệ giao hàng đúng hạn dự kiến",
-                    'plannedOntimeDeliveryRate': "Tỉ lệ giao hàng đúng hạn kế hoạch",
+                    'deliveryLateDayAverage': "Số ngày trễ hạn trung bình",
                 }
             },
             padding: {
@@ -90,12 +73,12 @@ function OnTimeDeliveryChart(props) {
                     type: 'category',
                 },
                 y: {
-                    label: '%'
+                    label: 'days'
                 }
             },
 
             color: {
-                pattern: ['#0793de', '#f5b105', '#000000']
+                pattern: ['#0793de']
             },
 
             tooltip: {
@@ -116,9 +99,7 @@ function OnTimeDeliveryChart(props) {
     return (
         <React.Fragment>
             {/* <button onClick={() => props.getCostOfAllJourney({})}>Test</button> */}
-            {/* <section ref={ontimeDeliveryChart}></section> */}
-            <section ref={ontimeDeliveryChart}>
-            </section>
+            <section ref={DeliveryLateDay}></section>
             <button
                 style={{
                     position: 'absolute',
@@ -130,14 +111,16 @@ function OnTimeDeliveryChart(props) {
             >
                 Chi tiết
             </button>
+            {/* {console.log(T3Dashboard)} */}
         </React.Fragment>
     );
 }
 
 
 function mapState(state) {
-
+    
 }
-// const connectedOnTimeDeliveryChart = connect(mapState)(withTranslate(OnTimeDeliveryChart));
-const connectedOnTimeDeliveryChart = connect(mapState)(withTranslate(withRouter(OnTimeDeliveryChart)));
-export { connectedOnTimeDeliveryChart as OnTimeDeliveryChart };
+
+// const connectedDeliveryLateDay = connect(mapState)(withTranslate(DeliveryLateDay));
+const connectedDeliveryLateDay = connect(mapState)(withTranslate(withRouter(DeliveryLateDay)));
+export { connectedDeliveryLateDay as DeliveryLateDay };

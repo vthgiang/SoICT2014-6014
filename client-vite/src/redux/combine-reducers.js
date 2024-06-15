@@ -186,12 +186,12 @@ import { projectStatistic } from '../modules/project/statistic/redux/reducers'
 import { delegation } from '../modules/delegation/delegation-list/redux/reducers'
 import { delegationReceive } from '../modules/delegation/delegation-receive/redux/reducers'
 
-// Transportation Quản lý vận chuyển 2
-import { delivery } from '../modules/transportation/scheduling/delivery-plan/redux/reducers'
-import { vehicle } from '../modules/transportation/vehicle/redux/reducers'
-import { journey } from '../modules/transportation/scheduling/tracking-route/redux/reducers'
-import { shipper } from '../modules/transportation/shipper/redux/reducers'
-import { transportationCostManagement } from '../modules/transportation/cost/redux/reducers'
+//Transportation Quản lý vận chuyển 2
+import { delivery } from '../modules/transportation/scheduling/delivery-plan/redux/reducers';
+import { vehicle } from '../modules/transportation/vehicle/redux/reducers';
+import { journey } from '../modules/transportation/scheduling/tracking-route/redux/reducers';
+import { shipper } from '../modules/transportation/shipper/redux/reducers';
+import { transportationCostManagement } from '../modules/transportation/cost/redux/reducers';
 
 import { newsFeeds } from '../modules/home/redux/reducers'
 
@@ -200,6 +200,7 @@ import { orders } from '../modules/transport3/order/redux/reducers'
 import { employee as T3employee } from '../modules/transport3/employee/redux/reducers'
 import { vehicle as T3vehicle } from '../modules/transport3/vehicle/redux/reducers'
 import { schedule as T3schedule } from '../modules/transport3/schedule/redux/reducers'
+import { dashboard as T3dashboard} from '../modules/transport3/dashboard/redux/reducers'
 
 const appReducer = combineReducers({
   socket,
@@ -422,7 +423,8 @@ const appReducer = combineReducers({
   orders,
   T3employee,
   T3vehicle,
-  T3schedule
+  T3schedule,
+  T3dashboard
 })
 
 const rootReducer = (state, action) => {

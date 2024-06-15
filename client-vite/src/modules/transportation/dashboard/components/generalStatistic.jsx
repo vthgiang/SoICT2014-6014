@@ -10,7 +10,7 @@ import { OrdersInfoChart } from "./charts/ordersInfoChart";
 import { TransportationCostChart } from "./charts/costChart";
 import { OnTimeDeliveryChart } from "./charts/ontimeDeliveryChart";
 import { JourneyActions } from '../../scheduling/tracking-route/redux/actions';
-import { VehiclesStatusChart } from "./charts/vehiclesStatusChart";
+import { DeliveryLateDay } from "./charts/deliveryLateDay";
 
 function GeneralStatistic(props) {
 
@@ -255,10 +255,10 @@ function GeneralStatistic(props) {
                                 <div className="box-body">
                                     <div className="box box-primary">
                                         <div className="box-header">
-                                            <div className="box-title">Phương tiện vận chuyển</div>
+                                            <div className="box-title">Số ngày trễ hạn trung bình</div>
                                         </div>
                                         <div className="box-body">
-                                            <VehiclesStatusChart
+                                            <DeliveryLateDay
                                             />
                                         </div>
                                     </div>

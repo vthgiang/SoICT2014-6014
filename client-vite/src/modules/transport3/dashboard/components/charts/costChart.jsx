@@ -4,7 +4,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../production/common-production/request-management/redux/actions';
-import { JourneyActions } from '../../../scheduling/tracking-route/redux/actions'
+import { JourneyActions } from '../../../../transportation/scheduling/tracking-route/redux/actions';
 import moment from 'moment';
 
 function TransportationCostChart (props) {

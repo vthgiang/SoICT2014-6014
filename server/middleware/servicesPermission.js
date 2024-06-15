@@ -1554,6 +1554,26 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/risk',
+        apis : ['@all']
+    },
+    {
+        url:'/riskDistribution',
+        apis: ['@all']
+    },{
+        url:'/taskPert',
+        apis: ['@all']
+    },{
+        url:'/exprimentalAnalysis',
+        apis: ['@all']
+    },{
+        url:'/riskResponsePlan',
+        apis: ['@all']
+    },{
+        url:'/bayesianNetworkConfig',
+        apis: ['@all']
+    },
+    {
         url: '/majors',
         apis: ['@all'],
     },

@@ -1034,72 +1034,72 @@ class SideBar extends Component {
 
             {/* Quản lý vận chuyển 3 */}
             <GroupItem
-                groupItem={{
-                  name: 'menu.manage_transport3',
-                  icon: 'fa fa-truck',
-                  list: [
-                    {
-                      name: 'menu.manage_transport3_dashboard',
-                      icon: 'fa fa-dashboard',
-                      path: '/manage-transport3-dashboard'
-                    },
-                    {
-                      name: 'menu.manage_transport3_order',
-                      icon: 'fa fa-circle-o',
-                      path: '/manage-transport3-order'
-                    },
-                    {
-                      name: 'menu.manage_transport3_schedule',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-schedule'
-                    },
-                    {
-                      name: 'menu.manage_transport3_route',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-route'
-                    },
-                    {
-                      name: 'menu.manage_transport3_cost',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-cost'
-                    },
-                    {
-                      name: 'menu.manage_transport3_issue',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-issue'
-                    },
-                    {
-                      name: 'menu.manage_transport3_partner',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-partner'
-                    },
-                    {
-                      name: 'menu.manage_transport3_vehicle',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-vehicle'
-                    },
-                    {
-                      name: 'menu.manage_transport3_employee',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-employee'
-                    },
-                    {
-                      name: 'menu.manage_transport3_statistic',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-statistic'
-                    },
-                    {
-                      name: 'menu.manage_transport3_mission',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-mission'
-                    },
-                    {
-                      name: 'menu.manage_transport3_requirement',
-                      icon: 'fa fa-calendar-o',
-                      path: '/manage-transport3-requirement'
-                    }
-                  ]
-                }}
+              groupItem={{
+                name: 'menu.manage_transport3',
+                icon: 'fa fa-truck',
+                list: [
+                  {
+                    name: 'menu.manage_transport3_dashboard',
+                    icon: 'fa fa-dashboard',
+                    path: '/manage-transport3-dashboard'
+                  },
+                  {
+                    name: 'menu.manage_transport3_order',
+                    icon: 'fa fa-circle-o',
+                    path: '/manage-transport3-order'
+                  },
+                  {
+                    name: 'menu.manage_transport3_schedule',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-schedule'
+                  },
+                  {
+                    name: 'menu.manage_transport3_route',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-route'
+                  },
+                  {
+                    name: 'menu.manage_transport3_cost',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-cost'
+                  },
+                  {
+                    name: 'menu.manage_transport3_issue',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-issue'
+                  },
+                  {
+                    name: 'menu.manage_transport3_partner',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-partner'
+                  },
+                  {
+                    name: 'menu.manage_transport3_vehicle',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-vehicle'
+                  },
+                  {
+                    name: 'menu.manage_transport3_employee',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-employee'
+                  },
+                  {
+                    name: 'menu.manage_transport3_statistic',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-statistic'
+                  },
+                  {
+                    name: 'menu.manage_transport3_mission',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-mission'
+                  },
+                  {
+                    name: 'menu.manage_transport3_requirement',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-requirement'
+                  }
+                ]
+              }}
             />
 
             {/* Report management */}
@@ -1324,6 +1324,11 @@ class SideBar extends Component {
                     name: 'menu.manage_transportation_cost',
                     icon: 'fa fa-usd',
                     path: '/transportation-cost-manage'
+                  },
+                  {
+                    name: 'menu.manage_transportation_init_route',
+                    icon: 'fa fa-road',
+                    path: '/ontime-predict-model-management'
                   }
                 ]
               }}

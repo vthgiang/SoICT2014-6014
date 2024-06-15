@@ -126,6 +126,8 @@ function OrderTable(props) {
     'Độ ưu tiên',
     'Trạng thái',
     'T/g giao hàng dự kiến',
+    'Giao hàng đúng hạn',
+    'Số ngày trễ hạn'
   ]
 
   const transportType = {
@@ -167,6 +169,16 @@ function OrderTable(props) {
                   </a>
                 </li>
               </ul>
+            </div>
+            <div className="dropdown pull-right" style={{marginTop: 5}}>
+              <button
+                type="button"
+                className="btn btn-success dropdown-toggle pull-right"
+                aria-expanded="true"
+                // onClick={retrainingModel}
+              >
+                Cập nhật mô hình dự báo
+              </button>
             </div>
           </div>
           <OrderCreateForm code={code}/>
@@ -213,6 +225,7 @@ function OrderTable(props) {
             </tr>
             </thead>
             <tbody>
+            {console.log(listOrders)}
             {typeof listOrders !== 'undefined' &&
               listOrders.length !== 0 &&
               listOrders.map((item, index) => (
@@ -225,6 +238,8 @@ function OrderTable(props) {
                   <td>{item.priority ? item.priority : ''}</td>
                   <td>{item.status ? item.status : ''}</td>
                   <td>{item.deliveryTime ? formatDate(item.deliveryTime) : '---'}</td>
+                  <td>{}</td>
+                  <td>{}</td>
                   <td
                     style={{
                       textAlign: 'center'

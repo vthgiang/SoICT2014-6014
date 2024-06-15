@@ -12,23 +12,17 @@ import Introduction from '../modules/intro/components'
 import { ModalViewTaskProcessById } from '../modules/task/task-process/component/process-template/modalViewTaskProcessById'
 import { ModalViewProcessById } from '../modules/task/task-process/component/task-process-management/modalViewProcessById'
 
+import { TaskPert } from '../modules/risk/process-analysis/components'
+import { ExprimentalAnalysis } from '../modules/exprimental-analysis/components'
+import { RiskManagement } from '../modules/risk/risk-list/components'
+import { BayesianNetworkConfig } from '../modules/risk/risk-bayes-config/components'
+import { RiskDashboard } from '../modules/risk/risk-dash-board/components'
+import { RiskResponsePlanManagement } from '../modules/risk/risk-response-plan/components'
+
 const Home = lazy(() => import('../modules/home/components'))
 const NotFound = lazy(() => import('../modules/not-found/components'))
 const ManageDocument = lazy(() => import('../modules/document/components/administration'))
 const Document = lazy(() => import('../modules/document/components/user'))
-
-const ManageUser = lazy(() => import('../modules/super-admin/user/components'))
-const ManageRole = lazy(() => import('../modules/super-admin/role/components'))
-const ManageLink = lazy(() => import('../modules/super-admin/link/components'))
-const ManageAttribute = lazy(() => import('../modules/super-admin/attribute/components'))
-const ManagePolicy = lazy(() => import('../modules/super-admin/policy/components'))
-const ManageApi = lazy(() => import('../modules/super-admin/api/api-management/components/apiManagement'))
-const ManagePolicyDelegation = lazy(() => import('../modules/super-admin/policy-delegation/components'))
-const ApiRegistration = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistration'))
-const ApiRegistrationEmployee = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistrationEmployee'))
-const ManageDepartment = lazy(() => import('../modules/super-admin/organizational-unit/components'))
-const ManageComponent = lazy(() => import('../modules/super-admin/component/components'))
-const ConfigurationManager = lazy(() => import('../modules/super-admin/module-configuration/components'))
 
 const AnnualLeaveManager = lazy(() => import('../modules/human-resource/annual-leave/components/annualLeaveManagement'))
 const ManagerPraiseDiscipline = lazy(() => import('../modules/human-resource/commendation-discipline/components'))
@@ -53,6 +47,19 @@ const DashboardUnit = lazy(() => import('../modules/dashboard-unit/components'))
 const ListEducation = lazy(() => import('../modules/training/education-program/components/educationProgramList'))
 const TrainingPlan = lazy(() => import('../modules/training/course/components/course'))
 const CourseOfUser = lazy(() => import('../modules/training/course/user/components/course'))
+
+const ManageUser = lazy(() => import('../modules/super-admin/user/components'))
+const ManageRole = lazy(() => import('../modules/super-admin/role/components'))
+const ManageLink = lazy(() => import('../modules/super-admin/link/components'))
+const ManageAttribute = lazy(() => import('../modules/super-admin/attribute/components'))
+const ManagePolicy = lazy(() => import('../modules/super-admin/policy/components'))
+const ManageApi = lazy(() => import('../modules/super-admin/api/api-management/components/apiManagement'))
+const ManagePolicyDelegation = lazy(() => import('../modules/super-admin/policy-delegation/components'))
+const ApiRegistration = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistration'))
+const ApiRegistrationEmployee = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistrationEmployee'))
+const ManageDepartment = lazy(() => import('../modules/super-admin/organizational-unit/components'))
+const ManageComponent = lazy(() => import('../modules/super-admin/component/components'))
+const ConfigurationManager = lazy(() => import('../modules/super-admin/module-configuration/components'))
 
 const CareerPosition = lazy(() => import('../modules/human-resource/career/component'))
 const SearchKeyEmployee = lazy(() => import('../modules/human-resource/profile/employee-management/components/searchKeyEmployees'))
@@ -125,13 +132,13 @@ const ManagePurchaseRequest = lazy(() => import('../modules/supplies/admin/purch
 const UserPurchaseRequest = lazy(() => import('../modules/supplies/user/purchase-request/components'))
 
 // import UsageManager from "../modules/asset/admin/usage/components";
-const IncidentManager = lazy(() => import('../modules/asset/admin/incident/components'))
-const ManagerDepreciation = lazy(() => import('../modules/asset/admin/depreciation/components'))
-const AssetManager = lazy(() => import('../modules/asset/admin/asset-information/components'))
-const ManagerAssetAssignedCrash = lazy(() => import('../modules/asset/user/asset-assigned/components'))
-const DashBoardAssets = lazy(() => import('../modules/asset/admin/asset-dashboard/components/assetDashBoard'))
-const BuildingAsset = lazy(() => import('../modules/asset/admin/building/components'))
-const EmployeeAssetManagement = lazy(() => import('../modules/asset/user/asset-managed/components'))
+const IncidentManager = lazy(() => import("../modules/asset/admin/incident/components"))
+const ManagerDepreciation = lazy(() => import("../modules/asset/admin/depreciation/components"))
+const AssetManager = lazy(() => import("../modules/asset/admin/asset-information/components"))
+const ManagerAssetAssignedCrash = lazy(() => import("../modules/asset/user/asset-assigned/components"))
+const DashBoardAssets = lazy(() => import("../modules/asset/admin/asset-dashboard/components/assetDashBoard"))
+const BuildingAsset = lazy(() => import("../modules/asset/admin/building/components"))
+const EmployeeAssetManagement = lazy(() => import("../modules/asset/user/asset-managed/components"))
 
 // report
 const TaskReportManager = lazy(() => import('../modules/report/task-report/components/taskReportManager'))
@@ -149,15 +156,15 @@ const StockRequestManagement = lazy(() => import('../modules/production/warehous
 const StogareManagement = lazy(() => import('../modules/production/warehouse/storage-management/components'))
 
 // Customer Management
-const CrmDashBoard = lazy(() => import('../modules/crm/dashboard/components'))
-const CrmDashBoardUnit = lazy(() => import('../modules/crm/crmUnitDashboard/components'))
-const CrmCustomer = lazy(() => import('../modules/crm/customer/components'))
-const CrmGroup = lazy(() => import('../modules/crm/group/components'))
-const CrmCare = lazy(() => import('../modules/crm/care/components'))
-const CrmLoyalCustomer = lazy(() => import('../modules/crm/loyalCustomer/components'))
-const CrmEvaluation = lazy(() => import('../modules/crm/evaluation/components'))
-const GeneralConfiguration = lazy(() => import('../modules/crm/generalConfiguration/components'))
-const CrmUnitConfiguration = lazy(() => import('../modules/crm/crmUnitConfiguration/components'))
+const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
+const CrmDashBoardUnit = lazy(() => import("../modules/crm/crmUnitDashboard/components"))
+const CrmCustomer = lazy(() => import("../modules/crm/customer/components"))
+const CrmGroup = lazy(() => import("../modules/crm/group/components"))
+const CrmCare = lazy(() => import("../modules/crm/care/components"))
+const CrmLoyalCustomer = lazy(() => import("../modules/crm/loyalCustomer/components"))
+const CrmEvaluation = lazy(() => import("../modules/crm/evaluation/components"))
+const GeneralConfiguration = lazy(() => import("../modules/crm/generalConfiguration/components"))
+const CrmUnitConfiguration = lazy(() => import("../modules/crm/crmUnitConfiguration/components"))
 
 // orders
 const PurchaseOrder = lazy(() => import('../modules/production/order/purchase-order/components'))
@@ -178,20 +185,21 @@ const MarketingCampaign = lazy(() => import('../modules/production/order/marketi
 const MarketingCampaignDetail = lazy(() => import('../modules/production/order/marketing/components/CampaignDetail'))
 
 // plans
-const PlanManagement = lazy(() => import('../modules/plan/components'))
+const PlanManagement = lazy(() => import("../modules/plan/components"))
 
 // Example
-const ExampleManagement1 = lazy(() => import('../modules/example/example1/components'))
-const ExampleManagement2 = lazy(() => import('../modules/example/example2/components'))
-const ExampleManagement3 = lazy(() => import('../modules/example/example3/components'))
+const ExampleManagement1 = lazy(() => import("../modules/example/example1/components"))
+const ExampleManagement2 = lazy(() => import("../modules/example/example2/components"))
+const ExampleManagement3 = lazy(() => import("../modules/example/example3/components"))
 
-const ExampleManagementHooks1 = lazy(() => import('../modules/example/example1/components-hooks'))
-const ExampleManagementHooks2 = lazy(() => import('../modules/example/example2/components-hooks'))
-const ExampleManagementHooks3 = lazy(() => import('../modules/example/example3/components-hooks'))
+const ExampleManagementHooks1 = lazy(() => import("../modules/example/example1/components-hooks"))
+const ExampleManagementHooks2 = lazy(() => import("../modules/example/example2/components-hooks"))
+const ExampleManagementHooks3 = lazy(() => import("../modules/example/example3/components-hooks"))
+
 
 // Delegation
-const ManageDelegation = lazy(() => import('../modules/delegation/delegation-list/components'))
-const ManageDelegationReceive = lazy(() => import('../modules/delegation/delegation-receive/components'))
+const ManageDelegation = lazy(() => import("../modules/delegation/delegation-list/components"))
+const ManageDelegationReceive = lazy(() => import("../modules/delegation/delegation-receive/components"))
 
 // Manufacturing Managements
 
@@ -209,26 +217,26 @@ const ManufacturingRouting = lazy(() => import('../modules/production/manufactur
 const ManufacturingQuality = lazy(() => import('../modules/production/manufacturing/manufacturing-quality'))
 
 // Transport Managements
-const TransportRequirement = lazy(() => import('../modules/production/transport/transport-requirements/components'))
-const TransportPlan = lazy(() => import('../modules/production/transport/transport-plan/components'))
-const TransportSchedule = lazy(() => import('../modules/production/transport/transport-schedule/components'))
-const TransportVehicle = lazy(() => import('../modules/production/transport/transport-vehicle/components'))
-const TransportRoute = lazy(() => import('../modules/production/transport/transport-route/components'))
-const TransportDepartment = lazy(() => import('../modules/production/transport/transport-department/components'))
-const CarrierTodayTransportMission = lazy(() => import('../modules/production/transport/carrier-today-transport-mission/components'))
-const CarrierAllTimesTransportMission = lazy(() => import('../modules/production/transport/carrier-all-times-transport-mission/components'))
+const TransportRequirement = lazy(() => import("../modules/production/transport/transport-requirements/components"))
+const TransportPlan = lazy(() => import("../modules/production/transport/transport-plan/components"))
+const TransportSchedule = lazy(() => import("../modules/production/transport/transport-schedule/components"))
+const TransportVehicle = lazy(() => import("../modules/production/transport/transport-vehicle/components"))
+const TransportRoute = lazy(() => import("../modules/production/transport/transport-route/components"))
+const TransportDepartment = lazy(() => import("../modules/production/transport/transport-department/components"))
+const CarrierTodayTransportMission = lazy(() => import("../modules/production/transport/carrier-today-transport-mission/components"))
+const CarrierAllTimesTransportMission = lazy(() => import("../modules/production/transport/carrier-all-times-transport-mission/components"))
 
 // Quản lý vận chuyển 2
-const DashBoardTransportationUnit = lazy(() => import('../modules/transportation/dashboard/components'))
-const InitializationType = lazy(() => import('../modules/transportation/scheduling/delivery-plan/components'))
-// const DeliveryPlanList = lazy(() => import('../modules/transportation/scheduling/delivery-plan/components'))
-const VehiclesTransportation = lazy(() => import('../modules/transportation/vehicle/components'))
-const DetailSolution = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/detailSolution'))
-const Journeys = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/index'))
-const DetailJourney = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/detailJourney'))
-const TransportationCost = lazy(() => import('../modules/transportation/cost/components/index'))
-const ShipperInfo = lazy(() => import('../modules/transportation/shipper/components/info-management/index'))
-const ShipperDeliveryReport = lazy(() => import('../modules/transportation/shipper/components/delivery-report/index'))
+const DashBoardTransportationUnit = lazy(() => import("../modules/transportation/dashboard/components"))
+const InitializationType = lazy(() => import("../modules/transportation/scheduling/delivery-plan/components"));
+const DeliveryPlanList = lazy(()=> import("../modules/transportation/scheduling/delivery-plan/components"))
+const VehiclesTransportation = lazy(() => import("../modules/transportation/vehicle/components"));
+const DetailSolution = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/detailSolution'));
+const Journeys = lazy(() => import("../modules/transportation/scheduling/tracking-route/components/index"));
+const DetailJourney = lazy(() =>import('../modules/transportation/scheduling/tracking-route/components/detailJourney'));
+const TransportationCost = lazy(() => import('../modules/transportation/cost/components/index'));
+const ShipperInfo = lazy(() => import('../modules/transportation/shipper/components/info-management/index'));
+const ShipperDeliveryReport = lazy(() => import('../modules/transportation/shipper/components/delivery-report/index'));
 
 // Quản lý vận chuyển 3
 const DashBoardtransport3Unit = lazy(() => import('../modules/transport3/dashboard/components'))
@@ -239,15 +247,15 @@ const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/compo
 
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
-const Project = lazy(() => import('../modules/project/projects/components/index'))
+const Project = lazy(() => import("../modules/project/projects/components/index"))
 // const Phase = lazy(() => import("../modules/project/component/phases/index"))
 // const PhaseDetail = lazy(() => import("../modules/project/component/phases/detailPhase"))
-const ProjectDetailPage = lazy(() => import('../modules/project/projects/components/detailProjectPage'))
-const ProjectReport = lazy(() => import('../modules/project/reports/components/index'))
-const ProjectStatistic = lazy(() => import('../modules/project/statistic/components/index'))
-const UserGuide = lazy(() => import('../modules/user-guide/components'))
-const PersonalTimeSheetLog = lazy(() => import('../modules/task/task-dashboard/statistic/personalTimeSheetLog'))
-const EmployeeTimeSheetLog = lazy(() => import('../modules/task/task-dashboard/statistic/employeeTimeSheetLog'))
+const ProjectDetailPage = lazy(() => import("../modules/project/projects/components/detailProjectPage"))
+const ProjectReport = lazy(() => import("../modules/project/reports/components/index"))
+const ProjectStatistic = lazy(() => import("../modules/project/statistic/components/index"))
+const UserGuide = lazy(() => import("../modules/user-guide/components"))
+const PersonalTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/personalTimeSheetLog"))
+const EmployeeTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/employeeTimeSheetLog"))
 
 const Notifications = lazy(() => import('../modules/notification/components/index'))
 const SystemSetting = lazy(() => import('../modules/system-admin/system-setting/components'))
@@ -268,21 +276,7 @@ const ManageRoleDefault = lazy(() => import('../modules/system-admin/root-role/c
 const ComponentsDefaultManagement = lazy(() => import('../modules/system-admin/system-component/components'))
 const ManageSystem = lazy(() => import('../modules/super-admin/system/components'))
 const DashboardUnitForAdmin = lazy(() => import('../modules/dashboard-unit/components/dashboardUnitForAdmin'))
-const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
-const OrganizationalUnitKpiCreateForAdmin = lazy(
-  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin.jsx')
-)
-const OrganizationalUnitKpiCreate = lazy(
-  () => import('../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate.jsx')
-)
 
-const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation.jsx'))
-
-const OrganizationalUnitKpiDashboard = lazy(
-  () => import('../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard.jsx')
-)
-const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
-const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview'))
 class Routes extends Component {
   render() {
     const { auth, company, user, role, link, component, department, employeesManager } = this.props
@@ -4521,4 +4515,4 @@ const mapStateToProps = (state) => {
   return state
 }
 
-export default connect(mapStateToProps, null)(Routes)
+export default connect(mapStateToProps, null)(Routes);
