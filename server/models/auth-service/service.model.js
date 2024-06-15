@@ -20,17 +20,6 @@ const ServiceSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Company",
     },
-    attributes: [
-        {
-            attributeId: {
-                type: Schema.Types.ObjectId,
-                ref: "Attribute"
-            },
-            // thuộc tính của role
-            value: String, //giá trị
-            description: String // mô tả
-        },
-    ],
     active: {
         type: Boolean,
         required: true,
