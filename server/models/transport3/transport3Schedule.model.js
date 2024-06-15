@@ -53,7 +53,7 @@ const Transport3ScheduleSchema = new Schema(
     }],
     vehicles: {
       type: Schema.Types.ObjectId,
-      ref: 'Transport3Vehicle'
+      ref: 'Asset'
     },
     depot: {
       type: Schema.Types.ObjectId,
