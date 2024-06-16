@@ -161,8 +161,16 @@ exports.getPolicyById = async (portal, id) => {
 exports.getDetailedPolicyById = async (portal, id) => {
     const policy = await AuthorizationPolicy(connect(DB_CONNECTION, portal)).findById({ _id: id });
     const authorization = await DynamicAssignment(connect(DB_CONNECTION, portal)).findOne({ policyId: id })
-    const requesters = await RequesterService.findByIds(portal, authorization.requesterIds);
-    const resources = await ResourceService.findByIds(portal, authorization.resourceIds);
+
+    if (!policy) {
+        throw ['policy_invalid'];
+    }
+
+    let requesters, resources;
+    if (authorization){
+        requesters = await RequesterService.findByIds(portal, authorization.requesterIds);
+        resources = await ResourceService.findByIds(portal, authorization.resourceIds);
+    }
     
     return {
         id: policy.id,
@@ -176,8 +184,8 @@ exports.getDetailedPolicyById = async (portal, id) => {
         roleRequirements: policy.roleRequirements,
         environmentRequirements: policy.environmentRequirements,
         authorization: {
-            requesters: requesters,
-            resources: resources
+            requesters: requesters ?? [],
+            resources: resources ?? []
         }
     };
 }
