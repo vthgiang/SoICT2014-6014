@@ -158,8 +158,7 @@ function AttributeAddForm(props) {
 }
 
 function mapStateToProps(state) {
-  const { policy } = state
-  return { policy }
+  return {}
 }
 
 const attributeAddForm = connect(mapStateToProps)(withTranslate(AttributeAddForm))

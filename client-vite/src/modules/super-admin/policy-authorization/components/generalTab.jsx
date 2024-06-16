@@ -80,8 +80,7 @@ function GeneralTab(props) {
 }
 
 function mapState(state) {
-  const { policy } = state
-  return { policy }
+  return {}
 }
 
 const actionCreators = {}

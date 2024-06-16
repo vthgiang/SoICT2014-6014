@@ -101,24 +101,24 @@ export function PolicyDetailInfo(props) {
 
             {/* Effect */}
             <div className='form-group'>
-              <label>{translate('manage_authorization_policy.description')}:</label>
+              <label>{translate('manage_authorization_policy.effect')}:</label>
               <span> {effect}</span>
             </div>
 
             {/* effectiveStartTime */}
             <div className='form-group'>
-              <label>{translate('manage_authorization_policy.description')}:</label>
+              <label>{translate('manage_authorization_policy.effective_start_time')}:</label>
               <span> {effectiveStartTime}</span>
             </div>
 
             {/* effectiveEndTime */}
             <div className='form-group'>
-              <label>{translate('manage_authorization_policy.description')}:</label>
+              <label>{translate('manage_authorization_policy.effective_end_time')}:</label>
               <span> {effectiveEndTime}</span>
             </div>
 
             <div className='form-group'>
-              <label>{translate('manage_authorization_policy.requester_information')}:</label>
+              <label>{translate('manage_authorization_policy.authorization_requirements')}:</label>
               <table className='table table-hover table-bordered detail-policy-attribute-table not-sort'>
                 <thead>
                   <tr>
