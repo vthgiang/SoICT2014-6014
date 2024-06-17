@@ -16,9 +16,9 @@ function getListTag(data) {
       url: `${process.env.REACT_APP_SERVER}/tags/tag`,
       method: 'GET',
       params: {
-        name: data.name,
-        page: data.page,
-        limit: data.limit
+        name: data?.name,
+        page: data?.page,
+        limit: data?.limit
       }
     },
     false,

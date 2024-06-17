@@ -1,6 +1,5 @@
 import { createUnitKpiConstants } from './constants'
 import { createUnitKpiServices } from './services'
-
 /**
  * Get organizational unit kpi set
  * @param {*} organizationalUnitId

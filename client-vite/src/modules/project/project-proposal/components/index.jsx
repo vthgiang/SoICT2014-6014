@@ -201,7 +201,7 @@ function ProjectProposalPage(props) {
     }
   };
 
-  console.log('proposals: ', proposals)
+  // console.log('proposals: ', proposals)
 
   return (
     <React.Fragment>
@@ -327,7 +327,7 @@ function ProjectProposalPage(props) {
               Đang thực hiện phân bổ ... 
             </div>
           )}
-          { !isLoading && isShowPrevProposal && (
+          { !isLoading && isShowPrevProposal && proposals && proposals?.assignment && proposals?.assignment?.length && (
             <div className="mt-8">
               {/* <div>
                 {currentProject?.proposals?.distanceWithKPIEmployeesTarget}

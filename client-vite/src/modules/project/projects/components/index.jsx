@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { ListProject } from './listProject'
+import { ListProjectNew } from './listProjectNew'
 
 function ManagementTableProject(props) {
   return <ListProjectNew />

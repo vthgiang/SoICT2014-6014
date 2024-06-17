@@ -322,5 +322,6 @@ export const createUnitKpiServices = {
   editChildComment,
   deleteChildComment,
   deleteFileComment,
-  deleteFileChildComment
+  deleteFileChildComment,
+  getAllOrganizationlUnitKpiSet
 }

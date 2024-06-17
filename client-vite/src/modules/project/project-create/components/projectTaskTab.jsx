@@ -831,7 +831,7 @@ const ProjectTasksTab = (props) => {
                           <div className="form-group">
                             {listCapacityOptions && listCapacityOptions?.length > 0 &&
                               <SelectBox
-                                id={`${actionType}-add-capacity--type-${currentIndex}-${requireAssignee.currentCapacityType}-${projectId}`}
+                                id={`${actionType}-add-capacity--type-${currentIndex}-${requireAssignee?.currentCapacityType}-${projectId}`}
                                 className='form-control select2'
                                 style={{ width: '100%' }}
                                 items={listCapacityOptions}
@@ -857,7 +857,7 @@ const ProjectTasksTab = (props) => {
                                 options={{
                                   placeholder: "--- Chọn giá trị năng lực ---"
                                 }}
-                                value={requireAssignee.currentCapacityValue}
+                                value={requireAssignee?.currentCapacityValue}
                                 onChange={(e) => {
                                   handleChangeCurrentCapacityValue(e)
                                 }}
@@ -867,7 +867,7 @@ const ProjectTasksTab = (props) => {
                         </td>
 
                         <td>
-                          <a className={`save ${requireAssignee.currentCapacityValue ? 'text-green' : 'text-green'}`}
+                          <a className={`save ${requireAssignee?.currentCapacityValue ? 'text-green' : 'text-green'}`}
                             title={translate('general.save')}
                             onClick={handleAddCapacityInTask}
                           >
