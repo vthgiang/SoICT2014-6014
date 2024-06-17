@@ -372,6 +372,8 @@ exports.links = [
             { path: '/kpi/allocation/task-package', method: 'GET' },
             { path: '/kpi/allocation/task-package/task-type', method: 'GET' },
             { path: '/kpi/allocation/task-package/task-type', method: 'POST' },
+            { path: '/kpi/allocation/start', method: 'POST' },
+            { path: '/kpi/allocation/assign-allocation', method: 'POST' },
 
             // Task-management
             { path: '/task/tasks', method: 'GET' },
@@ -1661,5 +1663,5 @@ exports.links = [
     {
         url: '/manage-transport3-requirement',
         apis: ['@all'],
-    }
+    },
 ];

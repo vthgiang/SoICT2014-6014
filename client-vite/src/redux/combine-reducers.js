@@ -70,7 +70,8 @@ import { kpimembers } from '../modules/kpi/evaluation/employee-evaluation/redux/
 import { tasktemplates } from '../modules/task/task-template/redux/reducers'
 
 // kpi allocation
-import { configManagementReducer } from '../modules/kpi/kpi-allocation/config-management/redux/reducers'
+// import { configManagementReducer } from '../modules/kpi/kpi-allocation/config-management/redux/reducers'
+import { configParametersReducer } from '../modules/kpi/organizational-unit/creation/component/kpi-allocation/redux/reducers'
 import { taskPackageManagementReducer } from '../modules/kpi/kpi-allocation/task-package-management/redux/reducers'
 
 import { dashboardEvaluationEmployeeKpiSet } from '../modules/kpi/evaluation/dashboard/redux/reducers'
@@ -272,6 +273,7 @@ const appReducer = combineReducers({
   managerKpiUnit,
   statisticsOfOrganizationalUnitKpi,
   kpitemplates,
+  configParametersReducer,
 
   // kpi-personal
   createEmployeeKpiSet,
@@ -291,7 +293,7 @@ const appReducer = combineReducers({
 
   // kpi allocation unit
   kpiAllocation: combineReducers({
-    configManagementReducer,
+    // configManagementReducer,
     taskPackageManagementReducer
   }),
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslate, withTranslate } from 'react-redux-multilingual'
-import { connect, useDispatch } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { InformationForm } from './informationsTemplate'
@@ -34,6 +34,7 @@ function AddTaskTemplate({
   const userId = getStorage('userId')
   const dispatch = useDispatch()
   const translate = useTranslate()
+  const createKpiUnit = useSelector((state) => state.createKpiUnit)
 
   const [state, setState] = useState({
     newTemplate: {
@@ -787,25 +788,26 @@ function AddTaskTemplate({
           <br />
         </div>
       )}
-
-      <div className='row'>
-        <div className='form-check form-switch col-sm-12 pb-[16px]'>
-          <input
-            className='form-check-input'
-            type='checkbox'
-            role='switch'
-            id='flexSwitchCheckDefault'
-            checked={isShowMappingTaskTemplates}
-            onChange={handleIsShowMappingTaskTemplates}
-          />
-          <label className='form-check-label' htmlFor='flexSwitchCheckDefault'>
-            Ánh xạ mẫu công việc ra tập các công việc
-          </label>
+      {createKpiUnit?.parent && (
+        <div className='row'>
+          <div className='form-check form-switch col-sm-12 pb-[16px]'>
+            <input
+              className='form-check-input'
+              type='checkbox'
+              role='switch'
+              id='flexSwitchCheckDefault'
+              checked={isShowMappingTaskTemplates}
+              onChange={handleIsShowMappingTaskTemplates}
+            />
+            <label className='form-check-label' htmlFor='flexSwitchCheckDefault'>
+              Ánh xạ mẫu công việc ra tập các công việc
+            </label>
+          </div>
+          {isShowMappingTaskTemplates && (
+            <MappingTaskTemplateIntoListTasks isProcess={isProcess} onChangeListMappingTask={onChangeListMappingTask} />
+          )}
         </div>
-        {isShowMappingTaskTemplates && (
-          <MappingTaskTemplateIntoListTasks isProcess={isProcess} onChangeListMappingTask={onChangeListMappingTask} />
-        )}
-      </div>
+      )}
     </>
   )
 }

@@ -16,7 +16,7 @@ import { compareLteDate, formatToTimeZoneDate } from '../../../../../../helpers/
 import { workScheduleActions } from '../../../work-schedule/redux/actions'
 import { taskTemplateActions } from '../../../../../task/task-template/redux/actions'
 
-const NewPlanCreateForm = (props) => {
+function NewPlanCreateForm(props) {
   const { translate } = props
 
   const [steps, setSteps] = useState([
@@ -95,7 +95,7 @@ const NewPlanCreateForm = (props) => {
         const listMillIds = listMills.map((x) => x._id)
         const data = {
           startDate: value,
-          endDate: endDate,
+          endDate,
           manufacturingMills: listMillIds
         }
         props.getAllWorkSchedulesOfManufacturingWork(data)
@@ -112,7 +112,7 @@ const NewPlanCreateForm = (props) => {
       if (listMills) {
         const listMillIds = listMills.map((x) => x._id)
         const data = {
-          startDate: startDate,
+          startDate,
           endDate: value,
           manufacturingMills: listMillIds
         }
@@ -138,8 +138,8 @@ const NewPlanCreateForm = (props) => {
     if (listSalesOrdersWorks.length) {
       listOrders = listSalesOrdersWorks.filter((x) => value.includes(x._id))
     }
-    let goods = []
-    let goodIds = []
+    const goods = []
+    const goodIds = []
     for (let i = 0; i < listOrders.length; i++) {
       listOrders[i].goods.map((x) => {
         if (!goodIds.includes(x.good._id)) {
@@ -173,10 +173,10 @@ const NewPlanCreateForm = (props) => {
 
   // Hàm xử lý thêm tất cả các good trong sales orders vào goods
   const handleAddAllGood = () => {
-    let goodIds = goods.map((x) => x.good._id)
+    const goodIds = goods.map((x) => x.good._id)
     const newGoods = goods
     for (let i = 0; i < listGoodsSalesOrders.length; i++) {
-      let x = listGoodsSalesOrders[i]
+      const x = listGoodsSalesOrders[i]
       if (!goodIds.includes(x.good._id)) {
         goodIds.push(x.good._id)
         newGoods.push({ ...x })
@@ -234,7 +234,7 @@ const NewPlanCreateForm = (props) => {
     newGoods.splice(index, 1)
 
     setGoods([...newGoods])
-    setManufacturingCommands([])  
+    setManufacturingCommands([])
   }
 
   // Phần chia lệnh sản xuất
@@ -273,7 +273,8 @@ const NewPlanCreateForm = (props) => {
         return false
       }
       return true
-    } else if (index == 2) {
+    }
+    if (index == 2) {
       if (
         goods.length === 0 ||
         startDate === '' ||
@@ -295,9 +296,9 @@ const NewPlanCreateForm = (props) => {
     const { manufacturingMill, workSchedule } = props
     const { listMills } = manufacturingMill
     const listMillIds = listMills.map((x) => x._id)
-    var listSchedulesMap = new Map()
+    const listSchedulesMap = new Map()
     listMillIds.map((x) => {
-      let workSchedulesOfMill = workSchedule.listWorkSchedulesOfWorks.filter((y) => y.manufacturingMill === x)
+      const workSchedulesOfMill = workSchedule.listWorkSchedulesOfWorks.filter((y) => y.manufacturingMill === x)
       listSchedulesMap.set(x, workSchedulesOfMill)
     })
     return listSchedulesMap
@@ -324,28 +325,28 @@ const NewPlanCreateForm = (props) => {
   const save = () => {
     if (isFormValidated()) {
       let listMillSchedules = []
-      for (var value of listWorkSchedulesOfWorks.values()) {
+      for (const value of listWorkSchedulesOfWorks.values()) {
         listMillSchedules = [...listMillSchedules, ...value]
       }
       const data = {
-        code: code,
-        salesOrders: salesOrders,
+        code,
+        salesOrders,
         startDate: formatToTimeZoneDate(startDate),
         endDate: formatToTimeZoneDate(endDate),
-        description: description,
-        goods: goods,
-        approvers: approvers,
+        description,
+        goods,
+        approvers,
         creator: localStorage.getItem('userId'),
-        manufacturingCommands: manufacturingCommands,
-        listMillSchedules: listMillSchedules,
-        arrayWorkerSchedules: arrayWorkerSchedules
+        manufacturingCommands,
+        listMillSchedules,
+        arrayWorkerSchedules
       }
       props.createManufacturingPlan(data)
     }
   }
 
   const checkHasComponent = (name) => {
-    let { auth } = props
+    const { auth } = props
     let result = false
     auth.components.forEach((component) => {
       if (component.name === name) result = true
@@ -355,7 +356,7 @@ const NewPlanCreateForm = (props) => {
   }
 
   return (
-    <React.Fragment>
+    <>
       {checkHasComponent('create-manufacturing-plan') && (
         <ButtonModal
           onButtonCallBack={handleClickCreate}
@@ -378,7 +379,7 @@ const NewPlanCreateForm = (props) => {
       >
         <form id='form-create-new-plan'>
           <div className='timeline'>
-            <div className='timeline-progress' style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
+            <div className='timeline-progress' style={{ width: `${(step * 100) / (steps.length - 1)}%` }} />
             <div className='timeline-items'>
               {steps.map((item, index) => (
                 <div className={`timeline-item ${item.active ? 'active' : ''}`} key={index}>
@@ -442,7 +443,7 @@ const NewPlanCreateForm = (props) => {
           <div style={{ textAlign: 'center' }}>{`${step + 1} / ${steps.length}`}</div>
         </form>
       </DialogModal>
-    </React.Fragment>
+    </>
   )
 }
 
@@ -460,7 +461,6 @@ const mapDispatchToProps = {
   getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
   createManufacturingPlan: manufacturingPlanActions.createManufacturingPlan,
   getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser
-
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm))
