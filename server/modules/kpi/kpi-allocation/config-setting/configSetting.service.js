@@ -76,31 +76,35 @@ const handleStartAllocation = async (portal, kpiData) => {
                             .findOne({ emailInCompany: email })
                             .populate('certificates.certificate')
                             .populate('degrees.major');
-                        return employee;
+                        return {
+                            employeeDetail: employee,
+                            employee_user_id: item.userId._id,
+                        };
                     })
                 );
 
                 const results = listFullEmployee.map((employee) => {
                     // Calculate mean score for certificates
-                    const certificateScores = employee.certificates.map((cert) => cert.certificate?.score);
+                    const certificateScores = employee.employeeDetail.certificates.map((cert) => cert.certificate?.score);
                     const validCertificateScores = certificateScores.filter((score) => typeof score === 'number');
                     const meanCertificateScore = validCertificateScores.length
                         ? validCertificateScores.reduce((acc, score) => acc + score, 0) / validCertificateScores.length
                         : 0;
 
                     // Calculate mean score for majors
-                    const majorScores = employee.degrees.map((degree) => degree.major?.score);
+                    const majorScores = employee.employeeDetail.degrees.map((degree) => degree.major?.score);
                     const validMajorScores = majorScores.filter((score) => typeof score === 'number');
                     const meanMajorScore = validMajorScores.length
                         ? validMajorScores.reduce((acc, score) => acc + score, 0) / validMajorScores.length
                         : 0;
 
                     return {
-                        name: employee.fullName,
-                        employee_id: employee._id,
+                        name: employee.employeeDetail.fullName,
+                        employee_id: employee.employeeDetail._id,
                         company_unit_id: item.id,
                         company_unit_object_id: item._id,
                         score: (meanCertificateScore + meanMajorScore) / 2,
+                        employee_user_id: employee.employee_user_id,
                     };
                 });
 
@@ -287,57 +291,86 @@ const handleStartAllocation = async (portal, kpiData) => {
 
 const handleStartAssignAllocation = async (portal, responseServerOutput, responseInput, userDetail, listUnitKpiWeight) => {
     const { listEnterpriseUnit, listResource, listEnterpriseGoal } = responseInput;
-    const { list_unit_kpi } = responseServerOutput.content;
+    const { list_unit_kpi, list_resource_kpi } = responseServerOutput.content;
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
 
     // create unit KPI
-    listEnterpriseUnit.forEach(async (unit) => {
-        const unitResource = listResource.filter((item) => item.company_unit_object_id === unit._id);
-        const employeeImportance = unitResource.map((item) => {
-            return {
-                employee: new ObjectId(item.employee_id),
-                importance: 100,
-            };
-        });
-        const unitKpi = listUnitKpiWeight.filter((item) => item.value === unit._id);
-        const allocationUnitKpi = list_unit_kpi.filter((item) => item.unit_id === unit.id);
+    const enterpriseUnitKpiObject = await Promise.all(
+        listEnterpriseUnit.map(async (unit) => {
+            const unitResource = listResource.filter((item) => item.company_unit_object_id === unit._id);
+            const employeeImportance = unitResource.map((item) => {
+                return {
+                    employee: new ObjectId(item.employee_id),
+                    importance: 100,
+                };
+            });
+            const unitKpi = listUnitKpiWeight.filter((item) => item.value === unit._id);
+            const allocationUnitKpi = list_unit_kpi.filter((item) => item.unit_id === unit.id);
 
-        const kpis = await Promise.all(
-            unitKpi[0].kpis.map(async (unitMetric) => {
-                const allocationUnitKpiItem = allocationUnitKpi[0].unit_list_metric.filter((item) => item.description === unitMetric.name)[0];
-                const unitKpiCreated = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).create({
-                    name: unitMetric.name,
-                    parent: unitMetric._id,
-                    weight: unitMetric.kpiWeight,
-                    criteria: unitMetric.criteria,
-                    type: unitMetric.type,
-                    automaticPoint: 0,
-                    employeePoint: 0,
-                    approvedPoint: 0,
-                    target: allocationUnitKpiItem?.planed_value ? allocationUnitKpiItem.planed_value : null,
-                    unit: unitMetric.unit,
-                });
-                return unitKpiCreated._id;
-            })
-        );
+            const kpis = await Promise.all(
+                unitKpi[0].kpis.map(async (unitMetric) => {
+                    const allocationUnitKpiItem = allocationUnitKpi[0].unit_list_metric.filter((item) => item.description === unitMetric.name)[0];
+                    const unitKpiCreated = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).create({
+                        name: unitMetric.name,
+                        parent: unitMetric._id,
+                        weight: unitMetric.kpiWeight,
+                        criteria: unitMetric.criteria,
+                        type: unitMetric.type,
+                        automaticPoint: 0,
+                        employeePoint: 0,
+                        approvedPoint: 0,
+                        target: allocationUnitKpiItem?.planed_value ? allocationUnitKpiItem.planed_value : null,
+                        unit: unitMetric.unit,
+                    });
+                    return unitKpiCreated._id;
+                })
+            );
 
-        await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).create({
-            organizationalUnit: new ObjectId(unit._id),
-            creator: new ObjectId(userDetail._id),
-            date: new Date(currentYear, currentMonth + 1, 1),
-            kpis,
-            automaticPoint: 0,
-            employeePoint: 0,
-            approvedPoint: 0,
-            status: 0,
-            employeeImportances: employeeImportance,
-            organizationalUnitImportances: [],
-        });
-    });
+            const unitKpiSetObject = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).create({
+                organizationalUnit: new ObjectId(unit._id),
+                creator: new ObjectId(userDetail._id),
+                date: new Date(currentYear, currentMonth + 1, 1),
+                kpis,
+                automaticPoint: 0,
+                employeePoint: 0,
+                approvedPoint: 0,
+                status: 0,
+                employeeImportances: employeeImportance,
+                organizationalUnitImportances: [],
+            });
+
+            return unitKpiSetObject;
+        })
+    );
 
     // create employee kpi
+    listEnterpriseUnit.forEach(async (unit) => {
+        const unitResource = listResource.filter((item) => item.company_unit_object_id === unit._id);
+        unitResource.map((item) => {
+            const itemKpi = list_resource_kpi.filter((resource_kpi) => resource_kpi.resource_employee_user_id === item.employee_user_id);
+            console.log(itemKpi[0]);
+            //             const kpis = await Promise.all(
+            //     unitKpi[0].kpis.map(async (unitMetric) => {
+            //         const allocationUnitKpiItem = allocationUnitKpi[0].unit_list_metric.filter((item) => item.description === unitMetric.name)[0];
+            //         const unitKpiCreated = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).create({
+            //             name: unitMetric.name,
+            //             parent: unitMetric._id,
+            //             weight: unitMetric.kpiWeight,
+            //             criteria: unitMetric.criteria,
+            //             type: unitMetric.type,
+            //             automaticPoint: 0,
+            //             employeePoint: 0,
+            //             approvedPoint: 0,
+            //             target: allocationUnitKpiItem?.planed_value ? allocationUnitKpiItem.planed_value : null,
+            //             unit: unitMetric.unit,
+            //         });
+            //         return unitKpiCreated._id;
+            //     })
+            // );
+        });
+    });
     // console.log('Khởi tạo Employee Kpi');
 
     // var employee_1KpiArray = []; // employee_1KpiArray[i] là mảng các kpi
@@ -674,6 +707,79 @@ const handleStartAssignAllocation = async (portal, responseServerOutput, respons
     // }
 
     // create task employee
+    // Tạo công việc tương ứng với kpi của employee
+    // var task_employee = await Task(vnistDB).insertMany([
+    //     // Tháng hiện tại
+    //     {
+    //         organizationalUnit: organizationalUnit_2,
+    //         creator: manager,
+    //         name: 'Tiến hành các cuộc nghiên cứu thị trường',
+    //         description: 'Đánh giá theo các cuộc nghiên cứu thị trường',
+    //         startDate: new Date(currentYear, currentMonth, 1, 12),
+    //         endDate: new Date(currentYear, currentMonth, 30, 12),
+    //         priority: 2, // Mức độ ưu tiên
+    //         isArchived: false,
+    //         status: 'finished',
+    //         taskTemplate: null,
+    //         parent: null,
+    //         level: 1,
+    //         inactiveEmployees: [],
+    //         responsibleEmployees: [employee], // Người thực hiện
+    //         accountableEmployees: [employee], // Người phê duyệt
+    //         consultedEmployees: [employee], // Người tư vấn
+    //         informedEmployees: [deputyManager], // Người quan sát
+    //         confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
+    //         evaluations: [
+    //             {
+    //                 // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+    //                 evaluatingMonth: new Date(currentYear, currentMonth, 30),
+    //                 date: new Date(currentYear, currentMonth, 30),
+    //                 startDate: new Date(currentYear, currentMonth, 2),
+    //                 endDate: new Date(currentYear, currentMonth, 30),
+    //                 results: [
+    //                     {
+    //                         // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+    //                         employee: employee,
+    //                         organizationalUnit: organizationalUnit_2,
+    //                         role: 'responsible',
+    //                         kpis: [employeeKpiArray[1][2]],
+    //                         automaticPoint: 90,
+    //                         employeePoint: 70,
+    //                         approvedPoint: 80,
+    //                         contribution: 50,
+    //                         taskImportanceLevel: 7,
+    //                     },
+    //                     {
+    //                         // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+    //                         employee: employee,
+    //                         organizationalUnit: organizationalUnit_2,
+    //                         role: 'accountable',
+    //                         kpis: [employeeKpiArray[1][0]],
+    //                         automaticPoint: 90,
+    //                         employeePoint: 80,
+    //                         approvedPoint: 60,
+    //                         contribution: 30,
+    //                         taskImportanceLevel: 5,
+    //                     },
+    //                     {
+    //                         // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+    //                         employee: employee,
+    //                         organizationalUnit: organizationalUnit_2,
+    //                         role: 'consulted',
+    //                         kpis: [employeeKpiArray[1][1]],
+    //                         automaticPoint: 90,
+    //                         employeePoint: 100,
+    //                         approvedPoint: 60,
+    //                         contribution: 20,
+    //                         taskImportanceLevel: 5,
+    //                     },
+    //                 ],
+    //                 taskInformations: [], // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
+    //             },
+    //         ],
+    //         progress: 60,
+    //     },
+    // ]);
 };
 
 module.exports = {
