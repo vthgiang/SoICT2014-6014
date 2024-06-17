@@ -262,7 +262,10 @@ export function PolicyTable() {
           columnData={{
             index: translate('manage_authorization_policy.index'),
             name: translate('manage_authorization_policy.name'),
-            description: translate('manage_authorization_policy.description')
+            description: translate('manage_authorization_policy.description'),
+            effectiveStartTime: translate('manage_authorization_policy.effective_start_time'),
+            effectiveEndTime: translate('manage_authorization_policy.effective_end_time'),
+            effect: translate('manage_authorization_policy.effect')
           }}
           tableHeaderData={{
             index: (
@@ -272,6 +275,9 @@ export function PolicyTable() {
             ),
             name: <th>{translate('manage_authorization_policy.name')}</th>,
             description: <th>{translate('manage_authorization_policy.description')}</th>,
+            effect: <th>{translate('manage_authorization_policy.effect')}</th>,
+            effectiveStartTime: <th>{translate('manage_authorization_policy.effective_start_time')}</th>,
+            effectiveEndTime: <th>{translate('manage_authorization_policy.effective_end_time')}</th>,
             action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
           }}
           tableBodyData={
@@ -282,6 +288,9 @@ export function PolicyTable() {
                 index: <td>{index + 1}</td>,
                 name: <td>{item?.name}</td>,
                 description: <td>{item?.description}</td>,
+                effect: <td>{item?.effect}</td>,
+                effectiveStartTime: <td>{item?.effectiveStartTime}</td>,
+                effectiveEndTime: <td>{item?.effectiveEndTime}</td>,
                 action: (
                   <td style={{ textAlign: 'center' }}>
                     <a

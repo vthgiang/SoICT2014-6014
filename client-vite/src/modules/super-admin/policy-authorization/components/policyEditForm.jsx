@@ -175,7 +175,16 @@ export function PolicyEditForm(props) {
 
         <div className='tab-content'>
           {/* Thông tin chung */}
-          <GeneralTab id='edit_general' handleChange={handleChange} policyID={policyID} name={state.name} description={state.description} />
+          <GeneralTab
+            id='edit_general'
+            handleChange={handleChange}
+            policyID={policyID}
+            name={state.name}
+            description={state.description}
+            effect={state.effect}
+            effectiveStartTime={state.effectiveStartTime}
+            effectiveEndTime={state.effectiveEndTime}
+          />
 
           {/* Thông tin thuộc tính */}
           <AttributeTableTab
