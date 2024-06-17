@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import dayjs from 'dayjs'
 
 import { useTranslate } from 'react-redux-multilingual'
 import { DeleteNotification, PaginateBar, SmartTable } from '../../../../common-components'
@@ -165,6 +166,13 @@ export function PolicyTable() {
     window.$(`#modal-detail-info-policy-hooks`).modal('show')
   }
 
+  const formatTime = (date) => {
+    if (!date) {
+      return ''
+    }
+    return dayjs(date).format('DD-MM-YYYY hh:mm A')
+  }
+
   let lists = []
   if (policyAuthorization) {
     lists = policyAuthorization.listPaginate
@@ -283,8 +291,8 @@ export function PolicyTable() {
                 name: <td>{item?.name}</td>,
                 description: <td>{item?.description}</td>,
                 effect: <td>{item?.effect}</td>,
-                effectiveStartTime: <td>{item?.effectiveStartTime}</td>,
-                effectiveEndTime: <td>{item?.effectiveEndTime}</td>,
+                effectiveStartTime: <td>{formatTime(item?.effectiveStartTime)}</td>,
+                effectiveEndTime: <td>{formatTime(item?.effectiveEndTime)}</td>,
                 action: (
                   <td style={{ textAlign: 'center' }}>
                     <a

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { split } from 'lodash'
+import dayjs from 'dayjs'
 import { ErrorLabel, SelectBox, DatePicker } from '../../../../common-components'
 import ValidationHelper from '../../../../helpers/validationHelper'
 
@@ -18,15 +19,10 @@ function GeneralTab(props) {
   })
 
   const getDateFormatted = (value) => {
-    console.log("ddd", value)
     if (!value) {
       return ''
     }
-    const date = new Date(value)
-    const d = date.getDate()
-    const m = date.getMonth() + 1
-    const y = date.getFullYear()
-    return `${d}-${m}-${y}`
+    return dayjs(value).format('DD-MM-YYYY')
   }
 
   // setState từ props mới
@@ -74,12 +70,11 @@ function GeneralTab(props) {
   }
 
   const handlePolicyEffect = (e) => {
-    const { value } = e.target
     setState({
       ...state,
-      effect: value
+      effect: e[0]
     })
-    props.handleChange('effect', value)
+    props.handleChange('effect', e[0])
   }
 
   const handlePolicyEffectiveStartTime = (value) => {
@@ -88,7 +83,7 @@ function GeneralTab(props) {
     date.setDate(a[0])
     date.setMonth(parseInt(a[1], 10) - 1)
     date.setYear(a[2])
-    date.setUTCHours(0, 0, 0, 0)
+    date.setHours(0, 0, 0, 0)
     setState({
       ...state,
       effectiveStartTime: date
@@ -102,7 +97,8 @@ function GeneralTab(props) {
     date.setDate(a[0])
     date.setMonth(parseInt(a[1], 10) - 1)
     date.setYear(a[2])
-    date.setUTCHours(0, 0, 0, 0)
+    date.setHours(0, 0, 0, 0)
+
     setState({
       ...state,
       effectiveEndTime: date
