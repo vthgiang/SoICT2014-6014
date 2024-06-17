@@ -119,6 +119,7 @@ module.exports = {
     BusinessDepartment: require('./production/order/businessDepartment.model'),
     Payment: require('./production/order/payment.model'),
     MarketingCampaign: require('./production/order/marketingCampaign.model'),
+    MarketingEffective : require('./production/order/marketingEffective.model'),
     Location: require('./common/location.model'),
 
     // plan

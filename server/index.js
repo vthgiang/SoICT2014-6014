@@ -215,6 +215,7 @@ app.use('/payment', require('./modules/production/order/payment/payment.route'))
 app.use('/business-department', require('./modules/production/order/business-department/businessDepartment.route'));
 app.use('/news-feed', require('./modules/news-feed/newsFeed.route'));
 app.use('/marketing-campaign', require('./modules/production/order/marketing-campaign/marketingCampaign.route'));
+app.use('/marketing-effective', require('./modules/production/order/marketing-effective/marketingEffective.route'));
 
 
 // project

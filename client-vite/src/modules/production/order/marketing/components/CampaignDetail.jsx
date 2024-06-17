@@ -22,6 +22,7 @@ import { Doughnut } from 'react-chartjs-2'
 import LinearProgress from '@mui/material/LinearProgress'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min'
 // import faker from 'faker'
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend)
