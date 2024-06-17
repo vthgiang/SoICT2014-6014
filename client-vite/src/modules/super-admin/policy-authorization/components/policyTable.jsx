@@ -36,12 +36,6 @@ export function PolicyTable() {
     dispatch(AttributeActions.getAttributes())
   }, [])
 
-  useEffect(() => {
-    if (curentRowDetail) {
-      dispatch(PolicyActions.getPolicyById(curentRowDetail._id))
-    }
-  }, [curentRowDetail])
-
   const handleChangeAddRowAttribute = (name, value) => {
     setState({
       ...state,
