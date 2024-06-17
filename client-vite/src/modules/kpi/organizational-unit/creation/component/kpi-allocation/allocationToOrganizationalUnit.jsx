@@ -26,18 +26,54 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
   }, [])
 
   useEffect(() => {
+    const getRandomInt = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min
+    }
+
     const listUnitWithTaskTemplate = listUnit.map((unit) => {
       const unitTaskTemplate = taskTemplates?.listTemplatesAll?.filter((template) => template.organizationalUnit === unit.value) ?? []
-      const updatedUnitTaskTemplate = unitTaskTemplate.map((template) => {
-        const updatedListMappingTask = template.listMappingTask.map((task) => ({
-          ...task,
-          taskWeight: 0
-        }))
-        return {
-          ...template,
-          listMappingTask: updatedListMappingTask
-        }
+
+      // Group tasks by organizationalUnitKpi.name
+      const tasksByKpiName = {}
+      unitTaskTemplate.forEach((template) => {
+        template.listMappingTask.forEach((task) => {
+          const kpiName = task.organizationalUnitKpi.name
+          if (!tasksByKpiName[kpiName]) tasksByKpiName[kpiName] = []
+          tasksByKpiName[kpiName].push(task)
+        })
       })
+
+      // Function to generate random integer weights that sum to 100
+      const generateRandomIntWeights = (count) => {
+        const weights = Array(count).fill(1)
+        let remainingWeight = 100 - count
+
+        while (remainingWeight > 0) {
+          const randomIndex = Math.floor(Math.random() * count)
+          weights[randomIndex] += 1
+          remainingWeight -= 1
+        }
+
+        return weights
+      }
+
+      // Assign random integer weights
+      Object.values(tasksByKpiName).forEach((tasks) => {
+        const randomWeights = generateRandomIntWeights(tasks.length)
+        tasks.forEach((task, index) => {
+          task.taskWeight = randomWeights[index]
+        })
+      })
+
+      // Update the task templates with new weights
+      const updatedUnitTaskTemplate = unitTaskTemplate.map((template) => ({
+        ...template,
+        listMappingTask: template.listMappingTask.map((task) => ({
+          ...task,
+          taskWeight: task.taskWeight ?? 0
+        }))
+      }))
+
       return {
         ...unit,
         taskTemplates: updatedUnitTaskTemplate
@@ -46,13 +82,34 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
 
     const filterValue = listUnitWithTaskTemplate
       .filter((unit) => selectedValue.includes(unit.value))
-      .map((unit) => ({
-        ...unit,
-        kpis: currentKPI.kpis.map((kpi) => ({
-          ...kpi,
-          kpiWeight: 0
-        }))
-      }))
+      .map((unit) => {
+        const numberOfKPIs = currentKPI.kpis.length
+
+        if (numberOfKPIs < 2) throw new Error('Not enough KPIs to assign weights.')
+
+        const kpiWeight1 = 5
+        const kpiWeight2 = 5
+        let remainingWeight = 100 - kpiWeight1 - kpiWeight2
+
+        const initialWeights = [kpiWeight1, kpiWeight2]
+
+        const kpiWeights = currentKPI.kpis.slice(2).reduce((acc, kpi, index, arr) => {
+          const maxWeight = remainingWeight - (arr.length - index - 1)
+          const weight = getRandomInt(1, maxWeight > 0 ? maxWeight : 1)
+          remainingWeight -= weight
+          return acc.concat(weight)
+        }, initialWeights)
+
+        if (numberOfKPIs > 2) kpiWeights[numberOfKPIs - 1] += remainingWeight
+
+        return {
+          ...unit,
+          kpis: currentKPI.kpis.map((kpi, index) => ({
+            ...kpi,
+            kpiWeight: kpiWeights[index]
+          }))
+        }
+      })
 
     setListUnitKpi(filterValue)
   }, [selectedValue])
@@ -167,12 +224,12 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
     setSteps(newSteps)
   }
 
-  const handleStartAllocation = () => {
-    // console.log(configData)
+  const handleStartAllocation = (e) => {
     const payload = {
       configData,
       kpiData: listUnitKpi
     }
+    setCurrentStep(e, 2)
     dispatch(ConfigParametersAction.handleStartAllocation(payload))
   }
 
@@ -371,7 +428,7 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
 
       {step === 1 && <ConfigParameters handleStartAllocation={handleStartAllocation} />}
 
-      {step === 2 && <AllocationResult />}
+      {step === 2 && <AllocationResult listUnitKpi={listUnitKpi} />}
     </DialogModal>
   )
 }

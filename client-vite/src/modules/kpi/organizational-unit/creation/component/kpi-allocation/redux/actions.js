@@ -62,9 +62,28 @@ const handleStartAllocation = (payload) => {
   }
 }
 
+const handleAssignAllocation = (payload) => {
+  return (dispatch) => {
+    dispatch({ type: ConfigManagementConstant.ASSIGN_ALLOCATION_REQUEST })
+    ConfigParametersServices.startAssignAllocation(payload)
+      .then((response) => {
+        dispatch({
+          type: ConfigManagementConstant.ASSIGN_ALLOCATION_REQUEST_SUCCESS,
+          payload: response.data.content
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: ConfigManagementConstant.HANDLE_START_ALLOCATION_REQUEST_FAILED
+        })
+      })
+  }
+}
+
 export const ConfigParametersAction = {
   getConfigSettingData,
   updateConfigSetting,
   updateConfigSettingData,
-  handleStartAllocation
+  handleStartAllocation,
+  handleAssignAllocation
 }

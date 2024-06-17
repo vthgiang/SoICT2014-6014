@@ -38,8 +38,22 @@ const startAllocation = (payload) => {
   )
 }
 
+const startAssignAllocation = (payload) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/kpi/allocation/assign-allocation`,
+      method: 'POST',
+      data: payload
+    },
+    true,
+    true,
+    'kpi'
+  )
+}
+
 export const ConfigParametersServices = {
   getConfigSettingData,
   updateConfigSettingData,
-  startAllocation
+  startAllocation,
+  startAssignAllocation
 }

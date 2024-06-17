@@ -98,7 +98,7 @@ function ConfigParameters({ handleStartAllocation }) {
             <button type='button' className='btn btn-success' onClick={handleResetData}>
               Reset thay đổi
             </button> */}
-            <button type='button' className='btn btn-success' onClick={() => handleStartAllocation()}>
+            <button type='button' className='btn btn-success' onClick={(e) => handleStartAllocation(e)}>
               Bắt đầu phân bổ
             </button>
           </div>

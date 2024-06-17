@@ -70,13 +70,37 @@ const handleStartAllocation = async (request, response) => {
         response.status(200).json({
             success: true,
             messages: ['allocation_success'],
-            content: result.content,
+            content: result,
         });
     } catch (error) {
-        // Logger.error(email, `Allocation`, portal);
+        Logger.error(email, `Allocation`, portal);
         response.status(401).json({
             success: false,
             messages: ['allocation_fail'],
+            content: error,
+        });
+    }
+};
+
+const handleAssignKpiAndTask = async (request, response) => {
+    try {
+        const portal = request.portal;
+        const { email } = request.user;
+        const { responseServerOutput, responseInput, listUnitKpi } = request.body;
+
+        await ConfigSettingService.handleStartAssignAllocation(portal, responseServerOutput, responseInput, request.user, listUnitKpi);
+
+        // Logger.info(email, `Assign task and kpi success`, portal);
+        response.status(200).json({
+            success: true,
+            messages: ['assign_allocation_success'],
+            content: [],
+        });
+    } catch (error) {
+        // Logger.error(email, `Assign task and kpi`, portal);
+        response.status(401).json({
+            success: false,
+            messages: ['assign_allocation_fail'],
             content: error,
         });
     }
@@ -87,4 +111,5 @@ module.exports = {
     updateConfigSettingData,
     createConfigSettingData,
     handleStartAllocation,
+    handleAssignKpiAndTask,
 };
