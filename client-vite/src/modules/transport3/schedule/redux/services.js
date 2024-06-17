@@ -1,6 +1,7 @@
 import { sendRequest } from '@helpers/requestHelper'
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
 import { StockServices } from '@modules/production/warehouse/stock-management/redux/services'
+import { method } from 'lodash'
 
 const provider = new OpenStreetMapProvider({
   params: {
@@ -47,4 +48,25 @@ const createSchedule = (data) => {
   )
 }
 
-export { getAllSchedule, getAllStocksWithLatlng, createSchedule }
+// const predictOntimeDelivery = (scheduleId, data) => {
+//   return sendRequest({
+//     url: `${process.env.PYTHON_URL_SERVER}/api/dxclan/ontimePredict/${scheduleId}`,
+//     method: 'POST',
+//     data
+//   },
+//   true,
+//   true,
+//   'transport3.schedule')
+// }
+
+const predictOntimeDelivery = (scheduleId) => {
+  return sendRequest({
+    url: `${process.env.REACT_APP_SERVER}/transport3/predict/${scheduleId}`,
+    method: 'GET'
+  },
+  true,
+  true,
+  'transport3.schedule')
+}
+
+export { getAllSchedule, getAllStocksWithLatlng, createSchedule, predictOntimeDelivery }

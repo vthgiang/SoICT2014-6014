@@ -9,5 +9,6 @@ router.get('/estimatedOntimeRate', auth, OntimePredictController.getEstimatedOnT
 router.get('/estimatedOntimeRatePerMonth', auth, OntimePredictController.getEstimatedOnTimeDeliveryRatesPerMonth);
 router.get('/deliveryLateDayAverage', auth, OntimePredictController.getDeliveryLateDayAverage);
 router.get('/deliveryLateDayAveragePerMonth', auth, OntimePredictController.getDeliveryLateDayAveragePerMonth);
+router.get('/predict/:scheduleId', auth, OntimePredictController.predictOnTimeDelivery);
 
 module.exports = router;

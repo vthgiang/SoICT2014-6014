@@ -1,4 +1,5 @@
 import { ScheduleConstants } from './constants'
+import { schedule } from './reducers'
 import * as ScheduleServices from './services'
 
 const getAllSchedule = () => {
@@ -52,9 +53,28 @@ const autoSchedule = (data) => {
     }
   }
 }
+
+const predictOntimeDelivery = (scheduleId) => {
+  return (dispatch) => {
+    dispatch({ type: ScheduleConstants.PREDICT_ONTIME_DELIVERY_REQUEST })
+  ScheduleServices.predictOntimeDelivery(scheduleId)
+    .then((response) => {
+      dispatch({
+        type: ScheduleConstants.PREDICT_ONTIME_DELIVERY_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: ScheduleConstants.PREDICT_ONTIME_DELIVERY_FAILURE
+      })
+    })
+}
+}
 export const ScheduleActions = {
   getAllSchedule,
   getAllStocksWithLatlng,
   createSchedule,
-  autoSchedule
+  autoSchedule,
+  predictOntimeDelivery
 }

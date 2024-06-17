@@ -264,5 +264,12 @@ exports.getDeliveryLateDayAveragePerMonth = async (portal, data) => {
       }
 
     return fillMissingData(monthlyLateDayAverages);
-
 }
+
+// exports.predictOnTimeDelivery = async (portal, scheduleId) => {
+//     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).findById({ _id: scheduleId });
+//     if (!transport3Schedules) {
+//         throw new Error('Schedule not found');
+//     }
+//     return 1
+// }

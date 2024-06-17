@@ -3691,7 +3691,7 @@ class Routes extends Component {
             path='/manage-transport3-dashboard'
             pageName='manage_transport3_dashboard'
             layout={Layout}
-            component={DashBoardTransportationUnit}
+            component={DashBoardtransport3Unit}
           />
 
           <PrivateRoute

@@ -5,7 +5,8 @@ const initState = {
   isAutoScheduling: false,
   listAutoSchedules: null,
   listSchedules: [],
-  listStocsWithLatLng: []
+  listStocsWithLatLng: [],
+  predictOntimeDeliveryResults: []
 }
 
 export function schedule(state = initState, action) {
@@ -75,6 +76,22 @@ export function schedule(state = initState, action) {
         isAutoScheduling: false,
         listAutoSchedules: []
       }
+      case ScheduleConstants.PREDICT_ONTIME_DELIVERY_REQUEST:
+        return {
+          ...state,
+          isLoading: true
+        }
+      case ScheduleConstants.PREDICT_ONTIME_DELIVERY_SUCCESS:
+        return {
+          ...state,
+          predictOntimeDeliveryResults: action.payload,
+          isLoading: true
+        }
+      case ScheduleConstants.PREDICT_ONTIME_DELIVERY_FAILURE:
+        return {
+          ...state,
+          isLoading: false
+        }
     default:
       return state
   }
