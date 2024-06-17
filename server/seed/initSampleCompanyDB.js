@@ -5,7 +5,9 @@ const linksPermission = require('../middleware/servicesPermission').links;
 const categoryChild = require('./CategoryChild.json')
 const listProducts = require('./ListProduct.json')
 const marketingCampaign = require('./MarketingCampaign.json')
+const marketingEffective = require('./MarketingEffective.json')
 const saleOrders = require('./SaleOrders.json')
+const listCustomer = require('./Customer.json')
 const {
     Component,
     RoleType,
@@ -51,6 +53,7 @@ const {
     Category,
     Good,
     MarketingCampaign,
+    MarketingEffective,
     SalesOrder,
 
     Tax,
@@ -211,6 +214,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.Category) Category(db);
         if (!db.models.Good) Good(db);
         if (!db.models.MarketingCampaign) MarketingCampaign(db);
+        if (!db.models.MarketingEffective) MarketingEffective(db);
         if (!db.models.Tax) Tax(db);
         if (!db.models.ServiceLevelAgreement) ServiceLevelAgreement(db);
         if (!db.models.Discount) Discount(db);
@@ -4571,6 +4575,28 @@ const initSampleCompanyDB = async () => {
         };
     });
     await MarketingCampaign(vnistDB).insertMany(listMarketing);
+
+    // var listMarketingEffective = marketingEffective.map( async (subCat) => {
+    //     const marketing = await MarketingCampaign(vnistDB).findOne({code: subCat.code});
+    //     return {
+    //         ...subCat,
+    //         marketingId: marketing._id
+    //     };
+    // });
+
+    var listMarketingEffective = await Promise.all(
+        marketingEffective.map(async (subCat) => {
+            const marketing = await MarketingCampaign(vnistDB).findOne({ code: subCat.code });
+            return {
+                ...subCat,
+                marketingId: marketing ? marketing._id : null
+            };
+        })
+    );
+
+    await MarketingEffective(vnistDB).insertMany(listMarketingEffective);
+
+    
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU HÀNG HÓA
@@ -6496,6 +6522,78 @@ const initSampleCompanyDB = async () => {
 
     var listCustomers = await Customer(vnistDB).insertMany(listCustomerData);
     console.log('Xong! Đã tạo mẫu dữ liệu khách hàng');
+
+    let listCustomerData1 = [];
+    for(let i = 0; i < listCustomer.length; i++) {
+        const now = new Date();
+        const month = now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
+        const year = now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
+        const customer = {
+            owner: [users[(i % 3) + 5]._id],
+            customerStatus: [customerStatuss[i % 5]._id],
+            point: 0,
+            isDeleted: false,
+            code: listCustomer[i].code,
+            name: listCustomer[i].name,
+            customerType: listCustomer[i].customerType,
+            customerGroup: customerGroups[i % 4]._id,
+            gender: listCustomer[i].gender,
+            birthDate: listCustomer[i].birthDate,
+            mobilephoneNumber: listCustomer[i].mobilephoneNumber,
+            email: listCustomer[i].email,
+            address: listCustomer[i].address,
+            telephoneNumber: listCustomer[i].telephoneNumber,
+            taxNumber: 'Tax 123456789',
+            location: 1,
+            customerSource: listCustomer[i].customerSource,
+            statusHistories: [
+                {
+                    createdAt: new Date(),
+                    oldValue: customerStatuss[1]._id,
+                    newValue: customerStatuss[1]._id,
+                    createdBy: users[(i % 3) + 5]._id,
+                    description: 'Khách hàng được khởi tạo',
+                },
+                {
+                    oldValue: customerStatuss[1]._id,
+                    newValue: customerStatuss[i % 5]._id,
+                    createdAt: new Date(),
+                    createdBy: users[(i % 3) + 5]._id,
+                    description: 'Khách hàng đã được chuyển trạng thái',
+                },
+            ],
+            creator: users[(i % 3) + 5]._id,
+            rankPoints: [
+                {
+                    point: Math.floor(Math.random() * 9876),
+                    expirationDate: new Date(year, 12),
+                },
+                {
+                    point: Math.floor(Math.random() * 98),
+                    expirationDate: new Date(year, 12),
+                },
+            ],
+            files: [],
+            promotions: [],
+            createdAt: new Date(year, month),
+            updatedAt: new Date(),
+            __v: 0,
+            address2: '',
+            company: '',
+            companyEstablishmentDate: null,
+            email2: '',
+            linkedIn: '',
+            note: '',
+            represent: '',
+            website: '',
+            customerCareUnit: customerCareUnits[0]._id,
+        };
+        listCustomerData1.push(customer);
+}
+
+    await Customer(vnistDB).insertMany(listCustomerData1);
+    console.log('Xong! Đã tạo mẫu dữ liệu khách hàng');
+
 
     // ****************** Tạo mẫu dữ liệu chăm sóc khách hàng********************
     const getRamdomCareName = () => {

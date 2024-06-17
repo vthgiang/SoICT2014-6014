@@ -30,7 +30,6 @@ exports.createNewMarketingCampaign = async (req, res) => {
 exports.getMarketingCampaign = async ( req, res ) => {
     try {
         let allMarketingCampaigns = await MarketingCampaign(connect(DB_CONNECTION, req.portal)).find().sort([['createdAt', -1]]);;
-        console.log('allMarketingCampaigns', allMarketingCampaigns);
 
         await Log.info(req.user.email, "GET_ALL_getMarketingCampaign", req.portal);
 
