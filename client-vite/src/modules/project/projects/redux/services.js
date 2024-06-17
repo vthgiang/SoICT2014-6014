@@ -1,13 +1,5 @@
 import { sendRequest } from '../../../../helpers/requestHelper'
 
-export const ProjectServices = {
-  getProjects,
-  createProject,
-  editProject,
-  deleteProject,
-  getSalaryMembersAPI
-}
-
 function getProjects(params = undefined) {
   // console.log('params project', params)
   return sendRequest(
@@ -76,4 +68,12 @@ function getSalaryMembersAPI(data) {
     true,
     'project'
   )
+}
+
+export const ProjectServices = {
+  getProjects,
+  createProject,
+  editProject,
+  deleteProject,
+  getSalaryMembersAPI
 }

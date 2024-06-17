@@ -1,14 +1,6 @@
 import { ProjectServices } from './services'
 import { ProjectConstants } from './constants'
 
-export const ProjectActions = {
-  getProjectsDispatch,
-  createProjectDispatch,
-  editProjectDispatch,
-  deleteProjectDispatch,
-  getSalaryMembersDispatch
-}
-
 function getProjectsDispatch(data = undefined) {
   return (dispatch) => {
     dispatch({
@@ -98,4 +90,12 @@ function getSalaryMembersDispatch(data) {
         dispatch({ type: ProjectConstants.GET_SALARY_MEMBER_FAILE })
       })
   }
+}
+
+export const ProjectActions = {
+  getProjectsDispatch,
+  createProjectDispatch,
+  editProjectDispatch,
+  deleteProjectDispatch,
+  getSalaryMembersDispatch
 }

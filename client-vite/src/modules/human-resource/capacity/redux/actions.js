@@ -2,10 +2,6 @@ import { dispatch } from 'd3-dispatch'
 import { CapacityConstant } from './constants'
 import { CapacityService } from './services'
 
-export const CapacityActions = {
-  getListCapacity
-}
-
 /**
  * Lấy danh sách tag
  * @data : Dữ liệu key tìm kiếm
@@ -30,4 +26,8 @@ function getListCapacity(data) {
         })
       })
   }
+}
+
+export const CapacityActions = {
+  getListCapacity
 }

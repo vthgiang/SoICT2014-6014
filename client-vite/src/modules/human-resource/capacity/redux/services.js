@@ -1,9 +1,5 @@
 import { sendRequest } from '../../../../helpers/requestHelper'
 
-export const CapacityService = {
-  getListCapacity,
-}
-
 // =============GET=================
 
 /**
@@ -48,3 +44,8 @@ function getListCapacity(data) {
  * Xóa lĩnh vực cv
  * @data : Dữ liệu xóa
  */
+
+
+export const CapacityService = {
+  getListCapacity,
+}

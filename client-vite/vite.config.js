@@ -32,14 +32,6 @@ export default defineConfig(({ mode }) => {
       }),
       react()
     ],
-    css: {
-      postcss: {
-        plugins: [
-          tailwindcss,
-          autoprefixer,
-        ],
-      },
-    },
     server: {
       port: 3000,
       open: true // Automatically open the default browser when starting the server

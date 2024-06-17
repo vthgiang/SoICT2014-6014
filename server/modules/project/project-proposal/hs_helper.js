@@ -1229,7 +1229,6 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
     
       // Step 6: Check termination conditions
       if (FEs !== 0 && FEs % R === 0) {
-        // console.log("vao day")
         // console.log("subHMs L: ", subHMs[0].length)
         subHMs = regroupSubHMs(subHMs, numOfSub);
         // console.log("subHMs L: ", subHMs[0].length)

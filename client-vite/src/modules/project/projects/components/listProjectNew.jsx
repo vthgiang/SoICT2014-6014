@@ -42,18 +42,7 @@ function ListProjectNew(props) {
 
   const { project, translate, user } = props
   const userId = getStorage('userId')
-  const {
-    projectName,
-    startDate,
-    endDate,
-    page,
-    responsibleEmployees,
-    projectManager,
-    perPage,
-    currentRow,
-    projectDetail,
-    data
-  } = state
+  const { projectName, startDate, endDate, page, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state
 
   useEffect(() => {
     props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
@@ -84,9 +73,7 @@ function ListProjectNew(props) {
           member: currentProjects[n]?.responsibleEmployees ? (
             <ToolTip dataTooltip={currentProjects[n]?.responsibleEmployees.map((o) => o.name)} />
           ) : null,
-          asset: currentProjects[n]?.assets ? (
-            <ToolTip dataTooltip={currentProjects[n]?.assets.map((o) => o.assetName)} />
-          ) : null,
+          asset: currentProjects[n]?.assets ? <ToolTip dataTooltip={currentProjects[n]?.assets.map((o) => o.assetName)} /> : null,
           action: ['view']
         }
 
@@ -144,7 +131,6 @@ function ListProjectNew(props) {
       projectManager: value
     })
   }
-
 
   const handleChangeStartDate = (value) => {
     let month
@@ -298,7 +284,7 @@ function ListProjectNew(props) {
     } else {
       let data = {
         calledId: 'paginate',
-        projectName: projectName,
+        projectName,
         endDate: endDate,
         startDate: startDate,
         page: 1,
@@ -328,14 +314,13 @@ function ListProjectNew(props) {
 
   const totalPage = project && Math.ceil(project.data.totalDocs / perPage)
 
-
   return (
     <React.Fragment>
       <ProjectDetailForm
         projectDetailId={projectDetail && projectDetail._id}
         projectDetail={projectDetail}
         currentProjectTasks={projectDetail?.proposals?.tasks}
-        // currentProjectPhase={projectPhase && projectPhase.phases}
+      // currentProjectPhase={projectPhase && projectPhase.phases}
       />
 
       {/* <ProjectEditForm
@@ -349,8 +334,8 @@ function ListProjectNew(props) {
         handleAfterCreateProject={handleAfterCreateProject}
         submitFunction={props.createProjectDispatch}
         actionType={PROJECT_ACTION_FORM.CREATE}
-        // setParentState={setState}
-        // parentState={state}
+      // setParentState={setState}
+      // parentState={state}
       />
 
       <ProjectCreateEditFormModal
@@ -359,8 +344,8 @@ function ListProjectNew(props) {
         actionType={PROJECT_ACTION_FORM.EDIT}
         projectEditId={currentRow && currentRow._id}
         projectEdit={currentRow}
-        // setParentState={setState}
-        // parentState={state}
+      // setParentState={setState}
+      // parentState={state}
       />
 
       <div className='box'>
@@ -371,7 +356,7 @@ function ListProjectNew(props) {
               <button
                 className='btn btn-primary'
                 type='button'
-                style={{marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+                style={{ marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
                 onClick={() => {
                   window.$('#projects-filter').slideToggle()
                 }}
@@ -489,7 +474,6 @@ function ListProjectNew(props) {
   )
 }
 
-
 function mapState(state) {
   const { project, user, tasks, projectPhase, createKpiUnit, assetsManager, tag, capacity } = state
   return { project, user, tasks, projectPhase, createKpiUnit, assetsManager, tag, capacity }
@@ -506,7 +490,7 @@ const actions = {
   getAllOrganizationalUnitKpiSet: createUnitKpiActions.getAllOrganizationalUnitKpiSet,
   getAllAsset: AssetManagerActions.getAllAsset,
   getListTag: TagActions.getListTag,
-  getListCapacity: CapacityActions.getListCapacity,
+  getListCapacity: CapacityActions.getListCapacity
 }
 
 const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProjectNew))
