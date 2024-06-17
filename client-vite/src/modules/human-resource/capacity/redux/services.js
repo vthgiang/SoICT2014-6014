@@ -48,4 +48,3 @@ function getListCapacity(data) {
  * Xóa lĩnh vực cv
  * @data : Dữ liệu xóa
  */
-

@@ -2,14 +2,14 @@ module.exports = {
   root: true,
   env: { browser: true, es2020: true, browser: true, es2021: true, jest: true, amd: true, node: true },
   extends: [
-    // 'eslint:recommended',
-    // 'plugin:react/recommended',
-    // 'plugin:react/jsx-runtime',
-    // 'plugin:react-hooks/recommended',
-    // 'plugin:react/recommended',
-    // 'airbnb',
-    // 'eslint:recommended',
-    // 'plugin:prettier/recommended'
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:react-hooks/recommended',
+    'plugin:react/recommended',
+    'airbnb',
+    'eslint:recommended',
+    'plugin:prettier/recommended'
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parserOptions: {

@@ -458,5 +458,3 @@ exports.proposalForProject = async (portal, id, data) => {
     throw error
   }
 }
-
-

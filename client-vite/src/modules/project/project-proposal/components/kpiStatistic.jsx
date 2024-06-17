@@ -89,3 +89,4 @@ const KpiBarChart = ({ kpiTarget, kpiAssignment }) => {
 };
 
 export default KpiBarChart;
+

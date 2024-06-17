@@ -102,3 +102,4 @@ const actions = {
 }
 
 export default connect(mapState, actions)(withTranslate(ProposalScheduleGanttTask))
+  
