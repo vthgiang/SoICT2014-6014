@@ -113,6 +113,7 @@ router.use('/authorization/logging', require('./modules/authorization/logging/lo
 router.use('/authorization/policy', require('./modules/authorization/policy/policy.route'));
 
 // Router Quản lý ủy quyền
+router.use('/delegation/policy', require('./modules/delegation/policy/policy.route'));
 router.use('/delegation', require('./modules/delegation/delegation.route'));
 
 router.use('/task', require('./modules/task/task-management/task.route'));
