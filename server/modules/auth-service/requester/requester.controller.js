@@ -100,3 +100,23 @@ exports.updateAttributes = async (req, res) => {
 //       });
 //   }
 // }
+
+exports.getAccessibleResources = async (req, res) => {
+  try {
+    const resources = await RequesterService.getAccessibleResources(req.portal ?? req.header.portal ?? req.body.portal, req.params.id);
+
+    await Logger.info(req.body.email ?? '', 'get_accessible_resources_success');
+    res.status(200).json({
+        success: true,
+        messages: ['get_accessible_resources_success'],
+        content: resources
+    });
+  } catch (error) {
+      await Logger.error(req.body.email ?? '', 'get_accessible_resources_faile');
+      res.status(400).json({
+          success: false,
+          messages: Array.isArray(error) ? error : ['get_accessible_resources_faile'],
+          content: error
+      });
+  }
+}

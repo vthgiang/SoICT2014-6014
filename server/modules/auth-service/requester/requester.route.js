@@ -9,5 +9,6 @@ router.get('/requesters/:id', auth, RequesterController.findOne);
 router.patch('/requesters/:id', auth, RequesterController.updateAttributes);
 // router.delete('/requesters/:id', auth, RequesterController.remove);
 
+router.get('/accessible-resources/:id', auth, RequesterController.getAccessibleResources);
 module.exports = router;
 
