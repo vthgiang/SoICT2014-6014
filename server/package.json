@@ -42,6 +42,7 @@
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
     "@hapi/joi": "^16.1.8",
+    "amqplib": "^0.10.4",
     "archiver": "^5.1.0",
     "array-to-tree": "^3.3.2",
     "axios": "^0.21.1",

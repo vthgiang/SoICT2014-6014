@@ -105,7 +105,7 @@ export const getRoles = () => {
     })
     UserServices.getRoles()
       .then((res) => {
-        let roles = []
+        const roles = []
         res.data.content.forEach((data) => {
           roles.push({
             id: data.id_role._id,

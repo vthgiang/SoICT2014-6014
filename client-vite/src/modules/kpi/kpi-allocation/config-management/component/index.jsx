@@ -8,7 +8,7 @@ import { ConfigManagementAction } from '../redux/actions'
 function ConfigManagement() {
   const translate = useTranslate()
   const configData = useSelector((state) => state.kpiAllocation.configManagementReducer)
-  const { numberGeneration, solutionSize, hmcr, par, bandwidth, alpha, beta, gamma, isAutomatically, defaultSetting, _id } = configData
+  const { numberGeneration, solutionSize, isAutomatically, defaultSetting, _id } = configData
   const [isAutomatic, setIsAutomatic] = useState(isAutomatically ? 'on' : 'off')
   const dispatch = useDispatch()
 
@@ -31,12 +31,6 @@ function ConfigManagement() {
       ConfigManagementAction.updateConfigSettingData(_id, {
         numberGeneration,
         solutionSize,
-        hmcr,
-        par,
-        bandwidth,
-        alpha,
-        beta,
-        gamma,
         isAutomatically,
         isReset: false
       })

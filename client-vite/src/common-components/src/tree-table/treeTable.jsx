@@ -344,16 +344,18 @@ function TreeTable(props) {
           </a>
         )
       case 'startTimer':
-        return (
-          <a
-            style={{ cursor: 'pointer' }}
-            onClick={() => !performtasks.currentTimer && props.funcStartTimer(id)}
-            className={`timer ${performtasks.currentTimer ? (performtasks.currentTimer._id === id ? 'text-orange' : 'text-gray') : 'text-black'}`}
-            title={titleAction.startTimer}
-          >
-            <i className='material-icons'>timer</i>
-          </a>
-        )
+        if (!isAutomaticallyCreated(id))
+          return (
+            <a
+              style={{ cursor: 'pointer' }}
+              onClick={() => !performtasks.currentTimer && props.funcStartTimer(id)}
+              className={`timer ${performtasks.currentTimer ? (performtasks.currentTimer._id === id ? 'text-orange' : 'text-gray') : 'text-black'}`}
+              title={titleAction.startTimer}
+            >
+              <i className='material-icons'>timer</i>
+            </a>
+          )
+        return null
       default:
         return null
     }
@@ -445,6 +447,11 @@ function TreeTable(props) {
     props.onSelectedRowsChange(results)
   }
 
+  const isAutomaticallyCreated = (taskId) => {
+    const item = data.filter((task) => task._id === taskId)
+    return item[0]?.isAutomaticallyCreated ? item[0].isAutomaticallyCreated : false
+  }
+
   return (
     <>
       {tableSetting ? (
@@ -485,6 +492,8 @@ function TreeTable(props) {
           {dataTreeTable(column, data).length > 0
             ? dataTreeTable(column, data).map((rows, index) => (
                 <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
+                  {/* adsasd */}
+                  {/* {isAutomaticallyCreated(rows)} */}
                   {allowSelectAll && (
                     <td>
                       <input type='checkbox' defaultChecked={false} value={rows._id} />
@@ -516,7 +525,10 @@ function TreeTable(props) {
                               <div id={`actionTask${rows._id}`} className='collapse' style={{ visibility: 'unset' }}>
                                 {x.map((y, index) =>
                                   !Array.isArray(y) ? (
-                                    <React.Fragment key={index}>{showActionColumn(y, rows._id)}</React.Fragment>
+                                    <React.Fragment key={index}>
+                                      {showActionColumn(y, rows._id)}
+                                      {console.log(rows)}
+                                    </React.Fragment>
                                   ) : (
                                     <div id={`actionTask2${rows._id}`} key={`actionTask2${rows._id}-${index}`}>
                                       {y.map((z, index) => (

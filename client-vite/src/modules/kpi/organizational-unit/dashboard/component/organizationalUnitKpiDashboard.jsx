@@ -17,6 +17,7 @@ import StatisticsKpiUnits from './statisticsKpiUnits'
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart'
 import { TrendsInChildrenOrganizationalUnitKpiChart } from './trendsInChildrenOrganizationalUnitKpiChart'
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart'
+import KpiUnitAllocation from './kpiUnitAllocation'
 
 function OrganizationalUnitKpiDashboard(props) {
   const today = new Date()
@@ -26,13 +27,13 @@ function OrganizationalUnitKpiDashboard(props) {
     organizationalUnitId: null,
 
     currentYear: new Date().getFullYear(),
-    month: today.getFullYear() + '-' + (today.getMonth() + 1),
-    date: today.getMonth() + 1 + '-' + today.getFullYear(),
+    month: `${today.getFullYear()}-${today.getMonth() + 1}`,
+    date: `${today.getMonth() + 1}-${today.getFullYear()}`,
 
     infoSearch: {
       organizationalUnitId: null,
-      month: today.getFullYear() + '-' + (today.getMonth() + 1),
-      date: today.getMonth() + 1 + '-' + today.getFullYear()
+      month: `${today.getFullYear()}-${today.getMonth() + 1}`,
+      date: `${today.getMonth() + 1}-${today.getFullYear()}`
     },
 
     childUnitChart: 1,
@@ -79,12 +80,12 @@ function OrganizationalUnitKpiDashboard(props) {
   }
 
   const handleSelectMonth = async (value) => {
-    let month = value.slice(3, 7) + '-' + value.slice(0, 2)
+    const month = `${value.slice(3, 7)}-${value.slice(0, 2)}`
     setState({
       ...state,
       infoSearch: {
         ...state.infoSearch,
-        month: month,
+        month,
         date: value
       }
     })
@@ -161,10 +162,17 @@ function OrganizationalUnitKpiDashboard(props) {
     organizationalUnitOfChartAllKpis,
     infoSearch
   } = state
-  let childOrganizationalUnit, childrenOrganizationalUnit, childrenOrganizationalUnitLoading
-  let organizationalUnitSelectBox, typeChartSelectBox, currentOrganizationalUnit
+  let childOrganizationalUnit
+  let childrenOrganizationalUnit
+  let childrenOrganizationalUnitLoading
+  let organizationalUnitSelectBox
+  let typeChartSelectBox
+  let currentOrganizationalUnit
   let organizationalUnitIds
-  let listUnitKpi, organizationalUnitNotInitialKpi, settingUpKpi, activedKpi
+  let listUnitKpi
+  let organizationalUnitNotInitialKpi
+  let settingUpKpi
+  let activedKpi
 
   if (dashboardEvaluationEmployeeKpiSet) {
     childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
@@ -229,7 +237,7 @@ function OrganizationalUnitKpiDashboard(props) {
 
   // Lọc các đơn vị chưa khởi tạo KPI
   if (listUnitKpi?.length > 0) {
-    let listUnitKpiInitialKpi = listUnitKpi.map((item) => item?.organizationalUnit?._id)
+    const listUnitKpiInitialKpi = listUnitKpi.map((item) => item?.organizationalUnit?._id)
     organizationalUnitNotInitialKpi = organizationalUnitSelectBox?.filter(
       (item) => !listUnitKpiInitialKpi.includes(item?.value?.toString())
     )
@@ -239,18 +247,22 @@ function OrganizationalUnitKpiDashboard(props) {
     organizationalUnitNotInitialKpi = organizationalUnitSelectBox
   }
 
-  let d = new Date(),
-    monthDate = '' + (d.getMonth() + 1),
-    day = '' + d.getDate(),
-    year = d.getFullYear()
+  const d = new Date()
+  let monthDate = `${d.getMonth() + 1}`
+  let day = `${d.getDate()}`
+  const year = d.getFullYear()
 
-  if (monthDate.length < 2) monthDate = '0' + monthDate
-  if (day.length < 2) day = '0' + day
-  let defaultDate = [monthDate, year].join('-')
+  if (monthDate.length < 2) monthDate = `0${monthDate}`
+  if (day.length < 2) day = `0${day}`
+  const defaultDate = [monthDate, year].join('-')
 
-  return (
-    <React.Fragment>
-      {childrenOrganizationalUnit ? (
+  const handleAllocationKpiUnitToEmployee = () => {
+    console.log('123')
+  }
+
+  if (childrenOrganizationalUnit) {
+    return (
+      <>
         <section>
           <div className='qlcv' style={{ marginBottom: '10px' }}>
             <div className='form-inline'>
@@ -258,7 +270,7 @@ function OrganizationalUnitKpiDashboard(props) {
                 <div className='form-group'>
                   <label style={{ width: 'auto' }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
                   <SelectBox
-                    id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
+                    id='organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard'
                     className='form-control select2'
                     style={{ width: '100%' }}
                     items={organizationalUnitSelectBox}
@@ -282,6 +294,17 @@ function OrganizationalUnitKpiDashboard(props) {
               <button type='button' className='btn btn-success' onClick={() => handleSearchData()}>
                 {translate('kpi.evaluation.dashboard.analyze')}
               </button>
+              <button
+                type='button'
+                className='btn btn-success'
+                // onClick={() => handleAllocationKpiUnitToEmployee()}
+                data-toggle='modal'
+                data-target='#allocation-each-unit-result'
+                data-backdrop='static'
+                data-keyboard='false'
+              >
+                Phân bổ KPI đơn vị cho từng cá nhân
+              </button>
               {createKpiUnit.currentKPI?.status && state.employeeKpiSet?.length === 0 ? (
                 <span style={{ display: 'inline-flex' }}>
                   <span style={{ marginLeft: 5, cursor: 'pointer' }}>
@@ -303,36 +326,36 @@ function OrganizationalUnitKpiDashboard(props) {
                         html: `
                                                 <h4>Hệ thống tự động hoạch định mục tiêu KPI nhân viên dựa vào các thông số sau: </h4>
                                                 <div style="text-align:left; font-size: 14">
-                                                
+
                                                 </br>
                                                 <strong>Điểm đánh giá nhân viên:</strong> Mô hình đánh giá nhân viên với các thông tin đầu vào như bằng cấp, chứng chỉ, … Cụ thể:
-                                                
+
                                                 </br>
                                                 - Trạng thái làm việc: Điểm chỉ được tính cho các nhân viên có trạng thái: Làm chính thức hoặc đang thử việc (10 điểm)
-                                                
+
                                                 </br>
                                                 - Trình độ học vấn: Điểm từ 5-15 được tính dựa vào loại trình độ
-                                                
+
                                                 </br>
                                                 - Bằng cấp: Điểm từ 0-20 được tính dựa vào xếp loại của bằng cấp
-                                               
+
                                                 </br>
-                                                - Chứng chỉ: Với mỗi chứng chỉ, nhân viên sẽ được cộng 20 điểm. 
-                                                
+                                                - Chứng chỉ: Với mỗi chứng chỉ, nhân viên sẽ được cộng 20 điểm.
+
                                                 </br>
-                                                - Kinh nghiệm làm việc: Với mỗi kinh nghiệm làm việc, nhân viên sẽ được cộng 20 điểm. 
+                                                - Kinh nghiệm làm việc: Với mỗi kinh nghiệm làm việc, nhân viên sẽ được cộng 20 điểm.
                                                 </br>
-                                                - Dự án từng tham gia: Với mỗi dự án tham gia, nhân viên sẽ được cộng 20 điểm. 
-                                                
+                                                - Dự án từng tham gia: Với mỗi dự án tham gia, nhân viên sẽ được cộng 20 điểm.
+
                                                 </br>
                                                 <strong>Điểm quá trình:</strong> Trong quá trình thực hiện các mục tiêu KPI sẽ có điểm đánh giá hoàn thành. Điểm quá trình làm việc là trung bình điểm đánh giá của các mục tiêu trong KPI 3 tháng gần nhất. Trường hợp nhân viên không có điểm đánh giá trong 1 tháng nào đó thì mặc định điểm của tháng đó là 80.
-                                                
+
                                                 </br>
                                                 <strong>Điểm kết quả:</strong> Khi KPI kết thúc sẽ có điểm đánh giá kết quả vào cuối tháng. Điểm kết quả là trung bình kết quả điểm KPI trong 3 tháng gần nhất. Trường hợp nhân viên không có điểm kết quả trong 1 tháng nào đó thì mặc định điểm của tháng đó là 80.
-                                               
+
                                                 </br>
-                                                <strong>Tỉ lệ hoàn thành KPI:</strong> Là thông số để hệ thống dựa vào để hoạch định số lượng mục tiêu và chỉ tiêu trong KPI của nhân viên. Công thức tính thông số này có thể được tùy chỉnh trong form khởi tạo. 
-                                                
+                                                <strong>Tỉ lệ hoàn thành KPI:</strong> Là thông số để hệ thống dựa vào để hoạch định số lượng mục tiêu và chỉ tiêu trong KPI của nhân viên. Công thức tính thông số này có thể được tùy chỉnh trong form khởi tạo.
+
                                                 </div>
                                                 </div>
                                                 `,
@@ -487,14 +510,12 @@ function OrganizationalUnitKpiDashboard(props) {
             </div>
           </div>
 
-          {
-            <OrganizationalUnitKPITarget
-              organizationalUnitId={organizationalUnitId}
-              organizationalUnitIds={organizationalUnitIds}
-              month={month}
-              onChangeData={handleChangeEmployeeKpiTarget}
-            />
-          }
+          <OrganizationalUnitKPITarget
+            organizationalUnitId={organizationalUnitId}
+            organizationalUnitIds={organizationalUnitIds}
+            month={month}
+            onChangeData={handleChangeEmployeeKpiTarget}
+          />
 
           <div className='row'>
             <div className='col-md-12'>
@@ -533,7 +554,7 @@ function OrganizationalUnitKpiDashboard(props) {
                     <div className='form-group'>
                       <label style={{ width: 'auto' }}>Thống kê</label>
                       <SelectBox
-                        id={`typeChartSelectBoxInOrganizationalUnitKpiDashboard`}
+                        id='typeChartSelectBoxInOrganizationalUnitKpiDashboard'
                         className='form-control select2'
                         style={{ width: '100%' }}
                         items={typeChartSelectBox}
@@ -553,22 +574,20 @@ function OrganizationalUnitKpiDashboard(props) {
             </div>
           </div>
 
-          {/* Danh sach KPI don vi con*/}
+          {/* Danh sach KPI don vi con */}
           <LazyLoadComponent key=''>
-            {
-              <div className='row'>
-                <div className='col-xs-12'>
-                  <div className='box box-primary'>
-                    <div className='box-header with-border'>
-                      <div className='box-title'>{'Danh sách KPI đơn vị con'}</div>
-                    </div>
-                    <div className='box-body qlcv'>
-                      <ChildOfOrganizationalUnitKpi />
-                    </div>
+            <div className='row'>
+              <div className='col-xs-12'>
+                <div className='box box-primary'>
+                  <div className='box-header with-border'>
+                    <div className='box-title'>Danh sách KPI đơn vị con</div>
+                  </div>
+                  <div className='box-body qlcv'>
+                    <ChildOfOrganizationalUnitKpi />
                   </div>
                 </div>
               </div>
-            }
+            </div>
           </LazyLoadComponent>
 
           <LazyLoadComponent key='distributionOfOrganizationalUnitKpiChart'>
@@ -704,15 +723,16 @@ function OrganizationalUnitKpiDashboard(props) {
             )}
           </LazyLoadComponent>
         </section>
-      ) : (
-        childrenOrganizationalUnitLoading && (
-          <div className='box box-body'>
-            <h4>Bạn chưa có đơn vị</h4>
-          </div>
-        )
-      )}
-    </React.Fragment>
-  )
+        <KpiUnitAllocation />
+      </>
+    )
+  }
+  if (childrenOrganizationalUnitLoading)
+    return (
+      <div className='box box-body'>
+        <h4>Bạn chưa có đơn vị</h4>
+      </div>
+    )
 }
 
 function mapState(state) {
