@@ -7,7 +7,6 @@ const Logger = require('../../../logs');
 exports.get = async (req, res) => {
     try {
         let tp = await ProjectService.get(req.portal, req.query);
-        // console.log("req query: ", req.query)
 
         await Logger.info(req.user.email, 'get_task_project_success', req.portal)
         res.status(200).json({
@@ -56,7 +55,7 @@ exports.show = async (req, res) => {
  */
 exports.create = async (req, res) => {
     try {
-        const project = await ProjectService.create(req.portal, req.body, req.user._id, req.user.company._id);
+        const project = await ProjectService.create(req.portal, req.body, req.user.company._id);
         await Logger.info(req.user.email, 'create_task_project_success', req.portal)
         res.status(200).json({
             success: true,

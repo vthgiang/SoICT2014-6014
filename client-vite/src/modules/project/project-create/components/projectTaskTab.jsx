@@ -73,7 +73,7 @@ const ProjectTasksTab = (props) => {
 
 
 
-  console.log("projectTasks: ", projectTasks)
+  // console.log("projectTasks: ", projectTasks)
 
   // logs some thing
   // console.log("listCapacity: ", listCapacityOptions)
@@ -125,7 +125,7 @@ const ProjectTasksTab = (props) => {
   const [state, setState] = useState({
     type: TASK_ACTION_TYPE.ADD_TYPE,
     // currentTask: initTaskData,
-    currentTask: '',
+    currentTask: { ...initTaskData },
     currentIndex: null,
     tagType: TASK_ACTION_TYPE.ADD_TYPE,
     currentTag: '',
@@ -148,6 +148,7 @@ const ProjectTasksTab = (props) => {
     taskKPIWeight,
   } = currentTask
 
+  console.log("requireAsset: ", requireAsset)
 
   const listPrevTask =
     projectTasks?.map((x) => {
@@ -164,7 +165,7 @@ const ProjectTasksTab = (props) => {
       value = e
     }
     if (keyChange === 'kpiInTask') {
-      console.log("e: ", e)
+      // console.log("e: ", e)
       value = e[0]
     }
 
@@ -304,7 +305,7 @@ const ProjectTasksTab = (props) => {
     })
   }
 
-  console.log("requireAsset: ", requireAsset)
+  // console.log("requireAsset: ", requireAsset)
 
   const handleChangeCurrentTaskAssetTypeOrCapacity = (e, key) => {
     // console.log("e: ", e[0])

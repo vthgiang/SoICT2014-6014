@@ -306,8 +306,8 @@ function ProjectCreateEditFormModal(props) {
   useEffect(() => {
     setSelectedTab(TABs.GENERAL)
     if (actionType === PROJECT_ACTION_FORM.EDIT && projectEditId && projectEdit) {
-      console.log("vào đây lấy project infomation: ", projectEditId)
-      console.log("vào đây lấy project infomation edit: ", projectEdit)
+      // console.log("vào đây lấy project infomation: ", projectEditId)
+      // console.log("vào đây lấy project infomation edit: ", projectEdit)
       const {
         name, startDate, endDate, unitCost, unitTime, description,
         kpiTarget,
