@@ -184,6 +184,7 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
             })
             .populate("userId roleId");
     }
+    console.log("emps: ", employees)
 
     return employees;
 };
@@ -1043,6 +1044,29 @@ module.exports._getAllUsersInOrganizationalUnits = _getAllUsersInOrganizationalU
                     path: "userId",
                     select: "name email",
                 });
+            // Bổ sung thông tin nhân viên
+            let userEmails = userRoles.map((item) => item.userId.email)
+            let empWithUserRoles = await Employee(connect(DB_CONNECTION, portal)).find({
+                emailInCompany: {
+                    $in: [...userEmails]
+                }
+            })
+                .select('_id employeeNumber company fullName educationalLevel foreignLanguage professionalSkill degrees certificates experiences careerPosition capacities emailInCompany')
+                .populate({
+                    path: 'capacities.capacity', // Đường dẫn đến thuộc tính cần populate
+                    model: 'Capacity' // Tên model cần populate
+                });
+            userRoles = userRoles.map((item) => {
+                const empData = empWithUserRoles.find((employee) => employee.emailInCompany === item.userId.email)
+                return {
+                    ...item._doc,
+                    userId: {
+                        ...item?.userId._doc,
+                        employee: empData
+                    } 
+                }
+            })
+
 
             var tmp = await Role(connect(DB_CONNECTION, portal)).find(
                 {

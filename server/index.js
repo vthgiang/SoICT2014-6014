@@ -264,6 +264,14 @@ app.use("/transportation/costs", require("./modules/transportation/cost/transpor
 app.use("/transportation/cost-formula", require("./modules/transportation/cost-formula/costFormula.route"));
 app.use("/transportation/manage-shipper", require("./modules/transportation/manage-shipper/manageShipper.route"));
 
+app.use("/projects", require("./modules/project/project-management/project.route"));
+app.use("/projects", require("./modules/project/project-phase/projectPhase.route"));
+app.use("/project-templates", require("./modules/project-template/projectTemplate.route"));
+app.use("/projects", require("./modules/project/project-proposal/projectProposal.route"))
+
+
+// capacity
+app.use("/capacities", require("./modules/capacity/capacity.route"));
 
 app.use(router);
 

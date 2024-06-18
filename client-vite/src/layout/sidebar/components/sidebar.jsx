@@ -545,6 +545,11 @@ class SideBar extends Component {
                     name: 'menu.project_evaluation',
                     icon: 'fa fa-user-plus',
                     path: '/project/project-evaluation'
+                  },
+                  {
+                    name: 'menu.project_proposal',
+                    icon: 'fa fa-flash',
+                    path: '/project/project-proposal'
                   }
                   // { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/project/projects-template-list" },
                 ]

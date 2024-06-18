@@ -1,6 +1,5 @@
 import { createUnitKpiConstants } from './constants'
 import { createUnitKpiServices } from './services'
-
 /**
  * Get organizational unit kpi set
  * @param {*} organizationalUnitId
@@ -410,6 +409,35 @@ function deleteFileChildComment(fileId, childCommentId, commentId, setKpiId) {
   }
 }
 
+/**
+ * Get organizational unit kpi set
+ * @param {*} organizationalUnitId
+ * @param {*} status
+ */
+function getAllOrganizationalUnitKpiSet(organizationalUnitId = undefined, status = -1) {
+  return (dispatch) => {
+    dispatch({
+      type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_REQUEST
+    })
+
+    createUnitKpiServices
+      .getAllOrganizationlUnitKpiSet(organizationalUnitId, status)
+      .then((res) => {
+        dispatch({
+          type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_SUCCESS,
+          payload: res.data.content
+          // typeState: type
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_FAILURE,
+          payload: error
+        })
+      })
+  }
+}
+
 export const createUnitKpiActions = {
   getCurrentKPIUnit,
   editKPIUnit,
@@ -429,5 +457,6 @@ export const createUnitKpiActions = {
   editChildComment,
   deleteChildComment,
   deleteFileComment,
-  deleteFileChildComment
+  deleteFileChildComment,
+  getAllOrganizationalUnitKpiSet
 }

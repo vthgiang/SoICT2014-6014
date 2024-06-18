@@ -250,12 +250,13 @@ const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/compo
 const Project = lazy(() => import("../modules/project/projects/components/index"))
 // const Phase = lazy(() => import("../modules/project/component/phases/index"))
 // const PhaseDetail = lazy(() => import("../modules/project/component/phases/detailPhase"))
-const ProjectDetailPage = lazy(() => import("../modules/project/projects/components/detailProjectPage"))
-const ProjectReport = lazy(() => import("../modules/project/reports/components/index"))
-const ProjectStatistic = lazy(() => import("../modules/project/statistic/components/index"))
-const UserGuide = lazy(() => import("../modules/user-guide/components"))
-const PersonalTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/personalTimeSheetLog"))
-const EmployeeTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/employeeTimeSheetLog"))
+const ProjectDetailPage = lazy(() => import('../modules/project/projects/components/detailProjectPage'))
+const ProjectReport = lazy(() => import('../modules/project/reports/components/index'))
+const ProjectStatistic = lazy(() => import('../modules/project/statistic/components/index'))
+const UserGuide = lazy(() => import('../modules/user-guide/components'))
+const PersonalTimeSheetLog = lazy(() => import('../modules/task/task-dashboard/statistic/personalTimeSheetLog'))
+const EmployeeTimeSheetLog = lazy(() => import('../modules/task/task-dashboard/statistic/employeeTimeSheetLog'))
+const ProjectProposalPage = lazy(() => import('../modules/project/project-proposal/components/index'))
 
 const Notifications = lazy(() => import('../modules/notification/components/index'))
 const SystemSetting = lazy(() => import('../modules/system-admin/system-setting/components'))
@@ -4341,6 +4342,25 @@ class Routes extends Component {
             layout={Layout}
             component={ProjectDetailPage}
           />
+                              <PrivateRoute
+                      isLoading={false}
+                      key={"/project/project-proposal"}
+                      arrPage={[
+                        {link: '/', name: 'home', icon: 'fa fa-home'},
+                        {
+                            link: '/project/project-proposal',
+                            name: 'project_proposal',
+                            icon: 'fa fa-folder-open'
+                        },
+                      ]}
+                      auth={auth}
+                      exact={true}
+                      link={'/project/project-proposal'}
+                      path={'/project/project-proposal'}
+                      pageName={'project_proposal'}
+                      layout={Layout}
+                      component={ProjectProposalPage}
+                    />
           {/* <PrivateRoute
                         isLoading={false}
                         key={"/project/phases-list"}

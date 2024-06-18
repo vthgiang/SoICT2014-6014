@@ -1460,6 +1460,10 @@ exports.links = [
         url: '/project/project-evaluation',
         apis: ['@all'],
     },
+    {
+        url: '/project/project-proposal',
+        apis: ['@all'],
+    },
 
     //transport
     {
@@ -1557,23 +1561,27 @@ exports.links = [
     },
     {
         url: '/risk',
-        apis : ['@all']
+        apis: ['@all'],
     },
     {
-        url:'/riskDistribution',
-        apis: ['@all']
-    },{
-        url:'/taskPert',
-        apis: ['@all']
-    },{
-        url:'/exprimentalAnalysis',
-        apis: ['@all']
-    },{
-        url:'/riskResponsePlan',
-        apis: ['@all']
-    },{
-        url:'/bayesianNetworkConfig',
-        apis: ['@all']
+        url: '/riskDistribution',
+        apis: ['@all'],
+    },
+    {
+        url: '/taskPert',
+        apis: ['@all'],
+    },
+    {
+        url: '/exprimentalAnalysis',
+        apis: ['@all'],
+    },
+    {
+        url: '/riskResponsePlan',
+        apis: ['@all'],
+    },
+    {
+        url: '/bayesianNetworkConfig',
+        apis: ['@all'],
     },
     {
         url: '/majors',
@@ -1662,6 +1670,10 @@ exports.links = [
     },
     {
         url: '/manage-transport3-requirement',
+        apis: ['@all'],
+    },
+    {
+        url: '/capacities',
         apis: ['@all'],
     },
 ];

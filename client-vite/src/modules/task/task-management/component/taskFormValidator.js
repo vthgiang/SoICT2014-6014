@@ -4,7 +4,8 @@ export const TaskFormValidator = {
   validateTaskEndDate,
   validateTimeEst,
   validateCostEst,
-  validateFormula
+  validateFormula,
+  validateTargetKPI,
 }
 
 /**
@@ -124,6 +125,27 @@ function validateFormula(value) {
     if (typeof automaticPoint !== 'number') {
       msg = 'Công thức không hợp lệ. Hãy kiểm tra lại các toán tử và toán hạng của công thức.'
     }
+  }
+  return msg
+}
+
+/**
+ * Hàm tiện ích kiểm tra về giá gtri KPI mục tiêu
+ * @param {*} translate 
+ * @param {*} assignValue
+ * @param {*} targetValue
+ */
+function validateTargetKPI(translate, assignValue, targetValue) {
+  let msg = undefined
+  if ((assignValue === undefined || targetValue === undefined)) {
+    // TODO: add i18n
+    msg = 'Giá trị không được để trống'
+  } else if (Number(assignValue) < 0 || Number(targetValue) < 0) {
+    // TODO: add i18n
+    msg = 'Giá trị không được là số nhỏ hơn 0'
+  } else if (Number(assignValue) < Number(targetValue)) {
+    // TODO: add i18n
+    msg = 'Giá trị chỉ tiêu cần đạt phải nhỏ hơn bằng tổng số giao'
   }
   return msg
 }

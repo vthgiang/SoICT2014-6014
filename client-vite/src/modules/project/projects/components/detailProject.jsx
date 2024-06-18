@@ -44,4 +44,6 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   editProjectDispatch: ProjectActions.editProjectDispatch
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectDetailForm))
+
+const connectedExampleManagementTable = connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectDetailForm))
+export { connectedExampleManagementTable as ProjectDetailForm }

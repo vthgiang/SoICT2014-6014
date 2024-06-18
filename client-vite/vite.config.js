@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
       }),
       react()
     ],
-
+    
     server: {
       port: 3000,
       open: true // Automatically open the default browser when starting the server

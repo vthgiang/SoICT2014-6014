@@ -182,6 +182,7 @@ import { project } from '../modules/project/projects/redux/reducers'
 import { schedulingProjects } from '../modules/project/scheduling-projects/redux/reducers'
 import { projectPhase } from '../modules/project/project-phase/redux/reducers'
 import { projectStatistic } from '../modules/project/statistic/redux/reducers'
+import { projectProposal } from '../modules/project/project-proposal/redux/reducers'
 
 // Delegation
 import { delegation } from '../modules/delegation/delegation-list/redux/reducers'
@@ -202,6 +203,8 @@ import { employee as T3employee } from '../modules/transport3/employee/redux/red
 import { vehicle as T3vehicle } from '../modules/transport3/vehicle/redux/reducers'
 import { schedule as T3schedule } from '../modules/transport3/schedule/redux/reducers'
 import { dashboard as T3dashboard} from '../modules/transport3/dashboard/redux/reducers'
+//Capacity
+import { capacity } from '../modules/human-resource/capacity/redux/reducers'
 
 const appReducer = combineReducers({
   socket,
@@ -253,6 +256,9 @@ const appReducer = combineReducers({
   timesheets,
   field,
   employeeDashboardData,
+
+  // hr-capacity
+  capacity,
 
   // gói thầu
   career,
@@ -397,6 +403,7 @@ const appReducer = combineReducers({
   changeRequest,
   schedulingProjects,
   projectPhase,
+  projectProposal,
 
   Intl,
 
