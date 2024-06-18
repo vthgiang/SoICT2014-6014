@@ -232,7 +232,7 @@ class SuperHome extends Component {
 
   componentDidMount = async () => {
     let { startDate, endDate } = this.state
-    // console.log('startDate', startDate)
+    console.log('startDate', startDate)
     let startDateWork = moment(startDate, 'MM-YYYY').format('YYYY-MM')
     let endDateWork = moment(endDate, 'MM-YYYY').format('YYYY-MM')
     await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true)
