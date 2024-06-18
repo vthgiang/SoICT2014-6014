@@ -1,7 +1,7 @@
 import { sendRequest } from '../../../../helpers/requestHelper'
 import { getStorage } from '../../../../config'
 
-function getDelegations(queryData) {
+function getDelegations(queryData, delegateType) {
   const userId = getStorage('userId')
   return sendRequest(
     {
@@ -9,10 +9,10 @@ function getDelegations(queryData) {
       method: 'GET',
       params: {
         userId,
-        delegationName: queryData?.delegationName ? queryData.delegationName : '',
+        name: queryData?.name ? queryData.name : '',
         page: queryData?.page ? queryData.page : null,
         perPage: queryData?.perPage ? queryData.perPage : null,
-        delegateType: queryData?.delegateType ? queryData.delegateType : null
+        delegateType
       }
     },
     false,
@@ -21,13 +21,16 @@ function getDelegations(queryData) {
   )
 }
 
-function deleteDelegations(data) {
+function deleteDelegations(data, delegateType) {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/delegation/delegations`,
       method: 'DELETE',
       data: {
         delegationIds: data?.delegationIds
+      },
+      params: {
+        delegateType
       }
     },
     true,
@@ -36,7 +39,7 @@ function deleteDelegations(data) {
   )
 }
 
-function revokeDelegation(data) {
+function revokeDelegation(data, delegateType) {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/delegation/delegations`,
@@ -44,6 +47,9 @@ function revokeDelegation(data) {
       data: {
         delegationIds: data?.delegationIds,
         reason: data?.reason
+      },
+      params: {
+        delegateType
       }
     },
     true,
@@ -52,12 +58,15 @@ function revokeDelegation(data) {
   )
 }
 
-function createDelegation(data) {
+function createDelegation(data, delegateType) {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/delegation/delegations`,
       method: 'POST',
-      data
+      data,
+      params: {
+        delegateType
+      }
     },
     true,
     true,
@@ -65,166 +74,15 @@ function createDelegation(data) {
   )
 }
 
-function editDelegation(id, data) {
+function editDelegation(id, data, delegateType) {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/delegation/delegations/${id}`,
       method: 'PATCH',
-      data
-    },
-    true,
-    true,
-    'manage_delegation'
-  )
-}
-
-function getDelegationsTask(queryData) {
-  const userId = getStorage('userId')
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks`,
-      method: 'GET',
+      data,
       params: {
-        userId,
-        delegationName: queryData?.delegationName ? queryData.delegationName : '',
-        page: queryData?.pageTask ? queryData.pageTask : null,
-        perPage: queryData?.perPageTask ? queryData.perPageTask : null,
-        delegateType: queryData?.delegateType ? queryData.delegateType : null
+        delegateType
       }
-    },
-    false,
-    true,
-    'manage_delegation'
-  )
-}
-
-function deleteTaskDelegations(data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks`,
-      method: 'DELETE',
-      data: {
-        delegationIds: data?.delegationIds
-      }
-    },
-    true,
-    true,
-    'manage_delegation'
-  )
-}
-
-function revokeTaskDelegation(data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks`,
-      method: 'PATCH',
-      data: {
-        delegationIds: data?.delegationIds,
-        reason: data?.reason
-      }
-    },
-    true,
-    true,
-    'manage_delegation'
-  )
-}
-
-function createTaskDelegation(data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks`,
-      method: 'POST',
-      data
-    },
-    true,
-    true,
-    'manage_delegation'
-  )
-}
-
-function editTaskDelegation(id, data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-tasks/${id}`,
-      method: 'PATCH',
-      data
-    },
-    true,
-    true,
-    'manage_delegation'
-  )
-}
-
-function getDelegationsService(queryData) {
-  const userId = getStorage('userId')
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-services`,
-      method: 'GET',
-      params: {
-        userId,
-        delegationName: queryData?.delegationName ? queryData.delegationName : '',
-        page: queryData?.pageService ? queryData.pageService : null,
-        perPage: queryData?.perPageService ? queryData.perPageService : null,
-        delegateType: queryData?.delegateType ? queryData.delegateType : null
-      }
-    },
-    false,
-    true,
-    'manage_delegation'
-  )
-}
-
-function deleteServiceDelegations(data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-services`,
-      method: 'DELETE',
-      data: {
-        delegationIds: data?.delegationIds
-      }
-    },
-    true,
-    true,
-    'manage_delegation'
-  )
-}
-
-function revokeServiceDelegation(data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-services`,
-      method: 'PATCH',
-      data: {
-        delegationId: data?.delegationId,
-        reason: data?.reason
-      }
-    },
-    true,
-    true,
-    'manage_delegation'
-  )
-}
-
-function createServiceDelegation(data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-services`,
-      method: 'POST',
-      data
-    },
-    true,
-    true,
-    'manage_delegation'
-  )
-}
-
-function editServiceDelegation(id, data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/delegation/delegations-services/${id}`,
-      method: 'PATCH',
-      data
     },
     true,
     true,
@@ -237,15 +95,5 @@ export const delegationServices = {
   deleteDelegations,
   createDelegation,
   editDelegation,
-  revokeDelegation,
-  getDelegationsTask,
-  deleteTaskDelegations,
-  createTaskDelegation,
-  editTaskDelegation,
-  revokeTaskDelegation,
-  getDelegationsService,
-  deleteServiceDelegations,
-  createServiceDelegation,
-  editServiceDelegation,
-  revokeServiceDelegation
+  revokeDelegation
 }

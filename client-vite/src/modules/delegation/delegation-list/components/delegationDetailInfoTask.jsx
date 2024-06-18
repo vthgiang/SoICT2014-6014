@@ -17,7 +17,7 @@ function DelegationDetailInfoTask(props) {
   })
 
   const { translate, delegation } = props
-  const { delegationID, delegateTask, showEvaluations, delegatee } = state
+  const { delegationID, delegateObject, showEvaluations, delegatee } = state
 
   // Nhận giá trị từ component cha
   useEffect(() => {
@@ -26,19 +26,18 @@ function DelegationDetailInfoTask(props) {
       props.status !== state.status ||
       props.replyStatus !== state.replyStatus ||
       props.logs !== state.logs ||
-      props.delegateTask !== state.delegateTask
+      props.delegateObject !== state.delegateObject
     ) {
       setState({
         ...state,
         delegationID: props.delegationID,
-        delegationName: props.delegationName,
+        name: props.name,
         description: props.description,
         delegator: props.delegator,
         delegatee: props.delegatee,
         delegatePrivileges: props.delegatePrivileges,
         delegateType: props.delegateType,
-        delegateRole: props.delegateRole,
-        delegateTask: props.delegateTask,
+        delegateObject: props.delegateObject,
         delegateTaskRoles: props.delegateTaskRoles,
         status: props.status,
         allPrivileges: props.allPrivileges,
@@ -49,11 +48,11 @@ function DelegationDetailInfoTask(props) {
         forReceive: props.forReceive,
         replyStatus: props.replyStatus,
         declineReason: props.declineReason,
-        delegatePolicy: props.delegatePolicy,
+        policy: props.policy,
         logs: props.logs
       })
     }
-  }, [props.delegationID, props.status, props.replyStatus, props.delegateTask, props.delegateTask])
+  }, [props.delegationID, props.status, props.replyStatus, props.delegateObject, props.delegateObject])
 
   console.log(state)
   const showDetailTimer = (nameAction, timeSheetLogs) => {
@@ -207,14 +206,13 @@ function DelegationDetailInfoTask(props) {
           <GeneralTab
             id='detail_general_information_task'
             delegationID={delegationID}
-            delegationName={state.delegationName}
+            name={state.name}
             description={state.description}
             delegator={state.delegator}
             delegatee={state.delegatee}
             delegatePrivileges={state.delegatePrivileges}
             delegateType={state.delegateType}
-            delegateRole={state.delegateRole}
-            delegateTask={state.delegateTask}
+            delegateObject={state.delegateObject}
             delegateTaskRoles={state.delegateTaskRoles}
             status={state.status}
             allPrivileges={state.allPrivileges}
@@ -225,7 +223,7 @@ function DelegationDetailInfoTask(props) {
             forReceive={state.forReceive}
             replyStatus={state.replyStatus}
             declineReason={state.declineReason}
-            delegatePolicy={state.delegatePolicy}
+            policy={state.policy}
             logs={state.logs}
           />
 
@@ -233,14 +231,13 @@ function DelegationDetailInfoTask(props) {
           <LogActivityTab
             id='detail_log_activity_task'
             delegationID={delegationID}
-            delegationName={state.delegationName}
+            name={state.name}
             description={state.description}
             delegator={state.delegator}
             delegatee={state.delegatee}
             delegatePrivileges={state.delegatePrivileges}
             delegateType={state.delegateType}
-            delegateRole={state.delegateRole}
-            delegateTask={state.delegateTask}
+            delegateObject={state.delegateObject}
             status={state.status}
             allPrivileges={state.allPrivileges}
             startDate={state.startDate}
@@ -251,7 +248,7 @@ function DelegationDetailInfoTask(props) {
           />
 
           <div id='detail_log_activity_task_actions' className='tab-pane'>
-            {delegateTask && getTaskActions(delegateTask.taskActions).length > 0 ? (
+            {delegateObject && getTaskActions(delegateObject.taskActions).length > 0 ? (
               <ShowMoreShowLess
                 id={`detail_log_activity_${delegationID}_actions`}
                 classShowMoreLess='tool-level1'
@@ -260,7 +257,7 @@ function DelegationDetailInfoTask(props) {
                   marginBotton: 15
                 }}
               >
-                {getTaskActions(delegateTask.taskActions).map((item, index) => (
+                {getTaskActions(delegateObject.taskActions).map((item, index) => (
                   <div key={item._id} className={index > 3 ? 'hide-component' : ''}>
                     {item.creator ? (
                       <img className='user-img-level1' src={process.env.REACT_APP_SERVER + item.creator.avatar} alt='User Image' />
@@ -374,7 +371,7 @@ function DelegationDetailInfoTask(props) {
           </div>
 
           <div id='detail_log_activity_task_timesheet' className='tab-pane'>
-            {delegateTask && delegateTask.timesheetLogs.filter((a) => a.creator._id == delegatee._id).length > 0 ? (
+            {delegateObject && delegateObject.timesheetLogs.filter((a) => a.creator._id == delegatee._id).length > 0 ? (
               <ShowMoreShowLess
                 id={`detail_log_activity_${delegationID}_timesheet`}
                 styleShowMoreLess={{
@@ -382,7 +379,7 @@ function DelegationDetailInfoTask(props) {
                   marginBotton: 15
                 }}
               >
-                {delegateTask.timesheetLogs
+                {delegateObject.timesheetLogs
                   .filter((a) => a.creator._id == delegatee._id)
                   .map((item, index) => (
                     <React.Fragment key={index}>
@@ -423,7 +420,7 @@ function DelegationDetailInfoTask(props) {
           </div>
 
           <div id='detail_log_activity_task_history' className='tab-pane'>
-            {delegateTask && delegateTask.logs.filter((a) => a.creator._id == delegatee._id).length > 0 ? (
+            {delegateObject && delegateObject.logs.filter((a) => a.creator._id == delegatee._id).length > 0 ? (
               <ShowMoreShowLess
                 id={`detail_log_activity_${delegationID}_history`}
                 classShowMoreLess='tool-level1'
@@ -432,7 +429,7 @@ function DelegationDetailInfoTask(props) {
                   marginBotton: 15
                 }}
               >
-                {delegateTask.logs
+                {delegateObject.logs
                   .filter((a) => a.creator._id == delegatee._id)
                   .map((item, index) => (
                     <React.Fragment key={index}>
@@ -455,8 +452,8 @@ function DelegationDetailInfoTask(props) {
       </div>
       {/* <form id={`form-detail-delegation-hooks`}>
                     <div className={`form-group`}>
-                        <label>{translate('manage_delegation.delegationName')}:</label>
-                        <span> {delegationName}</span>
+                        <label>{translate('manage_delegation.name')}:</label>
+                        <span> {name}</span>
                     </div>
 
                     <div className={`form-group`}>

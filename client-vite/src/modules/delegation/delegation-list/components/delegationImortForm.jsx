@@ -35,12 +35,12 @@ function DelegationImportForm(props) {
       value = value.map((item, index) => {
         let errorAlert = []
 
-        if (!item.delegationName) {
+        if (!item.name) {
           rowError = [...rowError, index + 1]
           item = { ...item, error: true }
         }
 
-        if (!item.delegationName) {
+        if (!item.name) {
           errorAlert = [...errorAlert, 'Tên ví dụ không được bỏ trống']
         }
 
@@ -76,7 +76,7 @@ function DelegationImportForm(props) {
       importData && props.createDelegation(importData)
       importData &&
         props.getDelegations({
-          delegationName: '',
+          name: '',
           page: page,
           perPage: perPage
         })
