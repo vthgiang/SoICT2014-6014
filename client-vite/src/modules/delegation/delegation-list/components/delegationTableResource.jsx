@@ -263,13 +263,13 @@ function DelegationTableResource(props) {
           columnData={{
             index: translate('manage_delegation.index'),
             name: translate('manage_delegation.name'),
-            delegator: translate('manage_delegation.delegator'),
+            // delegator: translate('manage_delegation.delegator'),
             delegatee: translate('manage_delegation.delegatee'),
             delegateResource: translate('manage_delegation.delegateResource'),
+            description: translate('manage_delegation.description'),
             delegateStartDate: translate('manage_delegation.delegateStartDate'),
             delegateEndDate: translate('manage_delegation.delegateEndDate'),
             delegateStatus: translate('manage_delegation.delegateStatus')
-            // description: translate('manage_delegation.description')
           }}
           tableHeaderData={{
             index: (
@@ -278,13 +278,13 @@ function DelegationTableResource(props) {
               </th>
             ),
             name: <th>{translate('manage_delegation.name')}</th>,
-            delegator: <th>{translate('manage_delegation.delegator')}</th>,
+            // delegator: <th>{translate('manage_delegation.delegator')}</th>,
             delegatee: <th>{translate('manage_delegation.delegatee')}</th>,
             delegateResource: <th>{translate('manage_delegation.delegateResource')}</th>,
+            description: <th>{translate('manage_delegation.description')}</th>,
             delegateStartDate: <th>{translate('manage_delegation.delegateStartDate')}</th>,
             delegateEndDate: <th>{translate('manage_delegation.delegateEndDate')}</th>,
             delegateStatus: <th>{translate('manage_delegation.delegateStatus')}</th>,
-            // description: <th>{translate('manage_delegation.description')}</th>,
             action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
           }}
           tableBodyData={
@@ -294,7 +294,6 @@ function DelegationTableResource(props) {
                 id: item?._id,
                 index: <td>{index + 1}</td>,
                 name: <td>{item?.name}</td>,
-                // delegateType: <td>{translate('manage_delegation.delegateType' + item?.delegateType)}</td>,
                 delegateResource: <td>{item.delegateObject ? `${item.delegateObject.name} - ${item.delegateObject.type}` : ''}</td>,
                 delegator: <td>{item?.delegator?.name}</td>,
                 delegatee: <td>{item?.delegatee?.name}</td>,
@@ -309,8 +308,12 @@ function DelegationTableResource(props) {
                         : translate('manage_delegation.end_date_tbd')}
                   </td>
                 ),
-                delegateStatus: <td>{colorfyDelegationStatus(item.status, translate)}</td>,
-                // description: <td>{item?.description}</td>,
+                delegateStatus: (
+                  <td>
+                    {colorfyDelegationStatus(item.status, translate)} - {colorfyDelegationStatus(item.replyStatus, translate)}
+                  </td>
+                ),
+                description: <td>{item?.description}</td>,
                 action: (
                   <td style={{ textAlign: 'center' }}>
                     <a
