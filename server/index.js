@@ -109,6 +109,9 @@ router.use('/authorization/internal-policies', require('./modules/authorization/
 router.use('/authorization/internal-service-identities', require('./modules/authorization/internal-service-identities/internal-service-identities.route'));
 router.use('/authorization/logging', require('./modules/authorization/logging/logging.route'));
 
+// Router new authorization
+router.use('/authorization/policy', require('./modules/authorization/policy/policy.route'));
+
 // Router Quản lý ủy quyền
 router.use('/delegation', require('./modules/delegation/delegation.route'));
 

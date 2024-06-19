@@ -153,3 +153,8 @@ exports.updateAttributes = async (portal, id, data) => {
 
   return enrich(resource);
 }
+
+exports.findByIds = async(portal, ids) => {
+  const resources = await Resource(connect(DB_CONNECTION, portal)).find( {_id: {$in: ids} }).populate('refId');
+  return resources.map(x => enrich(x));
+}

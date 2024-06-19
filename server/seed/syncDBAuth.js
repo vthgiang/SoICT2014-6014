@@ -10,7 +10,7 @@ const {
     Task,
     Resource,
     Requester,
-    PolicyV2,
+    AuthorizationPolicy,
     Service,
 } = require('../models');
 
@@ -88,7 +88,7 @@ const syncDBAuth = async () => {
         if (!db.models.SystemApi) SystemApi(db);
         if (!db.models.Resource) Resource(db);
         if (!db.models.Requester) Requester(db);
-        if (!db.models.PolicyV2) PolicyV2(db);
+        if (!db.models.AuthorizationPolicy) AuthorizationPolicy(db);
     };
 
     initModels(vnistDB);

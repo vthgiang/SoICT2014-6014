@@ -7,6 +7,8 @@ module.exports = {
     Service: require('./auth-service/service.model'),
     Requester: require('./auth-service/requester.model'),
     Resource: require('./auth-service/resource.model'),
+    AuthorizationPolicy: require('./auth-service/authorization.policy.model'),
+    DynamicAssignment: require('./auth-service/dynamic.assignment.model'),
 
     Document: require('./document/document.model'),
     DocumentCategory: require('./document/documentCategory.model'),

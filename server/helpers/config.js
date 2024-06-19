@@ -394,6 +394,13 @@ const LINKS = [
     components: getComponentsInLink("/links-management"),
   },
   {
+      url: '/authorization-policies-management',
+      description: 'Quản lý chính sách của công ty',
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink('/authorization-policies-management'),
+  },
+  {
     url: "/attributes-management",
     description: "Quản lý thuộc tính phân quyền",
     category: LINK_CATEGORY.RBAC.name,
