@@ -46,30 +46,7 @@ function formatNumber(totalCost) {
     }
 }
 
-const MarketingEffeciveChanneTablel = () => {
-    const [isLoading, setIsLoading] = React.useState(false)
-    const [marketingEffectiveChannel, setMarketingCampaignChannel] = React.useState([])
-    const fetchMarketingEffectiveChannel = async () => {
-        setIsLoading(true)
-        const response = await sendRequest(
-            {
-                url: `${process.env.REACT_APP_SERVER}/marketing-effective/channel`,
-                method: 'GET',
-            },
-            false,
-            false,
-            'marketing-effective'
-        )
-        console.log('response', response);
-        if (response.status === 200) {
-            setMarketingCampaignChannel(response.data.content)
-        }
-        setIsLoading(false)
-    }
-
-    React.useEffect(() => {
-        fetchMarketingEffectiveChannel()
-    }, [])
+const MarketingEffeciveChannelTable = ({isLoading, marketingEffectiveChannel}) => {
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label='customized table'>
@@ -115,4 +92,4 @@ const MarketingEffeciveChanneTablel = () => {
     )
 }
 
-export default MarketingEffeciveChanneTablel
+export default MarketingEffeciveChannelTable
