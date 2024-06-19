@@ -113,10 +113,11 @@ export function DelegationCreateFormResource(props) {
   const isFormValidated = () => {
     if (
       !nameError.status ||
-      errorDelegatee !== undefined ||
-      errorDelegator !== undefined ||
+      !validateDelegateResource(delegateResource, false) ||
+      !validateDelegatee(delegatee, false) ||
       (showChooseRevoke && !ValidationHelper.validateEmpty(translate, delegateDuration.endDate).status) ||
-      !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status
+      !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status ||
+      !validateDelegatePolicy(state.policy, false)
     ) {
       return false
     }
