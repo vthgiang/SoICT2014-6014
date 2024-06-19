@@ -149,7 +149,10 @@ function GeneralTab(props) {
 
       {/* Effective Start Time */}
       <div className={`form-group ${nameError.status ? '' : 'has-error'}`}>
-        <label>{translate('manage_authorization_policy.effective_start_time')}</label>
+        <label>
+          {translate('manage_authorization_policy.effective_start_time')}
+          <span className='text-red'>*</span>
+        </label>
         <DatePicker
           id={`select-effective-start-time-${props.id}`}
           dateFormat='day-month-year'
@@ -160,10 +163,7 @@ function GeneralTab(props) {
 
       {/* Effective End Time */}
       <div className={`form-group ${nameError.status ? '' : 'has-error'}`}>
-        <label>
-          {translate('manage_authorization_policy.effective_end_time')}
-          <span className='text-red'>*</span>
-        </label>
+        <label>{translate('manage_authorization_policy.effective_end_time')}</label>
         <DatePicker
           id={`select-effective-end-time-${props.id}`}
           dateFormat='day-month-year'

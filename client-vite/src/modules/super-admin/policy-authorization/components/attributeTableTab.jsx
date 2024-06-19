@@ -131,6 +131,7 @@ export function AttributeTableTab(props) {
           <tr>
             <td rowSpan={!requesterAttributes || requesterAttributes.length == 0 ? 1 : requesterAttributes.length}>
               {translate('manage_authorization_policy.requester_table')}
+              <span className='text-red'>*</span>
             </td>
             {!requesterAttributes || requesterAttributes.length == 0 ? (
               <td colSpan={3}>
@@ -229,6 +230,7 @@ export function AttributeTableTab(props) {
           <tr>
             <td rowSpan={!resourceAttributes || resourceAttributes.length == 0 ? 1 : resourceAttributes.length}>
               {translate('manage_authorization_policy.resource_table')}
+              <span className='text-red'>*</span>
             </td>
             {!resourceAttributes || resourceAttributes.length == 0 ? (
               <td colSpan={3}>

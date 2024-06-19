@@ -85,7 +85,10 @@ export function PolicyEditForm(props) {
     dispatch(AttributeActions.getAttributes())
   }, [])
 
-  const validateAttributes = (attributes) => {
+  const validateAttributes = (attributes, notEmpty = false) => {
+    if (notEmpty && attributes.length === 0) {
+      return false
+    }
     if (attributes.length !== 0) {
       for (let i = 0; i < attributes.length; i++) {
         if (
@@ -105,8 +108,8 @@ export function PolicyEditForm(props) {
   const isFormValidated = () => {
     if (
       !ValidationHelper.validateName(translate, name, 6, 255).status ||
-      !validateAttributes(requesterAttributes) ||
-      !validateAttributes(resourceAttributes) ||
+      !validateAttributes(requesterAttributes, true) ||
+      !validateAttributes(resourceAttributes, true) ||
       !validateAttributes(roleAttributes) ||
       !validateAttributes(environmentAttributes)
     ) {
