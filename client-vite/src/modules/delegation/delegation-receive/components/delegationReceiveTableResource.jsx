@@ -5,31 +5,31 @@ import { withTranslate } from 'react-redux-multilingual'
 import dayjs from 'dayjs'
 import { PaginateBar, SmartTable, ConfirmNotification } from '../../../../common-components'
 
-import { DelegationDetailInfoTask } from '../../delegation-list/components/delegationDetailInfoTask'
+import { DelegationDetailInfoResource } from '../../delegation-list/components/delegationDetailInfoResource'
 
 import { DelegationActions } from '../redux/actions'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { colorfyDelegationStatus } from '../../delegation-list/components/functionHelper'
 
-function DelegationReceiveTableTask(props) {
-  const getTableId = 'table-manage-delegation1-hooks-Task'
+function DelegationReceiveTableResource(props) {
+  const getTableId = 'table-manage-delegation1-hooks-Resource'
   const defaultConfig = { limit: 5 }
   const getLimit = getTableConfiguration(getTableId, defaultConfig).limit
 
   // Khởi tạo state
   const [state, setState] = useState({
     name: '',
-    pageTask: 1,
-    perPageTask: getLimit,
+    page: 1,
+    perPage: getLimit,
     tableId: getTableId
   })
   const [selectedData, setSelectedData] = useState()
 
   const { delegationReceive, translate } = props
-  const { name, pageTask, perPageTask, curentRowDetail, tableId } = state
+  const { name, page, perPage, curentRowDetail, tableId } = state
 
   useEffect(() => {
-    props.getDelegationsTask({ name, pageTask, perPageTask, delegateType: 'Task' })
+    props.getDelegationsResource({ name, page, perPage, delegateType: 'Resource' })
   }, [])
 
   /**
@@ -48,15 +48,15 @@ function DelegationReceiveTableTask(props) {
    * Hàm xử lý khi click nút tìm kiếm
    */
   const handleSubmitSearch = () => {
-    props.getDelegationsTask({
+    props.getDelegationsResource({
       name,
-      perPageTask,
-      pageTask: 1,
-      delegateType: 'Task'
+      perPage,
+      page: 1,
+      delegateType: 'Resource'
     })
     setState({
       ...state,
-      pageTask: 1
+      page: 1
     })
   }
 
@@ -67,14 +67,14 @@ function DelegationReceiveTableTask(props) {
   const setPage = (pageNumber) => {
     setState({
       ...state,
-      pageTask: parseInt(pageNumber)
+      page: parseInt(pageNumber)
     })
 
-    props.getDelegationsTask({
+    props.getDelegationsResource({
       name,
-      perPageTask,
-      pageTask: parseInt(pageNumber),
-      delegateType: 'Task'
+      perPage,
+      page: parseInt(pageNumber),
+      delegateType: 'Resource'
     })
   }
 
@@ -85,14 +85,14 @@ function DelegationReceiveTableTask(props) {
   const setLimit = (number) => {
     setState({
       ...state,
-      perPageTask: parseInt(number),
-      pageTask: 1
+      perPage: parseInt(number),
+      page: 1
     })
-    props.getDelegationsTask({
+    props.getDelegationsResource({
       name,
-      perPageTask: parseInt(number),
-      pageTask: 1,
-      delegateType: 'Task'
+      perPage: parseInt(number),
+      page: 1,
+      delegateType: 'Resource'
     })
   }
 
@@ -103,13 +103,13 @@ function DelegationReceiveTableTask(props) {
   const confirmDelegation = (id) => {
     props.confirmDelegation({
       delegationId: id,
-      delegateType: 'Task'
+      delegateType: 'Resource'
     })
-    props.getDelegationsTask({
+    props.getDelegationsResource({
       name,
-      perPageTask,
-      delegateType: 'Task',
-      pageTask: delegationReceive && delegationReceive.listsTask && delegationReceive.listsTask.length === 1 ? pageTask - 1 : pageTask
+      perPage,
+      delegateType: 'Resource',
+      page: delegationReceive && delegationReceive.listsResource && delegationReceive.listsResource.length === 1 ? page - 1 : page
     })
   }
 
@@ -117,13 +117,13 @@ function DelegationReceiveTableTask(props) {
     props.rejectDelegation({
       delegationId: id,
       reason: window.$(`#rejectReason-${id}`).val(),
-      delegateType: 'Task'
+      delegateType: 'Resource'
     })
-    props.getDelegationsTask({
+    props.getDelegationsResource({
       name,
-      perPageTask,
-      delegateType: 'Task',
-      pageTask: delegationReceive && delegationReceive.listsTask && delegationReceive.listsTask.length === 1 ? pageTask - 1 : pageTask
+      perPage,
+      delegateType: 'Resource',
+      page: delegationReceive && delegationReceive.listsResource && delegationReceive.listsResource.length === 1 ? page - 1 : page
     })
   }
 
@@ -136,35 +136,33 @@ function DelegationReceiveTableTask(props) {
       ...state,
       curentRowDetail: delegation
     })
-    window.$(`#modal-detail-info-delegation-hooks-Task`).modal('show')
+    window.$(`#modal-detail-info-delegation-hooks-Resource`).modal('show')
   }
 
-  let listsTask = []
+  let listsResource = []
   if (delegationReceive) {
-    listsTask = delegationReceive.listsTask
+    listsResource = delegationReceive.listsResource
   }
 
-  const totalPage = delegationReceive && Math.ceil(delegationReceive.totalListTask / perPageTask)
+  const totalPage = delegationReceive && Math.ceil(delegationReceive.totalList / perPage)
   // convert ISODate to String hh:mm AM/PM
   const formatTime = (date) => {
     return dayjs(date).format('DD-MM-YYYY hh:mm A')
   }
 
+  console.log(delegationReceive)
+
   return (
     <>
-      <DelegationDetailInfoTask
+      <DelegationDetailInfoResource
         delegationID={curentRowDetail && curentRowDetail._id}
         name={curentRowDetail && curentRowDetail.name}
         description={curentRowDetail && curentRowDetail.description}
         delegator={curentRowDetail && curentRowDetail.delegator}
         delegatee={curentRowDetail && curentRowDetail.delegatee}
-        delegatePrivileges={curentRowDetail && curentRowDetail.delegatePrivileges}
         delegateType={curentRowDetail && curentRowDetail.delegateType}
-        delegateRole={curentRowDetail && curentRowDetail.delegateRole}
         delegateObject={curentRowDetail && curentRowDetail.delegateObject}
-        delegateTaskRoles={curentRowDetail && curentRowDetail.metaData.delegateTaskRoles}
         status={curentRowDetail && curentRowDetail.status}
-        allPrivileges={curentRowDetail && curentRowDetail.allPrivileges}
         startDate={curentRowDetail && curentRowDetail.startDate}
         endDate={curentRowDetail && curentRowDetail.endDate}
         revokedDate={curentRowDetail && curentRowDetail.revokedDate}
@@ -186,7 +184,7 @@ function DelegationReceiveTableTask(props) {
             <input
               type='text'
               className='form-control'
-              name='nameTask'
+              name='nameResource'
               onChange={handleChangeDelegationName}
               placeholder={translate('manage_delegation.name')}
               autoComplete='off'
@@ -211,13 +209,13 @@ function DelegationReceiveTableTask(props) {
             index: translate('manage_delegation.index'),
             name: translate('manage_delegation.name'),
             delegateType: translate('manage_delegation.delegateType'),
-            delegateObjectTask: translate('manage_delegation.delegateObjectTask'),
-            delegateTaskRoles: translate('manage_delegation.delegateObjectTaskRole'),
+            delegateResource: translate('manage_delegation.delegateResource'),
             delegator: translate('manage_delegation.delegator'),
+            // delegatee: translate('manage_delegation.delegatee'),
+            description: translate('manage_delegation.description'),
             delegateStartDate: translate('manage_delegation.delegateStartDate'),
             delegateEndDate: translate('manage_delegation.delegateEndDate'),
             delegateStatus: translate('manage_delegation.delegateStatus')
-            // description: translate('manage_delegation.description')
           }}
           tableHeaderData={{
             index: (
@@ -226,33 +224,25 @@ function DelegationReceiveTableTask(props) {
               </th>
             ),
             name: <th>{translate('manage_delegation.name')}</th>,
-            // delegateType: <th>{translate('manage_delegation.delegateType')}</th>,
-            delegateObjectTask: <th>{translate('manage_delegation.delegateObjectTask')}</th>,
-            delegateTaskRoles: <th>{translate('manage_delegation.delegateObjectTaskRole')}</th>,
+            delegateResource: <th>{translate('manage_delegation.delegateResource')}</th>,
             delegator: <th>{translate('manage_delegation.delegator')}</th>,
+            // delegatee: <th>{translate('manage_delegation.delegatee')}</th>,
+            description: <th>{translate('manage_delegation.description')}</th>,
             delegateStartDate: <th>{translate('manage_delegation.delegateStartDate')}</th>,
             delegateEndDate: <th>{translate('manage_delegation.delegateEndDate')}</th>,
             delegateStatus: <th>{translate('manage_delegation.delegateStatus')}</th>,
-            // description: <th>{translate('manage_delegation.description')}</th>,
             action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
           }}
           tableBodyData={
-            listsTask?.length > 0 &&
-            listsTask.map((item, index) => {
+            listsResource?.length > 0 &&
+            listsResource.map((item, index) => {
               return {
                 id: item?._id,
                 index: <td>{index + 1}</td>,
                 name: <td>{item?.name}</td>,
-                // delegateType: <td>{translate('manage_delegation.delegateType' + item?.delegateType)}</td>,
-                delegateObjectTask: <td>{item.delegateObject ? item.delegateObject.name : ''}</td>,
-                delegateTaskRoles: (
-                  <td>
-                    {item.metaData?.delegateTaskRoles
-                      ? item.metaData?.delegateTaskRoles.map((r) => translate(`task.task_management.${r}`)).join(', ')
-                      : ''}
-                  </td>
-                ),
+                delegateResource: <td>{item.delegateObject ? `${item.delegateObject.name} - ${item.delegateObject.type}` : ''}</td>,
                 delegator: <td>{item?.delegator.name}</td>,
+                delegatee: <td>{item?.delegatee.name}</td>,
                 delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
                 delegateEndDate: (
                   <td>
@@ -269,7 +259,7 @@ function DelegationReceiveTableTask(props) {
                     {colorfyDelegationStatus(item.status, translate)} - {colorfyDelegationStatus(item.replyStatus, translate)}
                   </td>
                 ),
-                // description: <td>{item?.description}</td>,
+                description: <td>{item?.description}</td>,
                 action: (
                   <td style={{ textAlign: 'center' }}>
                     <a
@@ -310,7 +300,7 @@ function DelegationReceiveTableTask(props) {
               }
             })
           }
-          dataDependency={listsTask}
+          dataDependency={listsResource}
           onSetNumberOfRowsPerpage={setLimit}
           onSelectedRowsChange={onSelectedRowsChange}
         />
@@ -319,15 +309,15 @@ function DelegationReceiveTableTask(props) {
         {delegationReceive && delegationReceive.isLoading ? (
           <div className='table-info-panel'>{translate('confirm.loading')}</div>
         ) : (
-          (typeof listsTask === 'undefined' || listsTask.length === 0) && (
+          (typeof listsResource === 'undefined' || listsResource.length === 0) && (
             <div className='table-info-panel'>{translate('confirm.no_data')}</div>
           )
         )}
         <PaginateBar
           pageTotal={totalPage || 0}
-          currentPage={pageTask}
-          display={listsTask && listsTask.length !== 0 && listsTask.length}
-          total={delegationReceive && delegationReceive.totalListTask}
+          currentPage={page}
+          display={listsResource && listsResource.length !== 0 && listsResource.length}
+          total={delegationReceive && delegationReceive.totalListResource}
           func={setPage}
         />
       </div>
@@ -341,10 +331,10 @@ function mapState(state) {
 }
 
 const actions = {
-  getDelegationsTask: DelegationActions.getDelegationsTask,
+  getDelegationsResource: DelegationActions.getDelegationsResource,
   confirmDelegation: DelegationActions.confirmDelegation,
   rejectDelegation: DelegationActions.rejectDelegation
 }
 
-const connectedDelegationReceiveTableTask = connect(mapState, actions)(withTranslate(DelegationReceiveTableTask))
-export { connectedDelegationReceiveTableTask as DelegationReceiveTableTask }
+const connectedDelegationReceiveTableResource = connect(mapState, actions)(withTranslate(DelegationReceiveTableResource))
+export { connectedDelegationReceiveTableResource as DelegationReceiveTableResource }
