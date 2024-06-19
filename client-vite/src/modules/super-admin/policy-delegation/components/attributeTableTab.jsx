@@ -131,6 +131,7 @@ export function AttributeTableTab(props) {
           <tr>
             <td rowSpan={!delegatorAttributes || delegatorAttributes.length == 0 ? 1 : delegatorAttributes.length}>
               {translate('manage_delegation_policy.delegator_table')}
+              <span className='text-red'>*</span>
             </td>
             {!delegatorAttributes || delegatorAttributes.length == 0 ? (
               <td colSpan={3}>
@@ -180,6 +181,7 @@ export function AttributeTableTab(props) {
           <tr>
             <td rowSpan={!delegateObjectAttributes || delegateObjectAttributes.length == 0 ? 1 : delegateObjectAttributes.length}>
               {translate('manage_delegation_policy.delegate_object_table')}
+              <span className='text-red'>*</span>
             </td>
             {!delegateObjectAttributes || delegateObjectAttributes.length == 0 ? (
               <td colSpan={3}>
@@ -229,6 +231,7 @@ export function AttributeTableTab(props) {
           <tr>
             <td rowSpan={!delegateeAttributes || delegateeAttributes.length == 0 ? 1 : delegateeAttributes.length}>
               {translate('manage_delegation_policy.delegatee_table')}
+              <span className='text-red'>*</span>
             </td>
             {!delegateeAttributes || delegateeAttributes.length == 0 ? (
               <td colSpan={3}>
