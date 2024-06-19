@@ -153,7 +153,7 @@ Object.assign(TaskDelegationHandler.prototype, {
         });
 
         // For demo
-        await this.assignDelegation(portal, newDelegation._id.toString())
+        // await this.assignDelegation(portal, newDelegation._id.toString())
 
         // For auto activate revoke
         if (isToday(new Date(data.startDate))) {
@@ -195,7 +195,7 @@ Object.assign(TaskDelegationHandler.prototype, {
             }
             if (oldDelegation.delegator.refId.toString() !== data.delegator.toString() ||
                 oldDelegation.delegatee.refId.toString() !== data.delegatee.toString() ||
-                oldDelegation.delegateTask.toString() !== data.delegateObject.toString()
+                oldDelegation.delegateObject.toString() !== data.delegateObject.toString()
             ) {
                 data.notCheck = false;
             } else {
@@ -204,7 +204,7 @@ Object.assign(TaskDelegationHandler.prototype, {
         } else {
             if (oldDelegation.delegator.refId.toString() !== data.delegator.toString() ||
                 oldDelegation.delegatee.refId.toString() !== data.delegatee.toString() ||
-                oldDelegation.delegateTask.toString() !== data.delegateObject.toString()
+                oldDelegation.delegateObject.toString() !== data.delegateObject.toString()
             ) {
                 data.notCheck = false;
             } else {

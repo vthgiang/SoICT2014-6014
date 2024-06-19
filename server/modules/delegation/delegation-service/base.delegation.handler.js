@@ -179,7 +179,7 @@ Object.assign(BaseDelegationHandler.prototype, {
         delegation.declineReason = null;
         await delegation.save();
 
-        const newDelegation = this.getDelegationById(delegation._id);
+        const newDelegation = await this.getDelegationById(portal, delegation._id);
         return newDelegation;
     },
 
@@ -192,7 +192,7 @@ Object.assign(BaseDelegationHandler.prototype, {
         delegation.declineReason = !reason ? null : reason;
         await delegation.save();
     
-        const newDelegation = this.getDelegationById(delegation._id);
+        const newDelegation = await this.getDelegationById(portal, delegation._id);
         return newDelegation;
     },
 

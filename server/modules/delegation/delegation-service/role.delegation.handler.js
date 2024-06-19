@@ -18,11 +18,16 @@ function RoleDelegationHandler() {
     BaseDelegationHandler.call(this);
     this.populateArray.push(
         {
-            path: 'metaData.delegatePrivileges', select: '_id resourceId resourceType',
-            populate: {
-                path: 'resourceId',
-                select: '_id url category description'
-            }
+            path: 'metaData',
+            populate: [
+                {
+                    path: 'delegatePrivileges', select: '_id resourceId resourceType', 
+                    populate: {
+                        path: 'resourceId',
+                        select: '_id url category description'
+                    }
+                }
+            ]
         }
     );
     this.delegateType = 'Role';
@@ -113,7 +118,7 @@ Object.assign(RoleDelegationHandler.prototype, {
         });
 
         // for demo
-        await this.assignDelegation(portal, newDelegation._id.toString());
+        // await this.assignDelegation(portal, newDelegation._id.toString());
 
         // add delegationId to selected Privileges
         if (isToday(new Date(data.startDate))) {

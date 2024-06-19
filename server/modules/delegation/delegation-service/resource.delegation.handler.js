@@ -15,6 +15,9 @@ const { BaseDelegationHandler } = require('./base.delegation.handler');
 
 function ResourceDelegationHandler() {
     BaseDelegationHandler.call(this);
+    this.populateArray.push(
+        { path: 'delegateObject', select: '_id name type' }
+    );
     this.delegateType = 'Resource';
 }
 
@@ -99,7 +102,7 @@ Object.assign(ResourceDelegationHandler.prototype, {
         });
 
         // for demo
-        await this.assignDelegation(portal, newDelegation._id.toString());
+        // await this.assignDelegation(portal, newDelegation._id.toString());
 
         // add delegationId to selected Privileges
         if (isToday(new Date(data.startDate))) {
