@@ -85,7 +85,7 @@ export function schedule(state = initState, action) {
         return {
           ...state,
           predictOntimeDeliveryResults: action.payload,
-          isLoading: true
+          isLoading: false
         }
       case ScheduleConstants.PREDICT_ONTIME_DELIVERY_FAILURE:
         return {

@@ -69,7 +69,7 @@ const predictOntimeDelivery = (scheduleId) => {
         type: ScheduleConstants.PREDICT_ONTIME_DELIVERY_FAILURE
       })
     })
-}
+  }
 }
 export const ScheduleActions = {
   getAllSchedule,

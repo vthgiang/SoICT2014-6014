@@ -48,21 +48,10 @@ const createSchedule = (data) => {
   )
 }
 
-// const predictOntimeDelivery = (scheduleId, data) => {
-//   return sendRequest({
-//     url: `${process.env.PYTHON_URL_SERVER}/api/dxclan/ontimePredict/${scheduleId}`,
-//     method: 'POST',
-//     data
-//   },
-//   true,
-//   true,
-//   'transport3.schedule')
-// }
-
 const predictOntimeDelivery = (scheduleId) => {
   return sendRequest({
     url: `${process.env.REACT_APP_SERVER}/transport3/predict/${scheduleId}`,
-    method: 'GET'
+    method: 'PUT'
   },
   true,
   true,

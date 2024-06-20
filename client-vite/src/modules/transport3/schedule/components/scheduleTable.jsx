@@ -17,20 +17,21 @@ import {ScheduleActions} from '@modules/transport3/schedule/redux/actions';
 import OrderCreateForm from '@modules/transport3/order/components/orderCreateForm.jsx';
 import OrderDetail from '@modules/transport3/order/components/orderDetail.jsx';
 import { color } from 'd3'
+import OntimeDeliveryResults from './ontimeDeliveryResults'
 
 function ScheduleTable(props) {
   const TableId = 'schedule-table'
   const defaultConfig = {limit: 5}
   const Limit = getTableConfiguration(TableId, defaultConfig).limit
+  const [selectedSchedule, setSelectedSchedule] = useState(null);
 
   let listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules)
-  let ontimePredictResults = useSelector(state => state.T3schedule.predictOntimeDeliveryResults)
-  // console.log(listSchedules)
+  let ontimePredictResults = useSelector(state => state.T3schedule.predictOntimeDeliveryResults.predict_ontime)
+
   let dispatch = useDispatch()
   useEffect(() => {
     dispatch(ScheduleActions.getAllStocksWithLatlng())
     dispatch(ScheduleActions.getAllSchedule())
-    dispatch(ScheduleActions.predictOntimeDelivery('66701c40c330c01f84b6faac'))
   }, [dispatch])
   const [state, setState] = useState({
     page: 1,
@@ -59,11 +60,10 @@ function ScheduleTable(props) {
     })
   }
 
-  const handlePredictOntimeDelivery = (request) => {
-    setState({
-      ...state,
-    });
-    console.log(T3schedule.predictOntimeDeliveryResults)
+  const handlePredictOntimeDelivery = (schedule) => {
+    window.$(`#modal-ontime-delivery-results`).modal('show')
+    setSelectedSchedule(schedule);
+    dispatch(ScheduleActions.predictOntimeDelivery(schedule._id))
   }
 
   const columns = [
@@ -176,7 +176,7 @@ function ScheduleTable(props) {
                       // func={handleDeleteVehicle}
                     />
                     <button
-                      // onClick={handlePredictOntimeDelivery(schedule._id)}
+                      onClick={()=> handlePredictOntimeDelivery(schedule)}
                     >
                       Dự báo*
                     </button>
@@ -190,7 +190,10 @@ function ScheduleTable(props) {
             </tr>}
             </tbody>
           </table>
-          {JSON.stringify(ontimePredictResults)}
+          <OntimeDeliveryResults 
+              schedule={selectedSchedule}
+
+          />
           <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={setPage}/>
         </div>
       </div>

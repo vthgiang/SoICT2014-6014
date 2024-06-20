@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {connect} from 'react-redux'
+import {connect, useDispatch, useSelector} from 'react-redux'
 import {withTranslate} from 'react-redux-multilingual'
 //Actions
 import {OrderActions} from '../redux/actions'
@@ -8,6 +8,7 @@ import {StockActions} from '@modules/production/warehouse/stock-management/redux
 import {UserActions} from '@modules/super-admin/user/redux/actions'
 import {GoodActions} from '@modules/production/common-production/good-management/redux/actions'
 import {LotActions} from '@modules/production/warehouse/inventory-management/redux/actions'
+import {ScheduleActions} from '@modules/transport3/schedule/redux/actions';
 import {CrmCustomerActions} from '@modules/crm/customer/redux/actions'
 
 //Helper Function
@@ -22,11 +23,18 @@ import {
 import OrderCreateForm from './orderCreateForm'
 import {getTableConfiguration} from '@helpers/tableConfiguration'
 import OrderDetail from '@modules/transport3/order/components/orderDetail.jsx';
+import { getAllSchedule } from '../../schedule/redux/services'
+import { schemeYlGn } from 'd3'
 
 function OrderTable(props) {
   const TableId = 'order-table'
   const defaultConfig = {limit: 5}
   const Limit = getTableConfiguration(TableId, defaultConfig).limit
+
+  let listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules)
+  let T3orders = useSelector(state => state.T3order)
+  // console.log(listSchedules)
+  let dispatch = useDispatch()
 
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole'),
@@ -111,6 +119,10 @@ function OrderTable(props) {
     window.$('#modal-add-order').modal('show')
   }
 
+  const retrainingModel = () => {
+    dispatch(OrderActions.retrainingModel())
+  }
+
   let {limit, code, tableId} = state
   const {translate, orders} = props
   const {totalPages, page} = orders
@@ -188,7 +200,7 @@ function OrderTable(props) {
                 type="button"
                 className="btn btn-success dropdown-toggle pull-right"
                 aria-expanded="true"
-                // onClick={retrainingModel}
+                onClick={()=> retrainingModel()}
               >
                 Cập nhật mô hình dự báo
               </button>
@@ -292,8 +304,8 @@ function OrderTable(props) {
 
 function mapStateToProps(state) {
   const {customers} = state.crm
-  const {orders, department, role, auth} = state
-  return {orders, customers, department, role, auth}
+  const {orders, schedules, department, role, auth} = state
+  return {orders, schedules, customers, department, role, auth}
 }
 
 const mapDispatchToProps = {

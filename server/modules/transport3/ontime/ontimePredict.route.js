@@ -9,6 +9,7 @@ router.get('/estimatedOntimeRate', auth, OntimePredictController.getEstimatedOnT
 router.get('/estimatedOntimeRatePerMonth', auth, OntimePredictController.getEstimatedOnTimeDeliveryRatesPerMonth);
 router.get('/deliveryLateDayAverage', auth, OntimePredictController.getDeliveryLateDayAverage);
 router.get('/deliveryLateDayAveragePerMonth', auth, OntimePredictController.getDeliveryLateDayAveragePerMonth);
-router.get('/predict/:scheduleId', auth, OntimePredictController.predictOnTimeDelivery);
+router.put('/predict/:scheduleId', auth, OntimePredictController.predictOnTimeDelivery);
+router.get('/retrainingModel', auth, OntimePredictController.retrainingModel);
 
 module.exports = router;

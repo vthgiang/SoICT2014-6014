@@ -2,6 +2,9 @@ const { DeliverySchedule, Transport3Schedule } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const moment = require('moment');
 const mongoose = require('mongoose');
+const axios = require('axios');
+const { json } = require('body-parser');
+const { ObjectId } = require('mongodb');
 
 //Lấy tỉ lệ giao hàng đúng hạn thực tế. Tỉ lệ giao hàng đúng hạn = Số đơn giao hàng đúng hạn /tổng số đơn hàng đã giao
 exports.getOnTimeDeliveryRates = async (portal, data) => {
@@ -266,10 +269,25 @@ exports.getDeliveryLateDayAveragePerMonth = async (portal, data) => {
     return fillMissingData(monthlyLateDayAverages);
 }
 
-// exports.predictOnTimeDelivery = async (portal, scheduleId) => {
-//     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).findById({ _id: scheduleId });
-//     if (!transport3Schedules) {
-//         throw new Error('Schedule not found');
-//     }
-//     return 1
-// }
+exports.UpdateEstimatedOntimeDeliveryInfo = async (portal, scheduleId) => {
+    const transport3Schedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).findById(scheduleId);   
+    if (!transport3Schedule) {
+        throw new Error('Schedule not found');
+    }
+    const responseAI = await axios.get(`${process.env.PYTHON_URL_SERVER}/api/dxclan/ontime_predict/${scheduleId}`);
+    
+    if (!responseAI || !responseAI.data.predict_ontime) {
+        throw new Error('Failed to fetch or predict ontime delivery');
+    }
+    
+    const predictResults = responseAI.data.predict_ontime;
+
+    transport3Schedule.orders.forEach((order) => {
+        const filterItem = predictResults.find((predictResult) => predictResult.order_id === order.order.toString());
+        if (filterItem) {
+            order.estimatedOntime = filterItem.predictOntime;
+        }
+    });
+    await transport3Schedule.save()
+    return responseAI.data.predict_ontime
+}

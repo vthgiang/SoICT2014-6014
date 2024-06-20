@@ -13,6 +13,9 @@ const Transport3ScheduleSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'Transport3Order'
       },
+      code: {
+        type: String
+      },
       // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
       status: {
         type: Number
@@ -46,7 +49,7 @@ const Transport3ScheduleSchema = new Schema(
       distance: {
         type: Number
       }, 
-      //Dự báo khả năng giao hàng đúng hạn
+      //d
       estimatedOntime: {
         type: Number
       }

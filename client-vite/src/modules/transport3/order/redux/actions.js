@@ -48,8 +48,29 @@ const getAllOrder = (query) => {
       })
   }
 }
+
+
+const retrainingModel = () => {
+  return (dispatch) => {
+    dispatch({ type: OrderConstants.RETRAINING_MODEL_REQUEST })
+  OrderServices.retrainingModel()
+    .then((response) => {
+      dispatch({
+        type: OrderConstants.RETRAINING_MODEL_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: OrderConstants.RETRAINING_MODEL_FAILURE
+      })
+    })
+  }
+}
+
 export const OrderActions = {
   getAdressFromLatLng,
   createNewOrder,
-  getAllOrder
+  getAllOrder,
+  retrainingModel
 }

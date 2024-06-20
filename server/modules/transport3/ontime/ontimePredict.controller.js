@@ -1,6 +1,6 @@
 const OntimePredictService = require('./ontimePredict.service');
 const Log = require(`../../../logs`);
-const axios = require('axios')
+const axios = require('axios');
 // const { schedule } = require('../../../../client-vite/src/modules/transport3/schedule/redux/reducers');
 
 exports.getOnTimeDeliveryRates = async (req, res) => {
@@ -139,32 +139,47 @@ exports.getDeliveryLateDayAveragePerMonth = async (req, res) => {
 exports.predictOnTimeDelivery = async (req, res) => {
     try {
         let { scheduleId } = req.params;
-        console.log("Schedule ID:", scheduleId);
-        
-        const responseAI = await axios.post(`http://localhost:8080/ api/dxclan/ontime_predict/${scheduleId}`);
-        // const responseAI = await axios.post(`${process.env.PYTHON_URL_SERVER}/api/dxclan/ontime_predict/`, scheduleId);
-        console.log("Response from AI service:", responseAI);
-        
-        // Uncomment and implement the following lines as needed
-        // let data = await OntimePredictService.predictOnTimeDelivery(req.portal, scheduleId);
-        // await Log.info(req.user.email, "PREDICT_ONTIME_DELIVERY", req.portal);
+        // const responseAI = await axios.get(`${process.env.PYTHON_URL_SERVER}/api/dxclan/ontime_predict/${scheduleId}`);
+        let data = await OntimePredictService.UpdateEstimatedOntimeDeliveryInfo(req.portal, scheduleId);
+        await Log.info(req.user.email, "PREDICT_ONTIME_DELIVERY", req.portal);
 
-        // res.status(200).json({
-        //     success: true,
-        //     messages: ["predict_ont_time_delivery_success"],
-        //     content: data
-        // });
+        res.status(200).json({
+            success: true,
+            messages: ["predict_ont_time_delivery_success"],
+            content: data
+        });
     } catch (error) {
-        console.error("Error occurred:", error.message);
-        
-        // Uncomment and implement the following lines as needed
-        // await Log.error(req.user.email, "PREDICT_ONTIME_DELIVERY", req.portal);
 
-        // res.status(400).json({
-        //     success: false,
-        //     messages: ["predict_ont_time_delivery_fail"],
-        //     content: error.message
-        // });
+        await Log.error(req.user.email, "PREDICT_ONTIME_DELIVERY", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["predict_ont_time_delivery_fail"],
+            content: error.message
+        });
+    } 
+}
+
+exports.retrainingModel = async (req, res) => {
+    try {
+        const responseAI = await axios.get(`${process.env.PYTHON_URL_SERVER}/api/dxclan/ontime_predict/retrain/`);
+        await Log.info(req.user.email, "RETRAINING_MODEL", req.portal);
+        console.log(responseAI.data)
+
+        res.status(200).json({
+            success: true,
+            messages: ["retraining_model_success"],
+            content: responseAI.data
+        });
+    } catch (error) {
+
+        await Log.error(req.user.email, "RETRAINING_MODEL", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["retraining_model_fail"],
+            content: error.message
+        });
     } 
 }
 
