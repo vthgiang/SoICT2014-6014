@@ -211,7 +211,7 @@ exports.editDelegation = async (req, res) => {
         const delegationHandler = createDelegationHandler(delegateType);
         let { id } = req.params;
         let data = req.body;
-        let updatedDelegation = await delegationHandler.getNewlyCreateDelegation(req.portal, id, data);
+        let updatedDelegation = await delegationHandler.editDelegation(req.portal, id, data);
         updatedDelegation = await delegationHandler.saveLog(req.portal, updatedDelegation, updatedDelegation.delegator, updatedDelegation.name, 'edit', updatedDelegation.createdAt)
         await Log.info(req.user.email, `edited_${delegateType}_delegation`, req.portal);
         res.status(200).json({

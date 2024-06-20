@@ -154,8 +154,8 @@ Object.assign(BaseDelegationHandler.prototype, {
 
         if (updatedDelegation !== -1) {
             this.cancelJobDelegation(delegationId)
-            await this.revokeDelegation(req.portal, [delegationId]);
-            await this.deleteDelegations(req.portal, [delegationId]);
+            await this.revokeDelegation(portal, [delegationId]);
+            await this.deleteDelegations(portal, [delegationId]);
         }
 
         return updatedDelegation;
