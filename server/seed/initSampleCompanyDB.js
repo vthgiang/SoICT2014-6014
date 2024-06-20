@@ -5016,7 +5016,7 @@ const initSampleCompanyDB = async () => {
         //         minQuantity: 10,
         //     },
         // ],
-        Array.from({ length: 300 }, (_, index) => ({
+        Array.from({ length: 20 }, (_, index) => ({
           good: list_goods_in_stock[index]._id,
           maxQuantity: 1000,
           minQuantity: 10,
