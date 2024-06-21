@@ -903,11 +903,11 @@ class SideBar extends Component {
                     icon: 'fa fa-dashboard',
                     path: '/manage-sales-order-dashboard'
                   },
-                  {
-                    name: 'menu.manage_quote',
-                    icon: 'fa fa-tablet',
-                    path: '/manage-quote'
-                  },
+                  // {
+                  //   name: 'menu.manage_quote',
+                  //   icon: 'fa fa-tablet',
+                  //   path: '/manage-quote'
+                  // },
                   {
                     name: 'menu.manage_sales_order',
                     icon: 'fa fa-dollar',
@@ -923,31 +923,31 @@ class SideBar extends Component {
                     icon: 'fa fa-dollar',
                     path: '/forecast-sales-order'
                   },
-                  {
-                    name: 'menu.manage_profit',
-                    icon: 'fa fa-money',
-                    path: '/manage-profit'
-                  },
-                  {
-                    name: 'menu.manage_purchase_order',
-                    icon: 'fa fa-shopping-cart',
-                    path: '/manage-purchase-order'
-                  },
+                  // {
+                  //   name: 'menu.manage_profit',
+                  //   icon: 'fa fa-money',
+                  //   path: '/manage-profit'
+                  // },
+                  // {
+                  //   name: 'menu.manage_purchase_order',
+                  //   icon: 'fa fa-shopping-cart',
+                  //   path: '/manage-purchase-order'
+                  // },
                   {
                     name: 'menu.manage_discount',
                     icon: 'fa fa-arrow-down',
                     path: '/manage-discount'
                   },
-                  {
-                    name: 'menu.manage_tax',
-                    icon: 'fa fa-money',
-                    path: '/manage-tax'
-                  },
-                  {
-                    name: 'menu.manage_sla',
-                    icon: 'fa fa-registered',
-                    path: '/manage-sla'
-                  },
+                  // {
+                  //   name: 'menu.manage_tax',
+                  //   icon: 'fa fa-money',
+                  //   path: '/manage-tax'
+                  // },
+                  // {
+                  //   name: 'menu.manage_sla',
+                  //   icon: 'fa fa-registered',
+                  //   path: '/manage-sla'
+                  // },
                   {
                     name: 'menu.manage_business_department',
                     icon: 'fa fa-sitemap',

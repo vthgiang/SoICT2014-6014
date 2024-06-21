@@ -131,7 +131,7 @@ import { purchaseOrders } from '../modules/production/order/purchase-order/redux
 import { quotes } from '../modules/production/order/quote/redux/reducers'
 import { salesOrders } from '../modules/production/order/sales-order/redux/reducers'
 import { serviceLevelAgreements } from '../modules/production/order/service-level-agreement/redux/reducers'
-import { taxs } from '../modules/production/order/tax/redux/reducers'
+
 
 // plan
 import { plan } from '../modules/plan/redux/reducers'
@@ -349,7 +349,7 @@ const appReducer = combineReducers({
   }),
 
   // order
-  taxs,
+ 
   quotes,
   discounts,
   serviceLevelAgreements,

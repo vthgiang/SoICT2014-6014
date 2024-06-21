@@ -175,7 +175,7 @@ const Forecast = lazy(() => import('../modules/production/order/forecast/compone
 const Discount = lazy(() => import('../modules/production/order/discount/components'))
 const Quote = lazy(() => import('../modules/production/order/quote/components'))
 const SalesOrderDashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
-const Tax = lazy(() => import('../modules/production/order/tax/components'))
+
 const ServiceLevelAgreement = lazy(() => import('../modules/production/order/service-level-agreement/components'))
 const BusinessDepartment = lazy(() => import('../modules/production/order/business-department/components'))
 const Payment = lazy(() => import('../modules/production/order/payment/components'))
@@ -3004,7 +3004,7 @@ class Routes extends Component {
             layout={Layout}
             component={Forecast}
           />
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={this.props.salesOrders.isLoading}
             key='/manage-profit'
             arrPage={[
@@ -3022,9 +3022,9 @@ class Routes extends Component {
             pageName='manage_profit'
             layout={Layout}
             component={Profit}
-          />
+          /> */}
 
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={false}
             key='/manage-purchase-order'
             arrPage={[
@@ -3042,9 +3042,9 @@ class Routes extends Component {
             pageName='manage_purchase_order'
             layout={Layout}
             component={PurchaseOrder}
-          />
+          /> */}
 
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={this.props.quotes.isLoading}
             key='/manage-quote'
             arrPage={[
@@ -3062,7 +3062,7 @@ class Routes extends Component {
             pageName='manage_quote'
             layout={Layout}
             component={Quote}
-          />
+          /> */}
 
           <PrivateRoute
             isLoading={false}
@@ -3104,7 +3104,7 @@ class Routes extends Component {
             component={Discount}
           />
 
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={this.props.taxs.isLoading}
             key='/manage-tax'
             arrPage={[
@@ -3122,9 +3122,9 @@ class Routes extends Component {
             pageName='manage_tax'
             layout={Layout}
             component={Tax}
-          />
+          /> */}
 
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={this.props.serviceLevelAgreements.isLoading}
             key='/manage-sla'
             arrPage={[
@@ -3142,7 +3142,7 @@ class Routes extends Component {
             pageName='manage_sla'
             layout={Layout}
             component={ServiceLevelAgreement}
-          />
+          /> */}
 
           <PrivateRoute
             isLoading={false}

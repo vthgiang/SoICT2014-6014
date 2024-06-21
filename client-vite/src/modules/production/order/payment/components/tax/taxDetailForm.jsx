@@ -1,8 +1,8 @@
 import React, { Component, useEffect, useState } from 'react'
 import { withTranslate } from 'react-redux-multilingual'
 import { connect } from 'react-redux'
-import { DialogModal } from '../../../../../common-components'
-import { TaxActions } from '../redux/actions'
+import { DialogModal } from '../../../../../../common-components'
+import { PaymentActions } from '../../redux/actions'
 
 function TaxDetailForm(props) {
   const [state, setState] = useState({})
@@ -101,7 +101,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  getTaxById: TaxActions.getTaxById
+  getTaxById: PaymentActions.getTaxById
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaxDetailForm))
