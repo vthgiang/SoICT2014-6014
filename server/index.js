@@ -78,6 +78,7 @@ router.use('/configuration', require('./modules/super-admin/module-configuration
 
 router.use('/system', require('./modules/super-admin/system/system.route'));
 router.use('/user', require('./modules/super-admin/user/user.route'));
+router.use('/service', require('./modules/super-admin/service/service.route'));
 router.use('/role', require('./modules/super-admin/role/role.route'));
 router.use('/component', require('./modules/super-admin/component/component.route'));
 router.use('/link', require('./modules/super-admin/link/link.route'));
