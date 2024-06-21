@@ -45,6 +45,20 @@ const filterValidRequirementData = async (requirement) => {
     }
 }
 
+/**
+ * Need populate 'delegationId' when query DynamicAssignment
+ * @param {*} dynamicAssignments 
+ * @returns Active delegation assignments
+ */
+exports.filterActiveDelegations = (dynamicAssignments = []) => {
+    const activeDelegations = dynamicAssignments.filter(x =>
+        x.delegationId &&
+        (x.delegationId.startDate?.getTime() <= Date.now()) &&
+        (x.delegationId.endDate ? x.delegationId.endDate?.getTime() >= Date.now() : true)
+    );
+    return activeDelegations;
+}
+
 // Tạo mới mảng Ví dụ
 exports.createPolicy = async (portal, data) => {
     let newPolicy;
