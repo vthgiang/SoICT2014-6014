@@ -776,7 +776,7 @@ function applicationLayout() {
                 {type: 'left', size: '50%', resizable: true, style: pstyle},  	//Data Analyzer
                 {type: 'main', resizable: true, style: pstyle},					//Warehouse GRID
                 {type: 'preview', size: '75%', resizable: true},  				//The display panel for the image
-                // {type: 'right', resizable: true, style: pstyle}		//Scale Control
+                {type: 'right', resizable: true, style: pstyle}		//Scale Control
             ] //panels
         }
 
@@ -2260,7 +2260,7 @@ function myDataVisualizer() {
                         w2popup.open({
                             title: 'Edit record',
                             width: 600,
-                            // height: 800,
+                            height: 800,
                             body: formHTML,
                             buttons: '<button class="w2ui-btn" style="margin-right: 10px; background-color: #4CAF50; color: #4e77c5; border: none; cursor: pointer; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; transition-duration: 0.4s;" onclick="saveFormData()">Save</button> <button class="w2ui-btn" style="background-color: #f44336; color: #da6969; border: none; cursor: pointer; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; transition-duration: 0.4s;" onclick="w2popup.close();">Cancel</button>'
                         });
@@ -3736,5 +3736,4 @@ function fnGetBackGroundColorInvert(backGroundColor) {
 // } //b64toBlob
 
 //https://stackoverflow.com/questions/9092125/how-to-debug-dynamically-loaded-javascript-with-jquery-in-the-browsers-debugg
-//# sourceURL=myDataVisualizer.js	
-
+//# sourceURL=myDataVisualizer.js

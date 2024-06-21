@@ -429,6 +429,18 @@ const EmployeeSchema = new Schema(
                 urlFile: String,
             },
         ],
+        // Năng lực
+        capacities: [
+            {
+                capacity: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Capacity",
+                },   
+                value: {
+                    type: Number
+                }
+            }
+        ],
     },
     {
         timestamps: true,

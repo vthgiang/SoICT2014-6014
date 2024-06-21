@@ -349,6 +349,8 @@ export default {
       issues_list: 'Issues list',
       project_report: 'Project report',
       project_evaluation: 'Evaluation',
+      project_create: 'Create New Project',
+      project_proposal: "Project Proposal",
 
       // Quản lý vận chuyển
       manage_transport: 'Manage transport',

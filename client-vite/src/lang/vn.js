@@ -305,7 +305,7 @@ export default {
 
       // QUẢN LÝ ĐƠN HÀNG
       manage_orders: 'Quản lý đơn hàng',
-      manage_sales_order: 'Đơn bán hàng',
+      manage_sales_order: 'Đơn hàng',
       forecast_sales_order: 'Dự báo doanh số',
       sales_statistics: 'Thống kê doanh số',
       manage_profit: 'Lợi nhuận',
@@ -360,6 +360,8 @@ export default {
       issues_list: 'Danh sách vấn đề',
       project_report: 'Báo cáo dự án',
       project_evaluation: 'Thống kê đánh giá',
+      project_create: 'Tạo dự án mới',
+      project_proposal: 'Phân bổ nguồn lực dự án',
 
       // Quản lý vận chuyển 3
       manage_transport3: 'Quản lý vận chuyển',

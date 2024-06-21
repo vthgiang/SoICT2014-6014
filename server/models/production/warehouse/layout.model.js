@@ -47,9 +47,9 @@ const LayoutSchema = new Schema({
     type: Number,
   },
   inventory: {
-      type: Schema.Types.ObjectId,
-      ref: "InventoryWarehouse",
-      require: false,
+    type: Schema.Types.ObjectId,
+    ref: "InventoryWarehouse",
+    require: false,
   },
 });
 
@@ -59,3 +59,4 @@ module.exports = (db) => {
   if (!db.models.Layout) return db.model("Layout", LayoutSchema);
   return db.models.Layout;
 };
+

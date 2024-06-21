@@ -343,8 +343,8 @@ const LINKS = [
     components: getComponentsInLink("/notifications"),
   },
   {
-    url: "/manage-configuration",
-    description: "Cấu hình hệ thống",
+    url: "/notifications",
+    description: "Thông báo",
     category: LINK_CATEGORY.COMMON.name,
     roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
     components: getComponentsInLink("/manage-configuration"),
@@ -499,6 +499,20 @@ const LINKS = [
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [ROOT_ROLES.ADMIN.name],
     components: getComponentsInLink("/hr-add-employee"),
+  },
+  {
+    url: "/hr-manage-field",
+    description: "Quản lý ngành nghề/ lĩnh vực",
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink("/hr-list-employee"),
+  },
+  {
+    url: "/hr-add-employee",
+    description: "Thêm mới nhân viên",
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink("/hr-manage-department"),
   },
   {
     url: "/hr-list-employee",
@@ -1368,7 +1382,6 @@ const LINKS = [
     ],
     components: getComponentsInLink("/route-picking-management"),
   },
-
   {
     url: "/manage-profit",
     description: "Lợi nhuận",
@@ -1382,32 +1395,32 @@ const LINKS = [
     ],
     components: getComponentsInLink("/manage-profit"),
   },
-  {
-    url: "/manage-purchase-order",
-    description: "Đơn mua hàng",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/manage-purchase-order"),
-  },
-  {
-    url: "/manage-quote",
-    description: "Báo giá",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/manage-quote"),
-  },
+  // {
+  //     url: '/manage-purchase-order',
+  //     description: 'Đơn mua hàng',
+  //     category: LINK_CATEGORY.ORDER.name,
+  //     roles: [
+  //         ROOT_ROLES.SUPER_ADMIN.name,
+  //         ROOT_ROLES.ADMIN.name,
+  //         ROOT_ROLES.MANAGER.name,
+  //         ROOT_ROLES.DEPUTY_MANAGER.name,
+  //         ROOT_ROLES.EMPLOYEE.name,
+  //     ],
+  //     components: getComponentsInLink('/manage-purchase-order'),
+  // },
+  // {
+  //     url: '/manage-quote',
+  //     description: 'Báo giá',
+  //     category: LINK_CATEGORY.ORDER.name,
+  //     roles: [
+  //         ROOT_ROLES.SUPER_ADMIN.name,
+  //         ROOT_ROLES.ADMIN.name,
+  //         ROOT_ROLES.MANAGER.name,
+  //         ROOT_ROLES.DEPUTY_MANAGER.name,
+  //         ROOT_ROLES.EMPLOYEE.name,
+  //     ],
+  //     components: getComponentsInLink('/manage-quote'),
+  // },
   {
     url: "/manage-sales-order-dashboard",
     description: "Dashboard đơn kinh doanh",
@@ -1473,33 +1486,33 @@ const LINKS = [
     ],
     components: getComponentsInLink("/manage-discount"),
   },
-  {
-    url: "/manage-tax",
-    description: "Thuế",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
+  // {
+  //     url: '/manage-tax',
+  //     description: 'Thuế',
+  //     category: LINK_CATEGORY.ORDER.name,
+  //     roles: [
+  //         ROOT_ROLES.SUPER_ADMIN.name,
+  //         ROOT_ROLES.ADMIN.name,
+  //         ROOT_ROLES.MANAGER.name,
+  //         ROOT_ROLES.DEPUTY_MANAGER.name,
+  //         ROOT_ROLES.EMPLOYEE.name,
+  //     ],
 
-    components: getComponentsInLink("/manage-tax"),
-  },
-  {
-    url: "/manage-sla",
-    description: "Cam kết chất lượng",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/manage-sla"),
-  },
+  //     components: getComponentsInLink('/manage-tax'),
+  // },
+  // {
+  //     url: '/manage-sla',
+  //     description: 'Cam kết chất lượng',
+  //     category: LINK_CATEGORY.ORDER.name,
+  //     roles: [
+  //         ROOT_ROLES.SUPER_ADMIN.name,
+  //         ROOT_ROLES.ADMIN.name,
+  //         ROOT_ROLES.MANAGER.name,
+  //         ROOT_ROLES.DEPUTY_MANAGER.name,
+  //         ROOT_ROLES.EMPLOYEE.name,
+  //     ],
+  //     components: getComponentsInLink('/manage-sla'),
+  // },
   {
     url: "/manage-payment",
     description: "Quản lý thu chi",
@@ -2107,18 +2120,6 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
   },
-  {
-    url: "/transportation-cost-manage",
-    description: "Chi phí vận chuyển",
-    category: LINK_CATEGORY.TRANSPORTATION.name,
-    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
-  },
-  {
-    url: "/transportation-shipper-manage",
-    description: "Nhân viên giao hàng",
-    category: LINK_CATEGORY.TRANSPORTATION.name,
-    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
-  },
 
   // Quản lý vận chuyển 3
   {
@@ -2276,6 +2277,59 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/manage-transport3-requirement"),
+  },
+
+  {
+    url: "/transportation-route-init",
+    description: "Đơn vận chuyển",
+    category: LINK_CATEGORY.TRANSPORTATION.name,
+    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
+  },
+  {
+    url: "/transportation-list-journey",
+    description: "Danh sách lộ trình",
+    category: LINK_CATEGORY.TRANSPORTATION.name,
+    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
+  },
+  {
+    url: "/transportation-delivery-detail",
+    description: "Chi tiết lộ trình",
+    category: LINK_CATEGORY.TRANSPORTATION.name,
+    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
+  },
+  {
+    url: "/transportation-journey-detail",
+    description: "Chi tiết chuyến hàng",
+    category: LINK_CATEGORY.TRANSPORTATION.name,
+    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
+  },
+  {
+    url: "/transportation-info-vehicles",
+    description: "Thông tin đội xe",
+    category: LINK_CATEGORY.TRANSPORTATION.name,
+    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
+  },
+  {
+    url: "/transportation-test-api-shipper",
+    description: "Thực hiện giao hàng",
+    category: LINK_CATEGORY.TRANSPORTATION.name,
+    roles: [
+      // ROOT_ROLES.MANAGER.name,
+      // ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+  },
+  {
+    url: "/transportation-cost-manage",
+    description: "Chi phí vận chuyển",
+    category: LINK_CATEGORY.TRANSPORTATION.name,
+    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
+  },
+  {
+    url: "/transportation-shipper-manage",
+    description: "Nhân viên giao hàng",
+    category: LINK_CATEGORY.TRANSPORTATION.name,
+    roles: [ROOT_ROLES.MANAGER.name, ROOT_ROLES.ADMIN.name],
   },
 
   // Quan li du an
@@ -2706,6 +2760,19 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/project/project-evaluation"),
+  },
+  {
+    url: "/project/project-proposal",
+    description: "Phân bổ nguồn lực dự án",
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/project/project-proposal"),
   },
 
   {

@@ -70,6 +70,26 @@ export function createKpiUnit(state = {}, action) {
         loading: false,
         error: action.payload
       }
+    case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_REQUEST:
+      return {
+        ...state,
+        organizationalUnitKpiSets: null,
+        loading: true,
+        isLoading: false
+      }
+    case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_SUCCESS: 
+      return {
+        ...state,
+        loading: false,
+        isLoading: false,
+        organizationalUnitKpiSets: action.payload
+      }
+    case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
     case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST:
       return {
         ...state,

@@ -29,14 +29,14 @@ function DepartmentTreeView(props) {
       for (let i = 0; i < data.length; i++) {
         listData = [...listData, data[i]]
         if (data[i].children) {
-          let da = data[i].children
-          for (let j in da) {
-            da[j]['parentName'] = data[i].name
+          const da = data[i].children
+          for (const j in da) {
+            da[j].parentName = data[i].name
             listData = [...listData, da[j]]
             if (da[j].children) {
-              let datas = da[j].children
-              for (let k in datas) {
-                datas[k]['parentName'] = da[j].name
+              const datas = da[j].children
+              for (const k in datas) {
+                datas[k].parentName = da[j].name
                 listData = [...listData, datas[k]]
               }
             }
@@ -47,19 +47,19 @@ function DepartmentTreeView(props) {
     let datas = []
     if (listData.length !== 0) {
       for (let k = 0; k < listData.length; k++) {
-        let x = listData[k]
+        const x = listData[k]
         let length = 1
-        let name = x.name
-        let description = x.description
-        let managers = x.managers.map((item) => item.name)
+        const { name } = x
+        const { description } = x
+        const managers = x.managers.map((item) => item.name)
         if (managers.length > length) {
           length = managers.length
         }
-        let deputyManagers = x.deputyManagers.map((item) => item.name)
+        const deputyManagers = x.deputyManagers.map((item) => item.name)
         if (deputyManagers.length > length) {
           length = deputyManagers.length
         }
-        let employees = x.employees.map((item) => item.name)
+        const employees = x.employees.map((item) => item.name)
         if (employees.length > length) {
           length = employees.length
         }
@@ -69,9 +69,9 @@ function DepartmentTreeView(props) {
         }
         let out = {
           STT: k + 1,
-          name: name,
-          description: description,
-          parent: parent,
+          name,
+          description,
+          parent,
           managers: managers[0],
           deputyManagers: deputyManagers[0],
           employees: employees[0]
@@ -93,7 +93,7 @@ function DepartmentTreeView(props) {
         }
       }
     }
-    let exportData = {
+    const exportData = {
       fileName: 'Bảng thống kê cơ cấu tổ chức',
       dataSheets: [
         {
@@ -193,7 +193,7 @@ function DepartmentTreeView(props) {
               title='Ẩn/hiện điều khiển'
               onClick={() => toggleSetting(`department-setting-${data.id}`)}
             >
-              <i className='fa fa-gears'></i>
+              <i className='fa fa-gears' />
             </a>
           </span>
           {`${data.name}`}
@@ -244,13 +244,12 @@ function DepartmentTreeView(props) {
           <ul>{data.children.map((tag) => displayTreeView(tag, translate))}</ul>
         </li>
       )
-    } else {
-      return null
     }
+    return null
   }
 
   const handleUploadImage = () => {
-    let formData = new FormData()
+    const formData = new FormData()
     const { organizationalUnitImage } = state
     if (state.organizationalUnitImage) {
       formData.append('organizationalUnitImage', organizationalUnitImage)
@@ -261,7 +260,7 @@ function DepartmentTreeView(props) {
   const handleUpload = (e) => {
     const file = e.target.files[0]
     if (file) {
-      let fileLoad = new FileReader()
+      const fileLoad = new FileReader()
       fileLoad.readAsDataURL(file)
       fileLoad.onload = () => {
         setState({
@@ -274,7 +273,7 @@ function DepartmentTreeView(props) {
   }
 
   useEffect(() => {
-    //const { item } = props.company;
+    // const { item } = props.company;
     if (props.company.image != state.image) {
       return {
         organizationalUnitImagePreview: props.company.image ? `.${props.company.image}` : null,
@@ -300,11 +299,11 @@ function DepartmentTreeView(props) {
     maxHeight: '100%'
   }
 
-  let exportData = convertDataToExportData(data)
+  const exportData = convertDataToExportData(data)
 
   return (
-    <React.Fragment>
-      {<ExportExcel id='export-organizationalUnit' exportData={exportData} style={{ marginLeft: 5 }} />}
+    <>
+      <ExportExcel id='export-organizationalUnit' exportData={exportData} style={{ marginLeft: 5 }} />
       {/* Button thêm mới một phòng ban */}
       <DepartmentCreateForm />
       <DepartmentImportForm />
@@ -348,12 +347,10 @@ function DepartmentTreeView(props) {
 
       {/* Kiểm tra có dữ liệu về các đơn vị, phòng ban hay không */}
       {department.list && department.list.length > 0 ? (
-        <React.Fragment>
-          <div className='pull-left'>
-            <i className='btn btn-sm btn-default fa fa-plus' onClick={zoomIn} title={translate('manage_department.zoom_in')}></i>
-            <i className='btn btn-sm btn-default fa fa-minus' onClick={zoomOut} title={translate('manage_department.zoom_out')}></i>
-          </div>
-        </React.Fragment>
+        <div className='pull-left'>
+          <i className='btn btn-sm btn-default fa fa-plus' onClick={zoomIn} title={translate('manage_department.zoom_in')} />
+          <i className='btn btn-sm btn-default fa fa-minus' onClick={zoomOut} title={translate('manage_department.zoom_out')} />
+        </div>
       ) : department.isLoading ? (
         <p className='text-center'>{translate('confirm.loading')}</p>
       ) : (
@@ -399,7 +396,7 @@ function DepartmentTreeView(props) {
               </div>
               <div style={{ height: '500px', textAlign: 'center' }}>
                 {organizationalUnitImagePreview ? (
-                  <ApiImage style={organizationalUnitImageStyle} src={organizationalUnitImagePreview} alt={''} />
+                  <ApiImage style={organizationalUnitImageStyle} src={organizationalUnitImagePreview} alt='' />
                 ) : (
                   <>
                     <h4 style={{ fontWeight: 'bold' }}>Chưa có ảnh cơ cấu tổ chức</h4>
@@ -416,7 +413,7 @@ function DepartmentTreeView(props) {
 
       {/* Các form edit và thêm mới một phòng ban mới với phòng ban cha được chọn */}
       {currentRow && (
-        <React.Fragment>
+        <>
           <DepartmentCreateWithParent
             // departmentId={currentRow.id}
             departmentParent={currentRow.id}
@@ -430,9 +427,9 @@ function DepartmentTreeView(props) {
             deputyManagers={currentRow.deputyManagers}
             employees={currentRow.employees}
           />
-        </React.Fragment>
+        </>
       )}
-    </React.Fragment>
+    </>
   )
 }
 

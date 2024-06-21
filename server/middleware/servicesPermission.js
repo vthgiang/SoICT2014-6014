@@ -372,6 +372,8 @@ exports.links = [
             { path: '/kpi/allocation/task-package', method: 'GET' },
             { path: '/kpi/allocation/task-package/task-type', method: 'GET' },
             { path: '/kpi/allocation/task-package/task-type', method: 'POST' },
+            { path: '/kpi/allocation/start', method: 'POST' },
+            { path: '/kpi/allocation/assign-allocation', method: 'POST' },
 
             // Task-management
             { path: '/task/tasks', method: 'GET' },
@@ -1244,34 +1246,34 @@ exports.links = [
         url: '/forecast-sales-order',
         apis: ['@all'],
     },
-    {
-        url: '/manage-purchase-order',
-        apis: ['@all'],
-    },
-    {
-        url: '/manage-quote',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-purchase-order',
+    //     apis: ['@all'],
+    // },
+    // {
+    //     url: '/manage-quote',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-sales-order-dashboard',
         apis: ['@all'],
     },
-    {
-        url: '/manage-profit',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-profit',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-discount',
         apis: ['@all'],
     },
-    {
-        url: '/manage-tax',
-        apis: ['@all'],
-    },
-    {
-        url: '/manage-sla',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-tax',
+    //     apis: ['@all'],
+    // },
+    // {
+    //     url: '/manage-sla',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-payment',
         apis: ['@all'],
@@ -1462,6 +1464,10 @@ exports.links = [
         url: '/project/project-evaluation',
         apis: ['@all'],
     },
+    {
+        url: '/project/project-proposal',
+        apis: ['@all'],
+    },
 
     //transport
     {
@@ -1531,6 +1537,30 @@ exports.links = [
     },
     {
         url: '/employees-infomation',
+        apis: ['@all'],
+    },
+    {
+        url: '/risk',
+        apis: ['@all'],
+    },
+    {
+        url: '/riskDistribution',
+        apis: ['@all'],
+    },
+    {
+        url: '/taskPert',
+        apis: ['@all'],
+    },
+    {
+        url: '/exprimentalAnalysis',
+        apis: ['@all'],
+    },
+    {
+        url: '/riskResponsePlan',
+        apis: ['@all'],
+    },
+    {
+        url: '/bayesianNetworkConfig',
         apis: ['@all'],
     },
     {
@@ -1645,5 +1675,9 @@ exports.links = [
     {
         url: '/manage-transport3-requirement',
         apis: ['@all'],
-    }
+    },
+    {
+        url: '/capacities',
+        apis: ['@all'],
+    },
 ];

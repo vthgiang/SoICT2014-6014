@@ -370,7 +370,7 @@ function CreateTransportRequestForm(props) {
     const getAvailableStocks = () => {
         const { listGoods } = state;
         let listStock = requestManagements.allStockWithBinLocation?.listStock;
-
+        
         let listRequestGood = listGoods.map((good) => {
             return {
                 id: good.goodId,

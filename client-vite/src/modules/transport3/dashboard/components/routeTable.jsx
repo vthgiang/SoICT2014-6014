@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import ProgressBar from "react-bootstrap/esm/ProgressBar";
 import { PaginateBar, SmartTable, DataTableSetting, SelectBox } from "../../../../common-components";
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
-import { JourneyActions } from '../../scheduling/tracking-route/redux/actions';
+// import { JourneyActions } from '../../scheduling/tracking-route/redux/actions';
 import { RequestActions } from '../../../production/common-production/request-management/redux/actions'
 
 function RouteTable(props) {
@@ -28,27 +28,27 @@ function RouteTable(props) {
     const { journey, translate, notifications, socket } = props;
     const { page, perPage, tableId, today, journeyStatusSearch } = state;
 
-    useEffect(() => {
-        props.getJourneysByCondition({
-            date: today
-        });
-    }, [])
-    useEffect(() => {
-        socket.io.on('delivery progress', data => {
-            props.refreshJourneyData(data)
-        });
-        return () => props.socket.io.off('delivery progress');
-    }, [socket])
+    // useEffect(() => {
+    //     props.getJourneysByCondition({
+    //         date: today
+    //     });
+    // }, [])
+    // useEffect(() => {
+    //     socket.io.on('delivery progress', data => {
+    //         props.refreshJourneyData(data)
+    //     });
+    //     return () => props.socket.io.off('delivery progress');
+    // }, [socket])
 
-    useEffect(() => {
-        if (notifications?.associatedData?.value) {
-            if (notifications.associatedData.dataType === "realtime_tasks") {
-                props.refreshJourneyData(notifications.associatedData.value);
-            }
-            notifications.associatedData = {}; // reset lại ...
-        }
-        notifications.associatedData = {}; // reset lại ...
-    }, [notifications.associatedData])
+    // useEffect(() => {
+    //     if (notifications?.associatedData?.value) {
+    //         if (notifications.associatedData.dataType === "realtime_tasks") {
+    //             props.refreshJourneyData(notifications.associatedData.value);
+    //         }
+    //         notifications.associatedData = {}; // reset lại ...
+    //     }
+    //     notifications.associatedData = {}; // reset lại ...
+    // }, [notifications.associatedData])
 
     const handleSubmitSearch = () => {
         props.getExamples({
@@ -105,10 +105,10 @@ function RouteTable(props) {
     }
 
     const handleSearchJourneyByStatus = () => {
-        props.getJourneysByCondition({
-            date: today,
-            status: journeyStatusSearch,
-        });
+        // props.getJourneysByCondition({
+        //     date: today,
+        //     status: journeyStatusSearch,
+        // });
     }
 
     let deliveredNumber = 0, notDeliveredNumber = 0, inProcessNumber = 0;
@@ -248,8 +248,8 @@ function mapState(state) {
 }
 
 const mapDispatchToProps = {
-    getJourneysByCondition: JourneyActions.getJourneysByCondition,
-    refreshJourneyData: JourneyActions.refreshJourneyData,
+    // getJourneysByCondition: JourneyActions.getJourneysByCondition,
+    // refreshJourneyData: JourneyActions.refreshJourneyData,
 }
 
 const connectedRouteTable = connect(mapState, mapDispatchToProps)(withTranslate(RouteTable));

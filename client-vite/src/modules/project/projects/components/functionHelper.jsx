@@ -107,10 +107,16 @@ export const convertDateTime = (date, time) => {
   let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`
   return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss')
 }
+export const convertToDate = (date) => {
+  const splitter = date.split('-')
+  const strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]}`
+  return dayjs(strDateTime)
+}
 // convert ISODate to String hh:mm AM/PM
 export const formatTime = (date) => {
   return dayjs(date).format('hh:mm A')
 }
+
 
 export const convertToMilliseconds = (duration, currentMode = 'days') => {
   if (currentMode === 'days') return duration * MILISECS_TO_DAYS

@@ -1,17 +1,17 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const CustomerSchema = new Schema({
-    creator: {// Người thêm khách hàng
+    creator: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    code: { // Mã khách hàng
+    code: {
         type: String,
         required: true,
     },
-    name: { // Tên khách hàng
+    name: {
         type: String,
         required: true,
     },
@@ -19,58 +19,58 @@ const CustomerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
     }],
-    gender: { // Giới tính 1: Name, 2: Nữ
+    gender: {
         type: Number,
     },
-    avatar: { // Ảnh đại diện khách hàng
+    avatar: {
         type: String,
     },
-    customerType: { // 1: Cá nhân, 2: Công ty/tổ chức
+    customerType: {
         type: Number,
     },
-    company: { // Tên công ty
+    company: {
         type: String,
     },
-    represent: { // Người đại diện
+    represent: {
         type: String,
     },
-    taxNumber: { // Mã số thuế
+    taxNumber: {
         type: String,
     },
-    customerSource: { // nguồn tìm thấy khách hàng
+    customerSource: {
         type: String,
     },
-    companyEstablishmentDate: { // Ngày thành lập công ty
+    companyEstablishmentDate: {
         type: Date,
     },
-    birthDate: { //Ngày sinh nhật
+    birthDate: {
         type: Date,
     },
-    telephoneNumber: { // Số điện thoại bàn 
+    telephoneNumber: {
         type: Number,
     },
-    mobilephoneNumber: { // Số điện thoại di động
+    mobilephoneNumber: {
         type: Number,
     },
-    email: { // Địa chỉ email
+    email: {
         type: String,
     },
     email2: {
         type: String,
     },
-    address: { // Địa chỉ thứ 1 của khách hàng
+    address: {
         type: String
     },
-    address2: { // Địa chỉ thứ 2 của khách hàng nếu có
+    address2: {
         type: String
     },
-    location: { // 1: Miền bắc, 2: Miền trung,  3: Miền nam
+    location: {
         type: Number,
     },
-    website: { // Địa chỉ khách hàng
+    website: {
         type: String,
     },
-    linkedIn: { // Địa chỉ linkedIn
+    linkedIn: {
         type: String,
     },
     customerGroup: {
@@ -85,27 +85,19 @@ const CustomerSchema = new Schema({
         type: Number,
         default: 0
     },
-    isDeleted: { // Trạng thái kích hoạt khách hàng
+    isDeleted: {
         type: Boolean,
-        // required: true,
         default: false,
     },
-    // diem xep hang khach hang
-    rankPoints: [
-        {
-            point: {
-                type: Number
-            },
-            expirationDate: {
-                type: Date
-            },
-            
-          
+    rankPoints: [{
+        point: {
+            type: Number
+        },
+        expirationDate: {
+            type: Date
         }
-    ],
-
-    
-    files: [{ // Tài liệu liên quan tới khách hàng
+    }],
+    files: [{
         creator: {
             type: Schema.Types.ObjectId,
             ref: 'User'
@@ -123,7 +115,7 @@ const CustomerSchema = new Schema({
             type: String
         }
     }],
-    statusHistories: [{// lịch sử thay đổi trạng thái
+    statusHistories: [{
         oldValue: {
             type: Schema.Types.ObjectId,
             ref: 'CustomerStatus'
@@ -132,13 +124,10 @@ const CustomerSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'CustomerStatus'
         },
-        createdAt: { // ngày cập nhật
+        createdAt: {
             type: Date,
         },
-        createdAt: {// ngày cập nhật
-            type: Date,
-        },
-        createdBy: {// người cập nhật
+        createdBy: {
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
@@ -146,51 +135,73 @@ const CustomerSchema = new Schema({
             type: String
         }
     }],
-
-    updatedAt: { // ngày cập nhật
+    updatedAt: {
         type: Date,
     },
-    updatedBy: {// người cập nhật
+    updatedBy: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    note: { // ghi chú
+    note: {
         type: String,
-    }
-    ,
-    promotions: [{// tat ca danh sach khuyen mai cua khach hang 
-        code: { // Mã ưu đãi, cái này mới thêm khi làm chức năng thêm mã khuyến mãi cho nhóm KH, vì liên quan đến nhiều phần khác chưa sửa nên tạm thời để require = false
+    },
+    promotions: [{
+        code: {
             type: String,
-            require: false 
+            require: false
         },
-        value: { type: Number },
-        description: { type: String },
-        minimumOrderValue: { type: Number },
-        promotionalValueMax: { type: Number },
-        expirationDate:{type:Date},
-        status:{type:Number}
+        value: {
+            type: Number
+        },
+        description: {
+            type: String
+        },
+        minimumOrderValue: {
+            type: Number
+        },
+        promotionalValueMax: {
+            type: Number
+        },
+        expirationDate: {
+            type: Date
+        },
+        status: {
+            type: Number
+        }
     }],
-    canUsedPromotions: [{// danh sach khuyen mai con hieu luc, chua su dung cua khach hang 
-        code: { 
+    canUsedPromotions: [{
+        code: {
             type: String,
-            require: false 
+            require: false
         },
-        value: { type: Number },
-        description: { type: String },
-        minimumOrderValue: { type: Number },
-        promotionalValueMax: { type: Number },
-        expirationDate:{type:Date},
+        value: {
+            type: Number
+        },
+        description: {
+            type: String
+        },
+        minimumOrderValue: {
+            type: Number
+        },
+        promotionalValueMax: {
+            type: Number
+        },
+        expirationDate: {
+            type: Date
+        },
         exceptCustomer: [{
             type: Schema.Types.ObjectId,
             ref: "Customer"
         }],
-        status:{type:Number},
+        status: {
+            type: Number
+        },
         customerUsed: [{
             type: Schema.Types.ObjectId,
             ref: "Customer"
         }]
     }],
-    customerCareUnit: {// đơn vị CSKH
+    customerCareUnit: {
         type: Schema.Types.ObjectId,
         ref: "CustomerCareUnit",
     },
@@ -203,10 +214,7 @@ const CustomerSchema = new Schema({
     latePenaltyCost: {
         type: Number
     }
-
-}
-
-, {
+}, {
     timestamps: true,
 });
 
@@ -216,4 +224,4 @@ module.exports = (db) => {
     if (!db.models.Customer)
         return db.model('Customer', CustomerSchema);
     return db.models.Customer;
-}
+};

@@ -173,7 +173,7 @@ function GeneralTab(props) {
     setState((state) => {
       return {
         ...state,
-        isVehicle: value[0] == 'vehicle',
+        isVehicle: value[0] == 'vehicle' ? true : false,
         group: value[0]
       }
     })

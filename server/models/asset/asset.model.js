@@ -404,6 +404,14 @@ const AssetSchema = new Schema({
             ],
         },
     ],
+
+    costPerHour: {
+        type: Number
+    },
+    // Khả năng sử dụng
+    capacityValue: {
+        type: Number
+    }
     
 },{
     timestamps: true,

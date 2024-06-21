@@ -6,7 +6,7 @@ const MarketingCampaignSchema = new Schema(
   {
     code: {
       type: String,
-      required: true,
+      // required: true
     },
     cost: {
       type: Number,
@@ -19,7 +19,7 @@ const MarketingCampaignSchema = new Schema(
       type: String,
     },
     status: {
-      type: Number,
+      type: Boolean,
       default: 0,
     },
   },

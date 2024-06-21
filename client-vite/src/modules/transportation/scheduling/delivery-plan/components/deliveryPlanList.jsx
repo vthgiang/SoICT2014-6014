@@ -60,10 +60,12 @@ function DeliveryPlanList(props) {
                                 />
                             </th> */}
                             <th>Mã lộ trình</th>
-                            <th>Nhân viên giao hàng</th>
                             <th>Tổng chi phí (VNĐ)</th>
                             <th>Lợi nhuận (VNĐ)</th>
-                            <th>Ngày giao dự kiến</th>
+                            <th>Thời gian đi trung bình</th>
+                            <th>Số xe sử dụng</th>
+                            <th>Số lượng tài xế</th>
+                            <th>Tỷ lệ lấp đầy trung bình</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -71,13 +73,13 @@ function DeliveryPlanList(props) {
 
                         <tr >
                             <td>PLAN_01</td>
-                            <td>
-                                Nguyễn Văn Thắng
-                            </td>
                             <td>3500000</td>
                             {/* <td>{journey.data.totalDistance}</td> */}
                             <td>700000</td>
-                            <td>15/4/2023</td>
+                            <td>97.5 (phút/xe)</td>
+                            <td>2 xe</td>
+                            <td>2 người</td>
+                            <td>22.82%</td>
                             {/* <td>
                                 Chưa giao
                             </td> */}
@@ -94,13 +96,13 @@ function DeliveryPlanList(props) {
                         </tr>
                         <tr >
                             <td>PLAN_02</td>
-                            <td>
-                                Trần Văn An
-                            </td>
                             <td>3500000</td>
                             {/* <td>{journey.data.totalDistance}</td> */}
                             <td>700000</td>
-                            <td>15/4/2023</td>
+                            <td>87.3 (phút/xe)</td>
+                            <td>2 xe</td>
+                            <td>2 người</td>
+                            <td>22.82%</td>
                             {/* <td>
                                         Chưa giao
                                     </td> */}
