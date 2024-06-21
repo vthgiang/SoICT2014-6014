@@ -36,6 +36,14 @@ import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import AdsClickIcon from '@mui/icons-material/AdsClick';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import WebAssetIcon from '@mui/icons-material/WebAsset';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import PercentIcon from '@mui/icons-material/Percent';
 import * as XLSX from 'xlsx';
 import {
   Chart as ChartJS,
@@ -136,16 +144,16 @@ const MarketingCampaign = (props) => {
   const [layout, setLayout] = React.useState(() => {
     const layoutDefault = JSON.parse(localStorage.getItem('layout'));
     if (layoutDefault) return layoutDefault
-    return [{ i: 'a', x: 0, y: 0, w: 3, h: 3, minW: 0, maxW: 6 },
-    { i: 'b', x: 3, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'c', x: 6, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'd', x: 9, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'e', x: 12, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'f', x: 15, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'g', x: 18, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'i', x: 21, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'h', x: 0, y: 4, w: 15, h: 7, minW: 2, maxW: 24 },
-    { i: 'k', x: 15, y: 4, w: 9, h: 7, minW: 2, maxW: 24 },
+    return [{ i: 'a', x: 0, y: 0, w: 6, h: 3, minW: 0, maxW: 6 },
+    { i: 'b', x: 6, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'c', x: 12, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'd', x: 18, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'e', x: 0, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'f', x: 6, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'g', x: 12, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'i', x: 18, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'h', x: 0, y: 6, w: 15, h: 7, minW: 2, maxW: 24 },
+    { i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 },
     { i: 'm', x: 0, y: 13, w: 6, h: 6, minW: 2, maxW: 24 }
     ]
   }
@@ -210,12 +218,12 @@ const MarketingCampaign = (props) => {
         {
           label: 'Costs',
           data: costs,
-          backgroundColor: '#ff5252'
+          backgroundColor: '#d62728'
         },
         {
           label: 'Revenue',
           data: revenue,
-          backgroundColor: '#1976d2'
+          backgroundColor: '#1f77b4'
         }
       ]
     }
@@ -230,7 +238,7 @@ const MarketingCampaign = (props) => {
         {
           label: '% of Transactions',
           data: trans,
-          backgroundColor: ['#1976d2', '#ff5252', '#9ccc65'],
+          backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
           borderColor: ['#0d47a1', '#d50000', '#558b2f'],
           borderWidth: 1
         }
@@ -556,18 +564,36 @@ const MarketingCampaign = (props) => {
       </div>
       <GridLayout onLayoutChange={handleChangeLayout} className='layout' layout={layout} cols={24} rowHeight={30} width={1200} compactType={'vertical'}>
         <div key='a' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalCost >= 0 ? 'green' : 'red'}`}>
+              <AttachMoneyIcon
+                  sx={{
+                    height: '56px',
+                    width: '56px',
+                    color: '#ffff'
+                  }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Costs</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalCost ? formatNumber(marketingEffective.totalCost) : 0}</div>
             <div className={`campaign-manage-minicard-${percentChange?.totalCost >= 0 ? 'up' : 'down'}`}>
               {percentChange?.totalCost ? <>
                 {percentChange.totalCost >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalCost}
+                {percentChange.totalCost}%
                 </> : null}
             </div>
           </div>
         </div>
         <div key='b' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalClick >= 0 ? 'green' : 'red'}`}>
+              <AdsClickIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Clicks</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalClick ? formatNumber(marketingEffective.totalClick) : 0}
@@ -575,72 +601,127 @@ const MarketingCampaign = (props) => {
             <div className={`campaign-manage-minicard-${percentChange?.totalClick >= 0 ? 'up' : 'down'}`}>
               {percentChange?.totalClick ? <>
                 {percentChange.totalClick >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalClick}
+                {percentChange.totalClick}%
                 </> : null}
             </div>
           </div>
         </div>
         <div key='c' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalImpression >= 0 ? 'green' : 'red'}`}>
+        <VisibilityIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Impressions</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalImpression ? formatNumber(marketingEffective.totalImpression) : 0}</div>
             <div className={`campaign-manage-minicard-${percentChange?.totalImpression >= 0 ? 'up' : 'down'}`}>
               {percentChange?.totalImpression ? <>
                 {percentChange.totalImpression >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalImpression}
+                {percentChange.totalImpression}%
                 </> : null}
             </div>
           </div>
         </div>
         <div key='d' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalSession >= 0 ? 'green' : 'red'}`}>
+        <WebAssetIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Sessions</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalSession ? formatNumber(marketingEffective.totalSession) : 0}</div>
             <div className={`campaign-manage-minicard-${percentChange?.totalSession >= 0 ? 'up' : 'down'}`}>
               {percentChange?.totalSession ? <>
                 {percentChange.totalSession >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalSession}
+                {percentChange.totalSession}%
                 </> : null}
             </div>
           </div>
         </div>
         <div key='e' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalCPC <= 0 ? 'green' : 'red'}`}>
+        <PriceCheckIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> CPC</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalCost && marketingEffective?.totalClick ? formatNumber(marketingEffective.totalCost / marketingEffective.totalClick) : 0}</div>
             <div className={`campaign-manage-minicard-${percentChange?.totalCPC <= 0 ? 'up' : 'down'}`}>
               {percentChange?.totalCPC ? <>
                 {percentChange.totalCPC >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalCPC}
+                {percentChange.totalCPC}%
                 </> : null}
             </div>
           </div>
         </div>
         <div key='f' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalTransaction >= 0 ? 'green' : 'red'}`}>
+        <ReceiptIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Transactions</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalTransaction ? formatNumber(marketingEffective.totalTransaction) : 0}</div>
             <div className={`campaign-manage-minicard-${percentChange?.totalTransaction >= 0 ? 'up' : 'down'}`}>
               {percentChange?.totalTransaction ? <>
                 {percentChange.totalTransaction >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalTransaction}
+                {percentChange.totalTransaction}%
                 </> : null}
             </div>
           </div>
         </div>
         <div key='g' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalRevenue >= 0 ? 'green' : 'red'}`}>
+        <LocalAtmIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Revenue</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalRevenue ? formatNumber(marketingEffective.totalRevenue) : 0}</div>
             <div className={`campaign-manage-minicard-${percentChange?.totalRevenue >= 0 ? 'up' : 'down'}`}>
               {percentChange?.totalRevenue ? <>
                 {percentChange.totalRevenue >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalRevenue}
+                {percentChange.totalRevenue}%
                 </> : null}
             </div>
           </div>
         </div>
         <div key='i' className='item'>
+
+          <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalRoim >= 0 ? 'green' : 'red'}`}>
+          <PercentIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> ROIM</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalRevenue && marketingEffective?.totalCost ? formatNumber(marketingEffective.totalRevenue / marketingEffective.totalCost *100) : 0}%</div>
@@ -648,11 +729,12 @@ const MarketingCampaign = (props) => {
               <div className={`campaign-manage-minicard-${percentChange?.totalRoim >= 0 ? 'up' : 'down'}`}>
               {percentChange?.totalRoim ? <>
                 {percentChange.totalRoim >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalRoim}
+                {percentChange.totalRoim}%
                 </> : null}
             </div>
             </div>
           </div>
+
         </div>
 
         <div key='h' className='item campaign-manage-top-campaign'>
@@ -727,7 +809,7 @@ const MarketingCampaign = (props) => {
                     sx={{
                       height: '24px',
                       width: '24px',
-                      color: 'green',
+                      color: '#28a745',
                       marginRight: '10px'
                     }}
                   />
@@ -737,7 +819,7 @@ const MarketingCampaign = (props) => {
                       sx={{
                         height: '24px',
                         width: '24px',
-                        color: '#1976d2'
+                        color: '#1f77b4'
                       }}
                       onClick={()=> fetchMarketingEffectiveByCampaignId(row._id)}
                     />
@@ -762,9 +844,10 @@ const MarketingCampaign = (props) => {
         </Table>
       </TableContainer>
 
-      <ColorButton onClick={handleOpen} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
+      {/* <ColorButton onClick={handleOpen} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
         Quản lý chiến dịch
-      </ColorButton>
+      </ColorButton> */}
+      <button type="button" onClick={handleOpen} class="btn btn-success btn-on-right">Quản lý chiến dịch</button>
 
       <Modal open={open} onClose={handleClose} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
         <Box sx={{ ...style, width: 1000, maxHeight: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
@@ -824,7 +907,7 @@ const MarketingCampaign = (props) => {
                             sx={{
                               height: '24px',
                               width: '24px',
-                              color: '#1976d2'
+                              color: '#1f77b4'
                             }}
                           />
                         </Link>
@@ -890,8 +973,14 @@ const MarketingCampaign = (props) => {
                           />
                         </div>
                       </div>
-                      <button onClick={handleSubmitEdit}  className='submit-button'>Sửa</button>
+                      {/* <button onClick={handleSubmitEdit}  className='submit-button'>Sửa</button>
                       <button onClick={handleCloseEdit} className="close-button close-submit-button">
+                        Đóng
+                      </button> */}
+                      <button onClick={handleSubmitEdit} className="btn btn-success btn-on-right">
+                        Sửa
+                      </button>
+                      <button onClick={handleCloseEdit} className="btn btn-danger btn-on-right">
                         Đóng
                       </button>
                     </form>
@@ -902,9 +991,11 @@ const MarketingCampaign = (props) => {
           </div>
   
           <div className="button-container">
-          <ColorButton onClick={handleOpenAddCampaign} sx={{fontSize: 14, color: '#ffff' }} variant='contained'>
+          {/* <ColorButton onClick={handleOpenAddCampaign} sx={{fontSize: 14, color: '#ffff' }} variant='contained'>
             Thêm chiến dịch
-          </ColorButton>
+          </ColorButton> */}
+
+          <button type="button" onClick={handleOpenAddCampaign} class="btn btn-success">  Thêm chiến dịch</button>
             <Modal open={openAddCampaign} onClose={handleCloseAddCampaign} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
               <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
                 <CloseIcon 
@@ -955,24 +1046,25 @@ const MarketingCampaign = (props) => {
                       />
                     </div>
                   </div>
-                  <button onClick={handleSubmit} className='submit-button'>Thêm</button>
-                  <button onClick={handleCloseAddCampaign} className="close-button close-submit-button">
+                  {/* <button onClick={handleSubmit} className='submit-button'></button> */}
+                  <button type="button" onClick={handleSubmit} class="btn btn-success btn-on-right"> Thêm</button>
+                  <button onClick={handleCloseAddCampaign} className="btn btn-danger btn-on-right">
                     Đóng
-                  </button>
-                
+                  </button>                  
                 </form>
               
               </Box>
             </Modal>
-        <button onClick={handleClose} className="close-button">
+        <button onClick={handleClose} className="btn btn-danger">
           Đóng
         </button>
       </div>
         </Box>
       </Modal>
-      <ColorButton onClick={handleOpenForecast} sx={{ marginBottom: 2, marginTop: 2, marginLeft: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
+      {/* <ColorButton onClick={handleOpenForecast} sx={{ marginBottom: 2, marginTop: 2, marginLeft: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
         Dự báo
-      </ColorButton>
+      </ColorButton> */}
+       <button type="button" onClick={handleOpenForecast} class="btn btn-success btn-on-right">  Dự báo</button>
       <Modal open={openForecast} onClose={handleCloseForecast} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
         <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
           <ColorButton onClick={() => handleButtonClick('button1')} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>

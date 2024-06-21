@@ -60,6 +60,31 @@
   width: 150px; /* Set the width of the date picker */
 }
 
+.campaign-manage-minicard-image{
+  border-top-left-radius: 2px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 2px;
+  display: flex;  /* Chuyển từ block sang flex */
+  justify-content: center;  /* Căn giữa theo chiều ngang */
+  align-items: center;  /* Căn giữa theo chiều dọc */
+  height: 108px;
+  width: 108px;
+  text-align: center;  /* Chỉ cần nếu có text bên trong */
+  font-size: 45px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  float: left;  /* Giữ lại float nếu cần thiết cho layout */
+}
+
+.campaign-manage-minicard-image-green {
+  background-color: #28a745;
+}
+
+.campaign-manage-minicard-image-red {
+  background-color: #dc3545;
+}
+
 .campaign-manage-minicard {
   display: flex;
   flex-direction: column;
@@ -233,4 +258,9 @@ input:checked + .slider:before {
   bottom: 10px;
   right: 10px;
   font-size: 14px;
+}
+
+.btn-on-right{
+  margin-top: 20px;
+  margin-left: 20px;
 }

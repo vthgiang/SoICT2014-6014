@@ -48,7 +48,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       {
         label: '# of Votes',
         data: [marketingCampaignDetail?.totalPositiveRes, marketingCampaignDetail?.totalNegativeRes],
-        backgroundColor: ['#1976d2', '#ff5252'],
+        backgroundColor: ['#1f77b4', '#d62728'],
         borderColor: ['#0d47a1', '#d50000'],
         borderWidth: 1
       }
@@ -82,7 +82,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       },
       title: {
         display: true,
-        text: 'NE',
+        text: 'Age Group & Transaction',
         font: {
           size: 20,
           weight: 'bold'
@@ -123,12 +123,12 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       {
         label: 'New Customers',
         data: [2000, 1200, 3000, 4500, 6000, 2400, 3500],
-        backgroundColor: '#ff5252'
+        backgroundColor: '#d62728'
       },
       {
         label: 'Returning Customers',
         data: [1200, 3000, 2600, 4320, 5689, 3456, 6730],
-        backgroundColor: '#1976d2'
+        backgroundColor: '#1f77b4'
       }
     ]
   }
@@ -139,14 +139,14 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       {
         label: 'Sessions',
         data: [32000, 30500, 39000, 40000, 43000, 42000, 41500],
-        borderColor: '#ff5252',
-        backgroundColor: '#ff5252'
+        borderColor: '#d62728',
+        backgroundColor: '#d62728'
       },
       {
         label: 'Conversion',
         data: [30500, 28000, 31000, 31200, 38000, 41000, 38500],
-        borderColor: '#1976d2',
-        backgroundColor: '#1976d2'
+        borderColor: '#1f77b4',
+        backgroundColor: '#1f77b4'
       }
     ]
   }
@@ -157,7 +157,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       {
         label: 'New Customers',
         data: [2000, 1200, 3000, 4500, 6000, 2400, 3500],
-        backgroundColor: '#1976d2'
+        backgroundColor: '#1f77b4'
       }
     ]
   }
@@ -174,7 +174,8 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
               sx={{
                 '--CircularProgress-size': '160px',
                 '--CircularProgress-trackThickness': '10px',
-                '--CircularProgress-progressThickness': '7px'
+                '--CircularProgress-progressThickness': '7px',
+                '--CircularProgress-progressColor': '#1f77b4',
               }}
             >
               <div className='circular_progress_text_inside'>40%</div>
@@ -184,7 +185,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
         {/* <div key='e2' className='item'>
           <VisibilityIcon
             sx={{
-              color: '#1976d2',
+              color: '#1f77b4',
               fontSize: '40px',
               marginLeft: '-12px',
               marginRight: '4px'
@@ -198,7 +199,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
         <div key='e1' className='item'>
           <AttachMoneyIcon
             sx={{
-              color: '#1976d2',
+              color: '#1f77b4',
               fontSize: '48px',
               marginRight: '8px'
             }}
@@ -256,7 +257,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
         {/* <div key='c2' className='item'>
           <VisibilityIcon
             sx={{
-              color: '#1976d2',
+              color: '#1f77b4',
               fontSize: '40px',
               marginLeft: '-12px',
               marginRight: '4px'
@@ -270,7 +271,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
         <div key='c1' className='item'>
           <AttachMoneyIcon
             sx={{
-              color: '#1976d2',
+              color: '#1f77b4',
               fontSize: '48px',
               marginRight: '8px'
             }}
