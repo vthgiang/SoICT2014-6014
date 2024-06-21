@@ -36,7 +36,7 @@ export function requester(state = initState, action) {
     case RequesterConstants.GET_REQUESTERS_SUCCESS:
       return {
         ...state,
-        list: action.payload,
+        list: action.payload.data,
         isLoading: false
       }
 

@@ -13,7 +13,18 @@ function get(params) {
   )
 }
 
-function show(id) {
+function getAll() {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/requester/requesters-all`,
+      method: 'GET'
+    },
+    false,
+    true,
+    'super_admin.requester'
+  )
+}
+
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/requester/requesters/${id}`,
@@ -40,6 +51,6 @@ function edit(id, data) {
 
 export const RequesterServices = {
   get,
-  show,
+  getAll,
   edit
 }

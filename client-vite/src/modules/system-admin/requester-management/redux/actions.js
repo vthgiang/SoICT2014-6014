@@ -26,10 +26,29 @@ function get(params) {
 }
 
 /**
- * Lấy thông tin link theo id
- * @id id link
+ * Lấy danh sách tất cả các requesters của 1 công ty
  */
-function show(id) {
+function getAll() {
+  return (dispatch) => {
+    dispatch({
+      type: RequesterConstants.GET_REQUESTERS_REQUEST
+    })
+    RequesterServices.getAll()
+      .then((res) => {
+        dispatch({
+          type: RequesterConstants.GET_REQUESTERS_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RequesterConstants.GET_REQUESTERS_FAILE,
+          payload: err
+        })
+      })
+  }
+}
+
   return (dispatch) => {
     dispatch({
       type: RequesterConstants.SHOW_REQUESTER_REQUEST
@@ -78,6 +97,6 @@ function edit(id, link) {
 
 export const RequesterActions = {
   get,
-  show,
+  getAll,
   edit
 }

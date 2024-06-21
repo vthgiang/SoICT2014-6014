@@ -55,6 +55,20 @@ exports.find = async (portal, queryParams = {}) => {
   };
 }
 
+exports.findAll = async (portal) => {
+  const requesters = await Requester(connect(DB_CONNECTION, portal)).find();
+
+  return {
+    data: requesters.map(x => ({
+      id: x.id,
+      name: x.name,
+      attributes: x.attributes,
+      type: x.type,
+      refId: x.refId
+    }))
+  };
+}
+
 exports.findOne = async (portal, id) => {
   const existent = await Requester(connect(DB_CONNECTION, portal)).exists({
     _id: id,
