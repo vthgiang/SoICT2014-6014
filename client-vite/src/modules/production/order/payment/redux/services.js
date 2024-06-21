@@ -1,13 +1,7 @@
-import { sendRequest } from '../../../../../helpers/requestHelper'
+import { sendRequest } from '../../../../../helpers/requestHelper';
 
-export const PaymentServices = {
-  createPayment,
-  getAllPayments,
-  getPaymentDetail,
-  getPaymentForOrder
-}
-
-function createPayment(data) {
+// Payment services
+const createPayment = (data) => {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/payment`,
@@ -17,10 +11,10 @@ function createPayment(data) {
     true,
     true,
     'manage_order.payment'
-  )
-}
+  );
+};
 
-function getAllPayments(queryData) {
+const getAllPayments = (queryData) => {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/payment`,
@@ -30,10 +24,10 @@ function getAllPayments(queryData) {
     false,
     true,
     'manage_order.payment'
-  )
-}
+  );
+};
 
-function getPaymentDetail(id) {
+const getPaymentDetail = (id) => {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/payment/${id}`,
@@ -42,11 +36,10 @@ function getPaymentDetail(id) {
     false,
     true,
     'manage_order.payment'
-  )
-}
+  );
+};
 
-// Lấy các thanh toán cho đơn hàng
-function getPaymentForOrder({ orderId, orderType }) {
+const getPaymentForOrder = ({ orderId, orderType }) => {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/payment/get-for-order`,
@@ -56,5 +49,124 @@ function getPaymentForOrder({ orderId, orderType }) {
     false,
     true,
     'manage_order.payment'
-  )
-}
+  );
+};
+
+// Tax services
+const createNewTax = (data) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/tax`,
+      method: 'POST',
+      data
+    },
+    true,
+    true,
+    'manage_order.tax'
+  );
+};
+
+const getAllTaxs = (queryData) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/tax`,
+      method: 'GET',
+      params: queryData
+    },
+    false,
+    true,
+    'manage_order.tax'
+  );
+};
+
+const getTaxById = (id) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/tax/${id}`,
+      method: 'GET'
+    },
+    false,
+    true,
+    'manage_order.tax'
+  );
+};
+
+const updateTax = (id, data) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/tax/${id}`,
+      method: 'PATCH',
+      data
+    },
+    true,
+    true,
+    'manage_order.tax'
+  );
+};
+
+const disableTax = (id) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/tax/disable/${id}`,
+      method: 'PATCH'
+    },
+    true,
+    true,
+    'manage_order.tax'
+  );
+};
+
+const checkTaxCode = (code) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/tax/check-code`,
+      method: 'GET',
+      params: { code }
+    },
+    false,
+    true,
+    'manage_order.tax'
+  );
+};
+
+const getTaxByCode = (code) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/tax/get-by-code`,
+      method: 'GET',
+      params: { code }
+    },
+    false,
+    true,
+    'manage_order.tax'
+  );
+};
+
+const deleteTax = (code) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/tax`,
+      method: 'DELETE',
+      params: { code }
+    },
+    true,
+    true,
+    'manage_order.tax'
+  );
+};
+
+// Export all services at the end
+export const PaymentServices = {
+  createPayment,
+  getAllPayments,
+  getPaymentDetail,
+  getPaymentForOrder,
+  createNewTax,
+  getAllTaxs,
+  getTaxById,
+  updateTax,
+  disableTax,
+  checkTaxCode,
+  getTaxByCode,
+  deleteTax
+};

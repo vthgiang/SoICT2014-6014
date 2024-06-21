@@ -4,6 +4,8 @@ import { withTranslate } from 'react-redux-multilingual'
 
 import PaymentVoucher from './payment-voucher/index'
 import ReceiptVoucher from './receipt-voucher/index'
+import Tax from './tax/index'
+import Profit from './profit/index'   
 
 function Payment(props) {
   const [state, setState] = useState({
@@ -31,12 +33,24 @@ function Payment(props) {
             {'Phiếu chi'}
           </a>
         </li>
+        <li>
+          <a href='#taxs' data-toggle='tab' onClick={() => handleChangeType(3)}>
+            {'Thuế'}
+          </a>
+        </li>
+        <li>
+          <a href='#profit' data-toggle='tab' onClick={() => handleChangeType(4)}>
+            {'Lợi nhuận'}
+          </a>
+        </li>
       </ul>
       {/* Phiếu thu */}
       {type === 1 && <ReceiptVoucher />}
 
       {/* Phiếu chi */}
       {type === 2 && <PaymentVoucher />}
+      {type===3 && <Tax /> }
+      {type===4 & <Profit />}
     </div>
   )
 }

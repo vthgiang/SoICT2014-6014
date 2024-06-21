@@ -1242,34 +1242,34 @@ exports.links = [
         url: '/forecast-sales-order',
         apis: ['@all'],
     },
-    {
-        url: '/manage-purchase-order',
-        apis: ['@all'],
-    },
-    {
-        url: '/manage-quote',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-purchase-order',
+    //     apis: ['@all'],
+    // },
+    // {
+    //     url: '/manage-quote',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-sales-order-dashboard',
         apis: ['@all'],
     },
-    {
-        url: '/manage-profit',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-profit',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-discount',
         apis: ['@all'],
     },
-    {
-        url: '/manage-tax',
-        apis: ['@all'],
-    },
-    {
-        url: '/manage-sla',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-tax',
+    //     apis: ['@all'],
+    // },
+    // {
+    //     url: '/manage-sla',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-payment',
         apis: ['@all'],

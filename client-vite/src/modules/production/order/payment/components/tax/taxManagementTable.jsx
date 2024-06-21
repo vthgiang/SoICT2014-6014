@@ -1,12 +1,12 @@
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { TaxActions } from '../redux/actions'
-import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from '../../../../../common-components'
+import { PaymentActions } from '../../redux/actions'
+import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from '../../../../../../common-components'
 import TaxCreateForm from './taxCreateForm'
 import TaxDetailForm from './taxDetailForm'
 import TaxEditForm from './taxEditForm'
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration'
 
 function TaxManagementTable(props) {
   const TableId = 'tax-manager-table'
@@ -279,9 +279,9 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  getAllTaxs: TaxActions.getAllTaxs,
-  disableTax: TaxActions.disableTax,
-  deleteTax: TaxActions.deleteTax
+  getAllTaxs: PaymentActions.getAllTaxs,
+  disableTax: PaymentActions.disableTax,
+  deleteTax: PaymentActions.deleteTax
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaxManagementTable))
