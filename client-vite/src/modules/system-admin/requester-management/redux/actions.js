@@ -2,7 +2,7 @@ import { RequesterServices } from './services'
 import { RequesterConstants } from './constants'
 
 /**
- * Lấy danh sách tất cả các link của 1 công ty
+ * Lấy danh sách các requester của 1 công ty, có paging, có search
  */
 function get(params) {
   return (dispatch) => {
@@ -49,11 +49,16 @@ function getAll() {
   }
 }
 
+/**
+ * Lấy thông tin chi tiết của requester theo id
+ * @id id requester
+ */
+function getById(id) {
   return (dispatch) => {
     dispatch({
       type: RequesterConstants.SHOW_REQUESTER_REQUEST
     })
-    RequesterServices.show(id)
+    RequesterServices.getById(id)
       .then((res) => {
         dispatch({
           type: RequesterConstants.SHOW_REQUESTER_SUCCESS,
@@ -70,16 +75,16 @@ function getAll() {
 }
 
 /**
- * Chỉnh sửa link
- * @id id link
- * @link dữ liệu về link
+ * Chỉnh sửa requester
+ * @id id requester
+ * @requester dữ liệu về requester
  */
-function edit(id, link) {
+function edit(id, requester) {
   return (dispatch) => {
     dispatch({
       type: RequesterConstants.EDIT_REQUESTER_REQUEST
     })
-    RequesterServices.edit(id, link)
+    RequesterServices.edit(id, requester)
       .then((res) => {
         dispatch({
           type: RequesterConstants.EDIT_REQUESTER_SUCCESS,
@@ -98,5 +103,6 @@ function edit(id, link) {
 export const RequesterActions = {
   get,
   getAll,
+  getById,
   edit
 }

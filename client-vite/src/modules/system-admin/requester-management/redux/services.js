@@ -25,6 +25,7 @@ function getAll() {
   )
 }
 
+function getById(id) {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/requester/requesters/${id}`,
@@ -52,5 +53,6 @@ function edit(id, data) {
 export const RequesterServices = {
   get,
   getAll,
+  getById,
   edit
 }

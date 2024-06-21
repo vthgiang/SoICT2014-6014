@@ -26,7 +26,7 @@ export function requester(state = initState, action) {
   switch (action.type) {
     case RequesterConstants.GET_REQUESTERS_REQUEST:
     case RequesterConstants.GET_REQUESTERS_PAGINATE_REQUEST:
-    case RequesterConstants.SHOW_REQUESTER_REQUEST:
+    case RequesterConstants.GET_REQUESTER_BY_ID_REQUEST:
     case RequesterConstants.CREATE_REQUESTER_REQUEST:
     case RequesterConstants.EDIT_REQUESTER_REQUEST:
       return {
@@ -49,7 +49,7 @@ export function requester(state = initState, action) {
         isLoading: false
       }
 
-    case RequesterConstants.SHOW_REQUESTER_SUCCESS:
+    case RequesterConstants.GET_REQUESTER_BY_ID_SUCCESS:
       return {
         ...state,
         item: action.payload,
@@ -80,7 +80,7 @@ export function requester(state = initState, action) {
 
     case RequesterConstants.GET_REQUESTERS_FAILE:
     case RequesterConstants.GET_REQUESTERS_PAGINATE_FAILE:
-    case RequesterConstants.SHOW_REQUESTER_FAILE:
+    case RequesterConstants.GET_REQUESTER_BY_ID_FAILE:
     case RequesterConstants.CREATE_REQUESTER_FAILE:
     case RequesterConstants.EDIT_REQUESTER_FAILE:
       return {
