@@ -301,7 +301,7 @@ const proposalForProjectWithDLHS = (job, kpiInPast, allTasksOutOfProject, DLHS_A
   let checkResult = checkHasAvailableSolution(job.tasks, job?.willStartDate, job?.willEndDate, allTasksOutOfProject)
 
   if (checkResult?.isHasAvailableSolution === false && checkResult?.error_code) {
-    throw [error_code]
+    throw [checkResult?.error_code]
   }
   // return {
   //   job

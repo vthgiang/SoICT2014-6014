@@ -968,7 +968,7 @@ const ProjectTasksTab = (props) => {
                           <SelectBox
                             id={`${actionType}-require-asset-type-select-box-${currentIndex}-${requireAsset?.currentAssetType}-${projectId}`}
                             className='form-control select'
-                            style={{ width: '100%' }}
+                            // style={{ width: '100%' }}
                             items={fakeAssetRequireTypes}
                             value={requireAsset?.currentAssetRequireType}
                             onChange={(e) => handleChangeCurrentTaskAssetTypeOrCapacity(e, 'currentAssetRequireType')}
@@ -980,6 +980,7 @@ const ProjectTasksTab = (props) => {
                           <a className={`save ${'text-green'}`}
                             title={translate('general.save')}
                             onClick={handleAddAssetInCurrentTask}
+                            style={{ width: '100%' }}
                           >
                             <i className='material-icons'>add_circle</i>
                           </a>

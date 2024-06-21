@@ -2958,7 +2958,7 @@ const days = [
         },
         {
           startDate: new Date('2024-07-21T02:00:00.000Z'),
-          endDate: new Date('2024-08-01T08:00:00.000Z')
+          endDate: new Date('2024-08-01T02:00:00.000Z')
         },
         {
           startDate: new Date('2024-08-01T02:00:00.000Z'),
@@ -3513,12 +3513,7 @@ const days = [
       capacityValue: 3
     },
   ])
-
-
-
-
-
-
+  
   systemDB.close();
   vnistDB.close();
   console.log("@End init software unit database!");

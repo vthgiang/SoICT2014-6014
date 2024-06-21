@@ -12,6 +12,9 @@ import ProposalScheduleGanttEmployee from "./proposalScheduleGanttEmployee";
 import KpiBarChart from "./kpiStatistic";
 import ProposalScheduleGanttAsset from "./proposalScheduleGanttAsset";
 import ProposalScheduleGanttTask from "./proposalScheduleGanttTask";
+import { ProjectCreateEditForm } from "../../project-create/components/projectCreateEditForm";
+import { TASK_ACTION_TYPE } from "../../project-create/components/consts";
+import { PROJECT_ACTION_FORM } from "../../projects/constants";
 
 function ProjectProposalPage(props) {
   const formatCurrencyVND = (amount) => {
@@ -46,6 +49,7 @@ function ProjectProposalPage(props) {
   })
   const [algorithm, setAlgorithm] = useState()
   const [isShowPrevProposal, setIsShowPrevProposal] = useState(false)
+  const [isShowPreviewProject, setIsShowPreviewProject] = useState(false)
   const [scheduleType, setScheduleType] = useState(scheduleOptions[0]?.value)
   const [isShowShedule, setIsShowSchedule] = useState(false)
 
@@ -202,7 +206,9 @@ function ProjectProposalPage(props) {
   };
 
   // console.log('proposals: ', proposals)
-
+  const handleUpdateProject = () => {
+    console.log("udpate")
+  }
   return (
     <React.Fragment>
       <div className="box">
@@ -258,6 +264,62 @@ function ProjectProposalPage(props) {
             </div>
             {/* </div> */}
           </form>
+          <div>
+            {currentProject && currentProject?._id && (
+              <div>
+                <a 
+                  className="inline-block mt-8 cursor-pointer ml-2" 
+                  onClick={() => setIsShowPreviewProject((prev) => !prev)}
+                  aria-haspopup="true"
+                  aria-expanded="true"
+                >
+                  <div className="flex items-center">
+                    <span>{isShowPreviewProject ? 'Ẩn thông tin dự án' : 'Xem thông tin dự án'}</span>
+                    {isShowPreviewProject ? (
+                      <svg
+                        className="-mr-1 ml-2 h-5 w-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 12.707a1 1 0 001.414 0L10 9.414l3.293 3.293a1 1 0 001.414-1.414l-4-4a1 1 0 00-1.414 0l-4 4a1 1 0 000 1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="-mr-1 ml-2 h-5 w-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </a> 
+                {isShowPreviewProject && 
+                  <div>
+                    <ProjectCreateEditForm 
+                      actionType={PROJECT_ACTION_FORM.EDIT}
+                      projectEdit={currentProject}
+                      projectEditId={currentProject?._id}
+                      submitFunction={props.editProjectDispatch}
+                      />
+                  </div>
+                }
+              </div>
+            )}
+          
+          </div>
           {!isLoading && proposals && proposals?.assignment?.length && 
             <a 
               className="inline-block mt-8 cursor-pointer ml-2" 
@@ -447,7 +509,8 @@ function mapState(state) {
 
 const actions = {
   getProjectsDispatch: ProjectActions.getProjectsDispatch,
-  proposalForProjectDispatch: ProjectProposalActions.proposalForProjectDispatch
+  proposalForProjectDispatch: ProjectProposalActions.proposalForProjectDispatch,
+  editProjectDispatch: ProjectActions.editProjectDispatch,
 }
 
 export default connect(mapState, actions)(withTranslate(ProjectProposalPage))

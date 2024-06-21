@@ -22,10 +22,11 @@ exports.proposalForProject = async (req, res) => {
         content: null
       })
     } else {
+      console.log("error: ", error)
       await Logger.error(req.user.email, error[0], req.portal)
       res.status(400).json({
         success: false,
-        messages: Array.isArray(error) ? error : ['proposal_project_fail'],
+        messages: error ? error : ['proposal_project_fail'],
         content: null
       })
     }
