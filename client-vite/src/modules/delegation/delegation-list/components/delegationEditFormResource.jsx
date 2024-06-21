@@ -103,18 +103,13 @@ export function DelegationEditFormResource(props) {
     return true
   }
 
-  const requesters = useSelector((x) => x.requester?.listPaginate)
+  const requesters = useSelector((x) => x.requester?.list)
   const auth = useSelector((x) => x.auth)
   const delegationPolicies = useSelector((x) => x.policyDelegation.listPaginate)
 
   useEffect(() => {
     if (!requesters.length) {
-      dispatch(
-        RequesterActions.get({
-          page: 1,
-          perPage: 10000
-        })
-      )
+      dispatch(RequesterActions.getAll())
     }
 
     if (!delegationPolicies.length) {
