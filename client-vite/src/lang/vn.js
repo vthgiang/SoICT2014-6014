@@ -209,7 +209,8 @@ export default {
       bill_management: 'Quản lý thông tin phiếu',
       inventory_management: 'Quản lý lô hàng',
       storage_management: 'Quản lý thông tin lưu trữ',
-
+      route_picking_management: "Quản lý tuyến đường lấy hàng",
+      
       manage_kpi_unit: 'KPI đơn vị',
       manage_kpi_personal: 'KPI cá nhân',
       kpi_unit_create: 'Khởi tạo KPI đơn vị',

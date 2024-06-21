@@ -1229,6 +1229,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/route-picking-management',
+        apis: ['@all'],
+    },
+    {
         url: '/manage-sales-order',
         apis: ['@all'],
     },

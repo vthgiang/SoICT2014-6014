@@ -776,7 +776,7 @@ function applicationLayout() {
                 {type: 'left', size: '50%', resizable: true, style: pstyle},  	//Data Analyzer
                 {type: 'main', resizable: true, style: pstyle},					//Warehouse GRID
                 {type: 'preview', size: '75%', resizable: true},  				//The display panel for the image
-                {type: 'right', resizable: true, style: pstyle}		//Scale Control
+                // {type: 'right', resizable: true, style: pstyle}		//Scale Control
             ] //panels
         }
 

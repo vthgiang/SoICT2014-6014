@@ -147,7 +147,7 @@ const BillManagement = lazy(() => import('../modules/production/warehouse/bill-m
 const InventoryManagement = lazy(() => import('../modules/production/warehouse/inventory-management/components'))
 const StockRequestManagement = lazy(() => import('../modules/production/warehouse/request-management/components'))
 const StogareManagement = lazy(() => import('../modules/production/warehouse/storage-management/components'))
-
+const RoutePickingManagement = lazy(() => import('../modules/production/warehouse/route-picking-management/components'))
 // Customer Management
 const CrmDashBoard = lazy(() => import('../modules/crm/dashboard/components'))
 const CrmDashBoardUnit = lazy(() => import('../modules/crm/crmUnitDashboard/components'))
@@ -2746,7 +2746,25 @@ class Routes extends Component {
             layout={Layout}
             component={StogareManagement}
           />
-
+          <PrivateRoute
+            isLoading={false}
+            key='route-picking-management'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/route-picking-management',
+                name: 'route_picking_management',
+                icon: 'fa fa-cube'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/route-picking-management'
+            path='/route-picking-management'
+            pageName='route_picking_management'
+            layout={Layout}
+            component={RoutePickingManagement}
+          />
           {/* end warehouse route */}
 
           <PrivateRoute
