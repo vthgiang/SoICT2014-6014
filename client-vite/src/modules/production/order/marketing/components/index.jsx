@@ -16,6 +16,7 @@ import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
+import { DialogModal, ErrorLabel } from '../../../../../common-components'
 import { Link } from 'react-router-dom'
 import { green } from '@mui/material/colors'
 import TextField from '@mui/material/TextField'
@@ -34,6 +35,15 @@ import BatchPredictionIcon from '@mui/icons-material/BatchPrediction';
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import AdsClickIcon from '@mui/icons-material/AdsClick';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import WebAssetIcon from '@mui/icons-material/WebAsset';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import PercentIcon from '@mui/icons-material/Percent';
 import * as XLSX from 'xlsx';
 import {
   Chart as ChartJS,
@@ -51,7 +61,8 @@ import { Bar, Doughnut } from 'react-chartjs-2'
 import { sendRequest } from '../../../../../helpers/requestHelper';
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import MarketingEffeciveChanneTablel from './MarketingEffeciveChanneTablel';
+import MarketingEffeciveChannelTable from './MarketingEffeciveChannelTable';
+import MarketingCampaignDetail from './CampaignDetail';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
@@ -133,16 +144,16 @@ const MarketingCampaign = (props) => {
   const [layout, setLayout] = React.useState(() => {
     const layoutDefault = JSON.parse(localStorage.getItem('layout'));
     if (layoutDefault) return layoutDefault
-    return [{ i: 'a', x: 0, y: 0, w: 3, h: 3, minW: 0, maxW: 6 },
-    { i: 'b', x: 3, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'c', x: 6, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'd', x: 9, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'e', x: 12, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'f', x: 15, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'g', x: 18, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'i', x: 21, y: 0, w: 3, h: 3, minW: 2, maxW: 6 },
-    { i: 'h', x: 0, y: 4, w: 15, h: 7, minW: 2, maxW: 24 },
-    { i: 'k', x: 15, y: 4, w: 9, h: 7, minW: 2, maxW: 24 },
+    return [{ i: 'a', x: 0, y: 0, w: 6, h: 3, minW: 0, maxW: 6 },
+    { i: 'b', x: 6, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'c', x: 12, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'd', x: 18, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'e', x: 0, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'f', x: 6, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'g', x: 12, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'i', x: 18, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
+    { i: 'h', x: 0, y: 6, w: 15, h: 7, minW: 2, maxW: 24 },
+    { i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 },
     { i: 'm', x: 0, y: 13, w: 6, h: 6, minW: 2, maxW: 24 }
     ]
   }
@@ -150,6 +161,12 @@ const MarketingCampaign = (props) => {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const [openAddCampaign, setOpenAddCampaign] = React.useState(false)
+  const handleOpenAddCampaign = () => setOpenAddCampaign(true)
+  const handleCloseAddCampaign = () => setOpenAddCampaign(false)
+  const [openDetail, setOpenDetail] = React.useState(false)
+  const handleOpenDetail = () => setOpenDetail(true)
+  const handleCloseDetail = () => setOpenDetail(false)
   const [openForecast, setOpenForecast] = React.useState(false)
   const handleOpenForecast = () => setOpenForecast(true)
   const handleCloseForecast = () => setOpenForecast(false)
@@ -171,22 +188,7 @@ const MarketingCampaign = (props) => {
   };
   const { translate } = props
   const labels = ['Facebook', 'Google', 'Tiktok']
-  // const labelSwitch = { inputProps: { 'aria-label': 'Open/Close' } };
-  const data_channel_ROIM = {
-    labels,
-    datasets: [
-      {
-        label: 'Costs',
-        data: [125254, 96234, 90100],
-        backgroundColor: '#ff5252'
-      },
-      {
-        label: 'Revenue',
-        data: [120256, 60234, 50356],
-        backgroundColor: '#1976d2'
-      }
-    ]
-  }
+
   const optionsBar = {
     responsive: true,
     plugins: {
@@ -205,17 +207,43 @@ const MarketingCampaign = (props) => {
     }
   }
 
-  const data_channel_transaction = {
-    labels: ['Facebook', 'Google', 'Tiktok'],
-    datasets: [
-      {
-        label: '% of Transactions',
-        data: [4000, 356, 480],
-        backgroundColor: ['#1976d2', '#ff5252', '#9ccc65'],
-        borderColor: ['#0d47a1', '#d50000', '#558b2f'],
-        borderWidth: 1
-      }
-    ]
+  const convertDataBar = (data) => {
+    const channels = data.length > 0 && data.map(item => item._id);
+    const costs = data.length > 0 && data.map(item => item.totalCost);
+    const revenue = data.length > 0 && data.map(item => item.totalRevenue);
+
+    return {
+      labels: channels,
+      datasets: [
+        {
+          label: 'Costs',
+          data: costs,
+          backgroundColor: '#d62728'
+        },
+        {
+          label: 'Revenue',
+          data: revenue,
+          backgroundColor: '#1f77b4'
+        }
+      ]
+    }
+  }
+  const convertDataChannelTrans = (data) => {
+    const channels = data.length > 0 && data.map(item => item._id);
+    const trans = data.length > 0 && data.map(item => item.totalTransaction);
+
+    return {
+      labels: channels,
+      datasets: [
+        {
+          label: '% of Transactions',
+          data: trans,
+          backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
+          borderColor: ['#0d47a1', '#d50000', '#558b2f'],
+          borderWidth: 1
+        }
+      ]
+    }
   }
 
   const options = [
@@ -229,6 +257,8 @@ const MarketingCampaign = (props) => {
     endDate: null
   })
   const [marketingCampaign, setMarketingCampaign] = React.useState([])
+  const [percentChange, setPercentChange] = React.useState({})
+  const [marketingCampaignDetail, setMarketingCampaignDetail] = React.useState(null)
   const [isLoadingTopCampaign, setIsLoadingTopCampaign] = React.useState(false)
   const [topMarketingCampaign, setTopMarketingCampaign] = React.useState([])
   const [isLoading, setIsLoading] = React.useState(false)
@@ -259,10 +289,8 @@ const MarketingCampaign = (props) => {
       setChannel('Facebook');
       fetchMarketingCampaign();
     }
-
+    setOpenAddCampaign(false)
   }
-  //  const data =  MarketingCampaignServices.createMarketingCampaign({name, cost, channel})
-
   // onchange states
   const [excelFile, setExcelFile] = useState(null);
   const [typeError, setTypeError] = useState(null);
@@ -336,23 +364,6 @@ const MarketingCampaign = (props) => {
     setIsLoadingTopCampaign(false)
   }
 
-  // const fetchMarketingEffective = async () => {
-  //   setIsLoading(true)
-  //   const response = await sendRequest(
-  //     {
-  //       url: `${process.env.REACT_APP_SERVER}/marketing-effective`,
-  //       method: 'GET',
-  //     },
-  //     false,
-  //     false,
-  //     'marketing-effective'
-  //   )
-  //   if (response.status === 200) {
-  //     setMarketingEffective(response.data.content[0])
-  //   }
-  //   setIsLoading(false)
-  // }
-
   const fetchMarketingEffective = async () => {
     try {
       setIsLoading(true);
@@ -376,7 +387,8 @@ const MarketingCampaign = (props) => {
       );
 
       if (response.status === 200) {
-        setMarketingEffective(response.data.content[0]);
+        setMarketingEffective(response.data.content.currentTotals);
+        setPercentChange(response.data.content.percentageChanges)
       }
     } catch (error) {
       console.error('Error fetching marketing effective:', error);
@@ -384,6 +396,46 @@ const MarketingCampaign = (props) => {
       setIsLoading(false);
     }
   };
+
+  const [isLoadingMarketingChanel, setIsLoadingMarketingChanel] = React.useState(false)
+  const [marketingEffectiveChannel, setMarketingCampaignChannel] = React.useState([])
+  const fetchMarketingEffectiveChannel = async () => {
+    setIsLoadingMarketingChanel(true)
+      const response = await sendRequest(
+          {
+              url: `${process.env.REACT_APP_SERVER}/marketing-effective/channel`,
+              method: 'GET',
+          },
+          false,
+          false,
+          'marketing-effective'
+      )
+      if (response.status === 200) {
+          setMarketingCampaignChannel(response.data.content)
+      }
+      setIsLoadingMarketingChanel(false)
+  }
+  const fetchMarketingEffectiveByCampaignId = async (id) => {
+      const response = await sendRequest(
+          {
+              url: `${process.env.REACT_APP_SERVER}/marketing-effective/${id}`,
+              method: 'GET',
+          },
+          false,
+          false,
+          'marketing-effective'
+      )
+
+      console.log('response', response)
+      if (response.status === 200) {
+          setMarketingCampaignDetail(response.data.content[0])
+          setOpenDetail(true)
+      }
+  }
+
+  React.useEffect(() => {
+      fetchMarketingEffectiveChannel()
+  }, [])
 
   React.useEffect(() => {
     fetchMarketingCampaign()
@@ -446,13 +498,11 @@ const MarketingCampaign = (props) => {
     const formattedEndDate = moment(date.endDate, 'DD-MM-YYYY').format('DD-MM-YYYY');
 
     if (field == 'startDate' && moment(formattedValue).isAfter(formattedEndDate)) {
-      console.log('a')
       setDate({
         startDate: formattedEndDate,
         endDate: formattedValue
       });
     } else if (field == 'endDate' && moment(formattedValue).isBefore(formattedStartDate)) {
-      console.log('b')
       setDate({
         startDate: formattedValue,
         endDate: formattedStartDate
@@ -481,6 +531,8 @@ const MarketingCampaign = (props) => {
       fetchMarketingCampaign()
       setOpenEdit(false)
     }
+
+    setOpenEdit(false)
   }
 
   const handleChangeLayout = (e) => {
@@ -512,95 +564,187 @@ const MarketingCampaign = (props) => {
       </div>
       <GridLayout onLayoutChange={handleChangeLayout} className='layout' layout={layout} cols={24} rowHeight={30} width={1200} compactType={'vertical'}>
         <div key='a' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalCost >= 0 ? 'green' : 'red'}`}>
+              <AttachMoneyIcon
+                  sx={{
+                    height: '56px',
+                    width: '56px',
+                    color: '#ffff'
+                  }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Costs</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalCost ? formatNumber(marketingEffective.totalCost) : 0}</div>
-            <div className='campaign-manage-minicard-down'>
-              <ArrowDownwardIcon className='campaign-manage-minicard-icon' />
-              -1.5%
+            <div className={`campaign-manage-minicard-${percentChange?.totalCost >= 0 ? 'up' : 'down'}`}>
+              {percentChange?.totalCost ? <>
+                {percentChange.totalCost >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                {percentChange.totalCost}%
+                </> : null}
             </div>
           </div>
         </div>
         <div key='b' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalClick >= 0 ? 'green' : 'red'}`}>
+              <AdsClickIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Clicks</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalClick ? formatNumber(marketingEffective.totalClick) : 0}
             </div>
-            <div className='campaign-manage-minicard-down'>
-              <ArrowDownwardIcon className='campaign-manage-minicard-icon' />
-              -5.9%
+            <div className={`campaign-manage-minicard-${percentChange?.totalClick >= 0 ? 'up' : 'down'}`}>
+              {percentChange?.totalClick ? <>
+                {percentChange.totalClick >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                {percentChange.totalClick}%
+                </> : null}
             </div>
           </div>
         </div>
         <div key='c' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalImpression >= 0 ? 'green' : 'red'}`}>
+        <VisibilityIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Impressions</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalImpression ? formatNumber(marketingEffective.totalImpression) : 0}</div>
-            <div className='campaign-manage-minicard-down'>
-              <ArrowDownwardIcon className='campaign-manage-minicard-icon' />
-              -5.4%
+            <div className={`campaign-manage-minicard-${percentChange?.totalImpression >= 0 ? 'up' : 'down'}`}>
+              {percentChange?.totalImpression ? <>
+                {percentChange.totalImpression >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                {percentChange.totalImpression}%
+                </> : null}
             </div>
           </div>
         </div>
         <div key='d' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalSession >= 0 ? 'green' : 'red'}`}>
+        <WebAssetIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Sessions</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalSession ? formatNumber(marketingEffective.totalSession) : 0}</div>
-            <div className='campaign-manage-minicard-down'>
-              <ArrowDownwardIcon className='campaign-manage-minicard-icon' />
-              -6.75%
+            <div className={`campaign-manage-minicard-${percentChange?.totalSession >= 0 ? 'up' : 'down'}`}>
+              {percentChange?.totalSession ? <>
+                {percentChange.totalSession >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                {percentChange.totalSession}%
+                </> : null}
             </div>
           </div>
         </div>
         <div key='e' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalCPC <= 0 ? 'green' : 'red'}`}>
+        <PriceCheckIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> CPC</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalCost && marketingEffective?.totalClick ? formatNumber(marketingEffective.totalCost / marketingEffective.totalClick) : 0}</div>
-            <div className='campaign-manage-minicard-up'>
-              <ArrowDownwardIcon className='campaign-manage-minicard-icon' />
-              2.5%
+            <div className={`campaign-manage-minicard-${percentChange?.totalCPC <= 0 ? 'up' : 'down'}`}>
+              {percentChange?.totalCPC ? <>
+                {percentChange.totalCPC >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                {percentChange.totalCPC}%
+                </> : null}
             </div>
           </div>
         </div>
         <div key='f' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalTransaction >= 0 ? 'green' : 'red'}`}>
+        <ReceiptIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Transactions</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalTransaction ? formatNumber(marketingEffective.totalTransaction) : 0}</div>
-            <div className='campaign-manage-minicard-down'>
-              <ArrowDownwardIcon className='campaign-manage-minicard-icon' />
-              -6.0%
+            <div className={`campaign-manage-minicard-${percentChange?.totalTransaction >= 0 ? 'up' : 'down'}`}>
+              {percentChange?.totalTransaction ? <>
+                {percentChange.totalTransaction >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                {percentChange.totalTransaction}%
+                </> : null}
             </div>
           </div>
         </div>
         <div key='g' className='item'>
+        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalRevenue >= 0 ? 'green' : 'red'}`}>
+        <LocalAtmIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> Revenue</div>
             <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalRevenue ? formatNumber(marketingEffective.totalRevenue) : 0}</div>
-            <div className='campaign-manage-minicard-up'>
-              <ArrowUpwardIcon className='campaign-manage-minicard-icon' />
-              -0.4%
+            <div className={`campaign-manage-minicard-${percentChange?.totalRevenue >= 0 ? 'up' : 'down'}`}>
+              {percentChange?.totalRevenue ? <>
+                {percentChange.totalRevenue >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                {percentChange.totalRevenue}%
+                </> : null}
             </div>
           </div>
         </div>
         <div key='i' className='item'>
+
+          <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalRoim >= 0 ? 'green' : 'red'}`}>
+          <PercentIcon 
+                     sx={{
+                      height: '56px',
+                      width: '56px',
+                      color: '#ffff'
+                    }}
+              />
+          </span>
           <div className='campaign-manage-minicard'>
             <div className='campaign-manage-minicard-label'> ROIM</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalRevenue && marketingEffective?.totalCost ? formatNumber(marketingEffective.totalRevenue / marketingEffective.totalCost) : 0}</div>
+            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalRevenue && marketingEffective?.totalCost ? formatNumber(marketingEffective.totalRevenue / marketingEffective.totalCost *100) : 0}%</div>
             <div className='campaign-manage-minicard-down'>
-              <ArrowDownwardIcon className='campaign-manage-minicard-icon' />
-              -0.9%
+              <div className={`campaign-manage-minicard-${percentChange?.totalRoim >= 0 ? 'up' : 'down'}`}>
+              {percentChange?.totalRoim ? <>
+                {percentChange.totalRoim >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                {percentChange.totalRoim}%
+                </> : null}
+            </div>
             </div>
           </div>
+
         </div>
 
         <div key='h' className='item campaign-manage-top-campaign'>
-          <MarketingEffeciveChanneTablel></MarketingEffeciveChanneTablel>
+          <MarketingEffeciveChannelTable marketingEffectiveChannel={marketingEffectiveChannel} isLoading={isLoadingMarketingChanel}></MarketingEffeciveChannelTable>
         </div>
         <div key='k' className='item'>
-          <Bar options={optionsBar} data={data_channel_ROIM} />;
+          <Bar options={optionsBar} data={convertDataBar(marketingEffectiveChannel)} />;
         </div>
         <div key='m' className='item campaign-manage-top-campaign'>
-          <Doughnut data={data_channel_transaction} />
+          <Doughnut data={convertDataChannelTrans(marketingEffectiveChannel)} />
         </div>
         {/* <div key='n' className='item campaign-manage-top-campaign'>
           n
@@ -647,23 +791,7 @@ const MarketingCampaign = (props) => {
               <StyledTableCell> <Loading /></StyledTableCell>
               <StyledTableCell> <Loading /></StyledTableCell>
               <StyledTableCell>
-                <BatchPredictionIcon
-                  sx={{
-                    height: '24px',
-                    width: '24px',
-                    color: 'green',
-                    marginRight: '10px'
-                  }}
-                />
-                <Link to='/marketing-campaign-id'>
-                  <InfoIcon
-                    sx={{
-                      height: '24px',
-                      width: '24px',
-                      color: '#1976d2'
-                    }}
-                  />
-                </Link>
+                <Loading />
               </StyledTableCell>
             </StyledTableRow>}
             {topMarketingCampaign.length ? topMarketingCampaign.map((row) => (
@@ -681,19 +809,34 @@ const MarketingCampaign = (props) => {
                     sx={{
                       height: '24px',
                       width: '24px',
-                      color: 'green',
+                      color: '#28a745',
                       marginRight: '10px'
                     }}
                   />
-                  <Link to='/marketing-campaign-id'>
+                  {/* <Link to='/marketing-campaign-id'>
+                  </Link> */}
                     <InfoIcon
                       sx={{
                         height: '24px',
                         width: '24px',
-                        color: '#1976d2'
+                        color: '#1f77b4'
                       }}
+                      onClick={()=> fetchMarketingEffectiveByCampaignId(row._id)}
                     />
-                  </Link>
+                    <Modal open={openDetail} onClose={handleCloseDetail} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
+                    <Box sx={{ ...style, width: 1300, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
+                    <CloseIcon 
+                      onClick={handleCloseDetail}
+                      className='close-icon'
+                      sx={{ 
+                        width: '24px', 
+                        height: '24px', 
+                      }} 
+                    />
+                    <MarketingCampaignDetail marketingCampaignDetail={marketingCampaignDetail}></MarketingCampaignDetail>
+                    </Box>
+                     </Modal>
+                
                 </StyledTableCell>
               </StyledTableRow>
             )) : null}
@@ -701,14 +844,25 @@ const MarketingCampaign = (props) => {
         </Table>
       </TableContainer>
 
-      <ColorButton onClick={handleOpen} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
+      {/* <ColorButton onClick={handleOpen} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
         Quản lý chiến dịch
-      </ColorButton>
+      </ColorButton> */}
+      <button type="button" onClick={handleOpen} class="btn btn-success btn-on-right">Quản lý chiến dịch</button>
+
       <Modal open={open} onClose={handleClose} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
         <Box sx={{ ...style, width: 1000, maxHeight: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
-          <h3 id='parent-modal-title'>Thêm chiến dịch</h3>
+          <div id='parent-modal-title'>Quản lý chiến dịch</div>
+
+    <CloseIcon 
+      onClick={handleClose}
+      className='close-icon'
+      sx={{ 
+        width: '24px', 
+        height: '24px', 
+      }} 
+    />
           <div>
-            <TableContainer component={Paper} sx={{ minWidth: 700, maxHeight: 500, overflowY: scroll }}>
+            <TableContainer component={Paper} sx={{ minWidth: 700, maxHeight: 480, overflowY: scroll }}>
               <Table sx={{ minWidth: 700, maxHeight: 500, overflowY: scroll }} aria-label='customized table'>
                 <TableHead>
                   <TableRow sx={{ backgroundColor: '#asad' }}>
@@ -753,7 +907,7 @@ const MarketingCampaign = (props) => {
                             sx={{
                               height: '24px',
                               width: '24px',
-                              color: '#1976d2'
+                              color: '#1f77b4'
                             }}
                           />
                         </Link>
@@ -772,6 +926,14 @@ const MarketingCampaign = (props) => {
                 </TableBody>
                 <Modal open={openEdit} onClose={handleCloseEdit} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
                   <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
+                  <CloseIcon 
+                      onClick={handleCloseEdit}
+                      className='close-icon'
+                      sx={{ 
+                        width: '24px', 
+                        height: '24px', 
+                      }} 
+                    />
                     <form className='row'>
                       <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
                         <div className='form-group'>
@@ -811,61 +973,98 @@ const MarketingCampaign = (props) => {
                           />
                         </div>
                       </div>
-                      <button onClick={handleSubmitEdit}>Sửa</button>
+                      {/* <button onClick={handleSubmitEdit}  className='submit-button'>Sửa</button>
+                      <button onClick={handleCloseEdit} className="close-button close-submit-button">
+                        Đóng
+                      </button> */}
+                      <button onClick={handleSubmitEdit} className="btn btn-success btn-on-right">
+                        Sửa
+                      </button>
+                      <button onClick={handleCloseEdit} className="btn btn-danger btn-on-right">
+                        Đóng
+                      </button>
                     </form>
                   </Box>
                 </Modal>
               </Table>
             </TableContainer>
           </div>
+  
+          <div className="button-container">
+          {/* <ColorButton onClick={handleOpenAddCampaign} sx={{fontSize: 14, color: '#ffff' }} variant='contained'>
+            Thêm chiến dịch
+          </ColorButton> */}
 
-          <form className='row' onSubmit={handleSubmit}>
-            <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-              <div className='form-group'>
-                <label className='form-control-static'>Tên chiến dịch</label>
-                <input
-                  type='text'
-                  className='form-control'
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder='Quý 1 2024'
-                  autoComplete='off'
+          <button type="button" onClick={handleOpenAddCampaign} class="btn btn-success">  Thêm chiến dịch</button>
+            <Modal open={openAddCampaign} onClose={handleCloseAddCampaign} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
+              <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
+                <CloseIcon 
+                  onClick={handleCloseAddCampaign}
+                  className='close-icon'
+                  sx={{ 
+                    width: '24px', 
+                    height: '24px', 
+                  }} 
                 />
-              </div>
-              <div className='form-group'>
-                <label>{translate('menu.marketing_channels_select')}</label>
-                <SelectBox
-                  id={`select-good-issue-create-material`}
-                  className='form-control select2'
-                  style={{ width: '100%' }}
-                  value={channel}
-                  items={options}
-                  onChange={handleChangeChanel}
-                  multiple={false}
-                />
-              </div>
+              <form className='row' onSubmit={handleSubmit}>
+                  <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                    <div className='form-group'>
+                      <label className='form-control-static'>Tên chiến dịch</label>
+                      <input
+                        type='text'
+                        className='form-control'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder='Quý 1 2024'
+                        autoComplete='off'
+                      />
+                    </div>
+                    <div className='form-group'>
+                      <label>{translate('menu.marketing_channels_select')}</label>
+                      <SelectBox
+                        id={`select-good-issue-create-material`}
+                        className='form-control select2'
+                        style={{ width: '100%' }}
+                        value={channel}
+                        items={options}
+                        onChange={handleChangeChanel}
+                        multiple={false}
+                      />
+                    </div>
 
-            </div>
-            <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
-              <div className='form-group'>
-                <label>Chi phí</label>
-                <input
-                  type='text'
-                  className='form-control'
-                  value={cost}
-                  onChange={(e) => { setCost(e.target.value); }}
-                  placeholder='1000$'
-                  autoComplete='off'
-                />
-              </div>
-            </div>
-            <button onClick={handleSubmit}>Thêm</button>
-          </form>
+                  </div>
+                  <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                    <div className='form-group'>
+                      <label>Chi phí</label>
+                      <input
+                        type='text'
+                        className='form-control'
+                        value={cost}
+                        onChange={(e) => { setCost(e.target.value); }}
+                        placeholder='1000$'
+                        autoComplete='off'
+                      />
+                    </div>
+                  </div>
+                  {/* <button onClick={handleSubmit} className='submit-button'></button> */}
+                  <button type="button" onClick={handleSubmit} class="btn btn-success btn-on-right"> Thêm</button>
+                  <button onClick={handleCloseAddCampaign} className="btn btn-danger btn-on-right">
+                    Đóng
+                  </button>                  
+                </form>
+              
+              </Box>
+            </Modal>
+        <button onClick={handleClose} className="btn btn-danger">
+          Đóng
+        </button>
+      </div>
         </Box>
       </Modal>
-      <ColorButton onClick={handleOpenForecast} sx={{ marginBottom: 2, marginTop: 2, marginLeft: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
+      {/* <ColorButton onClick={handleOpenForecast} sx={{ marginBottom: 2, marginTop: 2, marginLeft: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
         Dự báo
-      </ColorButton>
+      </ColorButton> */}
+       <button type="button" onClick={handleOpenForecast} class="btn btn-success btn-on-right">  Dự báo</button>
       <Modal open={openForecast} onClose={handleCloseForecast} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
         <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
           <ColorButton onClick={() => handleButtonClick('button1')} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
@@ -874,8 +1073,6 @@ const MarketingCampaign = (props) => {
           <ColorButton onClick={() => handleButtonClick('button2')} sx={{ marginBottom: 2, marginTop: 2, marginLeft: 8, fontSize: 14, color: '#ffff' }} variant='contained'>
             Dự báo lợi nhuận từ tiếp thị
           </ColorButton>
-
-
           {content === 'upload' && (
             <div >
               <h3>Upload & View Excel Sheets</h3>
