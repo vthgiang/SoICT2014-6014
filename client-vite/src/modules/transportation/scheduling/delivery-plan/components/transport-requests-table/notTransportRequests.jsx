@@ -25,11 +25,11 @@ function NotTransportRequests(props) {
 
     const [showModal, setShowModal] = useState(false);
     const { translate, requestManagements, showConfirmBox, isProgress, selectedData, setLimit, setPage,
-            handleChangeEstimatedDeliveryDate, handleInitDeliveryPlan, nextStep, totalPage, currentPage } = props;
+        handleChangeEstimatedDeliveryDate, handleInitDeliveryPlan, nextStep, totalPage, currentPage } = props;
     const { page, limit, currentRow, currentRowDetail, tableId, customerSearchName, fromDate, toDate, idModalDetail } = state;
 
     useEffect(() => {
-        props.getAllRequestByCondition({ requestType: 4, status: 2, page, limit});
+        props.getAllRequestByCondition({ requestType: 4, status: 2, page, limit });
     }, [])
 
     useEffect(() => {
@@ -38,7 +38,7 @@ function NotTransportRequests(props) {
             if (checkBoxes) {
                 checkBoxes.forEach((checkBox) => {
                     if (selectedData.includes(checkBox.getAttribute("value"))) {
-                        console.log("test selected 23232",selectedData);
+                        console.log("test selected 23232", selectedData);
                         checkBox.checked = true
                     } else {
                         checkBox.checked = false
@@ -116,13 +116,13 @@ function NotTransportRequests(props) {
     }
 
     return (
-        <React.Fragment>  
+        <React.Fragment>
             <div className="qlcv">
                 {
                     isProgress &&
                     <>
                         <p>Đang khởi tạo kế hoạch giao hàng ...</p>
-                        <ProgressBar animated now={props.progressPercent ? props.progressPercent : 0} label={`${props.progressPercent ? props.progressPercent : 0}%`} max={100} min={0}/>
+                        <ProgressBar animated now={props.progressPercent ? props.progressPercent : 0} label={`${props.progressPercent ? props.progressPercent : 0}%`} max={100} min={0} />
                     </>
                 }
                 <ConfirmInitRoute
@@ -181,7 +181,7 @@ function NotTransportRequests(props) {
                         <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
                             <button onClick={handleShowDeliveryPlans} type="button" className="btn btn-info dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_transportation.orders_table.init_route')} >{translate('manage_transportation.orders_table.init_route')}</button>
                             <DeliveryPlanList showModal={showModal} setShowModal={setShowModal} />
-                             {/* <CreateTransportRequestForm showModal={showModal} setShowModal={setShowModal} /> */}
+                            {/* <CreateTransportRequestForm showModal={showModal} setShowModal={setShowModal} /> */}
 
                             {/* <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                                 <li><a style={{ cursor: 'pointer' }} title={translate('manage_transportation.orders_table.quick_create_title')} onClick={showConfirmBox}>
@@ -191,8 +191,9 @@ function NotTransportRequests(props) {
                             </ul> */}
                         </div>
                     }
+
                 </div>
-                <div className="row" style={{marginTop: "10px", marginBottom: "-10px"}}>
+                <div className="row" style={{ marginTop: "10px", marginBottom: "-10px" }}>
                     {
                         selectedData.length > 0 &&
                         <div className="col-md-2">
@@ -256,7 +257,7 @@ function NotTransportRequests(props) {
 }
 
 function mapStateToProps(state) {
-    const requestManagements = state. requestManagements;
+    const requestManagements = state.requestManagements;
     return { requestManagements }
 }
 

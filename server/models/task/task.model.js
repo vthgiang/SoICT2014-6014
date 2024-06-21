@@ -1130,6 +1130,45 @@ const TaskSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Delegation'
         }],
+
+        // Thêm các cái khác
+        requireAssignee: {
+            type: Schema.Types.Mixed
+        },
+        requireAsset: [{
+            type: {
+                type: Schema.Types.ObjectId,
+            },
+            number: {
+                type: Number
+            },
+            capacityValue: {
+                type: Number
+            },
+            requireType: {
+                type: String,
+                default: "obligatory",
+                enum: [
+                    "optional",
+                    "obligatory"
+                ],
+            }
+        }],
+        kpiInTask: {
+            type: Schema.Types.ObjectId,
+            ref: "OrganizationalUnitKpi"
+        },
+        taskKPIWeight: {
+            type: Number,
+        },
+        assignee: {
+            type: Schema.Types.ObjectId,
+            ref: "Employee",
+        },
+        assets: [{
+            type: Schema.Types.ObjectId,
+            ref: "Asset"
+        }]
     },
     {
         timestamps: true,

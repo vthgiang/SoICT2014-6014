@@ -1,0 +1,682 @@
+[
+    {
+        "code": 10378,
+        "name": "Áo thun nam ba lỗ",
+        "description": "Áo thun nam ba lỗ"
+    },
+    {
+        "code": 1685,
+        "name": "Áo thun nam ngắn tay không cổ",
+        "description": "Áo thun nam ngắn tay không cổ"
+    },
+    {
+        "code": 5333,
+        "name": "Áo thun nam ngắn tay có cổ",
+        "description": "Áo thun nam ngắn tay có cổ"
+    },
+    {
+        "code": 8336,
+        "name": "Áo thun nam dài tay không cổ",
+        "description": "Áo thun nam dài tay không cổ"
+    },
+    {
+        "code": 67298,
+        "name": "Áo thun nam dài tay có cổ",
+        "description": "Áo thun nam dài tay có cổ"
+    },
+    {
+        "code": 67250,
+        "name": "Áo thun nam trung niên",
+        "description": "Áo thun nam trung niên"
+    },
+    {
+        "code": 49446,
+        "name": "Áo sơ mi nam tay dài trơn",
+        "description": "Áo sơ mi nam tay dài trơn"
+    },
+    {
+        "code": 49450,
+        "name": "Áo sơ mi nam tay ngắn trơn",
+        "description": "Áo sơ mi nam tay ngắn trơn"
+    },
+    {
+        "code": 49444,
+        "name": "Áo sơ mi nam cổ tàu",
+        "description": "Áo sơ mi nam cổ tàu"
+    },
+    {
+        "code": 49452,
+        "name": "Áo sơ mi nam tay ngắn họa tiết",
+        "description": "Áo sơ mi nam tay ngắn họa tiết"
+    },
+    {
+        "code": 49448,
+        "name": "Áo sơ mi nam tay dài họa tiết",
+        "description": "Áo sơ mi nam tay dài họa tiết"
+    },
+    {
+        "code": 67249,
+        "name": "Áo sơ mi nam trung niên",
+        "description": "Áo sơ mi nam trung niên"
+    },
+    {
+        "code": 49458,
+        "name": "Áo khoác gió",
+        "description": "Áo khoác gió"
+    },
+    {
+        "code": 49464,
+        "name": "Áo khoác bomber nam",
+        "description": "Áo khoác bomber nam"
+    },
+    {
+        "code": 49460,
+        "name": "Áo khoác nỉ",
+        "description": "Áo khoác nỉ"
+    },
+    {
+        "code": 49508,
+        "name": "Áo khoác jeans nam",
+        "description": "Áo khoác jeans nam"
+    },
+    {
+        "code": 10381,
+        "name": "Áo khoác phao nam",
+        "description": "Áo khoác phao nam"
+    },
+    {
+        "code": 49456,
+        "name": "Áo khoác da nam",
+        "description": "Áo khoác da nam"
+    },
+    {
+        "code": 67248,
+        "name": "Áo khoác nam trung niên",
+        "description": "Áo khoác nam trung niên"
+    },
+    {
+        "code": 49512,
+        "name": "Áo hoodies nam vải nỉ",
+        "description": "Áo hoodies nam vải nỉ"
+    },
+    {
+        "code": 49514,
+        "name": "Áo hoodies nam vải cotton",
+        "description": "Áo hoodies nam vải cotton"
+    },
+    {
+        "code": 22900,
+        "name": "Áo nỉ nam",
+        "description": "Áo nỉ nam"
+    },
+    {
+        "code": 27554,
+        "name": "Áo len dệt kim",
+        "description": "Áo len dệt kim"
+    },
+    {
+        "code": 27566,
+        "name": "Áo vest và Blazer nam",
+        "description": "Áo vest và Blazer nam"
+    },
+    {
+        "code": 5409,
+        "name": "Quần jogger nam",
+        "description": "Quần jogger nam"
+    },
+    {
+        "code": 49496,
+        "name": "Quần jeans nam",
+        "description": "Quần jeans nam"
+    },
+    {
+        "code": 49500,
+        "name": "Quần kaki nam dài",
+        "description": "Quần kaki nam dài"
+    },
+    {
+        "code": 922,
+        "name": "Quần tây nam",
+        "description": "Quần tây nam"
+    },
+    {
+        "code": 49504,
+        "name": "Quần short thun nam",
+        "description": "Quần short thun nam"
+    },
+    {
+        "code": 49498,
+        "name": "Quần short kaki nam",
+        "description": "Quần short kaki nam"
+    },
+    {
+        "code": 49506,
+        "name": "Quần thun nam",
+        "description": "Quần thun nam"
+    },
+    {
+        "code": 49520,
+        "name": "Quần đôi cho nam",
+        "description": "Quần đôi cho nam"
+    },
+    {
+        "code": 67324,
+        "name": "Quần lót boxer nam",
+        "description": "Quần lót boxer nam"
+    },
+    {
+        "code": 67326,
+        "name": "Quần lót kiểu brief nam",
+        "description": "Quần lót kiểu brief nam"
+    },
+    {
+        "code": 67327,
+        "name": "Quần lót nam khác",
+        "description": "Quần lót nam khác"
+    },
+    {
+        "code": 4556,
+        "name": "Quần lót nam",
+        "description": "Quần lót nam"
+    },
+    {
+        "code": 67325,
+        "name": "Quần lót dây nam",
+        "description": "Quần lót dây nam"
+    },
+    {
+        "code": 49530,
+        "name": "Bộ quần áo nam kích cỡ lớn",
+        "description": "Bộ quần áo nam kích cỡ lớn"
+    },
+    {
+        "code": 49528,
+        "name": "Quần nam kích cỡ lớn",
+        "description": "Quần nam kích cỡ lớn"
+    },
+    {
+        "code": 67251,
+        "name": "Quần short nam trung niên",
+        "description": "Quần short nam trung niên"
+    },
+    {
+        "code": 67252,
+        "name": "Quần dài nam trung niên",
+        "description": "Quần dài nam trung niên"
+    },
+    {
+        "code": 49536,
+        "name": "Quần nam trung niên",
+        "description": "Quần nam trung niên"
+    },
+    {
+        "code": 49540,
+        "name": "Quần bơi - đi biển nam",
+        "description": "Quần bơi - đi biển nam"
+    },
+    {
+        "code": 4555,
+        "name": "Đồ mặc nhà nam - Bộ ngắn",
+        "description": "Đồ mặc nhà nam - Bộ ngắn"
+    },
+    {
+        "code": 2269,
+        "name": "Đồ mặc nhà nam - Bộ dài",
+        "description": "Đồ mặc nhà nam - Bộ dài"
+    },
+    {
+        "code": 67244,
+        "name": "Bộ đồ đôi cho nam",
+        "description": "Bộ đồ đôi cho nam"
+    },
+    {
+        "code": 67247,
+        "name": "Bộ đồ gia đình cho nam",
+        "description": "Bộ đồ gia đình cho nam"
+    },
+    {
+        "code": 49620,
+        "name": "Giày thể thao nam cổ thấp",
+        "description": "Giày thể thao nam cổ thấp"
+    },
+    {
+        "code": 49622,
+        "name": "Giày thể thao nam cổ cao",
+        "description": "Giày thể thao nam cổ cao"
+    },
+    {
+        "code": 49626,
+        "name": "Giày lười da nam",
+        "description": "Giày lười da nam"
+    },
+    {
+        "code": 49624,
+        "name": "Giày lười vải nam",
+        "description": "Giày lười vải nam"
+    },
+    {
+        "code": 49628,
+        "name": "Giày lười nhựa nam",
+        "description": "Giày lười nhựa nam"
+    },
+    {
+        "code": 1581,
+        "name": "Giày tây nam",
+        "description": "Giày tây nam"
+    },
+    {
+        "code": 49630,
+        "name": "Giày tây nam có dây",
+        "description": "Giày tây nam có dây"
+    },
+    {
+        "code": 49632,
+        "name": "Giày tây nam không dây",
+        "description": "Giày tây nam không dây"
+    },
+    {
+        "code": 49634,
+        "name": "Giày sandals nam quai ngang",
+        "description": "Giày sandals nam quai ngang"
+    },
+    {
+        "code": 5341,
+        "name": "Giày sandals nam",
+        "description": "Giày sandals nam"
+    },
+    {
+        "code": 49636,
+        "name": "Giày sandals nam quai chéo",
+        "description": "Giày sandals nam quai chéo"
+    },
+    {
+        "code": 1686,
+        "name": "Giày - Dép nam",
+        "description": "Giày - Dép nam"
+    },
+    {
+        "code": 10384,
+        "name": "Dép nam quai ngang",
+        "description": "Dép nam quai ngang"
+    },
+    {
+        "code": 49638,
+        "name": "Dép nam đi trong nhà",
+        "description": "Dép nam đi trong nhà"
+    },
+    {
+        "code": 10383,
+        "name": "Dép nam xỏ ngón",
+        "description": "Dép nam xỏ ngón"
+    },
+    {
+        "code": 49642,
+        "name": "Giày boots nam cổ thấp",
+        "description": "Giày boots nam cổ thấp"
+    },
+    {
+        "code": 49640,
+        "name": "Giày boots nam cổ cao",
+        "description": "Giày boots nam cổ cao"
+    },
+    {
+        "code": "C01",
+        "name": "Sức khoẻ và sắc đẹp",
+        "description": "Sức khoẻ và sắc đẹp"
+    },
+    {
+        "code": "C02",
+        "name": "Phụ kiện máy tính",
+        "description": "Phụ kiện máy tính"
+    },
+    {
+        "code": "C03",
+        "name": "Ô tô",
+        "description": "Ô tô"
+    },
+    {
+        "code": "C04",
+        "name": "Giường, bàn tắm",
+        "description": "Giường, bàn tắm"
+    },
+    {
+        "code": "C05",
+        "name": "Đồ nội thất trang trí",
+        "description": "Đồ nội thất trang trí"
+    },
+    {
+        "code": "C06",
+        "name": "Thể thao, giải trí",
+        "description": "Thể thao, giải trí"
+    },
+    {
+        "code": "C07",
+        "name": "Nước hoa",
+        "description": "Nước hoa"
+    },
+    {
+        "code": "C08",
+        "name": "Đồ gia dụng",
+        "description": "Đồ gia dụng"
+    },
+    {
+        "code": "C09",
+        "name": "Viễn thông",
+        "description": "Viễn thông"
+    },
+    {
+        "code": "C10",
+        "name": "Đồng hồ, quà tặng",
+        "description": "Đồng hồ, quà tặng"
+    },
+    {
+        "code": "C11",
+        "name": "Thực phẩm, đồ uống",
+        "description": "Thực phẩm, đồ uống"
+    },
+    {
+        "code": "C12",
+        "name": "Trẻ em",
+        "description": "Trẻ em"
+    },
+    {
+        "code": "C13",
+        "name": "Văn phòng phẩm",
+        "description": "Văn phòng phẩm"
+    },
+    {
+        "code": "C14",
+        "name": "Máy tính bảng, in ấn, hình ảnh",
+        "description": "Máy tính bảng, in ấn, hình ảnh"
+    },
+    {
+        "code": "C15",
+        "name": "Đồ chơi",
+        "description": "Đồ chơi"
+    },
+    {
+        "code": "C16",
+        "name": "Điện thoại cố định",
+        "description": "Điện thoại cố định"
+    },
+    {
+        "code": "C17",
+        "name": "Dụng cụ làm vườn",
+        "description": "Dụng cụ làm vườn"
+    },
+    {
+        "code": "C18",
+        "name": "Thời trang, túi xách, phụ kiện",
+        "description": "Thời trang, túi xách, phụ kiện"
+    },
+    {
+        "code": "C19",
+        "name": "Thiết bị nhỏ",
+        "description": "Thiết bị nhỏ"
+    },
+    {
+        "code": "C20",
+        "name": "Máy chơi game",
+        "description": "Máy chơi game"
+    },
+    {
+        "code": "C21",
+        "name": "Âm thanh",
+        "description": "Âm thanh"
+    },
+    {
+        "code": "C22",
+        "name": "Giày thời trang",
+        "description": "Giày thời trang"
+    },
+    {
+        "code": "C23",
+        "name": "Trò chơi",
+        "description": "Trò chơi"
+    },
+    {
+        "code": "C24",
+        "name": "Hành lý, phụ kiện",
+        "description": "Hành lý, phụ kiện"
+    },
+    {
+        "code": "C25",
+        "name": "Điều hòa không khí",
+        "description": "Điều hòa không khí"
+    },
+    {
+        "code": "C26",
+        "name": "Dụng cụ xây dựng",
+        "description": "Dụng cụ xây dựng"
+    },
+    {
+        "code": "C27",
+        "name": "Đồ nội thất ngoài trời, nhà bếp, phòng ăn, phòng giặt",
+        "description": "Đồ nội thất ngoài trời, nhà bếp, phòng ăn, phòng giặt"
+    },
+    {
+        "code": "C28",
+        "name": "Dụng cụ xây dựng vườn",
+        "description": "Dụng cụ xây dựng vườn"
+    },
+    {
+        "code": "C29",
+        "name": "Quần áo nam thời trang",
+        "description": "Quần áo nam thời trang"
+    },
+    {
+        "code": "C30",
+        "name": "Cửa hàng thú cưng",
+        "description": "Cửa hàng thú cưng"
+    },
+    {
+        "code": "C31",
+        "name": "Đồ nội thất văn phòng",
+        "description": "Đồ nội thất văn phòng"
+    },
+    {
+        "code": "C32",
+        "name": "Chợ",
+        "description": "Chợ"
+    },
+    {
+        "code": "C33",
+        "name": "Điện tử",
+        "description": "Điện tử"
+    },
+    {
+        "code": "C34",
+        "name": "Thiết bị gia dụng",
+        "description": "Thiết bị gia dụng"
+    },
+    {
+        "code": "C35",
+        "name": "Đồ dùng tiệc",
+        "description": "Đồ dùng tiệc"
+    },
+    {
+        "code": "C36",
+        "name": "Đồ dùng trong nhà",
+        "description": "Đồ dùng trong nhà"
+    },
+    {
+        "code": "C37",
+        "name": "Dụng cụ xây dựng",
+        "description": "Dụng cụ xây dựng"
+    },
+    {
+        "code": "C38",
+        "name": "Công nghiệp nông nghiệp và thương mại",
+        "description": "Công nghiệp nông nghiệp và thương mại"
+    },
+    {
+        "code": "C39",
+        "name": "Đồ nội thất, đệm và bọc",
+        "description": "Đồ nội thất, đệm và bọc"
+    },
+    {
+        "code": "C40",
+        "name": "Sách kỹ thuật",
+        "description": "Sách kỹ thuật"
+    },
+    {
+        "code": "C41",
+        "name": "Xây dựng nhà",
+        "description": "Xây dựng nhà"
+    },
+    {
+        "code": "C42",
+        "name": "Nhạc cụ",
+        "description": "Nhạc cụ"
+    },
+    {
+        "code": "C43",
+        "name": "Đồ nội thất phòng khách",
+        "description": "Đồ nội thất phòng khách"
+    },
+    {
+        "code": "C44",
+        "name": "Dụng cụ xây dựng, đèn",
+        "description": "Dụng cụ xây dựng, đèn"
+    },
+    {
+        "code": "C45",
+        "name": "Công nghiệp, thương mại và kinh doanh",
+        "description": "Công nghiệp, thương mại và kinh doanh"
+    },
+    {
+        "code": "C46",
+        "name": "Thực phẩm",
+        "description": "Thực phẩm"
+    },
+    {
+        "code": "C47",
+        "name": "Nghệ thuật",
+        "description": "Nghệ thuật"
+    },
+    {
+        "code": "C48",
+        "name": "Đồ nội thất phòng ngủ",
+        "description": "Đồ nội thất phòng ngủ"
+    },
+    {
+        "code": "C49",
+        "name": "Sách",
+        "description": "Sách"
+    },
+    {
+        "code": "C50",
+        "name": "Dụng cụ xây dựng",
+        "description": "Dụng cụ xây dựng"
+    },
+    {
+        "code": "C51",
+        "name": "Thời trang bãi biển",
+        "description": "Thời trang bãi biển"
+    },
+    {
+        "code": "C52",
+        "name": "Thời trang thể thao",
+        "description": "Thời trang thể thao"
+    },
+    {
+        "code": "C53",
+        "name": "Báo hiệu và an ninh",
+        "description": "Báo hiệu và an ninh"
+    },
+    {
+        "code": "C54",
+        "name": "Máy tính",
+        "description": "Máy tính"
+    },
+    {
+        "code": "C55",
+        "name": "Đồ dùng giáng sinh",
+        "description": "Đồ dùng giáng sinh"
+    },
+    {
+        "code": "C56",
+        "name": "Quần áo nữ thời trang",
+        "description": "Quần áo nữ thời trang"
+    },
+    {
+        "code": "C57",
+        "name": "Thiết bị gia dụng",
+        "description": "Thiết bị gia dụng"
+    },
+    {
+        "code": "C58",
+        "name": "Sách nhập khẩu",
+        "description": "Sách nhập khẩu"
+    },
+    {
+        "code": "C59",
+        "name": "Đồ uống",
+        "description": "Đồ uống"
+    },
+    {
+        "code": "C60",
+        "name": "Phim ảnh",
+        "description": "Phim ảnh"
+    },
+    {
+        "code": "C61",
+        "name": "Nấu ăn",
+        "description": "Nấu ăn"
+    },
+    {
+        "code": "C62",
+        "name": "Âm nhạc",
+        "description": "Âm nhạc"
+    },
+    {
+        "code": "C63",
+        "name": "Dụng cụ trong nhà",
+        "description": "Dụng cụ trong nhà"
+    },
+    {
+        "code": "C64",
+        "name": "Thiết bị nhỏ, lò nướng và cà phê tại nhà",
+        "description": "Thiết bị nhỏ, lò nướng và cà phê tại nhà"
+    },
+    {
+        "code": "C65",
+        "name": "Đĩa CD, DVD",
+        "description": "Đĩa CD, DVD"
+    },
+    {
+        "code": "C66",
+        "name": "Đĩa blu ray",
+        "description": "Đĩa blu ray"
+    },
+    {
+        "code": "C67",
+        "name": "Hoa",
+        "description": "Hoa"
+    },
+    {
+        "code": "C68",
+        "name": "Nghệ thuật và thủ công",
+        "description": "Nghệ thuật và thủ công"
+    },
+    {
+        "code": "C69",
+        "name": "Tã và vệ sinh",
+        "description": "Tã và vệ sinh"
+    },
+    {
+        "code": "C70",
+        "name": "Quần áo trẻ em thời trang",
+        "description": "Quần áo trẻ em thời trang"
+    },
+    {
+        "code": "C71",
+        "name": "An ninh và dịch vụ",
+        "description": "An ninh và dịch vụ"
+    },
+    {
+        "code": "C72",
+        "name": "Khác",
+        "description": "Khác"
+    }
+]

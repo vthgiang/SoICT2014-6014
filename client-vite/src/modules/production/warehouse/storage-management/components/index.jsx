@@ -4,7 +4,7 @@ import Warehouse3d from "./Warehouse3d";
 const StorageManagement = () => {
     return (
         <div id="3dwarehouse">
-            <Warehouse3d />
+            <Warehouse3d/>
         </div>
     )
 }

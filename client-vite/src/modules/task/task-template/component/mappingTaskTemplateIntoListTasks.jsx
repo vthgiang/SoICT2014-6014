@@ -93,14 +93,20 @@ function MappingTaskTemplateIntoListTasks({ isProcess, onChangeListMappingTask }
           </div>
         ))}
         {createKpiUnit?.parent?.kpis?.length !== 0 && (
-          <SelectBox
-            id='select-parent-kpis'
-            className='form-control select2'
-            style={{ width: '100%' }}
-            items={createKpiUnit?.parent?.kpis?.map((x) => ({ value: x._id, text: x.name }))}
-            value={taskData.goalCompanyId}
-            onChange={handleAddGoalCompanyId}
-          />
+          <div className='form-group'>
+            <label>
+              Ánh xạ đến KPI nào?
+              <span className='text-red'>*</span>
+            </label>
+            <SelectBox
+              id='select-parent-kpis'
+              className='form-control select2'
+              style={{ width: '100%' }}
+              items={createKpiUnit?.parent?.kpis?.map((x) => ({ value: x._id, text: x.name }))}
+              value={taskData.goalCompanyId}
+              onChange={handleAddGoalCompanyId}
+            />
+          </div>
         )}
 
         <div className={`form-group ${errors.taskDescription ? 'has-error' : ''}`}>

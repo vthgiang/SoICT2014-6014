@@ -7,14 +7,13 @@ import {getEmployeeSelectBoxItems} from '../TaskPertHelper'
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import {riskResponsePlanRequestActions} from '../../change-process-request/redux/actions'
 import { getStorage } from "../../../../config"
-import './modal.css'
 import { translate } from 'react-redux-multilingual/lib/utils';
 const RequestChangeTaskProcess = (props) => {
     const { translate, taskProcess, process } = props
     const [state, setState] = useState({
         processName: '',
         status: '',
-        manager: [],    
+        manager: [],
         processID: '',
         description: '',
         reson: '',
@@ -38,7 +37,7 @@ const RequestChangeTaskProcess = (props) => {
             console.log(process.manager)
             let items = getEmployeeSelectBoxItems(props.user.usersInUnitsOfCompany)
             console.log(items)
-            
+
             let managerItems = items.map(acc => {
                 let userInDepartment = acc.value
                 for(let user of userInDepartment){
@@ -46,7 +45,7 @@ const RequestChangeTaskProcess = (props) => {
                     return user
                 }
                 return null
-                
+
             })
             managerItems= managerItems.filter(acc => acc!=null)
             console.log(managerItems)
@@ -100,7 +99,7 @@ const RequestChangeTaskProcess = (props) => {
                 content:description,
                 reson:reson
             }
-            // something for save 
+            // something for save
             props.createChangeRequest(data)
 
         }

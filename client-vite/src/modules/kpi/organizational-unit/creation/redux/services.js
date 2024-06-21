@@ -44,6 +44,25 @@ function getKPIParent(data) {
 }
 
 /**
+ * Lấy danh sách các tập KPI đơn vị
+*/
+function getAllOrganizationlUnitKpiSet(organizationalUnitId, status) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+      method: 'GET',
+      params: {
+        allOrganizationalUnitKpiSet: true,
+        organizationalUnitId,
+        status,
+      }
+    },
+    false,
+    false
+  )
+}
+
+/**
  * Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị
  */
 function getAllOrganizationalUnitKpiSetByTime(roleId, organizationalUnitId, startDate, endDate) {
@@ -303,5 +322,6 @@ export const createUnitKpiServices = {
   editChildComment,
   deleteChildComment,
   deleteFileComment,
-  deleteFileChildComment
+  deleteFileChildComment,
+  getAllOrganizationlUnitKpiSet
 }

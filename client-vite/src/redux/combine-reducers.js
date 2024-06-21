@@ -70,7 +70,8 @@ import { kpimembers } from '../modules/kpi/evaluation/employee-evaluation/redux/
 import { tasktemplates } from '../modules/task/task-template/redux/reducers'
 
 // kpi allocation
-import { configManagementReducer } from '../modules/kpi/kpi-allocation/config-management/redux/reducers'
+// import { configManagementReducer } from '../modules/kpi/kpi-allocation/config-management/redux/reducers'
+import { configParametersReducer } from '../modules/kpi/organizational-unit/creation/component/kpi-allocation/redux/reducers'
 import { taskPackageManagementReducer } from '../modules/kpi/kpi-allocation/task-package-management/redux/reducers'
 
 import { dashboardEvaluationEmployeeKpiSet } from '../modules/kpi/evaluation/dashboard/redux/reducers'
@@ -130,7 +131,7 @@ import { purchaseOrders } from '../modules/production/order/purchase-order/redux
 import { quotes } from '../modules/production/order/quote/redux/reducers'
 import { salesOrders } from '../modules/production/order/sales-order/redux/reducers'
 import { serviceLevelAgreements } from '../modules/production/order/service-level-agreement/redux/reducers'
-import { taxs } from '../modules/production/order/tax/redux/reducers'
+
 
 // plan
 import { plan } from '../modules/plan/redux/reducers'
@@ -181,19 +182,29 @@ import { project } from '../modules/project/projects/redux/reducers'
 import { schedulingProjects } from '../modules/project/scheduling-projects/redux/reducers'
 import { projectPhase } from '../modules/project/project-phase/redux/reducers'
 import { projectStatistic } from '../modules/project/statistic/redux/reducers'
+import { projectProposal } from '../modules/project/project-proposal/redux/reducers'
 
 // Delegation
 import { delegation } from '../modules/delegation/delegation-list/redux/reducers'
 import { delegationReceive } from '../modules/delegation/delegation-receive/redux/reducers'
 
-// Transportation Quản lý vận chuyển 2
-import { delivery } from '../modules/transportation/scheduling/delivery-plan/redux/reducers'
-import { vehicle } from '../modules/transportation/vehicle/redux/reducers'
-import { journey } from '../modules/transportation/scheduling/tracking-route/redux/reducers'
-import { shipper } from '../modules/transportation/shipper/redux/reducers'
-import { transportationCostManagement } from '../modules/transportation/cost/redux/reducers'
+//Transportation Quản lý vận chuyển 2
+import { delivery } from '../modules/transportation/scheduling/delivery-plan/redux/reducers';
+import { vehicle } from '../modules/transportation/vehicle/redux/reducers';
+import { journey } from '../modules/transportation/scheduling/tracking-route/redux/reducers';
+import { shipper } from '../modules/transportation/shipper/redux/reducers';
+import { transportationCostManagement } from '../modules/transportation/cost/redux/reducers';
 
 import { newsFeeds } from '../modules/home/redux/reducers'
+
+// Transport 3
+import { orders } from '../modules/transport3/order/redux/reducers'
+import { employee as T3employee } from '../modules/transport3/employee/redux/reducers'
+import { vehicle as T3vehicle } from '../modules/transport3/vehicle/redux/reducers'
+import { schedule as T3schedule } from '../modules/transport3/schedule/redux/reducers'
+import { dashboard as T3dashboard} from '../modules/transport3/dashboard/redux/reducers'
+//Capacity
+import { capacity } from '../modules/human-resource/capacity/redux/reducers'
 
 const appReducer = combineReducers({
   socket,
@@ -246,6 +257,9 @@ const appReducer = combineReducers({
   field,
   employeeDashboardData,
 
+  // hr-capacity
+  capacity,
+
   // gói thầu
   career,
   major,
@@ -265,6 +279,7 @@ const appReducer = combineReducers({
   managerKpiUnit,
   statisticsOfOrganizationalUnitKpi,
   kpitemplates,
+  configParametersReducer,
 
   // kpi-personal
   createEmployeeKpiSet,
@@ -284,7 +299,7 @@ const appReducer = combineReducers({
 
   // kpi allocation unit
   kpiAllocation: combineReducers({
-    configManagementReducer,
+    // configManagementReducer,
     taskPackageManagementReducer
   }),
 
@@ -334,7 +349,7 @@ const appReducer = combineReducers({
   }),
 
   // order
-  taxs,
+ 
   quotes,
   discounts,
   serviceLevelAgreements,
@@ -388,6 +403,7 @@ const appReducer = combineReducers({
   changeRequest,
   schedulingProjects,
   projectPhase,
+  projectProposal,
 
   Intl,
 
@@ -410,7 +426,14 @@ const appReducer = combineReducers({
   vehicle,
   journey,
   transportationCostManagement,
-  shipper
+  shipper,
+
+  // Transport 3
+  orders,
+  T3employee,
+  T3vehicle,
+  T3schedule,
+  T3dashboard
 })
 
 const rootReducer = (state, action) => {

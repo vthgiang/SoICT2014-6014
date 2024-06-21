@@ -8,10 +8,11 @@ import RequestStockConfirm from "./requestStockConfirm";
 import TransportingRequests from "./transportingRequests";
 import FailureTransportRequests from "./failureTransportRequests";
 import SuccessTransportRequests from "./successTransportRequests";
+import OnTimePredictModelManagement from "../ontimePredictModelManagement";
 
 function RequestTransportTable(props) {
     const getTableId = "table-manage-problem-assumption";
-    const {nextStep, requestManagements, translate, isProgress, handleInitDeliveryPlan, handleChangeEstimatedDeliveryDate} = props;
+    const { nextStep, requestManagements, translate, isProgress, handleInitDeliveryPlan, handleChangeEstimatedDeliveryDate } = props;
 
     // Khởi tạo state
     const [state, setState] = useState({
@@ -51,7 +52,7 @@ function RequestTransportTable(props) {
             page: page,
         });
         let limit = state.limit;
-        props.getAllRequestByCondition({ requestType: 4, status: 2 , page, limit });
+        props.getAllRequestByCondition({ requestType: 4, status: 2, page, limit });
     }
 
     const setLimit = async (limit) => {
@@ -62,10 +63,10 @@ function RequestTransportTable(props) {
         });
 
         let page = state.page;
-        props.getAllRequestByCondition({ requestType: 4, status: 2 , page, limit })
+        props.getAllRequestByCondition({ requestType: 4, status: 2, page, limit })
     }
 
-    const handleNotTransportRequests =  async () => {
+    const handleNotTransportRequests = async () => {
         const requestType = 4, status = 2;
         await setState({
             ...state,
@@ -74,7 +75,7 @@ function RequestTransportTable(props) {
         await props.getAllRequestByCondition({ requestType, status, page, limit });
     };
 
-    const handleRequestStockConfirm =  async () => {
+    const handleRequestStockConfirm = async () => {
         const requestType = 4;
         await setState({
             ...state,
@@ -84,7 +85,7 @@ function RequestTransportTable(props) {
     };
 
 
-    const handleTransportingRequests =  async () => {
+    const handleTransportingRequests = async () => {
         const requestType = 4, status = 3;
         await setState({
             ...state,
@@ -94,7 +95,7 @@ function RequestTransportTable(props) {
     };
 
 
-    const handleFailureTransportRequests =  async () => {
+    const handleFailureTransportRequests = async () => {
         const requestType = 4, status = 5;
         await setState({
             ...state,
@@ -103,7 +104,7 @@ function RequestTransportTable(props) {
         await props.getAllRequestByCondition({ requestType, status, page, limit });
     };
 
-    const handleSuccessTransportRequests =  async () => {
+    const handleSuccessTransportRequests = async () => {
         const requestType = 4, status = 4;
         await setState({
             ...state,
@@ -112,9 +113,18 @@ function RequestTransportTable(props) {
         await props.getAllRequestByCondition({ requestType, status, page, limit });
     };
 
+    const handleManagementModel = async () => {
+        const requestType = 4;
+        await setState({
+            ...state,
+            type: 5,
+        })
+        await props.getAllRequestByCondition({ requestType, page, limit });
+    };
+
     var totalPage = ((requestManagements.totalDocs % limit) === 0) ?
-        parseInt(requestManagements.totalDocs  / limit) :
-        parseInt((requestManagements.totalDocs  / limit) + 1);
+        parseInt(requestManagements.totalDocs / limit) :
+        parseInt((requestManagements.totalDocs / limit) + 1);
     // var currentPage = parseInt((page / limit) + 1);
 
     return (
@@ -128,59 +138,74 @@ function RequestTransportTable(props) {
                             <li><a href="#transporting-tab" data-toggle="tab" onClick={() => handleTransportingRequests()}><i className="fa fa-telegram text-yellow" aria-hidden="true"></i> {translate('manage_transportation.orders_table.transporting_requests_tab')}</a></li>
                             <li><a href="#success-transport-tab" data-toggle="tab" onClick={() => handleSuccessTransportRequests()}><i className="fa fa-check-square-o text-green" aria-hidden="true"></i> {translate('manage_transportation.orders_table.success_transport_requests_tab')}</a></li>
                             <li><a href="#failure-transport-tab" data-toggle="tab" onClick={() => handleFailureTransportRequests()}><i className="fa fa-exclamation-circle text-red"></i>  {translate('manage_transportation.orders_table.failure_transport_requests_tab')}</a></li>
+                            <li><a href="#model-management-tab" data-toggle="tab" onClick={() => handleManagementModel()}><i className="fa fa-user text-green"></i>  Quản lý mô hình dự báo </a></li>
                         </ul>
                         <div className="tab-content">
                             <div className="tab-pane" id="request-stock-confirm-tab">
                                 {type === 0 &&
-                                    <LazyLoadComponent>
-                                        <RequestStockConfirm/>
-                                    </LazyLoadComponent>
+                                    <RequestStockConfirm />
+                                    // <LazyLoadComponent>
+                                       
+                                    // </LazyLoadComponent>
                                 }
                             </div>
                             <div className="tab-pane active" id="not-transport-tab">
                                 {type === 1 &&
-                                    <LazyLoadComponent>
-                                        <NotTransportRequests
-                                            setPage={setPage}
-                                            setLimit={setLimit}
-                                            totalPage={totalPage}
-                                            currentPage={page}
-                                            selectedData={selectedData}
-                                            onSelectedRowsChange={onSelectedRowsChange}
-                                            isProgress={isProgress}
-                                            showConfirmBox={showConfirmBox}
-                                            nextStep={nextStep}
-                                            handleInitDeliveryPlan={handleInitDeliveryPlan}
-                                            handleChangeEstimatedDeliveryDate={handleChangeEstimatedDeliveryDate}
-                                            progressPercent={progressPercent}
-                                        />
-                                    </LazyLoadComponent>
+                                    <NotTransportRequests
+                                        setPage={setPage}
+                                        setLimit={setLimit}
+                                        totalPage={totalPage}
+                                        currentPage={page}
+                                        selectedData={selectedData}
+                                        onSelectedRowsChange={onSelectedRowsChange}
+                                        isProgress={isProgress}
+                                        showConfirmBox={showConfirmBox}
+                                        nextStep={nextStep}
+                                        handleInitDeliveryPlan={handleInitDeliveryPlan}
+                                        handleChangeEstimatedDeliveryDate={handleChangeEstimatedDeliveryDate}
+                                        progressPercent={progressPercent}
+                                    />
+                                    // <LazyLoadComponent>
+
+                                    // </LazyLoadComponent>
                                 }
                             </div>
                             <div className="tab-pane" id="transporting-tab">
                                 {type === 2 &&
-                                    <LazyLoadComponent>
-                                        <TransportingRequests
-                                        />
-                                    </LazyLoadComponent>
+                                    <TransportingRequests
+                                    />
+                                    // <LazyLoadComponent>
+
+                                    // </LazyLoadComponent>
                                 }
                             </div>
                             <div className="tab-pane" id="success-transport-tab">
                                 {type === 3 &&
-                                    <LazyLoadComponent>
-                                        <SuccessTransportRequests
-                                        />
-                                    </LazyLoadComponent>
+                                    <SuccessTransportRequests
+                                    />
+                                    // <LazyLoadComponent>
+
+                                    // </LazyLoadComponent>
                                 }
                             </div>
                             <div className="tab-pane" id="failure-transport-tab">
                                 {type === 4 &&
-                                    <LazyLoadComponent>
-                                        <FailureTransportRequests
-                                        />
-                                    </LazyLoadComponent>
+                                    <FailureTransportRequests
+                                    />
+                                    // <LazyLoadComponent>
+
+                                    // </LazyLoadComponent>
                                 }
                             </div>
+                            <div className="tab-pane" id="model-management-tab">
+                                {type === 5 &&
+                                    <OnTimePredictModelManagement
+                                    />
+                                    // <LazyLoadComponent>
+
+                                    // </LazyLoadComponent>
+                                }
+                            </div>                           
                         </div>
                     </div>
                 </div>
@@ -189,7 +214,7 @@ function RequestTransportTable(props) {
     )
 }
 function mapStateToProps(state) {
-    const requestManagements = state. requestManagements;
+    const requestManagements = state.requestManagements;
     return { requestManagements }
 }
 

@@ -40,7 +40,8 @@ const ProductRequestManagementSchema = new Schema({
     refuser: { // Người từ chối yêu cầu
         refuser: {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            default: null
         },
         refuserTime: {
             type: Date
@@ -86,15 +87,18 @@ const ProductRequestManagementSchema = new Schema({
     },
     toStock: { // Nếu là luân chuyển hàng thì là kho tiếp nhận
         type: Schema.Types.ObjectId,
-        ref: 'Stock'
+        ref: 'Stock',
+        default: null,
     },
     requestingDepartment: { // Phòng ban yêu cầu
         type: Schema.Types.ObjectId,
-        ref: 'OrganizationalUnit'
+        ref: 'OrganizationalUnit',
+        default: null,
     },
     orderUnit: {// Bộ phận đơn hàng
         type: Schema.Types.ObjectId,
-        ref: "OrganizationalUnit"
+        ref: "OrganizationalUnit",
+        default: null,
     },
     supplier: { // nhà cung cấp
         type: Schema.Types.ObjectId,
@@ -122,12 +126,13 @@ const ProductRequestManagementSchema = new Schema({
     },
 
     desiredTime: { // Thời gian mong muốn nhận hàng hoặc nhập hàng
-        type: String
+        type: String,
+        default: null,
     },
     /*yêu cầu mua hàng gửi từ sản xuất : requestType = 1, type = 1
     1: chờ phê duyệt, 2: đã gửi đến bộ phận mua hàng, 3: đã phê duyệt mua hàng, 4. Đã tạo đơn mua hàng
     5: Chờ phê duyệt yêu cầu,
-    6: Đã gửi yêu cầu nhập kho, 7: Đã phê duyệt yêu cầu nhập kho, 8: Đang tiến hành nhập kho 9: Đã hoàn thành nhập kho, 
+    6: Đã gửi yêu cầu nhập kho, 7: Đã phê duyệt yêu cầu nhập kho, 8: Đang tiến hành nhập kho 9: Đã hoàn thành nhập kho,
     10: Đã hủy yêu cầu mua hàng, 11: Đã hủy yêu cầu nhập kho
     */
     /* Yêu cầu nhập kho từ sản xuất: requestType = 1, type = 2
@@ -162,25 +167,28 @@ const ProductRequestManagementSchema = new Schema({
     Yêu cầu vận chuyển: requestType = 6
     1. chờ phê duyệt đề nghị vận chuyển, 2. đã phê duyệt đề nghị vận chuyển, sẵn sàng lập lịch; 3. đang tiến hành vận chuyển,
     4. Vận chuyển thành công;  5. Vận chuyển thất bại; 6. Bị từ chối yêu cầu vận chuyển
-    */ 
+    */
     status: {
         type: Number,
         default: 1
     },
-    description: { // Mô tả phiếu đề nghị mua 
+    description: { // Mô tả phiếu đề nghị mua
         type: String
     },
     purchaseOrder: { // Mã đơn mua hàng
         type: Schema.Types.ObjectId,
-        ref: "PurchaseOrder"
+        ref: "PurchaseOrder",
+        default: null,
     },
     saleOrder: { // Mã đơn bán hàng
         type: Schema.Types.ObjectId,
-        ref: "SalesOrder"
+        ref: "SalesOrder",
+        default: null,
     },
     bill: { // Mã phiếu trong kho
         type: Schema.Types.ObjectId,
-        ref: "Bill"
+        ref: "Bill",
+        default: null,
     },
 }, {
     // Thời gian tạo, sửa yêu cầu

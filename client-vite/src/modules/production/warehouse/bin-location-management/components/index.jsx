@@ -49,9 +49,10 @@ function BinLocationManagement(props) {
         </div>
 
         <div className='tab-pane' id='bin-location-archives'>
-          <LazyLoadComponent>
+          {/* <LazyLoadComponent>
             <BinManagement />
-          </LazyLoadComponent>
+          </LazyLoadComponent> */}
+          <BinManagement />
         </div>
       </div>
     </div>

@@ -152,6 +152,19 @@ const TaskTemplateSchema = new Schema(
                     type: ObjectId,
                     ref: 'OrganizationalUnitKpi',
                 },
+                affected_factor: [
+                    {
+                        affected_factor_type: {
+                            type: String,
+                            enum: ['Product', 'Environment'],
+                        },
+                        score: {
+                            type: Number,
+                            min: 1,
+                            max: 5,
+                        },
+                    },
+                ],
             },
         ],
     },

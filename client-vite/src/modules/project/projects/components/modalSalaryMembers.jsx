@@ -14,7 +14,7 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper'
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers'
 
 const ModalSalaryMembers = (props) => {
-  const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember } = props
+  const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember, modalID } = props
   const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
   const [currentSalaryMembers, setCurrentSalaryMembers] = useState(project.salaries || [])
 
@@ -52,7 +52,7 @@ const ModalSalaryMembers = (props) => {
   return (
     <React.Fragment>
       <DialogModal
-        modalID={`modal-salary-members`}
+        modalID={modalID ? modalID : `modal-salary-members`}
         isLoading={false}
         formID={`form-salary-members`}
         title={`Bảng lương thành viên trong dự án`}

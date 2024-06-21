@@ -372,6 +372,8 @@ exports.links = [
             { path: '/kpi/allocation/task-package', method: 'GET' },
             { path: '/kpi/allocation/task-package/task-type', method: 'GET' },
             { path: '/kpi/allocation/task-package/task-type', method: 'POST' },
+            { path: '/kpi/allocation/start', method: 'POST' },
+            { path: '/kpi/allocation/assign-allocation', method: 'POST' },
 
             // Task-management
             { path: '/task/tasks', method: 'GET' },
@@ -1233,29 +1235,41 @@ exports.links = [
         apis: ['@all'],
     },
     {
-        url: '/manage-purchase-order',
+        url: '/sales-statistics',
         apis: ['@all'],
     },
     {
-        url: '/manage-quote',
+        url: '/forecast-sales-order',
         apis: ['@all'],
     },
+    // {
+    //     url: '/manage-purchase-order',
+    //     apis: ['@all'],
+    // },
+    // {
+    //     url: '/manage-quote',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-sales-order-dashboard',
         apis: ['@all'],
     },
+    // {
+    //     url: '/manage-profit',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-discount',
         apis: ['@all'],
     },
-    {
-        url: '/manage-tax',
-        apis: ['@all'],
-    },
-    {
-        url: '/manage-sla',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-tax',
+    //     apis: ['@all'],
+    // },
+    // {
+    //     url: '/manage-sla',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-payment',
         apis: ['@all'],
@@ -1446,6 +1460,10 @@ exports.links = [
         url: '/project/project-evaluation',
         apis: ['@all'],
     },
+    {
+        url: '/project/project-proposal',
+        apis: ['@all'],
+    },
 
     //transport
     {
@@ -1542,6 +1560,30 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/risk',
+        apis: ['@all'],
+    },
+    {
+        url: '/riskDistribution',
+        apis: ['@all'],
+    },
+    {
+        url: '/taskPert',
+        apis: ['@all'],
+    },
+    {
+        url: '/exprimentalAnalysis',
+        apis: ['@all'],
+    },
+    {
+        url: '/riskResponsePlan',
+        apis: ['@all'],
+    },
+    {
+        url: '/bayesianNetworkConfig',
+        apis: ['@all'],
+    },
+    {
         url: '/majors',
         apis: ['@all'],
     },
@@ -1580,6 +1622,58 @@ exports.links = [
     },
     {
         url: '/transportation-shipper-manage',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-dashboard',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-order',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-schedule',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-route',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-cost',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-issue',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-partner',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-vehicle',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-employee',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-statistic',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-mission',
+        apis: ['@all'],
+    },
+    {
+        url: '/manage-transport3-requirement',
+        apis: ['@all'],
+    },
+    {
+        url: '/capacities',
         apis: ['@all'],
     },
 ];

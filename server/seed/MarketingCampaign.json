@@ -1,0 +1,290 @@
+[
+    {
+        "code": "1",
+        "cost": "617849",
+        "channel": "Facebook",
+        "name": "Facebook Sale Shock"
+    },
+    {
+        "code": "2",
+        "cost": "939134",
+        "channel": "Google",
+        "name": "Google Ad Deals"
+    },
+    {
+        "code": "3",
+        "cost": "691774",
+        "channel": "TikTok",
+        "name": "TikTok Flash Sales"
+    },
+    {
+        "code": "4",
+        "cost": "953780",
+        "channel": "Facebook",
+        "name": "Super Discount Facebook"
+    },
+    {
+        "code": "5",
+        "cost": "784956",
+        "channel": "Google",
+        "name": "Discounts on Google"
+    },
+    {
+        "code": "6",
+        "cost": "567284",
+        "channel": "TikTok",
+        "name": "TikTok Summer Deals"
+    },
+    {
+        "code": "7",
+        "cost": "946173",
+        "channel": "Facebook",
+        "name": "Exclusive Deals on Facebook"
+    },
+    {
+        "code": "8",
+        "cost": "810293",
+        "channel": "Google",
+        "name": "Google Flash Sales"
+    },
+    {
+        "code": "9",
+        "cost": "857481",
+        "channel": "TikTok",
+        "name": "Exclusive TikTok Offers"
+    },
+    {
+        "code": "10",
+        "cost": "709317",
+        "channel": "Facebook",
+        "name": "Summer Sales Facebook"
+    },
+    {
+        "code": "11",
+        "cost": "837205",
+        "channel": "Google",
+        "name": "Google Special Offers"
+    },
+    {
+        "code": "12",
+        "cost": "764832",
+        "channel": "TikTok",
+        "name": "TikTok Mega Discounts"
+    },
+    {
+        "code": "13",
+        "cost": "831293",
+        "channel": "Facebook",
+        "name": "Facebook Flash Sale"
+    },
+    {
+        "code": "14",
+        "cost": "645299",
+        "channel": "Google",
+        "name": "Top Google Discounts"
+    },
+    {
+        "code": "15",
+        "cost": "834502",
+        "channel": "TikTok",
+        "name": "TikTok Seasonal Bargains"
+    },
+    {
+        "code": "16",
+        "cost": "829104",
+        "channel": "Facebook",
+        "name": "Top Deals Facebook"
+    },
+    {
+        "code": "17",
+        "cost": "723955",
+        "channel": "Google",
+        "name": "Google Seasonal Deals"
+    },
+    {
+        "code": "18",
+        "cost": "684023",
+        "channel": "TikTok",
+        "name": "Top TikTok Deals"
+    },
+    {
+        "code": "19",
+        "cost": "719385",
+        "channel": "Facebook",
+        "name": "Facebook Shopping Fest"
+    },
+    {
+        "code": "20",
+        "cost": "576319",
+        "channel": "Google",
+        "name": "Google Summer Sales"
+    },
+    {
+        "code": "21",
+        "cost": "628491",
+        "channel": "TikTok",
+        "name": "TikTok Hot Buys"
+    },
+    {
+        "code": "22",
+        "cost": "821040",
+        "channel": "Facebook",
+        "name": "Ultimate Facebook Offers"
+    },
+    {
+        "code": "23",
+        "cost": "863495",
+        "channel": "Google",
+        "name": "Google Bargain Bonanza"
+    },
+    {
+        "code": "24",
+        "cost": "936492",
+        "channel": "TikTok",
+        "name": "TikTok Special Discounts"
+    },
+    {
+        "code": "25",
+        "cost": "705829",
+        "channel": "Facebook",
+        "name": "Facebook Bargains"
+    },
+    {
+        "code": "26",
+        "cost": "763049",
+        "channel": "Google",
+        "name": "Google Prime Deals"
+    },
+    {
+        "code": "27",
+        "cost": "845203",
+        "channel": "TikTok",
+        "name": "TikTok Bargain Bonanza"
+    },
+    {
+        "code": "28",
+        "cost": "934729",
+        "channel": "Facebook",
+        "name": "Prime Deals on Facebook"
+    },
+    {
+        "code": "29",
+        "cost": "809512",
+        "channel": "Google",
+        "name": "Google Hot Deals"
+    },
+    {
+        "code": "30",
+        "cost": "596214",
+        "channel": "TikTok",
+        "name": "TikTok Super Sales"
+    },
+    {
+        "code": "31",
+        "cost": "965027",
+        "channel": "Facebook",
+        "name": "Facebook Summer Discounts"
+    },
+    {
+        "code": "32",
+        "cost": "941293",
+        "channel": "Google",
+        "name": "Google Exclusive Discounts"
+    },
+    {
+        "code": "33",
+        "cost": "684203",
+        "channel": "TikTok",
+        "name": "TikTok Limited Time Offers"
+    },
+    {
+        "code": "34",
+        "cost": "564932",
+        "channel": "Facebook",
+        "name": "Facebook Mega Sale"
+    },
+    {
+        "code": "35",
+        "cost": "720394",
+        "channel": "Google",
+        "name": "Google Mega Sales"
+    },
+    {
+        "code": "36",
+        "cost": "794510",
+        "channel": "TikTok",
+        "name": "TikTok Special Promos"
+    },
+    {
+        "code": "37",
+        "cost": "784021",
+        "channel": "Facebook",
+        "name": "Facebook Specials"
+    },
+    {
+        "code": "38",
+        "cost": "853004",
+        "channel": "Google",
+        "name": "Google Super Savings"
+    },
+    {
+        "code": "39",
+        "cost": "987234",
+        "channel": "TikTok",
+        "name": "TikTok Exclusive Promotions"
+    },
+    {
+        "code": "40",
+        "cost": "761934",
+        "channel": "Facebook",
+        "name": "Facebook Seasonal Deals"
+    },
+    {
+        "code": "41",
+        "cost": "817249",
+        "channel": "Google",
+        "name": "Google Hot Buys"
+    },
+    {
+        "code": "42",
+        "cost": "782030",
+        "channel": "TikTok",
+        "name": "TikTok Great Deals"
+    },
+    {
+        "code": "43",
+        "cost": "690304",
+        "channel": "Facebook",
+        "name": "Facebook Hot Buys"
+    },
+    {
+        "code": "44",
+        "cost": "601234",
+        "channel": "Google",
+        "name": "Google Special Promotions"
+    },
+    {
+        "code": "45",
+        "cost": "935092",
+        "channel": "TikTok",
+        "name": "TikTok Hot Sales"
+    },
+    {
+        "code": "46",
+        "cost": "945102",
+        "channel": "Facebook",
+        "name": "Facebook Exclusive Promos"
+    },
+    {
+        "code": "47",
+        "cost": "768391",
+        "channel": "Google",
+        "name": "Google Great Offers"
+    },
+    {
+        "code": "48",
+        "cost": "612304",
+        "channel": "TikTok",
+        "name": "TikTok Seasonal Sales"
+    }
+]

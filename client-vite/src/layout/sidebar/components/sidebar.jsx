@@ -545,6 +545,11 @@ class SideBar extends Component {
                     name: 'menu.project_evaluation',
                     icon: 'fa fa-user-plus',
                     path: '/project/project-evaluation'
+                  },
+                  {
+                    name: 'menu.project_proposal',
+                    icon: 'fa fa-flash',
+                    path: '/project/project-proposal'
                   }
                   // { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/project/projects-template-list" },
                 ]
@@ -898,36 +903,51 @@ class SideBar extends Component {
                     icon: 'fa fa-dashboard',
                     path: '/manage-sales-order-dashboard'
                   },
-                  {
-                    name: 'menu.manage_quote',
-                    icon: 'fa fa-tablet',
-                    path: '/manage-quote'
-                  },
+                  // {
+                  //   name: 'menu.manage_quote',
+                  //   icon: 'fa fa-tablet',
+                  //   path: '/manage-quote'
+                  // },
                   {
                     name: 'menu.manage_sales_order',
                     icon: 'fa fa-dollar',
                     path: '/manage-sales-order'
                   },
                   {
-                    name: 'menu.manage_purchase_order',
-                    icon: 'fa fa-shopping-cart',
-                    path: '/manage-purchase-order'
+                    name: 'menu.sales_statistics',
+                    icon: 'fa fa-dollar',
+                    path: '/sales-statistics'
                   },
+                  {
+                    name: 'menu.forecast_sales_order',
+                    icon: 'fa fa-dollar',
+                    path: '/forecast-sales-order'
+                  },
+                  // {
+                  //   name: 'menu.manage_profit',
+                  //   icon: 'fa fa-money',
+                  //   path: '/manage-profit'
+                  // },
+                  // {
+                  //   name: 'menu.manage_purchase_order',
+                  //   icon: 'fa fa-shopping-cart',
+                  //   path: '/manage-purchase-order'
+                  // },
                   {
                     name: 'menu.manage_discount',
                     icon: 'fa fa-arrow-down',
                     path: '/manage-discount'
                   },
-                  {
-                    name: 'menu.manage_tax',
-                    icon: 'fa fa-money',
-                    path: '/manage-tax'
-                  },
-                  {
-                    name: 'menu.manage_sla',
-                    icon: 'fa fa-registered',
-                    path: '/manage-sla'
-                  },
+                  // {
+                  //   name: 'menu.manage_tax',
+                  //   icon: 'fa fa-money',
+                  //   path: '/manage-tax'
+                  // },
+                  // {
+                  //   name: 'menu.manage_sla',
+                  //   icon: 'fa fa-registered',
+                  //   path: '/manage-sla'
+                  // },
                   {
                     name: 'menu.manage_business_department',
                     icon: 'fa fa-sitemap',
@@ -1012,6 +1032,76 @@ class SideBar extends Component {
                     name: 'menu.storage_management',
                     icon: 'fa fa-reorder',
                     path: '/storage-management'
+                  }
+                ]
+              }}
+            />
+
+            {/* Quản lý vận chuyển 3 */}
+            <GroupItem
+              groupItem={{
+                name: 'menu.manage_transport3',
+                icon: 'fa fa-truck',
+                list: [
+                  {
+                    name: 'menu.manage_transport3_dashboard',
+                    icon: 'fa fa-dashboard',
+                    path: '/manage-transport3-dashboard'
+                  },
+                  {
+                    name: 'menu.manage_transport3_order',
+                    icon: 'fa fa-circle-o',
+                    path: '/manage-transport3-order'
+                  },
+                  {
+                    name: 'menu.manage_transport3_schedule',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-schedule'
+                  },
+                  {
+                    name: 'menu.manage_transport3_route',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-route'
+                  },
+                  {
+                    name: 'menu.manage_transport3_cost',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-cost'
+                  },
+                  {
+                    name: 'menu.manage_transport3_issue',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-issue'
+                  },
+                  {
+                    name: 'menu.manage_transport3_partner',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-partner'
+                  },
+                  {
+                    name: 'menu.manage_transport3_vehicle',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-vehicle'
+                  },
+                  {
+                    name: 'menu.manage_transport3_employee',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-employee'
+                  },
+                  {
+                    name: 'menu.manage_transport3_statistic',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-statistic'
+                  },
+                  {
+                    name: 'menu.manage_transport3_mission',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-mission'
+                  },
+                  {
+                    name: 'menu.manage_transport3_requirement',
+                    icon: 'fa fa-calendar-o',
+                    path: '/manage-transport3-requirement'
                   }
                 ]
               }}
@@ -1239,6 +1329,11 @@ class SideBar extends Component {
                     name: 'menu.manage_transportation_cost',
                     icon: 'fa fa-usd',
                     path: '/transportation-cost-manage'
+                  },
+                  {
+                    name: 'menu.manage_transportation_init_route',
+                    icon: 'fa fa-road',
+                    path: '/ontime-predict-model-management'
                   }
                 ]
               }}

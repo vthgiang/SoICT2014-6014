@@ -42,12 +42,6 @@ function formatToTimeZoneDate(stringDate) {
     }
 }
 
-const convertDateTime = (date, time) => {
-    let splitter = date.split('-')
-    let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`
-    return dayjs(strDateTime, 'YYYY-MM-DD H').format('YYYY/MM/DD HH:mm:ss')
-}
-
 exports.createManufacturingCommand = async (data, portal) => {
     let newManufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).create({
         code: data.code,
@@ -67,6 +61,7 @@ exports.createManufacturingCommand = async (data, portal) => {
                 endDate: formatToTimeZoneDate(x.endDate),
             }
         }),
+        taskTemplate: data.taskTemplate,
         approvers: data.approvers.map(x => {
             return {
                 approver: x,
@@ -88,36 +83,6 @@ exports.createManufacturingCommand = async (data, portal) => {
     });
     
     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(newManufacturingCommand);
-
-    // Tạo công việc cho từng công đoạn
-    // await Promise.all(data.workOrders.map(async (wo) => {
-    //     const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById(wo.manufacturingMill);
-    //     const manufacturingWork = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(manufacturingMill.manufacturingWorks);
-    //     const organizationalUnitId = manufacturingWork.organizationalUnit;
-        
-    //     let newTask = {
-    //         name: `Công đoạn ${wo.operation} - ${manufacturingCommand.code}`,
-    //         description: 'Công việc tạo tự động từ lệnh sản xuất',
-    //         quillDescriptionDefault: '',
-    //         startDate: convertDateTime(wo.startDate, wo.startHour),
-    //         endDate: convertDateTime(wo.endDate, wo.endHour),
-    //         priority: 3,
-    //         responsibleEmployees: wo.responsibles,
-    //         accountableEmployees: data.accountables,
-    //         consultedEmployees: data.accountables,
-    //         informedEmployees: data.accountables,
-    //         creator: data.creator,
-    //         organizationalUnit: organizationalUnitId,
-    //         collaboratedWithOrganizationalUnits: [],
-    //         taskTemplate: '66410e53e26fa913a0f74a91',
-    //         parent: '',
-    //         taskProject: '',
-    //         tags: [],
-    //         taskOutputs: [],
-    //         imgs: null
-    //     }
-    //     await TaskManagementService.createTask(portal, newTask);
-    // })) 
 
     let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById(data.manufacturingPlan);
     manufacturingPlan.manufacturingCommands.push(manufacturingCommand._id);

@@ -198,7 +198,7 @@ exports.createTaskTemplate = async (portal, body, userId) => {
     const uniqueRoleIds = Array.from(roleIdSet);
     const privileges = uniqueRoleIds.map((roleId) => ({
         roleId: roleId,
-        resourceId: taskTemplate._id,
+        resourceId: tasktemplate._id,
         resourceType: 'TaskTemplate',
         action: read,
     }));

@@ -38,6 +38,7 @@ module.exports = {
     AllocationConfigSetting: require('./kpi/allocationConfigSetting.model'),
     TaskPackageAllocation: require('./kpi/taskPackageAllocation.model'),
     TaskType: require('./kpi/taskType.model'),
+    AllocationUnitResult: require('./kpi/allocationResult.model'),
 
     Notification: require('./notification/notification.model'),
     ManualNotification: require('./notification/manualNotification.model'),
@@ -118,7 +119,8 @@ module.exports = {
     PurchaseOrder: require('./production/order/purchaseOrder.model'),
     BusinessDepartment: require('./production/order/businessDepartment.model'),
     Payment: require('./production/order/payment.model'),
-
+    MarketingCampaign: require('./production/order/marketingCampaign.model'),
+    MarketingEffective: require('./production/order/marketingEffective.model'),
     Location: require('./common/location.model'),
 
     // plan
@@ -197,4 +199,14 @@ module.exports = {
     CostFormula: require('./transportation/cost/costFormula.model'),
     Driver: require('./transportation/driver/driver.model'),
     ShipperSalary: require('./transportation/driver/shipperSalary.model'),
+
+    // Transport 3
+    Transport3Order: require('./transport3/transport3Order.model'),
+    Transport3Employee: require('./transport3/transport3Employee.model'),
+    Transport3Vehicle: require('./transport3/transport3Vehicle.model'),
+    Transport3Schedule: require('./transport3/transport3Schedule.model'),
+    DeliverySchedule: require('./transportation/delivery-plan/deliverySchedule.model'),
+
+    // New Models
+    Capacity: require('./human-resource/capacity.model'),
 };
