@@ -35,6 +35,8 @@ function OrderTable(props) {
   let T3orders = useSelector(state => state.T3order)
   // console.log(listSchedules)
   let dispatch = useDispatch()
+  const currentRole = localStorage.getItem('currentRole')
+  const userdepartments = useSelector((state) => state.user.userdepartments)
 
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole'),
@@ -55,6 +57,9 @@ function OrderTable(props) {
     props.getAllOrder()
   }, [])
 
+  useEffect(() => {
+    dispatch(UserActions.getAllUserSameDepartment(currentRole))
+  }, [dispatch])
   const handleClickCreateCode = () => {
     setState((state) => {
       return {...state, code: generateCode('TP_')}
@@ -159,6 +164,13 @@ function OrderTable(props) {
     1: 'Chờ xác nhận',
     2: 'Đã xác nhận',
     3: 'Đã giao hàng',
+  }
+
+  const isManager = () => {
+    if (userdepartments?.managers[currentRole]) {
+      return true
+    }
+    return false
   }
 
   return (

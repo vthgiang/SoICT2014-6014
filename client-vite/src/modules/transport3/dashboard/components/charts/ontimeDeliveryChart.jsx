@@ -6,11 +6,21 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import moment from 'moment';
 import { DashboardActions } from '../../redux/actions';
 import { withRouter } from 'react-router-dom';
+import { DialogModal } from '../../../../../common-components';
+import improveOTDRate from './improveOTDRate';
+import ImproveOTDRate from './improveOTDRate';
 
 function OnTimeDeliveryChart(props) {
     const dispatch = useDispatch()
     const T3Dashboard = useSelector((state) => state.T3dashboard)
     const ontimeDeliveryChart = useRef(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const toggleModal = () => {
+        setModal(!modal);
+        console.log(modal)
+    };
+
     useEffect(() => {
         pieChart();
     });
@@ -60,6 +70,10 @@ function OnTimeDeliveryChart(props) {
     const redirectToDetailPage = () => {
         // Thực hiện chuyển hướng đến trang thông tin orders
         props.history.push('/manage-transport3-order');
+    };
+
+    const handleOpenImproveOTDRateModal = () => {
+        window.$(`#modal-improve-OTD-rate`).modal('show')
     };
 
     const pieChart = () => {
@@ -127,10 +141,12 @@ function OnTimeDeliveryChart(props) {
                     right: '10px',
                     zIndex: '10', // Để đảm bảo nút hiển thị trước biểu đồ
                 }}
-                onClick={redirectToDetailPage}
+                onClick={()=> handleOpenImproveOTDRateModal()}
             >
-                Chi tiết
+                Tăng tỉ lệ giao hàng đúng hạn
             </button>
+            <ImproveOTDRate showModal={showModal} setShowModal={setShowModal} />
+            {/* <RetrainingModel showModal={showModal} setShowModal={setShowModal} /> */}
         </React.Fragment>
     );
 }
