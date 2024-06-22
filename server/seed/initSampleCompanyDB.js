@@ -8,6 +8,8 @@ const marketingCampaign = require('./MarketingCampaign.json');
 const marketingEffective = require('./MarketingEffective.json');
 const saleOrders = require('./SaleOrders.json');
 const listCustomer = require('./Customer.json');
+const listTransport3Orders = require('./transport3orders.json');
+const listTransport3Schedules = require('./transport3schedule.json');
 const {
   Component,
   RoleType,
@@ -93,6 +95,10 @@ const {
   PurchaseInvoice,
   AllocationHistory,
   AllocationConfigSetting,
+  Transport3Employee,
+  Transport3Order,
+  Transport3Schedule,
+  Transport3Vehicle
 } = require('../models');
 const { ObjectId } = require('mongodb');
 
@@ -712,17 +718,17 @@ const initSampleCompanyDB = async () => {
   // Khởi tạo role cho đơn vị vận chuyển
   const vcNvVanChuyen = await Role(vnistDB).create({
     parents: [roleEmployee._id],
-    name: 'Nhân viên vận chuyển - miền bắc',
+    name: 'Nhân viên vận chuyển',
     type: roleChucDanh._id,
   });
   const vcNvGiamSat = await Role(vnistDB).create({
     parents: [roleEmployee._id],
-    name: 'Nhân viên giám sát - miền bắc',
+    name: 'Nhân viên giám sát',
     type: roleChucDanh._id,
   });
   const vcTruongPhong = await Role(vnistDB).create({
     parents: [roleManager._id],
-    name: 'Trưởng phòng vận chuyển phía bắc',
+    name: 'Trưởng phòng vận chuyển',
     type: roleChucDanh._id,
   });
 
@@ -988,6 +994,46 @@ const initSampleCompanyDB = async () => {
     {
       // tte nhân viên vận chuyển phía bắc
       userId: users[6]._id,
+      roleId: vcNvVanChuyen._id,
+    },
+    {
+      // pdp nhân viên vận chuyển phía bắc
+      userId: users[7]._id,
+      roleId: vcNvVanChuyen._id,
+    },
+    {
+      // tvb nhân viên vận chuyển phía bắc
+      userId: users[8]._id,
+      roleId: vcNvVanChuyen._id,
+    },
+    {
+      // tte nhân viên vận chuyển phía bắc
+      userId: users[9]._id,
+      roleId: vcNvVanChuyen._id,
+    },
+    {
+      // pdp nhân viên vận chuyển phía bắc
+      userId: users[10]._id,
+      roleId: vcNvVanChuyen._id,
+    },
+    {
+      // tvb nhân viên vận chuyển phía bắc
+      userId: users[11]._id,
+      roleId: vcNvVanChuyen._id,
+    },
+    {
+      // tte nhân viên vận chuyển phía bắc
+      userId: users[12]._id,
+      roleId: vcNvVanChuyen._id,
+    },
+    {
+      // pdp nhân viên vận chuyển phía bắc
+      userId: users[13]._id,
+      roleId: vcNvVanChuyen._id,
+    },
+    {
+      // tvb nhân viên vận chuyển phía bắc
+      userId: users[14]._id,
       roleId: vcNvVanChuyen._id,
     },
   ]);
@@ -8412,6 +8458,141 @@ const initSampleCompanyDB = async () => {
       unitsProducedDuringTheYears: [],
       informations: [],
     },
+    {
+      assetType: [listAssetType[23]._id],
+      readByRoles: [vcTruongPhong._id],
+      cost: 0,
+      usefulLife: 0,
+      startDepreciation: null,
+      residualValue: null,
+      company: vnist._id,
+      avatar: '',
+      assetName: 'Xe tải 3 ',
+      code: 'VVTM20210603.182183',
+      serial: '1235',
+      group: 'vehicle',
+      purchaseDate: new Date().toISOString(),
+      warrantyExpirationDate: transportGetNextNDates(100).toISOString(),
+      managedBy: users[1]._id,
+      assignedToUser: null,
+      assignedToOrganizationalUnit: null,
+      location: null,
+      status: 'ready_to_use',
+      typeRegisterForUse: 3,
+      description: '',
+      detailInfo: [
+        {
+          nameField: 'volume',
+          value: '16',
+        },
+        {
+          nameField: 'payload',
+          value: '3000',
+        },
+      ],
+      depreciationType: 'none',
+      maintainanceLogs: [],
+      usageLogs: [],
+      incidentLogs: [],
+      locationLogs: [],
+      disposalDate: null,
+      disposalType: '',
+      disposalCost: null,
+      disposalDesc: '',
+      documents: [],
+      unitsProducedDuringTheYears: [],
+      informations: [],
+    },
+    {
+      assetType: [listAssetType[23]._id],
+      readByRoles: [vcTruongPhong._id],
+      cost: 0,
+      usefulLife: 0,
+      startDepreciation: null,
+      residualValue: null,
+      company: vnist._id,
+      avatar: '',
+      assetName: 'Xe tải 4 ',
+      code: 'VVTM20210603.189184',
+      serial: '12445',
+      group: 'vehicle',
+      purchaseDate: new Date().toISOString(),
+      warrantyExpirationDate: transportGetNextNDates(100).toISOString(),
+      managedBy: users[1]._id,
+      assignedToUser: null,
+      assignedToOrganizationalUnit: null,
+      location: null,
+      status: 'ready_to_use',
+      typeRegisterForUse: 3,
+      description: '',
+      detailInfo: [
+        {
+          nameField: 'volume',
+          value: '16',
+        },
+        {
+          nameField: 'payload',
+          value: '3000',
+        },
+      ],
+      depreciationType: 'none',
+      maintainanceLogs: [],
+      usageLogs: [],
+      incidentLogs: [],
+      locationLogs: [],
+      disposalDate: null,
+      disposalType: '',
+      disposalCost: null,
+      disposalDesc: '',
+      documents: [],
+      unitsProducedDuringTheYears: [],
+      informations: [],
+    },
+    {
+      assetType: [listAssetType[23]._id],
+      readByRoles: [vcTruongPhong._id],
+      cost: 0,
+      usefulLife: 0,
+      startDepreciation: null,
+      residualValue: null,
+      company: vnist._id,
+      avatar: '',
+      assetName: 'Xe tải 5 ',
+      code: 'VVTM20220603.189185',
+      serial: '12425',
+      group: 'vehicle',
+      purchaseDate: new Date().toISOString(),
+      warrantyExpirationDate: transportGetNextNDates(100).toISOString(),
+      managedBy: users[1]._id,
+      assignedToUser: null,
+      assignedToOrganizationalUnit: null,
+      location: null,
+      status: 'ready_to_use',
+      typeRegisterForUse: 3,
+      description: '',
+      detailInfo: [
+        {
+          nameField: 'volume',
+          value: '16',
+        },
+        {
+          nameField: 'payload',
+          value: '3000',
+        },
+      ],
+      depreciationType: 'none',
+      maintainanceLogs: [],
+      usageLogs: [],
+      incidentLogs: [],
+      locationLogs: [],
+      disposalDate: null,
+      disposalType: '',
+      disposalCost: null,
+      disposalDesc: '',
+      documents: [],
+      unitsProducedDuringTheYears: [],
+      informations: [],
+    },
   ]);
 
   const transportDepartment = await TransportDepartment(vnistDB).insertMany([
@@ -8917,370 +9098,92 @@ const initSampleCompanyDB = async () => {
   console.log('Khởi tạo xong kế hoạch vận chuyển');
 
   /*---------------------------------------------------------------------------------------------
-      -----------------------------------------------------------------------------------------------
-          TẠO DỮ LIỆU NHÂN VIÊN VẬN CHUYỂN
-      -----------------------------------------------------------------------------------------------
-      ----------------------------------------------------------------------------------------------- */
-  const transport3Employee = await Transport3Employee(vnistDB).create([
-    {
-      code: 'NV_01',
-      employee: users[5]._id,
-      certificate: 'Bằng lái xe hạng A2',
-      salary: 8000000,
-    },
-    {
-      code: 'NV_02',
-      employee: users[5]._id,
-      certificate: 'Bằng lái xe hạng B1',
-      salary: 8000000,
-    },
-  ]);
-
-  console.log('Khởi tạo xong nhân viên vận chuyển');
-
-  /*---------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------
-    TẠO DỮ LIỆU ĐƠN HÀNG
------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------ */
-  console.log(listGood.length);
-  const transport3Order = await Transport3Order(vnistDB).create([
-    {
-      code: 'Order01',
-      customer: listCustomers[0]._id,
-      customerPhone: listCustomers[0].mobilephoneNumber,
-      address: listCustomers[0].address,
-      lat: 20.9896839,
-      lng: 105.6693152,
-      deliveryTime: new Date('2024-05-20T07:45:44.691Z'),
-      note: '',
-      noteAddress: '',
-      priority: 1,
-      // status: 1: chờ xác nhận, 2: đã xác nhận, 3: đã giao hàng
-      status: 2,
-      stockIn: {
-        stock: listStock[1]._id,
-        stockName: listStock[1].name,
-        stockAddress: listStock[1].address,
-      },
-      stockOut: {
-        stock: listStock[0]._id,
-        stockName: listStock[0].name,
-        stockAddress: listStock[0].address,
-      },
-      transportType: 1,
-      goods: [
-        {
-          good: listGood[0]._id,
-          code: 'G01',
-          goodName: listGood[0].name,
-          baseUnit: null,
-          quantity: 5,
-        },
-      ],
-    },
-    {
-      code: 'Order02',
-      customer: listCustomers[1]._id,
-      customerPhone: listCustomers[1].mobilephoneNumber,
-      address: listCustomers[1].address,
-      lat: 20.9896839,
-      lng: 105.6693152,
-      deliveryTime: new Date('2024-05-20T07:45:44.691Z'),
-      note: '',
-      noteAddress: '',
-      priority: 1,
-      // status: 1: chờ xác nhận, 2: đã xác nhận, 3: đã giao hàng
-      status: 2,
-      stockIn: {
-        stock: listStock[1]._id,
-        stockName: listStock[1].name,
-        stockAddress: listStock[1].address,
-      },
-      stockOut: {
-        stock: listStock[0]._id,
-        stockName: listStock[0].name,
-        stockAddress: listStock[0].address,
-      },
-      transportType: 1,
-      goods: [
-        {
-          good: listGood[0]._id,
-          code: 'G01',
-          goodName: listGood[0].name,
-          baseUnit: null,
-          quantity: 5,
-        },
-        {
-          good: listGood[1]._id,
-          code: 'G02',
-          goodName: listGood[1].name,
-          baseUnit: null,
-          quantity: 2,
-        },
-      ],
-    },
-    {
-      code: 'Order02',
-      customer: listCustomers[1]._id,
-      customerPhone: listCustomers[1].mobilephoneNumber,
-      address: listCustomers[1].address,
-      lat: 20.9896839,
-      lng: 105.6693152,
-      deliveryTime: new Date('2024-05-20T07:45:44.691Z'),
-      note: '',
-      noteAddress: '',
-      priority: 1,
-      // status: 1: chờ xác nhận, 2: đã xác nhận, 3: đã giao hàng
-      status: 2,
-      stockIn: {
-        stock: listStock[1]._id,
-        stockName: listStock[1].name,
-        stockAddress: listStock[1].address,
-      },
-      stockOut: {
-        stock: listStock[0]._id,
-        stockName: listStock[0].name,
-        stockAddress: listStock[0].address,
-      },
-      transportType: 1,
-      goods: [
-        {
-          good: listGood[0]._id,
-          code: 'G01',
-          goodName: listGood[0].name,
-          baseUnit: null,
-          quantity: 5,
-        },
-        {
-          good: listGood[1]._id,
-          code: 'G02',
-          goodName: listGood[1].name,
-          baseUnit: null,
-          quantity: 2,
-        },
-      ],
-    },
-    {
-      code: 'Order04',
-      customer: listCustomers[3]._id,
-      customerPhone: listCustomers[3].mobilephoneNumber,
-      address: listCustomers[3].address,
-      lat: 21.2896839,
-      lng: 106.1693152,
-      deliveryTime: new Date('2024-05-20T07:45:44.691Z'),
-      note: '',
-      noteAddress: '',
-      priority: 1,
-      // status: 1: chờ xác nhận, 2: đã xác nhận, 3: đã giao hàng
-      status: 2,
-      stockIn: {
-        stock: listStock[1]._id,
-        stockName: listStock[1].name,
-        stockAddress: listStock[1].address,
-      },
-      stockOut: {
-        stock: listStock[0]._id,
-        stockName: listStock[0].name,
-        stockAddress: listStock[0].address,
-      },
-      transportType: 1,
-      goods: [
-        {
-          good: listProducts[1407]._id,
-          code: listProducts[1407].code,
-          goodName: listProducts[1407].name,
-          baseUnit: null,
-          quantity: 1,
-        },
-        {
-          good: listProducts[1406]._id,
-          code: listProducts[1406].code,
-          goodName: listProducts[1406].name,
-          baseUnit: null,
-          quantity: 2,
-        },
-        {
-          good: listProducts[1405]._id,
-          code: listProducts[1405].code,
-          goodName: listProducts[1405].name,
-          baseUnit: null,
-          quantity: 1,
-        },
-      ],
-    },
-    {
-      code: 'Order03',
-      customer: listCustomers[2]._id,
-      customerPhone: listCustomers[2].mobilephoneNumber,
-      address: listCustomers[2].address,
-      lat: 21.4896839,
-      lng: 106.2693152,
-      deliveryTime: new Date('2024-05-20T07:45:44.691Z'),
-      note: '',
-      noteAddress: '',
-      priority: 1,
-      // status: 1: chờ xác nhận, 2: đã xác nhận, 3: đã giao hàng
-      status: 2,
-      stockIn: {
-        stock: listStock[1]._id,
-        stockName: listStock[1].name,
-        stockAddress: listStock[1].address,
-      },
-      stockOut: {
-        stock: listStock[0]._id,
-        stockName: listStock[0].name,
-        stockAddress: listStock[0].address,
-      },
-      transportType: 1,
-      goods: [
-        {
-          good: listProducts[1402]._id,
-          code: listProducts[1402].code,
-          goodName: listProducts[1402].name,
-          baseUnit: null,
-          quantity: 1,
-        },
-        {
-          good: listProducts[1403]._id,
-          code: listProducts[1403].code,
-          goodName: listProducts[1403].name,
-          baseUnit: null,
-          quantity: 2,
-        },
-      ],
-    },
-  ]);
-  console.log('Khởi tạo xong dữ liệu đơn hàng');
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU ĐƠN HÀNG
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+  console.log('Khởi tạo dữ liệu đơn van chuyen');
+  const transport3Order = await Transport3Order(vnistDB).create(
+    listTransport3Orders.map((order, index) => {
+      return {
+        code: order.code,
+        customer: listCustomers[index]._id,
+        customerPhone: listCustomers[index].mobilephoneNumber,
+        address: order.address,
+        lat: order.lat,
+        lng: order.lng,
+        deliveryTime: order.deliveryTime,
+        note: order.note,
+        noteAddress: order.noteAddress,
+        priority: order.priority,
+        status: order.status,
+        transportType: order.transportType,
+        goods: [
+          {
+            good: listGood[0]._id,
+            code: "G01",
+            goodName: listGood[0].name,
+            baseUnit: null,
+            quantity: 5,
+          }
+        ]
+      }
+    })
+  )
+  console.log('Khởi tạo xong dữ liệu đơn vận chuyển');
 
   /*---------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------
-    TẠO DỮ LIỆU PHƯƠNG TIỆN
------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------ */
-  const transport3Vehicle = await Transport3Vehicle(vnistDB).create([
-    {
-      code: 'VHC01',
-      asset: listAsset[6]._id,
-      // Trọng tải xe
-      tonnage: 1000,
-      // Thể tích thùng xe
-      volume: 8.58,
-      // Rộng, cao , sâu của thùng xe
-      width: 1.65,
-      height: 1.65,
-      depth: 3.15,
-      // Mức tiêu thụ nhiên liệu của xe/1km
-      averageGasConsume: 0.06,
-      // Trung bình chi phí vận chuyển của xe
-      traverageFeeTransport: 800000,
-      // Tốc độ tối thiểu
-      minVelocity: 0,
-      // Tốc độ tối đa
-      maxVelocity: 80,
-    },
-  ]);
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU PHƯƠNG TIỆN
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+  let list_transport3Vehicle = await Asset(vnistDB).find({ group: 'vehicle' });
+  for (let i = 0; i < list_transport3Vehicle.length; i++) {
+    await Transport3Vehicle(vnistDB).insertMany([
+      {
+        code: list_transport3Vehicle[i].code,
+        asset: list_transport3Vehicle[i]._id,
+        // Trọng tải xe
+        tonnage: 1000,
+        // Thể tích thùng xe
+        volume: 8.58,
+        // Rộng, cao , sâu của thùng xe
+        width: 1.65,
+        height: 1.65,
+        depth: 3.15,
+        // Mức tiêu thụ nhiên liệu của xe/1km
+        averageGasConsume: 0.06,
+        // Trung bình chi phí vận chuyển của xe
+        traverageFeeTransport: 800000,
+        // Tốc độ tối thiểu
+        minVelocity: 0,
+        // Tốc độ tối đa
+        maxVelocity: 80
+      }])
+  }
   console.log('Khởi tạo xong dữ liệu phương tiện');
   /*---------------------------------------------------------------------------------------------
-      -----------------------------------------------------------------------------------------------
-          TẠO DỮ LIỆU KẾ HOẠCH VẬN CHUYỂN
-      -----------------------------------------------------------------------------------------------
-      ----------------------------------------------------------------------------------------------- */
-  await Transport3Schedule(vnistDB).create([
-    {
-      code: 'KH01',
-      orders: [
-        {
-          order: transport3Order[0]._id,
-          // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
-          status: 1,
-          // thời gian dự kiến đến
-          estimateTimeArrive: new Date('2024-05-26T07:45:44.691Z'),
-          // thời gian đến
-          timeArrive: new Date('2024-05-25T07:45:44.691Z'),
-          // thời gian dự kiến phục vụ
-          estimateTimeService: new Date('2024-05-22T07:45:44.691Z'),
-          // thời gian phục vụ
-          timeService: new Date('2024-05-22T08:45:44.691Z'),
-          // thời gian bắt đầu vận chuyển đơn hàng này
-          beginTime: new Date('2024-05-22T09:45:44.691Z'),
-          // thời gian dự kiến đến động
-          dynamicEstimatedTime: null,
-          // khoảng cách từ depot đến địa chỉ giao hàng
-          // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
-          distance: 120,
-          //Dự báo khả năng giao hàng đúng hạn
-          estimatedOntime: 1,
-        },
-      ],
-      vehicles: transport3Vehicle[0]._id,
-      depot: listStock[0]._id,
-      employee: transport3Employee[0]._id,
-      // 1. Chưa thực hiện; 2 Đang thực hiện; 3. Đã hoàn thành
-      status: 1,
-      beginTime: new Date('2024-05-22T09:45:44.691Z'),
-      endTime: new Date('2024-05-25T10:45:44.691Z'),
-      note: '',
-    },
-    {
-      code: 'KH02',
-      orders: [
-        {
-          order: transport3Order[1]._id,
-          // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
-          status: 1,
-          // thời gian dự kiến đến
-          estimateTimeArrive: new Date('2024-06-01T07:45:44.691Z'),
-          // thời gian đến
-          timeArrive: new Date('2024-06-02T07:45:44.691Z'),
-          // thời gian dự kiến phục vụ
-          estimateTimeService: new Date('2024-06-02T07:45:44.691Z'),
-          // thời gian phục vụ
-          timeService: new Date('2024-06-02T08:45:44.691Z'),
-          // thời gian bắt đầu vận chuyển đơn hàng này
-          beginTime: new Date('2024-06-02T09:45:44.691Z'),
-          // thời gian dự kiến đến động
-          dynamicEstimatedTime: null,
-          // khoảng cách từ depot đến địa chỉ giao hàng
-          // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
-          distance: 134,
-          //Dự báo khả năng giao hàng đúng hạn
-          estimatedOntime: 1,
-        },
-        {
-          order: transport3Order[1]._id,
-          // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
-          status: 1,
-          // thời gian dự kiến đến
-          estimateTimeArrive: new Date('2024-06-12T07:45:44.691Z'),
-          // thời gian đến
-          timeArrive: new Date('2024-06-11T07:45:44.691Z'),
-          // thời gian dự kiến phục vụ
-          estimateTimeService: new Date('2024-06-02T07:45:44.691Z'),
-          // thời gian phục vụ
-          timeService: new Date('2024-06-02T08:45:44.691Z'),
-          // thời gian bắt đầu vận chuyển đơn hàng này
-          beginTime: new Date('2024-06-02T09:45:44.691Z'),
-          // thời gian dự kiến đến động
-          dynamicEstimatedTime: null,
-          // khoảng cách từ depot đến địa chỉ giao hàng
-          // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
-          distance: 134,
-          //Dự báo khả năng giao hàng đúng hạn
-          estimatedOntime: 1,
-        },
-      ],
-      vehicles: transport3Vehicle[1]._id,
-      depot: listStock[1]._id,
-      employee: transport3Employee[1]._id,
-      // 1. Chưa thực hiện; 2 Đang thực hiện; 3. Đã hoàn thành
-      status: 1,
-      beginTime: new Date('2024-05-22T09:45:44.691Z'),
-      endTime: new Date('2024-05-25T10:45:44.691Z'),
-      note: '',
-    },
-  ]);
-  console.log('Khởi tạo kế hoạch vận chuyển');
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU KẾ HOẠCH VẬN CHUYỂN
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+  const transport3Vehicle = await Transport3Vehicle(vnistDB).find({});
+  const listDepots = await Stock(vnistDB).find({});
+  await Transport3Schedule(vnistDB).create(
+    listTransport3Schedules.map((schedule, index) => {
+      return {
+        code: 'SC_20240621.132' + index,
+        employee: null,
+        status: 1,
+        vehicle: transport3Vehicle[Math.floor(Math.random() * transport3Vehicle.length)]._id,
+        depot: listDepots[Math.floor(Math.random() * listDepots.length)]._id,
+        orders: [
+          transport3Order[index]._id
+        ]
+      }
+    })
+  )
+  console.log('Khởi tạo xong kế hoạch vận chuyển');
 
   /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ const Transport3ScheduleSchema = new Schema(
       dynamicEstimatedTime: {
         type: Date
       },
-      // khoảng cách từ depot đến địa chỉ giao hàng
+      // khoảng cách từ depot đến địa chỉ giao hàng (tổng từ depot -> 1 + từ 1 -> 2)
       // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
       distance: {
         type: Number
@@ -86,6 +86,6 @@ Transport3ScheduleSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
   if (!db.models.Transport3Schedule)
-    return db.model('Transport3OSchedule', Transport3ScheduleSchema);
+    return db.model('Transport3Schedule', Transport3ScheduleSchema);
   return db.models.Transport3Schedule;
 };

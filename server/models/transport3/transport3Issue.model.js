@@ -13,11 +13,11 @@ const Transport3IssueSchema = new Schema(
       ref: 'Transport3Issue'
     },
     type: {
-      //
+      // 1: Lỗi xe, 2: Lỗi tuyến đường, 3: Lỗi hàng hóa 4: Lỗi khác
       type: Number
     },
     status: {
-      //
+      // 1: Chưa xử lý, 2: Đang xử lý, 3: Đã xử lý
       type: Number
     },
     reason: {
