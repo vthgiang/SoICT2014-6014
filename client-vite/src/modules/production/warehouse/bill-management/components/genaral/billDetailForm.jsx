@@ -180,7 +180,7 @@ function BillDetailForm(props) {
 
   // export data kế toán
   const convertDataToExportData = (bill) => {
-    console.log('convertDataToExportData', bill)
+    // console.log('convertDataToExportData', bill)
     let fileName = 'File export thông tin phiếu'
     let length = 0
     let exportThongTinPhieu = []
@@ -289,7 +289,7 @@ function BillDetailForm(props) {
   const { billDetail } = bills
   const { quantityDetail, dataCalendar, currentZoom, infoSearch } = state
   const exportData = convertDataToExportData(billDetail)
-  console.log('exportData', exportData)
+  // console.log('exportData', exportData)
   return (
     <React.Fragment>
       <DialogModal

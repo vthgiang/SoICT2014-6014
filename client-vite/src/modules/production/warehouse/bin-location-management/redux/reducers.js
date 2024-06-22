@@ -53,6 +53,7 @@ export function binLocations(state = initState, action) {
       }
 
     case BinLocationConstants.GET_ALL_BIN_LOCATION_SUCCESS:
+      console.log(action.payload)
       return {
         ...state,
         binLocation: action.payload,

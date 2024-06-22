@@ -85,7 +85,6 @@ const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/man
 const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation'))
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
 const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
-
 const CreateEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/creation/component/employeeKpiCreate'))
 const KPIPersonalManager = lazy(() => import('../modules/kpi/employee/management/component/employeeKpiManagement'))
 const DashBoardEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/dashboard/component/employeeKpiDashboard'))
@@ -154,7 +153,7 @@ const BillManagement = lazy(() => import('../modules/production/warehouse/bill-m
 const InventoryManagement = lazy(() => import('../modules/production/warehouse/inventory-management/components'))
 const StockRequestManagement = lazy(() => import('../modules/production/warehouse/request-management/components'))
 const StogareManagement = lazy(() => import('../modules/production/warehouse/storage-management/components'))
-
+const RoutePickingManagement = lazy(() => import('../modules/production/warehouse/route-picking-management/components'))
 // Customer Management
 const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
 const CrmDashBoardUnit = lazy(() => import("../modules/crm/crmUnitDashboard/components"))
@@ -229,11 +228,11 @@ const CarrierAllTimesTransportMission = lazy(() => import("../modules/production
 // Quản lý vận chuyển 2
 const DashBoardTransportationUnit = lazy(() => import("../modules/transportation/dashboard/components"))
 const InitializationType = lazy(() => import("../modules/transportation/scheduling/delivery-plan/components"));
-const DeliveryPlanList = lazy(()=> import("../modules/transportation/scheduling/delivery-plan/components"))
+const DeliveryPlanList = lazy(() => import("../modules/transportation/scheduling/delivery-plan/components"))
 const VehiclesTransportation = lazy(() => import("../modules/transportation/vehicle/components"));
 const DetailSolution = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/detailSolution'));
 const Journeys = lazy(() => import("../modules/transportation/scheduling/tracking-route/components/index"));
-const DetailJourney = lazy(() =>import('../modules/transportation/scheduling/tracking-route/components/detailJourney'));
+const DetailJourney = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/detailJourney'));
 const TransportationCost = lazy(() => import('../modules/transportation/cost/components/index'));
 const ShipperInfo = lazy(() => import('../modules/transportation/shipper/components/info-management/index'));
 const ShipperDeliveryReport = lazy(() => import('../modules/transportation/shipper/components/delivery-report/index'));
@@ -2754,7 +2753,25 @@ class Routes extends Component {
             layout={Layout}
             component={StogareManagement}
           />
-
+          <PrivateRoute
+            isLoading={false}
+            key='route-picking-management'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/route-picking-management',
+                name: 'route_picking_management',
+                icon: 'fa fa-cube'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/route-picking-management'
+            path='/route-picking-management'
+            pageName='route_picking_management'
+            layout={Layout}
+            component={RoutePickingManagement}
+          />
           {/* end warehouse route */}
 
           <PrivateRoute
@@ -4342,25 +4359,25 @@ class Routes extends Component {
             layout={Layout}
             component={ProjectDetailPage}
           />
-                              <PrivateRoute
-                      isLoading={false}
-                      key={"/project/project-proposal"}
-                      arrPage={[
-                        {link: '/', name: 'home', icon: 'fa fa-home'},
-                        {
-                            link: '/project/project-proposal',
-                            name: 'project_proposal',
-                            icon: 'fa fa-folder-open'
-                        },
-                      ]}
-                      auth={auth}
-                      exact={true}
-                      link={'/project/project-proposal'}
-                      path={'/project/project-proposal'}
-                      pageName={'project_proposal'}
-                      layout={Layout}
-                      component={ProjectProposalPage}
-                    />
+          <PrivateRoute
+            isLoading={false}
+            key={"/project/project-proposal"}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/project/project-proposal',
+                name: 'project_proposal',
+                icon: 'fa fa-folder-open'
+              },
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/project/project-proposal'}
+            path={'/project/project-proposal'}
+            pageName={'project_proposal'}
+            layout={Layout}
+            component={ProjectProposalPage}
+          />
           {/* <PrivateRoute
                         isLoading={false}
                         key={"/project/phases-list"}

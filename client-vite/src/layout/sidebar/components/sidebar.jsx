@@ -1032,6 +1032,11 @@ class SideBar extends Component {
                     name: 'menu.storage_management',
                     icon: 'fa fa-reorder',
                     path: '/storage-management'
+                  },
+                  {
+                    name: 'menu.route_picking_management',
+                    icon: 'fa fa-reorder',
+                    path: '/route-picking-management'
                   }
                 ]
               }}

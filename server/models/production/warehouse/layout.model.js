@@ -46,6 +46,11 @@ const LayoutSchema = new Schema({
   level: {
     type: Number,
   },
+  inventory: {
+    type: Schema.Types.ObjectId,
+    ref: "InventoryWarehouse",
+    require: false,
+  },
 });
 
 LayoutSchema.plugin(mongoosePaginate);
@@ -54,3 +59,4 @@ module.exports = (db) => {
   if (!db.models.Layout) return db.model("Layout", LayoutSchema);
   return db.models.Layout;
 };
+
