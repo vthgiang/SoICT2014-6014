@@ -13,7 +13,7 @@ function get(params) {
   )
 }
 
-function show(id) {
+function getById(id) {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/resource/resources/${id}`,
@@ -40,6 +40,6 @@ function edit(id, data) {
 
 export const ResourceServices = {
   get,
-  show,
+  getById,
   edit
 }

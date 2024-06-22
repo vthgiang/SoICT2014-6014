@@ -26,7 +26,7 @@ export function resource(state = initState, action) {
   switch (action.type) {
     case ResourceConstants.GET_RESOURCES_REQUEST:
     case ResourceConstants.GET_RESOURCES_PAGINATE_REQUEST:
-    case ResourceConstants.SHOW_RESOURCE_REQUEST:
+    case ResourceConstants.GET_RESOURCE_BY_ID_REQUEST:
     case ResourceConstants.CREATE_RESOURCE_REQUEST:
     case ResourceConstants.EDIT_RESOURCE_REQUEST:
       return {
@@ -49,7 +49,7 @@ export function resource(state = initState, action) {
         isLoading: false
       }
 
-    case ResourceConstants.SHOW_RESOURCE_SUCCESS:
+    case ResourceConstants.GET_RESOURCE_BY_ID_SUCCESS:
       return {
         ...state,
         item: action.payload,
@@ -80,7 +80,7 @@ export function resource(state = initState, action) {
 
     case ResourceConstants.GET_RESOURCES_FAILE:
     case ResourceConstants.GET_RESOURCES_PAGINATE_FAILE:
-    case ResourceConstants.SHOW_RESOURCE_FAILE:
+    case ResourceConstants.GET_RESOURCE_BY_ID_FAILE:
     case ResourceConstants.CREATE_RESOURCE_FAILE:
     case ResourceConstants.EDIT_RESOURCE_FAILE:
       return {

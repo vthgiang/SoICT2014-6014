@@ -26,24 +26,24 @@ function get(params) {
 }
 
 /**
- * Lấy thông tin link theo id
- * @id id link
+ * Lấy thông tin chi tiết của requester theo id
+ * @id id requester
  */
-function show(id) {
+function getById(id) {
   return (dispatch) => {
     dispatch({
-      type: ResourceConstants.SHOW_RESOURCE_REQUEST
+      type: ResourceConstants.GET_RESOURCE_BY_ID_REQUEST
     })
-    ResourceServices.show(id)
+    ResourceServices.getById(id)
       .then((res) => {
         dispatch({
-          type: ResourceConstants.SHOW_RESOURCE_SUCCESS,
+          type: ResourceConstants.GET_RESOURCE_BY_ID_SUCCESS,
           payload: res.data.content
         })
       })
       .catch((err) => {
         dispatch({
-          type: ResourceConstants.SHOW_RESOURCE_FAILE,
+          type: ResourceConstants.GET_RESOURCE_BY_ID_FAILE,
           payload: err
         })
       })
@@ -78,6 +78,6 @@ function edit(id, link) {
 
 export const ResourceActions = {
   get,
-  show,
+  getById,
   edit
 }
