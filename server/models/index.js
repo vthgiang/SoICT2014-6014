@@ -94,6 +94,7 @@ module.exports = {
     ProductRequestManagement: require('./production/common-production/productRequestManagement.model'),
     Layout: require('./production/warehouse/layout.model'),
     InventoryWarehouse: require('./production/warehouse/inventoryWarehouse.model'),
+    RoutePicking: require('./production/warehouse/routePicking.model'),
     // Customer Management
     Customer: require('./customer-care/customer.model'),
     CustomerCare: require('./customer-care/customerCare.model'),

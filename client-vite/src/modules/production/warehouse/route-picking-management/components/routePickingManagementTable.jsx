@@ -12,15 +12,15 @@ import ExampleDetailInfo from './exampleDetailInfo'
 import ExampleImportForm from './exampleImortForm'
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
-class ExampleManagementTable extends Component {
+class RoutePickingManagementTable extends Component {
   constructor(props) {
     super(props)
-    const tableId = 'table-manage-example1-class'
+    const tableId = 'table-manage-route-class'
     const defaultConfig = { limit: 5 }
     const limit = getTableConfiguration(tableId, defaultConfig).limit
 
     this.state = {
-      exampleName: '',
+      routeName: '',
       page: 1,
       perPage: limit,
       tableId
@@ -28,8 +28,8 @@ class ExampleManagementTable extends Component {
   }
 
   componentDidMount() {
-    let { exampleName, page, perPage } = this.state
-    this.props.getExamples({ exampleName, page, perPage })
+    let { routeName, page, perPage } = this.state
+    this.props.getExamples({ routeName, page, perPage })
   }
 
   /**
@@ -314,4 +314,4 @@ const mapDispatchToProps = {
   deleteExamples: exampleActions.deleteExamples
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ExampleManagementTable))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RoutePickingManagementTable))

@@ -1,22 +1,18 @@
-import { sendRequest } from '../../../../../helpers/requestHelper'
+import { sendRequest } from '@helpers/requestHelper.jsx'
 
-export const exampleServices = {
-  getExamples,
+export const routePickingServices = {
+  getAllChemins,
   deleteExamples,
   createExample,
   editExample
 }
 
-function getExamples(queryData) {
+function getAllChemins(queryData) {
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/examples`,
+      url: `${process.env.REACT_APP_SERVER}/`,
       method: 'GET',
-      params: {
-        exampleName: queryData?.exampleName ? queryData.exampleName : '',
-        page: queryData?.page ? queryData.page : null,
-        perPage: queryData?.perPage ? queryData.perPage : null
-      }
+      params: queryData
     },
     false,
     true,
