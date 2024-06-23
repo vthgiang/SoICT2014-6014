@@ -1631,6 +1631,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/forecastModel/ontimeDeliveryPredict',
+        apis: ['@all'],
+    },
+    {
         url: '/manage-transport3-dashboard',
         apis: ['@all'],
     },

@@ -2123,6 +2123,13 @@ const LINKS = [
 
   // Quản lý vận chuyển 3
   {
+    url: "/forecastModel/ontimeDeliveryPredict",
+    description: "Quản lí mô hình dự báo khả năng giao hàng đúng hạn",
+    category: LINK_CATEGORY.TRANSPORT3.name,
+    roles: [ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink("/forecastModel/ontimeDeliveryPredict"),
+  },
+  {
     url: "/manage-transport3-dashboard",
     description: "Bảng tin vận chuyển",
     category: LINK_CATEGORY.TRANSPORT3.name,

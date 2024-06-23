@@ -245,6 +245,7 @@ const EmployeeTransport3 = lazy(() => import('../modules/transport3/employee/com
 const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/components'))
 const RouteTransport3 = lazy(() => import('../modules/transport3/route/components'))
 const IssueTransport3 = lazy(() => import('../modules/transport3/issue/components'))
+const ForecastOTD = lazy(() => import('../modules/transport3/schedule/components/forestcastModel/ontimeDeliveryPredict.jsx'))
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 const Project = lazy(() => import("../modules/project/projects/components/index"))
@@ -3752,6 +3753,26 @@ class Routes extends Component {
             pageName='manage_transport3_route'
             layout={Layout}
             component={RouteTransport3}
+          />
+
+                    <PrivateRoute
+            isLoading={false}
+            key={'ontimeDeliveryPredict'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/forecastModel/ontimeDeliveryPredict',
+                name: 'forecast_model_management',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/forecastModel/ontimeDeliveryPredict'}
+            path={'/forecastModel/ontimeDeliveryPredict'}
+            pageName={'forecast_model_management'}
+            layout={Layout}
+            component={ForecastOTD}
           />
 
           <PrivateRoute

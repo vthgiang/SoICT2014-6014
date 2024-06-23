@@ -181,6 +181,21 @@ class SideBar extends Component {
               }}
             />
 
+            {/* Quản lý mô hình dự báo */}
+            <GroupItem
+              groupItem={{
+                name: 'menu.forecast_model_management',
+                icon: 'fa fa-gears',
+                list: [
+                  {
+                    name: 'menu.OTD_forecast_model_management',
+                    icon: 'fa fa-gear',
+                    path: '/forecastModel/ontimeDeliveryPredict'
+                  }
+                ]
+              }}
+            />
+
             {/* Quản lý doanh nghiệp */}
             <Item
               item={{

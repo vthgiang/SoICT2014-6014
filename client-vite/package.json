@@ -129,7 +129,8 @@
     "w2ui": "^2.0.0",
     "xlsx": "^0.18.5",
     "leaflet-geosearch": "^4.0.0",
-    "leaflet-routing-machine": "^3.2.12"
+    "leaflet-routing-machine": "^3.2.12",
+    "@ramonak/react-progress-bar": "^5.2.0"
   },
   "eslintConfig": {
     "extends": "react-app"

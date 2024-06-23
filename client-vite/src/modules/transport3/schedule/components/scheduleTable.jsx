@@ -17,7 +17,8 @@ import {ScheduleActions} from '@modules/transport3/schedule/redux/actions';
 import OrderCreateForm from '@modules/transport3/order/components/orderCreateForm.jsx';
 import OrderDetail from '@modules/transport3/order/components/orderDetail.jsx';
 import { color } from 'd3'
-import OntimeDeliveryResults from './ontimeDeliveryResults'
+import OntimeDeliveryResults from './ontimeDeliveryResults';
+import ProgressBar from "@ramonak/react-progress-bar";
 
 function ScheduleTable(props) {
   const TableId = 'schedule-table'
@@ -73,6 +74,7 @@ function ScheduleTable(props) {
     'Nhân viên',
     'Phương tiện',
     'Trạng thái',
+    'Khả năng giao đúng hạn',
     'Số đơn hàng',
     'Ngày tạo',
   ]
@@ -107,6 +109,16 @@ function ScheduleTable(props) {
                 Thêm lịch mới
               </button>
             </div>
+            {/* <div className="dropdown pull-right" style={{ marginTop: 5 }}>
+              <button
+                type="button"
+                className="btn btn-success dropdown-toggle pull-right"
+                aria-expanded="true"
+                onClick={() => retrainingModel()}
+              >
+                Cập nhật mô hình dự báo
+              </button>
+            </div> */}
           </div>
           {/* Tim kiem */}
           <div className="form-inline">
@@ -153,37 +165,48 @@ function ScheduleTable(props) {
             </tr>
             </thead>
             <tbody>
-            {listSchedules && listSchedules.length !== 0 ? listSchedules.map((schedule, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{schedule.code}</td>
-                <td>{schedule.depot.name}</td>
-                <td>{schedule.employee ? schedule.employee.map(employee => employee.fullName).join(', ') : 'Chưa có'}</td>
-                <td>{schedule.vehicles && schedule.vehicles.asset.assetName}</td>
-                <td>{status[schedule.status]}</td>
-                <td>
-                  {schedule.orders && schedule.orders.length}
-                </td>
-                <td>{formatDate(schedule.createdAt)}</td>
-                <td>
-                  <td style={{textAlign: 'center'}}>
-                    <a onClick={() => handleShowDetailInfo(schedule._id)}><i
-                      className="material-icons">visibility</i></a>
-                    <a><i className="material-icons">edit</i></a>
-                    <DeleteNotification
-                      content={'Xác nhận xóa lịch trình?'}
-                      data={{id: schedule._id}}
-                      // func={handleDeleteVehicle}
+            {listSchedules && listSchedules.length !== 0 ? listSchedules.map((schedule, index) => {
+              const totalOrders = schedule.orders.length;
+              const ontimeOrders = schedule.orders.filter(order => order.estimatedOntime === 1).length;
+              const completionPercentage = totalOrders === 0 ? 0 : Math.round((ontimeOrders / totalOrders) * 100);
+              return (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{schedule.code}</td>
+                  <td>{schedule.depot.name}</td>
+                  <td>{schedule.employee ? schedule.employee.map(employee => employee.fullName).join(', ') : 'Chưa có'}</td>
+                  <td>{schedule.vehicles && schedule.vehicles.asset.assetName}</td>
+                  <td>{status[schedule.status]}</td>
+                  <td>
+                    <ProgressBar
+                      completed={completionPercentage}
+                      customLabel={`${ontimeOrders}/${totalOrders}`}
                     />
-                    <button
-                      onClick={()=> handlePredictOntimeDelivery(schedule)}
-                    >
-                      Dự báo*
-                    </button>
                   </td>
-                </td>
-              </tr>
-            )) : <tr>
+                  <td>
+                    {schedule.orders && schedule.orders.length}
+                  </td>
+                  <td>{formatDate(schedule.createdAt)}</td>
+                  <td>
+                    <td style={{textAlign: 'center'}}>
+                      <a onClick={() => handleShowDetailInfo(schedule._id)}><i
+                        className="material-icons">visibility</i></a>
+                      <a><i className="material-icons">edit</i></a>
+                      <DeleteNotification
+                        content={'Xác nhận xóa lịch trình?'}
+                        data={{id: schedule._id}}
+                        // func={handleDeleteVehicle}
+                      />
+                      {/*<button*/}
+                      {/*  onClick={()=> handlePredictOntimeDelivery(schedule)}*/}
+                      {/*>*/}
+                      {/*  Dự báo**/}
+                      {/*</button>*/}
+                    </td>
+                  </td>
+                </tr>
+              )
+            }) : <tr>
               <td colSpan={columns.length + 1}>
                 <center>Không có dữ liệu</center>
               </td>
