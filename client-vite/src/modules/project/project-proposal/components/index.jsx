@@ -205,10 +205,8 @@ function ProjectProposalPage(props) {
     }
   };
 
-  // console.log('proposals: ', proposals)
-  const handleUpdateProject = () => {
-    console.log("udpate")
-  }
+  console.log('proposals: ', proposals)
+
   return (
     <React.Fragment>
       <div className="box">
