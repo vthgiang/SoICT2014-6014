@@ -28,7 +28,7 @@ exports.createOrder = async (req, res) => {
 // Lấy tất cả vận đơn
 exports.getAllOrder = async (req, res) => {
   try {
-    const orders = await OrderService.getAllOrder(req.portal, req.query);
+    const orders = await OrderService.getAllOrder(req.portal, req.query, req.currentRole);
 
     await Log.info(req.user?.email, 'GET_ALL_ORDER', req.portal);
 

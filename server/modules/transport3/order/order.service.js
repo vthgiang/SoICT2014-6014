@@ -2,7 +2,7 @@ const {
   Transport3Order,
   Stock,
   Customer,
-  Good
+  Good, Role
 } = require('../../../models');
 
 const {
@@ -30,7 +30,15 @@ exports.createOrder = async (portal, data) => {
 }
 
 // Lấy tất cả vận đơn
-exports.getAllOrder = async (portal, query) => {
+exports.getAllOrder = async (portal, query, currentRole) => {
+  let role = await Role(connect(DB_CONNECTION, portal)).find({
+    _id: currentRole
+  });
+
+  if(role[0].name !== 'Trưởng phòng vận chuyển' && role[0].name !== 'Nhân viên giám sát') {
+    return [];
+  }
+
   return await Transport3Order(connect(DB_CONNECTION, portal)).find(query)
     .populate('customer')
     .populate('stockIn')

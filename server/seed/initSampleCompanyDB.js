@@ -722,7 +722,7 @@ const initSampleCompanyDB = async () => {
     type: roleChucDanh._id,
   });
   const vcNvGiamSat = await Role(vnistDB).create({
-    parents: [roleEmployee._id],
+    parents: [roleDeputyManager._id],
     name: 'Nhân viên giám sát',
     type: roleChucDanh._id,
   });
@@ -1178,8 +1178,8 @@ const initSampleCompanyDB = async () => {
     description:
       'Đơn vị vận chuyển khu vực miền bắc của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
     managers: [vcTruongPhong._id],
-    deputyManagers: [],
-    employees: [vcNvGiamSat._id, vcNvVanChuyen._id],
+    deputyManagers: [vcNvGiamSat._id],
+    employees: [vcNvVanChuyen._id],
     parent: Directorate._id,
   });
 
@@ -7219,7 +7219,7 @@ const initSampleCompanyDB = async () => {
   console.log('Xong! Đã tạo mẫu dữ liệu khách hàng');
 
   let listCustomerData1 = [];
-  for (let i = 0; i < listCustomer.length; i++) {
+  for (let i = 0; i < 200; i++) {
     const now = new Date();
     const month =
       now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
@@ -7695,7 +7695,7 @@ const initSampleCompanyDB = async () => {
   console.log('Khởi tạo xong cấu hình đơn vị kinh doanh');
 
   console.log('Khởi tạo dữ liệu đơn bán hàng');
-  const BATCH_SIZE = 10000; // Số lượng bản ghi trong mỗi lô
+  const BATCH_SIZE = 10; // Số lượng bản ghi trong mỗi lô
   const CONCURRENCY_LIMIT = 5; // Số lượng kết nối song song
   function getRandomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
@@ -7708,7 +7708,7 @@ const initSampleCompanyDB = async () => {
     let listSales = [];
     let batchPromises = [];
     let products_in_stock = await Good(vnistDB).find({});
-    for (let i = 0; i < saleOrders.length; i++) {
+    for (let i = 0; i < 100; i++) {
       let salesOrder = saleOrders[i];
       let product = products_in_stock.find(
         (product) => product.code === String(salesOrder.product_id)

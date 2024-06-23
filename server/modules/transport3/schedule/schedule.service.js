@@ -1,6 +1,6 @@
 const {
   Transport3Schedule,
-  Stock
+  Stock, Role
 } = require('../../../models');
 
 const {
@@ -8,7 +8,15 @@ const {
 } = require(`../../../helpers/dbHelper`);
 
 // Lấy tất cả lịch trình
-exports.getAllSchedule = async (portal, query) => {
+exports.getAllSchedule = async (portal, query, currentRole) => {
+  let role = await Role(connect(DB_CONNECTION, portal)).find({
+    _id: currentRole
+  });
+
+  if(role[0].name !== 'Trưởng phòng vận chuyển' && role[0].name !== 'Nhân viên giám sát') {
+    return [];
+  }
+
   return await Transport3Schedule(connect(DB_CONNECTION, portal)).find(query)
     .populate('depot')
     .populate('vehicles')

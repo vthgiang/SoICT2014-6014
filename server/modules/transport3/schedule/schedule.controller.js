@@ -4,7 +4,7 @@ const Log = require(`../../../logs`);
 // Lấy tất cả lịch trình
 exports.getAllSchedule = async (req, res) => {
   try {
-    let schedules = await ScheduleService.getAllSchedule(req.portal, req.query);
+    let schedules = await ScheduleService.getAllSchedule(req.portal, req.query, req.currentRole);
     res.status(200).json({
       schedules,
       messages: ['Lấy thông tin lịch trình thành công']

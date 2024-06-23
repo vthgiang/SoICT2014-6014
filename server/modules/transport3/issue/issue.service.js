@@ -1,5 +1,5 @@
 const {
-  Transport3Issue
+  Transport3Issue, Role
 } = require('../../../models');
 
 const {
@@ -7,7 +7,15 @@ const {
 } = require(`../../../helpers/dbHelper`);
 
 // Lấy danh sách các vấn đề
-exports.getIssues = async (portal, query) => {
+exports.getIssues = async (portal, query, currentRole) => {
+  let role = await Role(connect(DB_CONNECTION, portal)).find({
+    _id: currentRole
+  });
+
+  if(role[0].name !== 'Trưởng phòng vận chuyển' && role[0].name !== 'Nhân viên giám sát') {
+    return [];
+  }
+
   return Transport3Issue(connect(DB_CONNECTION, portal)).find(query)
     .populate('schedule')
     .populate('receiver_solve');

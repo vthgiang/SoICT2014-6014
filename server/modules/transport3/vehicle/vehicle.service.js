@@ -1,5 +1,5 @@
 const {
-  Transport3Vehicle, Transport3Schedule,
+  Transport3Vehicle, Transport3Schedule, Role,
 } = require('../../../models');
 
 const {
@@ -9,6 +9,14 @@ const {searchAssetProfiles} = require('../../asset/asset-management/asset.servic
 
 // Lấy tất cả phương tiện vận chuyển 3
 exports.getAllVehicleTransport3 = async (portal, query, currentRole, companyId) => {
+  let role = await Role(connect(DB_CONNECTION, portal)).find({
+    _id: currentRole
+  });
+
+  if(role[0].name !== 'Trưởng phòng vận chuyển' && role[0].name !== 'Nhân viên giám sát') {
+    return [];
+  }
+
   const {page, perPage} = query;
   let vehicle_assets = await searchAssetProfiles(portal, companyId, {group: ['vehicle']});
   let vehicles = await Transport3Vehicle(connect(DB_CONNECTION, portal)).find({})

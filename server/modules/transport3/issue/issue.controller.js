@@ -4,7 +4,7 @@ const Log = require(`../../../logs`);
 // Lấy danh sách các vấn đề
 exports.getIssues = async (req, res) => {
   try {
-    const issues = await IssueService.getIssues(req.portal, req.query);
+    const issues = await IssueService.getIssues(req.portal, req.query, req.currentRole);
     await Log.info(req.user.email, 'GET_ISSUES', req.portal);
     res.status(200).json({
       status: 200,
