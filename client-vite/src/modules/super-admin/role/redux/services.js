@@ -7,7 +7,8 @@ export const RoleServices = {
   edit,
   destroy,
   importRoles,
-  createRoleAttribute
+  createRoleAttribute,
+  editRoleAttribute
 }
 
 function get(params) {
@@ -98,6 +99,19 @@ function createRoleAttribute(role) {
     {
       url: `${process.env.REACT_APP_SERVER}/role/roles/attributes`,
       method: 'POST',
+      data: role
+    },
+    true,
+    true,
+    'super_admin.role'
+  )
+}
+
+function editRoleAttribute(id, role) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/role/roles/attributes/${id}`,
+      method: 'PATCH',
       data: role
     },
     true,
