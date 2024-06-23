@@ -36,7 +36,7 @@ const ScheduleCreateInfo = (props) => {
               <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div className="form-group">
                   <label>Ghi chú</label>
-                  <textarea className="form-control" rows="1" placeholder="Ghi chú"/>
+                  <textarea className="form-control" rows="1" placeholder="Ghi chú" value={props.note} onChange={props.handleNoteChange}/>
                 </div>
               </div>
               <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -74,7 +74,7 @@ const ScheduleCreateInfo = (props) => {
                       listVehicle.map(vehicle => (
                         {
                           value: vehicle._id,
-                          text: vehicle.code + ' - ' + vehicle.assetName
+                          text: vehicle.code + ' - ' + vehicle.asset.assetName
                         }
                       ))
                     }

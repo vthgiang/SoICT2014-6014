@@ -4,50 +4,30 @@ import {useDispatch, useSelector} from 'react-redux';
 import PickInMap from '@modules/transport3/schedule/components/map/pickInMap';
 import {MapContainer, useMap} from 'react-leaflet';
 import PickForVehicle from '@modules/transport3/schedule/components/map/pickForVehicle';
-import {StockActions} from '@modules/production/warehouse/stock-management/redux/actions.js';
-import {OpenStreetMapProvider} from 'leaflet-geosearch';
 
 const SchedulePickLocation = (props) => {
   const [state, setState] = useState({
-    listStocks: [],
-    schedule: {},
+    totalOrderPicked: 0,
+    typeRoute: false,
+    schedule: props.schedule,
     nearestDepots: [],
     lat: 21,
     lng: 105
   })
 
-  const provider = new OpenStreetMapProvider({
-    params: {
-      countrycodes: 'vn',
-      addressdetails: 1
-    }
-  });
+  useEffect(() => {
+    props.handleScheduleChange(state.schedule)
+  }, [state.totalOrderPicked])
 
-  let dispatch = useDispatch();
+  useEffect(() => {
+    props.handleNearestDepotsChange(state.nearestDepots)
+  }, [state.nearestDepots])
   let listOrders = useSelector(state => state.orders.listOrders)
     .filter(order => order.status === 2 && order.transportType !== 3 && props.orders.includes(order._id));
   let listVehicle = useSelector(state => state.T3vehicle.listVehicle)
     .filter(vehicle => props.vehicles.includes(vehicle._id));
-  let listStocks = useSelector(state => state.stocks).listStocks;
-  useEffect(() => {
-    state.listStocks && setState({
-        ...state,
-        listStocks: listStocks
-    })
-  }, []);
+  let listStocks = useSelector(state => state.T3schedule.listStocsWithLatLng)
 
-  useEffect(() => {
-    listStocks.forEach(async (stock) => {
-      if (stock.lat)
-        return;
-      let stockLocation = await provider.search({query: stock.address});
-      stock.lat = stockLocation[0].y;
-      stock.lng = stockLocation[0].x;
-    })
-  }, [state.listStocks])
-  useEffect(() => {
-    dispatch(StockActions.getAllStocks())
-  }, []);
   const transportType = {
     1: 'Giao hàng',
     2: 'Nhận hàng'
@@ -73,9 +53,11 @@ const SchedulePickLocation = (props) => {
         schedule[vehicleId].orders.splice(index, 1);
         setState({
           ...state,
-          schedule: schedule
+          schedule: schedule,
+          totalOrderPicked: Object.values(schedule).map(vehicle => vehicle.orders).flat().length,
+          nearestDepots: []
         })
-      }, 1)
+      }, 10)
       // delay to wait for selectbox value change
       return;
     }
@@ -93,7 +75,9 @@ const SchedulePickLocation = (props) => {
 
     setState({
       ...state,
-      schedule: schedule
+      schedule: schedule,
+      totalOrderPicked: Object.values(schedule).map(vehicle => vehicle.orders).flat().length,
+      nearestDepots: []
     })
   }
 
@@ -119,10 +103,17 @@ const SchedulePickLocation = (props) => {
     })
   }
 
+  const handleTypeRouteChange = (e) => {
+    setState({
+      ...state,
+      typeRoute: e.target.checked
+    })
+  }
+
   return (
     <>
       <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{height: '100vh'}}>
-        <div className="col-xs-6 col-sm-6 col-md-4 col-lg-4" style={{padding: 10, height: '60%'}}>
+        <div className="col-xs-6 col-sm-6 col-md-4 col-lg-4" style={{padding: 10, height: '6x0%'}}>
           <fieldset className="scheduler-border" style={{height: '100%'}}>
             <legend className="scheduler-border">Danh sách địa điểm</legend>
             {listOrders.map((order) => (
@@ -140,9 +131,16 @@ const SchedulePickLocation = (props) => {
         <div className="col-xs-6 col-sm-6 col-md-8 col-lg-8" style={{padding: 10, height: '60%'}}>
           <fieldset className="map-wrapper scheduler-border" style={{height: '100%'}}>
             <legend className="scheduler-border">Bản đồ</legend>
-            <MapContainer zoom={11} style={{height: '100%'}}>
+            <span style={{fontSize: 18, marginRight: 10}}>Kiểu hiển thị tuyến đường:</span>
+            <b>Line</b>
+            <label className="switch">
+              <input type="checkbox" id="typeRoute" onChange={handleTypeRouteChange} checked={state.typeRoute}/>
+              <span className="slider round"></span>
+            </label>
+            <b>Router</b>
+            <MapContainer zoom={11} style={{height: '90%', width: "100%"}}>
               <PickInMap lat={state.lat} lng={state.lng} listOrders={listOrders} listVehicle={listVehicle}
-                         listStocks={listStocks}
+                         listStocks={listStocks} nearestDepots={state.nearestDepots} typeRoute={state.typeRoute}
                          schedule={state.schedule} state={state}/>
             </MapContainer>
           </fieldset>
@@ -157,7 +155,8 @@ const SchedulePickLocation = (props) => {
                 listStocks={listStocks}
                 currentVehicle={vehicle}
                 schedule={state.schedule}
-                state={state}
+                totalOrderPicked={state.totalOrderPicked}
+                nearestDepots={state.nearestDepots}
                 handleOrderChange={handleOrderChange}
                 handleDeleteVehicle={handleDeleteVehicle}
                 handleSetNearestDepot={handleSetNearestDepot}

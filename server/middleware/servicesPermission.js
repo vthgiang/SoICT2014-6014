@@ -713,6 +713,8 @@ exports.links = [
             { path: '/projects/project/change-requests/update-lists', method: 'PATCH' },
             { path: '/projects/project/change-requests/:id/:status', method: 'PATCH' },
             { path: '/projects/project/project-phase', method: 'POST' },
+
+            { path: '/predict/:scheduleId', method: 'GET' },
         ],
     },
     {
@@ -1626,6 +1628,10 @@ exports.links = [
     },
     {
         url: '/transportation-shipper-manage',
+        apis: ['@all'],
+    },
+    {
+        url: '/forecastModel/ontimeDeliveryPredict',
         apis: ['@all'],
     },
     {

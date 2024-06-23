@@ -31,7 +31,7 @@ const VehicleManagementTable = (props) => {
     props.getAllVehicle({page, perPage});
   }, [])
 
-  console.log(props.listVehicle)
+  console.log(props.vehicle, 'vehicle')
 
   const setPage = (pageNumber) => {
     setState({
@@ -111,14 +111,14 @@ const VehicleManagementTable = (props) => {
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{vehicle.code}</td>
-                <td>{vehicle.assetName}</td>
+                <td>{vehicle.asset.assetName}</td>
                 <td>{vehicle.tonnage}</td>
                 <td>{vehicle.volume}</td>
                 <td>{vehicle.averageGasConsume}</td>
                 <td>{vehicle.averageFeeTransport}</td>
-                <td>{formatDate(vehicle.warrantyExpirationDate)}</td>
+                <td>{formatDate(vehicle.asset.warrantyExpirationDate)}</td>
                 <td>{vehicle.minVelocity} - {vehicle.maxVelocity}</td>
-                <td>{vehicle.status === 'ready_to_use' ? 'Sẵn sàng sử dụng' : 'Không sẵn sàng sử dụng'}</td>
+                <td>{vehicle.asset.status === 'ready_to_use' ? 'Sẵn sàng sử dụng' : 'Không sẵn sàng sử dụng'}</td>
                 <td style={{textAlign: 'center'}}>
                   <a onClick={() => handleShowDetailInfo(vehicle._id)}><i className="material-icons">visibility</i></a>
                   <a><i className="material-icons">edit</i></a>

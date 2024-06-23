@@ -1,18 +1,19 @@
-import React, {useEffect, useState} from 'react'
-import {connect} from 'react-redux'
-import {withTranslate} from 'react-redux-multilingual'
+import React, { useEffect, useState } from 'react'
+import { connect, useDispatch, useSelector } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
 //Actions
-import {OrderActions} from '../redux/actions'
-import {RoleActions} from '@modules/super-admin/role/redux/actions'
-import {StockActions} from '@modules/production/warehouse/stock-management/redux/actions'
-import {UserActions} from '@modules/super-admin/user/redux/actions'
-import {GoodActions} from '@modules/production/common-production/good-management/redux/actions'
-import {LotActions} from '@modules/production/warehouse/inventory-management/redux/actions'
-import {CrmCustomerActions} from '@modules/crm/customer/redux/actions'
+import { OrderActions } from '../redux/actions'
+import { RoleActions } from '@modules/super-admin/role/redux/actions'
+import { StockActions } from '@modules/production/warehouse/stock-management/redux/actions'
+import { UserActions } from '@modules/super-admin/user/redux/actions'
+import { GoodActions } from '@modules/production/common-production/good-management/redux/actions'
+import { LotActions } from '@modules/production/warehouse/inventory-management/redux/actions'
+import { ScheduleActions } from '@modules/transport3/schedule/redux/actions';
+import { CrmCustomerActions } from '@modules/crm/customer/redux/actions'
 
 //Helper Function
-import {formatDate} from '@helpers/formatDate'
-import {generateCode} from '@helpers/generateCode'
+import { formatDate } from '@helpers/formatDate'
+import { generateCode } from '@helpers/generateCode'
 //Components Import
 import {
   PaginateBar,
@@ -20,13 +21,22 @@ import {
   SelectMulti,
 } from '@common-components'
 import OrderCreateForm from './orderCreateForm'
-import {getTableConfiguration} from '@helpers/tableConfiguration'
+import { getTableConfiguration } from '@helpers/tableConfiguration'
 import OrderDetail from '@modules/transport3/order/components/orderDetail.jsx';
+import { getAllSchedule } from '../../schedule/redux/services'
+import { schemeYlGn } from 'd3'
 
 function OrderTable(props) {
   const TableId = 'order-table'
-  const defaultConfig = {limit: 5}
+  const defaultConfig = { limit: 5 }
   const Limit = getTableConfiguration(TableId, defaultConfig).limit
+
+  let listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules)
+  let T3orders = useSelector(state => state.T3order)
+  // console.log(listSchedules)
+  let dispatch = useDispatch()
+  const currentRole = localStorage.getItem('currentRole')
+  const userdepartments = useSelector((state) => state.user.userdepartments)
 
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole'),
@@ -38,18 +48,21 @@ function OrderTable(props) {
   })
 
   useEffect(() => {
-    const {page, limit, currentRole} = state
-    props.getCustomers({getAll: true})
+    const { page, limit, currentRole } = state
+    props.getCustomers({ getAll: true })
 
-    props.getAllStocks({managementLocation: currentRole})
+    props.getAllStocks({ managementLocation: currentRole })
     props.getUser()
-    props.getGoodsByType({type: 'product'})
+    props.getGoodsByType({ type: 'product' })
     props.getAllOrder()
   }, [])
 
+  useEffect(() => {
+    dispatch(UserActions.getAllUserSameDepartment(currentRole))
+  }, [dispatch])
   const handleClickCreateCode = () => {
     setState((state) => {
-      return {...state, code: generateCode('TP_')}
+      return { ...state, code: generateCode('TP_') }
     })
   }
 
@@ -79,7 +92,7 @@ function OrderTable(props) {
 
 
   const handleOrderCodeChange = (e) => {
-    let {value} = e.target
+    let { value } = e.target
     setState({
       ...state,
       codeQuery: value
@@ -88,7 +101,7 @@ function OrderTable(props) {
 
 
   const handleSubmitSearch = () => {
-    let {limit, page, codeQuery, status, customer} = state
+    let { limit, page, codeQuery, status, customer } = state
     const data = {
       limit,
       page,
@@ -111,11 +124,15 @@ function OrderTable(props) {
     window.$('#modal-add-order').modal('show')
   }
 
-  let {limit, code, tableId} = state
-  const {translate, orders} = props
-  const {totalPages, page} = orders
+  const retrainingModel = () => {
+    dispatch(OrderActions.retrainingModel())
+  }
 
-  let {listOrders} = orders
+  let { limit, code, tableId } = state
+  const { translate, orders } = props
+  const { totalPages, page } = orders
+
+  let { listOrders } = orders
 
   const columns = [
     'STT',
@@ -125,9 +142,7 @@ function OrderTable(props) {
     'Địa chỉ',
     'Độ ưu tiên',
     'Trạng thái',
-    'T/g giao hàng dự kiến',
-    'Giao hàng đúng hạn',
-    'Số ngày trễ hạn'
+    'T/g giao hàng dự kiến'
   ]
 
   const transportType = {
@@ -136,12 +151,33 @@ function OrderTable(props) {
     3: 'Vận chuyển giữa kho'
   }
 
+  const priority = {
+    1: 'Thấp',
+    2: 'Trung bình',
+    3: 'Cao',
+    4: 'Đặc biệt'
+  }
+
+  const status = {
+    1: 'Chờ xác nhận',
+    2: 'Đã xác nhận',
+    3: 'Đã giao hàng',
+  }
+
+  const isManager = () => {
+    if (userdepartments?.managers[currentRole]) {
+      return true
+    }
+    return false
+  }
+
   return (
     <>
       <div className="nav-tabs-custom">
+        {console.log(userdepartments)}
         <div className="box-body qlcv">
           <div className="form-inline">
-            <div className="dropdown pull-right" style={{marginTop: 5}}>
+            <div className="dropdown pull-right" style={{ marginTop: 5 }}>
               <button
                 type="button"
                 className="btn btn-success dropdown-toggle pull-right"
@@ -152,37 +188,38 @@ function OrderTable(props) {
               >
                 Thêm vận đơn mới
               </button>
-              <ul className="dropdown-menu pull-right" style={{marginTop: 0}}>
+              <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                 <li>
-                  <a style={{cursor: 'pointer'}} title={`Thêm từ đơn hàng`}>
+                  <a style={{ cursor: 'pointer' }} title={`Thêm từ đơn hàng`}>
                     Thêm từ đơn hàng
                   </a>
                 </li>
                 <li>
-                  <a style={{cursor: 'pointer'}} title={`Thêm trực tiếp`} onClick={createDirectly}>
+                  <a style={{ cursor: 'pointer' }} title={`Thêm trực tiếp`} onClick={createDirectly}>
                     Thêm trực tiếp
                   </a>
                 </li>
                 <li>
-                  <a style={{cursor: 'pointer'}} title={`Thêm từ file`}>
+                  <a style={{ cursor: 'pointer' }} title={`Thêm từ file`}>
                     Thêm từ file
                   </a>
                 </li>
               </ul>
             </div>
-            <div className="dropdown pull-right" style={{marginTop: 5}}>
+            {isManager() && <div className="dropdown pull-right" style={{ marginTop: 5 }}>
               <button
                 type="button"
                 className="btn btn-success dropdown-toggle pull-right"
                 aria-expanded="true"
-                // onClick={retrainingModel}
+                onClick={() => retrainingModel()}
               >
                 Cập nhật mô hình dự báo
               </button>
-            </div>
+            </div>}
+
           </div>
-          <OrderCreateForm code={code}/>
-          <OrderDetail order={state.currentDetail}/>
+          <OrderCreateForm code={code} />
+          <OrderDetail order={state.currentDetail} />
           {/* Tim kiem */}
           <div className="form-inline">
             <div className="form-group">
@@ -203,43 +240,40 @@ function OrderTable(props) {
             </div>
           </div>
           {/* Bang */}
-          <table id={tableId} className="table table-striped table-bordered table-hover" style={{marginTop: 20}}>
+          <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
             <thead>
-            <tr>
-              {columns.map((column, index) => (
-                <th key={index}>{column}</th>
-              ))}
-              <th
-                style={{
-                  width: '120px',
-                  textAlign: 'center'
-                }}
-              >
-                {translate('table.action')}
-                <DataTableSetting
-                  tableId={tableId}
-                  columnArr={columns}
-                  setLimit={setLimit}
-                />
-              </th>
-            </tr>
+              <tr>
+                {columns.map((column, index) => (
+                  <th key={index}>{column}</th>
+                ))}
+                <th
+                  style={{
+                    width: '120px',
+                    textAlign: 'center'
+                  }}
+                >
+                  {translate('table.action')}
+                  <DataTableSetting
+                    tableId={tableId}
+                    columnArr={columns}
+                    setLimit={setLimit}
+                  />
+                </th>
+              </tr>
             </thead>
             <tbody>
-            {console.log(listOrders)}
             {typeof listOrders !== 'undefined' &&
               listOrders.length !== 0 &&
               listOrders.map((item, index) => (
                 <tr key={index}>
-                  <td>{index + 1 + (page - 1) * limit}</td>
+                  <td>{index + 1 + (page || 1 - 1) * limit || 0}</td>
                   <td>{item.code ? item.code : ''}</td>
                   <td>{item.transportType ? transportType[item.transportType] : ''}</td>
                   <td>{item.customer ? item.customer.name : ''}</td>
                   <td>{item.address ? item.address : ''}</td>
-                  <td>{item.priority ? item.priority : ''}</td>
-                  <td>{item.status ? item.status : ''}</td>
+                  <td>{item.priority ? priority[item.priority] : ''}</td>
+                  <td>{item.status ? status[item.status] : ''}</td>
                   <td>{item.deliveryTime ? formatDate(item.deliveryTime) : '---'}</td>
-                  <td>{}</td>
-                  <td>{}</td>
                   <td
                     style={{
                       textAlign: 'center'
@@ -271,7 +305,7 @@ function OrderTable(props) {
               <div className="table-info-panel">{translate('confirm.no_data')}</div>
             )
           )}
-          <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={setPage}/>
+          <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={setPage} />
         </div>
       </div>
     </>
@@ -279,9 +313,9 @@ function OrderTable(props) {
 }
 
 function mapStateToProps(state) {
-  const {customers} = state.crm
-  const {orders, department, role, auth} = state
-  return {orders, customers, department, role, auth}
+  const { customers } = state.crm
+  const { orders, schedules, department, role, auth } = state
+  return { orders, schedules, customers, department, role, auth }
 }
 
 const mapDispatchToProps = {

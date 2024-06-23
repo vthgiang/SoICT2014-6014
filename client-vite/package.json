@@ -65,7 +65,6 @@
     "jsencrypt": "^3.0.0-rc.1",
     "jszip": "^3.10.0",
     "leaflet": "^1.9.4",
-    "leaflet-geosearch": "^4.0.0",
     "lodash": "^4.17.21",
     "mapbox-gl": "^3.2.0",
     "math-expression-evaluator": "^2.0.5",
@@ -128,7 +127,10 @@
     "url": "^0.11.3",
     "use-deep-compare-effect": "^1.6.1",
     "w2ui": "^2.0.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "leaflet-geosearch": "^4.0.0",
+    "leaflet-routing-machine": "^3.2.12",
+    "@ramonak/react-progress-bar": "^5.2.0"
   },
   "eslintConfig": {
     "extends": "react-app"

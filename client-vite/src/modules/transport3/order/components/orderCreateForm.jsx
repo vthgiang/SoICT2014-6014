@@ -440,7 +440,7 @@ function OrderCreateForm(props) {
             )}
             {step === 1 && (
               <div className={`d-flex flex-row`} style={{padding: 10, width: '100%'}}>
-                <MapContainer
+                <MapContainer className={"leaflet-container-order"}
                   center={[lat === 0 ? 21.0227396 : lat, lng === 0 ? 105.8369637 : lng]}
                   zoom={13} scrollWheelZoom={true}>
                   <OrderCreateLocation handleAddressChange={handleAddressChange}

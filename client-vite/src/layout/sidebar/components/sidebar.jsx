@@ -28,6 +28,12 @@ class SideBar extends Component {
     const { translate, auth } = this.props
     const { user, links } = this.props.auth
 
+    let module_transport = localStorage.getItem('module-tranport');
+    if(!module_transport) {
+      module_transport = 1;
+      localStorage.setItem('module-tranport', 1);
+    }
+
     return (
       <aside className='main-sidebar' style={{ minHeight: '100vh' }}>
         <section className='sidebar'>
@@ -170,6 +176,21 @@ class SideBar extends Component {
                     name: 'menu.manage_component',
                     icon: 'fa fa-object-group',
                     path: '/system/components-default-management'
+                  }
+                ]
+              }}
+            />
+
+            {/* Quản lý mô hình dự báo */}
+            <GroupItem
+              groupItem={{
+                name: 'menu.forecast_model_management',
+                icon: 'fa fa-gears',
+                list: [
+                  {
+                    name: 'menu.OTD_forecast_model_management',
+                    icon: 'fa fa-gear',
+                    path: '/forecastModel/ontimeDeliveryPredict'
                   }
                 ]
               }}
@@ -1043,74 +1064,76 @@ class SideBar extends Component {
             />
 
             {/* Quản lý vận chuyển 3 */}
-            <GroupItem
-              groupItem={{
-                name: 'menu.manage_transport3',
-                icon: 'fa fa-truck',
-                list: [
-                  {
-                    name: 'menu.manage_transport3_dashboard',
-                    icon: 'fa fa-dashboard',
-                    path: '/manage-transport3-dashboard'
-                  },
-                  {
-                    name: 'menu.manage_transport3_order',
-                    icon: 'fa fa-circle-o',
-                    path: '/manage-transport3-order'
-                  },
-                  {
-                    name: 'menu.manage_transport3_schedule',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-schedule'
-                  },
-                  {
-                    name: 'menu.manage_transport3_route',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-route'
-                  },
-                  {
-                    name: 'menu.manage_transport3_cost',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-cost'
-                  },
-                  {
-                    name: 'menu.manage_transport3_issue',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-issue'
-                  },
-                  {
-                    name: 'menu.manage_transport3_partner',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-partner'
-                  },
-                  {
-                    name: 'menu.manage_transport3_vehicle',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-vehicle'
-                  },
-                  {
-                    name: 'menu.manage_transport3_employee',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-employee'
-                  },
-                  {
-                    name: 'menu.manage_transport3_statistic',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-statistic'
-                  },
-                  {
-                    name: 'menu.manage_transport3_mission',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-mission'
-                  },
-                  {
-                    name: 'menu.manage_transport3_requirement',
-                    icon: 'fa fa-calendar-o',
-                    path: '/manage-transport3-requirement'
-                  }
-                ]
-              }}
-            />
+            {module_transport == 2 && (
+              <GroupItem
+                groupItem={{
+                  name: 'menu.manage_transport3',
+                  icon: 'fa fa-truck',
+                  list: [
+                    {
+                      name: 'menu.manage_transport3_dashboard',
+                      icon: 'fa fa-dashboard',
+                      path: '/manage-transport3-dashboard'
+                    },
+                    {
+                      name: 'menu.manage_transport3_order',
+                      icon: 'fa fa-circle-o',
+                      path: '/manage-transport3-order'
+                    },
+                    {
+                      name: 'menu.manage_transport3_schedule',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-schedule'
+                    },
+                    {
+                      name: 'menu.manage_transport3_route',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-route'
+                    },
+                    {
+                      name: 'menu.manage_transport3_cost',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-cost'
+                    },
+                    {
+                      name: 'menu.manage_transport3_issue',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-issue'
+                    },
+                    {
+                      name: 'menu.manage_transport3_partner',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-partner'
+                    },
+                    {
+                      name: 'menu.manage_transport3_vehicle',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-vehicle'
+                    },
+                    {
+                      name: 'menu.manage_transport3_employee',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-employee'
+                    },
+                    {
+                      name: 'menu.manage_transport3_statistic',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-statistic'
+                    },
+                    {
+                      name: 'menu.manage_transport3_mission',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-mission'
+                    },
+                    {
+                      name: 'menu.manage_transport3_requirement',
+                      icon: 'fa fa-calendar-o',
+                      path: '/manage-transport3-requirement'
+                    }
+                  ]
+                }}
+              />
+            )}
 
             {/* Report management */}
             <GroupItem
@@ -1201,44 +1224,47 @@ class SideBar extends Component {
             />
 
             {/* Quản lý vận chuyển */}
-            <GroupItem
-              groupItem={{
-                name: 'menu.manufacturing_process_title',
-                icon: 'fa fa-industry',
-                list: [
-                  {
-                    name: 'menu.manager_manufacturing_dashboard',
-                    icon: 'fa fa-dashboard',
-                    path: '/manager-manufacturing-dashboard'
-                  },
-                  {
-                    name: 'menu.manager_manufacturing_process',
-                    icon: 'fa fa-circle-o',
-                    path: '/manager-manufacturing-process'
-                  },
-                  {
-                    name: 'menu.chain_design',
-                    icon: 'fa fa-circle-o',
-                    path: '/manufacturing-chain'
-                  },
-                  {
-                    name: 'menu.manufacturing_process',
-                    icon: 'fa fa-adjust',
-                    path: '/manufacturing-process'
-                  },
-                  {
-                    name: 'menu.manufacturing_task_managerment',
-                    icon: 'fa fa-list-alt',
-                    path: '/manufacturing-task-managerment'
-                  },
-                  {
-                    name: 'menu.manufacturing_issue',
-                    icon: 'fa fa-exclamation',
-                    path: '/manufacturing-issue'
-                  }
-                ]
-              }}
-            />
+            {module_transport == 1 && (
+              <GroupItem
+                groupItem={{
+                  name: 'menu.manufacturing_process_title',
+                  icon: 'fa fa-industry',
+                  list: [
+                    {
+                      name: 'menu.manager_manufacturing_dashboard',
+                      icon: 'fa fa-dashboard',
+                      path: '/manager-manufacturing-dashboard'
+                    },
+                    {
+                      name: 'menu.manager_manufacturing_process',
+                      icon: 'fa fa-circle-o',
+                      path: '/manager-manufacturing-process'
+                    },
+                    {
+                      name: 'menu.chain_design',
+                      icon: 'fa fa-circle-o',
+                      path: '/manufacturing-chain'
+                    },
+                    {
+                      name: 'menu.manufacturing_process',
+                      icon: 'fa fa-adjust',
+                      path: '/manufacturing-process'
+                    },
+                    {
+                      name: 'menu.manufacturing_task_managerment',
+                      icon: 'fa fa-list-alt',
+                      path: '/manufacturing-task-managerment'
+                    },
+                    {
+                      name: 'menu.manufacturing_issue',
+                      icon: 'fa fa-exclamation',
+                      path: '/manufacturing-issue'
+                    }
+                  ]
+                }}
+              />
+            )}
+
             {/* Quản lý vận chuyển */}
             {/* <GroupItem
               groupItem={{
@@ -1295,6 +1321,7 @@ class SideBar extends Component {
                             /> */}
 
             {/* Quản lý vận chuyển 2 */}
+            {module_transport == 1 && (
             <GroupItem
               groupItem={{
                 name: 'menu.manage_transportation',
@@ -1343,6 +1370,9 @@ class SideBar extends Component {
                 ]
               }}
             />
+            )}
+
+            {/* Quản lý vận chuyển 1 */}
 
             {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
             <GroupItem

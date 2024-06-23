@@ -45,4 +45,14 @@ const getAllOrder = (query) => {
   )
 }
 
-export { getAddressFromLatLng, createNewOrder, getAllOrder }
+const retrainingModel = (query) => {
+  return sendRequest({
+    url: `${process.env.REACT_APP_SERVER}/transport3/retrainingModel`,
+    method: 'GET'
+  },
+  true,
+  true,
+  'transport3.order')
+}
+
+export { getAddressFromLatLng, createNewOrder, getAllOrder, retrainingModel }

@@ -1849,118 +1849,118 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
     );
 };
 
-/**
- * Tạo thông báo cho nhân viên khi hết hạn ký hợp đồng làm việc
- * @param {*} portal : Tên ngắn công ty
- */
-exports.createNotificationEndOfContract = async (portal) => {
-    let arrayTime = [30, 15];
-    let dateNow = new Date(this.formatDate(new Date(), false));
-    let notifications = [];
-    for (let n in arrayTime) {
-        let dateCheck = new Date(
-            dateNow.getFullYear(),
-            dateNow.getMonth(),
-            dateNow.getDate() + arrayTime[n]
-        );
-        dateCheck = new Date(this.formatDate(dateCheck, false));
-        let employees = await Employee(connect(DB_CONNECTION, portal)).find(
-            {
-                contractEndDate: dateCheck,
-            },
-            {
-                emailInCompany: 1,
-                _id: 1,
-            }
-        );
-
-        // Lấy thời gian phải gia hạn hợp đồng do được học các khoá đào tạo có thời gian cam kết
-        for (let i in employees) {
-            let infoCourses = await EmployeeCourse(
-                connect(DB_CONNECTION, portal)
-            )
-                .find(
-                    {
-                        employee: employees[i]._id,
-                    },
-                    {
-                        course: 1,
-                    }
-                )
-                .populate({
-                    path: "course",
-                    select: "endDate employeeCommitmentTime",
-                });
-            let endDateCommitmentTimes = infoCourses.map((x) => {
-                let endDateCourse = new Date(x.course.endDate);
-                let endDateCommitmentTime = new Date(
-                    endDateCourse.getFullYear(),
-                    endDateCourse.getMonth() +
-                    Number(x.course.employeeCommitmentTime),
-                    endDateCourse.getDate()
-                );
-                return endDateCommitmentTime;
-            });
-            endDateCommitmentTimes.filter(
-                (x) => x.getTime() > dateCheck.getTime()
-            );
-            let maxCommitmentTime = endDateCommitmentTimes[0];
-            if (endDateCommitmentTimes.length !== 0) {
-                endDateCommitmentTimes.forEach((x) => {
-                    if (x.getTime() > maxCommitmentTime.getTime()) {
-                        maxCommitmentTime = x;
-                    }
-                });
-            }
-            employees[i] = {
-                ...employees[i]._doc,
-                endDateCommitmentTime: maxCommitmentTime,
-            };
-        }
-
-        // Lấy thông tin tài khoản ứng với mỗi nhân viên
-        let emails = employees.map((x) => x.emailInCompany);
-        let users = await User(connect(DB_CONNECTION, portal)).find(
-            {
-                email: {
-                    $in: emails,
-                },
-            },
-            {
-                _id: 1,
-                company: 1,
-                email: 1,
-                name: 1,
-            }
-        );
-        // Tạo thông báo cho nhân viên
-        users.forEach((user, index) => {
-            let notification = {
-                company: user.company,
-                title: "Thông báo hết hạn hợp đồng lao động",
-                level: "important",
-                content:
-                    `Hợp đồng lao động của bạn sẽ hết hiệu lực sau ${arrayTime[n]} ngày.` +
-                    `${employees[index].endDateCommitmentTime
-                        ? " Tuy nhiên bạn phải làm thêm đến ngày " +
-                        this.formatDate(
-                            employees[index].endDateCommitmentTime,
-                            false
-                        ) +
-                        " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo."
-                        : ""
-                    }`,
-                sender: process.env.WEB_NAME,
-                user: user._id,
-                manualNotification: undefined,
-            };
-            notifications = [...notifications, notification];
-        });
-    }
-    await Notification(connect(DB_CONNECTION, portal)).insertMany(
-        notifications
-    );
-};
+// /**
+//  * Tạo thông báo cho nhân viên khi hết hạn ký hợp đồng làm việc
+//  * @param {*} portal : Tên ngắn công ty
+//  */
+// exports.createNotificationEndOfContract = async (portal) => {
+//     let arrayTime = [30, 15];
+//     let dateNow = new Date(this.formatDate(new Date(), false));
+//     let notifications = [];
+//     for (let n in arrayTime) {
+//         let dateCheck = new Date(
+//             dateNow.getFullYear(),
+//             dateNow.getMonth(),
+//             dateNow.getDate() + arrayTime[n]
+//         );
+//         dateCheck = new Date(this.formatDate(dateCheck, false));
+//         let employees = await Employee(connect(DB_CONNECTION, portal)).find(
+//             {
+//                 contractEndDate: dateCheck,
+//             },
+//             {
+//                 emailInCompany: 1,
+//                 _id: 1,
+//             }
+//         );
+//
+//         // Lấy thời gian phải gia hạn hợp đồng do được học các khoá đào tạo có thời gian cam kết
+//         for (let i in employees) {
+//             let infoCourses = await EmployeeCourse(
+//                 connect(DB_CONNECTION, portal)
+//             )
+//                 .find(
+//                     {
+//                         employee: employees[i]._id,
+//                     },
+//                     {
+//                         course: 1,
+//                     }
+//                 )
+//                 .populate({
+//                     path: "course",
+//                     select: "endDate employeeCommitmentTime",
+//                 });
+//             let endDateCommitmentTimes = infoCourses.map((x) => {
+//                 let endDateCourse = new Date(x.course.endDate);
+//                 let endDateCommitmentTime = new Date(
+//                     endDateCourse.getFullYear(),
+//                     endDateCourse.getMonth() +
+//                     Number(x.course.employeeCommitmentTime),
+//                     endDateCourse.getDate()
+//                 );
+//                 return endDateCommitmentTime;
+//             });
+//             endDateCommitmentTimes.filter(
+//                 (x) => x.getTime() > dateCheck.getTime()
+//             );
+//             let maxCommitmentTime = endDateCommitmentTimes[0];
+//             if (endDateCommitmentTimes.length !== 0) {
+//                 endDateCommitmentTimes.forEach((x) => {
+//                     if (x.getTime() > maxCommitmentTime.getTime()) {
+//                         maxCommitmentTime = x;
+//                     }
+//                 });
+//             }
+//             employees[i] = {
+//                 ...employees[i]._doc,
+//                 endDateCommitmentTime: maxCommitmentTime,
+//             };
+//         }
+//
+//         // Lấy thông tin tài khoản ứng với mỗi nhân viên
+//         let emails = employees.map((x) => x.emailInCompany);
+//         let users = await User(connect(DB_CONNECTION, portal)).find(
+//             {
+//                 email: {
+//                     $in: emails,
+//                 },
+//             },
+//             {
+//                 _id: 1,
+//                 company: 1,
+//                 email: 1,
+//                 name: 1,
+//             }
+//         );
+//         // Tạo thông báo cho nhân viên
+//         users.forEach((user, index) => {
+//             let notification = {
+//                 company: user.company,
+//                 title: "Thông báo hết hạn hợp đồng lao động",
+//                 level: "important",
+//                 content:
+//                     `Hợp đồng lao động của bạn sẽ hết hiệu lực sau ${arrayTime[n]} ngày.` +
+//                     `${employees[index].endDateCommitmentTime
+//                         ? " Tuy nhiên bạn phải làm thêm đến ngày " +
+//                         this.formatDate(
+//                             employees[index].endDateCommitmentTime,
+//                             false
+//                         ) +
+//                         " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo."
+//                         : ""
+//                     }`,
+//                 sender: process.env.WEB_NAME,
+//                 user: user._id,
+//                 manualNotification: undefined,
+//             };
+//             notifications = [...notifications, notification];
+//         });
+//     }
+//     await Notification(connect(DB_CONNECTION, portal)).insertMany(
+//         notifications
+//     );
+// };
 
 /**
  * Import thông tin nhân viên
