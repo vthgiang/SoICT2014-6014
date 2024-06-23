@@ -9,8 +9,11 @@ import { vehicleActions } from "../../../transportation/vehicle/redux/actions";
 import { OrdersInfoChart } from "./charts/ordersInfoChart";
 import { TransportationCostChart } from "./charts/costChart";
 import { OnTimeDeliveryChart } from "./charts/ontimeDeliveryChart";
+import { LateProducts } from "./charts/lateProductsChart";
 import { JourneyActions } from "../../../transportation/scheduling/tracking-route/redux/actions";
 import { DeliveryLateDay } from "./charts/deliveryLateDay";
+import { RouteTable } from "./routeTable";
+import { LateStocks } from "./charts/lateStocksChart";
 
 function GeneralStatistic(props) {
 
@@ -218,69 +221,140 @@ function GeneralStatistic(props) {
                                 </div>
                             </div>
                         </div>
+                        <div className="col-md-3 col-sm-6 form-inline">
+                            <div className="info-box">
+                                <span className="info-box-icon bg-aqua"><i className="fa fa-users" /></span>
+                                <div className="info-box-content">
+                                    <span className="info-box-text">Đơn hàng</span>
+                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>0 / 0</a>
+                                    <span>đang được giao</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-3 col-sm-6 form-inline">
+                            <div className="info-box">
+                                <span className="info-box-icon bg-aqua"><i className="fa fa-users" /></span>
+                                <div className="info-box-content">
+                                    <span className="info-box-text">Đơn hàng</span>
+                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>0 / 0</a>
+                                    <span>có khả năng trễ hạn</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>
-            {/* Biểu đồ */}
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <div className="box-title">Biểu đồ thông tin vận chuyển</div>
-                        </div>
+            <div className="nav-tabs-custom">
+                <ul className="nav nav-tabs">
+                    <li ><a href="#dashboard-tong-quan" data-toggle="tab"><i className="fa fa-tasks" aria-hidden="true"></i> Dashboard tổng quan</a></li>
+                    <li className="active"><a href="#OTD-model-management-dashboard" data-toggle="tab"><i className="fa fa-calendar" aria-hidden="true"></i>Dashboard quản lý thông tin dự báo</a></li>
+                </ul>
+                <div className="tab-content">
+                    <div className="tab-pane" id="dashboard-tong-quan">
+                        {/* Biểu đồ */}
                         <div className="row">
-                            <div className="col-md-6">
-                                <div className="box-body">
-                                    <div className="box box-primary">
-                                        <div className="box-header">
-                                            <div className="box-title">Trạng thái đơn hàng</div>
+                            <div className="col-md-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">Biểu đồ thông tin vận chuyển</div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="box-body">
+                                                <div className="box box-primary">
+                                                    <div className="box-header">
+                                                        <div className="box-title">Trạng thái đơn hàng</div>
+                                                    </div>
+                                                    <div className="box-body">
+                                                        <OrdersInfoChart
+                                                            transportationRequests={{ inProcessRequests, successRequests, failRequests, totalRequests }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="box-body">
-                                            <OrdersInfoChart
-                                                transportationRequests={{ inProcessRequests, successRequests, failRequests, totalRequests }}
-                                            />
+                                        <div className="col-md-6">
+                                            <div className="box-body">
+                                                <div className="box box-primary">
+                                                    <div className="box-header">
+                                                        <div className="box-title">Chi phí vận chuyển</div>
+                                                    </div>
+                                                    <div className="box-body">
+                                                        <TransportationCostChart
+                                                            journeyTotalCostPerDay={journeyTotalCostPerDay}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-6">
-                                <div className="box-body">
-                                    <div className="box box-primary">
-                                        <div className="box-header">
-                                            <div className="box-title">Chi phí vận chuyển</div>
+                        </div>
+                        <RouteTable/>
+                    </div>
+                    <div className="tab-pane active" id="OTD-model-management-dashboard">
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">Biểu đồ theo dõi thông tin giao hàng đúng hạn</div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="box-body">
+                                                <div className="box box-primary">
+                                                    <div className="box-header">
+                                                        <div className="box-title">Tỉ lệ giao hàng đúng hạn</div>
+                                                    </div>
+                                                    <div className="box-body">
+                                                        <OnTimeDeliveryChart
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="box-body">
-                                            <TransportationCostChart
-                                                journeyTotalCostPerDay={journeyTotalCostPerDay}
-                                            />
+                                        <div className="col-md-6">
+                                            <div className="box-body">
+                                                <div className="box box-primary">
+                                                    <div className="box-header">
+                                                        <div className="box-title">Số ngày trễ hạn trung bình</div>
+                                                    </div>
+                                                    <div className="box-body">
+                                                        <DeliveryLateDay
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="box-body">
+                                                <div className="box box-primary">
+                                                    <div className="box-header">
+                                                        <div className="box-title">TOP sản phẩm thường xuyên bị giao trễ hạn</div>
+                                                    </div>
+                                                    <div className="box-body">
+                                                        <LateProducts
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="box-body">
+                                                <div className="box box-primary">
+                                                    <div className="box-header">
+                                                        <div className="box-title">TOP kho hàng có sản phẩm thường xuyên bị giao trễ hạn</div>
+                                                    </div>
+                                                    <div className="box-body">
+                                                        <LateStocks
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="box-body">
-                                    <div className="box box-primary">
-                                        <div className="box-header">
-                                            <div className="box-title">Tỉ lệ giao hàng đúng hạn</div>
-                                        </div>
-                                        <div className="box-body">
-                                            <OnTimeDeliveryChart
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="box-body">
-                                    <div className="box box-primary">
-                                        <div className="box-header">
-                                            <div className="box-title">Số ngày trễ hạn trung bình</div>
-                                        </div>
-                                        <div className="box-body">
-                                            <DeliveryLateDay
-                                            />
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>

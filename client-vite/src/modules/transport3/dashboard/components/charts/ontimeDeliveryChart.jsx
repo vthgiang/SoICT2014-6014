@@ -85,7 +85,7 @@ function OnTimeDeliveryChart(props) {
                     listMonth(),
                     generateActualOntimeRate(),
                     generateEstimatedOntimeRate(),
-                    ['plannedOntimeDeliveryRate', 80, 80, 80, 80, 80, 80],
+                    ['plannedOntimeDeliveryRate', 100, 80, 80, 80, 80, 80],
                 ],
                 type: 'spline',
                 names: {
@@ -104,6 +104,9 @@ function OnTimeDeliveryChart(props) {
                     type: 'category',
                 },
                 y: {
+                    max: 100,
+                    min: 0,
+                    padding: {top: 0, bottom: 10},
                     label: '%'
                 }
             },
@@ -112,18 +115,18 @@ function OnTimeDeliveryChart(props) {
                 pattern: ['#0793de', '#f5b105', '#000000']
             },
 
-            tooltip: {
-                format: {
-                    title: function (d) { return d; },
-                    value: function (value) {
-                        return value;
-                    }
-                }
-            },
+            // tooltip: {
+            //     format: {
+            //         title: function (d) { return d; },
+            //         value: function (value) {
+            //             return value;
+            //         }
+            //     }
+            // },
 
-            legend: {
-                show: true
-            }
+            // legend: {
+            //     show: true
+            // }
         });
     }
 
