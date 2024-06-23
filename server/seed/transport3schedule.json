@@ -1,564 +1,249 @@
 [
   {
-    "_id": {"$oid": "6675600d277ba5246c52008b"},
+    "_id": {"$oid": "6677ade2ffda3450a437542e"},
     "__v": 0,
-    "code": "SC_20240621.115315_1",
-    "createdAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
-    "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "6675600d277ba5246c52008c"},
-        "order": {"$oid": "66755e1e96f8e524ace13da3"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "code": "SC_20240621.1320",
+    "createdAt": {"$date": "2024-06-23T05:08:50.446Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
+    "employee": "[6677addeffda3450a4372105]",
+    "orders": "[{_id=6677ade2ffda3450a437542f}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13f28"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.446Z"},
+    "vehicles": {"$oid": "6677ade2ffda3450a4375422"}
   },
   {
-    "_id": {"$oid": "6675600d277ba5246c52008e"},
+    "_id": {"$oid": "6677ade2ffda3450a4375442"},
     "__v": 0,
-    "code": "SC_20240621.115315_2",
-    "createdAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
-    "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "6675600d277ba5246c52008f"},
-        "order": {"$oid": "66755e1e96f8e524ace13db1"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "code": "SC_20240621.13210",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
+    "employee": "[6677ade838d43f3d48bc85f0]",
+    "orders": "[{_id=6677ade2ffda3450a4375443}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13fc5"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "vehicles": {"$oid": "6677ade2ffda3450a4375424"}
   },
   {
-    "_id": {"$oid": "6675600d277ba5246c520091"},
+    "_id": {"$oid": "6677ade2ffda3450a4375444"},
     "__v": 0,
-    "code": "SC_20240621.115315_3",
-    "createdAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
-    "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "6675600d277ba5246c520092"},
-        "order": {"$oid": "66755e1e96f8e524ace13db3"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "code": "SC_20240621.13211",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
+    "employee": "[6677ade838d43f3d48bc85fc]",
+    "orders": "[{_id=6677ade2ffda3450a4375445}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace14062"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "vehicles": {"$oid": "6677ade2ffda3450a4375426"}
   },
   {
-    "_id": {"$oid": "66756038277ba5246c520108"},
+    "_id": {"$oid": "6677ade2ffda3450a4375446"},
     "__v": 0,
-    "code": "SC_20240621.214922_1",
-    "createdAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
-    "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c520109"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd1"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      },
-      {
-        "_id": {"$oid": "66756038277ba5246c52010a"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd3"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "code": "SC_20240621.13212",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
+    "employee": "[6677ade838d43f3d48bc8608]",
+    "orders": "[{_id=6677ade2ffda3450a4375447}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace140ff"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "vehicles": {"$oid": "6677ade2ffda3450a4375428"}
   },
   {
-    "_id": {"$oid": "66756038277ba5246c52010c"},
+    "_id": {"$oid": "6677ade2ffda3450a4375448"},
     "__v": 0,
-    "code": "SC_20240621.214922_2",
-    "createdAt": {"$date": "2024-06-21T11:12:56.576Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
-    "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "code": "SC_20240621.13213",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
+    "employee": "[6677ade838d43f3d48bc8614]",
+    "orders": "[{_id=6677ade2ffda3450a4375449}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:56.576Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace1419c"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "vehicles": {"$oid": "6677ade2ffda3450a437542a"}
   },
   {
-    "_id": {"$oid": "667560f21e0d8e0d788ff188"},
+    "_id": {"$oid": "6677ade2ffda3450a437544a"},
     "__v": 0,
-    "code": "SC_20240621.115315_1",
-    "createdAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.13214",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a437447f"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a437544b}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13f28"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f21e0d8e0d788ff189"},
+    "_id": {"$oid": "6677ade2ffda3450a437544c"},
     "__v": 0,
-    "code": "SC_20240621.115315_2",
-    "createdAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.13215",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a437447f"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a437544d}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13fc5"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f31e0d8e0d788ff18a"},
+    "_id": {"$oid": "6677ade2ffda3450a437544e"},
     "__v": 0,
-    "code": "SC_20240621.115315_3",
-    "createdAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.13216",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a437544f}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace14062"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f31e0d8e0d788ff18b"},
+    "_id": {"$oid": "6677ade2ffda3450a4375450"},
     "__v": 0,
-    "code": "SC_20240621.214922_1",
-    "createdAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.13217",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a437447f"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375451}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace140ff"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f31e0d8e0d788ff18c"},
+    "_id": {"$oid": "6677ade2ffda3450a4375452"},
     "__v": 0,
-    "code": "SC_20240621.115315_1",
-    "createdAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.13218",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a437447f"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375453}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13f28"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f31e0d8e0d788ff18d"},
+    "_id": {"$oid": "6677ade2ffda3450a4375454"},
     "__v": 0,
-    "code": "SC_20240621.115315_2",
-    "createdAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.13219",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375455}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13fc5"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f41e0d8e0d788ff18e"},
+    "_id": {"$oid": "6677ade2ffda3450a4375456"},
     "__v": 0,
-    "code": "SC_20240621.115315_3",
-    "createdAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.13220",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375457}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace14062"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f41e0d8e0d788ff18f"},
+    "_id": {"$oid": "6677ade2ffda3450a4375458"},
     "__v": 0,
-    "code": "SC_20240621.214922_1",
-    "createdAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.13221",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375459}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace140ff"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f41e0d8e0d788ff190"},
+    "_id": {"$oid": "6677ade2ffda3450a437543a"},
     "__v": 0,
-    "code": "SC_20240621.115315_1",
-    "createdAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1326",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a437447f"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a437543b}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13f28"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f41e0d8e0d788ff191"},
+    "_id": {"$oid": "6677ade2ffda3450a4375432"},
     "__v": 0,
-    "code": "SC_20240621.115315_2",
-    "createdAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1322",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375433}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13fc5"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f41e0d8e0d788ff192"},
+    "_id": {"$oid": "6677ade2ffda3450a4375434"},
     "__v": 0,
-    "code": "SC_20240621.115315_3",
-    "createdAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1323",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a437447f"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375435}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace14062"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f51e0d8e0d788ff193"},
+    "_id": {"$oid": "6677ade2ffda3450a437543e"},
     "__v": 0,
-    "code": "SC_20240621.214922_1",
-    "createdAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1328",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a437543f}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace140ff"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f51e0d8e0d788ff194"},
+    "_id": {"$oid": "6677ade2ffda3450a437543c"},
     "__v": 0,
-    "code": "SC_20240621.115315_1",
-    "createdAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1327",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a437543d}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.564Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13f28"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f51e0d8e0d788ff195"},
+    "_id": {"$oid": "6677ade2ffda3450a4375430"},
     "__v": 0,
-    "code": "SC_20240621.115315_2",
-    "createdAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1321",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a437447f"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375431}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.580Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace13fc5"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f51e0d8e0d788ff196"},
+    "_id": {"$oid": "6677ade2ffda3450a4375436"},
     "__v": 0,
-    "code": "SC_20240621.115315_3",
-    "createdAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1324",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375437}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:13.585Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace14062"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f61e0d8e0d788ff197"},
+    "_id": {"$oid": "6677ade2ffda3450a4375438"},
     "__v": 0,
-    "code": "SC_20240621.214922_1",
-    "createdAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1325",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a437447f"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375439}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:56.572Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace140ff"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   },
   {
-    "_id": {"$oid": "667560f61e0d8e0d788ff198"},
+    "_id": {"$oid": "6677ade2ffda3450a4375440"},
     "__v": 0,
-    "code": "SC_20240621.214922_2",
-    "createdAt": {"$date": "2024-06-21T11:12:56.576Z"},
-    "depot": {"$oid": "66755e1b96f8e524ace12eb0"},
+    "code": "SC_20240621.1329",
+    "createdAt": {"$date": "2024-06-23T05:08:50.447Z"},
+    "depot": {"$oid": "6677ade0ffda3450a4374468"},
     "employee": null,
-    "orders": [
-      {
-        "_id": {"$oid": "66756038277ba5246c52010d"},
-        "order": {"$oid": "66755e1e96f8e524ace13dd5"},
-        "status": 1,
-        "estimateTimeArrive": null,
-        "timeArrive": null,
-        "estimateTimeService": null,
-        "timeService": null,
-        "beginTime": null,
-        "dynamicEstimatedTime": null,
-        "distance": null
-      }
-    ],
+    "orders": "[{_id=6677ade2ffda3450a4375441}]",
     "status": 1,
-    "updatedAt": {"$date": "2024-06-21T11:12:56.576Z"},
-    "vehicles": {"$oid": "66755e1f96f8e524ace1419c"}
+    "updatedAt": {"$date": "2024-06-23T05:08:50.447Z"}
   }
 ]

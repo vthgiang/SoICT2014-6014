@@ -145,7 +145,7 @@ function ScheduleTable(props) {
                 <td>{index + 1}</td>
                 <td>{schedule.code}</td>
                 <td>{schedule.depot.name}</td>
-                <td>{schedule.employee ? schedule.employee.map(employee => employee.name).join(', ') : 'Chưa có'}</td>
+                <td>{schedule.employee ? schedule.employee.map(employee => employee.fullName).join(', ') : 'Chưa có'}</td>
                 <td>{schedule.vehicles && schedule.vehicles.asset.assetName}</td>
                 <td>{status[schedule.status]}</td>
                 <td>

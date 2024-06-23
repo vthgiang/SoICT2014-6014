@@ -136,6 +136,19 @@ function OrderTable(props) {
     3: 'Vận chuyển giữa kho'
   }
 
+  const priority = {
+    1: 'Thấp',
+    2: 'Trung bình',
+    3: 'Cao',
+    4: 'Đặc biệt'
+  }
+
+  const status = {
+    1: 'Chờ xác nhận',
+    2: 'Đã xác nhận',
+    3: 'Đã giao hàng',
+  }
+
   return (
     <>
       <div className="nav-tabs-custom">
@@ -225,18 +238,17 @@ function OrderTable(props) {
             </tr>
             </thead>
             <tbody>
-            {console.log(listOrders)}
             {typeof listOrders !== 'undefined' &&
               listOrders.length !== 0 &&
               listOrders.map((item, index) => (
                 <tr key={index}>
-                  <td>{index + 1 + (page - 1) * limit}</td>
+                  <td>{index + 1 + (page || 1 - 1) * limit || 0}</td>
                   <td>{item.code ? item.code : ''}</td>
                   <td>{item.transportType ? transportType[item.transportType] : ''}</td>
                   <td>{item.customer ? item.customer.name : ''}</td>
                   <td>{item.address ? item.address : ''}</td>
-                  <td>{item.priority ? item.priority : ''}</td>
-                  <td>{item.status ? item.status : ''}</td>
+                  <td>{item.priority ? priority[item.priority] : ''}</td>
+                  <td>{item.status ? status[item.status] : ''}</td>
                   <td>{item.deliveryTime ? formatDate(item.deliveryTime) : '---'}</td>
                   <td>{}</td>
                   <td>{}</td>

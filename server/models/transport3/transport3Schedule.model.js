@@ -53,7 +53,7 @@ const Transport3ScheduleSchema = new Schema(
     }],
     vehicles: {
       type: Schema.Types.ObjectId,
-      ref: 'Asset'
+      ref: 'Transport3Vehicle'
     },
     depot: {
       type: Schema.Types.ObjectId,
@@ -61,7 +61,7 @@ const Transport3ScheduleSchema = new Schema(
     },
     employee: [{
       type: Schema.Types.ObjectId,
-      ref: 'Transport3Employee'
+      ref: 'Employee'
     }],
     // 1. Chưa thực hiện; 2 Đang thực hiện; 3. Đã hoàn thành
     status: {
