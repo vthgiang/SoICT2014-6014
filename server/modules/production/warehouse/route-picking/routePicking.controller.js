@@ -1,5 +1,5 @@
 const RoutePickingService = require('./routePicking.service');
-const Log = require(`../../../logs`);
+const Log = require(`../../../../logs`);
 
 exports.getAllChemins = async (req, res) => {
     try {
@@ -23,113 +23,21 @@ exports.getAllChemins = async (req, res) => {
     }
 }
 
-// exports.getOnTimeDeliveryRatesPerMonth = async (req, res) => {
-//     try {
-//         let data = await OntimePredictService.getOnTimeDeliveryRatesPerMonth(req.portal, req.query);
-//         await Log.info(req.user.email, "GET_ONTIME_DELIVERY_RATES_PER_MONTH", req.portal);
-
-//         res.status(200).json({
-//             success: true,
-//             messages: ["get_ontime_delivery_rates_per_month_success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         console.log(error)
-//         await Log.error(req.user.email, "GET_ONTIME_DELIVERY_RATES_PER_MONTH", req.portal);
-
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_ontime_delivery_rates_per_month_fail"],
-//             content: error.message
-//         });
-//     }
-// }
-
-// exports.getEstimatedOnTimeDeliveryRates = async (req, res) => {
-//     try {
-//         let data = await OntimePredictService.getEstimatedOnTimeDeliveryRates(req.portal, req.query);
-//         await Log.info(req.user.email, "GET_ESTIMATED_ONTIME_DELIVERY_RATES", req.portal);
-
-//         res.status(200).json({
-//             success: true,
-//             messages: ["get_estimated_ontime_delivery_rates_success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         console.log(error)
-//         await Log.error(req.user.email, "GET_ESTiMATED_ONTIME_DELIVERY_RATES", req.portal);
-
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_estimated_ontime_delivery_rates_fail"],
-//             content: error.message
-//         });
-//     }
-// }
-
-// exports.getEstimatedOnTimeDeliveryRatesPerMonth = async (req, res) => {
-//     try {
-//         let data = await OntimePredictService.getEstimatedOnTimeDeliveryRatesPerMonth(req.portal, req.query);
-//         await Log.info(req.user.email, "GET_ESTIMATED_ONTIME_DELIVERY_RATES_PER_MONTH", req.portal);
-
-//         res.status(200).json({
-//             success: true,
-//             messages: ["get_estimated_ontime_delivery_rates_per_month_success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         console.log(error)
-//         await Log.error(req.user.email, "GET_ESTIMATED_ONTIME_DELIVERY_RATES_PER_MONTH", req.portal);
-
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_estimated_ontime_delivery_rates_per_month_fail"],
-//             content: error.message
-//         });
-//     }
-// }
-
-
-// exports.getDeliveryLateDayAverage = async (req, res) => {
-//     try {
-//         let data = await OntimePredictService.getDeliveryLateDayAverage(req.portal, req.query);
-//         await Log.info(req.user.email, "GET_DELIVERY_LATE_DAY_AVERAGE", req.portal);
-
-//         res.status(200).json({
-//             success: true,
-//             messages: ["get_delivery_late_day_average_success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         console.log(error)
-//         await Log.error(req.user.email, "GET_DELIVERY_LATE_DAY_AVERAGE", req.portal);
-
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_delivery_late_day_average_fail"],
-//             content: error.message
-//         });
-//     }
-// }
-
-// exports.getDeliveryLateDayAveragePerMonth = async (req, res) => {
-//     try {
-//         let data = await OntimePredictService.getDeliveryLateDayAveragePerMonth(req.portal, req.query);
-//         await Log.info(req.user.email, "GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH", req.portal);
-
-//         res.status(200).json({
-//             success: true,
-//             messages: ["get_delivery_late_day_average_per_month_success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         console.log(error)
-//         await Log.error(req.user.email, "GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH", req.portal);
-
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_delivery_late_day_average_per_month_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+exports.getChemin = async (req, res) => {
+    try {
+        let data = await RoutePickingService.getChemin(req.params.id, req.portal)
+        await Log.info(req.user.email, "GET_CHEMIN", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_chemin_success"],
+            content: data
+        })
+    } catch (error) {
+        await Log.error(req.user.email, 'GET_CHEMIN', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_chemin_failed'],
+            content: error.message
+        })
+    }
+}

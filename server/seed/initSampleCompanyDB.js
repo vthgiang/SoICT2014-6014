@@ -7179,7 +7179,7 @@ const initSampleCompanyDB = async () => {
       now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
     const year =
       now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
-    const customer = {
+    await Customer(vnistDB).create({
       owner: [users[(i % 3) + 5]._id],
       customerStatus: [customerStatuss[i % 5]._id],
       point: 0,
@@ -7238,8 +7238,8 @@ const initSampleCompanyDB = async () => {
       represent: '',
       website: '',
       customerCareUnit: customerCareUnits[0]._id,
-    };
-    listCustomerData1.push(customer);
+    });
+    console.log(`Tạo dữ liệu khách hàng thứ ${i + 1}/${listCustomer.length}`);
   }
 
   await Customer(vnistDB).insertMany(listCustomerData1);

@@ -4,7 +4,6 @@ const Logger = require('../../../../logs');
 exports.getAllLayouts = async (req, res) => {
     try {
         const layouts = await LayoutService.getAllLayouts('vnist');
-
         // await Logger.info(req.user.email, 'GET_STOCKS', req.portal);
         res.status(200).json(layouts)
     }
