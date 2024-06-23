@@ -1,100 +1,120 @@
-import { exampleConstants } from './constants'
-import { exampleServices } from './services'
+import { RoutePickingConstants } from './constants'
+import { RoutePickingServices } from './services'
 
-export const exampleActions = {
-  getExamples,
-  deleteExamples,
-  createExample,
-  editExample
+export const RoutePickingActions = {
+  getAllChemins,
+  getChemin
+  // deleteExamples,
+  // createExample,
+  // editExample
 }
 
-function getExamples(queryData) {
+function getAllChemins(queryData) {
   return (dispatch) => {
     dispatch({
-      type: exampleConstants.GET_ALL_EXAMPLES_REQUEST
+      type: RoutePickingConstants.GET_ALL_ROUTES_REQUEST
     })
-
-    exampleServices
-      .getExamples(queryData)
+    RoutePickingServices.getAllChemins(queryData)
       .then((res) => {
         dispatch({
-          type: exampleConstants.GET_ALL_EXAMPLES_SUCCESS,
+          type: RoutePickingConstants.GET_ALL_ROUTES_SUCCESS,
           payload: res.data.content
         })
       })
       .catch((error) => {
         dispatch({
-          type: exampleConstants.GET_ALL_EXAMPLES_FAILURE,
+          type: RoutePickingConstants.GET_ALL_ROUTES_FAILURE,
           error
         })
       })
   }
 }
 
-function deleteExamples(data) {
+function getChemin(id) {
   return (dispatch) => {
     dispatch({
-      type: exampleConstants.DELETE_EXAMPLE_REQUEST
+      type: RoutePickingConstants.GET_DETAIL_ROUTE_REQUEST
     })
-
-    exampleServices
-      .deleteExamples(data)
+    RoutePickingServices.getChemin(id)
       .then((res) => {
         dispatch({
-          type: exampleConstants.DELETE_EXAMPLE_SUCCESS,
-          payload: res.data.content,
-          exampleIds: data.exampleIds
-        })
-      })
-      .catch((error) => {
-        dispatch({
-          type: exampleConstants.DELETE_EXAMPLE_FAILURE,
-          error
-        })
-      })
-  }
-}
-
-function createExample(data) {
-  return (dispatch) => {
-    dispatch({
-      type: exampleConstants.CREATE_EXAMPLE_REQUEST
-    })
-    exampleServices
-      .createExample(data)
-      .then((res) => {
-        dispatch({
-          type: exampleConstants.CREATE_EXAMPLE_SUCCESS,
+          type: RoutePickingConstants.GET_DETAIL_ROUTE_SUCCESS,
           payload: res.data.content
         })
       })
-      .catch((error) => {
+      .catch((err) => {
         dispatch({
-          type: exampleConstants.CREATE_EXAMPLE_FAILURE,
-          error
+          type: RoutePickingConstants.GET_DETAIL_ROUTE_FAILURE,
+          error: err
         })
       })
   }
 }
 
-function editExample(id, data) {
-  return (dispatch) => {
-    dispatch({
-      type: exampleConstants.EDIT_EXAMPLE_REQUEST
-    })
-    exampleServices
-      .editExample(id, data)
-      .then((res) => {
-        dispatch({
-          type: exampleConstants.EDIT_EXAMPLE_SUCCESS,
-          payload: res.data.content
-        })
-      })
-      .catch((error) => {
-        dispatch({
-          type: exampleConstants.EDIT_EXAMPLE_FAILURE,
-          error
-        })
-      })
-  }
-}
+// function deleteExamples(data) {
+//   return (dispatch) => {
+//     dispatch({
+//       type: exampleConstants.DELETE_EXAMPLE_REQUEST
+//     })
+
+//     exampleServices
+//       .deleteExamples(data)
+//       .then((res) => {
+//         dispatch({
+//           type: exampleConstants.DELETE_EXAMPLE_SUCCESS,
+//           payload: res.data.content,
+//           exampleIds: data.exampleIds
+//         })
+//       })
+//       .catch((error) => {
+//         dispatch({
+//           type: exampleConstants.DELETE_EXAMPLE_FAILURE,
+//           error
+//         })
+//       })
+//   }
+// }
+
+// function createExample(data) {
+//   return (dispatch) => {
+//     dispatch({
+//       type: exampleConstants.CREATE_EXAMPLE_REQUEST
+//     })
+//     exampleServices
+//       .createExample(data)
+//       .then((res) => {
+//         dispatch({
+//           type: exampleConstants.CREATE_EXAMPLE_SUCCESS,
+//           payload: res.data.content
+//         })
+//       })
+//       .catch((error) => {
+//         dispatch({
+//           type: exampleConstants.CREATE_EXAMPLE_FAILURE,
+//           error
+//         })
+//       })
+//   }
+// }
+
+// function editExample(id, data) {
+//   return (dispatch) => {
+//     dispatch({
+//       type: exampleConstants.EDIT_EXAMPLE_REQUEST
+//     })
+//     exampleServices
+//       .editExample(id, data)
+//       .then((res) => {
+//         dispatch({
+//           type: exampleConstants.EDIT_EXAMPLE_SUCCESS,
+//           payload: res.data.content
+//         })
+//       })
+//       .catch((error) => {
+//         dispatch({
+//           type: exampleConstants.EDIT_EXAMPLE_FAILURE,
+//           error
+//         })
+//       })
+//   }
+// }

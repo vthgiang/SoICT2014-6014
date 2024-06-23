@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-
-import { exampleActions } from '../redux/actions'
+import { RoutePickingActions } from '../redux/actions'
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from '../../../../../common-components'
 
-import ExampleCreateForm from './exampleCreateForm'
-import ExampleEditForm from './exampleEditForm'
-import ExampleDetailInfo from './exampleDetailInfo'
-import ExampleImportForm from './exampleImortForm'
+// import ExampleCreateForm from './exampleCreateForm'
+// import ExampleEditForm from './exampleEditForm'
+import RoutePickingDefaultInfo from './routePickingDetailInfo'
+// import ExampleImportForm from './exampleImortForm'
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 class RoutePickingManagementTable extends Component {
@@ -23,14 +22,16 @@ class RoutePickingManagementTable extends Component {
       routeName: '',
       page: 1,
       perPage: limit,
-      tableId
+      tableId,
+      detailModalId: 1,
     }
   }
 
   componentDidMount() {
     let { routeName, page, perPage } = this.state
-    this.props.getExamples({ routeName, page, perPage })
+    this.props.getAllRoutes()
   }
+
 
   /**
    * Hàm xử lý khi tên ví dụ thay đổi
@@ -55,7 +56,7 @@ class RoutePickingManagementTable extends Component {
         page: 1
       }
     })
-    this.props.getExamples({ exampleName, perPage, page: 1 })
+    this.props.getAllRoutes({ exampleName, perPage, page: 1 })
   }
 
   /**
@@ -72,7 +73,7 @@ class RoutePickingManagementTable extends Component {
       }
     })
 
-    this.props.getExamples({ exampleName, perPage, page: parseInt(pageNumber) })
+    this.props.getAllRoutes({ exampleName, perPage, page: parseInt(pageNumber) })
   }
 
   /**
@@ -88,7 +89,7 @@ class RoutePickingManagementTable extends Component {
         perPage: parseInt(number)
       }
     })
-    this.props.getExamples({ exampleName, perPage: parseInt(number), page })
+    this.props.getAllRoutes({ exampleName, perPage: parseInt(number), page })
   }
 
   /**
@@ -99,15 +100,15 @@ class RoutePickingManagementTable extends Component {
     const { example } = this.props
     const { exampleName, perPage, page } = this.state
 
-    this.props.deleteExamples({
-      exampleIds: [id]
-    })
-    console.log('55555')
-    this.props.getExamples({
-      exampleName,
-      perPage,
-      page: example?.lists?.length === 1 ? page - 1 : page
-    })
+    // this.props.deleteExamples({
+    //   exampleIds: [id]
+    // })
+    // console.log('55555')
+    // this.props.getAllRoutes({
+    //   exampleName,
+    //   perPage,
+    //   page: example?.lists?.length === 1 ? page - 1 : page
+    // })
   }
 
   /**
@@ -123,47 +124,30 @@ class RoutePickingManagementTable extends Component {
     )
   }
 
-  /**
-   * Hàm xử lý khi click xem chi tiết một ví dụ
-   * @param {*} example thông tin của ví dụ cần xem
-   */
-  handleShowDetailInfo = (example) => {
-    this.setState(
+  handleShowDetailInfo = async (chemin) => {
+    // const { detailModalId } = this.state
+    // await this.props.getRoute(chemin._id)
+    await this.setState(
       {
-        currentRowDetail: example
+        routeDetail: chemin
       },
-      () => window.$(`#modal-detail-info-example`).modal('show')
+      () => window.$(`#modal-detail-info-route-picking`).modal('show')
     )
   }
 
+
+
   render() {
-    const { example, translate } = this.props
-    const { page, perPage, currentRow, tableId, currentRowDetail } = this.state
-    let lists = []
-
-    if (example && example.isLoading === false) {
-      lists = example.lists
-    }
-
-    const totalPage = Math.ceil(example.totalList / perPage)
+    const { translate, routes } = this.props
+    const { page, perPage, currentRow, tableId, routeDetail } = this.state
+    console.log(routeDetail)
     return (
       <React.Fragment>
-        {currentRow && (
-          <ExampleEditForm exampleID={currentRow._id} exampleName={currentRow.exampleName} description={currentRow.description} />
-        )}
-
-        {currentRowDetail && (
-          <ExampleDetailInfo
-            exampleID={currentRowDetail._id}
-            exampleName={currentRowDetail.exampleName}
-            description={currentRowDetail.description}
+        {routeDetail && (
+          <RoutePickingDefaultInfo
+            routeDetail={routeDetail}
           />
         )}
-
-        <ExampleCreateForm page={page} perPage={perPage} />
-
-        <ExampleImportForm page={page} perPage={perPage} />
-
         <div className='box-body qlcv'>
           <div className='form-inline'>
             <div className='dropdown pull-right' style={{ marginBottom: 15 }}>
@@ -230,18 +214,20 @@ class RoutePickingManagementTable extends Component {
             <thead>
               <tr>
                 <th className='col-fixed' style={{ width: 60 }}>
-                  {translate('manage_example.index')}
+                  STT
                 </th>
-                <th>{translate('manage_example.exampleName')}</th>
-                <th>{translate('manage_example.description')}</th>
+                <th>Wave ID</th>
+                <th>Các đơn hàng trong wave</th>
+                <th>Sản phẩm</th>
+                <th>Tổng quãng đường</th>
                 <th style={{ width: '120px', textAlign: 'center' }}>
                   {translate('table.action')}
                   <DataTableSetting
                     tableId={tableId}
                     columnArr={[
-                      translate('manage_example.index'),
-                      translate('manage_example.exampleName'),
-                      translate('manage_example.description')
+                      'STT',
+                      'Các đơn hàng trong wave',
+                      'Tổng quãng đường'
                     ]}
                     setLimit={this.setLimit}
                   />
@@ -249,69 +235,82 @@ class RoutePickingManagementTable extends Component {
               </tr>
             </thead>
             <tbody>
-              {lists &&
-                lists.length !== 0 &&
-                lists.map((example, index) => (
+              {routes.listChemins &&
+                routes.listChemins.length !== 0 &&
+                routes.listChemins.map((chemin, index) => (
                   <tr key={index}>
                     <td>{index + 1 + (page - 1) * perPage}</td>
-                    <td>{example.exampleName}</td>
-                    <td>{example.description}</td>
+                    <td>{chemin.waveId}</td>
+                    <td>
+                      {chemin.orderId.map(order => order.code).join(', ')}
+                    </td>
+                    <td>
+                      {chemin.listInfoOrders.map(order => (
+                        <div style={{ maxWidth: '400px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {order.good.name}
+                        </div>
+                      ))}
+                    </td>
+                    <td>{chemin.distanceRoute}</td>
+
                     <td style={{ textAlign: 'center' }}>
                       <a
                         className='edit text-green'
                         style={{ width: '5px' }}
                         title={translate('manage_example.detail_info_example')}
-                        onClick={() => this.handleShowDetailInfo(example)}
+                        onClick={() => this.handleShowDetailInfo(chemin)}
                       >
                         <i className='material-icons'>visibility</i>
                       </a>
-                      <a
+                      {/* <a
                         className='edit text-yellow'
                         style={{ width: '5px' }}
                         title={translate('manage_example.edit')}
-                        onClick={() => this.handleEdit(example)}
+                        onClick={() => this.handleEdit(chemin)}
                       >
                         <i className='material-icons'>edit</i>
                       </a>
                       <DeleteNotification
                         content={translate('manage_example.delete')}
                         data={{
-                          id: example._id,
-                          info: example.exampleName
+                          id: chemin._id,
+                          info: chemin.exampleName
                         }}
                         func={this.handleDelete}
-                      />
+                      /> */}
                     </td>
                   </tr>
                 ))}
             </tbody>
           </table>
-          {example.isLoading ? (
+          {routes.isLoading ? (
             <div className='table-info-panel'>{translate('confirm.loading')}</div>
           ) : (
-            (typeof lists === 'undefined' || lists.length === 0) && <div className='table-info-panel'>{translate('confirm.no_data')}</div>
+            (typeof routes.listChemins === 'undefined' || routes.listChemins.length === 0) && <div className='table-info-panel'>{translate('confirm.no_data')}</div>
           )}
-          <PaginateBar
+          {/* <PaginateBar
             pageTotal={totalPage ? totalPage : 0}
             currentPage={page}
             display={lists && lists.length !== 0 && lists.length}
-            total={example && example.totalList}
+            total={routes && routes.totalList}
             func={this.setPage}
-          />
+          /> */}
         </div>
-      </React.Fragment>
+      </React.Fragment >
     )
   }
 }
 
 function mapStateToProps(state) {
-  const example = state.example1
-  return { example }
+  const { routes } = state
+
+  return { routes }
 }
 
 const mapDispatchToProps = {
-  getExamples: exampleActions.getExamples,
-  deleteExamples: exampleActions.deleteExamples
+  getAllRoutes: RoutePickingActions.getAllChemins,
+
+  // deleteExamples: exampleActions.deleteExamples
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RoutePickingManagementTable))

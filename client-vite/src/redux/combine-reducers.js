@@ -111,6 +111,8 @@ import { binLocations } from '../modules/production/warehouse/bin-location-manag
 import { lots } from '../modules/production/warehouse/inventory-management/redux/reducers'
 import { stocks } from '../modules/production/warehouse/stock-management/redux/reducers'
 import { storage } from '../modules/production/warehouse/storage-management/redux/reducers'
+import { routes } from '../modules/production/warehouse/route-picking-management/redux/reducers'
+
 // crm
 import { cares } from '../modules/crm/care/redux/reducers'
 import { careTypes } from '../modules/crm/careType/redux/reducers'
@@ -334,6 +336,7 @@ const appReducer = combineReducers({
   bills,
   requestManagements,
   storage,
+  routes,
   // customer management
   crm: combineReducers({
     customers,

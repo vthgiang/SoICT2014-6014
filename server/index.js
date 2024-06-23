@@ -162,6 +162,7 @@ router.use('/asset-template', require('./modules/manufacturing-process/manufactu
 router.use("/dashboard-unit", require("./modules/dashboard-unit/dashboardUnit.route"));
 router.use("/layout", require("./modules/production/warehouse/layout/layout.route"));
 router.use("/inventory-warehouse", require("./modules/production/warehouse/inventory-warehouse/inventory-warehouse.route"));
+router.use("/route-picking", require("./modules/production/warehouse/route-picking/routePicking.route"));
 
 // manufacturing-process
 router.use("/manufacturing-chain", require("./modules/manufacturing-process/template-production-line/productionLineTemplate.route"));
