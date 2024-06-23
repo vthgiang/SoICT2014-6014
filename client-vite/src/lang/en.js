@@ -103,6 +103,8 @@ export default {
       task_pert_dash: 'Completition Probability Analysis',
       rms_add: 'Regiter A New Risk',
       system_administration: 'System Administration',
+      forecast_model_management: 'Forecast Model Management',
+      OTD_forecast_model_management: 'Manage ontime delivery predict model',
       manage_configuration: 'Configuration',
       manage_system: 'Backup and Restore',
       manage_company: 'Manage Company',

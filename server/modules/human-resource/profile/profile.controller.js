@@ -635,16 +635,16 @@ exports.importEmployees = async (req, res) => {
     }
 };
 
-exports.createNotificationEndOfContract = async () => {
-    let companys = await CompanyServices.getAllCompanies({
-        page: undefined,
-        limit: undefined,
-    });
-    companys = companys.map((x) => x.shortName);
-    for (let n in companys) {
-        await EmployeeService.createNotificationEndOfContract(companys[n]);
-    }
-};
+// exports.createNotificationEndOfContract = async () => {
+//     let companys = await CompanyServices.getAllCompanies({
+//         page: undefined,
+//         limit: undefined,
+//     });
+//     companys = companys.map((x) => x.shortName);
+//     for (let n in companys) {
+//         await EmployeeService.createNotificationEndOfContract(companys[n]);
+//     }
+// };
 
 exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
     let companys = await CompanyServices.getAllCompanies({

@@ -1,22 +1,20 @@
 import React, {useEffect, useState} from 'react'
-import {connect} from 'react-redux'
 import {withTranslate} from 'react-redux-multilingual'
-import {CrmCustomerActions} from '@modules/crm/customer/redux/actions'
-import {formatToTimeZoneDate} from '@helpers/formatDate'
 import {DialogModal, ErrorLabel} from '@common-components'
-import ValidationHelper from '@helpers/validationHelper'
 import ScheduleCreateInfo from './scheduleCreateInfo'
 import SchedulePickLocation from './map/schedulePickLocation.jsx'
 import './order.css'
-import {MapContainer} from 'react-leaflet';
-import {generateCode} from '@helpers/generateCode.js';
+import {useDispatch, useSelector} from 'react-redux';
+import {ScheduleActions} from '@modules/transport3/schedule/redux/actions.js';
 
 function ScheduleCreateForm(props) {
   let initialState = {
     code: '',
     vehicles: [],
     orders: [],
-    schedule: [],
+    schedule: {},
+    nearestDepot: null,
+    note: '',
     step: 0
   }
   const [state, setState] = useState(initialState)
@@ -28,7 +26,18 @@ function ScheduleCreateForm(props) {
     })
   }, [props.code])
 
+  const dispatch = useDispatch()
   const save = async () => {
+    let {code, orders, vehicles, note, schedule, nearestDepot} = state
+    let data = {
+      code,
+      orders,
+      vehicles,
+      note,
+      schedules: schedule,
+      depot: nearestDepot
+    }
+    await dispatch(ScheduleActions.createSchedule(data))
   }
   let {
     code, step, orders, vehicles
@@ -54,6 +63,35 @@ function ScheduleCreateForm(props) {
       vehicles: value
     })
   }
+
+  const handleNoteChange = (e) => {
+    let {value} = e.target
+    setState({
+      ...state,
+      note: value
+    })
+  }
+
+  const handleScheduleChange = (value) => {
+    setState({
+      ...state,
+      schedule: value
+    })
+  }
+
+  const handleNearestDepotsChange = (value) => {
+    setState({
+      ...state,
+      nearestDepot: value
+    })
+  }
+
+  const handleAuToSchedule = () => {
+    dispatch(ScheduleActions.autoSchedule())
+  }
+
+  let isAutoScheduling = useSelector(state => state.T3schedule.isAutoScheduling);
+  let listAutoSchedule = useSelector(state => state.T3schedule.listAutoSchedules);
 
   return (
     <>
@@ -89,6 +127,19 @@ function ScheduleCreateForm(props) {
                 <span>Lập lịch vận chuyển</span>
               </a>
             </li>
+            {step === 1 && state.orders.length > 0 && state.vehicles.length > 0 && (
+              <>
+                <li style={{marginLeft: '50%'}}>
+                  <div className={'d-flex items-center justify-center'} style={{height: '100%'}}>
+                    Tự động sắp xếp lịch trình tối ưu?
+                    <a id={'autoBtn'} className={'btn btn-primary'} style={{marginLeft: 10}}
+                       onClick={handleAuToSchedule}
+                    >{isAutoScheduling ? 'Đang xử lý...' : listAutoSchedule ? 'Sắp xếp lại' : 'Sắp xếp'}</a>
+                  </div>
+                </li>
+              </>
+            )
+            }
           </ul>
         </div>
         <form id={`form-add-schedule`}>
@@ -98,15 +149,20 @@ function ScheduleCreateForm(props) {
                 code={code}
                 orders={orders}
                 vehicles={vehicles}
+                note={state.note}
                 handleOrderChange={handleOrderChange}
                 handleVehicleChange={handleVehicleChange}
+                handleNoteChange={handleNoteChange}
               />
             )}
             {step === 1 && (
               <SchedulePickLocation
                 orders={orders}
                 vehicles={vehicles}
+                schedule={state.schedule}
                 handleVehicleChange={handleVehicleChange}
+                handleScheduleChange={handleScheduleChange}
+                handleNearestDepotsChange={handleNearestDepotsChange}
               />
             )}
           </div>

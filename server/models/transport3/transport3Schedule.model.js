@@ -13,6 +13,9 @@ const Transport3ScheduleSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'Transport3Order'
       },
+      code: {
+        type: String
+      },
       // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
       status: {
         type: Number
@@ -41,12 +44,12 @@ const Transport3ScheduleSchema = new Schema(
       dynamicEstimatedTime: {
         type: Date
       },
-      // khoảng cách từ depot đến địa chỉ giao hàng
+      // khoảng cách từ depot đến địa chỉ giao hàng (tổng từ depot -> 1 + từ 1 -> 2)
       // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
       distance: {
         type: Number
       }, 
-      //Dự báo khả năng giao hàng đúng hạn
+      //d
       estimatedOntime: {
         type: Number
       }
@@ -61,7 +64,7 @@ const Transport3ScheduleSchema = new Schema(
     },
     employee: [{
       type: Schema.Types.ObjectId,
-      ref: 'Transport3Employee'
+      ref: 'Employee'
     }],
     // 1. Chưa thực hiện; 2 Đang thực hiện; 3. Đã hoàn thành
     status: {
@@ -86,6 +89,6 @@ Transport3ScheduleSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
   if (!db.models.Transport3Schedule)
-    return db.model('Transport3OSchedule', Transport3ScheduleSchema);
+    return db.model('Transport3Schedule', Transport3ScheduleSchema);
   return db.models.Transport3Schedule;
 };

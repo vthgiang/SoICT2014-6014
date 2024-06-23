@@ -243,7 +243,9 @@ const OrderTransport3 = lazy(() => import('../modules/transport3/order/component
 const ScheduleTransport3 = lazy(() => import('../modules/transport3/schedule/components'))
 const EmployeeTransport3 = lazy(() => import('../modules/transport3/employee/components'))
 const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/components'))
-
+const RouteTransport3 = lazy(() => import('../modules/transport3/route/components'))
+const IssueTransport3 = lazy(() => import('../modules/transport3/issue/components'))
+const ForecastOTD = lazy(() => import('../modules/transport3/schedule/components/forestcastModel/ontimeDeliveryPredict.jsx'))
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 const Project = lazy(() => import("../modules/project/projects/components/index"))
@@ -3750,7 +3752,27 @@ class Routes extends Component {
             path='/manage-transport3-route'
             pageName='manage_transport3_route'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={RouteTransport3}
+          />
+
+                    <PrivateRoute
+            isLoading={false}
+            key={'ontimeDeliveryPredict'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/forecastModel/ontimeDeliveryPredict',
+                name: 'forecast_model_management',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/forecastModel/ontimeDeliveryPredict'}
+            path={'/forecastModel/ontimeDeliveryPredict'}
+            pageName={'forecast_model_management'}
+            layout={Layout}
+            component={ForecastOTD}
           />
 
           <PrivateRoute
@@ -3770,7 +3792,7 @@ class Routes extends Component {
             path='/manage-transport3-cost'
             pageName='manage_transport3_cost'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={TransportationCost}
           />
 
           <PrivateRoute
@@ -3790,7 +3812,7 @@ class Routes extends Component {
             path='/manage-transport3-issue'
             pageName='manage_transport3_issue'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={IssueTransport3}
           />
 
           <PrivateRoute

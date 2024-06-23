@@ -55,6 +55,21 @@ export function orders(state = initState, action) {
         ...state,
         isLoading: false
       }
+    case OrderConstants.RETRAINING_MODEL_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case OrderConstants.RETRAINING_MODEL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case OrderConstants.RETRAINING_MODEL_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
     default:
       return state
   }
