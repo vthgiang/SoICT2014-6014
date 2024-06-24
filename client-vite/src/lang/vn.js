@@ -7907,6 +7907,9 @@ export default {
 
     // Quản lý dự án
     project: {
+      startDateProject: 'Ngày bắt đầu',
+      endDateProject: 'Ngày kết thúc',
+      memberProject: 'Thành viên',
       code: 'Mã dự án',
       name: 'Tên dự án',
       startDate: 'Ngày bắt đầu dự án',
