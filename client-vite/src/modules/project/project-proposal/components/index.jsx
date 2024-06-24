@@ -15,6 +15,7 @@ import ProposalScheduleGanttTask from "./proposalScheduleGanttTask";
 import { ProjectCreateEditForm } from "../../project-create/components/projectCreateEditForm";
 import { TASK_ACTION_TYPE } from "../../project-create/components/consts";
 import { PROJECT_ACTION_FORM } from "../../projects/constants";
+import { KPIEmployees } from "./kpiEmployees";
 
 function ProjectProposalPage(props) {
   const formatCurrencyVND = (amount) => {
@@ -205,7 +206,64 @@ function ProjectProposalPage(props) {
     }
   };
 
-  console.log('proposals: ', proposals)
+  const generateColors = (numColors) => {
+    const colors = [];
+    for (let i = 0; i < numColors; i++) {
+      const hue =  160 +  ((i * 240) / numColors); // Hues between 120 (green) and 240 (blue)
+      colors.push(`hsla(${hue}, 100%, 50%, 0.4)`);
+    }
+    return colors;
+  };
+
+  const converDataKPIOfEmployees = (currentProject, kpiOfEmployees) => {
+    const { responsibleEmployees, kpiTarget, usersInProject} = currentProject
+    
+  let labels = [];
+  let datasets = [];
+
+  if (responsibleEmployees && kpiOfEmployees && kpiTarget && usersInProject) {
+    // Create a mapping of employee _id to their names
+    const employeeNameMap = responsibleEmployees.reduce((acc, employee) => {
+      const userFind = usersInProject.find((item) => item.userId === employee?._id)
+      acc[userFind.employeeId] = employee?.name;
+      return acc;
+    }, {});
+
+    // Create a mapping of KPI _id to their names
+    const kpiNameMap = kpiTarget.reduce((acc, kpi) => {
+      acc[kpi._id] = kpi?.type?.name;
+      return acc;
+    }, {});
+
+    // Get the KPI labels (names) from the kpiNameMap
+    labels = Object.keys(kpiNameMap).map(kpiId => kpiNameMap[kpiId]);
+
+    // Iterate through kpiOfEmployees to structure the data
+    Object.keys(kpiOfEmployees).forEach((employeeId) => {
+      const employeeData = kpiOfEmployees[employeeId];
+      const dataEntry = {
+        label: employeeNameMap[employeeId],
+        data: Object.keys(employeeData).map(kpiId => employeeData[kpiId]),
+        backgroundColor: '',
+        borderColor: '',
+        borderWidth: 1
+      };
+      datasets.push(dataEntry);
+    });
+
+    // Generate colors for each employee
+    const colors = generateColors(datasets.length);
+
+    // Assign colors to each dataset
+    datasets = datasets.map((entry, index) => ({
+      ...entry,
+      backgroundColor: colors[index],
+      borderColor: colors[index].replace('0.4', '1')
+    }));
+  }
+
+  return { labels, datasets };
+};
 
   return (
     <React.Fragment>
@@ -450,7 +508,10 @@ function ProjectProposalPage(props) {
                     <div className="w-full lg:w-[65%] bg-gray-100 content-box">
                       <KpiBarChart kpiTarget={currentProject?.kpiTarget} kpiAssignment={proposals?.kpiAssignment} />
                     </div>
-                    
+                  </div>
+                  <div className="text-center py-4 font-semibold">KPI cho nhân viên</div>
+                  <div className="flex justify-center">
+                    <KPIEmployees data={converDataKPIOfEmployees(currentProject, proposals?.kpiOfEmployees)} />
                   </div>
                 </div>
               </div>
