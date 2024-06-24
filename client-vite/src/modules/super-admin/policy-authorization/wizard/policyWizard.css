@@ -1,0 +1,12 @@
+.authorization-wizard-row .authorization-wizard-title {
+    font-size: 16px;
+}
+
+.authorization-wizard-row .authorization-wizard-subtitle {
+    font-size: 14px;
+}
+
+.authorization-wizard-row .authorization-wizard-description {
+    font-size: 12px;
+    font-weight: 400;
+}

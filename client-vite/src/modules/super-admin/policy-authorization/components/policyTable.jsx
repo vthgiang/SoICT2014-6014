@@ -8,9 +8,13 @@ import { DeleteNotification, PaginateBar, SmartTable } from '../../../../common-
 import { PolicyCreateForm } from './policyCreateForm'
 import { PolicyEditForm } from './policyEditForm'
 import { PolicyDetailInfo } from './policyDetailInfo'
+import { PolicyWizard } from '../wizard/policyWizard'
 import { AttributeActions } from '../../attribute/redux/actions'
 import { PolicyActions } from '../redux/actions'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import { RequesterActions } from '../../../system-admin/requester-management/redux/actions'
+import { ResourceActions } from '../../../system-admin/resource-management/redux/actions'
+import { RoleActions } from '../../role/redux/actions'
 
 export function PolicyTable() {
   const getTableId = 'table-manage-policy1-hooks'
@@ -35,6 +39,9 @@ export function PolicyTable() {
   useEffect(() => {
     dispatch(PolicyActions.getPolicies({ name, page, perPage }))
     dispatch(AttributeActions.getAttributes())
+    dispatch(RequesterActions.getAll())
+    dispatch(ResourceActions.getAll())
+    dispatch(RoleActions.get())
   }, [])
 
   const handleChangeAddRowAttribute = (name, value) => {
@@ -205,18 +212,71 @@ export function PolicyTable() {
 
       <PolicyCreateForm handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
+      <PolicyWizard
+        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+        i={state.i}
+        id='wizard-authorization-ui'
+        requesterDescription={translate('manage_authorization_policy.wizard.requester.description_ui')}
+        resourceDescription={translate('manage_authorization_policy.wizard.resource.description_ui')}
+        roleDescription={translate('manage_authorization_policy.wizard.role.description_ui')}
+        filterRequester={(x) => x.type === 'User'}
+        filterResource={(x) => x.type === 'Link' || x.type === 'Component'}
+        filterRole={(x) => true}
+      />
+
+      <PolicyWizard
+        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+        i={state.i}
+        id='wizard-authorization-service'
+        requesterDescription={translate('manage_authorization_policy.wizard.requester.description_service')}
+        resourceDescription={translate('manage_authorization_policy.wizard.resource.description_service')}
+        roleDescription={translate('manage_authorization_policy.wizard.role.description_service')}
+        filterRequester={(x) => x.type === 'Service'}
+        filterResource={(x) => x.type === 'SystemApi'}
+      />
+
       <div className='box-body qlcv'>
         <div className='form-inline'>
           {/* Button thêm mới */}
+          <button
+            type='button'
+            className='btn btn-success pull-right'
+            title={translate('manage_authorization_policy.add_title')}
+            onClick={() => window.$('#modal-create-policy-hooks').modal('show')}
+          >
+            {translate('manage_authorization_policy.add')}
+          </button>
+          {/* Button wizard */}
           <div className='dropdown pull-right' style={{ marginTop: '5px' }}>
             <button
               type='button'
-              className='btn btn-success pull-right'
-              title={translate('manage_authorization_policy.add_title')}
-              onClick={() => window.$('#modal-create-policy-hooks').modal('show')}
+              className='btn btn-primary dropdown-toggle pull-right'
+              data-toggle='dropdown'
+              aria-expanded='true'
+              title={translate('manage_user.add_title')}
             >
-              {translate('manage_authorization_policy.add')}
+              Wizard
             </button>
+            <ul className='dropdown-menu pull-right' style={{ marginTop: 0 }}>
+              <li>
+                <a
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => window.$('#modal-wizard-authorization-ui-requester').modal('show')}
+                  title={translate('manage_authorization_policy.wizard.authorization_ui')}
+                >
+                  {translate('manage_authorization_policy.wizard.authorization_ui')}
+                </a>
+              </li>
+              <li>
+                <a
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => window.$('#modal-wizard-authorization-service-requester').modal('show')}
+                  title={translate('manage_authorization_policy.wizard.authorization_service')}
+                >
+                  {translate('manage_authorization_policy.wizard.authorization_service')}
+                </a>
+              </li>
+            </ul>
           </div>
           {selectedData?.length > 0 && (
             <button

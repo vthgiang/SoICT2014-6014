@@ -2085,10 +2085,48 @@ export default {
         tasks_add_attribute: 'Các công việc thêm thuộc tính',
         attribute_select: 'Chọn thuộc tính',
         attribute_not_selected: 'Chưa chọn thuộc tính'
+      },
+      wizard: {
+        authorization_ui: 'Phân quyền giao diện',
+        authorization_service: 'Phân quyền dịch vụ',
+        requirement_description:
+          'Yêu cầu bao gồm một quy tắc và các thuộc tính là danh sách các cặp key-value. Hệ thống ưu tiên đề xuất yêu cầu với quy tắc EQUALS -> CONTAINS -> BELONGS',
+        requirement_note: 'Lưu ý: Bạn có thể chỉnh sửa tất cả các yêu cầu ở bước cuối cùng',
+        rule_description:
+          'Chọn một quy tắc, sau đó hệ thống sẽ đề xuất danh sách các thuộc tính có thể đáp ứng tất cả Người yêu cầu ở trên nếu có thể',
+        proposed_attributes: 'Thuộc tính được đề xuất',
+        name: 'Tên',
+        value: 'Giá trị',
+        next: 'Tiếp theo',
+        requester: {
+          title: 'Chọn người yêu cầu',
+          description_ui: 'Chọn những người dùng mà sẽ nhận được quyền truy cập vào các thành phần giao diện',
+          description_service: 'Chọn những dịch vụ mà sẽ nhận được quyền truy cập vào API',
+          choose: 'Chọn người yêu cầu',
+          authorized: 'Người yêu cầu được phân quyền',
+          proposed_requirement: 'Yêu cầu được đề xuất cho người yêu cầu'
+        },
+        resource: {
+          title: 'Chọn tài nguyên',
+          description_ui: 'Chọn Link hoặc Component, đây là những đối tượng sẽ được người yêu cầu truy cập',
+          description_service: 'Chọn API, đây là những đối tượng sẽ được dịch vụ truy cập',
+          choose: 'Chọn tài nguyên',
+          authorized: 'Tài nguyên được phân quyền',
+          proposed_requirement: 'Yêu cầu được đề xuất cho tài nguyên'
+        },
+        role: {
+          title: 'Chọn vai trò',
+          note: 'Lưu ý: Nếu yêu cầu về vai trò không được chọn, tất cả các vai trò sẽ được ủy quyền',
+          description_ui: 'Chọn vai trò của người yêu cầu (chỉ áp dụng cho người yêu cầu là người dùng), có thể chọn hoặc không',
+          description_service: 'Chọn vai trò của người yêu cầu (chỉ áp dụng cho người yêu cầu là người dùng), có thể chọn hoặc không',
+          choose: 'Chọn vai trò',
+          authorized: 'Vai trò được phân quyền',
+          proposed_requirement: 'Yêu cầu được đề xuất cho tài nguyên'
+        }
       }
     },
 
-    manage_policy: {
+    manage_authorization_policy: {
       name: 'Tên chính sách',
       search: 'Tìm kiếm',
       add_policy: 'Thêm mới',
@@ -2116,11 +2154,13 @@ export default {
       authorized_information: 'Phân quyền bởi chính sách',
       authorized_requester: 'Người yâu cầu được phân quyền',
       authorized_resource: 'Tài nguyên được phân quyền',
+      authorized_role: 'Vai trò được phân quyền',
       authorized_requester_name: 'Tên người yêu cầu',
       authorized_requester_type: 'Loại',
       authorized_resource_name: 'Tên tài nguyên',
       authorized_resource_type: 'Loại tài nguyên',
       authorized_resource_additional_info: 'Thông tin thêm',
+      authorized_role_name: 'Tên vai trò',
       attribute_owner_table: 'Thuộc tính của',
       role_table: 'Vai trò',
       requester_table: 'Người yêu cầu',
