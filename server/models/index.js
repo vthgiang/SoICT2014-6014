@@ -94,6 +94,8 @@ module.exports = {
     ProductRequestManagement: require('./production/common-production/productRequestManagement.model'),
     Layout: require('./production/warehouse/layout.model'),
     InventoryWarehouse: require('./production/warehouse/inventoryWarehouse.model'),
+    Inventory: require('./production/warehouse/inventory.model'),
+    InventoryForecast: require('./production/warehouse/inventoryForecast.model'),
     // Customer Management
     Customer: require('./customer-care/customer.model'),
     CustomerCare: require('./customer-care/customerCare.model'),
@@ -122,6 +124,8 @@ module.exports = {
     MarketingCampaign: require('./production/order/marketingCampaign.model'),
     MarketingEffective: require('./production/order/marketingEffective.model'),
     Location: require('./common/location.model'),
+    TotalOrder: require('./production/order/totalOrder.model'),
+    SalesForecast: require('./production/order/salesForecast.model'),
 
     // plan
     Plan: require('./plan/plan.model'),

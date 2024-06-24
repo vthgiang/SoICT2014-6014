@@ -4,8 +4,6 @@ const Terms = require('../helpers/config');
 const linksPermission = require('../middleware/servicesPermission').links;
 const categoryChild = require('./CategoryChild.json');
 const listProducts = require('./ListProduct.json');
-const marketingCampaign = require('./MarketingCampaign.json');
-const marketingEffective = require('./MarketingEffective.json');
 const saleOrders = require('./SaleOrders.json');
 const listCustomer = require('./Customer.json');
 const listTransport3Orders = require('./transport3orders.json');
@@ -54,7 +52,6 @@ const {
   Bill,
   Category,
   Good,
-  MarketingCampaign,
   SalesOrder,
 
   Tax,
@@ -219,7 +216,6 @@ const initSampleCompanyDB = async () => {
     if (!db.models.Lot) Lot(db);
     if (!db.models.Category) Category(db);
     if (!db.models.Good) Good(db);
-    if (!db.models.MarketingCampaign) MarketingCampaign(db);
     if (!db.models.Tax) Tax(db);
     if (!db.models.ServiceLevelAgreement) ServiceLevelAgreement(db);
     if (!db.models.Discount) Discount(db);
@@ -5202,12 +5198,6 @@ const initSampleCompanyDB = async () => {
   });
   await Category(vnistDB).insertMany(listCategoryChild1);
 
-  var listMarketing = marketingCampaign.map((subCat) => {
-    return {
-      ...subCat,
-    };
-  });
-  await MarketingCampaign(vnistDB).insertMany(listMarketing);
   /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU HÀNG HÓA
@@ -7694,162 +7684,7 @@ const initSampleCompanyDB = async () => {
   ]);
   console.log('Khởi tạo xong cấu hình đơn vị kinh doanh');
 
-  console.log('Khởi tạo dữ liệu đơn bán hàng');
-  const BATCH_SIZE = 10; // Số lượng bản ghi trong mỗi lô
-  const CONCURRENCY_LIMIT = 5; // Số lượng kết nối song song
-  function getRandomElement(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
-  async function insertSalesOrdersInBatches(
-    saleOrders,
-    newProducts,
-    listMarketing
-  ) {
-    let listSales = [];
-    let batchPromises = [];
-    let products_in_stock = await Good(vnistDB).find({});
-    for (let i = 0; i < 100; i++) {
-      let salesOrder = saleOrders[i];
-      let product = products_in_stock.find(
-        (product) => product.code === String(salesOrder.product_id)
-      );
-      let marketingCampaign = listMarketing.find(
-        (marketing) => marketing.code == salesOrder.campaign_id
-      );
-
-      let customer = getRandomElement(listCustomers);
-      let user = getRandomElement(users);
-      let newSaleOrder = {
-        code: salesOrder.code,
-        status: salesOrder.status,
-        creator: user._id,
-        customer: customer._id,
-        customerName: customer.name,
-        customerPhone: customer.mobilephoneNumber,
-        customerAddress: customer.address,
-        customerRepresent: customer.represent,
-        customerTaxNumber: customer.taxNumber,
-        customerEmail: customer.email,
-        approvers: [
-          {
-            approver: users[1]._id,
-            status: 2,
-          },
-        ],
-        priority: 1,
-        goods: [
-          {
-            good: product._id,
-            pricePerBaseUnit: salesOrder.price,
-            quantity: salesOrder.orders,
-            productionCost: salesOrder.purchase_price,
-            pricePerBaseUnitOrigin: product.pricePerBaseUnit,
-            salesPriceVariance: product.salesPriceVariance,
-            serviceLevelAgreements: [
-              {
-                descriptions: [
-                  'Đóng gói đúng quy trình',
-                  'Sản phẩm đi đầu về chất lượng',
-                ],
-                _id: listServiceLevelAgreements[0]._id,
-                title: 'Chất lượng sản phẩm đi đầu',
-              },
-            ],
-            taxs: [
-              {
-                _id: listTaxs[0]._id,
-                code: listTaxs[0]._id,
-                name: 'VAT',
-                description: listTaxs[0]._id,
-                percent: 5,
-              },
-            ],
-            amount: salesOrder.price,
-            amountAfterDiscount: salesOrder.price,
-            amountAfterTax: (salesOrder.price * 11) / 10,
-          },
-        ],
-        discounts: [
-          {
-            _id: listDistcounts[5]._id,
-            code: listDistcounts[5].code,
-            type: listDistcounts[5].type,
-            formality: listDistcounts[5].formality,
-            name: listDistcounts[5].name,
-            effectiveDate: listDistcounts[5].effectiveDate,
-            expirationDate: listDistcounts[5].expirationDate,
-            maximumFreeShippingCost: 20000,
-          },
-          {
-            _id: listDistcounts[6]._id,
-            code: listDistcounts[6].code,
-            type: listDistcounts[6].type,
-            formality: listDistcounts[6].formality,
-            name: listDistcounts[6].name,
-            effectiveDate: listDistcounts[6].effectiveDate,
-            expirationDate: listDistcounts[6].expirationDate,
-            discountedPercentage: 10,
-          },
-          {
-            _id: listDistcounts[7]._id,
-            code: listDistcounts[7].code,
-            type: listDistcounts[7].type,
-            formality: listDistcounts[7].formality,
-            name: listDistcounts[7].name,
-            effectiveDate: listDistcounts[7].effectiveDate,
-            expirationDate: listDistcounts[7].expirationDate,
-            loyaltyCoin: 1000,
-          },
-        ],
-        shippingFee: 10000,
-        deliveryTime: salesOrder.date,
-        coin: 500,
-        paymentAmount: (salesOrder.price * salesOrder.orders * 11) / 10 + 10000,
-        note: 'Khách hàng quen thuộc',
-        marketingCampaign: marketingCampaign._id,
-      };
-
-      listSales.push(newSaleOrder);
-
-      // Khi đạt đến BATCH_SIZE hoặc khi đến bản ghi cuối cùng
-      if (listSales.length === BATCH_SIZE || i === saleOrders.length - 1) {
-        console.log(`Adding batch of size: ${listSales.length}`);
-        batchPromises.push(insertBatch(listSales));
-        listSales = []; // Reset danh sách cho lô tiếp theo
-
-        // Nếu đạt đến giới hạn kết nối song song, chờ cho các kết nối hoàn thành
-        if (batchPromises.length >= CONCURRENCY_LIMIT) {
-          console.log('Waiting for batch promises to resolve');
-          await Promise.all(batchPromises);
-          batchPromises = [];
-        }
-      }
-    }
-
-    // Chờ tất cả các batch còn lại hoàn thành
-    await Promise.all(batchPromises);
-    console.log('All data inserted');
-  }
-
-  async function insertBatch(batch) {
-    try {
-      console.log('Inserting batch:', batch);
-      await SalesOrder(vnistDB).insertMany(batch);
-      console.log('Inserted batch of size:', batch.length);
-    } catch (error) {
-      console.error('Error inserting batch:', error);
-    }
-  }
-
-  // Gọi hàm chính để chèn dữ liệu
-  insertSalesOrdersInBatches(saleOrders, newProducts, listMarketing)
-    .then(() => {
-      console.log('All data inserted');
-    })
-    .catch((err) => {
-      console.error('Error inserting data:', err);
-    });
-
+  
   /*---------------------------------------------------------------------------------------------
          -----------------------------------------------------------------------------------------------
              TẠO DỮ LIỆU THÔNG TIN BÁO GIÁ

@@ -173,7 +173,7 @@ const SalesStatistics = lazy(() => import('../modules/production/order/sales-sta
 const Forecast = lazy(() => import('../modules/production/order/forecast/components'))
 const Discount = lazy(() => import('../modules/production/order/discount/components'))
 const Quote = lazy(() => import('../modules/production/order/quote/components'))
-const SalesOrderDashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
+const Dashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
 
 const ServiceLevelAgreement = lazy(() => import('../modules/production/order/service-level-agreement/components'))
 const BusinessDepartment = lazy(() => import('../modules/production/order/business-department/components'))
@@ -3100,7 +3100,7 @@ class Routes extends Component {
             path='/manage-sales-order-dashboard'
             pageName='manage_sales_order_dashboard'
             layout={Layout}
-            component={SalesOrderDashboard}
+            component={Dashboard}
           />
 
           <PrivateRoute

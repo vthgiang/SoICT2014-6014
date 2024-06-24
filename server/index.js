@@ -216,7 +216,7 @@ app.use('/business-department', require('./modules/production/order/business-dep
 app.use('/news-feed', require('./modules/news-feed/newsFeed.route'));
 app.use('/marketing-campaign', require('./modules/production/order/marketing-campaign/marketingCampaign.route'));
 app.use('/marketing-effective', require('./modules/production/order/marketing-effective/marketingEffective.route'));
-
+app.use('/forecasts', require('./modules/production/order/forecast/sales-forecast/salesForecast.route')) 
 
 // project
 app.use('/projects', require('./modules/project/project-management/project.route'));
