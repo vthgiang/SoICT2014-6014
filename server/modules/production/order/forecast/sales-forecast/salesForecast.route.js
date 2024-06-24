@@ -9,4 +9,3 @@ router.get('/', auth, forecastController.getAllForecasts);
 router.get('/:id',auth, forecastController.getForecastById);
 
 module.exports = router;
-
