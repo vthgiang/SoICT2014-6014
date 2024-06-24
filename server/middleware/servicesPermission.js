@@ -713,6 +713,8 @@ exports.links = [
             { path: '/projects/project/change-requests/update-lists', method: 'PATCH' },
             { path: '/projects/project/change-requests/:id/:status', method: 'PATCH' },
             { path: '/projects/project/project-phase', method: 'POST' },
+
+            { path: '/predict/:scheduleId', method: 'GET' },
         ],
     },
     {
@@ -1231,6 +1233,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/route-picking-management',
+        apis: ['@all'],
+    },
+    {
         url: '/manage-sales-order',
         apis: ['@all'],
     },
@@ -1242,34 +1248,34 @@ exports.links = [
         url: '/forecast-sales-order',
         apis: ['@all'],
     },
-    {
-        url: '/manage-purchase-order',
-        apis: ['@all'],
-    },
-    {
-        url: '/manage-quote',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-purchase-order',
+    //     apis: ['@all'],
+    // },
+    // {
+    //     url: '/manage-quote',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-sales-order-dashboard',
         apis: ['@all'],
     },
-    {
-        url: '/manage-profit',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-profit',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-discount',
         apis: ['@all'],
     },
-    {
-        url: '/manage-tax',
-        apis: ['@all'],
-    },
-    {
-        url: '/manage-sla',
-        apis: ['@all'],
-    },
+    // {
+    //     url: '/manage-tax',
+    //     apis: ['@all'],
+    // },
+    // {
+    //     url: '/manage-sla',
+    //     apis: ['@all'],
+    // },
     {
         url: '/manage-payment',
         apis: ['@all'],
@@ -1622,6 +1628,10 @@ exports.links = [
     },
     {
         url: '/transportation-shipper-manage',
+        apis: ['@all'],
+    },
+    {
+        url: '/forecastModel/ontimeDeliveryPredict',
         apis: ['@all'],
     },
     {

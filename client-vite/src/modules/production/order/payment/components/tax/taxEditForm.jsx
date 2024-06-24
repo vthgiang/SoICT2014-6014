@@ -1,10 +1,10 @@
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { TaxActions } from '../redux/actions'
-import { GoodActions } from '../../../common-production/good-management/redux/actions'
-import { DialogModal, ErrorLabel, SelectBox, SelectMulti } from '../../../../../common-components'
-import ValidationHelper from '../../../../../helpers/validationHelper'
+import { PaymentActions } from '../../redux/actions'
+import { GoodActions } from '../../../../common-production/good-management/redux/actions'
+import { DialogModal, ErrorLabel, SelectBox, SelectMulti } from '../../../../../../common-components'
+import ValidationHelper from '../../../../../../helpers/validationHelper'
 import CreateTaxDetail from './createTaxDetail'
 
 function TaxEditForm(props) {
@@ -694,7 +694,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  updateTax: TaxActions.updateTax,
+  updateTax: PaymentActions.updateTax,
   getAllGoodsByType: GoodActions.getAllGoodsByType
 }
 

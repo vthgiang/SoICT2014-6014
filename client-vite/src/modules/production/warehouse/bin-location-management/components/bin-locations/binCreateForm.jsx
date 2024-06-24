@@ -549,7 +549,7 @@ function BinCreateForm(props) {
                     className='form-control'
                     value={good.contained}
                     placeholder={translate('manage_warehouse.good_management.contained')}
-                    disabled
+                    // disabled
                     onChange={handleContainedChange}
                   />
                 </div>

@@ -489,7 +489,7 @@ function BinEditForm(props) {
                 type='number'
                 className='form-control'
                 value={good.contained}
-                disabled
+                // disabled
                 placeholder={translate('manage_warehouse.good_management.contained')}
                 onChange={handleContainedChange}
               />

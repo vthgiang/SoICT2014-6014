@@ -85,7 +85,6 @@ const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/man
 const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation'))
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
 const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
-
 const CreateEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/creation/component/employeeKpiCreate'))
 const KPIPersonalManager = lazy(() => import('../modules/kpi/employee/management/component/employeeKpiManagement'))
 const DashBoardEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/dashboard/component/employeeKpiDashboard'))
@@ -154,7 +153,7 @@ const BillManagement = lazy(() => import('../modules/production/warehouse/bill-m
 const InventoryManagement = lazy(() => import('../modules/production/warehouse/inventory-management/components'))
 const StockRequestManagement = lazy(() => import('../modules/production/warehouse/request-management/components'))
 const StogareManagement = lazy(() => import('../modules/production/warehouse/storage-management/components'))
-
+const RoutePickingManagement = lazy(() => import('../modules/production/warehouse/route-picking-management/components'))
 // Customer Management
 const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
 const CrmDashBoardUnit = lazy(() => import("../modules/crm/crmUnitDashboard/components"))
@@ -175,7 +174,7 @@ const Forecast = lazy(() => import('../modules/production/order/forecast/compone
 const Discount = lazy(() => import('../modules/production/order/discount/components'))
 const Quote = lazy(() => import('../modules/production/order/quote/components'))
 const SalesOrderDashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
-const Tax = lazy(() => import('../modules/production/order/tax/components'))
+
 const ServiceLevelAgreement = lazy(() => import('../modules/production/order/service-level-agreement/components'))
 const BusinessDepartment = lazy(() => import('../modules/production/order/business-department/components'))
 const Payment = lazy(() => import('../modules/production/order/payment/components'))
@@ -229,11 +228,11 @@ const CarrierAllTimesTransportMission = lazy(() => import("../modules/production
 // Quản lý vận chuyển 2
 const DashBoardTransportationUnit = lazy(() => import("../modules/transportation/dashboard/components"))
 const InitializationType = lazy(() => import("../modules/transportation/scheduling/delivery-plan/components"));
-const DeliveryPlanList = lazy(()=> import("../modules/transportation/scheduling/delivery-plan/components"))
+const DeliveryPlanList = lazy(() => import("../modules/transportation/scheduling/delivery-plan/components"))
 const VehiclesTransportation = lazy(() => import("../modules/transportation/vehicle/components"));
 const DetailSolution = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/detailSolution'));
 const Journeys = lazy(() => import("../modules/transportation/scheduling/tracking-route/components/index"));
-const DetailJourney = lazy(() =>import('../modules/transportation/scheduling/tracking-route/components/detailJourney'));
+const DetailJourney = lazy(() => import('../modules/transportation/scheduling/tracking-route/components/detailJourney'));
 const TransportationCost = lazy(() => import('../modules/transportation/cost/components/index'));
 const ShipperInfo = lazy(() => import('../modules/transportation/shipper/components/info-management/index'));
 const ShipperDeliveryReport = lazy(() => import('../modules/transportation/shipper/components/delivery-report/index'));
@@ -244,7 +243,9 @@ const OrderTransport3 = lazy(() => import('../modules/transport3/order/component
 const ScheduleTransport3 = lazy(() => import('../modules/transport3/schedule/components'))
 const EmployeeTransport3 = lazy(() => import('../modules/transport3/employee/components'))
 const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/components'))
-
+const RouteTransport3 = lazy(() => import('../modules/transport3/route/components'))
+const IssueTransport3 = lazy(() => import('../modules/transport3/issue/components'))
+const ForecastOTD = lazy(() => import('../modules/transport3/schedule/components/forestcastModel/ontimeDeliveryPredict.jsx'))
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 const Project = lazy(() => import("../modules/project/projects/components/index"))
@@ -2754,7 +2755,25 @@ class Routes extends Component {
             layout={Layout}
             component={StogareManagement}
           />
-
+          <PrivateRoute
+            isLoading={false}
+            key='route-picking-management'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/route-picking-management',
+                name: 'route_picking_management',
+                icon: 'fa fa-cube'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/route-picking-management'
+            path='/route-picking-management'
+            pageName='route_picking_management'
+            layout={Layout}
+            component={RoutePickingManagement}
+          />
           {/* end warehouse route */}
 
           <PrivateRoute
@@ -3004,7 +3023,7 @@ class Routes extends Component {
             layout={Layout}
             component={Forecast}
           />
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={this.props.salesOrders.isLoading}
             key='/manage-profit'
             arrPage={[
@@ -3022,9 +3041,9 @@ class Routes extends Component {
             pageName='manage_profit'
             layout={Layout}
             component={Profit}
-          />
+          /> */}
 
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={false}
             key='/manage-purchase-order'
             arrPage={[
@@ -3042,9 +3061,9 @@ class Routes extends Component {
             pageName='manage_purchase_order'
             layout={Layout}
             component={PurchaseOrder}
-          />
+          /> */}
 
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={this.props.quotes.isLoading}
             key='/manage-quote'
             arrPage={[
@@ -3062,7 +3081,7 @@ class Routes extends Component {
             pageName='manage_quote'
             layout={Layout}
             component={Quote}
-          />
+          /> */}
 
           <PrivateRoute
             isLoading={false}
@@ -3104,7 +3123,7 @@ class Routes extends Component {
             component={Discount}
           />
 
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={this.props.taxs.isLoading}
             key='/manage-tax'
             arrPage={[
@@ -3122,9 +3141,9 @@ class Routes extends Component {
             pageName='manage_tax'
             layout={Layout}
             component={Tax}
-          />
+          /> */}
 
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={this.props.serviceLevelAgreements.isLoading}
             key='/manage-sla'
             arrPage={[
@@ -3142,7 +3161,7 @@ class Routes extends Component {
             pageName='manage_sla'
             layout={Layout}
             component={ServiceLevelAgreement}
-          />
+          /> */}
 
           <PrivateRoute
             isLoading={false}
@@ -3733,7 +3752,27 @@ class Routes extends Component {
             path='/manage-transport3-route'
             pageName='manage_transport3_route'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={RouteTransport3}
+          />
+
+                    <PrivateRoute
+            isLoading={false}
+            key={'ontimeDeliveryPredict'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/forecastModel/ontimeDeliveryPredict',
+                name: 'forecast_model_management',
+                icon: 'fa fa-calendar-o'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/forecastModel/ontimeDeliveryPredict'}
+            path={'/forecastModel/ontimeDeliveryPredict'}
+            pageName={'forecast_model_management'}
+            layout={Layout}
+            component={ForecastOTD}
           />
 
           <PrivateRoute
@@ -3753,7 +3792,7 @@ class Routes extends Component {
             path='/manage-transport3-cost'
             pageName='manage_transport3_cost'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={TransportationCost}
           />
 
           <PrivateRoute
@@ -3773,7 +3812,7 @@ class Routes extends Component {
             path='/manage-transport3-issue'
             pageName='manage_transport3_issue'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={IssueTransport3}
           />
 
           <PrivateRoute
@@ -4342,25 +4381,25 @@ class Routes extends Component {
             layout={Layout}
             component={ProjectDetailPage}
           />
-                              <PrivateRoute
-                      isLoading={false}
-                      key={"/project/project-proposal"}
-                      arrPage={[
-                        {link: '/', name: 'home', icon: 'fa fa-home'},
-                        {
-                            link: '/project/project-proposal',
-                            name: 'project_proposal',
-                            icon: 'fa fa-folder-open'
-                        },
-                      ]}
-                      auth={auth}
-                      exact={true}
-                      link={'/project/project-proposal'}
-                      path={'/project/project-proposal'}
-                      pageName={'project_proposal'}
-                      layout={Layout}
-                      component={ProjectProposalPage}
-                    />
+          <PrivateRoute
+            isLoading={false}
+            key={"/project/project-proposal"}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/project/project-proposal',
+                name: 'project_proposal',
+                icon: 'fa fa-folder-open'
+              },
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/project/project-proposal'}
+            path={'/project/project-proposal'}
+            pageName={'project_proposal'}
+            layout={Layout}
+            component={ProjectProposalPage}
+          />
           {/* <PrivateRoute
                         isLoading={false}
                         key={"/project/phases-list"}

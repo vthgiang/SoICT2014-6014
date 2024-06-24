@@ -13,6 +13,7 @@ const appWarehouses = [];
 const initalBackgroundColor = "#d9dccb";
 let edgeMaterial;
 
+
 $(document).ready(function () {
 
     warehouseList.forEach(function (warehouse) {  																					//demos
@@ -21,7 +22,9 @@ $(document).ready(function () {
         });
     });
 
-    $('#3dwarehouse').css({"margin": "0px", "position": "absolute", width: "100%", "height": "100%"});																								// https://github.com/vitmalina/w2ui/issues/105#issuecomment-17793381
+    $('#3dwarehouse').css({"margin": "0px", "position": "absolute", width: "100%", "height": "100%"});
+
+    // https://github.com/vitmalina/w2ui/issues/105#issuecomment-17793381
     var appDiv = $(document.createElement("div"))                                                                                    // Work around: https://github.com/vitmalina/w2ui/issues/1844
         .css({"position": "absolute", width: "85%", "height": "100%"})
         .appendTo('#3dwarehouse');
@@ -34,6 +37,43 @@ $(document).ready(function () {
             parentLayout.get("main").toolbar.click('warehouse:' + smallWarehouseIndex);
         }
     });
+
+    function createOrderPickingGrid() {
+        // Kiểm tra xem grid đã được tạo hay chưa
+        var orderPickingGrid = w2ui['orderPickingGrid'];
+        if (orderPickingGrid) {
+            // Nếu grid đã được tạo, chỉ cần ẩn/hiện nó
+            if (orderPickingGrid.hidden) {
+                orderPickingGrid.show();
+                orderPickingGrid.hidden = false;
+            } else {
+                orderPickingGrid.hide();
+                orderPickingGrid.hidden = true;
+            }
+        } else {
+            // Nếu grid chưa được tạo, tạo grid mới
+            orderPickingGrid = $().w2grid({
+                name: 'orderPickingGrid',
+                header: 'Order Picking Grid',
+                style: 'width: 40%; height: 80%;',
+                columns: [
+                    { field: 'id', caption: 'ID', size: '50px', sortable: true, attr: 'align=center' },
+                    { field: 'name', caption: 'Name', size: '30%', sortable: true },
+                    { field: 'info', caption: 'Info', size: '120px' }
+                ],
+                records: [
+                    { recid: 1, id: '1', name: 'Item 1', info: 'Info 1' },
+                    { recid: 2, id: '2', name: 'Item 2', info: 'Info 2' },
+                    // Thêm các hàng khác tại đây
+                ]
+            });
+
+            // Thêm grid mới vào layout chính
+            parentLayout.content('main', orderPickingGrid);
+            orderPickingGrid.hidden = false;
+        }
+    }
+
     parentLayout = $().w2layout({
         name: "parentLayout", box: appDiv, panels: [{
             type: 'main', size: "100%", resizable: false, style: pstyle, toolbar: {
@@ -60,6 +100,11 @@ $(document).ready(function () {
                     tooltip: "Show/hide Warehouse Layout Grid",
                     text: "Toggle Warehouse Layout Grid"
                 }, {type: 'break'}, {
+                    type: "button",
+                    id: "toggleOrderPickingGrid",
+                    tooltip: "Show/hide Order Picking Grid",
+                    text: "Toggle Order Picking Grid",
+                }, {type: 'break'}, {
                     type: "menu-radio",
                     id: "language",
                     tooltip: "Select Language",
@@ -81,12 +126,15 @@ $(document).ready(function () {
                     }, {id: "webgl", text: "WebGL"}, {id: "gltf", text: "glTF"}, {
                         id: "threejs",
                         text: "three.js"
-                    }, {id: "d3js", text: "d3.js"}, {id: "w2ui", text: "w2ui"}, {id: "about", text: translate("About")}]
+                    }, {id: "d3js", text: "d3.js"}, {id: "w2ui", text: "w2ui"}, {
+                        id: "about",
+                        text: translate("About")
+                    }]
                 }], onClick: function (event) {
                     event.done(function () {
 
                         const aTargets = event.target.split(":");
-                        if (aTargets.length === 1 && ["upload", "toggleVisualGrid", "toggleAnalyzer"].indexOf(aTargets[0]) === -1) return; //Menu, not menu item, clicked on option
+                        if (aTargets.length === 1 && ["upload", "toggleVisualGrid", "toggleAnalyzer", "toggleOrderPickingGrid"].indexOf(aTargets[0]) === -1) return; //Menu, not menu item, clicked on option
                         switch (aTargets[0]) {
 
                             case "warehouse":   //Find programmatically with: w2ui.toolbar.items.find(function(item) {return item.id == "warehouse"}).selected
@@ -167,6 +215,48 @@ $(document).ready(function () {
 
                                 break;
 
+                            case "toggleOrderPickingGrid":
+                                var mainPanel = this.owner.get("main").content;
+
+                                // if (mainPanel.get("preview").mdvPreHideSize) {
+                                //
+                                //     mainPanel.sizeTo("preview", mainPanel.get("preview").mdvPreHideSize);				//Must operate on preview, not main (bug)
+                                //     mainPanel.sizeTo("left", mainPanel.get("right").mdvPreHideSize);
+                                //     delete mainPanel.get("preview").mdvPreHideSize;
+                                //     delete mainPanel.get("right").mdvPreHideSize;										//Handling final sizing of preview
+                                //
+                                // } //if
+                                // else {
+                                //
+                                //     mainPanel.get("preview").mdvPreHideSize = mainPanel.get("preview").size;
+                                //     mainPanel.get("right").mdvPreHideSize = mainPanel.get("right").size;
+                                //     mainPanel.sizeTo("preview", "100%");
+                                //
+                                // } //else
+
+                                // Tạo grid mới
+                                // var newGrid = $().w2grid({
+                                //     name: 'newGrid',
+                                //     header: 'New Table',
+                                //     style: 'width: 100%; height: 80%;',
+                                //     columns: [
+                                //         {field: 'recid', caption: 'ID', size: '50px', sortable: true, attr: 'align=center'},
+                                //         {field: 'lname', caption: 'Last Name', sortable: true, resizable: true},
+                                //         {field: 'fname', caption: 'First Name', sortable: true, resizable: true},
+                                //         {field: 'email', caption: 'Email', sortable: true, resizable: true}
+                                //     ],
+                                //     records: [
+                                //         {recid: 1, fname: 'John', lname: 'Doe', email: 'maithanh0131@gmail.com'},
+                                //         {recid: 2, fname: 'Stuart', lname: 'Motzart', email: 'sssss'}
+                                //     ]
+                                //     // Cấu hình grid mới
+                                // });
+                                //
+                                // mainPanel.content('main', newGrid);
+                                // // Thêm grid mới vào mainPanel
+                                // mainPanel.content('right', newGrid);
+
+                                break;
                             case "language":
 
                                 fnSetLanguageIndex(aTargets[1]);
@@ -207,6 +297,7 @@ $(document).ready(function () {
                                 break;
 
                         } //switch
+
 
                         //Display pop-up Window
                         function fnPopUp(appContainer, title, html, wf, hf) {
@@ -259,6 +350,7 @@ function fnShowMyWarehouseVisualizerDemo() {
         $("#demoInstructions").load("demoInstructions.html");
         parentLayout.get("main").toolbar.disable("toggleAnalyzer"); // Can't click button Toggle Inventory Grid
         parentLayout.get("main").toolbar.disable("toggleVisualGrid"); // Can't click button Toggle Warehouse Layout Grid
+        parentLayout.get("main").toolbar.disable("toggleOrderPickingGrid"); // Can't click button Toggle Order Picking Grid
         return;
     }
     const getData = async (path) => { // get data warehouse from server
@@ -273,7 +365,7 @@ function fnShowMyWarehouseVisualizerDemo() {
     if (!appWarehouses[warehouseIndex].layoutData) {
         // Get data layout warehouse from server
         getData('layout').then((response) => {  // get layout warehouse from server
-            console.log(response)
+            // console.log(response)
             const warehouseScene = {scene: fnBuildWarehouse(response)};
             fnLoadWarehouseData(warehouseName, warehouseScene, response);
         }).catch((error) => {
@@ -683,8 +775,8 @@ function applicationLayout() {
             panels: [	//Tool Bar Handle by Main Panel
                 {type: 'left', size: '50%', resizable: true, style: pstyle},  	//Data Analyzer
                 {type: 'main', resizable: true, style: pstyle},					//Warehouse GRID
-                {type: 'preview', size: '75%', resizable: true}  				//The display panel for the image
-
+                {type: 'preview', size: '75%', resizable: true},  				//The display panel for the image
+                {type: 'right', resizable: true, style: pstyle}		//Scale Control
             ] //panels
         }
 
@@ -855,6 +947,7 @@ function myDataVisualizer() {
 
                 parentLayout.get("main").toolbar.disable("toggleVisualGrid");																//Disable warehouse grid and analyzerbutton
                 parentLayout.get("main").toolbar.disable("toggleAnalyzer");
+                parentLayout.get("main").toolbar.disable("toggleOrderPickingGrid");
 
                 mdvLayout.hide('left');   																									//Hide Data Analyzer Panel
                 mdvLayout.hide('main');
@@ -865,6 +958,7 @@ function myDataVisualizer() {
 
                 parentLayout.get("main").toolbar.enable("toggleVisualGrid");																// Enable show/hide warehouse grid button
                 parentLayout.get("main").toolbar.enable("toggleAnalyzer");
+                parentLayout.get("main").toolbar.enable("toggleOrderPickingGrid");
 
                 mdv.visualizer.setIntersectsSelectedCallback(fnSearchIntersects);															//Object on the warehouse selected Handler (ctrl Mouse Click or Double Click)
 
@@ -1991,7 +2085,7 @@ function myDataVisualizer() {
 
                         var column = {
                             field: field,
-                            caption: fieldCaption.trim() + " (Scaled)",
+                            caption: fieldCaption.trim(),
                             sortable: true,
                             searchable: true,
                             hidden: false,
@@ -2144,7 +2238,6 @@ function myDataVisualizer() {
                         selectColumn: true,
                         toolbarEdit: true,
                         //header: true,
-
                     },
 
                     onEdit: function (event) {
@@ -2172,7 +2265,7 @@ function myDataVisualizer() {
                             buttons: '<button class="w2ui-btn" style="margin-right: 10px; background-color: #4CAF50; color: #4e77c5; border: none; cursor: pointer; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; transition-duration: 0.4s;" onclick="saveFormData()">Save</button> <button class="w2ui-btn" style="background-color: #f44336; color: #da6969; border: none; cursor: pointer; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; transition-duration: 0.4s;" onclick="w2popup.close();">Cancel</button>'
                         });
 
-                        window.saveFormData = function() {
+                        window.saveFormData = function () {
                             var form = document.getElementById('editForm');
                             var formData = new FormData(form);
                             var dataObject = {};
@@ -2219,7 +2312,6 @@ function myDataVisualizer() {
                     multiSearch: true,
                     multiSelect: true,
                     multiSort: true,
-
 
                     toolbar: fnGetGridToolbar(dataVisual, visualizer, gridType + "Grid"),
 
@@ -2338,7 +2430,6 @@ function myDataVisualizer() {
                     return "&nbsp;" + div[0].outerHTML;
 
                 } //fnGridColumnRender
-
 
             } //fnGetGridProperties
 
@@ -3560,8 +3651,8 @@ function dataVisual() {
 
     this.setColorVisualObj = function (visualObj, color) {
 
-        visualObj.traverse(function (node) {  																		//Color the object and any child meshes with color-able materials
-            if (node.type == "Mesh" && node.material) {
+        visualObj.traverse(function (node) {  				//Color the object and any child meshes with color-able materials
+            if (node.type === "Mesh" && node.material) {
                 node.material.color.set(color);																	// 	https://threejs.org/docs/index.html#api/en/math/Color.set
             } //if
         }); //visualObj.traverse
@@ -3645,5 +3736,4 @@ function fnGetBackGroundColorInvert(backGroundColor) {
 // } //b64toBlob
 
 //https://stackoverflow.com/questions/9092125/how-to-debug-dynamically-loaded-javascript-with-jquery-in-the-browsers-debugg
-//# sourceURL=myDataVisualizer.js	
-
+//# sourceURL=myDataVisualizer.js

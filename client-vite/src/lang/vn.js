@@ -90,6 +90,11 @@ export default {
       get_all_unit_dashboard_data_fail: 'Lấy dữ liệu bảng tin doanh nghiệp thất bại'
     },
 
+    transport3: {
+      schedule: {
+        create_schedule_success: 'Tạo lịch vận chuyển thành công'
+      }
+    },
     menu: {
       home: 'Trang chủ',
       /** Quản lý rủi ro */
@@ -102,6 +107,8 @@ export default {
       task_pert: 'Phân tích xác suất thành công',
       task_pert_dash: 'Phân tích quy trình',
       system_administration: 'Quản trị hệ thống',
+      forecast_model_management: 'Quản lý mô hình dự báo',
+      OTD_forecast_model_management: 'Quản lý mô hình dự báo khả năng giao hàng đúng hạn',
       manage_configuration: 'Cấu hình hệ thống',
       manage_system: 'Sao lưu phục hồi',
       manage_company: 'Doanh nghiệp',
@@ -209,6 +216,7 @@ export default {
       bill_management: 'Quản lý thông tin phiếu',
       inventory_management: 'Quản lý lô hàng',
       storage_management: 'Quản lý thông tin lưu trữ',
+      route_picking_management: 'Quản lý tuyến đường lấy hàng',
 
       manage_kpi_unit: 'KPI đơn vị',
       manage_kpi_personal: 'KPI cá nhân',
@@ -304,7 +312,7 @@ export default {
 
       // QUẢN LÝ ĐƠN HÀNG
       manage_orders: 'Quản lý đơn hàng',
-      manage_sales_order: 'Đơn bán hàng',
+      manage_sales_order: 'Đơn hàng',
       forecast_sales_order: 'Dự báo doanh số',
       sales_statistics: 'Thống kê doanh số',
       manage_profit: 'Lợi nhuận',
@@ -367,7 +375,7 @@ export default {
       manage_transport3_dashboard: 'Bảng tin quản lý vận chuyển',
       manage_transport3_order: 'Quản lý vận đơn',
       manage_transport3_schedule: 'Lập lịch vận chuyển',
-      manage_transport3_route: 'Quản lý lịch trình',
+      manage_transport3_route: 'Quản lý thông số cài đặt mô hình',
       manage_transport3_cost: 'Quản lý chi phí',
       manage_transport3_issue: 'Xử lý sự cố',
       manage_transport3_partner: 'Quản lý đối tác vận chuyển',

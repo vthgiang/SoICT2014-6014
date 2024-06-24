@@ -1,11 +1,11 @@
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { generateCode } from '../../../../../helpers/generateCode'
-import { GoodActions } from '../../../common-production/good-management/redux/actions'
-import { TaxActions } from '../redux/actions'
-import { DialogModal, SelectMulti, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components'
-import ValidationHelper from '../../../../../helpers/validationHelper'
+import { generateCode } from '../../../../../../helpers/generateCode'
+import { GoodActions } from '../../../../common-production/good-management/redux/actions'
+import { PaymentActions } from '../../redux/actions'
+import { DialogModal, SelectMulti, ButtonModal, ErrorLabel, SelectBox } from '../../../../../../common-components'
+import ValidationHelper from '../../../../../../helpers/validationHelper'
 import CreateTaxDetail from './createTaxDetail'
 
 function TaxCreateForm(props) {
@@ -641,7 +641,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   getAllGoodsByType: GoodActions.getAllGoodsByType,
-  createNewTax: TaxActions.createNewTax
+  createNewTax: PaymentActions.createNewTax
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaxCreateForm))

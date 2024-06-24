@@ -1,8 +1,8 @@
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { DialogModal, ErrorLabel } from '../../../../../common-components'
-import ValidationHelper from '../../../../../helpers/validationHelper'
+import { DialogModal, ErrorLabel } from '../../../../../../common-components'
+import ValidationHelper from '../../../../../../helpers/validationHelper'
 
 function CreateTaxDetail(props) {
   const [state, setState] = useState({
