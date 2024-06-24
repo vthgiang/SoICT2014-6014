@@ -934,11 +934,7 @@ class SideBar extends Component {
                     icon: 'fa fa-dollar',
                     path: '/manage-sales-order'
                   },
-                  {
-                    name: 'menu.sales_statistics',
-                    icon: 'fa fa-dollar',
-                    path: '/sales-statistics'
-                  },
+              
                   {
                     name: 'menu.forecast_sales_order',
                     icon: 'fa fa-dollar',
@@ -954,11 +950,7 @@ class SideBar extends Component {
                   //   icon: 'fa fa-shopping-cart',
                   //   path: '/manage-purchase-order'
                   // },
-                  {
-                    name: 'menu.manage_discount',
-                    icon: 'fa fa-arrow-down',
-                    path: '/manage-discount'
-                  },
+                  
                   // {
                   //   name: 'menu.manage_tax',
                   //   icon: 'fa fa-money',

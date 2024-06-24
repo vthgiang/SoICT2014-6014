@@ -131,7 +131,7 @@ import { purchaseOrders } from '../modules/production/order/purchase-order/redux
 import { quotes } from '../modules/production/order/quote/redux/reducers'
 import { salesOrders } from '../modules/production/order/sales-order/redux/reducers'
 import { serviceLevelAgreements } from '../modules/production/order/service-level-agreement/redux/reducers'
-
+import { forecasts } from '../modules/production/order/forecast/redux/reducers'
 
 // plan
 import { plan } from '../modules/plan/redux/reducers'
@@ -361,7 +361,7 @@ const appReducer = combineReducers({
   bankAccounts,
   payments,
   purchaseOrders,
-
+  forecasts,
   // plane
   plan,
 
