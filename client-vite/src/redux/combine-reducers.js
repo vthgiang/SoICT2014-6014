@@ -25,6 +25,7 @@ import { department } from '../modules/super-admin/organizational-unit/redux/red
 import { role } from '../modules/super-admin/role/redux/reducers'
 import { system } from '../modules/super-admin/system/redux/reducers'
 import { user } from '../modules/super-admin/user/redux/reducers'
+import { service } from '../modules/super-admin/service/redux/reducers'
 import { attribute } from '../modules/super-admin/attribute/redux/reducers'
 import { policy } from '../modules/super-admin/policy/redux/reducers'
 import { policyDelegation } from '../modules/super-admin/policy-delegation/redux/reducers'
@@ -229,6 +230,7 @@ const appReducer = combineReducers({
   // admin
   system,
   user,
+  service,
   role,
   link,
   attribute,
