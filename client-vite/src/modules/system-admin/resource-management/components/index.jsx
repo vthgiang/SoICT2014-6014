@@ -18,7 +18,8 @@ function ManageResource(props) {
     page: 1,
     type: ['Link', 'Component', 'SystemApi', 'Task'], // Find all types in default
     value: '',
-    i: 0
+    i: 0,
+    currentRow: {}
   })
 
   const { resource, attribute } = props
@@ -88,8 +89,10 @@ function ManageResource(props) {
 
   // Cac ham xu ly du lieu voi modal
   const handleEdit = async (resource) => {
-    await setState({
+    const newIndex = state.i + resource.attributes.length ?? 0
+    setState({
       ...state,
+      i: newIndex,
       currentRow: resource
     })
     window.$('#modal-edit-resource').modal('show')
@@ -117,7 +120,7 @@ function ManageResource(props) {
     <div className='box' style={{ minHeight: '450px' }}>
       <div className='box-body qlcv'>
         {/* Form hỉnh sửa thông tin   */}
-        {currentRow && <ResourceEditForm resource={currentRow} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />}
+        <ResourceEditForm resource={currentRow} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
         <div className='form-inline' style={{ marginBottom: 15 }}>
           {/* Name */}
