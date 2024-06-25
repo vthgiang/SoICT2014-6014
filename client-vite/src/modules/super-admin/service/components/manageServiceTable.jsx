@@ -25,7 +25,8 @@ function ManageServiceTable(props) {
     page: 1,
     option: 'name', // Mặc định tìm kiếm theo tên
     value: '',
-    i: 0
+    i: 0,
+    currentRow: {}
   })
 
   const getService = (data) => {
