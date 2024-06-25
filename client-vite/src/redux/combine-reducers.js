@@ -10,6 +10,7 @@ import { privilegeApis } from '../modules/system-admin/system-api/system-api-pri
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers'
 import { systemAdminPage, systemPage } from '../modules/system-admin/system-page/redux/reducers'
 import { systemSetting } from '../modules/system-admin/system-setting/redux/reducers'
+import { requester } from '../modules/system-admin/requester-management/redux/reducers'
 import { internalServiceIdentities } from '../modules/system-admin/internal-service-identity/redux/reducers'
 import { internalPolicies } from '../modules/system-admin/internal-policy/redux/reducers'
 import { externalPolicies } from '../modules/system-admin/external-policy/redux/reducers'
@@ -233,6 +234,7 @@ const appReducer = combineReducers({
   service,
   role,
   link,
+  requester,
   attribute,
   policy,
   policyDelegation,
