@@ -18,7 +18,8 @@ function ManageRequester(props) {
     page: 1,
     type: ['User', 'Service'], // Find all types in default
     value: '',
-    i: 0
+    i: 0,
+    currentRow: {}
   })
 
   const { requester, attribute } = props
@@ -88,8 +89,10 @@ function ManageRequester(props) {
 
   // Cac ham xu ly du lieu voi modal
   const handleEdit = async (requester) => {
-    await setState({
+    const newIndex = state.i + requester.attributes.length ?? 0
+    setState({
       ...state,
+      i: newIndex,
       currentRow: requester
     })
     window.$('#modal-edit-requester').modal('show')
@@ -109,7 +112,7 @@ function ManageRequester(props) {
     <div className='box' style={{ minHeight: '450px' }}>
       <div className='box-body qlcv'>
         {/* Form hỉnh sửa thông tin   */}
-        {currentRow && <RequesterEditForm requester={currentRow} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />}
+        <RequesterEditForm requester={currentRow} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
         <div className='form-inline' style={{ marginBottom: 15 }}>
           {/* Name */}
