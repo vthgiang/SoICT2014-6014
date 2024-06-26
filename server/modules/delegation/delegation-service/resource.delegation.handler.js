@@ -81,7 +81,7 @@ Object.assign(ResourceDelegationHandler.prototype, {
         //     throw ["delegator_can_not_access_resources"];
         // }
 
-        // this.checkDelegationPolicy(policy, delegator, delegatee, delegateObject);
+        await this.checkDelegationPolicy(portal, policy, delegator, delegatee, delegateObject);
 
         const newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
             name: data.name,

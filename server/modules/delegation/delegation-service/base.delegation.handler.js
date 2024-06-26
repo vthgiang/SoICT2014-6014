@@ -3,14 +3,15 @@ const {
     Resource,
     Requester,
     DynamicAssignment,
-    DelegationPolicy
+    DelegationPolicy,
+    Attribute
 } = require('../../../models');
 const {
     connect,
 } = require(`../../../helpers/dbHelper`);
 const { isToday, compareDate } = require('../../../helpers/functionHelper');
 const schedule = require('node-schedule');
-const PolicyService = require('../../super-admin/policy/policy.service');
+const PolicyService = require('../policy/policy.service');
 const NotificationServices = require(`../../notification/notification.service`);
 const mongoose = require('mongoose');
 
@@ -27,16 +28,20 @@ function BaseDelegationHandler() {
 Object.assign(BaseDelegationHandler.prototype, {
     constructor: BaseDelegationHandler,
 
-    checkDelegationPolicy: function (policy, delegator, delegatee, delegateObject) {
-        if (PolicyService.ruleCheck([delegator], policy.delegatorRequirements.attributes, policy.delegatorRequirements.rule).length == 0) {
+    checkDelegationPolicy: async function(portal, policy, delegator, delegatee, delegateObject) {
+        const delegationAttributeIds = (await Attribute(connect(DB_CONNECTION, portal))
+            .find({type: {$in: ['Delegation', 'Mixed']}})
+            .select('_id')).map(x => x.id);
+
+        if (PolicyService.ruleCheck(delegationAttributeIds, [delegator], policy.delegatorRequirements.attributes, policy.delegatorRequirements.rule).length == 0) {
             throw ['delegator_invalid_policy']
         }
 
-        if (PolicyService.ruleCheck([delegateObject], policy.delegateObjectRequirements.attributes, policy.delegateObjectRequirements.rule).length == 0) {
+        if (PolicyService.ruleCheck(delegationAttributeIds, [delegateObject], policy.delegateObjectRequirements.attributes, policy.delegateObjectRequirements.rule).length == 0) {
             throw ['resource_invalid_policy']
         }
     
-        if (PolicyService.ruleCheck([delegatee], policy.delegateeRequirements.attributes, policy.delegateeRequirements.rule).length == 0) {
+        if (PolicyService.ruleCheck(delegationAttributeIds, [delegatee], policy.delegateeRequirements.attributes, policy.delegateeRequirements.rule).length == 0) {
             throw ['delegatee_invalid_policy']
         }
     },

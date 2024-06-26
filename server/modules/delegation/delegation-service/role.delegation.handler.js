@@ -86,7 +86,7 @@ Object.assign(RoleDelegationHandler.prototype, {
             throw ["end_date_past"]
         }
 
-        // this.checkDelegationPolicy(policy, delegator, delegatee, delegateRole);
+        await this.checkDelegationPolicy(portal, policy, delegator, delegatee, delegateObject);
 
         const delegatePrivileges = data.allPrivileges ? null
         : await Privilege(connect(DB_CONNECTION, portal))

@@ -129,7 +129,7 @@ Object.assign(TaskDelegationHandler.prototype, {
             throw ["end_date_past"]
         }
 
-        // this.checkDelegationPolicy(policy, delegator, delegatee, delegateTask);
+        await this.checkDelegationPolicy(portal, policy, delegator, delegatee, delegateObject);
 
         const newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
             name: data.name,
