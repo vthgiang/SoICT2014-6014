@@ -41,6 +41,27 @@ exports.find = async (req, res) => {
   }
 }
 
+exports.findAll = async (req, res) => {
+  try {
+    const result = await ResourceService.findAll(req.portal ?? req.header.portal ?? req.body.portal);
+
+    await Logger.info(req.body.email ?? '', 'get_all_resources_success');
+    res.status(200).json({
+        success: true,
+        messages: ['get_all_resources_success'],
+        content: result
+    });
+  } catch (error) {
+    console.log(error)
+    await Logger.error(req.body.email ?? '', 'get_all_resources_faile');
+    res.status(400).json({
+        success: false,
+        messages: Array.isArray(error) ? error : ['get_all_resources_faile'],
+        content: error
+    });
+  }
+}
+
 exports.findOne = async (req, res) => {
   try {
     const result = await ResourceService.findOne(req.portal ?? req.header.portal ?? req.body.portal, req.params.id);

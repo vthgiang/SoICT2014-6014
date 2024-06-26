@@ -26,6 +26,30 @@ function get(params) {
 }
 
 /**
+ * Lấy danh sách tất cả các resources của 1 công ty
+ */
+function getAll() {
+  return (dispatch) => {
+    dispatch({
+      type: ResourceConstants.GET_RESOURCES_REQUEST
+    })
+    ResourceServices.getAll()
+      .then((res) => {
+        dispatch({
+          type: ResourceConstants.GET_RESOURCES_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: ResourceConstants.GET_RESOURCES_FAILE,
+          payload: err
+        })
+      })
+  }
+}
+
+/**
  * Lấy thông tin chi tiết của requester theo id
  * @id id requester
  */
@@ -78,6 +102,7 @@ function edit(id, link) {
 
 export const ResourceActions = {
   get,
+  getAll,
   getById,
   edit
 }

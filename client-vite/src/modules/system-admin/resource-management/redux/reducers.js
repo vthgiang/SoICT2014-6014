@@ -36,7 +36,7 @@ export function resource(state = initState, action) {
     case ResourceConstants.GET_RESOURCES_SUCCESS:
       return {
         ...state,
-        list: action.payload,
+        list: action.payload.data,
         isLoading: false
       }
 

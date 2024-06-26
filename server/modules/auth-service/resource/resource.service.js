@@ -50,6 +50,21 @@ exports.find = async (portal, queryParams = {}) => {
   };
 }
 
+exports.findAll = async (portal) => {
+  const resources = await Resource(connect(DB_CONNECTION, portal)).find();
+
+  return {
+    data: resources.map(x => ({
+      id: x.id,
+      name: x.name,
+      attributes: x.attributes,
+      type: x.type,
+      refId: x.refId
+    }))
+  };
+}
+
+
 const enrich = (resource) => {
   let enrichResource = {
     id: resource.id,

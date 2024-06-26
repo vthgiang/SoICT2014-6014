@@ -13,6 +13,18 @@ function get(params) {
   )
 }
 
+function getAll() {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/resource/resources-all`,
+      method: 'GET'
+    },
+    false,
+    true,
+    'super_admin.resource'
+  )
+}
+
 function getById(id) {
   return sendRequest(
     {
@@ -40,6 +52,7 @@ function edit(id, data) {
 
 export const ResourceServices = {
   get,
+  getAll,
   getById,
   edit
 }
