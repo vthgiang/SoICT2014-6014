@@ -1,7 +1,7 @@
-const { ObjectId } = require("mongodb");
-const mongoose = require("mongoose");
+const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoosePaginate = require("mongoose-paginate-v2");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ResourceSchema = new Schema({
     name: {
@@ -27,7 +27,7 @@ const ResourceSchema = new Schema({
         {
             attributeId: {
                 type: Schema.Types.ObjectId,
-                ref: "Attribute"
+                ref: 'Attribute'
             },
             // thuộc tính của role
             value: String, //giá trị
@@ -42,6 +42,6 @@ const ResourceSchema = new Schema({
 ResourceSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.Resource) return db.model("Resource", ResourceSchema);
+    if (!db.models.Resource) return db.model('Resource', ResourceSchema);
     return db.models.Resource;
 };
