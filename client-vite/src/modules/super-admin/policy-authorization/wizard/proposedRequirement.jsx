@@ -21,8 +21,9 @@ export function ProposedRequirement(props) {
     errorRule: '',
     selectedRule: ''
   })
-  const attributeList = useSelector((x) => x.attribute.lists)
-  const { updateRequirement, selectedObjects, title } = props
+  const { updateRequirement, selectedObjects, title, attributeType } = props
+  const attributeList = useSelector((x) => x.attribute.lists.filter((a) => attributeType.includes(a.type)))
+  const attributeIdList = attributeList.map((x) => x._id)
   const hasEmptyAttributes = (selectedObjects = []) => {
     for (let i = 0; i < selectedObjects.length; i++) {
       if (!selectedObjects[i].attributes || !selectedObjects[i].attributes.length) {
@@ -115,8 +116,12 @@ export function ProposedRequirement(props) {
       errorRule: '',
       selectedRule: ''
     }))
+    const filteredAttributeSelectedObjects = selectedObjects.map(object => ({
+      ...object,
+      attributes: object.attributes.filter((x) => attributeIdList.includes(x.attributeId))
+    }))
     const { canEqual, equalAttributes, canContain, containAttributes, canBelong, belongAttributes } =
-      calculateSuggestRequirement(selectedObjects)
+      calculateSuggestRequirement(filteredAttributeSelectedObjects)
     let selectedRule = ''
     let errorRule = ''
     if (canEqual) {
@@ -145,7 +150,7 @@ export function ProposedRequirement(props) {
       belongAttributes,
       selectedRule,
       errorRule,
-      selectedObjects
+      selectedObjects: filteredAttributeSelectedObjects
     }))
   }, [selectedObjects])
 

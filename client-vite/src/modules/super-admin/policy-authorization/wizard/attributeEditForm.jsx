@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useTranslate } from 'react-redux-multilingual'
 import { RequesterActions } from '../../../system-admin/requester-management/redux/actions'
 import { ResourceActions } from '../../../system-admin/resource-management/redux/actions'
@@ -8,23 +8,32 @@ import { DialogModal, AttributeTable } from '../../../../common-components'
 import ValidationHelper from '../../../../helpers/validationHelper'
 
 export function AttributeEditForm(props) {
-  const [state, setState] = useState({})
+  const [state, setState] = useState({
+    otherTypeAttributes: [] // Delegation attributes of object
+  })
   const dispatch = useDispatch()
   const translate = useTranslate()
 
-  const { object, objectType, i, id } = props
+  const { object, objectType, i, id, attributeType } = props
 
   const editRequester = (id, newObject) => dispatch(RequesterActions.edit(id, newObject))
   const editResource = (id, newObject) => dispatch(ResourceActions.edit(id, newObject))
   const editRole = (id, newObject) => dispatch(RoleActions.editRoleAttribute(id, newObject))
+  const validTypeAttributeIds = useSelector((state) =>
+    state.attribute.lists.filter((x) => attributeType.includes(x.type))
+  ).map((x) => x._id)
+
   useEffect(() => {
     if (object && (object.id !== state.id || object.attributes !== state.attributes)) {
+      const validTypeAttributes = object.attributes.filter((x) => validTypeAttributeIds.includes(x.attributeId))
+      const otherTypeAttributes = object.attributes.filter((x) => !validTypeAttributeIds.includes(x.attributeId))
       setState({
         ...state,
         id: object.id,
         name: object.name,
         type: object.type?.name ?? object.type,
-        attributes: object.attributes.map((a, index) => (a = { ...a, addOrder: index })),
+        attributes: validTypeAttributes,
+        otherTypeAttributes,
         objectType
       })
     }
@@ -64,8 +73,9 @@ export function AttributeEditForm(props) {
   }
 
   const save = () => {
+    const allAttributes = state.attributes.concat(state.otherTypeAttributes)
     const newObject = {
-      attributes: state.attributes.map((x) => ({
+      attributes: allAttributes.map((x) => ({
         attributeId: x.attributeId,
         value: x.value,
         description: x.description
@@ -122,6 +132,7 @@ export function AttributeEditForm(props) {
           translation='manage_requester'
           handleChangeAddRowAttribute={handleChangeAddRowAttribute}
           i={i}
+          attributeType={attributeType}
         />
       </form>
     </DialogModal>

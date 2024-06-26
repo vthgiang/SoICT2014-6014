@@ -15,12 +15,12 @@ export function ChooseResource(props) {
     proposedResourceRule: ''
   })
 
-  const { id, next, openEditAttributes, description, filterObject } = props
+  const { id, next, openEditAttributes, description, filterObject, attributeType } = props
   const allResource = useSelector((x) => x.resource.list)
   const availableResources = allResource.filter(filterObject)
   const resourceLoading = useSelector((x) => x.resource.isLoading)
   const isLoading = useSelector((x) => x.policyAuthorization.isLoading)
-  const attributeList = useSelector((x) => x.attribute.lists)
+  const attributeList = useSelector((x) => x.attribute.lists.filter((x) => attributeType.includes(x.type)))
 
   useEffect(() => {
     setState((state) => ({
@@ -67,7 +67,9 @@ export function ChooseResource(props) {
     let str = ''
     for (let i = 0; i < attributes.length; i++) {
       const attributeName = attributeList.find((x) => x._id === attributes[i].attributeId)?.attributeName
-      str += `${attributeName}: ${attributes[i].value}\n`
+      if (attributeName) {
+        str += `${attributeName}: ${attributes[i].value}\n`
+      }
     }
     return str
   }
@@ -150,6 +152,7 @@ export function ChooseResource(props) {
         selectedObjects={state.selectedResources}
         id={`${id}-proposed_requirement`}
         title={translate('manage_authorization_policy.wizard.resource.proposed_requirement')}
+        attributeType={attributeType}
       />
     </DialogModal>
   )

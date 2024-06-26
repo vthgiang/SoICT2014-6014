@@ -11,7 +11,8 @@ export function AuthorizedObjectTab(props) {
   const allRequester = useSelector((x) => x.requester.list)
   const allResource = useSelector((x) => x.resource.list)
   const allRole = useSelector((x) => x.role.list)
-  const attributeList = useSelector((x) => x.attribute.lists)
+  const attributeList = useSelector((x) => x.attribute.lists.filter((x) => ['Mixed', 'Authorization'].includes(x.type)))
+  const attributeIdList = attributeList.map((x) => x._id)
 
   const ruleCheck = (objects, policyAttributes, policyRule) => {
     let satisfied = []
@@ -25,9 +26,10 @@ export function AuthorizedObjectTab(props) {
     if (policyRule === 'EQUALS') {
       // 2. Với mỗi user lấy ra những element có tập thuộc tính giống hệt trong chính sách (số lượng thuộc tính == và giá trị giống)
       objects.forEach((element) => {
+        const attributes = element.attributes.filter((x) => attributeIdList.includes(x.attributeId.toString()))
         // Kiểm tra length
-        if (element.attributes.length > 0 && element.attributes.length === policyAttributes.length) {
-          element.attributes.forEach((uAttr) => {
+        if (attributes.length > 0 && attributes.length === policyAttributes.length) {
+          attributes.forEach((uAttr) => {
             policyAttributes.forEach((pAttr) => {
               // Kiểm tra id thuộc tính và value
               if (pAttr.attributeId === uAttr.attributeId && pAttr.value === uAttr.value) {
@@ -50,9 +52,10 @@ export function AuthorizedObjectTab(props) {
     if (policyRule === 'BELONGS') {
       // 2. Với mỗi element lấy ra những element mà thuộc tính là tập con thuộc tính trong chính sách (số lượng thuộc tính <= và giá trị giống)
       objects.forEach((element) => {
+        const attributes = element.attributes.filter((x) => attributeIdList.includes(x.attributeId.toString()))
         // Kiểm tra length
-        if (element.attributes.length > 0 && element.attributes.length <= policyAttributes.length) {
-          element.attributes.forEach((uAttr) => {
+        if (attributes.length > 0 && attributes.length <= policyAttributes.length) {
+          attributes.forEach((uAttr) => {
             policyAttributes.forEach((pAttr) => {
               // Kiểm tra id thuộc tính và value
               if (pAttr.attributeId === uAttr.attributeId && pAttr.value === uAttr.value) {
@@ -60,7 +63,7 @@ export function AuthorizedObjectTab(props) {
               }
             })
           })
-          if (count === element.attributes.length) {
+          if (count === attributes.length) {
             // Nếu count == với length element attribute thì add element vào array
             satisfied = [...satisfied, element]
           }
@@ -75,9 +78,10 @@ export function AuthorizedObjectTab(props) {
     if (policyRule === 'CONTAINS') {
       // 2. Với mỗi element lấy ra những element mà thuộc tính là tập cha thuộc tính trong chính sách (số lượng thuộc tính >= và giá trị giống)
       objects.forEach((element) => {
+        const attributes = element.attributes.filter((x) => attributeIdList.includes(x.attributeId.toString()))
         // Kiểm tra length
-        if (element.attributes.length > 0 && element.attributes.length >= policyAttributes.length) {
-          element.attributes.forEach((uAttr) => {
+        if (attributes.length > 0 && attributes.length >= policyAttributes.length) {
+          attributes.forEach((uAttr) => {
             policyAttributes.forEach((pAttr) => {
               // Kiểm tra id thuộc tính và value
               if (pAttr.attributeId === uAttr.attributeId && pAttr.value === uAttr.value) {
@@ -106,10 +110,13 @@ export function AuthorizedObjectTab(props) {
     let str = ''
     for (let i = 0; i < attributes.length; i++) {
       const attributeName = attributeList.find((x) => x._id === attributes[i].attributeId)?.attributeName
-      str += `${attributeName}: ${attributes[i].value}\n`
+      if (attributeName) {
+        str += `${attributeName}: ${attributes[i].value}\n`
+      }
     }
     return str
   }
+  
   return (
     <div id={props.id} className='tab-pane'>
       {/* Authorized requesters */}

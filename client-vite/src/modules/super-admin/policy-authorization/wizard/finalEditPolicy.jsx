@@ -21,7 +21,6 @@ export function FinalEditPolicy(props) {
     }))
   }, [props])
   
-  const attributeList = useSelector((x) => x.attribute.lists)
   const { id, next } = props
   const {
     name,
@@ -80,15 +79,6 @@ export function FinalEditPolicy(props) {
    */
   const save = () => {
     next()
-  }
-
-  const prettyAttributes = (attributes) => {
-    let str = ''
-    for (let i = 0; i < attributes.length; i++) {
-      const attributeName = attributeList.find((x) => x._id === attributes[i].attributeId)?.attributeName
-      str += `${attributeName}: ${attributes[i].value}\n`
-    }
-    return str
   }
 
   return (

@@ -122,6 +122,12 @@ export function PolicyWizard(props) {
     }
   }
   const openEditAttributes = (object, objectType) => {
+    let index = i + 1
+    object?.attributes?.forEach((x) => {
+      x.addOrder = index
+      index += 1
+    })
+    handleChangeAddRowAttribute('i', index)
     setState((state) => ({
       ...state,
       currentObject: object,
@@ -186,6 +192,7 @@ export function PolicyWizard(props) {
         openEditAttributes={openEditAttributes}
         description={requesterDescription}
         filterObject={filterRequester ?? nonFilter}
+        attributeType={['Mixed', 'Authorization']}
       />
       <ChooseResource
         id={`${id}-resource`}
@@ -193,6 +200,7 @@ export function PolicyWizard(props) {
         openEditAttributes={openEditAttributes}
         description={resourceDescription}
         filterObject={filterResource ?? nonFilter}
+        attributeType={['Mixed', 'Authorization']}
       />
       <ChooseRole
         id={`${id}-role`}
@@ -200,6 +208,7 @@ export function PolicyWizard(props) {
         openEditAttributes={openEditAttributes}
         description={roleDescription}
         filterObject={filterRole ?? nonFilter}
+        attributeType={['Mixed', 'Authorization']}
       />
       <FinalEditPolicy
         id={`${id}-finish-policy`}
@@ -228,6 +237,7 @@ export function PolicyWizard(props) {
         i={i}
         handleChange={handleChange}
         handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+        attributeType={['Mixed', 'Authorization']}
       />
     </>
   )

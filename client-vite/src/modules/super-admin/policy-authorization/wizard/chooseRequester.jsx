@@ -15,12 +15,12 @@ export function ChooseRequester(props) {
     proposedRequesterRule: ''
   })
 
-  const { id, next, openEditAttributes, description, filterObject } = props
+  const { id, next, openEditAttributes, description, filterObject, attributeType } = props
   const allRequester = useSelector((x) => x.requester.list)
   const availableRequesters = allRequester.filter(filterObject)
   const requesterLoading = useSelector((x) => x.requester.isLoading)
   const isLoading = useSelector((x) => x.policyAuthorization.isLoading)
-  const attributeList = useSelector((x) => x.attribute.lists)
+  const attributeList = useSelector((x) => x.attribute.lists.filter((x) => attributeType.includes(x.type)))
 
   useEffect(() => {
     setState((state) => ({
@@ -67,7 +67,9 @@ export function ChooseRequester(props) {
     let str = ''
     for (let i = 0; i < attributes.length; i++) {
       const attributeName = attributeList.find((x) => x._id === attributes[i].attributeId)?.attributeName
-      str += `${attributeName}: ${attributes[i].value}\n`
+      if (attributeName) {
+        str += `${attributeName}: ${attributes[i].value}\n`
+      }
     }
     return str
   }
@@ -150,6 +152,7 @@ export function ChooseRequester(props) {
         selectedObjects={state.selectedRequesters}
         id={`${id}-proposed_requirement`}
         title={translate('manage_authorization_policy.wizard.requester.proposed_requirement')}
+        attributeType={attributeType}
       />
     </DialogModal>
   )
