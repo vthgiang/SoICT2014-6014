@@ -269,6 +269,7 @@ const SystemApiManagement = lazy(() => import('../modules/system-admin/system-ap
 const PrivilegeApiManagement = lazy(
   () => import('../modules/system-admin/system-api/system-api-privilege/components/privilegeApiManagement')
 )
+const ManageRequester = lazy(() => import('../modules/system-admin/requester-management/components'))
 const InternalServiceIdentityManagement = lazy(() => import('../modules/system-admin/internal-service-identity/components'))
 const ExternalServiceConsumerManagement = lazy(() => import('../modules/super-admin/external-service-consumer/components'))
 const InternalPolicyManagement = lazy(() => import('../modules/system-admin/internal-policy/components'))
@@ -595,6 +596,29 @@ class Routes extends Component {
             pageName='manage_link'
             layout={Layout}
             component={ManageLink}
+          />
+          <PrivateRoute
+            isLoading={this.props.requester.isLoading}
+            key='requesters-management'
+            arrPage={[
+              {
+                requester: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                requester: '/requesters-management',
+                name: 'manage_requester',
+                icon: 'fa fa-link'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/requesters-management'
+            path='/requesters-management'
+            pageName='manage_requester'
+            layout={Layout}
+            component={ManageRequester}
           />
           <PrivateRoute
             isLoading={this.props.attribute.isLoading}

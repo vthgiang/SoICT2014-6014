@@ -782,6 +782,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/requesters-management',
+        apis: ['@all'],
+    },
+    {
         url: '/attributes-management',
         apis: ['@all'],
     },
