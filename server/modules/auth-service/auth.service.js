@@ -1,5 +1,5 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const Models = require('../../models');
 const { Company, Service } = Models;
 const { connect, initModels } = require(`../../helpers/dbHelper`);
@@ -10,7 +10,7 @@ const { connect, initModels } = require(`../../helpers/dbHelper`);
  */
 exports.login = async (data) => {
     // data bao gom email va password
-    if (!data.portal) throw ["portal_invalid"];
+    if (!data.portal) throw ['portal_invalid'];
 
     let company;
     if (data.portal !== process.env.DB_NAME) {
@@ -19,7 +19,7 @@ exports.login = async (data) => {
         )
             .findOne({ shortName: data.portal })
             .select('_id name shortName active log');
-        if (!company) throw ["portal_invalid"];
+        if (!company) throw ['portal_invalid'];
     }
 
     await initModels(connect(DB_CONNECTION, data.portal), Models);
@@ -33,14 +33,14 @@ exports.login = async (data) => {
     // Lưu log login vào các ủy quyền có delegatee = userId
     // let delegations = await Delegation(connect(DB_CONNECTION, data.portal)).find({ delegatee: user._id });
     // delegations.forEach(async delegation => {
-    //     await DelegationService.saveLog(data.portal, delegation, delegation.delegatee, null, "login", new Date())
+    //     await DelegationService.saveLog(data.portal, delegation, delegation.delegatee, null, 'login', new Date())
     // })
 
 
-    if (!service) throw ["email_password_invalid"];
+    if (!service) throw ['email_password_invalid'];
     const validPass = await bcrypt.compare(data.password, service.password);
     if (!validPass) {
-        throw ["email_password_invalid"];
+        throw ['email_password_invalid'];
     }
 
     const token = await jwt.sign(
@@ -94,7 +94,7 @@ exports.logout = async (portal, id, requestToken) => {
     let service = await Service(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!service?.tokens || !service.tokens.some(x => x == requestToken)) {
-        throw ["token_invalid"];
+        throw ['token_invalid'];
     }
     
     if (service?.tokens?.length) {
@@ -103,7 +103,7 @@ exports.logout = async (portal, id, requestToken) => {
 
     // let delegations = await Delegation(connect(DB_CONNECTION, portal)).find({ delegatee: id });
     // delegations.forEach(async delegation => {
-    //     await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
+    //     await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, 'logout', new Date())
     // })
 
     await service.save();

@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const {
     Service,
 } = require(`../../../models`);
-const bcrypt = require("bcryptjs");
-const generator = require("generate-password");
+const bcrypt = require('bcryptjs');
+const generator = require('generate-password');
 const { connect } = require(`../../../helpers/dbHelper`);
-const { sendEmail } = require("../../../helpers/emailHelper");
+const { sendEmail } = require('../../../helpers/emailHelper');
 
 /**
  * Lấy danh sách services
@@ -20,7 +20,7 @@ exports.getServices = async (portal, query = {}) => {
             ...keySearch,
             email: {
                 $regex: query.email,
-                $options: "i"
+                $options: 'i'
             },
         };
     }
@@ -29,7 +29,7 @@ exports.getServices = async (portal, query = {}) => {
             ...keySearch,
             name: {
                 $regex: query.name,
-                $options: "i"
+                $options: 'i'
             },
         };
     }
@@ -38,7 +38,7 @@ exports.getServices = async (portal, query = {}) => {
         .find(keySearch)
         .skip((page - 1) * perPage)
         .limit(perPage)
-        .select("-password -password2 -status -deleteSoft -tokens");
+        .select('-password -password2 -status -deleteSoft -tokens');
 
     const totalServices = await Service(connect(DB_CONNECTION, portal))
         .countDocuments(keySearch);
@@ -59,15 +59,15 @@ exports.getServices = async (portal, query = {}) => {
 exports.getService = async (portal, id) => {
     var service = await Service(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select("-password -password2 -status -deleteSoft -tokens")
+        .select('-password -password2 -status -deleteSoft -tokens')
         .populate(
             {
-                path: "company",
+                path: 'company',
             },
         );
 
     if (!service) {
-        throw ["service_not_found"];
+        throw ['service_not_found'];
     }
 
     return service;
@@ -100,7 +100,7 @@ exports.createService = async (portal, data, company) => {
     });
 
     if (checkService) {
-        throw ["email_exist"];
+        throw ['email_exist'];
     }
 
     var service = await Service(connect(DB_CONNECTION, portal)).create({
@@ -121,8 +121,8 @@ exports.createService = async (portal, data, company) => {
  * @password của tài khoản đó
  */
 exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
-    let subject = "Xác thực tạo tài khoản trên hệ thống quản lý công việc";
-    let text = "Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : " + email;
+    let subject = 'Xác thực tạo tài khoản trên hệ thống quản lý công việc';
+    let text = 'Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : ' + email;
     let html = `<html>
                 <head>
                     <style>
@@ -168,28 +168,28 @@ exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
                 </head>
                 
                 <body>
-                    <div class="wrapper">
-                        <div class="title">
+                    <div class='wrapper'>
+                        <div class='title'>
                             <h1>${process.env.WEB_NAME}</h1>
                         </div>
-                        <div class="form">
+                        <div class='form'>
                             <p><b>Thông tin tài khoản đăng nhập của bạn: </b></p>
-                            <div class="info">
+                            <div class='info'>
                                 <li>Portal: ${portal}</li>
                                 <li>Tài khoản: ${email}</li>
                                 <li>Mật khẩu: <b>${password}</b></li>
                             </div>
-                            <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
+                            <p>Đăng nhập ngay tại: <a href='${process.env.WEBSITE}/login'>${process.env.WEBSITE}/login</a></p><br />
                 
                             <p><b>Your account information: </b></p>
-                            <div class="info">
+                            <div class='info'>
                                 <li>Portal: ${portal}</li>
                                 <li>Account: ${email}</li>
                                 <li>Password: <b>${password}</b></li>
                             </div>
-                            <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
+                            <p>Login in: <a href='${process.env.WEBSITE}/login'>${process.env.WEBSITE}/login</a></p>
                         </div>
-                        <div class="footer">
+                        <div class='footer'>
                             <p>Copyright by
                                 <i>Công ty Cổ phần Công nghệ
                                     <br />
@@ -208,26 +208,26 @@ exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
  * @newEmail email mới
  */
 exports.sendMailAboutChangeEmailOfServiceAccount = async (oldEmail, newEmail) => {
-    let subject = "Xác thực thay đổi email";
+    let subject = 'Xác thực thay đổi email';
     let text = `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `;
-    let html = "<p>Tài khoản dùng để đăng nhập của bạn là : </p>" +
-        "<ul>" +
-        "<li>Email cũ :" +
+    let html = '<p>Tài khoản dùng để đăng nhập của bạn là : </p>' +
+        '<ul>' +
+        '<li>Email cũ :' +
         oldEmail +
-        "</li>" +
-        "<li>Email mới :" +
+        '</li>' +
+        '<li>Email mới :' +
         newEmail +
-        "</li>" +
-        "</ul>" +
-        "<p>Your account use to login in system : </p>" +
-        "<ul>" +
-        "<li>Old email :" +
+        '</li>' +
+        '</ul>' +
+        '<p>Your account use to login in system : </p>' +
+        '<ul>' +
+        '<li>Old email :' +
         oldEmail +
-        "</li>" +
-        "<li>New email :" +
+        '</li>' +
+        '<li>New email :' +
         newEmail +
-        "</li>" +
-        "</ul>";
+        '</li>' +
+        '</ul>';
 
     return await sendEmail(newEmail, subject, text, html);
 };
@@ -245,30 +245,30 @@ exports.editService = async (portal, id, data) => {
         throw ['servicename_empty'];
     var service = await Service(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select("-password -password2 -status -deleteSoft")
+        .select('-password -password2 -status -deleteSoft')
         .populate([
             {
-                path: "roles",
+                path: 'roles',
                 populate: {
-                    path: "roleId",
+                    path: 'roleId',
                 },
             },
             {
-                path: "company",
+                path: 'company',
             },
         ]);
 
     const name = data.name.trim();
     const email = data.email.trim();
     if (!service) {
-        throw ["service_not_found"];
+        throw ['service_not_found'];
     }
 
     if (service.email !== email) {
         const checkEmail = await Service(connect(DB_CONNECTION, portal)).findOne({
             email: data.email,
         });
-        if (checkEmail !== null) throw ["email_exist"];
+        if (checkEmail !== null) throw ['email_exist'];
         await this.sendMailAboutChangeEmailOfServiceAccount(
             service.email,
             data.email
@@ -355,7 +355,7 @@ exports.sendEmailResetPasswordService = async (portal, email) => {
     service.password = hash;
 
     if (service.password2) {
-        service.password2 = ""
+        service.password2 = ''
         await Service(connect(DB_CONNECTION, portal)).updateOne({
             _id: service._id,
         }, { $set: service })
@@ -410,28 +410,28 @@ exports.sendEmailResetPasswordService = async (portal, email) => {
                 </head>
                 
                 <body>
-                    <div class="wrapper">
-                        <div class="title">
+                    <div class='wrapper'>
+                        <div class='title'>
                             <h1>${process.env.WEB_NAME}</h1>
                         </div>
-                        <div class="form">
+                        <div class='form'>
                             <p><b>Thông tin tài khoản đăng nhập mới của bạn: </b></p>
-                            <div class="info">
+                            <div class='info'>
                                 <li>Portal: ${portal}</li>
                                 <li>Tài khoản: ${email}</li>
                                 <li>Mật khẩu: <b>${password}</b></li>
                             </div>
-                            <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
+                            <p>Đăng nhập ngay tại: <a href='${process.env.WEBSITE}/login'>${process.env.WEBSITE}/login</a></p><br />
                 
                             <p><b>Your account information: </b></p>
-                            <div class="info">
+                            <div class='info'>
                                 <li>Portal: ${portal}</li>
                                 <li>Account: ${email}</li>
                                 <li>Password: <b>${password}</b></li>
                             </div>
-                            <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
+                            <p>Login in: <a href='${process.env.WEBSITE}/login'>${process.env.WEBSITE}/login</a></p>
                         </div>
-                        <div class="footer">
+                        <div class='footer'>
                             <p>Copyright by
                                 <i>Công ty Cổ phần Công nghệ
                                     <br />
@@ -441,7 +441,7 @@ exports.sendEmailResetPasswordService = async (portal, email) => {
                     </div>
                 </body>
         </html>`
-    await sendEmail(email, subject, text, html);
+    sendEmail(email, subject, text, html);
 
     return {
         portal, email

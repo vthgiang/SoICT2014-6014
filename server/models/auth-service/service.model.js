@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoosePaginate = require("mongoose-paginate-v2");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ServiceSchema = new Schema({
     name: {
@@ -18,7 +18,7 @@ const ServiceSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: "Company",
+        ref: 'Company',
     },
     active: {
         type: Boolean,
@@ -47,6 +47,6 @@ const ServiceSchema = new Schema({
 ServiceSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.Service) return db.model("Service", ServiceSchema);
+    if (!db.models.Service) return db.model('Service', ServiceSchema);
     return db.models.Service;
 };
