@@ -240,6 +240,11 @@ class SideBar extends Component {
                     path: '/users-management'
                   },
                   {
+                    name: 'menu.manage_service',
+                    icon: 'fa fa-cogs',
+                    path: '/services-management'
+                  },
+                  {
                     name: 'menu.manage_role',
                     icon: 'fa fa-lock',
                     path: '/roles-management'

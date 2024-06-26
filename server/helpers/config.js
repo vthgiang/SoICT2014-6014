@@ -373,6 +373,13 @@ const LINKS = [
     components: getComponentsInLink("/users-management"),
   },
   {
+      url: "/services-management",
+      description: "Quản lý dịch vụ",
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink('/services-management'),
+  },
+  {
     url: "/roles-management",
     description: "Quản lý phân quyền",
     category: LINK_CATEGORY.RBAC.name,

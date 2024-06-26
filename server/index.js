@@ -39,6 +39,7 @@ app.use('/upload/user-guide/bill', express.static('upload/user-guide/bill'));
 const router = express.Router();
 
 router.use('/auth', require('./modules/auth/auth.route'));
+router.use('/auth-service', require('./modules/auth-service/auth.route'));
 
 router.use('/annualLeave', require('./modules/human-resource/annual-leave/annualLeave.route'));
 router.use('/commendation', require('./modules/human-resource/commendation/commendation.route'));
@@ -77,6 +78,7 @@ router.use('/configuration', require('./modules/super-admin/module-configuration
 
 router.use('/system', require('./modules/super-admin/system/system.route'));
 router.use('/user', require('./modules/super-admin/user/user.route'));
+router.use('/service', require('./modules/super-admin/service/service.route'));
 router.use('/role', require('./modules/super-admin/role/role.route'));
 router.use('/component', require('./modules/super-admin/component/component.route'));
 router.use('/link', require('./modules/super-admin/link/link.route'));

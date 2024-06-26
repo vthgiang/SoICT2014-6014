@@ -49,6 +49,7 @@ const TrainingPlan = lazy(() => import('../modules/training/course/components/co
 const CourseOfUser = lazy(() => import('../modules/training/course/user/components/course'))
 
 const ManageUser = lazy(() => import('../modules/super-admin/user/components'))
+const ManageService = lazy(() => import('../modules/super-admin/service/components'))
 const ManageRole = lazy(() => import('../modules/super-admin/role/components'))
 const ManageLink = lazy(() => import('../modules/super-admin/link/components'))
 const ManageAttribute = lazy(() => import('../modules/super-admin/attribute/components'))
@@ -525,6 +526,29 @@ class Routes extends Component {
             pageName='manage_user'
             layout={Layout}
             component={ManageUser}
+          />
+          <PrivateRoute
+            isLoading={this.props.service.isLoading}
+            key='services-management'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/services-management',
+                name: 'manage_service',
+                icon: 'fa fa-cogs'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/services-management'
+            path='/services-management'
+            pageName='manage_service'
+            layout={Layout}
+            component={ManageService}
           />
           <PrivateRoute
             isLoading={this.props.role.isLoading}
