@@ -2,7 +2,8 @@ const {
     AuthorizationPolicy,
     Requester,
     Resource,
-    DynamicAssignment
+    DynamicAssignment,
+    Attribute
 } = require('../../../models');
 
 const {
@@ -111,8 +112,12 @@ exports.cacheAuthorization = async (portal, policyId) => {
     const requesters = await Requester(connect(DB_CONNECTION, portal)).find();
     const resources = await Resource(connect(DB_CONNECTION, portal)).find();
 
-    let satisfiedRequesters = this.ruleCheck(requesters, policy.requesterRequirements.attributes, policy.requesterRequirements.rule);
-    let satisfiedResources = this.ruleCheck(resources, policy.resourceRequirements.attributes, policy.resourceRequirements.rule);
+    const authorizationAttributeIds = (await Attribute(connect(DB_CONNECTION, portal))
+        .find({type: {$in: ['Authorization', 'Mixed']}})
+        .select('_id')).map(x => x.id);
+
+    let satisfiedRequesters = this.ruleCheck(authorizationAttributeIds, requesters, policy.requesterRequirements.attributes, policy.requesterRequirements.rule);
+    let satisfiedResources = this.ruleCheck(authorizationAttributeIds, resources, policy.resourceRequirements.attributes, policy.resourceRequirements.rule);
 
     await DynamicAssignment(connect(DB_CONNECTION, portal)).create({
         policyId: policy._id,
@@ -248,7 +253,7 @@ exports.deletePolicies = async (portal, policyIds) => {
  * @policyAttributes thuộc tính set trong policy
  * @policyRule rule check set trong policy
  */
-exports.ruleCheck = (input, policyAttributes, policyRule) => {
+exports.ruleCheck = (authorizationAttributeIds, input, policyAttributes, policyRule) => {
     let satisfied = [];
     let count = 0;
 
@@ -257,11 +262,12 @@ exports.ruleCheck = (input, policyAttributes, policyRule) => {
     if (policyRule == 'EQUALS') {
         // 2. Với mỗi user lấy ra những element có tập thuộc tính giống hệt trong chính sách (số lượng thuộc tính == và giá trị giống) 
         input.forEach((element) => {
+            const attributes = element.attributes.filter((x) => authorizationAttributeIds.includes(x.attributeId.toString()));
             // Kiểm tra length
-            if (element.attributes.length > 0
-                && element.attributes.length == policyAttributes.length
+            if (attributes.length > 0
+                && attributes.length == policyAttributes.length
             ) {
-                element.attributes.forEach((uAttr) => {
+                attributes.forEach((uAttr) => {
                     policyAttributes.forEach((pAttr) => {
                         // Kiểm tra id thuộc tính và value
                         if (pAttr.attributeId.equals(uAttr.attributeId) && pAttr.value == uAttr.value) {
@@ -286,9 +292,10 @@ exports.ruleCheck = (input, policyAttributes, policyRule) => {
     if (policyRule == 'BELONGS') {
         // 2. Với mỗi element lấy ra những element mà thuộc tính là tập con thuộc tính trong chính sách (số lượng thuộc tính <= và giá trị giống) 
         input.forEach((element) => {
+            const attributes = element.attributes.filter((x) => authorizationAttributeIds.includes(x.attributeId.toString()));
             // Kiểm tra length
-            if (element.attributes.length > 0 && element.attributes.length <= policyAttributes.length) {
-                element.attributes.forEach((uAttr) => {
+            if (attributes.length > 0 && attributes.length <= policyAttributes.length) {
+                attributes.forEach((uAttr) => {
                     policyAttributes.forEach((pAttr) => {
                         // Kiểm tra id thuộc tính và value
                         if (pAttr.attributeId.equals(uAttr.attributeId) && pAttr.value == uAttr.value) {
@@ -296,7 +303,7 @@ exports.ruleCheck = (input, policyAttributes, policyRule) => {
                         }
                     })
                 })
-                if (count == element.attributes.length) {
+                if (count == attributes.length) {
                     // Nếu count == với length element attribute thì add element vào array
                     satisfied = [...satisfied, element]
                 }
@@ -312,9 +319,10 @@ exports.ruleCheck = (input, policyAttributes, policyRule) => {
     if (policyRule == 'CONTAINS') {
         // 2. Với mỗi element lấy ra những element mà thuộc tính là tập cha thuộc tính trong chính sách (số lượng thuộc tính >= và giá trị giống) 
         input.forEach((element) => {
+            const attributes = element.attributes.filter((x) => authorizationAttributeIds.includes(x.attributeId.toString()));
             // Kiểm tra length
-            if (element.attributes.length > 0 && element.attributes.length >= policyAttributes.length) {
-                element.attributes.forEach((uAttr) => {
+            if (attributes.length > 0 && attributes.length >= policyAttributes.length) {
+                attributes.forEach((uAttr) => {
                     policyAttributes.forEach((pAttr) => {
                         // Kiểm tra id thuộc tính và value
                         if (pAttr.attributeId.equals(uAttr.attributeId) && pAttr.value == uAttr.value) {
