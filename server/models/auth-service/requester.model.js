@@ -1,13 +1,13 @@
-const { ObjectId } = require("mongodb");
-const mongoose = require("mongoose");
+const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoosePaginate = require("mongoose-paginate-v2");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const RequesterSchema = new Schema({
     // credentials: [{
     //     protocol: {
     //         type: String,
-    //         default: "login"
+    //         default: 'login'
     //     },
     //     token: String,
     // }],
@@ -27,7 +27,7 @@ const RequesterSchema = new Schema({
         {
             attributeId: {
                 type: Schema.Types.ObjectId,
-                ref: "Attribute"
+                ref: 'Attribute'
             },
             // thuộc tính của role
             value: String, //giá trị
@@ -42,6 +42,6 @@ const RequesterSchema = new Schema({
 RequesterSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.Requester) return db.model("Requester", RequesterSchema);
+    if (!db.models.Requester) return db.model('Requester', RequesterSchema);
     return db.models.Requester;
 };

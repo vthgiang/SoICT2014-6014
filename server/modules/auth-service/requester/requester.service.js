@@ -21,7 +21,7 @@ exports.find = async (portal, queryParams = {}) => {
         ...query,
         name: {
           $regex: queryParams.name,
-          $options: "i"
+          $options: 'i'
         },
       };
     }
