@@ -1,5 +1,6 @@
 const {
-    DelegationPolicy
+    DelegationPolicy,
+    Delegation
 } = require('../../../models');
 
 const {
@@ -130,7 +131,13 @@ exports.getPolicyById = async (portal, id) => {
 
 exports.getDetailedPolicyById = async (portal, id) => {
     const policy = await DelegationPolicy(connect(DB_CONNECTION, portal)).findById({ _id: id });
-    const delegations = await Delegation(connect(DB_CONNECTION, portal)).find({ policy: id }).select('name description status');
+    const delegations = 
+        await Delegation(connect(DB_CONNECTION, portal)).find({ policy: id })
+            .populate([
+                { path: 'delegateObject', select: '_id name' },
+                { path: 'delegatee', select: '_id name' },
+                { path: 'delegator', select: '_id name' }
+            ]);
 
     return {
         id: policy.id,
@@ -181,7 +188,7 @@ exports.editPolicy = async (portal, id, data) => {
 exports.deletePolicies = async (portal, policyIds) => {
     const delegationsHavePolicy = await Delegation(connect(DB_CONNECTION, portal)).exists({ policy: { $in: policyIds } });
 
-    if (delegationsHavePolicy.length > 0) {
+    if (delegationsHavePolicy) {
         throw ['policy_delegation_exist']
     }
 
