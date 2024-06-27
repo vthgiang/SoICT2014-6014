@@ -353,3 +353,11 @@ exports.cleanAuthorizationPolicy = async (portal, policyId) => {
     await DynamicAssignment(connect(DB_CONNECTION, portal))
         .deleteMany({ policyId: policyId })
 }
+
+exports.checkAllPolicies = async (portal) => {
+    const allPolicies = await AuthorizationPolicy(connect(DB_CONNECTION, portal)).find();
+    allPolicies.map(p => p._id).forEach(async policyId => {
+        await this.cleanAuthorizationPolicy(portal, policyId)
+        await this.cacheAuthorization(portal, policyId)
+    })
+}

@@ -131,6 +131,8 @@ exports.updateAttributes = async (portal, id, data) => {
     { new: true }
   );
 
+  await AuthorizationPolicyService.checkAllPolicies(portal);
+
   return {
     id: requester.id,
     name: requester.name,
