@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { connect, useDispatch, useSelector } from 'react-redux'
-import withTranslate from 'react-redux-multilingual/lib/withTranslate'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import './policyAttributeTable.css'
 
 import { useTranslate } from 'react-redux-multilingual'
@@ -19,6 +18,34 @@ export function PolicyDetailInfo(props) {
     }
   }, [props.policyID])
 
+  const formatStatus = (translate, data) => {
+    if (data === 'pending') return translate('manage_delegation.pending')
+    if (data === 'declined') return translate('manage_delegation.declined')
+    if (data === 'confirmed') return translate('manage_delegation.confirmed')
+    if (data === 'revoked') return translate('manage_delegation.revoked')
+    if (data === 'activated') return translate('manage_delegation.activated')
+    if (data === 'wait_confirm') return translate('manage_delegation.wait_confirm')
+  }
+
+  const colorfyDelegationStatus = (status, translate) => {
+    let statusColor = ''
+    switch (status) {
+      case 'pending':
+        statusColor = '#db8b0b'
+        break
+      case 'revoked':
+        statusColor = '#e34724'
+        break
+      case 'activated':
+        statusColor = '#31b337'
+        break
+      default:
+        statusColor = '#4b76cd'
+    }
+
+    return <span style={{ color: statusColor }}>{formatStatus(translate, status)}</span>
+  }
+
   const {
     name,
     description,
@@ -26,7 +53,7 @@ export function PolicyDetailInfo(props) {
     delegateObjectRequirements,
     delegateeRequirements,
     environmentRequirements,
-    delegation
+    delegations
   } = policyDelegation.detailedPolicy
 
   const delegatorAttributes = delegatorRequirements?.attributes
@@ -37,26 +64,6 @@ export function PolicyDetailInfo(props) {
   const delegateObjectRule = delegateObjectRequirements?.rule
   const delegateeRule = delegateeRequirements?.rule
   const environmentRule = environmentRequirements?.rule
-  const authorizedRequesters = delegation?.delegators
-  const authorizedResources = delegation?.delegatees
-
-  const prettyAttributes = (attributes) => {
-    let str = ''
-    const attributeList = attribute.lists
-    for (let i = 0; i < attributes.length; i++) {
-      const attributeName = attributeList.find((x) => x._id === attributes[i].attributeId)?.attributeName
-      str += `${attributeName}: ${attributes[i].value}\n`
-    }
-    return str.trim()
-  }
-
-  const prettyAdditionalInfo = (additionalInfo) => {
-    let str = ''
-    for (const k in additionalInfo) {
-      str += `${k}: ${additionalInfo[k]}\n`
-    }
-    return str.trim()
-  }
 
   return (
     <DialogModal
@@ -141,7 +148,9 @@ export function PolicyDetailInfo(props) {
                       })}
 
                   <tr>
-                    <td rowSpan={!delegateObjectAttributes || delegateObjectAttributes.length == 0 ? 1 : delegateObjectAttributes.length + 1}>
+                    <td
+                      rowSpan={!delegateObjectAttributes || delegateObjectAttributes.length == 0 ? 1 : delegateObjectAttributes.length + 1}
+                    >
                       {translate('manage_delegation_policy.delegate_object_table')}
                     </td>
                     {!delegateObjectAttributes || delegateObjectAttributes.length == 0 ? (
@@ -217,7 +226,47 @@ export function PolicyDetailInfo(props) {
           </div>
 
           <div id='delegated_information' className='tab-pane'>
-            Implement later
+            <table className='table table-bordered policy-attribute-table not-sort'>
+              <thead>
+                <tr>
+                  <th style={{ width: '16%' }}>
+                    <label>{translate('manage_delegation.name')}</label>
+                  </th>
+                  <th style={{ width: '16%' }}>
+                    <label>{translate('manage_delegation.delegateType')}</label>
+                  </th>
+                  <th style={{ width: '16%' }}>
+                    <label>{translate('manage_delegation.delegator')}</label>
+                  </th>
+                  <th style={{ width: '16%' }}>
+                    <label>{translate('manage_delegation.delegateObject')}</label>
+                  </th>
+                  <th style={{ width: '16%' }}>
+                    <label>{translate('manage_delegation.delegatee')}</label>
+                  </th>
+                  <th style={{ width: '16%' }}>
+                    <label>{translate('manage_delegation.delegateStatus')}</label>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {delegations &&
+                  delegations.map((x) => {
+                    return (
+                      <tr>
+                        <td>{x.name}</td>
+                        <td>{x.delegateObjectType}</td>
+                        <td>{x.delegator.name}</td>
+                        <td>{x.delegateObject.name}</td>
+                        <td>{x.delegatee.name}</td>
+                        <td>
+                          {colorfyDelegationStatus(x.status, translate)} - {colorfyDelegationStatus(x.replyStatus, translate)}
+                        </td>
+                      </tr>
+                    )
+                  })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
