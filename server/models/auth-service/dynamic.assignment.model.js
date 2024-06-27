@@ -1,26 +1,26 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const DynamicAssignmentSchema = new Schema({
     policyId: {
         type: Schema.Types.ObjectId,
-        ref: "AuthorizationPolicy"
+        ref: 'AuthorizationPolicy'
     },
     delegationId: {
         type: Schema.Types.ObjectId,
-        ref: "Delegation"
+        ref: 'Delegation'
     },
     requesterIds: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Requester"
+            ref: 'Requester'
         },
     ],
     resourceIds: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Resource"
+            ref: 'Resource'
         },
     ]
 }, {

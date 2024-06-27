@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
@@ -25,7 +25,7 @@ const AuthorizationPolicySchema = new Schema({
             {
                 attributeId: {
                     type: Schema.Types.ObjectId,
-                    ref: "Attribute"
+                    ref: 'Attribute'
                 },
                 value: String,
             }
@@ -39,7 +39,7 @@ const AuthorizationPolicySchema = new Schema({
             {
                 attributeId: {
                     type: Schema.Types.ObjectId,
-                    ref: "Attribute"
+                    ref: 'Attribute'
                 },
                 value: String,
             }
@@ -53,7 +53,7 @@ const AuthorizationPolicySchema = new Schema({
             {
                 attributeId: {
                     type: Schema.Types.ObjectId,
-                    ref: "Attribute"
+                    ref: 'Attribute'
                 },
                 value: String,
             }
@@ -67,7 +67,7 @@ const AuthorizationPolicySchema = new Schema({
             {
                 attributeId: {
                     type: Schema.Types.ObjectId,
-                    ref: "Attribute"
+                    ref: 'Attribute'
                 },
                 value: String,
             }

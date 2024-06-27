@@ -217,12 +217,6 @@ export function PolicyTable() {
             >
               {translate('manage_authorization_policy.add')}
             </button>
-            {/* <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-policy-hooks').modal('show')} title={translate('manage_authorization_policy.add_one_policy')}>
-                                {translate('manage_authorization_policy.add_policy')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-policy-hooks').modal('show')} title={translate('manage_authorization_policy.add_multi_policy')}>
-                                {translate('human_resource.salary.add_import')}</a></li>
-                        </ul> */}
           </div>
           {selectedData?.length > 0 && (
             <button
