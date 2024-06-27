@@ -71,7 +71,7 @@ const syncDBAuth = async () => {
      * 1.3. Lấy dữ liệu về công ty VNIST trong database của hệ thống
      */
     const vnist = await Company(systemDB).findOne({
-        shortName: "vnist",
+        shortName: 'vnist',
     });
 
     vnistDB.dropCollection('resources')
@@ -162,26 +162,26 @@ const syncDBAuth = async () => {
 
     // init new Services
     const salt = await bcrypt.genSaltSync(10);
-    const hash = await bcrypt.hashSync("vnist123@", salt);
+    const hash = await bcrypt.hashSync('vnist123@', salt);
     await Service(vnistDB).insertMany([
         {
           // 1
-          name: "Task Service",
-          email: "task.service@vnist.com",
+          name: 'Task Service',
+          email: 'task.service@vnist.com',
           password: hash,
           company: vnist._id,
         },
         {
           // 2
-          name: "User Service",
-          email: "user.service@vnist.com",
+          name: 'User Service',
+          email: 'user.service@vnist.com',
           password: hash,
           company: vnist._id,
         },
         {
           // 3
-          name: "Google Service",
-          email: "google.service@vnist.com",
+          name: 'Google Service',
+          email: 'google.service@vnist.com',
           password: hash,
           company: vnist._id,
         },

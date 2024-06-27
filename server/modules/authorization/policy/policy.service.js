@@ -17,7 +17,7 @@ const filterValidAttributeArray = async (array) => {
     let resArray = [];
     if (array.length > 0) {
 
-        if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+        if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, '')))).size !== array.length) {
             throw ['attribute_selected_duplicate'];
         }
 
@@ -128,7 +128,7 @@ exports.getPolicies = async (portal, data) => {
         keySearch = {
             name: {
                 $regex: data.name,
-                $options: "i"
+                $options: 'i'
             }
         }
     }
@@ -197,7 +197,7 @@ exports.editPolicy = async (portal, id, data) => {
         throw [`policy_${id}_not_found`];
     }
 
-    if (oldPolicy.name.trim().toLowerCase().replace(/ /g, "") !== data.name.trim().toLowerCase().replace(/ /g, "")) {
+    if (oldPolicy.name.trim().toLowerCase().replace(/ /g, '') !== data.name.trim().toLowerCase().replace(/ /g, '')) {
         const check = await AuthorizationPolicy(connect(DB_CONNECTION, portal)).exists({ name: data.name });
         if (check) throw ['policy_name_exist'];
     }
@@ -254,7 +254,7 @@ exports.ruleCheck = (input, policyAttributes, policyRule) => {
 
     // Kiểm tra rule EQUALS
     // 1. Nếu rule là EQUALS
-    if (policyRule == "EQUALS") {
+    if (policyRule == 'EQUALS') {
         // 2. Với mỗi user lấy ra những element có tập thuộc tính giống hệt trong chính sách (số lượng thuộc tính == và giá trị giống) 
         input.forEach((element) => {
             // Kiểm tra length
@@ -283,7 +283,7 @@ exports.ruleCheck = (input, policyAttributes, policyRule) => {
 
     // Kiểm tra rule BELONGS
     // 1. Nếu rule là BELONGS
-    if (policyRule == "BELONGS") {
+    if (policyRule == 'BELONGS') {
         // 2. Với mỗi element lấy ra những element mà thuộc tính là tập con thuộc tính trong chính sách (số lượng thuộc tính <= và giá trị giống) 
         input.forEach((element) => {
             // Kiểm tra length
@@ -309,7 +309,7 @@ exports.ruleCheck = (input, policyAttributes, policyRule) => {
 
     // Kiểm tra rule CONTAINS
     // 1. Nếu rule là CONTAINS
-    if (policyRule == "CONTAINS") {
+    if (policyRule == 'CONTAINS') {
         // 2. Với mỗi element lấy ra những element mà thuộc tính là tập cha thuộc tính trong chính sách (số lượng thuộc tính >= và giá trị giống) 
         input.forEach((element) => {
             // Kiểm tra length
