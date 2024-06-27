@@ -124,7 +124,7 @@ const syncDBAuth = async () => {
     // add apis to Resource
     const apis = await SystemApi(systemDB).find();
     const apiResources = apis.map(x => ({
-        name: x.path,
+        name: `${x.path} - ${x.method}`,
         refId: x._id,
         type: 'SystemApi',
         owner: superAdmin._id,
@@ -133,7 +133,6 @@ const syncDBAuth = async () => {
     }));
     
     await Resource(vnistDB).insertMany(apiResources);
-    await SystemApi(vnistDB).insertMany(apis);
 
     // add tasks to Resource
     const tasks = await Task(vnistDB).find();
