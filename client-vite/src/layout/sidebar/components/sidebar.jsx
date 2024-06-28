@@ -290,7 +290,11 @@ class SideBar extends Component {
                       }
                     ]
                   },
-
+                  {
+                    name: 'menu.authorization_logging',
+                    icon: 'fa fa-link',
+                    path: '/authorization-logging'
+                  },
                   {
                     name: 'menu.manage_api',
                     icon: 'fa fa-link',

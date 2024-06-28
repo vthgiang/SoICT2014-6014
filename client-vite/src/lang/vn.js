@@ -122,6 +122,7 @@ export default {
       manage_policy_authorization: 'Chính sách phân quyền',
       manage_policy_authorization_v2: 'Chính sách phân quyền v2',
       manage_policy_delegation: 'Chính sách ủy quyền',
+      authorization_logging: 'Log phân quyền',
       manage_component: 'Quản lý phân quyền trên các trang',
       manage_internal_service_identity: 'Quản lý dịch vụ',
       manage_internal_policies: 'Quản lý chính sách phân quyền dịch vụ nội bộ',
@@ -1060,6 +1061,17 @@ export default {
           status: 'Trạng thái',
           payload: 'Dữ liệu',
           timestamp: 'Thời gian'
+        }
+      },
+
+      authorization_logging: {
+        table: {
+          index: 'STT',
+          requester: 'Người yêu cầu',
+          resource: 'Tài nguyên',
+          status: 'Trạng thái',
+          policy: 'Chính sách',
+          access_time: 'Thời gian truy cập'
         }
       },
 

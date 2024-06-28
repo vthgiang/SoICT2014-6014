@@ -118,6 +118,7 @@ export default {
       manage_policy_authorization: 'Manage Authorization Policies',
       manage_policy_authorization_v2: 'Manage Authorization Policies v2',
       manage_policy_delegation: 'Manage Delegation Policies',
+      authorization_logging: 'Authorization logging',
       manage_component: 'Manage permissions on page',
       manage_internal_service_identity: 'Manage Internal Service Identity',
       manage_internal_policies: 'Manage Internal Policy',
@@ -986,6 +987,17 @@ export default {
           status: 'Status',
           payload: 'Payload',
           timestamp: 'Timestamp'
+        }
+      },
+
+      authorization_logging: {
+        table: {
+          index: 'Index',
+          requester: 'Requester',
+          resource: 'Resource',
+          status: 'Status',
+          policy: 'Policy',
+          access_time: 'Access time'
         }
       },
 

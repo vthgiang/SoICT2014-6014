@@ -2,46 +2,54 @@ const {
   connect
 } = require(`../../../helpers/dbHelper`)
 
-const { LoggingRecord } = require("../../../models");
+const { AuthorizationAccessLog } = require("../../../models");
 
 
-exports.create = (portal, type, status, target, payload) => {
-  return LoggingRecord(connect(DB_CONNECTION, portal)).create({
-    type: type,
-    status: status,
-    target: target,
-    payload: payload,
-    timestamp: new Date(),
+exports.create = (portal, requesterId, resourceId, accessStatus, policyId) => {
+  AuthorizationAccessLog(connect(DB_CONNECTION, portal)).create({
+    requesterId,
+    resourceId,
+    accessStatus,
+    policyId
   });
 }
 
-exports.findAll = async (portal, queryParams = {}) => {
+exports.getLogs = async (portal, queryParams = {}) => {
   let query = {};
-  const { page, perPage } = queryParams;
+  const page = queryParams?.page ? Number(queryParams.page) : 1;
+  const perPage = queryParams?.perPage ? Number(queryParams?.perPage) : 20;
 
   if (queryParams) {
-    if (queryParams.type) {
+    if (queryParams.accessStatus) {
       query = {
         ...query,
-        type: queryParams.type,
+        accessStatus: {$in: queryParams.accessStatus}
       };
     }
 
-    if (queryParams.target) {
+    if (queryParams.requesterId) {
       query = {
         ...query,
-        target: queryParams.target,
+        requesterId: queryParams.requesterId,
+      };
+    }
+
+    if (queryParams.resourceId) {
+      query = {
+        ...query,
+        resourceId: queryParams.resourceId,
       };
     }
   }
 
-  const loggingRecords = await LoggingRecord(connect(DB_CONNECTION, portal))
+  const loggingRecords = await AuthorizationAccessLog(connect(DB_CONNECTION, portal))
     .find(query)
-    .skip(page)
+    .skip((page - 1) * perPage)
     .limit(perPage)
-    .sort({ timestamp: 'desc' });
+    .sort({ accessTime: 'desc' })
+    .populate('requesterId resourceId policyId');
 
-  const totalLoggingRecords = await LoggingRecord(connect(DB_CONNECTION, portal)).countDocuments(query);
+  const totalLoggingRecords = await AuthorizationAccessLog(connect(DB_CONNECTION, portal)).countDocuments(query);
   const totalPages = perPage ? Math.ceil(totalLoggingRecords / perPage) : 1;
 
   return {
