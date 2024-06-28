@@ -17,6 +17,18 @@ function getPolicies(queryData) {
   )
 }
 
+function getAllPolicies() {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/authorization/policy/policies-all`,
+      method: 'GET'
+    },
+    false,
+    true,
+    'super_admin.policy'
+  )
+}
+
 function deletePolicies(data) {
   return sendRequest(
     {
@@ -84,6 +96,7 @@ function getDetailedPolicyById(id) {
 
 export const policyServices = {
   getPolicies,
+  getAllPolicies,
   deletePolicies,
   createPolicy,
   editPolicy,

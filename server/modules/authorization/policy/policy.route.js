@@ -4,6 +4,7 @@ const PolicyController = require('./policy.controller');
 const { auth } = require(`../../../middleware`);
 
 router.get('/policies', auth, PolicyController.getPolicies);
+router.get('/policies-all', auth, PolicyController.getAllPolicies);
 router.get('/policies/:id', auth, PolicyController.getPolicyById);
 router.get('/detail/:id', auth, PolicyController.getDetailedPolicyById);
 router.post('/policies', auth, PolicyController.createPolicy);

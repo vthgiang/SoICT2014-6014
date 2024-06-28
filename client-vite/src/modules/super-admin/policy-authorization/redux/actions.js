@@ -4,11 +4,34 @@ import { policyServices } from './services'
 function getPolicies(queryData) {
   return (dispatch) => {
     dispatch({
-      type: policyConstants.GET_ALL_POLICIES_REQUEST
+      type: policyConstants.GET_POLICIES_REQUEST
     })
 
     policyServices
       .getPolicies(queryData)
+      .then((res) => {
+        dispatch({
+          type: policyConstants.GET_POLICIES_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: policyConstants.GET_POLICIES_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+function getAllPolicies() {
+  return (dispatch) => {
+    dispatch({
+      type: policyConstants.GET_ALL_POLICIES_REQUEST
+    })
+
+    policyServices
+      .getAllPolicies()
       .then((res) => {
         dispatch({
           type: policyConstants.GET_ALL_POLICIES_SUCCESS,
@@ -138,6 +161,7 @@ function editPolicy(id, data) {
 
 export const PolicyActions = {
   getPolicies,
+  getAllPolicies,
   deletePolicies,
   createPolicy,
   editPolicy,

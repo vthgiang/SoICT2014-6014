@@ -31,6 +31,30 @@ exports.getPolicies = async (req, res) => {
     try {
         let data = await PolicyService.getPolicies(req.portal, req.query);
 
+        await Log.info(req.user.email, 'GET_POLICIES', req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_policies_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, 'GET_POLICIES', req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ['get_policies_fail'],
+            content: error.message
+        });
+    }
+}
+
+// Lấy ra đầy đủ thông tin tất cả các dịch vụ
+exports.getAllPolicies = async (req, res) => {
+    try {
+        let data = await PolicyService.getPolicies(req.portal, req.query);
+
         await Log.info(req.user.email, 'GET_ALL_POLICIES', req.portal);
 
         res.status(200).json({

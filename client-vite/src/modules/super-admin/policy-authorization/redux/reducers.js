@@ -11,6 +11,7 @@ const findIndex = (array, id) => {
 }
 
 const initialState = {
+  list: [],
   listPaginate: [],
   isLoading: false,
   error: null,
@@ -22,6 +23,7 @@ export function policyAuthorization(state = initialState, action) {
   let index = -1
   switch (action.type) {
     case policyConstants.GET_ALL_POLICIES_REQUEST:
+    case policyConstants.GET_POLICIES_REQUEST:
     case policyConstants.DELETE_POLICY_REQUEST:
     case policyConstants.CREATE_POLICY_REQUEST:
     case policyConstants.EDIT_POLICY_REQUEST:
@@ -32,6 +34,7 @@ export function policyAuthorization(state = initialState, action) {
         isLoading: true
       }
     case policyConstants.GET_ALL_POLICIES_FAILURE:
+    case policyConstants.GET_POLICIES_FAILURE:
     case policyConstants.DELETE_POLICY_FAILURE:
     case policyConstants.CREATE_POLICY_FAILURE:
     case policyConstants.EDIT_POLICY_FAILURE:
@@ -43,6 +46,12 @@ export function policyAuthorization(state = initialState, action) {
         error: action.error
       }
     case policyConstants.GET_ALL_POLICIES_SUCCESS:
+      return {
+        ...state,
+        list: action.payload.data,
+        isLoading: false
+      }
+    case policyConstants.GET_POLICIES_SUCCESS:
       return {
         ...state,
         listPaginate: action.payload.data,
