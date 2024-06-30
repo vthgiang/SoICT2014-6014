@@ -130,37 +130,56 @@ function GeneralStatistic(props) {
     let lists = [];
 
     // const totalPage = example && Math.ceil(requestManagements.totalDocs / perPage);
-
+    const handleChangeModule = (value) => {
+      localStorage.setItem('module-transport', value);
+      if(value == 1){
+        // navigate to transportation dashboard
+        window.location.href = '/transportation-dashboard';
+      }else{
+        window.location.href = '/manage-transport3-dashboard';
+      }
+    }
     return (
         <React.Fragment>
             {/* Chỉ số tổng hợp ở đầu trang */}
             <div className="box-body qlcv">
                 <section>
                     <div className="qlcv" style={{ marginBottom: "10px" }}>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
-                                <DatePicker
-                                    id="monthInTransportationDashboard"
-                                    dateFormat="month-year"
-                                    value={monthToSearch}
-                                    onChange={handleChangeMonthToSearch}
-                                    disabled={false}
-                                />
-                            </div>
-                            <button type="button" className="btn btn-success">{translate('general.search')}</button>
+                      <div className="form-inline">
+                        <div className="form-group">
+                          <label style={{width: 'auto'}}>{translate('kpi.organizational_unit.dashboard.month')}</label>
+                          <DatePicker
+                            id="monthInTransportationDashboard"
+                            dateFormat="month-year"
+                            value={monthToSearch}
+                            onChange={handleChangeMonthToSearch}
+                            disabled={false}
+                          />
                         </div>
+                        <button type="button" className="btn btn-success">{translate('general.search')}</button>
+                        <label style={{width: 'auto', marginLeft: '60%'}}>Chọn module</label>
+                        <SelectBox
+                          id={`select-module-transport`}
+                          className="form-control select2"
+                          style={{width: '100%'}}
+                          items={[{value: '1', text: 'Transportation'}, {value: '2', text: 'Transport 3'}]}
+                          onChange={handleChangeModule}
+                          value={localStorage.getItem('module-transport') ? localStorage.getItem('module-transport') : '1'}
+                          multiple={false}
+                        />
+                      </div>
                     </div>
 
-                    <div className="row">
-                        {/* Số đơn vị con */}
-                        <div className="col-md-3 col-sm-6 form-inline">
-                            <div className="info-box">
-                                <span className="info-box-icon bg-green"><i className="fa fa-shopping-bag" /></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Tổng số</span>
-                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>{totalRequests} đơn</a>
-                                </div>
+                  <div className="row">
+                    {/* Số đơn vị con */}
+                    <div className="col-md-3 col-sm-6 form-inline">
+                      <div className="info-box">
+                        <span className="info-box-icon bg-green"><i className="fa fa-shopping-bag"/></span>
+                        <div className="info-box-content">
+                          <span className="info-box-text">Tổng số</span>
+                          <a className="info-box-number"
+                             style={{cursor: 'pointer', fontSize: '20px'}}>{totalRequests} đơn</a>
+                        </div>
                             </div>
                         </div>
 

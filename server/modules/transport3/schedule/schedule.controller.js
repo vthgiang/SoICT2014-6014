@@ -81,3 +81,20 @@ exports.getOrdersTransporting = async (req, res) => {
     });
   }
 }
+
+exports.getMySchedule = async (req, res) => {
+    try {
+        let schedules = await ScheduleService.getMySchedule(req.portal, req.user);
+        res.status(200).json({
+        schedules,
+        messages: ['Lấy thông tin lịch trình thành công']
+        });
+    } catch (error) {
+        Log.error(`Error while fetching schedules ${error}`);
+        res.status(400).json({
+        messages: [
+            'Lấy thông tin lịch trình thất bại'
+        ]
+        });
+    }
+}

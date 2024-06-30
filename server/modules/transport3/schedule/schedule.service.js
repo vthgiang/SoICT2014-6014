@@ -1,6 +1,6 @@
 const {
   Transport3Schedule,
-  Stock, Role
+  Stock, Role, Employee
 } = require('../../../models');
 
 const {
@@ -20,13 +20,18 @@ exports.getAllSchedule = async (portal, query, currentRole) => {
   return Transport3Schedule(connect(DB_CONNECTION, portal)).find(query)
     .populate('depot')
     .populate({
+      path: 'orders.order',
+      populate: {
+        path: 'customer'
+      }
+    })
+    .populate({
       path: 'vehicles',
       populate: {
         path: 'asset'
       }
     })
-    .populate('employee')
-    .populate('orders');
+    .populate('employee');
 }
 
 // Tạo mới 1 lịch trình
@@ -79,4 +84,24 @@ exports.getOrdersTransporting = async (portal) => {
   let allSchedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({}).populate('orders');
   let list_orders = allSchedule.map(schedule => schedule.orders).flat();
   return list_orders.filter(order => order.status === 2);
+}
+
+exports.getMySchedule = async (portal, user) => {
+  let employee = await Employee(connect(DB_CONNECTION, portal)).findOne({emailInCompany: user.email});
+  let allSchedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({})
+    .populate({
+      path: 'orders.order',
+      populate: {
+        path: 'customer'
+      }
+    })
+    .populate({
+      path: 'vehicles',
+      populate: {
+        path: 'asset'
+      }
+    })
+    .populate('depot');
+  allSchedule = allSchedule.filter(schedule => schedule.employee);
+  return allSchedule.filter(schedule => schedule.employee.includes(employee._id));
 }
