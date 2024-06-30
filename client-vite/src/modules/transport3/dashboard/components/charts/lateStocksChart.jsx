@@ -7,18 +7,39 @@ import moment from 'moment';
 import { DashboardActions } from '../../redux/actions';
 import { withRouter } from 'react-router-dom';
 
-function LateStocks (props) {
+function LateStocks ({monthToSearch}) {
+    const dispatch = useDispatch()
+    const T3Dashboard = useSelector((state) => state.T3dashboard.topLateStocks)
     const LateStocks = useRef(null);
     useEffect(() => {
         barChart();
     });
+    useEffect(() => {
+        const [month, year] = monthToSearch.split('-');
+        dispatch(DashboardActions.getTopLateStocks(month, year))
+    }, [dispatch, monthToSearch]);
+
+    const listStocksName = () => {
+        return T3Dashboard.map(item => item.stockName);
+    };
+
+    const getLateOrderNumber = () => {
+        const arr = ['Số lượng đơn hàng lấy sản phẩm từ kho trễ hạn']
+
+        const lateOrderNumber = T3Dashboard.map((item) => {
+            return item.lateDeliveries
+        })
+
+        return arr.concat(lateOrderNumber)
+    }
     // Khởi tạo BarChart bằng C3
     const barChart = () => {
         let chart = c3.generate({
             bindto: LateStocks.current,
             data: {
                 columns: [
-                    ['Số lượng sản phẩm trễ hạn', 30, 200, 100, 400, 150]
+                    ['Số lượng đơn hàng lấy sản phẩm từ kho trễ hạn', 20, 11]
+                    // getLateOrderNumber()
                 ],
                 type: 'bar',
                 labels: true
@@ -31,7 +52,8 @@ function LateStocks (props) {
             axis: {
                 x: {
                     type: 'category',
-                    categories: ['cat1', 'cat2', 'cat3', 'cat4', 'cat5']
+                    // categories: ['Kho Trần Đại Nghĩa', 'Kho AEON Mall Hà Đông', 'Kho AEON Mall Long Biên', 'Trung tâm cung cấp nông sản Vineco', 'Big C Mê Linh']
+                    categories: listStocksName()
                 },
                 y: {
                     label: '%'

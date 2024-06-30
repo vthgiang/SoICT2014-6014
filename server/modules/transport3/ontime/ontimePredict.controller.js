@@ -136,6 +136,75 @@ exports.getDeliveryLateDayAveragePerMonth = async (req, res) => {
     }
 }
 
+exports.getTopLateDeliveryDay = async (req, res) => {
+    const { month, year } = req.query;
+    try {
+        let data = await OntimePredictService.getTopLateDeliveryDay(req.portal, { month: parseInt(month), year: parseInt(year) });
+        await Log.info(req.user.email, "GET_TOP_LATE_DAY_OF_WEEK", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_late_day_of_week_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_TOP_LATE_DAY_OF_WEEK", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_late_day_of_week_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.getTopLateProducts = async (req, res) => {
+    const { month, year } = req.query;
+    try {
+        let data = await OntimePredictService.getTopLateProducts(req.portal, { month: parseInt(month), year: parseInt(year) });
+        await Log.info(req.user.email, "GET_TOP_LATE_PRODUCTS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_late_products_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_TOP_LATE_PRODUCTS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_late_products_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.getTopLateStocks = async (req, res) => {
+    const { month, year } = req.query;
+    try {
+        let data = await OntimePredictService.getTopLateStocks(req.portal, { month: parseInt(month), year: parseInt(year) });
+        await Log.info(req.user.email, "GET_TOP_LATE_STOCKS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_late_stocks_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_TOP_LATE_STOCKS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_late_stocks_fail"],
+            content: error.message
+        });
+    }
+}
+
 exports.predictOnTimeDelivery = async (req, res) => {
     try {
         let { scheduleId } = req.params;

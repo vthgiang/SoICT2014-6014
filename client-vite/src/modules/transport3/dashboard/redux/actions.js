@@ -74,9 +74,69 @@ const getDeliveryLateDayAveragePerMonth = () => {
   }
 }
 
+const getTopLateDeliveryDay = (month, year) => {
+  return (dispatch) => {
+    dispatch({ type: transportationConstants.GET_TOP_LATE_DELIVERY_DAY })
+    const query = { month, year };
+  DashboardService.getTopLateDeliveryDay(query)
+    .then((response) => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_DELIVERY_DAY_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_DELIVERY_DAY_FAILED
+      })
+    })
+  }
+}
+
+const getTopLateProducts = (month, year) => {
+  return (dispatch) => {
+    dispatch({ type: transportationConstants.GET_TOP_LATE_PRODUCTS })
+    const query = { month, year };
+  DashboardService.getTopLateProducts(query)
+    .then((response) => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_PRODUCTS_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_PRODUCTS_FAILED
+      })
+    })
+  }
+}
+
+const getTopLateStocks = (month, year) => {
+  return (dispatch) => {
+    dispatch({ type: transportationConstants.GET_TOP_LATE_STOCKS })
+    const query = { month, year };
+  DashboardService.getTopLateStocks(query)
+    .then((response) => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_STOCKS_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_STOCKS_FAILED
+      })
+    })
+  }
+}
+
 export const DashboardActions = {
   getOntimeDeliveryRate,
   getOnTimeDeliveryRatesPerMonth,
   getEstimatedOnTimeDeliveryRatesPerMonth,
-  getDeliveryLateDayAveragePerMonth
+  getDeliveryLateDayAveragePerMonth,
+  getTopLateDeliveryDay,
+  getTopLateProducts,
+  getTopLateStocks
 }

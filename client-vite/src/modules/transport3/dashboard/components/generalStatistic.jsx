@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import dayjs from 'dayjs';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 import { DatePicker, SelectBox } from "../../../../common-components";
 import { RequestActions } from "../../../production/common-production/request-management/redux/actions";
 import { ShipperActions } from "../../../transportation/shipper/redux/actions";
 import { vehicleActions } from "../../../transportation/vehicle/redux/actions";
+import { UserActions } from '@modules/super-admin/user/redux/actions'
 import { OrdersInfoChart } from "./charts/ordersInfoChart";
 import { TransportationCostChart } from "./charts/costChart";
 import { OnTimeDeliveryChart } from "./charts/ontimeDeliveryChart";
@@ -14,11 +17,16 @@ import { JourneyActions } from "../../../transportation/scheduling/tracking-rout
 import { DeliveryLateDay } from "./charts/deliveryLateDay";
 import { RouteTable } from "./routeTable";
 import { LateStocks } from "./charts/lateStocksChart";
+import { DayOfWeek } from "./charts/dayOfWeekChart";
 
 function GeneralStatistic(props) {
+    let dispatch = useDispatch()
+    const currentRole = localStorage.getItem('currentRole')
+    const userdepartments = useSelector((state) => state.user.userdepartments)
 
     // Khởi tạo state
     const [state, setState] = useState({
+        currentRole: localStorage.getItem('currentRole'),
         page: 1,
         perPage: 5,
         monthToSearch: dayjs().format("MM-YYYY"),
@@ -40,11 +48,16 @@ function GeneralStatistic(props) {
         notUseVehicle, journeyTotalCostPerDay, isWorkingShipper, notWorkingShipper, totalTransportationCost } = state;
 
     useEffect(() => {
+        const { currentRole } = state
         props.getAllRequestByCondition({ monthToSearch: monthToSearch, requestType: 4 });
         props.getAllVehicle({});
         props.getCostOfAllJourney({});
         props.getAllShipperWithCondition({ page: 1, perPage: 100 });
     }, []);
+
+    useEffect(() => {
+        dispatch(UserActions.getAllUserSameDepartment(currentRole))
+      }, [dispatch])
 
     useEffect(() => {
         if (journey.journeyWithCost) {
@@ -100,7 +113,6 @@ function GeneralStatistic(props) {
 
     useEffect(() => {
         socket.io.on('request status dashboard', data => {
-            console.log(data);
             props.updateRealTimeRequestStatus(data)
         });
         return () => props.socket.io.off('request status dashboard');
@@ -108,7 +120,6 @@ function GeneralStatistic(props) {
 
     useEffect(() => {
         socket.io.on('drivers status dashboard', data => {
-            console.log(data);
             props.updateRealTimeShipperStatus(data)
         });
         return () => props.socket.io.off('drivers status dashboard');
@@ -116,7 +127,6 @@ function GeneralStatistic(props) {
 
     useEffect(() => {
         socket.io.on('vehicles status dashboard', data => {
-            console.log(data);
             props.updateRealTimeVehicleStatus(data)
         });
         return () => props.socket.io.off('vehicles status dashboard');
@@ -131,6 +141,12 @@ function GeneralStatistic(props) {
 
 
     let lists = [];
+    const isManager = () => {
+        if (userdepartments?.managers[currentRole]) {
+          return true
+        }
+        return false
+      }
 
     // const totalPage = example && Math.ceil(requestManagements.totalDocs / perPage);
     const handleChangeModule = (value) => {
@@ -244,15 +260,14 @@ function GeneralStatistic(props) {
                     </div>
                 </section>
             </div>
-            <div className="nav-tabs-custom">
-                <ul className="nav nav-tabs">
-                    <li ><a href="#dashboard-tong-quan" data-toggle="tab"><i className="fa fa-tasks" aria-hidden="true"></i> Dashboard tổng quan</a></li>
-                    <li className="active"><a href="#OTD-model-management-dashboard" data-toggle="tab"><i className="fa fa-calendar" aria-hidden="true"></i>Dashboard quản lý thông tin dự báo</a></li>
-                </ul>
-                <div className="tab-content">
-                    <div className="tab-pane" id="dashboard-tong-quan">
-                        {/* Biểu đồ */}
-                        <div className="row">
+            <Tabs>
+                <TabList>
+                <Tab>Dashboard tổng quan</Tab>
+                <Tab>Dashboard quản lý thông tin dự báo</Tab>
+                </TabList>
+
+                <TabPanel>
+                <div className="row">
                             <div className="col-md-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
@@ -292,9 +307,9 @@ function GeneralStatistic(props) {
                             </div>
                         </div>
                         <RouteTable/>
-                    </div>
-                    <div className="tab-pane active" id="OTD-model-management-dashboard">
-                        <div className="row">
+                </TabPanel>
+                <TabPanel>
+                <div className="row">
                             <div className="col-md-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
@@ -334,33 +349,45 @@ function GeneralStatistic(props) {
                                                         <div className="box-title">TOP sản phẩm thường xuyên bị giao trễ hạn</div>
                                                     </div>
                                                     <div className="box-body">
-                                                        <LateProducts
+                                                        <LateProducts monthToSearch={monthToSearch}
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="col-md-6">
+                                        {isManager() && <div className="col-md-6">
                                             <div className="box-body">
                                                 <div className="box box-primary">
                                                     <div className="box-header">
                                                         <div className="box-title">TOP kho hàng có sản phẩm thường xuyên bị giao trễ hạn</div>
                                                     </div>
                                                     <div className="box-body">
-                                                        <LateStocks
+                                                        <LateStocks monthToSearch={monthToSearch}
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>}
+                                        {!isManager() && <div className="col-md-6">
+                                            <div className="box-body">
+                                                <div className="box box-primary">
+                                                    <div className="box-header">
+                                                        <div className="box-title">TOP ngày trong tuần thường xuyên có đơn hàng bị giao trễ hạn</div>
+                                                    </div>
+                                                    <div className="box-body">
+                                                        <DayOfWeek monthToSearch={monthToSearch}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>}
                                     </div>
                                     
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+                </TabPanel>
+            </Tabs>
         </React.Fragment>
     )
 }

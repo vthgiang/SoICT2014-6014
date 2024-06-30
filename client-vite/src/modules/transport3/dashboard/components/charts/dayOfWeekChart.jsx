@@ -7,24 +7,35 @@ import moment from 'moment';
 import { DashboardActions } from '../../redux/actions';
 import { withRouter } from 'react-router-dom';
 
-function LateProducts ({monthToSearch}) {
+function DayOfWeek ({monthToSearch}) {
     const dispatch = useDispatch()
-    const T3Dashboard = useSelector((state) => state.T3dashboard.topLateProducts)
-    const LateProducts = useRef(null);
+    const T3Dashboard = useSelector((state) => state.T3dashboard.topLateDeliveryDay)
+    const DayOfWeek = useRef(null);
     useEffect(() => {
         barChart();
     });
     useEffect(() => {
         const [month, year] = monthToSearch.split('-');
-        dispatch(DashboardActions.getTopLateProducts(month, year))
+        dispatch(DashboardActions.getTopLateDeliveryDay(month, year))
     }, [dispatch, monthToSearch]);
 
-    const listProductsName = () => {
-        return T3Dashboard.map(item => item.goodName);
+    
+    const dayOfWeekMap = {
+        "0": "Chủ nhật",
+        "1": "Thứ hai",
+        "2": "Thứ ba",
+        "3": "Thứ tư",
+        "4": "Thứ năm",
+        "5": "Thứ sáu",
+        "6": "Thứ bảy"
     };
 
-    const getLateProductNumber = () => {
-        const arr = ['Số lần giao trễ hạn']
+    const listDayOfWeek = () => {
+        return T3Dashboard.map(item => dayOfWeekMap[item.dayOfWeek]);
+    };
+
+    const getLateOrderNumber = () => {
+        const arr = ['Số đơn hàng trễ hạn']
 
         const lateOrderNumber = T3Dashboard.map((item) => {
             return item.lateDeliveries
@@ -35,11 +46,11 @@ function LateProducts ({monthToSearch}) {
     // Khởi tạo BarChart bằng C3
     const barChart = () => {
         let chart = c3.generate({
-            bindto: LateProducts.current,
+            bindto: DayOfWeek.current,
             data: {
                 columns: [
-                    ['Số lần giao trễ hạn', 30, 25, 12, 9, 7]
-                    // getLateProductNumber()
+                    // getLateOrderNumber()
+                    ['Số đơn hàng trễ hạn', 15, 9, 7, 6, 4]
                 ],
                 type: 'bar',
                 labels: true
@@ -52,11 +63,11 @@ function LateProducts ({monthToSearch}) {
             axis: {
                 x: {
                     type: 'category',
-                    categories: ['Mascara Mabeline', 'Bộ chăm sóc da simple', 'Đèn LED trị mụn', 'Máy massage mặt và cổ SKG', 'Bộ dầu gội, xả Pantene Pro - V']
-                    // categories: listProductsName()
+                    // categories: listDayOfWeek()
+                    categories: ['Thứ 6', 'Thứ 2', 'Thứ 3', 'Thứ 5', 'Thứ 4']
                 },
                 y: {
-                    label: 'lần'
+                    label: 'đơn'
                 }, 
                 rotated: true
             },
@@ -82,7 +93,7 @@ function LateProducts ({monthToSearch}) {
 
     return (
         <React.Fragment>
-            <section ref={LateProducts}></section>
+            <section ref={DayOfWeek}></section>
         </React.Fragment>
     );
 }
@@ -91,5 +102,5 @@ function mapState(state) {
     return{}
 }
 
-const connectedLateProducts = connect(mapState)(withTranslate(withRouter(LateProducts)));
-export { connectedLateProducts as LateProducts };
+const connectedDayOfWeek = connect(mapState)(withTranslate(withRouter(DayOfWeek)));
+export { connectedDayOfWeek as DayOfWeek };

@@ -7,7 +7,10 @@ const initialState = {
     totalList: 0,
     onTimeDeliveryData: [],
     estimatedOnTimeDeliveryData: [],
-    deliveryLateDayAverage: []
+    deliveryLateDayAverage: [],
+    topLateDeliveryDay: [],
+    topLateProducts: [],
+    topLateStocks: []
 }
 
 export function dashboard(state = initialState, action) {
@@ -28,16 +31,6 @@ export function dashboard(state = initialState, action) {
                 externalSessionId: action.payload,
                 isLoading: false,
             }
-        // case transportationConstants.GET_ON_TIME_DELIVERY_RATE:
-        //     return {
-        //         ...state,
-        //         isLoading: true
-        //     }
-        // case transportationConstants.GET_ON_TIME_DELIVERY_RATE_SUCCESS:
-        //     return {
-        //         onTimeDeliveryData: action.payload,
-        //         isLoading: false
-        //     }
         case transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH:
             return {
                 ...state,
@@ -72,6 +65,42 @@ export function dashboard(state = initialState, action) {
             return {
                 ...state,
                 deliveryLateDayAverage: action.payload,
+                isLoading: false
+            }
+        case transportationConstants.GET_TOP_LATE_DELIVERY_DAY:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_TOP_LATE_DELIVERY_DAY_SUCCESS:
+            console.log(action.payload)
+            return {
+                ...state,
+                topLateDeliveryDay: action.payload,
+                isLoading: false
+            }
+        case transportationConstants.GET_TOP_LATE_PRODUCTS:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_TOP_LATE_PRODUCTS_SUCCESS:
+            console.log(action.payload)
+            return {
+                ...state,
+                topLateProducts: action.payload,
+                isLoading: false
+            }
+        case transportationConstants.GET_TOP_LATE_STOCKS:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_TOP_LATE_STOCKS_SUCCESS:
+            console.log(action.payload)
+            return {
+                ...state,
+                topLateStocks: action.payload,
                 isLoading: false
             }
         default:

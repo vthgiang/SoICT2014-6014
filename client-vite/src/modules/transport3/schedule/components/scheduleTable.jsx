@@ -202,11 +202,11 @@ function ScheduleTable(props) {
                         data={{id: schedule._id}}
                         // func={handleDeleteVehicle}
                       />
-                      {/*<button*/}
-                      {/*  onClick={()=> handlePredictOntimeDelivery(schedule)}*/}
-                      {/*>*/}
-                      {/*  Dự báo**/}
-                      {/*</button>*/}
+                      <button
+                       onClick={()=> handlePredictOntimeDelivery(schedule)}
+                      >
+                        Dự báo
+                      </button>
                     </td>
                   </td>
                 </tr>

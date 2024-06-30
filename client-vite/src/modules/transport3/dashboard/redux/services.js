@@ -52,9 +52,51 @@ const getDeliveryLateDayAveragePerMonth = (query) => {
   )
 }
 
+const getTopLateDeliveryDay = (query) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/topLateDeliveryDay`,
+      method: 'GET',
+      params: query
+    },
+    false,
+    true,
+    'transport3.ontime'
+  )
+}
+
+const getTopLateProducts = (query) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/topLateProducts`,
+      method: 'GET',
+      params: query
+    },
+    false,
+    true,
+    'transport3.ontime'
+  )
+}
+
+const getTopLateStocks = (query) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/topLateStocks`,
+      method: 'GET',
+      params: query
+    },
+    false,
+    true,
+    'transport3.ontime'
+  )
+}
+
 export const DashboardService = {
   getOntimeDeliveryRate,
   getOnTimeDeliveryRatesPerMonth,
   getEstimatedOnTimeDeliveryRatesPerMonth,
-  getDeliveryLateDayAveragePerMonth
+  getDeliveryLateDayAveragePerMonth,
+  getTopLateDeliveryDay,
+  getTopLateProducts,
+  getTopLateStocks
 }

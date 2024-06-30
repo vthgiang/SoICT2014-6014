@@ -56,7 +56,8 @@ function DeliveryLateDay (props) {
                 x: 'x',
                 columns: [
                     listMonth(),
-                    generateDeliveryLateDayAverage(),
+                    // generateDeliveryLateDayAverage(),
+                    ['deliveryLateDayAverage', 2.5, 1.2, 3.6, 4, 3.2, 3]
                 ],
                 type: 'spline',
                 names: {
@@ -111,7 +112,6 @@ function DeliveryLateDay (props) {
             >
                 Chi tiết
             </button>
-            {/* {console.log(T3Dashboard)} */}
         </React.Fragment>
     );
 }

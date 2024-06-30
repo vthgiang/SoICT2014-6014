@@ -18,7 +18,6 @@ function OnTimeDeliveryChart(props) {
 
     const toggleModal = () => {
         setModal(!modal);
-        console.log(modal)
     };
 
     useEffect(() => {
@@ -83,9 +82,11 @@ function OnTimeDeliveryChart(props) {
                 x: 'x',
                 columns: [
                     listMonth(),
-                    generateActualOntimeRate(),
-                    generateEstimatedOntimeRate(),
-                    ['plannedOntimeDeliveryRate', 100, 80, 80, 80, 80, 80],
+                    // generateActualOntimeRate(),
+                    // generateEstimatedOntimeRate(),
+                    ['actualOntimeDeliveryRate', 87, 92, 93, 85, 90, 92],
+                    ['estimatedOntimeDeliveryRate', 88, 92, 90, 87, 89, 91],
+                    ['plannedOntimeDeliveryRate', 90, 90, 90, 90, 90, 90],
                 ],
                 type: 'spline',
                 names: {
@@ -105,7 +106,7 @@ function OnTimeDeliveryChart(props) {
                 },
                 y: {
                     max: 100,
-                    min: 0,
+                    // min: 0,
                     padding: {top: 0, bottom: 10},
                     label: '%'
                 }
