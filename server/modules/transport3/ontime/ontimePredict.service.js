@@ -433,6 +433,131 @@ exports.getOrderStatus = async (portal, { month, year }) => {
     return ordersStatus
 }
 
+exports.getTopLateDeliveryDay = async (portal, { month, year }) => {
+    const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});  
+    if (!transport3Schedules) {
+        throw new Error('Schedule not found');
+    } 
+    let deliveryLateDay = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+    transport3Schedules.forEach((schedule) => {
+        schedule.orders.forEach((order) => {
+            if (order.status && order.status === 3 && order.timeArrive > order.estimateTimeArrive) {
+                const orderDate = new Date(order.beginTime);
+                const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
+                const orderYear = orderDate.getFullYear(); // Năm
+
+                // Chỉ xử lý nếu tháng và năm khớp với tham số tìm kiếm
+                if (orderMonth === month && orderYear === year) {
+                    const dayOfWeek = orderDate.getDay(); // Ngày trong tuần (0-6, Chủ nhật là 0)
+                    deliveryLateDay[dayOfWeek] += 1;
+                }
+            }
+        });
+    });
+    // Chuyển đổi đối tượng thành mảng và sắp xếp theo số lượng đơn hàng trễ hạn giảm dần
+    const sortedDays = Object.keys(deliveryLateDay).map(day => ({
+        dayOfWeek: day,
+        lateDeliveries: deliveryLateDay[day]
+    })).sort((a, b) => b.lateDeliveries - a.lateDeliveries);
+
+    // Lấy tối đa 5 ngày
+    const top5Days = sortedDays.slice(0, 5);
+
+    return top5Days;
+}
+
+exports.getTopLateProducts = async (portal, { month, year }) => {
+    const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});  
+    if (!transport3Schedules) {
+        throw new Error('Schedule not found');
+    } 
+    let lateProductsMap = {};
+
+    await Promise.all(transport3Schedules.map(async (schedule) => {
+        for (const order of schedule.orders) {
+            if (order.status === 3 && order.timeArrive > order.estimateTimeArrive) {
+                const orderDate = new Date(order.beginTime);
+                const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
+                const orderYear = orderDate.getFullYear(); // Năm
+
+                // Chỉ xử lý nếu tháng và năm khớp với tham số tìm kiếm
+                if (orderMonth === month && orderYear === year) {
+                    try {
+                        const transport3Order = await Transport3Order(connect(DB_CONNECTION, portal)).findById(order.order);
+                        if (transport3Order) {
+                            transport3Order.goods.forEach((good) => {
+                                const { good: id, goodName: name } = good;
+                                if (!lateProductsMap[id]) {
+                                    lateProductsMap[id] = {
+                                        goodName: name,
+                                        lateDeliveries: 0
+                                    };
+                                }
+                                lateProductsMap[id].lateDeliveries++;
+                            });
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching Transport3Order for order ${order.order}: ${error.message}`);
+                    }             
+                }
+            }
+        }
+    }));
+    const sortedProducts = Object.values(lateProductsMap)
+        .sort((a, b) => b.lateDeliveries - a.lateDeliveries);
+
+    // Lấy tối đa 5 sản phẩm
+    const top5Products = sortedProducts.slice(0, 5);
+
+    return top5Products;
+}
+
+exports.getTopLateStocks = async (portal, { month, year }) => {
+    const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});  
+    if (!transport3Schedules) {
+        throw new Error('Schedule not found');
+    } 
+    let lateStocksMap = {};
+
+    await Promise.all(transport3Schedules.map(async (schedule) => {
+        try {
+            const stock = await Stock(connect(DB_CONNECTION, portal)).findById(schedule.depot);
+            if (!stock) {
+                throw new Error('Stock not found');
+            }
+
+            for (const order of schedule.orders) {
+                if (order.status === 3 && order.timeArrive > order.estimateTimeArrive) {
+                    const orderDate = new Date(order.beginTime);
+                    const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
+                    const orderYear = orderDate.getFullYear(); // Năm
+
+                    // Chỉ xử lý nếu tháng và năm khớp với tham số tìm kiếm
+                    if (orderMonth === month && orderYear === year) {
+                        if (!lateStocksMap[schedule.depot]) {
+                            lateStocksMap[schedule.depot] = {
+                                stockName: stock.name,
+                                lateDeliveries: 0
+                            };
+                        }
+                        lateStocksMap[schedule.depot].lateDeliveries++;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(`Error fetching stock for schedule ${schedule._id}: ${error.message}`);
+        }    
+    }));
+
+    const sortedStocks = Object.values(lateStocksMap)
+        .sort((a, b) => b.lateDeliveries - a.lateDeliveries);
+
+    // Lấy tối đa 5 kho
+    const top5Stocks = sortedStocks.slice(0, 5);
+
+    return top5Stocks;   
+}
+
 exports.UpdateEstimatedOntimeDeliveryInfo = async (portal, scheduleId) => {
     const transport3Schedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).findById(scheduleId);   
     if (!transport3Schedule) {
