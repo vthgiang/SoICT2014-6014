@@ -21,7 +21,7 @@ services:
     env_file:
       - ./client-vite/.env
     environment:
-      - REACT_APP_SERVER=https://localhost:8000
+      - REACT_APP_SERVER=http://localhost:8000
       - REACT_APP_SERVICE_IDENTITY_SERVER=http://localhost:8000
     volumes:
       - ./client-vite:/app

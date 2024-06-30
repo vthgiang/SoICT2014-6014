@@ -5,7 +5,11 @@ const {
   Transport3Employee,
   Transport3Order,
   Transport3Schedule,
-  Transport3Vehicle, Stock, Asset, Customer, Good,
+  Transport3Vehicle,
+  Stock,
+  Asset,
+  Customer,
+  Good,
 } = require('../models');
 
 require('dotenv').config();
@@ -35,13 +39,22 @@ const initTransport3Data = async () => {
 
   console.log('DB vnist connected');
 
+  const dropModels = async (db) => {
+    await db.dropCollection('transport3employees');
+    await db.dropCollection('transport3orders');
+    await db.dropCollection('transport3schedules');
+    await db.dropCollection('transport3vehicles');
+  }
+
   const initModels = (db) => {
-    if (!db.models.Transport3Employee) Transport3Employee(db);
-    if (!db.models.Transport3Order) Transport3Order(db);
-    if (!db.models.Transport3Schedule) Transport3Schedule(db);
-    if (!db.models.Transport3Vehicle) Transport3Vehicle(db);
+    Transport3Employee(db);
+    Transport3Order(db);
+    Transport3Schedule(db);
+    Transport3Vehicle(db);
   };
 
+  console.log('Xoá dữ liệu transport3 cũ và khởi tạo dữ liệu mới');
+  await dropModels(vnistDB);
   initModels(vnistDB);
   const listCustomers = await Customer(vnistDB).find({});
   const listGoods = await Good(vnistDB).find({});
@@ -133,6 +146,7 @@ const initTransport3Data = async () => {
     })
   )
   console.log('Khởi tạo xong kế hoạch vận chuyển');
+  process.exit(0);
 };
 
 initTransport3Data().catch((err) => {
