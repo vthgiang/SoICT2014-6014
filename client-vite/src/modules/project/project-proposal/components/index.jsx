@@ -17,6 +17,8 @@ import { TASK_ACTION_TYPE } from "../../project-create/components/consts";
 import { PROJECT_ACTION_FORM } from "../../projects/constants";
 import { KPIEmployees } from "./kpiEmployees";
 import AlgorithmModal from "./algorithmModal";
+import { useLocation } from 'react-router-dom';
+
 
 function ProjectProposalPage(props) {
   const formatCurrencyVND = (amount) => {
@@ -85,7 +87,23 @@ function ProjectProposalPage(props) {
     }
   })
 
+  const { proposals } = currentProject || {}
+
+  const column = [
+    { name: 'Mã công việc', key: 'code' },
+    { name: 'Tên công việc', key: 'name' },
+    { name: 'Công việc tiền nhiệm', key: 'preceedingTasks'},
+    { name: 'Ngày bắt đầu', key: 'startDate' },
+    { name: 'Ngày kết thúc', key: 'endDate' },
+    { name: 'Nhân viên', key: 'assignee' },
+    { name: 'Tài sản', key: 'assets' },
+  ]
+
+  const location = useLocation()
+
+
   console.log("algorithmParams: ", algorithmParams)
+  
 
   const handleChangeCurrentProject = (e) => {
     setState(prevState => ({
@@ -115,6 +133,21 @@ function ProjectProposalPage(props) {
   }
 
   useEffect(() => {
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId });
+  }, [page, perPage]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    if (id) {
+      setState({
+        ...state,
+        currentProject: projectData && projectData?.length ? projectData?.find((item) => item?._id === id) : {}
+      })
+    }
+  }, [location, projectData?.length]);
+
+  useEffect(() => {
     if (!isLoading && projectProposalData) {
       // Update the project state with the new allocation data
       setState((prevState) => ({
@@ -126,24 +159,6 @@ function ProjectProposalPage(props) {
       }));
     }
   }, [isLoading, projectProposalData]);
-
-
-  useEffect(() => {
-    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId });
-  }, [page, perPage]);
-
-  const { proposals } = currentProject
-
-
-  const column = [
-    { name: 'Mã công việc', key: 'code' },
-    { name: 'Tên công việc', key: 'name' },
-    { name: 'Công việc tiền nhiệm', key: 'preceedingTasks'},
-    { name: 'Ngày bắt đầu', key: 'startDate' },
-    { name: 'Ngày kết thúc', key: 'endDate' },
-    { name: 'Nhân viên', key: 'assignee' },
-    { name: 'Tài sản', key: 'assets' },
-  ]
 
   const convertAssignmentToTableData = (assignments) => {
     let data = []
@@ -453,29 +468,6 @@ function ProjectProposalPage(props) {
                 )}
               </div>
             </a> 
-            // <button
-            //   type="button"
-            //   className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            //   id="options-menu"
-            //   aria-haspopup="true"
-            //   aria-expanded="true"
-            //   // onClick={}
-            // >
-            //   Options
-            //   <svg
-            //     className="-mr-1 ml-2 h-5 w-5"
-            //     xmlns="http://www.w3.org/2000/svg"
-            //     viewBox="0 0 20 20"
-            //     fill="currentColor"
-            //     aria-hidden="true"
-            //   >
-            //     <path
-            //       fillRule="evenodd"
-            //       d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            //       clipRule="evenodd"
-            //     />
-            //   </svg>
-            // </button>
           }
           {isLoading && (
             <div className="min-height-96 flex justify-center items-center mt-8">
