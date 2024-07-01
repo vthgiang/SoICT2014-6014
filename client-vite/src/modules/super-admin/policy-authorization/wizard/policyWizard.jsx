@@ -132,6 +132,12 @@ export function PolicyWizard(props) {
   }
 
   const requesterNext = (requesterAttributes, requesterRule) => {
+    let index = i + 1
+    requesterAttributes.forEach((x) => {
+      x.addOrder = index
+      index += 1
+    })
+    handleChangeAddRowAttribute('i', index)
     setState((state) => ({
       ...state,
       requesterAttributes,
@@ -141,6 +147,12 @@ export function PolicyWizard(props) {
     window.$(`#modal-${id}-resource`).modal('show')
   }
   const resourceNext = (resourceAttributes, resourceRule) => {
+    let index = i + 1
+    resourceAttributes.forEach((x) => {
+      x.addOrder = index
+      index += 1
+    })
+    handleChangeAddRowAttribute('i', index)
     setState((state) => ({
       ...state,
       resourceAttributes,
@@ -150,6 +162,12 @@ export function PolicyWizard(props) {
     window.$(`#modal-${id}-role`).modal('show')
   }
   const roleNext = (roleAttributes, roleRule) => {
+    let index = i + 1
+    roleAttributes.forEach((x) => {
+      x.addOrder = index
+      index += 1
+    })
+    handleChangeAddRowAttribute('i', index)
     setState((state) => ({
       ...state,
       roleAttributes,
