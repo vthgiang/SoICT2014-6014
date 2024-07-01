@@ -1273,37 +1273,37 @@ const initSampleCompanyDB = async () => {
       company: vnist._id,
     },
     {
-      name: 'Lê Đàm Quân',
+      name: 'Lê Đàm Quân test',
       email: 'ldq.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Nguyễn Minh Chiến',
+      name: 'Nguyễn Minh Chiến test',
       email: 'nmc.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Chu Văn Thành',
+      name: 'Chu Văn Thành test',
       email: 'cvt.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Nguyễn Hoàng Thương',
+      name: 'Nguyễn Hoàng Thương test',
       email: 'nht.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Dương Đăng Quang',
+      name: 'Dương Đăng Quang test',
       email: 'ddq.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Nguyễn Khánh Duy',
+      name: 'Nguyễn Khánh Duy test',
       email: 'nkd.vnist@gmail.com',
       password: hash,
       company: vnist._id,
@@ -1362,6 +1362,102 @@ const initSampleCompanyDB = async () => {
       password: hash,
       company: vnist._id,
     },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
   ]);
 
   //Khởi tạo Role cho bộ phận kinh doanh
@@ -1621,33 +1717,105 @@ const initSampleCompanyDB = async () => {
       userId: users2[15]._id,
       roleId: thanhVienPhongKinhDoanh2._id,
     },
+    {
+      userId: users2[16]._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
+    },
+    {
+      userId: users2[17]._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
+    },
+    {
+      userId: users2[18]._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
+    },
+    {
+      userId: users2[19]._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
+    },
+    {
+      userId: users2[20]._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
+    },
+    {
+      userId: users2[21]._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
+    },
     // {
     //   userId: users2[22]._id,
-    //   roleId: giamDocPhongKeHoach2._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
     // },
     // {
-    //   userId: users2[16]._id,
-    //   roleId: phoPhongPhongKeHoach2._id,
+    //   userId: users2[23]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
     // },
     // {
-    //   userId: users2[17]._id,
-    //   roleId: thanhVienPhongKeHoach2._id,
+    //   userId: users2[24]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
     // },
     // {
-    //   userId: users2[18]._id,
-    //   roleId: thanhVienPhongKeHoach2._id,
+    //   userId: users2[25]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
     // },
     // {
-    //   userId: users2[19]._id,
-    //   roleId: thanhVienPhongKeHoach2._id,
+    //   userId: users2[26]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
     // },
     // {
-    //   userId: users2[20]._id,
-    //   roleId: thanhVienPhongKeHoach2._id,
+    //   userId: users2[27]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
     // },
     // {
-    //   userId: users2[21]._id,
-    //   roleId: thanhVienPhongKeHoach2._id,
+    //   userId: users2[28]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[29]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[30]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[31]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[32]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[33]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[34]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[35]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[36]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[37]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[38]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[39]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[40]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
     // },
   ]);
 

@@ -287,7 +287,7 @@ const handleStartAllocation = async (portal, kpiData) => {
       listTaskTypeExp,
     };
 
-    return payload
+    return payload;
   } catch (error) {
     console.error('Error fetching data from API:', error);
   }
