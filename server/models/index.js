@@ -105,6 +105,7 @@ module.exports = {
     CustomerGroup: require('./customer-care/customerGroup.model'),
     CustomerStatus: require('./customer-care/customerStatus.model'),
     CustomerRankPoint: require('./customer-care/customerRankPoint.model'),
+    CustomerMarketing: require('./customer-care/customerMarketing.model'),
     Product: require('./customer-care/product.model'),
     ProductCategory: require('./customer-care/productCategory.model'),
     ProductDiscount: require('./customer-care/productDiscount.model'),

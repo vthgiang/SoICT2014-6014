@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { Button } from '@mui/material'
+import { Button, Select } from '@mui/material'
 import * as React from 'react'
 import { useState, useRef } from 'react';
 import { styled } from '@mui/material/styles'
@@ -16,6 +16,8 @@ import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { DialogModal, ErrorLabel } from '../../../../../common-components'
 import { Link } from 'react-router-dom'
 import { green } from '@mui/material/colors'
@@ -44,6 +46,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import PercentIcon from '@mui/icons-material/Percent';
+import IconButton from '@mui/material/IconButton';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
+import { Popover } from '@mui/material';
 import * as XLSX from 'xlsx';
 import {
   Chart as ChartJS,
@@ -63,6 +70,8 @@ import moment from 'moment';
 import { toast } from 'react-toastify';
 import MarketingEffeciveChannelTable from './MarketingEffeciveChannelTable';
 import MarketingCampaignDetail from './CampaignDetail';
+import QuestionMark from '@mui/icons-material/QuestionMark';
+import { element } from 'prop-types';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
@@ -140,24 +149,24 @@ function formatNumber(totalCost) {
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend)
 
+const LayoutDefault = [{ i: 'cost', x: 0, y: 0, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'click', x: 6, y: 0, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'impression', x: 12, y: 0, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'session', x: 18, y: 0, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'CPC', x: 0, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'transaction', x: 6, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'revenue', x: 12, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'ROIM', x: 18, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'h', x: 0, y: 6, w: 15, h: 7, minW: 2, maxW: 24 },
+{ i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 },
+{ i: 'm', x: 0, y: 13, w: 6, h: 6, minW: 2, maxW: 24 }
+]
 const MarketingCampaignComponent = (props) => {
   const [layout, setLayout] = React.useState(() => {
     const layoutDefault = JSON.parse(localStorage.getItem('layout'));
     if (layoutDefault) return layoutDefault
-    return [{ i: 'a', x: 0, y: 0, w: 6, h: 3, minW: 0, maxW: 6 },
-    { i: 'b', x: 6, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
-    { i: 'c', x: 12, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
-    { i: 'd', x: 18, y: 0, w: 6, h: 3, minW: 2, maxW: 6 },
-    { i: 'e', x: 0, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
-    { i: 'f', x: 6, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
-    { i: 'g', x: 12, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
-    { i: 'i', x: 18, y: 3, w: 6, h: 3, minW: 2, maxW: 6 },
-    { i: 'h', x: 0, y: 6, w: 15, h: 7, minW: 2, maxW: 24 },
-    { i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 },
-    { i: 'm', x: 0, y: 13, w: 6, h: 6, minW: 2, maxW: 24 }
-    ]
-  }
-  )
+    return LayoutDefault;
+  })
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -266,12 +275,86 @@ const MarketingCampaignComponent = (props) => {
   const [name, setName] = React.useState('')
   const [cost, setCost] = React.useState('')
   const [channel, setChannel] = React.useState('Facebook')
+  const [anchorElPopover, setAnchorElPopover] = React.useState(null);
+  const [anchorElMenuCard, setAnchorElMenuCard] = React.useState(null);
+  const [anchorElMenuChild, setAnchorElMenuChild] = React.useState(null);
+  const [anchorElMenuAddChart, setAnchorElMenuAddChart] = React.useState(null);
+  const [optionsMenuChild, setOptionsMenuChild] = React.useState([]);
+  const [listCard, setListCard] = React.useState([]);
+  const [costCard, setCostCard] = React.useState(null);
+  const [clickCard, setClickCard] = React.useState(null);
+  const [impressionCard, setImpressionCard] = React.useState(null);
+  const [sessionCard, setSessionCard] = React.useState(null);
+  const [CPCCard, setCPCCard] = React.useState(null);
+  const [revenuesCard, setRevenuesCard] = React.useState(null);
+  const [ROIMCard, setROIMCard] = React.useState(null);
+  const [transactionCard, setTransactionCard] = React.useState(null);
+  const [currentMenuCardTargetId, setCurrentMenuCardTargetId] = React.useState();
+  //Trong đó Card = {
+  //   id: int
+  //   title: String,
+  //   image: IconComponent,
+  //   total: int,
+  // }
+
+  const openPopover = Boolean(anchorElPopover);
+  const openMenuCard = Boolean(anchorElMenuCard);
+  const openMenuChild = Boolean(anchorElMenuChild);
+  const openMenuAddChart = Boolean(anchorElMenuAddChart);
+  const idPopoverTarget = openPopover ? 'simple-popover' : undefined;
+
+  const deleteCard = (key) => {
+    const condition = (element) => element.key === key;
+    const newListCard = listCard.filter(element => !condition(element))
+    const newListKeyCard = newListCard.map(element => element.key);
+    localStorage.setItem("listCard", JSON.stringify(newListKeyCard))
+    setListCard(newListCard)
+    setAnchorElMenuCard(null)
+  }
+  const optionsMenuCard = [
+    {
+      title: 'Action',
+      child: [
+        { title: 'A' },
+        { title: 'B' },
+        { title: 'C' }
+      ],
+    },
+    {
+      title: 'Delete',
+      child: [],
+      onClick: () => deleteCard(currentMenuCardTargetId)
+    }
+    // 'Action',
+    // 'Delete'
+  ];
+
+  const optionsMenuAddCard = [
+    {
+      title: "Dữ liệu đơn",
+      child: [
+        { title: 'Cost', onClick: () => addCard(costCard) },
+        { title: 'Click', onClick: () => addCard(clickCard) },
+        { title: 'Impression', onClick: () => addCard(impressionCard) },
+        { title: 'Session', onClick: () => addCard(sessionCard) },
+        { title: 'CPC', onClick: () => addCard(CPCCard) },
+        { title: 'Transaction', onClick: () => addCard(transactionCard) },
+        { title: 'Revenues', onClick: () => addCard(revenuesCard) },
+        { title: 'ROIM', onClick: () => addCard(ROIMCard) },
+      ],
+    },
+    {
+      title: "Dữ liệu bảng",
+    },
+    {
+      title: "Dữ liệu dạng biểu đồ"
+    }
+  ]
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     const data = { cost, channel, name }
 
-    console.log(data);
     const response = await sendRequest(
       {
         url: `${process.env.REACT_APP_SERVER}/marketing-campaign`,
@@ -388,6 +471,7 @@ const MarketingCampaignComponent = (props) => {
 
       if (response.status === 200) {
         setMarketingEffective(response.data.content.currentTotals);
+        console.log(response.data.content.currentTotals);
         setPercentChange(response.data.content.percentageChanges)
       }
     } catch (error) {
@@ -401,40 +485,40 @@ const MarketingCampaignComponent = (props) => {
   const [marketingEffectiveChannel, setMarketingCampaignChannel] = React.useState([])
   const fetchMarketingEffectiveChannel = async () => {
     setIsLoadingMarketingChanel(true)
-      const response = await sendRequest(
-          {
-              url: `${process.env.REACT_APP_SERVER}/marketing-effective/channel`,
-              method: 'GET',
-          },
-          false,
-          false,
-          'marketing-effective'
-      )
-      if (response.status === 200) {
-          setMarketingCampaignChannel(response.data.content)
-      }
-      setIsLoadingMarketingChanel(false)
+    const response = await sendRequest(
+      {
+        url: `${process.env.REACT_APP_SERVER}/marketing-effective/channel`,
+        method: 'GET',
+      },
+      false,
+      false,
+      'marketing-effective'
+    )
+    if (response.status === 200) {
+      setMarketingCampaignChannel(response.data.content)
+    }
+    setIsLoadingMarketingChanel(false)
   }
   const fetchMarketingEffectiveByCampaignId = async (id) => {
-      const response = await sendRequest(
-          {
-              url: `${process.env.REACT_APP_SERVER}/marketing-effective/${id}`,
-              method: 'GET',
-          },
-          false,
-          false,
-          'marketing-effective'
-      )
+    const response = await sendRequest(
+      {
+        url: `${process.env.REACT_APP_SERVER}/marketing-effective/${id}`,
+        method: 'GET',
+      },
+      false,
+      false,
+      'marketing-effective'
+    )
 
-      console.log('response', response)
-      if (response.status === 200) {
-          setMarketingCampaignDetail(response.data.content[0])
-          setOpenDetail(true)
-      }
+    console.log('response', response)
+    if (response.status === 200) {
+      setMarketingCampaignDetail(response.data.content[0])
+      setOpenDetail(true)
+    }
   }
 
   React.useEffect(() => {
-      fetchMarketingEffectiveChannel()
+    fetchMarketingEffectiveChannel()
   }, [])
 
   React.useEffect(() => {
@@ -451,6 +535,151 @@ const MarketingCampaignComponent = (props) => {
       fetchMarketingEffective();
     }
   }, [date.startDate, date.endDate]); // Theo dõi sự thay đổi của startDate và endDate
+
+  React.useEffect(() => {
+    const costCard = {
+      key: "cost",
+      title: "Cost",
+      image: <AttachMoneyIcon
+        sx={{
+          height: '56px',
+          width: '56px',
+          color: '#ffff'
+        }}
+      />,
+      percentChangeTotal: percentChange?.totalCost,
+      marketingEffectiveTotal: marketingEffective?.totalCost,
+      layout: layout.find((value) => value.i === "cost")
+    }
+    const clickCard = {
+      key: "click",
+      title: "Clicks",
+      image: <AdsClickIcon
+        sx={{
+          height: '56px',
+          width: '56px',
+          color: '#ffff'
+        }}
+      />,
+      percentChangeTotal: percentChange?.totalClick,
+      marketingEffectiveTotal: marketingEffective?.totalClick,
+      layout: layout.find((value) => value.i === "click")
+    }
+    const impressionCard = {
+      key: "impression",
+      title: "Impressions",
+      image: <VisibilityIcon
+        sx={{
+          height: '56px',
+          width: '56px',
+          color: '#ffff'
+        }}
+      />,
+      percentChangeTotal: percentChange?.totalImpression,
+      marketingEffectiveTotal: marketingEffective?.totalImpression,
+      layout: layout.find((value) => value.i === "impression")
+    }
+    const sessionCard = {
+      key: "session",
+      title: "Sessions",
+      image: <WebAssetIcon
+        sx={{
+          height: '56px',
+          width: '56px',
+          color: '#ffff'
+        }}
+      />,
+      percentChangeTotal: percentChange?.totalSession,
+      marketingEffectiveTotal: marketingEffective?.totalSession,
+      layout: layout.find((value) => value.i === "session")
+    }
+    const CPCCard = {
+      key: "CPC",
+      title: "CPC",
+      image: <PriceCheckIcon
+        sx={{
+          height: '56px',
+          width: '56px',
+          color: '#ffff'
+        }}
+      />,
+      percentChangeTotal: percentChange?.totalCPC,
+      marketingEffectiveTotal: (marketingEffective?.totalCost && marketingEffective?.totalClick) ?
+        marketingEffective?.totalCost / marketingEffective?.totalClick : 0,
+      layout: layout.find((value) => value.i === "CPC")
+    }
+    const transactionCard = {
+      key: "transaction",
+      title: "Transactions",
+      image: <AttachMoneyIcon
+        sx={{
+          height: '56px',
+          width: '56px',
+          color: '#ffff'
+        }}
+      />,
+      percentChangeTotal: percentChange?.totalTransaction,
+      marketingEffectiveTotal: marketingEffective?.totalTransaction,
+      layout: layout.find((value) => value.i === "transaction")
+    }
+    const revenueCard = {
+      key: "revenue",
+      title: "Revenues",
+      image: <LocalAtmIcon
+        sx={{
+          height: '56px',
+          width: '56px',
+          color: '#ffff'
+        }}
+      />,
+      percentChangeTotal: percentChange?.totalRevenue,
+      marketingEffectiveTotal: marketingEffective?.totalRevenue,
+      layout: layout.find((value) => value.i === "revenue")
+    }
+    const ROIMCard = {
+      key: "ROIM",
+      title: "ROIM",
+      image: <PercentIcon
+        sx={{
+          height: '56px',
+          width: '56px',
+          color: '#ffff'
+        }}
+      />,
+      percentChangeTotal: percentChange?.totalRoim,
+      marketingEffectiveTotal: (marketingEffective.totalRevenue && marketingEffective.totalCost) ? marketingEffective.totalRevenue / marketingEffective.totalCost *100 : 0,
+      layout: layout.find((value) => value.i === "ROIM")
+    }
+    const listCard = [
+      costCard,
+      clickCard,
+      impressionCard,
+      sessionCard,
+      CPCCard,
+      transactionCard,
+      revenueCard,
+      ROIMCard
+    ]
+    setCostCard(costCard);
+    setCPCCard(CPCCard);
+    setClickCard(clickCard);
+    setImpressionCard(impressionCard);
+    setSessionCard(sessionCard);
+    setTransactionCard(transactionCard);
+    setRevenuesCard(revenueCard);
+    setROIMCard(ROIMCard);
+    const listCardCurrent = JSON.parse(localStorage.getItem("listCard"))
+    if (listCardCurrent) {
+      const listCardKeySet = new Set(listCardCurrent);
+      const listCardFilter = listCard.filter((element) => listCardKeySet.has(element.key))
+      setListCard(listCardFilter)
+    }
+    else {
+      const listKeyCard = listCard.map(element => element.key)
+      localStorage.setItem("listCard", JSON.stringify(listKeyCard))
+      setListCard(listCard)
+    }
+  }, [isLoading])
 
   const handleChangeChanel = (e) => {
     setChannel(e[0])
@@ -540,210 +769,243 @@ const MarketingCampaignComponent = (props) => {
     setLayout(e)
   }
 
+  const handleClickOpenPopover = (event) => {
+    setAnchorElPopover(event.currentTarget);
+  };
+
+  const handleClickOpenMenuAddCard = (event) => {
+    setAnchorElMenuAddChart(event.currentTarget)
+  }
+
+  const handleClosePopover = () => {
+    setAnchorElPopover(null);
+  };
+
+  const handleCloseMenuCard = () => {
+    setAnchorElMenuCard(null)
+  }
+
+  const handleCloseMenuChild = () => {
+    setAnchorElMenuChild(null)
+  }
+
+  const handleCloseMenuAddChart = () => {
+    setAnchorElMenuAddChart(null)
+  }
+
+  const handleClickOpenMenuCard = (event) => {
+    const elementCurrentTarget = event.currentTarget;
+    setCurrentMenuCardTargetId(elementCurrentTarget.getAttribute("id"));
+    setAnchorElMenuCard(elementCurrentTarget);
+  }
+
+  const handleOpenMenuChild = (event, options) => {
+    setOptionsMenuChild(options)
+    setAnchorElMenuChild(event.currentTarget)
+  }
+
+  const addCard = (card) => {
+    const checkExistCard = listCard.find(element => element.key === card.key)
+    if (checkExistCard) {
+      // toast.error("Dữ liệu đơn này đã tồn tại ở dashboard, hãy kiểm tra lại.")
+      toast.error("Dữ liệu đơn này đã tồn tại ở dashboard, hãy kiểm tra lại.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+    setAnchorElMenuChild(null)
+    setAnchorElMenuAddChart(null)
+    const newLayout = LayoutDefault.find(element => element.i === card.key)
+    const setLayoutCard = { ...card, layout: newLayout }
+    // setLayout(...layout, newLayout)
+    const listCardCurrent = JSON.parse(localStorage.getItem("listCard"))
+    localStorage.setItem("listCard", JSON.stringify([...listCardCurrent, card.key]))
+    localStorage.setItem("layout", JSON.stringify([...layout, newLayout]))
+    setListCard([...listCard, setLayoutCard])
+  }
+
   return (
     <>
       <div className='time-campaign-manage-container'>
-        <div className='form-control-static'>Từ</div>
-        <DatePicker
-          id={`time-campaign-manage-from`}
-          value={date.startDate}
-          onChange={(e) => handleChangeDate('startDate', e)}
-          disabled={false}
-          className='date-picker'
-        />
+        <div style={{ display: 'flex' }}>
 
-        <div className='form-control-static'>Đến</div>
+          <div className='form-control-static'>Từ</div>
+          <DatePicker
+            id={`time-campaign-manage-from`}
+            value={date.startDate}
+            onChange={(e) => handleChangeDate('startDate', e)}
+            disabled={false}
+            className='date-picker'
+          />
 
-        <DatePicker
-          id={`time-campaign-manage-to`}
-          value={date.endDate}
-          onChange={(e) => handleChangeDate('endDate', e)}
-          disabled={false}
-          className='date-picker'
-        />
+          <div className='form-control-static'>Đến</div>
+
+          <DatePicker
+            id={`time-campaign-manage-to`}
+            value={date.endDate}
+            onChange={(e) => handleChangeDate('endDate', e)}
+            disabled={false}
+            className='date-picker'
+          />
+        </div>
+
+        <button type="button" class="btn btn-success" onClick={handleClickOpenMenuAddCard}>Thêm thống kê</button>
+        <Menu
+          id="long-menu"
+          MenuListProps={{
+            'aria-labelledby': 'long-button',
+          }}
+          anchorEl={anchorElMenuAddChart}
+          open={openMenuAddChart}
+          onClose={handleCloseMenuAddChart}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          {optionsMenuAddCard.map((option) => (
+            <MenuItem key={option.title}
+              onClick={
+                (event) =>
+                  option.child.length > 0 ? handleOpenMenuChild(event, option.child) : option.onClick()
+              }
+            >
+              {option.title}
+            </MenuItem>
+          ))}
+        </Menu>
       </div>
-      <GridLayout onLayoutChange={handleChangeLayout} className='layout' layout={layout} cols={24} rowHeight={30} width={1200} compactType={'vertical'}>
-        <div key='a' className='item'>
-        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalCost >= 0 ? 'green' : 'red'}`}>
-              <AttachMoneyIcon
-                  sx={{
-                    height: '56px',
-                    width: '56px',
-                    color: '#ffff'
-                  }}
-              />
-          </span>
-          <div className='campaign-manage-minicard'>
-            <div className='campaign-manage-minicard-label'> Costs</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalCost ? formatNumber(marketingEffective.totalCost) : 0}</div>
-            <div className={`campaign-manage-minicard-${percentChange?.totalCost >= 0 ? 'up' : 'down'}`}>
-              {percentChange?.totalCost ? <>
-                {percentChange.totalCost >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalCost}%
-                </> : null}
-            </div>
-          </div>
-        </div>
-        <div key='b' className='item'>
-        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalClick >= 0 ? 'green' : 'red'}`}>
-              <AdsClickIcon 
-                     sx={{
-                      height: '56px',
-                      width: '56px',
-                      color: '#ffff'
-                    }}
-              />
-          </span>
-          <div className='campaign-manage-minicard'>
-            <div className='campaign-manage-minicard-label'> Clicks</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalClick ? formatNumber(marketingEffective.totalClick) : 0}
-            </div>
-            <div className={`campaign-manage-minicard-${percentChange?.totalClick >= 0 ? 'up' : 'down'}`}>
-              {percentChange?.totalClick ? <>
-                {percentChange.totalClick >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalClick}%
-                </> : null}
-            </div>
-          </div>
-        </div>
-        <div key='c' className='item'>
-        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalImpression >= 0 ? 'green' : 'red'}`}>
-        <VisibilityIcon 
-                     sx={{
-                      height: '56px',
-                      width: '56px',
-                      color: '#ffff'
-                    }}
-              />
-          </span>
-          <div className='campaign-manage-minicard'>
-            <div className='campaign-manage-minicard-label'> Impressions</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalImpression ? formatNumber(marketingEffective.totalImpression) : 0}</div>
-            <div className={`campaign-manage-minicard-${percentChange?.totalImpression >= 0 ? 'up' : 'down'}`}>
-              {percentChange?.totalImpression ? <>
-                {percentChange.totalImpression >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalImpression}%
-                </> : null}
-            </div>
-          </div>
-        </div>
-        <div key='d' className='item'>
-        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalSession >= 0 ? 'green' : 'red'}`}>
-        <WebAssetIcon 
-                     sx={{
-                      height: '56px',
-                      width: '56px',
-                      color: '#ffff'
-                    }}
-              />
-          </span>
-          <div className='campaign-manage-minicard'>
-            <div className='campaign-manage-minicard-label'> Sessions</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalSession ? formatNumber(marketingEffective.totalSession) : 0}</div>
-            <div className={`campaign-manage-minicard-${percentChange?.totalSession >= 0 ? 'up' : 'down'}`}>
-              {percentChange?.totalSession ? <>
-                {percentChange.totalSession >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalSession}%
-                </> : null}
-            </div>
-          </div>
-        </div>
-        <div key='e' className='item'>
-        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalCPC <= 0 ? 'green' : 'red'}`}>
-        <PriceCheckIcon 
-                     sx={{
-                      height: '56px',
-                      width: '56px',
-                      color: '#ffff'
-                    }}
-              />
-          </span>
-          <div className='campaign-manage-minicard'>
-            <div className='campaign-manage-minicard-label'> CPC</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalCost && marketingEffective?.totalClick ? formatNumber(marketingEffective.totalCost / marketingEffective.totalClick) : 0}</div>
-            <div className={`campaign-manage-minicard-${percentChange?.totalCPC <= 0 ? 'up' : 'down'}`}>
-              {percentChange?.totalCPC ? <>
-                {percentChange.totalCPC >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalCPC}%
-                </> : null}
-            </div>
-          </div>
-        </div>
-        <div key='f' className='item'>
-        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalTransaction >= 0 ? 'green' : 'red'}`}>
-        <ReceiptIcon 
-                     sx={{
-                      height: '56px',
-                      width: '56px',
-                      color: '#ffff'
-                    }}
-              />
-          </span>
-          <div className='campaign-manage-minicard'>
-            <div className='campaign-manage-minicard-label'> Transactions</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalTransaction ? formatNumber(marketingEffective.totalTransaction) : 0}</div>
-            <div className={`campaign-manage-minicard-${percentChange?.totalTransaction >= 0 ? 'up' : 'down'}`}>
-              {percentChange?.totalTransaction ? <>
-                {percentChange.totalTransaction >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalTransaction}%
-                </> : null}
-            </div>
-          </div>
-        </div>
-        <div key='g' className='item'>
-        <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalRevenue >= 0 ? 'green' : 'red'}`}>
-        <LocalAtmIcon 
-                     sx={{
-                      height: '56px',
-                      width: '56px',
-                      color: '#ffff'
-                    }}
-              />
-          </span>
-          <div className='campaign-manage-minicard'>
-            <div className='campaign-manage-minicard-label'> Revenue</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalRevenue ? formatNumber(marketingEffective.totalRevenue) : 0}</div>
-            <div className={`campaign-manage-minicard-${percentChange?.totalRevenue >= 0 ? 'up' : 'down'}`}>
-              {percentChange?.totalRevenue ? <>
-                {percentChange.totalRevenue >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalRevenue}%
-                </> : null}
-            </div>
-          </div>
-        </div>
-        <div key='i' className='item'>
+      <Popover
+        id={idPopoverTarget}
+        open={openPopover}
+        anchorEl={anchorElPopover}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+      </Popover>
+      <Menu
+        id="long-menu"
+        MenuListProps={{
+          'aria-labelledby': 'long-button',
+        }}
+        anchorEl={anchorElMenuCard}
+        open={openMenuCard}
+        onClose={handleCloseMenuCard}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      // PaperProps={{
+      //   style: {
+      //     maxHeight: ITEM_HEIGHT * 4.5,
+      //     width: '20ch',
+      //   },
+      // }}
+      >
+        {optionsMenuCard.map((option) => (
+          <MenuItem key={option.title}
+            onClick={
+              (event) =>
+                option.child.length > 0 ? handleOpenMenuChild(event, option.child) : option.onClick()
+            }
+          >
+            {option.title}
+          </MenuItem>
+        ))}
+      </Menu>
+      {/*Menu child */}
+      <Menu
+        id="long-menu"
+        MenuListProps={{
+          'aria-labelledby': 'long-button',
+        }}
+        anchorEl={anchorElMenuChild}
+        open={openMenuChild}
+        onClose={handleCloseMenuChild}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      // PaperProps={{
+      //   style: {
+      //     maxHeight: ITEM_HEIGHT * 4.5,
+      //     width: '20ch',
+      //   },
+      // }}
+      >
+        {optionsMenuChild.map((option) => (
+          <MenuItem key={option.title} selected={option === 'Pyxis'} onClick={() => option.onClick()}>
+            {option.title}
+          </MenuItem>
+        ))}
+      </Menu>
+      <GridLayout
+        draggableHandle=".react-grid-dragHandleExample"
+        onLayoutChange={handleChangeLayout}
+        className='layout'
+        cols={24}
+        rowHeight={30} width={1200} compactType={'vertical'}>
+        {/* Class của to chứa nội dung item */}
+        {
+          listCard.map((card, index) => {
+            return card.key ? (
+              <div key={card.key} className='item' data-grid={card.layout} >
+                <div className='item-icon'>
+                  {/*Info icon */}
+                  <div className='item-icon-info'>
+                    <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={handleClickOpenPopover} />
+                  </div>
+                </div>
+                {/*Liệt kê các button trong thẻ item-action */}
+                <div className='item-action-menu'>
+                  <IconButton
+                    aria-label="more"
+                    id={`${card.key}`}
+                    aria-controls={openMenuCard ? 'long-menu' : undefined}
+                    aria-expanded={openMenuCard ? 'true' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleClickOpenMenuCard}
+                    key={card.key}
+                  >
+                    {/* <MoreVertIcon /> */}
+                    <MoreHorizIcon />
+                  </IconButton>
+                </div>
+                <div className='item-content react-grid-dragHandleExample'>
+                  <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${card?.percentChangeTotal >= 0 ? 'green react-grid-dragHandleExample' : 'red react-grid-dragHandleExample'}`}>
+                    {card.image}
+                  </span>
+                  <div className='campaign-manage-minicard'>
+                    <div className='campaign-manage-minicard-label'> {card?.title}</div>
+                    <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : card.marketingEffectiveTotal ? formatNumber(card.marketingEffectiveTotal) : 0}</div>
+                    <div className={`campaign-manage-minicard-${card?.percentChangeTotal >= 0 ? 'up' : 'down'}`}>
+                      {card?.percentChangeTotal ? <>
+                        {card?.percentChangeTotal >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
+                        {card?.percentChangeTotal}%
+                      </> : null}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div key={'custom'} className='item' data-grid={{ i: 'custom', x: 0, y: 13, w: 6, h: 6, minW: 2, maxW: 24 }} >
+                Choose
+              </div>
+            )
+          })
+        }
 
-          <span className={`campaign-manage-minicard-image campaign-manage-minicard-image-${percentChange?.totalRoim >= 0 ? 'green' : 'red'}`}>
-          <PercentIcon 
-                     sx={{
-                      height: '56px',
-                      width: '56px',
-                      color: '#ffff'
-                    }}
-              />
-          </span>
-          <div className='campaign-manage-minicard'>
-            <div className='campaign-manage-minicard-label'> ROIM</div>
-            <div className='campaign-manage-minicard-number'>{isLoading ? <Loading /> : marketingEffective?.totalRevenue && marketingEffective?.totalCost ? formatNumber(marketingEffective.totalRevenue / marketingEffective.totalCost *100) : 0}%</div>
-            <div className='campaign-manage-minicard-down'>
-              <div className={`campaign-manage-minicard-${percentChange?.totalRoim >= 0 ? 'up' : 'down'}`}>
-              {percentChange?.totalRoim ? <>
-                {percentChange.totalRoim >= 0 ? <ArrowUpwardIcon className='campaign-manage-minicard-icon' /> : <ArrowDownwardIcon className='campaign-manage-minicard-icon' />}
-                {percentChange.totalRoim}%
-                </> : null}
-            </div>
-            </div>
-          </div>
-
-        </div>
-
-        <div key='h' className='item campaign-manage-top-campaign'>
+        <div key='h' className='item campaign-manage-top-campaign' data-grid={{ i: 'h', x: 0, y: 6, w: 15, h: 7, minW: 2, maxW: 24 }}>
           <MarketingEffeciveChannelTable marketingEffectiveChannel={marketingEffectiveChannel} isLoading={isLoadingMarketingChanel}></MarketingEffeciveChannelTable>
         </div>
-        <div key='k' className='item'>
+        <div key='k' className='item' data-grid={{ i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 }}>
           <Bar options={optionsBar} data={convertDataBar(marketingEffectiveChannel)} />;
         </div>
-        <div key='m' className='item campaign-manage-top-campaign'>
+        <div key='m' className='item campaign-manage-top-campaign' data-grid={{ i: 'm', x: 0, y: 13, w: 6, h: 6, minW: 2, maxW: 24 }}>
           <Doughnut data={convertDataChannelTrans(marketingEffectiveChannel)} />
         </div>
         {/* <div key='n' className='item campaign-manage-top-campaign'>
@@ -815,28 +1077,28 @@ const MarketingCampaignComponent = (props) => {
                   />
                   {/* <Link to='/marketing-campaign-id'>
                   </Link> */}
-                    <InfoIcon
-                      sx={{
-                        height: '24px',
-                        width: '24px',
-                        color: '#1f77b4'
-                      }}
-                      onClick={()=> fetchMarketingEffectiveByCampaignId(row._id)}
-                    />
-                    <Modal open={openDetail} onClose={handleCloseDetail} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
+                  <InfoIcon
+                    sx={{
+                      height: '24px',
+                      width: '24px',
+                      color: '#1f77b4'
+                    }}
+                    onClick={() => fetchMarketingEffectiveByCampaignId(row._id)}
+                  />
+                  <Modal open={openDetail} onClose={handleCloseDetail} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
                     <Box sx={{ ...style, width: 1300, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
-                    <CloseIcon 
-                      onClick={handleCloseDetail}
-                      className='close-icon'
-                      sx={{ 
-                        width: '24px', 
-                        height: '24px', 
-                      }} 
-                    />
-                    <MarketingCampaignDetail marketingCampaignDetail={marketingCampaignDetail}></MarketingCampaignDetail>
+                      <CloseIcon
+                        onClick={handleCloseDetail}
+                        className='close-icon'
+                        sx={{
+                          width: '24px',
+                          height: '24px',
+                        }}
+                      />
+                      <MarketingCampaignDetail marketingCampaignDetail={marketingCampaignDetail}></MarketingCampaignDetail>
                     </Box>
-                     </Modal>
-                
+                  </Modal>
+
                 </StyledTableCell>
               </StyledTableRow>
             )) : null}
@@ -853,14 +1115,14 @@ const MarketingCampaignComponent = (props) => {
         <Box sx={{ ...style, width: 1000, maxHeight: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
           <div id='parent-modal-title'>Quản lý chiến dịch</div>
 
-    <CloseIcon 
-      onClick={handleClose}
-      className='close-icon'
-      sx={{ 
-        width: '24px', 
-        height: '24px', 
-      }} 
-    />
+          <CloseIcon
+            onClick={handleClose}
+            className='close-icon'
+            sx={{
+              width: '24px',
+              height: '24px',
+            }}
+          />
           <div>
             <TableContainer component={Paper} sx={{ minWidth: 700, maxHeight: 480, overflowY: scroll }}>
               <Table sx={{ minWidth: 700, maxHeight: 500, overflowY: scroll }} aria-label='customized table'>
@@ -926,13 +1188,13 @@ const MarketingCampaignComponent = (props) => {
                 </TableBody>
                 <Modal open={openEdit} onClose={handleCloseEdit} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
                   <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
-                  <CloseIcon 
+                    <CloseIcon
                       onClick={handleCloseEdit}
                       className='close-icon'
-                      sx={{ 
-                        width: '24px', 
-                        height: '24px', 
-                      }} 
+                      sx={{
+                        width: '24px',
+                        height: '24px',
+                      }}
                     />
                     <form className='row'>
                       <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
@@ -989,24 +1251,24 @@ const MarketingCampaignComponent = (props) => {
               </Table>
             </TableContainer>
           </div>
-  
+
           <div className="button-container">
-          {/* <ColorButton onClick={handleOpenAddCampaign} sx={{fontSize: 14, color: '#ffff' }} variant='contained'>
+            {/* <ColorButton onClick={handleOpenAddCampaign} sx={{fontSize: 14, color: '#ffff' }} variant='contained'>
             Thêm chiến dịch
           </ColorButton> */}
 
-          <button type="button" onClick={handleOpenAddCampaign} class="btn btn-success">  Thêm chiến dịch</button>
+            <button type="button" onClick={handleOpenAddCampaign} class="btn btn-success">  Thêm chiến dịch</button>
             <Modal open={openAddCampaign} onClose={handleCloseAddCampaign} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
               <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
-                <CloseIcon 
+                <CloseIcon
                   onClick={handleCloseAddCampaign}
                   className='close-icon'
-                  sx={{ 
-                    width: '24px', 
-                    height: '24px', 
-                  }} 
+                  sx={{
+                    width: '24px',
+                    height: '24px',
+                  }}
                 />
-              <form className='row' onSubmit={handleSubmit}>
+                <form className='row' onSubmit={handleSubmit}>
                   <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
                     <div className='form-group'>
                       <label className='form-control-static'>Tên chiến dịch</label>
@@ -1050,21 +1312,21 @@ const MarketingCampaignComponent = (props) => {
                   <button type="button" onClick={handleSubmit} class="btn btn-success btn-on-right"> Thêm</button>
                   <button onClick={handleCloseAddCampaign} className="btn btn-danger btn-on-right">
                     Đóng
-                  </button>                  
+                  </button>
                 </form>
-              
+
               </Box>
             </Modal>
-        <button onClick={handleClose} className="btn btn-danger">
-          Đóng
-        </button>
-      </div>
+            <button onClick={handleClose} className="btn btn-danger">
+              Đóng
+            </button>
+          </div>
         </Box>
       </Modal>
       {/* <ColorButton onClick={handleOpenForecast} sx={{ marginBottom: 2, marginTop: 2, marginLeft: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
         Dự báo
       </ColorButton> */}
-       <button type="button" onClick={handleOpenForecast} class="btn btn-success btn-on-right">  Dự báo</button>
+      <button type="button" onClick={handleOpenForecast} class="btn btn-success btn-on-right">  Dự báo</button>
       <Modal open={openForecast} onClose={handleCloseForecast} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
         <Box sx={{ ...style, width: 700, '& .MuiTextField-root': { m: 1, width: '25ch' } }} component='form' noValidate autoComplete='off'>
           <ColorButton onClick={() => handleButtonClick('button1')} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
