@@ -16,6 +16,7 @@ import { ProjectCreateEditForm } from "../../project-create/components/projectCr
 import { TASK_ACTION_TYPE } from "../../project-create/components/consts";
 import { PROJECT_ACTION_FORM } from "../../projects/constants";
 import { KPIEmployees } from "./kpiEmployees";
+import AlgorithmModal from "./algorithmModal";
 
 function ProjectProposalPage(props) {
   const formatCurrencyVND = (amount) => {
@@ -64,6 +65,27 @@ function ProjectProposalPage(props) {
     isLoading, 
     projectProposalData
   } = projectProposal
+
+  const [algorithmParams, setAlgorithmParams] = useState({
+    hs: {
+      HMS: 60,
+      bw: 1,
+      PAR: 0.5,
+      HMCR: 0.9,
+      maxIter: 30000
+    },
+    dlhs: {
+      HMS: 60,
+      Max_FEs: 30000,
+      R: 100,
+      numOfSub: 4,
+      PSLSize: 5,
+      BW_max: 2,
+      BW_min: 1,
+    }
+  })
+
+  console.log("algorithmParams: ", algorithmParams)
 
   const handleChangeCurrentProject = (e) => {
     setState(prevState => ({
@@ -217,53 +239,58 @@ function ProjectProposalPage(props) {
 
   const converDataKPIOfEmployees = (currentProject, kpiOfEmployees) => {
     const { responsibleEmployees, kpiTarget, usersInProject} = currentProject
-    
-  let labels = [];
-  let datasets = [];
+      
+    let labels = [];
+    let datasets = [];
 
-  if (responsibleEmployees && kpiOfEmployees && kpiTarget && usersInProject) {
-    // Create a mapping of employee _id to their names
-    const employeeNameMap = responsibleEmployees.reduce((acc, employee) => {
-      const userFind = usersInProject.find((item) => item.userId === employee?._id)
-      acc[userFind.employeeId] = employee?.name;
-      return acc;
-    }, {});
+    if (responsibleEmployees && kpiOfEmployees && kpiTarget && usersInProject) {
+      // Create a mapping of employee _id to their names
+      const employeeNameMap = responsibleEmployees.reduce((acc, employee) => {
+        const userFind = usersInProject.find((item) => item.userId === employee?._id)
+        acc[userFind.employeeId] = employee?.name;
+        return acc;
+      }, {});
 
-    // Create a mapping of KPI _id to their names
-    const kpiNameMap = kpiTarget.reduce((acc, kpi) => {
-      acc[kpi._id] = kpi?.type?.name;
-      return acc;
-    }, {});
+      // Create a mapping of KPI _id to their names
+      const kpiNameMap = kpiTarget.reduce((acc, kpi) => {
+        acc[kpi._id] = kpi?.type?.name;
+        return acc;
+      }, {});
 
-    // Get the KPI labels (names) from the kpiNameMap
-    labels = Object.keys(kpiNameMap).map(kpiId => kpiNameMap[kpiId]);
+      // Get the KPI labels (names) from the kpiNameMap
+      labels = Object.keys(kpiNameMap).map(kpiId => kpiNameMap[kpiId]);
 
-    // Iterate through kpiOfEmployees to structure the data
-    Object.keys(kpiOfEmployees).forEach((employeeId) => {
-      const employeeData = kpiOfEmployees[employeeId];
-      const dataEntry = {
-        label: employeeNameMap[employeeId],
-        data: Object.keys(employeeData).map(kpiId => employeeData[kpiId]),
-        backgroundColor: '',
-        borderColor: '',
-        borderWidth: 1
-      };
-      datasets.push(dataEntry);
-    });
+      // Iterate through kpiOfEmployees to structure the data
+      Object.keys(kpiOfEmployees).forEach((employeeId) => {
+        const employeeData = kpiOfEmployees[employeeId];
+        const dataEntry = {
+          label: employeeNameMap[employeeId],
+          data: Object.keys(employeeData).map(kpiId => employeeData[kpiId]),
+          backgroundColor: '',
+          borderColor: '',
+          borderWidth: 1
+        };
+        datasets.push(dataEntry);
+      });
 
-    // Generate colors for each employee
-    const colors = generateColors(datasets.length);
+      // Generate colors for each employee
+      const colors = generateColors(datasets.length);
 
-    // Assign colors to each dataset
-    datasets = datasets.map((entry, index) => ({
-      ...entry,
-      backgroundColor: colors[index],
-      borderColor: colors[index].replace('0.4', '1')
-    }));
+      // Assign colors to each dataset
+      datasets = datasets.map((entry, index) => ({
+        ...entry,
+        backgroundColor: colors[index],
+        borderColor: colors[index].replace('0.4', '1')
+      }));
+    }
+
+    return { labels, datasets };
+  };
+
+  const openModal = (algorithm) => {
+    console.log("vao day")
+    window.$(`#modal-params-${algorithm}`).modal('show')
   }
-
-  return { labels, datasets };
-};
 
   return (
     <React.Fragment>
@@ -282,7 +309,7 @@ function ProjectProposalPage(props) {
                   style={{ width: '100%' }}
                   items={projectOptions}
                   options={{
-                    placeholder: "--- Chon du an can phan bo nguon luc ---"
+                    placeholder: "--- Chọn dự án ---"
                   }}
                   value={currentProject?._id}
                   onChange={handleChangeCurrentProject}
@@ -292,6 +319,15 @@ function ProjectProposalPage(props) {
                 <label>
                   {'Chiến lược phân bổ'}
                   <span className='text-red'>*</span>
+                  <span>
+                    <a 
+                      className="inline-block cursor-pointer ml-2" 
+                      onClick={() => openModal(algorithm)}
+                      aria-haspopup="true"
+                      aria-expanded="true"
+                    > Xem thông tin và cấu hình tham số
+                    </a>
+                  </span>
                 </label>
                 <SelectBox
                   id={`proposal-project-algorithm-id`}
@@ -299,7 +335,7 @@ function ProjectProposalPage(props) {
                   style={{ width: '100%' }}
                   items={proposalAlgorithmItems}
                   options={{
-                    placeholder: "--- Chon chien luoc phan bo nguon luc ---"
+                    placeholder: "--- Chọn chiến lược ---"
                   }}
                   value={algorithm}
                   onChange={handleChangeAlgorithm}
@@ -372,6 +408,7 @@ function ProjectProposalPage(props) {
                       />
                   </div>
                 }
+                <AlgorithmModal algorithm={algorithm} algorithmParams={algorithmParams} setAlgorithmParams={setAlgorithmParams} />
               </div>
             )}
           
