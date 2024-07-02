@@ -113,7 +113,7 @@ export function ChooseRole(props) {
             <tr>
               <th>{translate('manage_role.index')}</th>
               <th>{translate('manage_role.name')}</th>
-              <th>{translate('manage_role.attribute')}</th>
+              <th>{translate('manage_role.attributes')}</th>
               <th style={{ width: '120px' }}>{translate('table.action')}</th>
             </tr>
           </thead>

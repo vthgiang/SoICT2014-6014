@@ -1754,6 +1754,7 @@ export default {
     },
 
     manage_role: {
+      index: 'STT',
       add: 'Thêm',
       add_title: 'Thêm phân quyền mới',
       description: 'Mô tả về phân quyền',

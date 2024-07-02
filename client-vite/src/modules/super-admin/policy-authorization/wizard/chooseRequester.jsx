@@ -15,7 +15,7 @@ export function ChooseRequester(props) {
     proposedRequesterRule: ''
   })
 
-  const { id, next, openEditAttributes, description, filterObject, attributeType } = props
+  const { id, next, openEditAttributes, description, filterObject, attributeType, translation } = props
   const allRequester = useSelector((x) => x.requester.list)
   const availableRequesters = allRequester.filter(filterObject)
   const requesterLoading = useSelector((x) => x.requester.isLoading)
@@ -79,7 +79,7 @@ export function ChooseRequester(props) {
       modalID={`modal-${id}`}
       isLoading={isLoading}
       formID={`form-${id}`}
-      title={translate('manage_authorization_policy.wizard.requester.title')}
+      title={translate(`manage_authorization_policy.wizard.${translation ?? 'requester'}.title`)}
       msg_success={translate('manage_authorization_policy.add_success')}
       msg_failure={translate('manage_authorization_policy.add_fail')}
       func={save}
@@ -92,7 +92,7 @@ export function ChooseRequester(props) {
       <div className={`form-group authorization-wizard-row `}>
         <label>
           <div className='authorization-wizard-title'>
-            {translate('manage_authorization_policy.wizard.requester.choose')}
+            {translate(`manage_authorization_policy.wizard.${translation ?? 'requester'}.choose`)}
             <span className='text-red'>*</span>
           </div>
           <div className='authorization-wizard-description'>{description}</div>
@@ -114,7 +114,7 @@ export function ChooseRequester(props) {
       {/* Display authorized requesters */}
       <div className={`form-group authorization-wizard-row `}>
         <label>
-          <div className='authorization-wizard-title'>{translate('manage_authorization_policy.wizard.requester.authorized')}</div>
+          <div className='authorization-wizard-title'>{translate(`manage_authorization_policy.wizard.${translation ?? 'requester'}.authorized`)}</div>
         </label>
         {/* Bảng dữ liệu */}
         <table className='table table-hover table-striped table-bordered' id='table-requester-wizard'>
@@ -151,7 +151,7 @@ export function ChooseRequester(props) {
         updateRequirement={updateRequirement}
         selectedObjects={state.selectedRequesters}
         id={`${id}-proposed_requirement`}
-        title={translate('manage_authorization_policy.wizard.requester.proposed_requirement')}
+        title={translate(`manage_authorization_policy.wizard.${translation ?? 'requester'}.proposed_requirement`)}
         attributeType={attributeType}
       />
     </DialogModal>

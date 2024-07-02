@@ -1679,6 +1679,7 @@ export default {
     },
 
     manage_role: {
+      index: 'Index',
       add: 'Add',
       add_title: 'Add new role',
       description: 'Description',
