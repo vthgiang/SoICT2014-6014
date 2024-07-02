@@ -2,7 +2,7 @@ const {
   connect
 } = require(`../../../helpers/dbHelper`)
 
-const { AuthorizationAccessLog } = require("../../../models");
+const { AuthorizationAccessLog } = require('../../../models');
 
 
 exports.create = (portal, requesterId, resourceId, accessStatus, policyId) => {

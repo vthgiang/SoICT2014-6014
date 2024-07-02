@@ -238,7 +238,7 @@ exports.editRoleAttribute = async (portal, id, data) => {
         let resArray = [];
         if (array.length > 0) {
 
-            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, '')))).size !== array.length) {
                 throw ['attribute_selected_duplicate'];
             }
 
