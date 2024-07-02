@@ -17,14 +17,7 @@ require('./rabbitmq/server');
 /**
  * Server initial
  */
-fp(8000)
-  .then(([freep]) => {
-    console.log('found ' + freep);
-    const port = process.env.PORT || freep;
-    server.listen(port, () => {
-      console.log(`Server up and running on: ${port} !`);
-    });
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+const port = process.env.PORT || 8000;
+server.listen(port, () => {
+  console.log(`Server up and running on: ${port} !`);
+});

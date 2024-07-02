@@ -17,7 +17,7 @@ services:
 #    container_name: client
     image: node:16-alpine
     ports:
-      - "9000:3000"
+      - "9000:4173"
     env_file:
       - ./client-vite/.env
     volumes:
@@ -53,8 +53,8 @@ services:
   kpi-service:
     container_name: kpi-service
     image: node:16-alpine
-    ports:
-      - "7000:7000"
+    # ports:
+    #   - "7000:7000"
     env_file:
       - ./micro-services/kpi-service/.env
     volumes:
@@ -66,8 +66,8 @@ services:
   task-service:
     container_name: task-service
     image: node:16-alpine
-    ports:
-      - "6000:6000"
+    # ports:
+    #   - "6000:6000"
     env_file:
       - ./micro-services/task-service/.env
     volumes:

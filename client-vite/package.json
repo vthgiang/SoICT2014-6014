@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0 --fix",
-    "preview": "vite preview",
+    "preview": "vite preview --host",
     "start": "env-cmd vite --host",
-    "build": "vite build",
+    "build": "vite --max-old-space-size=4096 build",
     "test": "vite test",
     "eject": "vite eject",
     "format": "prettier 'src/**/*.{js,jsx}' --write --config ./.prettierrc"
