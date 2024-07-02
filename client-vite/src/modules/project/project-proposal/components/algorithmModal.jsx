@@ -192,7 +192,7 @@ function AlgorithmModal(props) {
                   className='form-control'
                   disabled
                   value={algorithm}
-                  onChange={(e) => handleChangeParams(e, 'dlhs', 'HMS')}
+                  onChange={(e) => handleChangeParams(e, 'hs', 'HMS')}
                 ></input>
                 <div className="has-error">
                   <ErrorLabel content={''} />
@@ -242,7 +242,7 @@ function AlgorithmModal(props) {
                 <input
                   type='number'
                   className='form-control'
-                  value={dlhs?.PSLSize}
+                  value={hs?.HMCR}
                   onChange={(e) => handleChangeParams(e, 'hs', 'HMCR')}
                 ></input>
                 <div className="has-error">
@@ -260,7 +260,7 @@ function AlgorithmModal(props) {
                 <input
                   type='number'
                   className='form-control'
-                  value={dlhs?.numOfSub}
+                  value={hs?.PAR}
                   onChange={(e) => handleChangeParams(e, 'hs', 'PAR')}
                 ></input>
                 <div className="has-error">
@@ -277,7 +277,7 @@ function AlgorithmModal(props) {
                 <input
                   type='number'
                   className='form-control'
-                  value={dlhs?.R}
+                  value={hs?.bw}
                   onChange={(e) => handleChangeParams(e, 'hs', 'bw')}
                 ></input>
                 <div className="has-error">
