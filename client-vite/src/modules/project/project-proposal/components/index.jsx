@@ -13,7 +13,6 @@ import KpiBarChart from "./kpiStatistic";
 import ProposalScheduleGanttAsset from "./proposalScheduleGanttAsset";
 import ProposalScheduleGanttTask from "./proposalScheduleGanttTask";
 import { ProjectCreateEditForm } from "../../project-create/components/projectCreateEditForm";
-import { TASK_ACTION_TYPE } from "../../project-create/components/consts";
 import { PROJECT_ACTION_FORM } from "../../projects/constants";
 import { KPIEmployees } from "./kpiEmployees";
 import AlgorithmModal from "./algorithmModal";
@@ -125,7 +124,8 @@ function ProjectProposalPage(props) {
 
   const handleProposalForProject = () => {
     props.proposalForProjectDispatch(currentProject._id, {
-      algorithm: algorithm
+      algorithm,
+      algorithmParams: algorithm === proposalAlgorithmItems[0]?.value ? algorithmParams.dlhs : algorithmParams.hs 
     })
     setIsShowSchedule(false)
     setIsShowPrevProposal(false)

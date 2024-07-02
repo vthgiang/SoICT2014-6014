@@ -12,9 +12,9 @@ const {
   AssetType
 } = require('../../../models');
 const { connect, } = require(`../../../helpers/dbHelper`);
-const { KPI_MAX, KPI_NOT_WORK, KPI_FAIL } = require('./constants');
+const { KPI_MAX, KPI_NOT_WORK, KPI_FAIL, ALGORITHM } = require('./constants');
 const { findTasksWithMatchingTagsAndRequire, findEmployeesWithCapacities, getVectorLength, getDistanceQualityVector, calculateCPM, checkHasAvailableSolution } = require('./helper');
-const { topologicalSort, scheduleTasksWithAssetAndEmpTasks, initRandomHarmonyVector, DLHS, reScheduleTasks, addOptionalAssetsAvailableForTasks } = require('./hs_helper');
+const { topologicalSort, scheduleTasksWithAssetAndEmpTasks, initRandomHarmonyVector, DLHS, reScheduleTasks, addOptionalAssetsAvailableForTasks, harmonySearch } = require('./hs_helper');
 const { splitKPIToEmployeesByKMeans, findBestMiniKPIOfTasks, reSplitKPIOfEmployees } = require('./kmean_helper');
 
 const getInputsFromProject = async (portal, id) => {
@@ -282,7 +282,7 @@ const initHS_Arguments = () => {
   }
 }
 
-const proposalForProjectWithDLHS = (job, kpiInPast, allTasksOutOfProject, DLHS_Arguments, assetHasKPIWeight) => {
+const proposalForProjectWithAlgorithm = (job, kpiInPast, allTasksOutOfProject, assetHasKPIWeight, algorithm, algorithmParams) => {
   const {
     employees, 
     assets,
@@ -360,7 +360,14 @@ const proposalForProjectWithDLHS = (job, kpiInPast, allTasksOutOfProject, DLHS_A
   }
 
   // Step 3
-  let result = DLHS(DLHS_Arguments, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+  let result = {}
+  if (algorithm === ALGORITHM.DLHS) {
+    result = DLHS(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+  } else {
+    // TODO for HS
+    result = harmonySearch(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+  }
+
   if (result?.falseDuplidate) {
     result = reScheduleTasks(result, assetsWithStatus, allTasksOutOfProject, job.willEndDate, job.unitTime)
   }
@@ -375,7 +382,9 @@ const proposalForProjectWithDLHS = (job, kpiInPast, allTasksOutOfProject, DLHS_A
 exports.proposalForProject = async (portal, id, data) => {
   try {
     const job = await getInputsFromProject(portal, id)
-    const { algorithm } = data
+    const { algorithm, algorithmParams } = data
+    // console.log("algorithm, algorithmParams: ", algorithm, algorithmParams)
+
     const allTasksInPast = await Task(connect(DB_CONNECTION, portal)).find({
       status: 'finished',
       taskProject: { $ne: id }
@@ -394,10 +403,19 @@ exports.proposalForProject = async (portal, id, data) => {
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
     
-    const DLHS_Arguments = initDLHS_Arguments()
+    // const DLHS_Arguments = initDLHS_Arguments()
+    let initArguments = {}
+    if (!algorithmParams) {
+      if (algorithm === ALGORITHM.DLHS) {
+        initArguments = initDLHS_Arguments()
+      } else {
+        initArguments = initHS_Arguments()
+      }
+    }
     const assetHasKPIWeight = 0.1
 
-    const result = proposalForProjectWithDLHS(job, kpiInPast, allTasksOutOfProject, DLHS_Arguments, assetHasKPIWeight) 
+    // TODO: update params
+    const result = proposalForProjectWithAlgorithm(job, kpiInPast, allTasksOutOfProject, assetHasKPIWeight, algorithm, algorithmParams ? algorithmParams : initArguments) 
 
     let kpiAssignment = result?.kpiAssignment
     let isCompleteProposal = true

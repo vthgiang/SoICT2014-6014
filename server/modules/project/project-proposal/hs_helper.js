@@ -1372,6 +1372,129 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
   return newHM[0]
 }
 
+function harmonySearch(HS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime) {
+  const { HMS, bw, HMCR, PAR, maxIter } = HS_Arguments
+  let HM = []
+  // Step 1: init HM
+  for (let i = 0; i < HMS; i++) {
+    let randomSolution = initRandomHarmonyVector(tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime)
+    HM.push(randomSolution)
+  }
+
+  // Step 2: improvise solution
+  for (let i = 0; i < maxIter; i++) {
+    const bestSolution = findBestAndWorstHarmonySolution(HM, kpiTarget, kpiOfEmployeesTarget).best
+    const worstSolution = findBestAndWorstHarmonySolution(HM, kpiTarget, kpiOfEmployeesTarget).worst
+
+    let isFitnessSolution = checkIsFitnessSolution(bestSolution, kpiTarget, kpiOfEmployeesTarget)
+
+    let improviseAssignment = []
+    let empAssigned = []
+    let falseAssigneeScore = 0, falseDuplicate = 0
+    let taskInDuplicate = []
+    let currentScheduleOfOptional = {}
+
+    tasks.forEach((task) => {
+      const { availableAssignee, assets, startDate, endDate } = task
+      let randomAssignee = availableAssignee[Math.floor(Math.random() * availableAssignee.length)]
+      let availableCheckDuplicate = availableAssignee.filter((employee) => !checkDuplicate(improviseAssignment, employee, startDate, endDate))
+      if (availableCheckDuplicate?.length) {
+        randomAssignee = availableCheckDuplicate[Math.floor(Math.random() * availableCheckDuplicate.length)]
+      } 
+
+      if (Math.random() < HMCR) {
+        let randomAssignment = HM[Math.floor(Math.random() * HM?.length)].assignment
+        randomAssignee = randomAssignment.find((item) => item.task._id === task._id).assignee
+        if (Math.random() < PAR || !isFitnessSolution) {
+          if (availableCheckDuplicate?.length) {
+            let randomAssigneeIndex = availableAssignee.findIndex((item) => item._id === randomAssignee._id)
+            randomAssigneeIndex = Math.floor(Math.random() * bw + randomAssigneeIndex) % availableCheckDuplicate.length
+            randomAssignee = availableCheckDuplicate[randomAssigneeIndex]
+          } else {
+            let randomAssigneeIndex = availableAssignee.findIndex((item) => item._id === randomAssignee._id)
+            randomAssigneeIndex = Math.floor(Math.random() * bw + randomAssigneeIndex) % availableAssignee.length
+            randomAssignee = availableAssignee[randomAssigneeIndex]
+          }
+        }
+      }
+
+      if (checkDuplicate(improviseAssignment, randomAssignee, startDate, endDate)) {
+        falseDuplicate++
+        taskInDuplicate.push(task._id)
+      }
+
+
+      // Do for assets: TODO
+      let assignedAssets = [...assets] || []
+      const requireOptionalAsset = task?.requireAsset.filter((item) => item.requireType === 'optional')
+      if(requireOptionalAsset && requireOptionalAsset?.length) {
+        const availableOptionalAssets = task?.availableAssetOptional
+        let checkCanAssignOptionalAssets = checkAvailableOptionAssetsIsOkForAssign(availableOptionalAssets, task, randomAssignee, lastKPIs, currentScheduleOfOptional, unitTime, assetHasKPIWeight)
+        if (checkCanAssignOptionalAssets) {
+          assignedAssets.push(...availableOptionalAssets)
+
+          // mark optional assets time
+          for(let i = 0; i < availableOptionalAssets?.length; i++) {
+            let optionalAsset = availableOptionalAssets[i]
+            if (!currentScheduleOfOptional[optionalAsset?._id]) {
+              currentScheduleOfOptional[optionalAsset?._id] = []
+            }
+            currentScheduleOfOptional[optionalAsset?._id].push({
+              startDate: task?.startDate,
+              endDate: task?.endDate
+            })
+          }
+        }
+      }
+
+      if (!empAssigned.includes(randomAssignee._id)) {
+        empAssigned.push(randomAssignee._id)
+      }
+      
+      improviseAssignment.push({
+        task,
+        assignee: randomAssignee,
+        assets: [...assignedAssets]
+      })
+    })
+
+    // total False
+    falseAssigneeScore = employees.length - empAssigned.length
+    // total False assets: TODO
+
+    // get total KPI
+    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight)
+
+    // get total Cost
+    const totalCost = getTotalCost(improviseAssignment, lastKPIs, assetHasKPIWeight, unitTime)
+
+    // getKPI of Employees 
+    const kpiOfEmployees = getKpiOfEmployees(improviseAssignment, employees, lastKPIs, kpiTarget, assetHasKPIWeight)
+
+    //  get distance
+    const distanceWithKPIEmployeesTarget = getDistanceOfKPIEmployeesTarget(kpiOfEmployees, kpiOfEmployeesTarget, kpiTarget)
+
+    const improviseSolution = {
+      assignment: improviseAssignment,
+      falseAssigneeScore,
+      totalCost,
+      kpiAssignment,
+      kpiOfEmployees,
+      distanceWithKPIEmployeesTarget,
+      falseDuplicate,
+      taskInDuplicate,
+      currentScheduleOfOptional
+    }
+
+    const checkIsImproviseSolution = compareSolution(improviseSolution, worstSolution, kpiTarget, kpiOfEmployeesTarget) 
+    if (checkIsImproviseSolution) {
+      updateHarmonyMemory(HM, improviseSolution)
+    }
+  }
+
+  return HM[0]
+}
+
 function getLastestEndDate(assignment) {
   let endDate = new Date(0)
   for (let i = 0; i < assignment.length; i++) {
@@ -1516,5 +1639,6 @@ module.exports = {
   getAvailableTimeForAssetOfTask,
   initRandomHarmonyVector,
   DLHS,
+  harmonySearch,
   reScheduleTasks
 }
