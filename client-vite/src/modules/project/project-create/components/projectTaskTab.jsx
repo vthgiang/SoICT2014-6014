@@ -71,23 +71,6 @@ const ProjectTasksTab = (props) => {
   const listMembersInProject = listUsersWithUnit && listUsersWithUnit?.length > 0 && listMembersInProjectWithUnit && listMembersInProjectWithUnit?.length > 0 ? getListMembersInProject(listMembersInProjectWithUnit, listUsersWithUnit) : []
 
   // Get assets to check capacities in tasks
-
-
-
-  // console.log("projectTasks: ", projectTasks)
-
-  // logs some thing
-  // console.log("listCapacity: ", listCapacityOptions)
-  // console.log("projectKPITarget: ", projectKPITarget)
-  // console.log("projectKPITarget: ", generalProjectInfo)
-  // console.log("projectMembers: ", projectMembers)
-  // console.log("projectAssets: ", projectMembers)
-  // console.log("user: ", user)
-  // console.log("requireAsset: ", )
-
-  // Test moment js
-
-
   const initTaskData = {
     name: '',
     code: '',
@@ -149,17 +132,12 @@ const ProjectTasksTab = (props) => {
     taskKPIWeight,
   } = currentTask
 
-  // console.log("requireAsset: ", requireAsset)
-  // console.log("projectTask: ", projectTasks)
-  // console.log("")
-
   const listPrevTask =
     projectTasks?.map((x) => {
       return { text: x.code, value: x.code?.trim() }
     }) ?? []
 
   // Data on file
-  const [dataImport, setDataImport] = useState([])
   const [errorUpload, setErrorUpload] = useState('')
 
   const handleChangeCurrentTask = (e, key = '') => {

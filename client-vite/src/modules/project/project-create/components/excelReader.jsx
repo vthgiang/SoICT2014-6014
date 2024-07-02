@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react'
 import * as XLSX from 'xlsx'
 import { requiredFields } from './consts'
-
+import { connect } from "react-redux"
+import { withTranslate } from "react-redux-multilingual"
 // tmp object
 /*
 [
@@ -31,7 +32,10 @@ import { requiredFields } from './consts'
 ]
  */
 
-const ExcelReader = ({ onDataLoad, setErrorUpload }) => {
+const ExcelReader = (props) => {
+  const { onDataLoad, setErrorUpload, translate } = props
+  const { multiple = false, disabled = false, accept = '', deleteValue = true } = props
+  
   const [fileName, setFileName] = useState('')
   const fileInputRef = useRef(null)
 
@@ -156,21 +160,40 @@ const ExcelReader = ({ onDataLoad, setErrorUpload }) => {
   }
 
   return (
-    <div>
-      <input
-        type='file'
-        accept='.xls,.xlsx'
-        onChange={handleFileUpload}
-        ref={fileInputRef} // Thêm ref cho input file
-      />
+    <div className='form-group'>
+      <div className='upload btn btn-primary' disabled={disabled}>
+        <i className='fa fa-folder'></i>
+        {' ' + translate('document.choose_file')}
+        <input
+          className='upload'
+          type='file'
+          accept='.xls,.xlsx'
+          onChange={handleFileUpload}
+          disabled={disabled}
+          style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+          ref={fileInputRef} // Thêm ref cho input file
+        />
+      </div>
       {fileName && (
         <div>
-          <button onClick={handleRemoveFile}>Remove File</button>
+          <label className='delete-label-upfile-cmc flex'>
+            <a className="inline-block max-w-xs truncate" title={fileName}>{fileName}</a>
+            <a style={{ cursor: deleteValue ? 'pointer' : 'text', paddingLeft: 4 }} title='Xóa file này'>
+              <i
+                className='fa fa-times'
+                id='delete-icon-upload-cmc'
+                style={{ pointerEvents: deleteValue ? '' : 'none' }}
+                onClick={handleRemoveFile}
+              />
+            </a>
+          </label>
         </div>
       )}
     </div>
   )
 }
 
-export default ExcelReader;
+const mapState = (state) => state
+export default connect(mapState, null)(withTranslate(ExcelReader))
+
 
