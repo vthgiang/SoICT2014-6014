@@ -240,6 +240,11 @@ class SideBar extends Component {
                     path: '/users-management'
                   },
                   {
+                    name: 'menu.manage_service',
+                    icon: 'fa fa-cogs',
+                    path: '/services-management'
+                  },
+                  {
                     name: 'menu.manage_role',
                     icon: 'fa fa-lock',
                     path: '/roles-management'
@@ -248,6 +253,11 @@ class SideBar extends Component {
                     name: 'menu.manage_link',
                     icon: 'fa fa-link',
                     path: '/links-management'
+                  },
+                  {
+                    name: 'menu.manage_requester',
+                    icon: 'fa fa-link',
+                    path: '/requesters-management'
                   },
                   {
                     name: 'menu.manage_attribute',
@@ -934,11 +944,7 @@ class SideBar extends Component {
                     icon: 'fa fa-dollar',
                     path: '/manage-sales-order'
                   },
-                  {
-                    name: 'menu.sales_statistics',
-                    icon: 'fa fa-dollar',
-                    path: '/sales-statistics'
-                  },
+              
                   {
                     name: 'menu.forecast_sales_order',
                     icon: 'fa fa-dollar',
@@ -954,11 +960,7 @@ class SideBar extends Component {
                   //   icon: 'fa fa-shopping-cart',
                   //   path: '/manage-purchase-order'
                   // },
-                  {
-                    name: 'menu.manage_discount',
-                    icon: 'fa fa-arrow-down',
-                    path: '/manage-discount'
-                  },
+                  
                   // {
                   //   name: 'menu.manage_tax',
                   //   icon: 'fa fa-money',

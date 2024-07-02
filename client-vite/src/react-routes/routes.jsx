@@ -49,6 +49,7 @@ const TrainingPlan = lazy(() => import('../modules/training/course/components/co
 const CourseOfUser = lazy(() => import('../modules/training/course/user/components/course'))
 
 const ManageUser = lazy(() => import('../modules/super-admin/user/components'))
+const ManageService = lazy(() => import('../modules/super-admin/service/components'))
 const ManageRole = lazy(() => import('../modules/super-admin/role/components'))
 const ManageLink = lazy(() => import('../modules/super-admin/link/components'))
 const ManageAttribute = lazy(() => import('../modules/super-admin/attribute/components'))
@@ -173,7 +174,7 @@ const SalesStatistics = lazy(() => import('../modules/production/order/sales-sta
 const Forecast = lazy(() => import('../modules/production/order/forecast/components'))
 const Discount = lazy(() => import('../modules/production/order/discount/components'))
 const Quote = lazy(() => import('../modules/production/order/quote/components'))
-const SalesOrderDashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
+const Dashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
 
 const ServiceLevelAgreement = lazy(() => import('../modules/production/order/service-level-agreement/components'))
 const BusinessDepartment = lazy(() => import('../modules/production/order/business-department/components'))
@@ -268,6 +269,7 @@ const SystemApiManagement = lazy(() => import('../modules/system-admin/system-ap
 const PrivilegeApiManagement = lazy(
   () => import('../modules/system-admin/system-api/system-api-privilege/components/privilegeApiManagement')
 )
+const ManageRequester = lazy(() => import('../modules/system-admin/requester-management/components'))
 const InternalServiceIdentityManagement = lazy(() => import('../modules/system-admin/internal-service-identity/components'))
 const ExternalServiceConsumerManagement = lazy(() => import('../modules/super-admin/external-service-consumer/components'))
 const InternalPolicyManagement = lazy(() => import('../modules/system-admin/internal-policy/components'))
@@ -527,6 +529,29 @@ class Routes extends Component {
             component={ManageUser}
           />
           <PrivateRoute
+            isLoading={this.props.service.isLoading}
+            key='services-management'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/services-management',
+                name: 'manage_service',
+                icon: 'fa fa-cogs'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/services-management'
+            path='/services-management'
+            pageName='manage_service'
+            layout={Layout}
+            component={ManageService}
+          />
+          <PrivateRoute
             isLoading={this.props.role.isLoading}
             arrPage={[
               {
@@ -571,6 +596,29 @@ class Routes extends Component {
             pageName='manage_link'
             layout={Layout}
             component={ManageLink}
+          />
+          <PrivateRoute
+            isLoading={this.props.requester.isLoading}
+            key='requesters-management'
+            arrPage={[
+              {
+                requester: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                requester: '/requesters-management',
+                name: 'manage_requester',
+                icon: 'fa fa-link'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/requesters-management'
+            path='/requesters-management'
+            pageName='manage_requester'
+            layout={Layout}
+            component={ManageRequester}
           />
           <PrivateRoute
             isLoading={this.props.attribute.isLoading}
@@ -3100,7 +3148,7 @@ class Routes extends Component {
             path='/manage-sales-order-dashboard'
             pageName='manage_sales_order_dashboard'
             layout={Layout}
-            component={SalesOrderDashboard}
+            component={Dashboard}
           />
 
           <PrivateRoute

@@ -770,11 +770,19 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/services-management',
+        apis: ['@all'],
+    },
+    {
         url: '/roles-management',
         apis: ['@all'],
     },
     {
         url: '/links-management',
+        apis: ['@all'],
+    },
+    {
+        url: '/requesters-management',
         apis: ['@all'],
     },
     {

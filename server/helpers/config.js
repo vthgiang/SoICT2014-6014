@@ -373,6 +373,13 @@ const LINKS = [
     components: getComponentsInLink("/users-management"),
   },
   {
+      url: "/services-management",
+      description: "Quản lý dịch vụ",
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink('/services-management'),
+  },
+  {
     url: "/roles-management",
     description: "Quản lý phân quyền",
     category: LINK_CATEGORY.RBAC.name,
@@ -385,6 +392,43 @@ const LINKS = [
     category: LINK_CATEGORY.RBAC.name,
     roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
     components: getComponentsInLink("/links-management"),
+  },
+  {
+    url: "/attributes-management",
+    description: "Quản lý thuộc tính phân quyền",
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink("/attributes-management")
+  },
+  {
+    url: "/policies-management",
+    description: "Quản lý chính sách phân quyền",
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    components: getComponentsInLink("/policies-management")
+  },
+  {
+    url: "/delegation-receive",
+    description: "Danh sách nhận ủy quyền",
+    category: LINK_CATEGORY.DELEGATION.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER,
+        ROOT_ROLES.DEPUTY_MANAGER,
+        ROOT_ROLES.EMPLOYEE,
+    ],
+    components: getComponentsInLink("/delegation-receive")
+  },
+  {
+    url: "/requesters-management",
+    description: "Quản lý requester",
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink("/requesters-management"),
   },
   {
     url: "/apis-management",
@@ -1537,14 +1581,26 @@ const LINKS = [
     url: "/marketing-campaign",
     description: "Quản lý chiến dịch tiếp thị",
     category: LINK_CATEGORY.KPI.name,
-    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
     components: getComponentsInLink("/marketing-campaign"),
   },
   {
     url: "/marketing-campaign-id",
     description: "Quản lý chiến dịch tiếp thị",
     category: LINK_CATEGORY.KPI.name,
-    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
     components: getComponentsInLink("/marketing-campaign-id"),
   },
   {
