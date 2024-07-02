@@ -1,48 +1,6 @@
 import { getStorage } from '../../../../config'
 import { sendRequest } from '../../../../helpers/requestHelper'
 
-export const taskManagementService = {
-  getResponsibleTaskByUser,
-  getAccountableTaskByUser,
-  getConsultedTaskByUser,
-  getInformedTaskByUser,
-  getCreatorTaskByUser,
-  getPaginateTasksByUser,
-  getPaginateTasks,
-  getPaginatedTasksByOrganizationalUnit,
-  getAllTasksThatHasEvaluation,
-
-  addNewTask,
-  editTask,
-  deleteTaskById,
-  getSubTask,
-
-  getTasksByUser,
-  getTaskEvaluations,
-  getTaskInOrganizationUnitByMonth,
-
-  getTaskAnalysOfUser,
-  getTaskByPriorityInOrganizationUnit,
-  getTimeSheetOfUser,
-  getAllUserTimeSheet,
-
-  addNewProjectTask,
-  getTasksByProject,
-  importTasks,
-
-  getOrganizationTaskDashboardChart,
-
-  saveTaskAttributes,
-  addTaskDelegation,
-  revokeTaskDelegation,
-  deleteTaskDelegation,
-  confirmTaskDelegation,
-  rejectTaskDelegation,
-  editTaskDelegation,
-
-  proposalPersonnel
-}
-
 /**
  * lấy công việc theo người thực hiện
  * @param {*} unit đơn vị
@@ -898,4 +856,60 @@ function proposalPersonnel(data) {
     false,
     'task.task_management'
   )
+}
+
+const getCurrentUserProgressTask = (payload) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/task/diagrams/progress-task/`,
+      method: 'GET',
+      data: payload
+    },
+    false,
+    false,
+    'task.task_management'
+  )
+}
+
+export const taskManagementService = {
+  getResponsibleTaskByUser,
+  getAccountableTaskByUser,
+  getConsultedTaskByUser,
+  getInformedTaskByUser,
+  getCreatorTaskByUser,
+  getPaginateTasksByUser,
+  getPaginateTasks,
+  getPaginatedTasksByOrganizationalUnit,
+  getAllTasksThatHasEvaluation,
+
+  addNewTask,
+  editTask,
+  deleteTaskById,
+  getSubTask,
+
+  getTasksByUser,
+  getTaskEvaluations,
+  getTaskInOrganizationUnitByMonth,
+
+  getTaskAnalysOfUser,
+  getTaskByPriorityInOrganizationUnit,
+  getTimeSheetOfUser,
+  getAllUserTimeSheet,
+
+  addNewProjectTask,
+  getTasksByProject,
+  importTasks,
+
+  getOrganizationTaskDashboardChart,
+
+  saveTaskAttributes,
+  addTaskDelegation,
+  revokeTaskDelegation,
+  deleteTaskDelegation,
+  confirmTaskDelegation,
+  rejectTaskDelegation,
+  editTaskDelegation,
+
+  proposalPersonnel,
+  getCurrentUserProgressTask
 }

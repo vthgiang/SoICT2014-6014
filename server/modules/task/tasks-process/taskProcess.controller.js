@@ -5,334 +5,346 @@ const Logger = require(`../../../logs`);
 
 /**
  * hàm lấy tất cả các process
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.get = async (req, res) => {
-	if (req.query.type === "template") {
-		this.getAllXmlDiagrams(req, res);
-	}
-	else if (req.query.type === "task") {
-		this.getAllTaskProcess(req, res);
-	}
-}
+  if (req.query.type === 'template') {
+    this.getAllXmlDiagrams(req, res);
+  } else if (req.query.type === 'task') {
+    this.getAllTaskProcess(req, res);
+  }
+};
 
 /**
  * Lấy tất cả diagram
  */
 exports.getAllXmlDiagrams = async (req, res) => {
-	try {
-		var data = await TaskProcessService.getAllXmlDiagram(req.portal, req.query);
-		await Logger.info(req.user.email, `get all xml diagram `, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['get_all_success'],
-			content: data
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `get all xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['get_all_err'],
-			content: error
-		});
-	}
-}
+  try {
+    var data = await TaskProcessService.getAllXmlDiagram(req.portal, req.query);
+    await Logger.info(req.user.email, `get all xml diagram `, req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['get_all_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `get all xml diagram `, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['get_all_err'],
+      content: error,
+    });
+  }
+};
 /**
  * Lấy  diagram theo id
  */
 exports.getXmlDiagramById = async (req, res) => {
-	try {
-		var data = await TaskProcessService.getXmlDiagramById(req.portal, req.params);
-		await Logger.info(req.user.email, `get all xml diagram `, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['get_by_id_success'],
-			content: data
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `get all xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['get_by_id_err'],
-			content: error
-		});
-	}
-}
+  try {
+    var data = await TaskProcessService.getXmlDiagramById(req.portal, req.params);
+    await Logger.info(req.user.email, `get all xml diagram `, req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['get_by_id_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `get all xml diagram `, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['get_by_id_err'],
+      content: error,
+    });
+  }
+};
 /**
  * tạo mới diagram
  */
 exports.createXmlDiagram = async (req, res) => {
-	try {
-		var data = await TaskProcessService.createXmlDiagram(req.portal, req.body);
-		await Logger.info(req.user.email, `create xml diagram `, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['create_success'],
-			content: data
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `create xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['create_error'],
-			content: error
-		});
-	}
-}
+  try {
+    var data = await TaskProcessService.createXmlDiagram(req.portal, req.body);
+    await Logger.info(req.user.email, `create xml diagram `, req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['create_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `create xml diagram `, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['create_error'],
+      content: error,
+    });
+  }
+};
 
 /**
  * chỉnh sửa mới diagram
  */
 exports.editXmlDiagram = async (req, res) => {
-	try {
-		var data = await TaskProcessService.editXmlDiagram(req.portal, req.params, req.body);
-		await Logger.info(req.user.email, `edit xml diagram `, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['edit_success'],
-			content: data
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['edit_failure'],
-			content: error
-		});
-	}
-}
+  try {
+    var data = await TaskProcessService.editXmlDiagram(req.portal, req.params, req.body);
+    await Logger.info(req.user.email, `edit xml diagram `, req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['edit_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `edit xml diagram `, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['edit_failure'],
+      content: error,
+    });
+  }
+};
 
 /**
  * xóa diagram
  */
 exports.deleteXmlDiagram = async (req, res) => {
-	try {
-		var data = await TaskProcessService.deleteXmlDiagram(req.portal, req.params.diagramId, req.query);
+  try {
+    var data = await TaskProcessService.deleteXmlDiagram(req.portal, req.params.diagramId, req.query);
 
-		await Logger.info(req.user.email, `delete xml diagram `, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['delete_success'],
-			content: data
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['delete_failure'],
-			content: error
-		});
-	}
-}
+    await Logger.info(req.user.email, `delete xml diagram `, req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['delete_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `edit xml diagram `, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['delete_failure'],
+      content: error,
+    });
+  }
+};
 exports.deleteTaskProcess = async (req, res) => {
-	try {
-		var data = await TaskProcessService.deleteTaskProcess(req.portal, req.params.taskProcessId, req.query);
-		// console.log(data);
-		await Logger.info(req.user.email, `delete taskProcess `, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['delete_success'],
-			content: data
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['delete_failure'],
-			content: error
-		});
-	}
-}
+  try {
+    var data = await TaskProcessService.deleteTaskProcess(req.portal, req.params.taskProcessId, req.query);
+    // console.log(data);
+    await Logger.info(req.user.email, `delete taskProcess `, req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['delete_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `edit xml diagram `, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['delete_failure'],
+      content: error,
+    });
+  }
+};
 /**
  * Lấy  process theo id
  */
- exports.getProcessById = async (req, res) => {
-	try {
-		var data = await TaskProcessService.getProcessById(req.portal, req.params);
-		await Logger.info(req.user.email, `get Process by id `, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['get_by_id_success'],
-			content: data
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `get Process by id `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['get_by_id_err'],
-			content: error
-		});
-	}
-}
+exports.getProcessById = async (req, res) => {
+  try {
+    var data = await TaskProcessService.getProcessById(req.portal, req.params);
+    await Logger.info(req.user.email, `get Process by id `, req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['get_by_id_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `get Process by id `, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['get_by_id_err'],
+      content: error,
+    });
+  }
+};
 
 /**
  * Tạo công việc theo quy trình
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.createTaskByProcess = async (req, res) => {
-	try {
-		let data = await TaskProcessService.createTaskByProcess(req.portal, req.params.processId, req.body);
-		let process = data.process;
-		let mails = data.mailInfo;
-		for (let i in mails) {
-			
-			let task = mails[i].task;
-			console.log("task",task.organizationalUnit)
-			let user = mails[i].user;
-			let email = mails[i].email;
-			let html = mails[i].html;
-			let mailData = { 
-				"organizationalUnits": task.organizationalUnit, 
-				"title": "Tạo mới công việc", 
-				"level": "general", 
-				"content": html, 
-				"sender": task.organizationalUnit.name, 
-				"users": user,
-				associatedDataObject: {
-                dataType: 1,
-                description: `<strong>${req.user.name}</strong>: đã tạo mới công việc theo quy trình `
-            }
-			};
-			
-			// Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
-			let collaboratedEmail = mails[i].collaboratedEmail;
-			let collaboratedHtml = mails[i].collaboratedHtml;
-			let collaboratedData = {
-				organizationalUnits: task.organizationalUnit._id,
-				title: "Tạo mới công việc được phối hợp với đơn vị bạn",
-				level: "general",
-				content: collaboratedHtml,
-				sender: task.organizationalUnit.name,
-				users: mails[i].managersOfOrganizationalUnitThatHasCollaborated
-			};
-			
-			NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData,);
-			sendEmail(email, "Tạo mới công việc hành công", '', html);
+  try {
+    let data = await TaskProcessService.createTaskByProcess(req.portal, req.params.processId, req.body);
+    let process = data.process;
+    let mails = data.mailInfo;
+    for (let i in mails) {
+      let task = mails[i].task;
+      console.log('task', task.organizationalUnit);
+      let user = mails[i].user;
+      let email = mails[i].email;
+      let html = mails[i].html;
+      let mailData = {
+        organizationalUnits: task.organizationalUnit,
+        title: 'Tạo mới công việc',
+        level: 'general',
+        content: html,
+        sender: task.organizationalUnit.name,
+        users: user,
+        associatedDataObject: {
+          dataType: 1,
+          description: `<strong>${req.user.name}</strong>: đã tạo mới công việc theo quy trình `,
+        },
+      };
 
-			NotificationServices.createNotification(req.portal, task.organizationalUnit.company, collaboratedData);
-			collaboratedEmail && collaboratedEmail.length !== 0
-            && sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
+      // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
+      let collaboratedEmail = mails[i].collaboratedEmail;
+      let collaboratedHtml = mails[i].collaboratedHtml;
+      let collaboratedData = {
+        organizationalUnits: task.organizationalUnit._id,
+        title: 'Tạo mới công việc được phối hợp với đơn vị bạn',
+        level: 'general',
+        content: collaboratedHtml,
+        sender: task.organizationalUnit.name,
+        users: mails[i].managersOfOrganizationalUnitThatHasCollaborated,
+      };
 
-		}
-		await Logger.info(req.user.email, `create_task_by_process`, req.portal);
-		
-		res.status(200).json({
-			success: true,
-			messages: ['create_task_by_process_success'],
-			content: process,
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `create_task_by_process`, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['create_task_by_process_failure'],
-			content: error,
-		});
-	}
-}
+      NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData);
+      sendEmail(email, 'Tạo mới công việc hành công', '', html);
+
+      NotificationServices.createNotification(req.portal, task.organizationalUnit.company, collaboratedData);
+      collaboratedEmail &&
+        collaboratedEmail.length !== 0 &&
+        sendEmail(collaboratedEmail, 'Đơn vị bạn được phối hợp thực hiện công việc mới', '', collaboratedHtml);
+    }
+    await Logger.info(req.user.email, `create_task_by_process`, req.portal);
+
+    res.status(200).json({
+      success: true,
+      messages: ['create_task_by_process_success'],
+      content: process,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `create_task_by_process`, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['create_task_by_process_failure'],
+      content: error,
+    });
+  }
+};
 
 /**
  * lấy tất cả danh sách quy trình công việc
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.getAllTaskProcess = async (req, res) => {
-	// try {
-		var data = await TaskProcessService.getAllTaskProcess(req.portal, req.query);
-		await Logger.info(req.user.email, `get_all_task_process_success`, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['get_all_task_process_success'],
-			content: data,
-		});
-	// } catch (error) {
-	// 	await Logger.error(req.user.email, `get_all_task_process_failure`, req.portal);
-	// 	res.status(400).json({
-	// 		success: false,
-	// 		messages: ['get_all_task_process_failure'],
-	// 		content: error,
-	// 	});
-	// }
-}
-
+  // try {
+  var data = await TaskProcessService.getAllTaskProcess(req.portal, req.query);
+  await Logger.info(req.user.email, `get_all_task_process_success`, req.portal);
+  res.status(200).json({
+    success: true,
+    messages: ['get_all_task_process_success'],
+    content: data,
+  });
+  // } catch (error) {
+  // 	await Logger.error(req.user.email, `get_all_task_process_failure`, req.portal);
+  // 	res.status(400).json({
+  // 		success: false,
+  // 		messages: ['get_all_task_process_failure'],
+  // 		content: error,
+  // 	});
+  // }
+};
 
 /**
  * cập nhật diagram
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 
-
 exports.updateDiagram = async (req, res) => {
-	try {
-		var data = await TaskProcessService.updateDiagram(req.portal, req.params, req.body);
-		await Logger.info(req.user.email, `update diagram`, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['update_task_process_success'],
-			content: data,
-		});
-	} catch (error) {
-		await Logger.error(req.user.email, `update diagram`, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['update_task_process_failure'],
-			content: error,
-		});
-	}
-}
+  try {
+    var data = await TaskProcessService.updateDiagram(req.portal, req.params, req.body);
+    await Logger.info(req.user.email, `update diagram`, req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['update_task_process_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, `update diagram`, req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['update_task_process_failure'],
+      content: error,
+    });
+  }
+};
+
+exports.getListUserProgressTask = async (request, response) => {
+  try {
+	  await Logger.info(request.user.email, `update diagram`, request.portal);
+	  console.log(request)
+    response.status(200).json({
+      success: true,
+      messages: ['update_task_process_success'],
+      content: [],
+    });
+  } catch (error) {
+    await Logger.error(request.user.email, `update diagram`, request.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['get_list_progress_task_failure'],
+      content: error,
+    });
+  }
+};
 
 /**
  * cập nhật thông tin quy trình công việc
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.editProcessInfo = async (req, res) => {
-	// try {
-		var data = await TaskProcessService.editProcessInfo(req.portal, req.params, req.body);
-		await Logger.info(req.user.email, `update info process`, req.portal);
-		// console.log(data);
-		res.status(200).json({
-			success: true,
-			messages: ['edit_info_process_success'],
-			content: data,
-		});
-	// } catch (error) {
-	// 	await Logger.error(req.user.email, `update info process`, req.portal);
-	// 	res.status(400).json({
-	// 		success: false,
-	// 		messages: ['edit_info_process_failure'],
-	// 		content: error,
-	// 	});
-	// }
-}
-
-
+  // try {
+  var data = await TaskProcessService.editProcessInfo(req.portal, req.params, req.body);
+  await Logger.info(req.user.email, `update info process`, req.portal);
+  // console.log(data);
+  res.status(200).json({
+    success: true,
+    messages: ['edit_info_process_success'],
+    content: data,
+  });
+  // } catch (error) {
+  // 	await Logger.error(req.user.email, `update info process`, req.portal);
+  // 	res.status(400).json({
+  // 		success: false,
+  // 		messages: ['edit_info_process_failure'],
+  // 		content: error,
+  // 	});
+  // }
+};
 
 /**
  * impoort file excel mẫu quy trình
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 
-
 exports.importProcessTemplate = async (req, res) => {
-	// try {
-		let result = await TaskProcessService.importProcessTemplate(req.portal, req.body.data, req.body.idUser);
-		await Logger.info(req.user.email, `import process`, req.portal);
-		res.status(200).json({
-			success: true,
-			messages: ['import_process_success'],
-			content: result,
-		});
-	// } catch (error) {
-	// 	await Logger.error(req.user.email, `import process`, req.portal);
-	// 	res.status(400).json({
-	// 		success: false,
-	// 		messages: ['import_process_failure'],
-	// 		content: error,
-	// 	});
-	// }
-}
+  // try {
+  let result = await TaskProcessService.importProcessTemplate(req.portal, req.body.data, req.body.idUser);
+  await Logger.info(req.user.email, `import process`, req.portal);
+  res.status(200).json({
+    success: true,
+    messages: ['import_process_success'],
+    content: result,
+  });
+  // } catch (error) {
+  // 	await Logger.error(req.user.email, `import process`, req.portal);
+  // 	res.status(400).json({
+  // 		success: false,
+  // 		messages: ['import_process_failure'],
+  // 		content: error,
+  // 	});
+  // }
+};

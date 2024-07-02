@@ -50,6 +50,7 @@ const handleStartAllocation = async (portal, kpiData, numberGeneration, solution
       payload: JSON.parse(payload),
     };
   } catch (error) {
+    console.log(error)
     console.error('Error fetching data from API:', error.message);
   }
 };

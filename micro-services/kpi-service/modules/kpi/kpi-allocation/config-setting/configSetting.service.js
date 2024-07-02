@@ -14,7 +14,6 @@ const {
 const { connect } = require('../../../../helpers/dbHelper');
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
-const axios = require('axios');
 
 // /**
 //  * Get config setting data base company id
@@ -22,7 +21,7 @@ const axios = require('axios');
 //  * @param {*} portal
 //  */
 const getConfigSettingData = async (company_id, portal) => {
-  const companyConfigSetting = await AllocationConfigSetting(connect(DB_CONNECTION, portal)).find({ company: new ObjectId(company_id) });
+  const companyConfigSetting = await AllocationConfigSetting(connect(DB_CONNECTION, portal)).find({});
   return companyConfigSetting;
 };
 

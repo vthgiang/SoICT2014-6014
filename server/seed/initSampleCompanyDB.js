@@ -8997,26 +8997,26 @@ const initSampleCompanyDB = async () => {
 
   console.log('Khởi tạo xong dữ liệu vận chuyển');
 
-  /*---------------------------------------------------------------------------------------------
-      -----------------------------------------------------------------------------------------------
-          TẠO DỮ LIỆU CẤU HÌNH GIẢI THUẬT CHO GIẢI THUẬT PHÂN BỔ KPI
-      -----------------------------------------------------------------------------------------------
-      ----------------------------------------------------------------------------------------------- */
-  console.log('Khởi tạo cấu hình giải thuật cho giải thuật phân bổ KPI');
+  // /*---------------------------------------------------------------------------------------------
+  //     -----------------------------------------------------------------------------------------------
+  //         TẠO DỮ LIỆU CẤU HÌNH GIẢI THUẬT CHO GIẢI THUẬT PHÂN BỔ KPI
+  //     -----------------------------------------------------------------------------------------------
+  //     ----------------------------------------------------------------------------------------------- */
+  // console.log('Khởi tạo cấu hình giải thuật cho giải thuật phân bổ KPI');
 
-  await AllocationConfigSetting(vnistDB).create({
-    company: vnist._id,
-    numberGeneration: 200,
-    solutionSize: 50,
-    isAutomatically: true,
-    defaultSetting: {
-      numberGeneration: 200,
-      solutionSize: 50,
-      isAutomatically: true,
-    },
-  });
+  // await AllocationConfigSetting(vnistDB).create({
+  //   company: vnist._id,
+  //   numberGeneration: 200,
+  //   solutionSize: 50,
+  //   isAutomatically: true,
+  //   defaultSetting: {
+  //     numberGeneration: 200,
+  //     solutionSize: 50,
+  //     isAutomatically: true,
+  //   },
+  // });
 
-  console.log('Khởi tạo xong cấu hình giải thuật cho giải thuật phân bổ KPI');
+  // console.log('Khởi tạo xong cấu hình giải thuật cho giải thuật phân bổ KPI');
 
   /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------

@@ -124,6 +124,12 @@ function TaskDashboard(props) {
     dispatch(taskManagementActions.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
     dispatch(taskManagementActions.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
     dispatch(taskManagementActions.getTimeSheetOfUser(getStorage('userId'), month, year))
+    const payload = {
+      currentUserId: getStorage('userId'),
+      month,
+      year
+    }
+    dispatch(taskManagementActions.getCurrentUserProgressTask(payload))
   }, [dispatch])
 
   const convertType = (value) => {

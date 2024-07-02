@@ -21,6 +21,7 @@ const {
   Employee,
   Field,
   CareerPosition,
+  AllocationConfigSetting,
 } = require('../models');
 
 const initSampleCompanyDB = async () => {
@@ -96,6 +97,7 @@ const initSampleCompanyDB = async () => {
     if (!db.models.Employee) Employee(db);
     if (!db.models.Field) Field(db);
     if (!db.models.CareerPosition) CareerPosition(db);
+    if (!db.models.AllocationConfigSetting) AllocationConfigSetting(db);
   };
   initModels(vnistDB);
 
@@ -1729,6 +1731,27 @@ const initSampleCompanyDB = async () => {
   // // Nếu bạn muốn lưu kết quả vào một file JSON
   // const fs = require('fs');
   // fs.writeFileSync('result.json', JSON.stringify(result, null, 2));
+
+  /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU CẤU HÌNH GIẢI THUẬT CHO GIẢI THUẬT PHÂN BỔ KPI
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+  console.log('Khởi tạo cấu hình giải thuật cho giải thuật phân bổ KPI');
+
+  await AllocationConfigSetting(vnistDB).create({
+    company: vnist._id,
+    numberGeneration: 200,
+    solutionSize: 50,
+    isAutomatically: true,
+    defaultSetting: {
+      numberGeneration: 200,
+      solutionSize: 50,
+      isAutomatically: true,
+    },
+  });
+
+  console.log('Khởi tạo xong cấu hình giải thuật cho giải thuật phân bổ KPI');
 
   vnistDB.close();
   systemDB.close();
