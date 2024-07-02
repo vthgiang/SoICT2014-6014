@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
@@ -47,21 +47,21 @@ const DelegationSchema = new Schema({
     status: {
         // có 3 trạng thái của ủy quyền
         type: String,
-        default: "pending",
+        default: 'pending',
         enum: [
-            "activated", // Đang hoạt động
-            "pending", // Chờ kích hoạt
-            "revoked", // Thu hồi
+            'activated', // Đang hoạt động
+            'pending', // Chờ kích hoạt
+            'revoked', // Thu hồi
         ],
     },
     replyStatus: {
         // Có 3 trạng thái phản hồi
         type: String,
-        default: "wait_confirm",
+        default: 'wait_confirm',
         enum: [
-            "declined", // Từ chối
-            "confirmed", // Xác nhận
-            "wait_confirm" // Chờ xác nhận
+            'declined', // Từ chối
+            'confirmed', // Xác nhận
+            'wait_confirm' // Chờ xác nhận
         ],
     },
     declineReason: {
@@ -107,7 +107,7 @@ const DelegationSchema = new Schema({
             // Requester
             requester: {
                 type: Schema.Types.ObjectId,
-                ref: "Requester",
+                ref: 'Requester',
             },
             // Nội dung
             content: {
@@ -120,18 +120,18 @@ const DelegationSchema = new Schema({
             // Loại log
             category: {
                 type: String,
-                default: "page_access",
+                default: 'page_access',
                 enum: [
-                    "login",
-                    "logout",
-                    "page_access",
-                    "create",
-                    "edit",
-                    "revoke",
-                    "confirm",
-                    "reject",
-                    "activate",
-                    "switch_delegate_role"
+                    'login',
+                    'logout',
+                    'page_access',
+                    'create',
+                    'edit',
+                    'revoke',
+                    'confirm',
+                    'reject',
+                    'activate',
+                    'switch_delegate_role'
                 ],
             }
         },

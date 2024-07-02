@@ -61,7 +61,7 @@ exports.getDelegations = async (req, res) => {
         });
     } catch (error) {
         console.log(error)
-        await Log.error(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+        await Log.error(req.user.email, 'GET_ALL_DELEGATIONS', req.portal);
 
         res.status(400).json({
             success: false,
@@ -115,19 +115,19 @@ exports.getDelegationById = async (req, res) => {
         const delegationHandler = createDelegationHandler(delegateType);
         let { id } = req.params;
         let delegation = await delegationHandler.getDelegationById(req.portal, id);
-        await Log.info(req.user.email, "get_delegation_by_id", req.portal);
+        await Log.info(req.user.email, 'get_delegation_by_id', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_delegation_by_id_success"],
+            messages: ['get_delegation_by_id_success'],
             content: delegation
         });
     } catch (error) {
         console.log(error)
-        await Log.error(req.user.email, "get_delegation_by_id", req.portal);
+        await Log.error(req.user.email, 'get_delegation_by_id', req.portal);
 
         res.status(400).json({
             success: false,
-            messages: ["get_delegation_by_id_fail"],
+            messages: ['get_delegation_by_id_fail'],
             content: error.message
         });
     }

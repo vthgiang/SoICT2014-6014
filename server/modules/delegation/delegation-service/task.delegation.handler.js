@@ -19,14 +19,14 @@ function TaskDelegationHandler() {
         {
             path: 'delegateObject', select: '_id name taskActions logs timesheetLogs',
             populate: [
-                { path: "taskActions.creator", select: "name email avatar" },
+                { path: 'taskActions.creator', select: 'name email avatar' },
                 {
-                    path: "taskActions.evaluations.creator",
-                    select: "name email avatar ",
+                    path: 'taskActions.evaluations.creator',
+                    select: 'name email avatar ',
                 },
-                { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
-                { path: "timesheetLogs.creator", select: "name avatar _id email" },
-                { path: "logs.creator", select: "_id name avatar email " }
+                { path: 'taskActions.timesheetLogs.creator', select: '_id name email avatar' },
+                { path: 'timesheetLogs.creator', select: 'name avatar _id email' },
+                { path: 'logs.creator', select: '_id name avatar email ' }
             ]
         },
     );
@@ -41,7 +41,7 @@ Object.assign(TaskDelegationHandler.prototype, {
         const [delegateTask, policy, delegator, delegatee] =
             await Promise.all([
                 Task(connect(DB_CONNECTION, portal)).findById(data.delegateObject).populate({
-                    path: "delegations", populate: [
+                    path: 'delegations', populate: [
                         { path: 'delegatee', select: '_id name' },
                         { path: 'delegator', select: '_id name company' },
                     ]
@@ -54,12 +54,12 @@ Object.assign(TaskDelegationHandler.prototype, {
         const checkDelegationExist = await Delegation(connect(DB_CONNECTION, portal)).find({
             delegator: delegator._id,
             // delegatee: data.delegatee,
-            delegateObjectType: "Task",
+            delegateObjectType: 'Task',
             delegateObject: data.delegateObject,
             status: {
                 $in: [
-                    "activated", // Đang hoạt động
-                    "pending", // Chờ xác nhận
+                    'activated', // Đang hoạt động
+                    'pending', // Chờ xác nhận
                 ]
             }
         }).populate([
@@ -69,7 +69,7 @@ Object.assign(TaskDelegationHandler.prototype, {
 
         let delegationToDelegatee = checkDelegationExist.filter(e => e.delegatee?.refId.toString() == data.delegatee.toString());
         if (delegationToDelegatee.length > 0 && delegationToDelegatee.map(e => e.metaData.delegateTaskRoles).flat().some(e => { return data.delegateTaskRoles.includes(e) }) && !data.notCheck) {
-            throw ["delegation_task_exist"]; // Đã tồn tại ủy quyền công việc với vai trò cho người nhận ủy quyền
+            throw ['delegation_task_exist']; // Đã tồn tại ủy quyền công việc với vai trò cho người nhận ủy quyền
         }
 
         let delegateTaskRolesExist = checkDelegationExist.map(e => e.metaData.delegateTaskRoles).flat();
@@ -107,7 +107,7 @@ Object.assign(TaskDelegationHandler.prototype, {
             }
             if (r == 'informed') {
                 if (checkDelegationExist.map(d => d.metaData.delegatorHasInformed).includes(false)) {
-                    throw ["informed_get_by_delegation"] // Vai trò quan sát có qua ủy quyền không thể ủy
+                    throw ['informed_get_by_delegation'] // Vai trò quan sát có qua ủy quyền không thể ủy
                 }
                 if (delegateTask.informedEmployees.includes(data.delegatee)) {
                     errorRole = r;
@@ -118,15 +118,15 @@ Object.assign(TaskDelegationHandler.prototype, {
         })
 
         if (errorRole) {
-            throw ["delegatee_already_in_task_" + errorRole] // Người nhận đã đảm nhận vai trò errorRole trong công việc
+            throw ['delegatee_already_in_task_' + errorRole] // Người nhận đã đảm nhận vai trò errorRole trong công việc
         }
 
         if (!isToday(new Date(data.startDate)) && compareDate(new Date(data.startDate), new Date()) < 0) {
-            throw ["start_date_past"]
+            throw ['start_date_past']
         }
 
         if (data.endDate != null && compareDate(new Date(data.endDate), new Date()) < 0) {
-            throw ["end_date_past"]
+            throw ['end_date_past']
         }
 
         await this.checkDelegationPolicy(portal, policy, delegator, delegatee, delegateObject);
@@ -141,7 +141,7 @@ Object.assign(TaskDelegationHandler.prototype, {
         	startDate: data.startDate,
         	endDate: data.endDate,
         	// revokedDate: data.revokedDate,
-            status: isToday(new Date(data.startDate)) ? "activated" : "pending",
+            status: isToday(new Date(data.startDate)) ? 'activated' : 'pending',
         	// replyStatus: data.replyStatus,
         	// declineReason: data.declineReason,
         	// revokeReason: data.revokeReason,
@@ -189,7 +189,7 @@ Object.assign(TaskDelegationHandler.prototype, {
         ]);
         const checkDelegationExisted = await Delegation(connect(DB_CONNECTION, portal)).findOne({ name: data.name })
         let updatedDelegation = -1;
-        if (oldDelegation.name.trim().toLowerCase().replace(/ /g, "") !== data.name.trim().toLowerCase().replace(/ /g, "")) {
+        if (oldDelegation.name.trim().toLowerCase().replace(/ /g, '') !== data.name.trim().toLowerCase().replace(/ /g, '')) {
             if (checkDelegationExisted) {
                 throw ['delegation_name_exist'];
             }
@@ -227,7 +227,7 @@ Object.assign(TaskDelegationHandler.prototype, {
         let delegateTaskRoles = newDelegation.metaData.delegateTaskRoles
         let delegateTask = await Task(connect(DB_CONNECTION, portal)).findById(newDelegation.delegateObject)
             .populate({
-                path: "delegations", select: "_id status metaData"
+                path: 'delegations', select: '_id status metaData'
             })
 
         // ???
@@ -291,14 +291,14 @@ Object.assign(TaskDelegationHandler.prototype, {
             })
         }
 
-        newDelegation.status = "activated"
+        newDelegation.status = 'activated'
         newDelegation.logs.push(
             {
                 createdAt: new Date(),
                 requester: null,
                 content: newDelegation.name,
                 time: new Date(newDelegation.startDate),
-                category: "activate"
+                category: 'activate'
             })
         await newDelegation.save();
     },
@@ -314,7 +314,7 @@ Object.assign(TaskDelegationHandler.prototype, {
 
         let delegateTaskRoles = result.metaData.delegateTaskRoles
         let delegateTask = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: result.delegateObject }).populate({
-            path: "delegations", select: "_id status metaData"
+            path: 'delegations', select: '_id status metaData'
         })
         let delegatee = result.delegatee.refId;
         let delegator = result.delegator.refId;
@@ -368,7 +368,7 @@ Object.assign(TaskDelegationHandler.prototype, {
 
         }
 
-        result.status = "revoked";
+        result.status = 'revoked';
         result.revokeReason = !reason ? null : reason;
         result.revokedDate = new Date();
         if (result.endDate && compareDate(result.endDate, new Date()) > 0) {
@@ -386,12 +386,12 @@ Object.assign(TaskDelegationHandler.prototype, {
                 requester: null,
                 content: result.name,
                 time: new Date(),
-                category: "revoke"
+                category: 'revoke'
             }
         )
 
         await result.save();
-        await this.sendNotification(portal, result.id, "revoke", true)
+        await this.sendNotification(portal, result.id, 'revoke', true)
         
         let newDelegation = this.getDelegationById(portal, delegationIds[0])
         return newDelegation;

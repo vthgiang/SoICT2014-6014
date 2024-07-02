@@ -53,7 +53,7 @@ Object.assign(RoleDelegationHandler.prototype, {
 
         // Check if data is valid
         if (checkDelegationNameExist && !data.notCheckName) {
-            throw ["delegation_name_exist"];
+            throw ['delegation_name_exist'];
         }
 
         if (!delegateRole) {
@@ -65,25 +65,25 @@ Object.assign(RoleDelegationHandler.prototype, {
             delegateObject: data.delegateObject,
             status: {
                 $in: [
-                    "activated", // Đang hoạt động
-                    "pending", // Chờ xác nhận
+                    'activated', // Đang hoạt động
+                    'pending', // Chờ xác nhận
                 ]
             }
         });
 
         if (checkDelegationExist && !data.notCheck) {
-            throw ["delegation_exist"];
+            throw ['delegation_exist'];
         }
 
         if (checkUserHaveRole && !data.notCheck) {
-            throw ["user_role_exist"]
+            throw ['user_role_exist']
         }
 
         if (!isToday(new Date(data.startDate)) && compareDate(new Date(data.startDate), new Date()) < 0) {
-            throw ["start_date_past"]
+            throw ['start_date_past']
         }
         if (data.endDate != null && compareDate(new Date(data.endDate), new Date()) < 0) {
-            throw ["end_date_past"]
+            throw ['end_date_past']
         }
 
         await this.checkDelegationPolicy(portal, policy, delegator, delegatee, delegateObject);
@@ -105,7 +105,7 @@ Object.assign(RoleDelegationHandler.prototype, {
         	startDate: data.startDate,
         	endDate: data.endDate,
         	// revokedDate: data.revokedDate,
-            status: isToday(new Date(data.startDate)) ? "activated" : "pending",
+            status: isToday(new Date(data.startDate)) ? 'activated' : 'pending',
         	// replyStatus: data.replyStatus,
         	// declineReason: data.declineReason,
         	// revokeReason: data.revokeReason,
@@ -144,7 +144,7 @@ Object.assign(RoleDelegationHandler.prototype, {
             ]);
         const checkNameExisted = await Delegation(connect(DB_CONNECTION, portal)).exists({ name: data.name });
         let updatedDelegation = -1;
-        if (oldDelegation.name.trim().toLowerCase().replace(/ /g, "") !== data.name.trim().toLowerCase().replace(/ /g, "")) {
+        if (oldDelegation.name.trim().toLowerCase().replace(/ /g, '') !== data.name.trim().toLowerCase().replace(/ /g, '')) {
             if (checkNameExisted) {
                 throw ['delegation_name_exist'];
             }
@@ -198,14 +198,14 @@ Object.assign(RoleDelegationHandler.prototype, {
         // newUserRole.delegations.indexOf(delegation._id) === -1 ? newUserRole.delegations.push(delegation._id) : null
         newUserRole.save();
         
-        newDelegation.status = "activated"
+        newDelegation.status = 'activated'
         newDelegation.logs.push(
             {
                 createdAt: new Date(),
                 requester: null,
                 content: newDelegation.name,
                 time: new Date(),
-                category: "activate"
+                category: 'activate'
             })
         await newDelegation.save();
     },
@@ -226,7 +226,7 @@ Object.assign(RoleDelegationHandler.prototype, {
                 await pri.save()
             })
         }
-        result.status = "revoked";
+        result.status = 'revoked';
         result.revokeReason = !reason ? null : reason;
         result.revokedDate = new Date();
         if (result.endDate && compareDate(result.endDate, new Date()) > 0) {
@@ -244,11 +244,11 @@ Object.assign(RoleDelegationHandler.prototype, {
                 requester: null,
                 content: result.name,
                 time: new Date(),
-                category: "revoke"
+                category: 'revoke'
             }
         )
         await result.save();
-        await this.sendNotification(portal, result.id, "revoke", true)
+        await this.sendNotification(portal, result.id, 'revoke', true)
 
         const newDelegation = await this.getDelegationById(portal, delegationIds[0]);
         return newDelegation;

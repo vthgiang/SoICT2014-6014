@@ -54,14 +54,14 @@ Object.assign(ResourceDelegationHandler.prototype, {
 
     createDelegation: async function(portal, data, logs = []) {
         if (data.delegator == data.delegatee) {
-            throw ["delegator_same_delegatee"];
+            throw ['delegator_same_delegatee'];
         }
 
         if (!isToday(new Date(data.startDate)) && compareDate(new Date(data.startDate), new Date()) < 0) {
-            throw ["start_date_past"]
+            throw ['start_date_past']
         }
         if (data.endDate != null && compareDate(new Date(data.endDate), new Date()) < 0) {
-            throw ["end_date_past"]
+            throw ['end_date_past']
         }
 
         const [delegator, delegatee, delegateObject, policy, checkDelegationNameExist] =
@@ -74,11 +74,11 @@ Object.assign(ResourceDelegationHandler.prototype, {
             ]);
 
         if (checkDelegationNameExist && !data.notCheckName) {
-            throw ["delegation_name_exist"];
+            throw ['delegation_name_exist'];
         }
 
         // if (!isRequesterCanAccessResources(delegator, data.delegateObject)){
-        //     throw ["delegator_can_not_access_resources"];
+        //     throw ['delegator_can_not_access_resources'];
         // }
 
         await this.checkDelegationPolicy(portal, policy, delegator, delegatee, delegateObject);
@@ -93,7 +93,7 @@ Object.assign(ResourceDelegationHandler.prototype, {
         	startDate: data.startDate,
         	endDate: data.endDate,
         	// revokedDate: data.revokedDate,
-            status: isToday(new Date(data.startDate)) ? "activated" : "pending",
+            status: isToday(new Date(data.startDate)) ? 'activated' : 'pending',
         	// replyStatus: data.replyStatus,
         	// declineReason: data.declineReason,
         	// revokeReason: data.revokeReason,
@@ -124,7 +124,7 @@ Object.assign(ResourceDelegationHandler.prototype, {
         let oldDelegation = await Delegation(connect(DB_CONNECTION, portal)).findById(id);
         const checkNameExisted = await Delegation(connect(DB_CONNECTION, portal)).exists({ name: data.name });
         let updatedDelegation = -1;
-        if (oldDelegation.name.trim().toLowerCase().replace(/ /g, "") !== data.name.trim().toLowerCase().replace(/ /g, "")) {
+        if (oldDelegation.name.trim().toLowerCase().replace(/ /g, '') !== data.name.trim().toLowerCase().replace(/ /g, '')) {
             if (checkNameExisted) {
                 throw ['delegation_name_exist'];
             }
@@ -155,14 +155,14 @@ Object.assign(ResourceDelegationHandler.prototype, {
             resourceIds: [delegation.delegateObject]
         });
 
-        delegation.status = "activated"
+        delegation.status = 'activated'
         delegation.logs.push(
             {
                 createdAt: new Date(),
                 requester: null,
                 content: delegation.name,
                 time: new Date(delegation.startDate),
-                category: "activate"
+                category: 'activate'
             });
         await delegation.save();
     },
@@ -174,17 +174,17 @@ Object.assign(ResourceDelegationHandler.prototype, {
             await DynamicAssignment(connect(DB_CONNECTION, portal))
                 .deleteMany({ delegationId: delegation._id });
             
-            delegation.status = "revoked";
+            delegation.status = 'revoked';
             delegation.revokeReason = !reason ? null : reason;
             delegation.revokedDate = new Date();
-            // await this.sendNotification(portal, revokedDelegation, "revoke", true)
+            // await this.sendNotification(portal, revokedDelegation, 'revoke', true)
             delegation.logs.push(
                 {
                     createdAt: new Date(),
                     requester: null,
                     content: delegation.name,
                     time: new Date(),
-                    category: "revoke"
+                    category: 'revoke'
                 }
             )
             if (delegation.endDate && compareDate(delegation.endDate, new Date()) > 0) {
