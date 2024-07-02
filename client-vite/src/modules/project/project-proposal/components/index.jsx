@@ -470,8 +470,11 @@ function ProjectProposalPage(props) {
             </a> 
           }
           {isLoading && (
-            <div className="min-height-96 flex justify-center items-center mt-8">
-              Đang thực hiện phân bổ ... 
+            <div className="min-height-96 flex justify-center mt-8">
+              <span className="pr-2">Đang thực hiện phân bổ ...</span>
+              <div className="mt-[1.5px]">
+                <Loading />
+              </div>
             </div>
           )}
           { !isLoading && isShowPrevProposal && proposals && proposals?.assignment && proposals?.assignment?.length && (
