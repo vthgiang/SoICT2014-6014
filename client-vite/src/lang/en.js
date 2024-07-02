@@ -2235,14 +2235,17 @@ export default {
       delegated_name: 'Name',
       delegated_description: 'Description',
       delegated_status: 'Status',
-      // authorized_information: 'Authorization by policy',
-      // authorized_delegator: 'Authorized delegators',
-      // authorized_delegatee: 'Authorized delegatees',
-      // authorized_delegator_name: 'User name',
-      // authorized_delegator_type: 'Type',
-      // authorized_delegatee_name: 'Delegatee name',
-      // authorized_delegatee_type: 'Delegatee type',
-      // authorized_delegatee_additional_info: 'Additional Info',
+      authorized_information: 'Authorization by policy',
+      authorized_delegator: 'Authorized delegators',
+      authorized_delegatee: 'Authorized delegatees',
+      authorized_delegateObject: 'Authorized delegate objects',
+      authorized_delegator_name: 'Delegator name',
+      authorized_delegator_type: 'Type',
+      authorized_delegatee_name: 'Delegatee name',
+      authorized_delegatee_type: 'Type',
+      authorized_delegateObject_name: 'Delegate object name',
+      authorized_delegateObject_type: 'Type',
+      authorized_delegateObject_additional_info: 'Additional Info',
       attributes_information: 'Attributes infomation',
       attribute_owner_table: 'Attribute of',
       delegator_table: 'Delegator',
@@ -2341,6 +2344,43 @@ export default {
         tasks_add_attribute: 'Attributes of tasks',
         attribute_select: 'Select attribute',
         attribute_not_selected: 'Attribute not selected'
+      },
+      wizard: {
+        delegation_ui: 'UI Delegation',
+        delegation_service: 'Service Delegation',
+        requirement_description:
+          'Requirement consist of a rule and attributes that are a lists of attribute-value pairs. The system prioritizes requirement proposals with the rule EQUALS -> CONTAINS -> BELONGS',
+        requirement_note: 'Note: You can edit all requirements in last step',
+        rule_description:
+          'Select a rule, then the system will propose list of attributes that can satisfy all Requesters above if possible',
+        proposed_attributes: 'Proposed attributes',
+        name: 'Name',
+        value: 'Value',
+        next: 'Next',
+        delegator: {
+          title: 'Choose Delegator',
+          description_ui: 'Select the Users that will delegate access rights to UI components to delegatee',
+          description_service: 'Select the Users or Services that will delegate access rights to API to delegatee',
+          choose: 'Choose Delegator',
+          authorized: 'Authorized Delegators',
+          proposed_requirement: 'Proposed Delegator’s requirement'
+        },
+        delegatee: {
+          title: 'Choose Delegatee',
+          description_ui: 'Select the Users that will be received access rights to UI components from delegator',
+          description_service: 'Select the Services that will be received access rights to API from delegator',
+          choose: 'Choose Delegatee',
+          authorized: 'Authorized Delegatees',
+          proposed_requirement: 'Proposed Delegatee’s requirement'
+        },
+        delegateObject: {
+          title: 'Choose Delegate Object',
+          description_ui: 'Select the Link or Component, which is the object that will be delegated',
+          description_service: 'Select the API, which is the object that will be delegated',
+          choose: 'Choose Delegate Object',
+          authorized: 'Authorized Delegate Objects',
+          proposed_requirement: 'Proposed Delegate Object’s requirement'
+        }
       }
     },
     manage_api: {

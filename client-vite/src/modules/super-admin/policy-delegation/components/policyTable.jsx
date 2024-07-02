@@ -10,6 +10,9 @@ import { PolicyDetailInfo } from './policyDetailInfo'
 import { AttributeActions } from '../../attribute/redux/actions'
 import { PolicyActions } from '../redux/actions'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import { PolicyWizard } from '../wizard/policyWizard'
+import { RequesterActions } from '../../../system-admin/requester-management/redux/actions'
+import { ResourceActions } from '../../../system-admin/resource-management/redux/actions'
 
 export function PolicyTable() {
   const getTableId = 'table-manage-policy1-hooks'
@@ -34,6 +37,9 @@ export function PolicyTable() {
   useEffect(() => {
     dispatch(PolicyActions.getPolicies({ name, page, perPage }))
     dispatch(AttributeActions.getAttributes())
+    dispatch(PolicyActions.getPolicies())
+    dispatch(RequesterActions.getAll())
+    dispatch(ResourceActions.getAll())
   }, [])
 
   const handleChangeAddRowAttribute = (name, value) => {
@@ -197,24 +203,72 @@ export function PolicyTable() {
 
       <PolicyCreateForm handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
+      <PolicyWizard
+        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+        i={state.i}
+        id='wizard-delegation-ui'
+        delegatorDescription={translate('manage_delegation_policy.wizard.delegator.description_ui')}
+        delegateeDescription={translate('manage_delegation_policy.wizard.delegatee.description_ui')}
+        delegateObjectDescription={translate('manage_delegation_policy.wizard.delegateObject.description_ui')}
+        filterDelegator={(x) => x.type === 'User'}
+        filterDelegatee={(x) => x.type === 'User'}
+        filterDelegateObject={(x) => x.type === 'Link' || x.type === 'Component'}
+      />
+
+      <PolicyWizard
+        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+        i={state.i}
+        id='wizard-delegation-service'
+        delegatorDescription={translate('manage_delegation_policy.wizard.delegator.description_service')}
+        delegateeDescription={translate('manage_delegation_policy.wizard.delegatee.description_service')}
+        delegateObjectDescription={translate('manage_delegation_policy.wizard.delegateObject.description_service')}
+        filterDelegator={(x) => x.type === 'Service'}
+        filterDelegatee={(x) => x.type === 'Service'}
+        filterDelegateObject={(x) => x.type === 'SystemApi'}
+      />
+
       <div className='box-body qlcv'>
         <div className='form-inline'>
           {/* Button thêm mới */}
+          <button
+            type='button'
+            className='btn btn-success pull-right'
+            title={translate('manage_delegation_policy.add_title')}
+            onClick={() => window.$('#modal-create-policy-hooks').modal('show')}
+          >
+            {translate('manage_delegation_policy.add')}
+          </button>
+          {/* Button wizard */}
           <div className='dropdown pull-right' style={{ marginTop: '5px' }}>
             <button
               type='button'
-              className='btn btn-success pull-right'
-              title={translate('manage_delegation_policy.add_title')}
-              onClick={() => window.$('#modal-create-policy-hooks').modal('show')}
+              className='btn btn-primary dropdown-toggle pull-right'
+              data-toggle='dropdown'
+              aria-expanded='true'
+              title={translate('manage_user.add_title')}
             >
-              {translate('manage_delegation_policy.add')}
+              Wizard
             </button>
-            {/* <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-policy-hooks').modal('show')} title={translate('manage_delegation_policy.add_one_policy')}>
-                                {translate('manage_delegation_policy.add_policy')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-policy-hooks').modal('show')} title={translate('manage_delegation_policy.add_multi_policy')}>
-                                {translate('human_delegatee.salary.add_import')}</a></li>
-                        </ul> */}
+            <ul className='dropdown-menu pull-right' style={{ marginTop: 0 }}>
+              <li>
+                <a
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => window.$('#modal-wizard-delegation-ui-delegator').modal('show')}
+                  title={translate('manage_delegation_policy.wizard.delegation_ui')}
+                >
+                  {translate('manage_delegation_policy.wizard.delegation_ui')}
+                </a>
+              </li>
+              <li>
+                <a
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => window.$('#modal-wizard-delegation-service-delegator').modal('show')}
+                  title={translate('manage_delegation_policy.wizard.delegation_service')}
+                >
+                  {translate('manage_delegation_policy.wizard.delegation_service')}
+                </a>
+              </li>
+            </ul>
           </div>
           {selectedData?.length > 0 && (
             <button

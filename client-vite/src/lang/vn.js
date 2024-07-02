@@ -2299,6 +2299,17 @@ export default {
       edit_policy_fail: 'Cập nhật chính sách thất bại!',
       detail_info_policy: 'Thông tin chi tiết chính sách',
       general_information: 'Thông tin chung',
+      authorized_information: 'Authorization by policy',
+      authorized_delegator: 'Người ủy quyền thỏa mãn',
+      authorized_delegatee: 'Người nhận ủy quyền thỏa mãn',
+      authorized_delegateObject: 'Đối tượng được ủy quyền thỏa mãn',
+      authorized_delegator_name: 'Tên',
+      authorized_delegator_type: 'Loại',
+      authorized_delegatee_name: 'Tên',
+      authorized_delegatee_type: 'Loại',
+      authorized_delegateObject_name: 'Tên',
+      authorized_delegateObject_type: 'Loại',
+      authorized_delegateObject_additional_info: 'Thông tin thêm',
       delegator_information: 'Thông tin thuộc tính người ủy quyền',
       delegatee_information: 'Thông tin thuộc tính người nhận ủy quyền',
       policy_information: 'Thông tin chính sách',
@@ -2404,6 +2415,43 @@ export default {
         tasks_add_attribute: 'Các công việc thêm thuộc tính',
         attribute_select: 'Chọn thuộc tính',
         attribute_not_selected: 'Chưa chọn thuộc tính'
+      },
+      wizard: {
+        delegation_ui: 'Ủy quyền giao diện',
+        delegation_service: 'Ủy quyền API',
+        requirement_description:
+          'Yêu cầu bao gồm một quy tắc và các thuộc tính là danh sách các cặp key-value. Hệ thống ưu tiên đề xuất yêu cầu với quy tắc EQUALS -> CONTAINS -> BELONGS',
+        requirement_note: 'Lưu ý: Bạn có thể chỉnh sửa tất cả các yêu cầu ở bước cuối cùng',
+        rule_description:
+          'Chọn một quy tắc, sau đó hệ thống sẽ đề xuất danh sách các thuộc tính có thể đáp ứng tất cả Người yêu cầu ở trên nếu có thể',
+        proposed_attributes: 'Thuộc tính được đề xuất',
+        name: 'Tên',
+        value: 'Giá trị',
+        next: 'Tiếp theo',
+        delegator: {
+          title: 'Chọn người ủy quyền',
+          description_ui: 'Chọn những người dùng mà sẽ ủy quyền quyền truy cập vào các thành phần giao diện',
+          description_service: 'Chọn những người dùng hoặc dịch vụ mà sẽ ủy quyền quyền truy cập vào API',
+          choose: 'Chọn người ủy quyền',
+          authorized: 'Người ủy quyền thỏa mãn',
+          proposed_requirement: 'Yêu cầu được đề xuất cho người ủy quyền'
+        },
+        delegatee: {
+          title: 'Chọn người nhận ủy quyền',
+          description_ui: 'Chọn những người dùng mà sẽ nhận được ủy quyền quyền truy cập vào các thành phần giao diện',
+          description_service: 'Chọn những dịch vụ mà sẽ nhận được ủy quyền quyền truy cập vào API',
+          choose: 'Chọn người nhận ủy quyền',
+          authorized: 'Người nhận ủy quyền thỏa mãn',
+          proposed_requirement: 'Yêu cầu được đề xuất cho người nhận ủy quyền'
+        },
+        delegateObject: {
+          title: 'Chọn đối tượng ủy quyền',
+          description_ui: 'Chọn Link hoặc Component, đây là những đối tượng sẽ được ủy quyền',
+          description_service: 'Chọn API, đây là những đối tượng sẽ được ủy quyền',
+          choose: 'Chọn đối tượng ủy quyền',
+          authorized: 'Đối tượng ủy quyền thỏa mãn',
+          proposed_requirement: 'Yêu cầu được đề xuất cho đối tượng được ủy quyền'
+        }
       }
     },
     manage_api: {
