@@ -12,7 +12,10 @@ router.get('/deliveryLateDayAveragePerMonth', auth, OntimePredictController.getD
 router.get('/topLateDeliveryDay', auth, OntimePredictController.getTopLateDeliveryDay);
 router.get('/topLateProducts', auth, OntimePredictController.getTopLateProducts);
 router.get('/topLateStocks', auth, OntimePredictController.getTopLateStocks);
+
 router.put('/predict/:scheduleId', auth, OntimePredictController.predictOnTimeDelivery);
 router.get('/retrainingModel', auth, OntimePredictController.retrainingModel);
 
+router.post('/hyperparamaterTuning', auth, OntimePredictController.hyperparamaterTuning);
+router.get('/hyperparameter', auth, OntimePredictController.getHyperparamter);
 module.exports = router;

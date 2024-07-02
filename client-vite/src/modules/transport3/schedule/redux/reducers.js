@@ -6,7 +6,8 @@ const initState = {
   listAutoSchedules: null,
   listSchedules: [],
   listStocsWithLatLng: [],
-  predictOntimeDeliveryResults: []
+  predictOntimeDeliveryResults: [],
+  hyperparameters: []
 }
 
 export function schedule(state = initState, action) {
@@ -92,6 +93,37 @@ export function schedule(state = initState, action) {
           ...state,
           isLoading: false
         }
+      case ScheduleConstants.POST_HYPERPARAMETER:
+          return {
+              ...state,
+              isLoading: true
+          }
+      case ScheduleConstants.POST_HYPERPARAMETER_SUCCESS:
+          return {
+              ...state,
+              isLoading: false
+          }
+      case ScheduleConstants.POST_HYPERPARAMETER_FAILURE:
+          return {
+              ...state,
+              isLoading: false
+          }
+      case ScheduleConstants.GET_HYPERPARAMETER:
+          return {
+              ...state,
+              isLoading: true
+          }
+      case ScheduleConstants.GET_HYPERPARAMETER_SUCCESS:
+          return {
+              ...state,
+              hyperparameters: action.payload,
+              isLoading: false
+          }
+      case ScheduleConstants.GET_HYPERPARAMETER_FAILURE:
+          return {
+              ...state,
+              isLoading: false
+          }
     default:
       return state
   }

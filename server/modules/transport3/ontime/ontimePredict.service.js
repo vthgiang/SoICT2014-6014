@@ -1,4 +1,4 @@
-const { DeliverySchedule, Transport3Schedule, Transport3Order, Stock } = require('../../../models');
+const { DeliverySchedule, Transport3Schedule, Transport3Order, Stock, HyperParameter } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const moment = require('moment');
 const mongoose = require('mongoose');
@@ -415,4 +415,33 @@ exports.UpdateEstimatedOntimeDeliveryInfo = async (portal, scheduleId) => {
     });
     await transport3Schedule.save()
     return responseAI.data.predict_ontime
+}
+
+exports.HyperparamaterTuning = async (portal) => {
+    const responseAI = await axios.get(`${process.env.PYTHON_URL_SERVER}/api/dxclan/ontime_predict/hyperparameterTuning/`);
+    if (!responseAI || !responseAI.data.results) {
+        throw new Error('Failed to fetch or predict ontime delivery');
+    }
+    const { best_params, accuracy } = responseAI.data.results;
+
+    await HyperParameter(connect(DB_CONNECTION, portal)).create({
+        modelName: 'XGBoost',
+        learning_rate: best_params.learning_rate,
+        max_depth: best_params.max_depth,
+        min_child_weight: best_params.min_child_weight,
+        n_estimators: best_params.n_estimators,
+        reg_alpha: best_params.reg_alpha,
+        reg_lambda: best_params.reg_lambda,
+        accuracy: accuracy
+    })
+
+    return 'Hyperparameters saved successfully';
+}
+
+exports.getHyperparamter = async (portal) => {
+    const Hyperparameters = await HyperParameter(connect(DB_CONNECTION, portal)).find({});   
+    if (!Hyperparameters) {
+        throw new Error('Schedule not found');
+    }
+    return Hyperparameters
 }

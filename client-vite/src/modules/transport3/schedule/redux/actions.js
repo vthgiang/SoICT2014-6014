@@ -71,10 +71,49 @@ const predictOntimeDelivery = (scheduleId) => {
     })
   }
 }
+
+const postHyperparameter = () => {
+  return (dispatch) => {
+    dispatch({ type: ScheduleConstants.POST_HYPERPARAMETER })
+  ScheduleServices.hyperparamaterTuning()
+    .then((response) => {
+      dispatch({
+        type: ScheduleConstants.POST_HYPERPARAMETER_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: ScheduleConstants.POST_HYPERPARAMETER_FAILURE
+      })
+    })
+  }
+}
+
+const getHyperparamter = () => {
+  return (dispatch) => {
+    dispatch({ type: ScheduleConstants.GET_HYPERPARAMETER })
+  ScheduleServices.getHyperparamter()
+    .then((response) => {
+      dispatch({
+        type: ScheduleConstants.GET_HYPERPARAMETER_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: ScheduleConstants.GET_HYPERPARAMETER_FAILURE
+      })
+    })
+  }
+}
+
 export const ScheduleActions = {
   getAllSchedule,
   getAllStocksWithLatlng,
   createSchedule,
   autoSchedule,
-  predictOntimeDelivery
+  predictOntimeDelivery,
+  postHyperparameter,
+  getHyperparamter
 }

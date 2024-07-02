@@ -233,7 +233,6 @@ exports.retrainingModel = async (req, res) => {
     try {
         const responseAI = await axios.get(`${process.env.PYTHON_URL_SERVER}/api/dxclan/ontime_predict/retrain/`);
         await Log.info(req.user.email, "RETRAINING_MODEL", req.portal);
-        console.log(responseAI.data)
 
         res.status(200).json({
             success: true,
@@ -250,5 +249,45 @@ exports.retrainingModel = async (req, res) => {
             content: error.message
         });
     } 
+}
+
+exports.hyperparamaterTuning = async (req, res) => {
+    try {
+        let data = await OntimePredictService.HyperparamaterTuning(req.portal);
+        await Log.info(req.user.email, "HYPERPARAMETER_TUNING", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["hyperparameter_tuning_success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "HYPERPARAMETER_TUNING", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["hyperparameter_tuning_fail"],
+            content: error.message
+        });
+    } 
+}
+
+exports.getHyperparamter = async(req, res) => {
+    try {
+        let data = await OntimePredictService.getHyperparamter(req.portal);
+        await Log.info(req.user.email, "GET_HYPERPARAMETER", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_hyperparameter_success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_HYPERPARAMETER", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_hyperparameter_fail"],
+            content: error.message
+        });
+    }
 }
 
