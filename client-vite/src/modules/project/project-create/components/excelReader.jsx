@@ -3,34 +3,6 @@ import * as XLSX from 'xlsx'
 import { requiredFields } from './consts'
 import { connect } from "react-redux"
 import { withTranslate } from "react-redux-multilingual"
-// tmp object
-/*
-[
-    {
-        "name": "介護会社5Staff",
-        "code": "A1",
-        "description": "",
-        "preceedingTasks": [], => conver từ xâu => mảng
-        "estimateNormalTime": 2,
-        "requireAssignee": {
-            "manual_test": 1
-        },
-        "requireAsset": [
-            {
-                "type": "66659c35e7f74549b898525c",
-                "number": 1,
-                "capacityValue": 1,
-                "requireType": "obligatory"
-            }
-        ],
-        "tags": [
-          "planning" => conver từ xâu sang mảng
-        ],
-        "kpiInTask": "66659c3f169e3547d0e0a883", => conver từ tên => ID
-        "taskKPIWeight": 0
-    }
-]
- */
 
 const ExcelReader = (props) => {
   const { onDataLoad, setErrorUpload, translate } = props
@@ -195,5 +167,3 @@ const ExcelReader = (props) => {
 
 const mapState = (state) => state
 export default connect(mapState, null)(withTranslate(ExcelReader))
-
-
