@@ -1478,6 +1478,10 @@ exports.links = [
         url: '/project/project-proposal',
         apis: ['@all'],
     },
+    {
+        url: '/project/project-statistic',
+        apis: ['@all'],
+    },
 
     //transport
     {

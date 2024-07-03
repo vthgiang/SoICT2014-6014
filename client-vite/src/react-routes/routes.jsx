@@ -259,6 +259,7 @@ const UserGuide = lazy(() => import('../modules/user-guide/components'))
 const PersonalTimeSheetLog = lazy(() => import('../modules/task/task-dashboard/statistic/personalTimeSheetLog'))
 const EmployeeTimeSheetLog = lazy(() => import('../modules/task/task-dashboard/statistic/employeeTimeSheetLog'))
 const ProjectProposalPage = lazy(() => import('../modules/project/project-proposal/components/index'))
+const ProjectStatisticPage = lazy(() => import('../modules/project/project-statistic/components/index')) 
 
 const Notifications = lazy(() => import('../modules/notification/components/index'))
 const SystemSetting = lazy(() => import('../modules/system-admin/system-setting/components'))
@@ -4447,6 +4448,25 @@ class Routes extends Component {
             pageName={'project_proposal'}
             layout={Layout}
             component={ProjectProposalPage}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={"/project/project-statistic"}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/project/project-statistic',
+                name: 'project_statistic',
+                icon: 'fa fa-folder-open'
+              },
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/project/project-statistic'}
+            path={'/project/project-statistic'}
+            pageName={'project_statistic'}
+            layout={Layout}
+            component={ProjectStatisticPage}
           />
           {/* <PrivateRoute
                         isLoading={false}

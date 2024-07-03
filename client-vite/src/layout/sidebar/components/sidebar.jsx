@@ -563,9 +563,19 @@ class SideBar extends Component {
                 icon: 'fa fa-folder-open',
                 list: [
                   {
+                    name: 'menu.project_statistic',
+                    icon: 'fa fa-flash',
+                    path: '/project/project-statistic'
+                  },
+                  {
                     name: 'menu.projects_list',
                     icon: 'fa fa-dashboard',
                     path: '/project/projects-list'
+                  },
+                  {
+                    name: 'menu.project_proposal',
+                    icon: 'fa fa-flash',
+                    path: '/project/project-proposal'
                   },
                   {
                     name: 'menu.project_report',
@@ -577,11 +587,6 @@ class SideBar extends Component {
                     icon: 'fa fa-user-plus',
                     path: '/project/project-evaluation'
                   },
-                  {
-                    name: 'menu.project_proposal',
-                    icon: 'fa fa-flash',
-                    path: '/project/project-proposal'
-                  }
                   // { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/project/projects-template-list" },
                 ]
               }}

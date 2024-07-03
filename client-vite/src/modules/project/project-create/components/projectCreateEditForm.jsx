@@ -503,16 +503,20 @@ function ProjectCreateEditForm(props) {
   const page = 1, perPage = 100
 
   useEffect(() => {
-    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
-    props.getProjectsDispatch({ calledId: 'user_all', userId })
     props.getAllUserInAllUnitsOfCompany()
-    props.getAllOrganizationalUnitKpiSet(null, 1)
+    // props.getAllOrganizationalUnitKpiSet(null, 1)
     props.getAllAsset({
       status: ['in_use', 'ready_to_use']
     })
     props.getListTag()
     props.getListCapacity()
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
+    props.getProjectsDispatch({ calledId: 'user_all', userId })
   }, [])
+
+  useEffect(() => {
+    props.getAllOrganizationalUnitKpiSet(null, 1)
+  }, [projectEditId])
 
   
 
@@ -611,7 +615,6 @@ function mapState(state) {
 
 const actions = {
   createProjectDispatch: ProjectActions.createProjectDispatch,
-
   getProjectsDispatch: ProjectActions.getProjectsDispatch,
   deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
   createProjectDispatch: ProjectActions.createProjectDispatch,

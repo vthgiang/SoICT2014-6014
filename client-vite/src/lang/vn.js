@@ -371,6 +371,7 @@ export default {
       project_evaluation: 'Thống kê đánh giá',
       project_create: 'Tạo dự án mới',
       project_proposal: 'Phân bổ nguồn lực dự án',
+      project_statistic: 'Thống kê danh sách dự án',
 
       // Quản lý vận chuyển 3
       manage_transport3: 'Quản lý vận chuyển',
