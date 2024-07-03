@@ -7,7 +7,9 @@ import { Loading } from '../../../common-components'
 class Content extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      isLoading: false
+    }
     this.checkLink = this.checkLink.bind(this)
   }
 
