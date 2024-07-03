@@ -1756,6 +1756,7 @@ export default {
     },
 
     manage_role: {
+      index: 'STT',
       add: 'Thêm',
       add_title: 'Thêm phân quyền mới',
       description: 'Mô tả về phân quyền',
@@ -2099,49 +2100,14 @@ export default {
         tasks_add_attribute: 'Các công việc thêm thuộc tính',
         attribute_select: 'Chọn thuộc tính',
         attribute_not_selected: 'Chưa chọn thuộc tính'
-      },
-      wizard: {
-        authorization_ui: 'Phân quyền giao diện',
-        authorization_service: 'Phân quyền dịch vụ',
-        requirement_description:
-          'Yêu cầu bao gồm một quy tắc và các thuộc tính là danh sách các cặp key-value. Hệ thống ưu tiên đề xuất yêu cầu với quy tắc EQUALS -> CONTAINS -> BELONGS',
-        requirement_note: 'Lưu ý: Bạn có thể chỉnh sửa tất cả các yêu cầu ở bước cuối cùng',
-        rule_description:
-          'Chọn một quy tắc, sau đó hệ thống sẽ đề xuất danh sách các thuộc tính có thể đáp ứng tất cả Người yêu cầu ở trên nếu có thể',
-        proposed_attributes: 'Thuộc tính được đề xuất',
-        name: 'Tên',
-        value: 'Giá trị',
-        next: 'Tiếp theo',
-        requester: {
-          title: 'Chọn người yêu cầu',
-          description_ui: 'Chọn những người dùng mà sẽ nhận được quyền truy cập vào các thành phần giao diện',
-          description_service: 'Chọn những dịch vụ mà sẽ nhận được quyền truy cập vào API',
-          choose: 'Chọn người yêu cầu',
-          authorized: 'Người yêu cầu được phân quyền',
-          proposed_requirement: 'Yêu cầu được đề xuất cho người yêu cầu'
-        },
-        resource: {
-          title: 'Chọn tài nguyên',
-          description_ui: 'Chọn Link hoặc Component, đây là những đối tượng sẽ được người yêu cầu truy cập',
-          description_service: 'Chọn API, đây là những đối tượng sẽ được dịch vụ truy cập',
-          choose: 'Chọn tài nguyên',
-          authorized: 'Tài nguyên được phân quyền',
-          proposed_requirement: 'Yêu cầu được đề xuất cho tài nguyên'
-        },
-        role: {
-          title: 'Chọn vai trò',
-          note: 'Lưu ý: Nếu yêu cầu về vai trò không được chọn, tất cả các vai trò sẽ được ủy quyền',
-          description_ui: 'Chọn vai trò của người yêu cầu (chỉ áp dụng cho người yêu cầu là người dùng), có thể chọn hoặc không',
-          description_service: 'Chọn vai trò của người yêu cầu (chỉ áp dụng cho người yêu cầu là người dùng), có thể chọn hoặc không',
-          choose: 'Chọn vai trò',
-          authorized: 'Vai trò được phân quyền',
-          proposed_requirement: 'Yêu cầu được đề xuất cho tài nguyên'
-        }
       }
     },
 
     manage_authorization_policy: {
       name: 'Tên chính sách',
+      effect: 'Hiệu lực',
+      effective_start_time: 'Thời gian bắt đầu có hiệu lực',
+      effective_end_time: 'Thời gian kết thúc hiệu lực',
       search: 'Tìm kiếm',
       add_policy: 'Thêm mới',
       index: 'STT',
@@ -2162,9 +2128,10 @@ export default {
       edit_policy_fail: 'Cập nhật chính sách thất bại!',
       detail_info_policy: 'Thông tin chi tiết chính sách',
       general_information: 'Thông tin chung',
-      subject_information: 'Thông tin thuộc tính subject',
-      resource_information: 'Thông tin thuộc tính resource',
+      requester_information: 'Thông tin thuộc tính người yêu cầu',
+      resource_information: 'Thông tin thuộc tính tài nguyên',
       policy_information: 'Thông tin chính sách',
+      delegation_requirements: 'Yêu cầu của chính sách ủy quyền',
       authorized_information: 'Phân quyền bởi chính sách',
       authorized_requester: 'Người yâu cầu được phân quyền',
       authorized_resource: 'Tài nguyên được phân quyền',
@@ -2271,11 +2238,49 @@ export default {
         tasks_add_attribute: 'Các công việc thêm thuộc tính',
         attribute_select: 'Chọn thuộc tính',
         attribute_not_selected: 'Chưa chọn thuộc tính'
+      },
+      wizard: {
+        authorization_ui: 'Phân quyền giao diện',
+        authorization_service: 'Phân quyền dịch vụ',
+        requirement_description:
+          'Yêu cầu bao gồm một quy tắc và các thuộc tính là danh sách các cặp key-value. Hệ thống ưu tiên đề xuất yêu cầu với quy tắc EQUALS -> CONTAINS -> BELONGS',
+        requirement_note: 'Lưu ý: Bạn có thể chỉnh sửa tất cả các yêu cầu ở bước cuối cùng',
+        rule_description:
+          'Chọn một quy tắc, sau đó hệ thống sẽ đề xuất danh sách các thuộc tính có thể đáp ứng tất cả Người yêu cầu ở trên nếu có thể',
+        proposed_attributes: 'Thuộc tính được đề xuất',
+        name: 'Tên',
+        value: 'Giá trị',
+        next: 'Tiếp theo',
+        requester: {
+          title: 'Chọn người yêu cầu',
+          description_ui: 'Chọn những người dùng mà sẽ nhận được quyền truy cập vào các thành phần giao diện',
+          description_service: 'Chọn những dịch vụ mà sẽ nhận được quyền truy cập vào API',
+          choose: 'Chọn người yêu cầu',
+          authorized: 'Người yêu cầu được phân quyền',
+          proposed_requirement: 'Yêu cầu được đề xuất cho người yêu cầu'
+        },
+        resource: {
+          title: 'Chọn tài nguyên',
+          description_ui: 'Chọn Link hoặc Component, đây là những đối tượng sẽ được người yêu cầu truy cập',
+          description_service: 'Chọn API, đây là những đối tượng sẽ được dịch vụ truy cập',
+          choose: 'Chọn tài nguyên',
+          authorized: 'Tài nguyên được phân quyền',
+          proposed_requirement: 'Yêu cầu được đề xuất cho tài nguyên'
+        },
+        role: {
+          title: 'Chọn vai trò',
+          note: 'Lưu ý: Nếu yêu cầu về vai trò không được chọn, tất cả các vai trò sẽ được ủy quyền',
+          description_ui: 'Chọn vai trò của người yêu cầu (chỉ áp dụng cho người yêu cầu là người dùng), có thể chọn hoặc không',
+          description_service: 'Chọn vai trò của người yêu cầu (chỉ áp dụng cho người yêu cầu là người dùng), có thể chọn hoặc không',
+          choose: 'Chọn vai trò',
+          authorized: 'Vai trò được phân quyền',
+          proposed_requirement: 'Yêu cầu được đề xuất cho tài nguyên'
+        }
       }
     },
 
     manage_delegation_policy: {
-      policyName: 'Tên chính sách',
+      name: 'Tên chính sách',
       search: 'Tìm kiếm',
       add_policy: 'Thêm mới',
       index: 'STT',
@@ -2296,30 +2301,39 @@ export default {
       edit_policy_fail: 'Cập nhật chính sách thất bại!',
       detail_info_policy: 'Thông tin chi tiết chính sách',
       general_information: 'Thông tin chung',
-      delegation_information: 'Thông tin thuộc tính ủy quyền',
+      authorized_information: 'Authorization by policy',
+      authorized_delegator: 'Người ủy quyền thỏa mãn',
+      authorized_delegatee: 'Người nhận ủy quyền thỏa mãn',
+      authorized_delegateObject: 'Đối tượng được ủy quyền thỏa mãn',
+      authorized_delegator_name: 'Tên',
+      authorized_delegator_type: 'Loại',
+      authorized_delegatee_name: 'Tên',
+      authorized_delegatee_type: 'Loại',
+      authorized_delegateObject_name: 'Tên',
+      authorized_delegateObject_type: 'Loại',
+      authorized_delegateObject_additional_info: 'Thông tin thêm',
+      delegator_information: 'Thông tin thuộc tính người ủy quyền',
+      delegatee_information: 'Thông tin thuộc tính người nhận ủy quyền',
+      policy_information: 'Thông tin chính sách',
+      delegation_requirements: 'Thông tin chính sách ủy quyền',
+      delegated_name: 'Tên',
+      delegated_description: 'Mô tả',
+      delegated_status: 'Trạng thái',
+      attributes_information: 'Thông tin thuộc tính',
       attribute_owner_table: 'Thuộc tính của',
+      delegate_object_table: 'Vai trò',
       delegator_table: 'Người ủy quyền',
-      delegatee_table: 'Người nhận ủy quyền',
-      delegatedObject_table: 'Vai trò ủy quyền',
-      delegatedObject_tableTask: 'Công việc ủy quyền',
-      resource_table: 'Trang cho phép ủy quyền',
+      delegatee_table: 'Tài nguyên',
       attribute_name: 'Tên thuộc tính',
       attribute_value: 'Giá trị',
       rule_table: 'Rule kiểm tra',
-      delegateType: 'Loại chính sách ủy quyền',
-      delegateTypeRole: 'Chính sách ủy quyền vai trò',
-      delegateTypeTask: 'Chính sách ủy quyền công việc',
-      delegateTypeService: 'Chính sách ủy quyền dịch vụ',
+      environment_table: 'Môi trường',
       edit_delegator_attribute: 'Chỉnh sửa thuộc tính người ủy quyền',
+      edit_delegate_object_attribute: 'Chỉnh sửa thuộc tính đối tượng ủy quyền',
       edit_delegatee_attribute: 'Chỉnh sửa thuộc tính người nhận ủy quyền',
-      edit_delegatedObject_attribute: 'Chỉnh sửa thuộc tính vai trò ủy quyền',
-      edit_delegatedObject_attributeTask: 'Chỉnh sửa thuộc tính công việc ủy quyền',
-      edit_resource_attribute: 'Chỉnh sửa thuộc tính trang cho phép ủy quyền',
       add_delegator_attribute: 'Thêm thuộc tính người ủy quyền',
-      add_delegatedObject_attribute: 'Thêm thuộc tính vai trò ủy quyền',
-      add_delegatedObject_attributeTask: 'Thêm thuộc tính công việc ủy quyền',
+      add_delegate_object_attribute: 'Thêm thuộc tính đối tượng ủy quyền',
       add_delegatee_attribute: 'Thêm thuộc tính người nhận ủy quyền',
-      add_resource_attribute: 'Thêm thuộc tính trang cho phép ủy quyền',
       rule_select: 'Chọn rule kiểm tra',
       rule_not_selected: 'Chưa chọn rule kiểm tra',
       add_rule: 'Rule kiểm tra',
@@ -2359,9 +2373,9 @@ export default {
         add_attribute: 'Thêm thuộc tính',
         add_delegatee_attribute: 'Thêm thuộc tính người nhận ủy quyền'
       },
-      delegatedObject: {
+      delegate_object: {
         add_attribute: 'Thêm thuộc tính',
-        add_delegatedObject_attribute: 'Thêm thuộc tính vai trò',
+        add_delegated_object_attribute: 'Thêm thuộc tính vai trò',
         attributes: 'Các thuộc tính của vai trò',
         attribute_name: 'Tên thuộc tính',
         attribute_value: 'Giá trị',
@@ -2370,13 +2384,28 @@ export default {
         attribute_value_example: 'VD: PM',
         attribute_description_example: 'VD: Project Manager dự án A',
         add_attribute_title: 'Thêm thuộc tính cho vai trò',
-        delegatedObjects_add_attribute: 'Các vai trò thêm thuộc tính',
+        delegated_objects_add_attribute: 'Các vai trò thêm thuộc tính',
         attribute_select: 'Chọn thuộc tính',
         attribute_not_selected: 'Chưa chọn thuộc tính'
       },
-      delegatedObjectTask: {
+      environment: {
         add_attribute: 'Thêm thuộc tính',
-        add_delegatedObject_attribute: 'Thêm thuộc tính công việc',
+        add_environment_attribute: 'Thêm thuộc tính môi trường',
+        attributes: 'Các thuộc tính của môi trường',
+        attribute_name: 'Tên thuộc tính',
+        attribute_value: 'Giá trị',
+        attribute_description: 'Mô tả',
+        attribute_name_example: 'VD: Project A',
+        attribute_value_example: 'VD: PageProjectA',
+        attribute_description_example: 'VD: Trang truy cập dự án A',
+        add_attribute_title: 'Thêm thuộc tính cho môi trường',
+        environments_add_attribute: 'Các môi trường thêm thuộc tính',
+        attribute_select: 'Chọn thuộc tính',
+        attribute_not_selected: 'Chưa chọn thuộc tính'
+      },
+      task: {
+        add_attribute: 'Quản lý thuộc tính',
+        add_task_attribute: 'Thêm thuộc tính công việc',
         attributes: 'Các thuộc tính của công việc',
         attribute_name: 'Tên thuộc tính',
         attribute_value: 'Giá trị',
@@ -2384,25 +2413,47 @@ export default {
         attribute_name_example: 'VD: Project A',
         attribute_value_example: 'VD: PM',
         attribute_description_example: 'VD: Project Manager dự án A',
-        add_attribute_title: 'Thêm thuộc tính cho công việc',
-        delegatedObjects_add_attribute: 'Các công việc thêm thuộc tính',
+        add_attribute_title: 'Quản lý thuộc tính công việc',
+        tasks_add_attribute: 'Các công việc thêm thuộc tính',
         attribute_select: 'Chọn thuộc tính',
         attribute_not_selected: 'Chưa chọn thuộc tính'
       },
-      resource: {
-        add_attribute: 'Thêm thuộc tính',
-        add_resource_attribute: 'Thêm thuộc tính trang',
-        attributes: 'Các thuộc tính của trang',
-        attribute_name: 'Tên thuộc tính',
-        attribute_value: 'Giá trị',
-        attribute_description: 'Mô tả',
-        attribute_name_example: 'VD: Project A',
-        attribute_value_example: 'VD: PageProjectA',
-        attribute_description_example: 'VD: Trang truy cập dự án A',
-        add_attribute_title: 'Thêm thuộc tính cho trang',
-        resources_add_attribute: 'Các trang thêm thuộc tính',
-        attribute_select: 'Chọn thuộc tính',
-        attribute_not_selected: 'Chưa chọn thuộc tính'
+      wizard: {
+        delegation_ui: 'Ủy quyền giao diện',
+        delegation_service: 'Ủy quyền API',
+        requirement_description:
+          'Yêu cầu bao gồm một quy tắc và các thuộc tính là danh sách các cặp key-value. Hệ thống ưu tiên đề xuất yêu cầu với quy tắc EQUALS -> CONTAINS -> BELONGS',
+        requirement_note: 'Lưu ý: Bạn có thể chỉnh sửa tất cả các yêu cầu ở bước cuối cùng',
+        rule_description:
+          'Chọn một quy tắc, sau đó hệ thống sẽ đề xuất danh sách các thuộc tính có thể đáp ứng tất cả Người yêu cầu ở trên nếu có thể',
+        proposed_attributes: 'Thuộc tính được đề xuất',
+        name: 'Tên',
+        value: 'Giá trị',
+        next: 'Tiếp theo',
+        delegator: {
+          title: 'Chọn người ủy quyền',
+          description_ui: 'Chọn những người dùng mà sẽ ủy quyền quyền truy cập vào các thành phần giao diện',
+          description_service: 'Chọn những người dùng hoặc dịch vụ mà sẽ ủy quyền quyền truy cập vào API',
+          choose: 'Chọn người ủy quyền',
+          authorized: 'Người ủy quyền thỏa mãn',
+          proposed_requirement: 'Yêu cầu được đề xuất cho người ủy quyền'
+        },
+        delegatee: {
+          title: 'Chọn người nhận ủy quyền',
+          description_ui: 'Chọn những người dùng mà sẽ nhận được ủy quyền quyền truy cập vào các thành phần giao diện',
+          description_service: 'Chọn những dịch vụ mà sẽ nhận được ủy quyền quyền truy cập vào API',
+          choose: 'Chọn người nhận ủy quyền',
+          authorized: 'Người nhận ủy quyền thỏa mãn',
+          proposed_requirement: 'Yêu cầu được đề xuất cho người nhận ủy quyền'
+        },
+        delegateObject: {
+          title: 'Chọn đối tượng ủy quyền',
+          description_ui: 'Chọn Link hoặc Component, đây là những đối tượng sẽ được ủy quyền',
+          description_service: 'Chọn API, đây là những đối tượng sẽ được ủy quyền',
+          choose: 'Chọn đối tượng ủy quyền',
+          authorized: 'Đối tượng ủy quyền thỏa mãn',
+          proposed_requirement: 'Yêu cầu được đề xuất cho đối tượng được ủy quyền'
+        }
       }
     },
     manage_api: {
@@ -2438,18 +2489,19 @@ export default {
       attribute_not_selected: 'Chưa chọn thuộc tính'
     },
     manage_delegation: {
-      delegationName: 'Mã ủy quyền',
+      name: 'Mã ủy quyền',
       delegateType: 'Loại ủy quyền',
       delegateObject: 'Vai trò',
       delegateObjectTask: 'Công việc',
       delegateObjectTaskRole: 'Vai trò công việc',
+      delegateResource: 'Tài nguyên',
       delegatee: 'Người nhận',
       delegator: 'Người ủy quyền',
       delegateStartDate: 'Ngày có hiệu lực',
       delegateEndDate: 'Ngày thu hồi',
       delegateStatus: 'Trạng thái',
       delegateTypeTask: 'Ủy quyền công việc',
-      delegateTypeService: 'Ủy quyền dịch vụ',
+      delegateTypeResource: 'Ủy quyền tài nguyên',
       delegateTypeRole: 'Ủy quyền vai trò',
       end_date_tbd: 'Chưa xác định',
       search: 'Tìm kiếm',
@@ -2554,16 +2606,16 @@ export default {
       task_delegation_title_add: 'Thêm ủy quyền công việc',
       choose_delegateTaskName: 'Chọn công việc ủy quyền',
       no_blank_delegate_task: 'Công việc ủy quyền không được bỏ trống',
-      service_delegation_title: 'Ủy quyền dịch vụ',
-      choose_delegate_apis: 'Chọn API',
-      service_delegation_title_add: 'Thêm ủy quyền dịch vụ',
-      service_delegation_title_edit: 'Chỉnh sửa ủy quyền dịch vụ',
-      no_blank_delegate_apis: 'API ủy quyền không được bỏ trống',
-      delegatee_service: 'Dịch vụ nhận ủy quyền',
-      delegator_service: 'Dịch vụ ủy quyền',
-      choose_delegatee_service: 'Chọn dịch vụ nhận ủy quyền',
-      choose_delegator_service: 'Chọn dịch vụ ủy quyền',
-      delegate_apis: 'API ủy quyền',
+      resource_delegation_title: 'Ủy quyền tài nguyên',
+      choose_delegate_resource: 'Chọn tài nguyên',
+      resource_delegation_title_add: 'Thêm ủy quyền tài nguyên',
+      resource_delegation_title_edit: 'Chỉnh sửa ủy quyền tài nguyên',
+      no_blank_delegate_resource: 'Tài nguyên ủy quyền không được bỏ trống',
+      delegatee_resource: 'Dịch vụ nhận ủy quyền',
+      delegator_resource: 'Dịch vụ ủy quyền',
+      choose_delegatee_resource: 'Chọn tài nguyên nhận ủy quyền',
+      choose_delegator_resource: 'Chọn tài nguyên ủy quyền',
+      delegate_resource: 'Tài nguyên ủy quyền',
       api: {
         url: 'URL',
         action: 'Hành động'

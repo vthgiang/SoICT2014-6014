@@ -1,44 +1,49 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components'
+import { useTranslate } from 'react-redux-multilingual'
+import { DialogModal } from '../../../../common-components'
 import { GeneralTab } from './generalTab'
-import { DelegationTab } from './delegationTab'
-import { ResourceTab } from './resourceTab'
-import { withTranslate } from 'react-redux-multilingual'
+import { AttributeTableTab } from './attributeTableTab'
 import ValidationHelper from '../../../../helpers/validationHelper'
 import { AttributeActions } from '../../attribute/redux/actions'
 import { PolicyActions } from '../redux/actions'
 
-function PolicyCreateForm(props) {
+export function PolicyCreateForm(props) {
+  const translate = useTranslate()
+  const policyDelegation = useSelector((x) => x.policyDelegation)
+  const dispatch = useDispatch()
   // Khởi tạo state
   const [state, setState] = useState({
-    policyName: '',
+    name: '',
     description: '',
+    effect: 'Allow',
+    effectiveStartTime: Date.now(),
+    effectiveEndTime: undefined,
     delegatorAttributes: [],
+    delegateObjectAttributes: [],
     delegateeAttributes: [],
-    delegatedObjectAttributes: [],
-    resourceAttributes: [],
+    environmentAttributes: [],
     delegatorRule: '',
+    delegateObjectRule: '',
     delegateeRule: '',
-    delegatedObjectRule: '',
-    resourceRule: '',
-    delegateType: 'Role'
+    environmentRule: ''
   })
 
-  const { translate, policyDelegation, page, perPage } = props
   const {
-    delegateType,
-    policyName,
+    name,
     description,
+    effect,
+    effectiveStartTime,
+    effectiveEndTime,
     delegatorRule,
+    delegateObjectRule,
     delegateeRule,
-    delegatedObjectRule,
-    resourceRule,
+    environmentRule,
     delegatorAttributes,
+    delegateObjectAttributes,
     delegateeAttributes,
-    delegatedObjectAttributes,
-    resourceAttributes
+    environmentAttributes
   } = state
 
   const handleChange = (name, value) => {
@@ -48,99 +53,45 @@ function PolicyCreateForm(props) {
     })
   }
 
-  console.log(state)
   const handleChangeAddRowAttribute = (name, value) => {
     props.handleChangeAddRowAttribute(name, value)
   }
 
   useEffect(() => {
-    props.getAttribute()
+    dispatch(AttributeActions.getAttributes())
   }, [])
+
+  const validateAttributes = (attributes, notEmpty = false) => {
+    if (notEmpty && attributes.length === 0) {
+      return false
+    }
+    if (attributes.length !== 0) {
+      for (let i = 0; i < attributes.length; i++) {
+        if (
+          !ValidationHelper.validateEmpty(translate, attributes[i].attributeId).status ||
+          !ValidationHelper.validateEmpty(translate, attributes[i].value).status
+        ) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+
   /**
    * Hàm dùng để kiểm tra xem form đã được validate hay chưa
    */
   const isFormValidated = () => {
     if (
-      !ValidationHelper.validateName(translate, policyName, 6, 255).status ||
-      !validateDelegatorAttributes() ||
-      !validateDelegateeAttributes() ||
-      !validateDelegatedObjectAttributes() ||
-      !validateResourceAttributes()
+      !ValidationHelper.validateName(translate, name, 6, 255).status ||
+      !validateAttributes(delegatorAttributes, true) ||
+      !validateAttributes(delegateeAttributes, true) ||
+      !validateAttributes(delegateObjectAttributes, true) ||
+      !validateAttributes(environmentAttributes)
     ) {
       return false
     }
     return true
-  }
-
-  const validateDelegatorAttributes = () => {
-    var delegatorAttributes = state.delegatorAttributes
-    let result = true
-
-    if (delegatorAttributes.length !== 0) {
-      for (let n in delegatorAttributes) {
-        if (
-          !ValidationHelper.validateEmpty(props.translate, delegatorAttributes[n].attributeId).status ||
-          !ValidationHelper.validateEmpty(props.translate, delegatorAttributes[n].value).status
-        ) {
-          result = false
-          break
-        }
-      }
-    }
-    return result
-  }
-  const validateDelegatedObjectAttributes = () => {
-    var delegatedObjectAttributes = state.delegatedObjectAttributes
-    let result = true
-
-    if (delegatedObjectAttributes.length !== 0) {
-      for (let n in delegatedObjectAttributes) {
-        if (
-          !ValidationHelper.validateEmpty(props.translate, delegatedObjectAttributes[n].attributeId).status ||
-          !ValidationHelper.validateEmpty(props.translate, delegatedObjectAttributes[n].value).status
-        ) {
-          result = false
-          break
-        }
-      }
-    }
-    return result
-  }
-
-  const validateDelegateeAttributes = () => {
-    var delegateeAttributes = state.delegateeAttributes
-    let result = true
-
-    if (delegateeAttributes.length !== 0) {
-      for (let n in delegateeAttributes) {
-        if (
-          !ValidationHelper.validateEmpty(props.translate, delegateeAttributes[n].attributeId).status ||
-          !ValidationHelper.validateEmpty(props.translate, delegateeAttributes[n].value).status
-        ) {
-          result = false
-          break
-        }
-      }
-    }
-    return result
-  }
-
-  const validateResourceAttributes = () => {
-    var resourceAttributes = state.resourceAttributes
-    let result = true
-
-    if (resourceAttributes.length !== 0) {
-      for (let n in resourceAttributes) {
-        if (
-          !ValidationHelper.validateEmpty(props.translate, resourceAttributes[n].attributeId).status ||
-          !ValidationHelper.validateEmpty(props.translate, resourceAttributes[n].value).status
-        ) {
-          result = false
-          break
-        }
-      }
-    }
-    return result
   }
 
   /**
@@ -148,97 +99,74 @@ function PolicyCreateForm(props) {
    */
   const save = () => {
     const data = {
-      policyName: policyName,
-      description: description,
-      delegateType: delegateType,
-      delegator: {
-        delegatorAttributes: delegatorAttributes,
-        delegatorRule: delegatorAttributes.length > 0 ? delegatorRule : ''
+      name,
+      description,
+      effect,
+      effectiveStartTime,
+      effectiveEndTime,
+      delegatorRequirements: {
+        attributes: delegatorAttributes,
+        rule: delegatorRule
       },
-      delegatee: {
-        delegateeAttributes: delegateeAttributes,
-        delegateeRule: delegateeAttributes.length > 0 ? delegateeRule : ''
+      delegateObjectRequirements: {
+        attributes: delegateObjectAttributes,
+        rule: delegateObjectRule
       },
-      delegatedObject: {
-        delegatedObjectAttributes: delegatedObjectAttributes,
-        delegatedObjectRule: delegatedObjectAttributes.length > 0 ? delegatedObjectRule : ''
+      delegateeRequirements: {
+        attributes: delegateeAttributes,
+        rule: delegateeRule
       },
-      resource: {
-        resourceAttributes: resourceAttributes,
-        resourceRule: resourceAttributes.length > 0 ? resourceRule : ''
+      environmentRequirements: {
+        attributes: environmentAttributes,
+        rule: environmentRule
       }
     }
-    if (isFormValidated() && policyName) {
-      props.createPolicy([data])
+    if (isFormValidated() && name) {
+      dispatch(PolicyActions.createPolicy([data]))
     }
   }
 
   return (
-    <React.Fragment>
-      <DialogModal
-        modalID='modal-create-policy-hooks'
-        isLoading={policyDelegation.isLoading}
-        formID='form-create-policy-hooks'
-        title={translate('manage_delegation_policy.add_title')}
-        msg_success={translate('manage_delegation_policy.add_success')}
-        msg_failure={translate('manage_delegation_policy.add_fail')}
-        func={save}
-        disableSubmit={!isFormValidated()}
-        size={75}
-        maxWidth={850}
-      >
-        <div className='nav-tabs-custom' style={{ marginTop: '-15px' }}>
-          {/* Nav-tabs */}
-          <ul className='nav nav-tabs'>
-            <li className='active'>
-              <a title={translate('manage_delegation_policy.general_information')} data-toggle='tab' href={`#create_general`}>
-                {translate('manage_delegation_policy.general_information')}
-              </a>
-            </li>
-            <li>
-              <a title={translate('manage_delegation_policy.delegation_information')} data-toggle='tab' href={`#create_delegation`}>
-                {translate('manage_delegation_policy.delegation_information')}
-              </a>
-            </li>
-            {/* <li><a title={translate('manage_delegation_policy.resource_information')} data-toggle="tab" href={`#create_resource`}>{translate('manage_delegation_policy.resource_information')}</a></li> */}
-          </ul>
+    <DialogModal
+      modalID='modal-create-policy-hooks'
+      isLoading={policyDelegation.isLoading}
+      formID='form-create-policy-hooks'
+      title={translate('manage_delegation_policy.add_title')}
+      msg_success={translate('manage_delegation_policy.add_success')}
+      msg_failure={translate('manage_delegation_policy.add_fail')}
+      func={save}
+      disableSubmit={!isFormValidated()}
+      size={75}
+      maxWidth={850}
+    >
+      <div className='nav-tabs-custom' style={{ marginTop: '-15px' }}>
+        {/* Nav-tabs */}
+        <ul className='nav nav-tabs'>
+          <li className='active'>
+            <a title={translate('manage_delegation_policy.general_information')} data-toggle='tab' href='#create_general'>
+              {translate('manage_delegation_policy.general_information')}
+            </a>
+          </li>
+          <li>
+            <a title={translate('manage_delegation_policy.attributes_information')} data-toggle='tab' href='#create_attributes'>
+              {translate('manage_delegation_policy.attributes_information')}
+            </a>
+          </li>
+        </ul>
 
-          <div className='tab-content'>
-            {/* Thông tin chung */}
-            <GeneralTab id={`create_general`} handleChange={handleChange} />
+        <div className='tab-content'>
+          {/* Thông tin chung */}
+          <GeneralTab id='create_general' handleChange={handleChange} />
 
-            {/* Thông tin thuộc tính subject */}
-            <DelegationTab
-              id={`create_delegation`}
-              handleChange={handleChange}
-              i={props.i}
-              handleChangeAddRowAttribute={handleChangeAddRowAttribute}
-              delegateType={delegateType}
-            />
-
-            {/* Thông tin thuộc tính resource */}
-            {/* <ResourceTab
-                            id={`create_resource`}
-                            handleChange={handleChange}
-                            i={props.i}
-                            handleChangeAddRowAttribute={handleChangeAddRowAttribute}
-                        /> */}
-          </div>
+          {/* Thông tin thuộc tính */}
+          <AttributeTableTab
+            id='create_attributes'
+            handleChange={handleChange}
+            i={props.i}
+            handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+          />
         </div>
-      </DialogModal>
-    </React.Fragment>
+      </div>
+    </DialogModal>
   )
 }
-
-function mapState(state) {
-  const policyDelegation = state.policyDelegation
-  return { policyDelegation }
-}
-
-const actions = {
-  createPolicy: PolicyActions.createPolicy,
-  getAttribute: AttributeActions.getAttributes
-}
-
-const connectedPolicyCreateForm = connect(mapState, actions)(withTranslate(PolicyCreateForm))
-export { connectedPolicyCreateForm as PolicyCreateForm }

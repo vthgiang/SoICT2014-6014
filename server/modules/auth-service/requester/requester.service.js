@@ -2,7 +2,9 @@ const {
   connect
 } = require(`../../../helpers/dbHelper`)
 
-const { Requester, DynamicAssignment, Resource } = require('../../../models');
+const { Requester, DynamicAssignment, Resource, Role, Privilege, UserRole } = require('../../../models');
+const AuthorizationPolicyService = require(`../../authorization/policy/policy.service`);
+const DelegationPolicyService = require(`../../delegation/policy/policy.service`);
 
 exports.find = async (portal, queryParams = {}) => {
   let query = {};
@@ -153,36 +155,72 @@ exports.findByIds = async(portal, ids) => {
   }));
 }
 
-exports.getAccessibleResources = async(portal, id) => {
+exports.getAccessibleResources = async(portal, requesterId, roleId = undefined) => {
   //TODO: implement later
-  const requester = await Requester(connect(DB_CONNECTION, portal)).findById(id)
+  const requester = await Requester(connect(DB_CONNECTION, portal)).findById(requesterId)
     .populate('refId');
 
-  let accessibleResources = ['6658e0a2882e1809dc9440c2', '6658e0a2882e1809dc9440c7', '6658e0a2882e1809dc9442ba'];
-
-  if (requester.type == 'User') {
+  let allowOriginalResourceIds = [];
+  if (requester.type == 'User' && roleId) {
     // get accessible resources RBAC
+    const role = await Role(connect(DB_CONNECTION, portal)).findById(roleId); //lay duoc role hien tai
+    let roles = [role._id, ...role.parents];
+    const privilege = await Privilege(connect(DB_CONNECTION, portal))
+        .find({
+            roleId: { $in: roles }
+        })
+        .populate({ path: "resourceId" });
+    // const userrole = await UserRole(connect(DB_CONNECTION, portal)).findOne({ userId: requester.refId, roleId: role._id });
+
+
+    // Lấy ds các link theo RBAC original và ko có policy
+    allowOriginalResourceIds = await privilege
+        .filter((pri) => pri.resourceId.deleteSoft === false && pri.policies.length == 0)
+        .map((pri) => pri.resourceId._id);
+
+    // Gán thêm các link được phân quyền theo policy với những user có UserRole và Privilege khớp policy
+    // privilege.forEach(pri => {
+    //     if (pri.policies.length > 0) {
+    //         if (userrole.policies.length > 0) {
+    //             if (pri.policies.some(policy => userrole.policies.includes(policy)) && pri.resourceId.deleteSoft === false) {
+    //               allowOriginalResourceIds = allowOriginalResourceIds.concat(pri.resourceId)
+    //             }
+    //         }
+    //     }
+    // })
   }
+  // const allowResourcesByRole = await Resource(connect(DB_CONNECTION, portal)).find({ refId: {$in: allowOriginalResourceIds }});
+  let allowResourceIds = [];
+  let denyResourceIds = [];
   
   const dynamicAssignments = await DynamicAssignment(connect(DB_CONNECTION, portal))
-    .find({ requesterIds: id }).populate('policyId');
-  const validAssignments = dynamicAssignments.filter(x => 
-    x.policyId &&
-    x.policyId.effectiveStartTime.getTime() <= Date.now() &&
-    x.policyId.effectiveEndTime ? x.policyId.effectiveEndTime.getTime() >= Date.now() : true
-  );
-  validAssignments.forEach(e => {
-    if (e.policyId.effect == 'Allow'){
-      accessibleResources.push(...e.resourceIds);
-    }
+      .find({ requesterIds: requester._id })
+      .populate('policyId delegationId');
+
+  const activePolicyAssignments = AuthorizationPolicyService.filterActiveAuthorizationPolicies(dynamicAssignments);
+  const activeDelegationAssignments = DelegationPolicyService.filterActiveDelegations(dynamicAssignments);
+
+  activePolicyAssignments.forEach(x => {
+      if (x.policyId.effect == 'Allow') {
+          allowResourceIds = allowResourceIds.concat(x.resourceIds);
+      }
+      else {
+          denyResourceIds = denyResourceIds.concat(x.resourceIds);
+      }
   });
-  validAssignments.forEach(e => {
-    if (e.policyId.effect == 'Deny'){
-      accessibleResources = accessibleResources.filter(x => !e.resourceIds.contains(x));
-    }
+  activeDelegationAssignments.forEach(x => {
+      allowResourceIds = allowResourceIds.concat(x.resourceIds);
   });
 
-  const resources = await Resource(connect(DB_CONNECTION, portal)).find({_id: {$in: accessibleResources}});
+  let allowResources = await Resource(connect(DB_CONNECTION, portal))
+    .find({
+      $or: [
+        {_id: {$in: allowResourceIds}},
+        {refId: {$in: allowOriginalResourceIds}},
+        {owner: requester.refId, ownerType: requester.type}
+      ]
+    });
 
-  return resources;
+  allowResources = allowResources.filter(x => !denyResourceIds.includes(x._id));
+  return allowResources;
 }

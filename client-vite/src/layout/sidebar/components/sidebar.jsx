@@ -256,12 +256,12 @@ class SideBar extends Component {
                   },
                   {
                     name: 'menu.manage_requester',
-                    icon: 'fa fa-link',
+                    icon: 'fa fa-users',
                     path: '/requesters-management'
                   },
                   {
                     name: 'menu.manage_resource',
-                    icon: 'fa fa-link',
+                    icon: 'fa fa-tasks',
                     path: '/resources-management'
                   },
                   {
@@ -292,7 +292,7 @@ class SideBar extends Component {
                   },
                   {
                     name: 'menu.authorization_logging',
-                    icon: 'fa fa-link',
+                    icon: 'fa fa-eye',
                     path: '/authorization-logging'
                   },
                   {

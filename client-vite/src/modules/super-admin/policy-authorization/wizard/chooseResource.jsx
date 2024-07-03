@@ -15,7 +15,7 @@ export function ChooseResource(props) {
     proposedResourceRule: ''
   })
 
-  const { id, next, openEditAttributes, description, filterObject, attributeType } = props
+  const { id, next, openEditAttributes, description, filterObject, attributeType, translation } = props
   const allResource = useSelector((x) => x.resource.list)
   const availableResources = allResource.filter(filterObject)
   const resourceLoading = useSelector((x) => x.resource.isLoading)
@@ -79,7 +79,7 @@ export function ChooseResource(props) {
       modalID={`modal-${id}`}
       isLoading={isLoading}
       formID={`form-${id}`}
-      title={translate('manage_authorization_policy.wizard.resource.title')}
+      title={translate(`manage_authorization_policy.wizard.${translation ?? 'resource'}.title`)}
       msg_success={translate('manage_authorization_policy.add_success')}
       msg_failure={translate('manage_authorization_policy.add_fail')}
       func={save}
@@ -92,7 +92,7 @@ export function ChooseResource(props) {
       <div className={`form-group authorization-wizard-row `}>
         <label>
           <div className='authorization-wizard-title'>
-            {translate('manage_authorization_policy.wizard.resource.choose')}
+            {translate(`manage_authorization_policy.wizard.${translation ?? 'resource'}.choose`)}
             <span className='text-red'>*</span>
           </div>
           <div className='authorization-wizard-description'>{description}</div>
@@ -114,7 +114,9 @@ export function ChooseResource(props) {
       {/* Display authorized resources */}
       <div className={`form-group authorization-wizard-row `}>
         <label>
-          <div className='authorization-wizard-title'>{translate('manage_authorization_policy.wizard.resource.authorized')}</div>
+          <div className='authorization-wizard-title'>
+            {translate(`manage_authorization_policy.wizard.${translation ?? 'resource'}.authorized`)}
+          </div>
         </label>
         {/* Bảng dữ liệu */}
         <table className='table table-hover table-striped table-bordered' id='table-resource-wizard'>
@@ -151,7 +153,7 @@ export function ChooseResource(props) {
         updateRequirement={updateRequirement}
         selectedObjects={state.selectedResources}
         id={`${id}-proposed_requirement`}
-        title={translate('manage_authorization_policy.wizard.resource.proposed_requirement')}
+        title={translate(`manage_authorization_policy.wizard.${translation ?? 'resource'}.proposed_requirement`)}
         attributeType={attributeType}
       />
     </DialogModal>

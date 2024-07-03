@@ -6,7 +6,7 @@ import { LogActivityTab } from './logActivityTab'
 
 import { DialogModal } from '../../../../common-components'
 
-const DelegationDetailInfo = (props) => {
+function DelegationDetailInfo(props) {
   const [state, setState] = useState({})
 
   const { translate, delegation } = props
@@ -23,14 +23,13 @@ const DelegationDetailInfo = (props) => {
       setState({
         ...state,
         delegationID: props.delegationID,
-        delegationName: props.delegationName,
+        name: props.name,
         description: props.description,
         delegator: props.delegator,
         delegatee: props.delegatee,
         delegatePrivileges: props.delegatePrivileges,
         delegateType: props.delegateType,
-        delegateRole: props.delegateRole,
-        delegateTask: props.delegateTask,
+        delegateObject: props.delegateObject,
         status: props.status,
         allPrivileges: props.allPrivileges,
         startDate: props.startDate,
@@ -40,90 +39,87 @@ const DelegationDetailInfo = (props) => {
         forReceive: props.forReceive,
         replyStatus: props.replyStatus,
         declineReason: props.declineReason,
-        delegatePolicy: props.delegatePolicy,
+        policy: props.policy,
         logs: props.logs
       })
     }
   }, [props.delegationID, props.status, props.replyStatus, props.logs])
 
   return (
-    <React.Fragment>
-      <DialogModal
-        modalID={`modal-detail-info-delegation-hooks-Role`}
-        isLoading={delegation.isLoading}
-        title={translate('manage_delegation.detail_info_delegation')}
-        formID={`form-detail-delegation-hooks-Role`}
-        size={50}
-        hasSaveButton={false}
-        hasNote={false}
-      >
-        <div className='nav-tabs-custom' style={{ marginTop: '-15px' }}>
-          {/* Nav-tabs */}
-          <ul className='nav nav-tabs'>
-            <li className='active'>
-              <a title={translate('manage_delegation.general_information')} data-toggle='tab' href={`#detail_general_information`}>
-                {translate('manage_delegation.general_information')}
-              </a>
-            </li>
-            <li>
-              <a title={translate('manage_delegation.log_activity')} data-toggle='tab' href={`#detail_log_activity`}>
-                {translate('manage_delegation.log_activity')}
-              </a>
-            </li>
-          </ul>
+    <DialogModal
+      modalID='modal-detail-info-delegation-hooks-Role'
+      isLoading={delegation.isLoading}
+      title={translate('manage_delegation.detail_info_delegation')}
+      formID='form-detail-delegation-hooks-Role'
+      size={50}
+      hasSaveButton={false}
+      hasNote={false}
+    >
+      <div className='nav-tabs-custom' style={{ marginTop: '-15px' }}>
+        {/* Nav-tabs */}
+        <ul className='nav nav-tabs'>
+          <li className='active'>
+            <a title={translate('manage_delegation.general_information')} data-toggle='tab' href='#detail_general_information'>
+              {translate('manage_delegation.general_information')}
+            </a>
+          </li>
+          <li>
+            <a title={translate('manage_delegation.log_activity')} data-toggle='tab' href='#detail_log_activity'>
+              {translate('manage_delegation.log_activity')}
+            </a>
+          </li>
+        </ul>
 
-          <div className='tab-content'>
-            {/* Thông tin chung */}
-            <GeneralTab
-              id={`detail_general_information`}
-              delegationID={delegationID}
-              delegationName={state.delegationName}
-              description={state.description}
-              delegator={state.delegator}
-              delegatee={state.delegatee}
-              delegatePrivileges={state.delegatePrivileges}
-              delegateType={state.delegateType}
-              delegateRole={state.delegateRole}
-              delegateTask={state.delegateTask}
-              status={state.status}
-              allPrivileges={state.allPrivileges}
-              startDate={state.startDate}
-              endDate={state.endDate}
-              revokedDate={state.revokedDate}
-              revokeReason={state.revokeReason}
-              forReceive={state.forReceive}
-              replyStatus={state.replyStatus}
-              declineReason={state.declineReason}
-              delegatePolicy={state.delegatePolicy}
-              logs={state.logs}
-            />
+        <div className='tab-content'>
+          {/* Thông tin chung */}
+          <GeneralTab
+            id='detail_general_information'
+            delegationID={delegationID}
+            name={state.name}
+            description={state.description}
+            delegator={state.delegator}
+            delegatee={state.delegatee}
+            delegatePrivileges={state.delegatePrivileges}
+            delegateType={state.delegateType}
+            delegateObject={state.delegateObject}
+            status={state.status}
+            allPrivileges={state.allPrivileges}
+            startDate={state.startDate}
+            endDate={state.endDate}
+            revokedDate={state.revokedDate}
+            revokeReason={state.revokeReason}
+            forReceive={state.forReceive}
+            replyStatus={state.replyStatus}
+            declineReason={state.declineReason}
+            policy={state.policy}
+            logs={state.logs}
+          />
 
-            {/* Thông tin thuộc tính subject */}
-            <LogActivityTab
-              id={`detail_log_activity`}
-              delegationID={delegationID}
-              delegationName={state.delegationName}
-              description={state.description}
-              delegator={state.delegator}
-              delegatee={state.delegatee}
-              delegatePrivileges={state.delegatePrivileges}
-              delegateType={state.delegateType}
-              delegateRole={state.delegateRole}
-              delegateTask={state.delegateTask}
-              status={state.status}
-              allPrivileges={state.allPrivileges}
-              startDate={state.startDate}
-              endDate={state.endDate}
-              revokedDate={state.revokedDate}
-              revokeReason={state.revokeReason}
-              logs={state.logs}
-            />
-          </div>
+          {/* Thông tin thuộc tính subject */}
+          <LogActivityTab
+            id='detail_log_activity'
+            delegationID={delegationID}
+            name={state.name}
+            description={state.description}
+            delegator={state.delegator}
+            delegatee={state.delegatee}
+            delegatePrivileges={state.delegatePrivileges}
+            delegateType={state.delegateType}
+            delegateObject={state.delegateObject}
+            status={state.status}
+            allPrivileges={state.allPrivileges}
+            startDate={state.startDate}
+            endDate={state.endDate}
+            revokedDate={state.revokedDate}
+            revokeReason={state.revokeReason}
+            logs={state.logs}
+          />
         </div>
-        {/* <form id={`form-detail-delegation-hooks`}>
+      </div>
+      {/* <form id={`form-detail-delegation-hooks`}>
                     <div className={`form-group`}>
-                        <label>{translate('manage_delegation.delegationName')}:</label>
-                        <span> {delegationName}</span>
+                        <label>{translate('manage_delegation.name')}:</label>
+                        <span> {name}</span>
                     </div>
 
                     <div className={`form-group`}>
@@ -131,13 +127,12 @@ const DelegationDetailInfo = (props) => {
                         <span> {description}</span>
                     </div>
                 </form> */}
-      </DialogModal>
-    </React.Fragment>
+    </DialogModal>
   )
 }
 
 function mapStateToProps(state) {
-  const delegation = state.delegation
+  const { delegation } = state
   return { delegation }
 }
 

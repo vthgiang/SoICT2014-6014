@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { withTranslate } from 'react-redux-multilingual'
+import { useTranslate } from 'react-redux-multilingual'
 import dayjs from 'dayjs'
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker, SelectMulti } from '../../../../common-components'
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker } from '../../../../common-components'
 import ValidationHelper from '../../../../helpers/validationHelper'
 import { DelegationActions } from '../redux/actions'
-import { InternalServiceIdentityActions } from '../../../system-admin/internal-service-identity/redux/actions'
-import { ExternalServiceConsumerActions } from '../../../super-admin/external-service-consumer/redux/actions'
+import { RequesterActions } from '../../../system-admin/requester-management/redux/actions'
+import { PolicyActions } from '../../../super-admin/policy-delegation/redux/actions'
 import { DelegationFormValidator } from './delegationFormValidator'
 import './selectLink.css'
 import { generateCode } from '../../../../helpers/generateCode'
 import { sendRequest } from '../../../../helpers/requestHelper'
 
-function DelegationCreateFormService(props) {
+export function DelegationCreateFormResource(props) {
+  const dispatch = useDispatch()
+  const translate = useTranslate()
   const [state, setState] = useState({
-    delegationName: '',
+    name: '',
     description: '',
-    delegationNameError: {
+    nameError: {
       message: undefined,
       status: true
     },
@@ -32,15 +34,14 @@ function DelegationCreateFormService(props) {
     showChooseRevoke: false,
     delegationStart: '',
     delegationEnd: '',
-    // delegatePolicy: '',
-    delegateApis: [],
-    apisServiceCanAccess: [],
-    allServices: []
+    policy: '',
+    delegateResource: undefined,
+    accessibleResources: []
   })
   const {
-    delegationName,
+    name,
     description,
-    delegationNameError,
+    nameError,
     delegatee,
     delegator,
     delegateDuration,
@@ -48,16 +49,12 @@ function DelegationCreateFormService(props) {
     errorDelegatee,
     errorDelegator,
     delegationEnd,
-    // delegatePolicy,
-    // errorDelegatePolicy,
-    delegateApis,
-    errorDelegateApis,
-    apisServiceCanAccess,
-    allServices
+    policy,
+    errorDelegatePolicy,
+    delegateResource,
+    errorDelegateResource,
+    accessibleResources
   } = state
-
-  const { internalServiceIdentities, externalServiceConsumers } = props
-  const { translate, getInternalServiceIdentities, getExternalServiceConsumers, createServiceDelegation } = props
 
   const convertDateTime = (date, time) => {
     const splitter = date.split('-')
@@ -95,17 +92,17 @@ function DelegationCreateFormService(props) {
           ...state.delegateDuration,
           startTime: currentTime
         },
-        delegationName: code,
-        delegationNameError: result
+        name: code,
+        nameError: result
       }
     })
   }
 
   useEffect(() => {
-    if (delegationName == '') {
-      window.$(`#modal-create-delegation-hooks-Service`).on('shown.bs.modal', regenerateTimeAndCode)
+    if (name === '') {
+      window.$(`#modal-create-delegation-hooks-Resource`).on('shown.bs.modal', regenerateTimeAndCode)
       return () => {
-        window.$(`#modal-create-delegation-hooks-Service`).unbind('shown.bs.modal', regenerateTimeAndCode)
+        window.$(`#modal-create-delegation-hooks-Resource`).unbind('shown.bs.modal', regenerateTimeAndCode)
       }
     }
   }, [])
@@ -115,78 +112,84 @@ function DelegationCreateFormService(props) {
    */
   const isFormValidated = () => {
     if (
-      !delegationNameError.status ||
-      errorDelegatee !== undefined ||
-      errorDelegator !== undefined ||
+      !nameError.status ||
+      !validateDelegateResource(delegateResource, false) ||
+      !validateDelegatee(delegatee, false) ||
       (showChooseRevoke && !ValidationHelper.validateEmpty(translate, delegateDuration.endDate).status) ||
-      !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status
+      !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status ||
+      !validateDelegatePolicy(state.policy, false)
     ) {
       return false
     }
     return true
   }
 
+  const requesters = useSelector((x) => x.requester?.list)
+  const auth = useSelector((x) => x.auth)
+  const delegationPolicies = useSelector((x) => x.policyDelegation.listPaginate)
+
   useEffect(() => {
-    getInternalServiceIdentities({
-      page: 1,
-      perPage: 1000
-    })
-    getExternalServiceConsumers({
-      page: 1,
-      perPage: 1000
-    })
+    if (!requesters.length) {
+      dispatch(RequesterActions.getAll())
+    }
+
+    if (!delegationPolicies.length) {
+      dispatch(
+        PolicyActions.getPolicies({
+          page: 1,
+          perPage: 10000
+        })
+      )
+    }
   }, [])
 
-  const SERVICE_IDENTITY_BASE_API_URL = `${process.env.REACT_APP_SERVICE_IDENTITY_SERVER}/authorization/internal-service-identities`
+  useEffect(() => {
+    if (requesters) {
+      const delegatorId = requesters.find((x) => x.refId == auth.user?._id)?.id
+      setState({
+        ...state,
+        delegator: delegatorId
+      })
+    }
+  }, [requesters])
+
+  // get accessible resources
+  const REQUESTER_SERVICE_BASE_API_URL = `${process.env.REACT_APP_SERVER}/requester`
   useEffect(() => {
     if (delegator) {
       sendRequest(
         {
-          url: `${SERVICE_IDENTITY_BASE_API_URL}/internal-service-identities/get-api-service-can-access/${delegator}`,
+          url: `${REQUESTER_SERVICE_BASE_API_URL}/accessible-resources/${delegator}`,
           method: 'GET'
         },
         false,
         false,
-        'system_admin.internal_service_identity'
+        'system_admin.accessible_resources'
       ).then((res) => {
         setState({
           ...state,
-          apisServiceCanAccess: res.data.content
+          accessibleResources: res.data.content
         })
       })
     }
   }, [delegator])
-
-  useEffect(() => {
-    if (internalServiceIdentities?.listInternalServiceIdentity && externalServiceConsumers?.listExternalServiceConsumer) {
-      const newAllServices = internalServiceIdentities.listInternalServiceIdentity.concat(
-        externalServiceConsumers.listExternalServiceConsumer
-      )
-      setState({
-        ...state,
-        allServices: newAllServices
-      })
-    }
-  }, [internalServiceIdentities.listInternalServiceIdentity, externalServiceConsumers.listExternalServiceConsumer])
-
-  // Nhận giá trị từ component cha
 
   /**
    * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
    */
   const save = () => {
     const data = {
-      delegationName,
+      name,
       description,
       delegator,
       delegatee,
-      delegationStart: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
-      delegationEnd: delegationEnd !== '' ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
-      // delegatePolicy: delegatePolicy,
-      delegateApis
+      startDate: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
+      endDate: delegationEnd !== '' ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
+      policy,
+      delegateObject: delegateResource
     }
-    if (isFormValidated() && delegationName) {
-      return createServiceDelegation([data])
+    if (isFormValidated() && name) {
+      dispatch(DelegationActions.createResourceDelegation([data]))
     }
   }
 
@@ -207,8 +210,8 @@ function DelegationCreateFormService(props) {
 
     setState({
       ...state,
-      delegationName: value,
-      delegationNameError: result
+      name: value,
+      nameError: result
     })
   }
 
@@ -242,66 +245,46 @@ function DelegationCreateFormService(props) {
   const handleDelegatee = (value) => {
     validateDelegatee(value[0], true)
   }
+  const handleDelegatePolicy = (value) => {
+    validateDelegatePolicy(value[0], true)
+  }
 
-  const validateDelegator = (value, willUpdateState) => {
+  const validateDelegatePolicy = (value, willUpdateState) => {
+    let msg
+    if (!value) {
+      msg = translate('manage_delegation.no_blank_delegate_policy')
+    }
+    if (willUpdateState) {
+      setState({
+        ...state,
+        policy: value,
+        errorDelegatePolicy: msg
+      })
+    }
+    return msg === undefined
+  }
+
+  const validateDelegateResource = (value, willUpdateState) => {
     let msg
     if (!value) {
       msg = translate('manage_delegation.no_blank_delegatee')
     }
+
     if (willUpdateState) {
       setState({
         ...state,
-        delegator: value,
-        errorDelegator: msg
+        delegateResource: value,
+        errorDelegateResource: msg
       })
     }
     return msg === undefined
   }
 
-  const handleDelegator = (value) => {
-    validateDelegator(value[0], true)
-  }
-  // const handleDelegatePolicy = (value) => {
-  //   validateDelegatePolicy(value[0], true)
-  // }
-
-  // const validateDelegatePolicy = (value, willUpdateState) => {
-  //   let msg = undefined
-  //   const { translate } = props
-  //   if (!value) {
-  //     msg = translate('manage_delegation.no_blank_delegate_policy')
-  //   }
-  //   if (willUpdateState) {
-  //     setState({
-  //       ...state,
-  //       delegatePolicy: value,
-  //       errorDelegatePolicy: msg
-  //     })
-  //   }
-  //   return msg === undefined
-  // }
-
-  const validateDelegateApis = (value, willUpdateState) => {
-    let msg
-    if (!value || value.length == 0) {
-      msg = translate('manage_delegation.no_blank_delegate_apis')
-    }
-
-    if (willUpdateState) {
-      setState({
-        ...state,
-        delegateApis: value,
-        errorDelegateApis: msg
-      })
-    }
-    return msg === undefined
+  const handleDelegateResource = (value) => {
+    validateDelegateResource(value[0], true)
   }
 
-  const handleDelegateApis = (value) => {
-    validateDelegateApis(value, true)
-  }
-
-  const validateServiceStartDate = (value, willUpdateState = true) => {
+  const validateResourceStartDate = (value, willUpdateState = true) => {
     let msg = DelegationFormValidator.validateTaskStartDate(value, delegateDuration.endDate, translate)
     const startDate = convertDateTime(value, delegateDuration.startTime)
     const endDate = convertDateTime(delegateDuration.endDate, delegateDuration.endTime)
@@ -358,8 +341,8 @@ function DelegationCreateFormService(props) {
     })
   }
 
-  const handleChangeServiceStartDate = (value) => {
-    validateServiceStartDate(value, true)
+  const handleChangeResourceStartDate = (value) => {
+    validateResourceStartDate(value, true)
   }
 
   const handleEndTimeChange = (value) => {
@@ -388,7 +371,7 @@ function DelegationCreateFormService(props) {
     })
   }
 
-  const validateServiceEndDate = (value, willUpdateState = true) => {
+  const validateResourceEndDate = (value, willUpdateState = true) => {
     let msg = DelegationFormValidator.validateDelegationEndDate(delegateDuration.startDate, value, translate)
     const endDate = convertDateTime(value, delegateDuration.endTime)
     const startDate = convertDateTime(delegateDuration.startDate, delegateDuration.startTime)
@@ -424,34 +407,34 @@ function DelegationCreateFormService(props) {
     return msg === undefined
   }
 
-  const handleChangeServiceEndDate = (value) => {
-    validateServiceEndDate(value, true)
+  const handleChangeResourceEndDate = (value) => {
+    validateResourceEndDate(value, true)
   }
 
   return (
     <DialogModal
-      modalID='modal-create-delegation-hooks-Service'
-      formID='modal-create-delegation-hooks-Service'
-      title={translate('manage_delegation.service_delegation_title_add')}
+      modalID='modal-create-delegation-hooks-Resource'
+      formID='modal-create-delegation-hooks-Resource'
+      title={translate('manage_delegation.resource_delegation_title_add')}
       msg_success={translate('manage_delegation.add_success')}
       msg_failure={translate('manage_delegation.add_fail')}
       func={save}
       disableSubmit={!isFormValidated()}
       size={50}
     >
-      <form id='modal-create-delegation-hooks-Service' onSubmit={() => save(translate('manage_delegation.add_success'))}>
+      <form id='modal-create-delegation-hooks-Resource' onSubmit={() => save(translate('manage_delegation.add_success'))}>
         <div className='row form-group'>
           {/* Tên ủy quyền */}
           <div
             style={{ marginBottom: '0px' }}
-            className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${delegationNameError.status ? '' : 'has-error'}`}
+            className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${nameError.status ? '' : 'has-error'}`}
           >
             <label>
-              {translate('manage_delegation.delegationName')}
+              {translate('manage_delegation.name')}
               <span className='text-red'>*</span>
             </label>
-            <input type='text' className='form-control' value={delegationName} onChange={handleDelegationName} />
-            <ErrorLabel content={delegationNameError.message} />
+            <input type='text' className='form-control' value={name} onChange={handleDelegationName} />
+            <ErrorLabel content={nameError.message} />
           </div>
           {/* Mô tả ủy quyền */}
           <div style={{ marginBottom: '0px' }} className='col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group'>
@@ -461,77 +444,52 @@ function DelegationCreateFormService(props) {
         </div>
 
         <div className='row form-group'>
-          {/* Chọn apis */}
+          {/* Chọn resource */}
           <div
             style={{ marginBottom: '0px' }}
-            className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegateApis === undefined ? '' : 'has-error'}`}
+            className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegateResource === undefined ? '' : 'has-error'}`}
           >
             <label>
-              {translate('manage_delegation.choose_delegate_apis')}
+              {translate('manage_delegation.choose_delegate_resource')}
               <span className='text-red'>*</span>
             </label>
-            {apisServiceCanAccess && (
-              <SelectMulti
-                id='select-apis-create'
+            {accessibleResources && (
+              <SelectBox
+                id='select-resource-create'
                 className='form-control select2'
-                multiple='multiple'
-                options={{
-                  nonSelectedText: translate('manage_delegation.choose_delegate_apis'),
-                  allSelectedText: translate('manage_delegation.select_all_apis'),
-                  enableFilter: true,
-                  placeholder: translate('manage_delegation.choose_delegate_apis')
-                }}
-                onChange={handleDelegateApis}
-                items={apisServiceCanAccess.map((api) => {
-                  return { value: api._id, text: `${api.path} - ${api.method}` }
+                multiple={false}
+                style={{ width: '100%' }}
+                options={{ placeholder: translate('manage_delegation.choose_delegate_resource') }}
+                onChange={handleDelegateResource}
+                items={accessibleResources.map((x) => {
+                  return { value: x._id, text: `${x.name} - ${x.type}` }
                 })}
               />
             )}
-            <ErrorLabel content={errorDelegateApis} />
+            <ErrorLabel content={errorDelegateResource} />
           </div>
         </div>
 
         <div className='row form-group'>
-          {/* Chọn service gửi */}
+          {/* Chọn delegatee */}
           <div
             style={{ marginBottom: '0px' }}
-            className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${errorDelegatee === undefined ? '' : 'has-error'}`}
+            className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegator === undefined ? '' : 'has-error'}`}
           >
             <label>
-              {translate('manage_delegation.delegator_service')}
+              {translate('manage_delegation.delegatee')}
               <span className='text-red'>*</span>
             </label>
-            {internalServiceIdentities?.listInternalServiceIdentity && (
+            {requesters && (
               <SelectBox
-                id='select-delegator-service-create'
+                id='select-delegatee-resource-create'
                 className='form-control select2'
                 style={{ width: '100%' }}
-                items={internalServiceIdentities?.listInternalServiceIdentity.map((service) => ({ value: service.id, text: service.name }))}
-                onChange={handleDelegator}
-                multiple={false}
-                options={{ placeholder: translate('manage_delegation.choose_delegator_service') }}
-              />
-            )}
-            <ErrorLabel content={errorDelegatee} />
-          </div>
-          {/* Chọn service nhận */}
-          <div
-            style={{ marginBottom: '0px' }}
-            className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${errorDelegator === undefined ? '' : 'has-error'}`}
-          >
-            <label>
-              {translate('manage_delegation.delegatee_service')}
-              <span className='text-red'>*</span>
-            </label>
-            {allServices && (
-              <SelectBox
-                id='select-delegatee-service-create'
-                className='form-control select2'
-                style={{ width: '100%' }}
-                items={allServices.map((service) => ({ value: service.id, text: service.name }))}
+                items={requesters.filter((x) => x.id !== delegator).map((x) => ({ value: x.id, text: `${x.name} (${x.type})` }))}
                 onChange={handleDelegatee}
                 multiple={false}
-                options={{ placeholder: translate('manage_delegation.choose_delegatee_service') }}
+                value={delegatee}
+                options={{ placeholder: translate('manage_delegation.choose_delegatee') }}
               />
             )}
             <ErrorLabel content={errorDelegator} />
@@ -541,8 +499,8 @@ function DelegationCreateFormService(props) {
         <div className='row'>
           <div className='col-lg-12 col-md-12 col-ms-12 col-xs-12'>
             <form style={{ marginBottom: '5px' }}>
-              <input type='checkbox' id='delegateRevoke-Service' name='delegateRevoke-Service' onChange={chooseRevoke} />
-              <label htmlFor='delegateRevoke-Service'>&nbsp;{translate('manage_delegation.choose_revoke')}</label>
+              <input type='checkbox' id='delegateRevoke-Resource' name='delegateRevoke-Resource' onChange={chooseRevoke} />
+              <label htmlFor='delegateRevoke-Resource'>&nbsp;{translate('manage_delegation.choose_revoke')}</label>
             </form>
           </div>
         </div>
@@ -556,14 +514,14 @@ function DelegationCreateFormService(props) {
               <span className='text-red'>*</span>
             </label>
             <DatePicker
-              id='datepicker1create-service'
+              id='datepicker1create-resource'
               dateFormat='day-month-year'
               value={delegateDuration.startDate}
-              onChange={handleChangeServiceStartDate}
+              onChange={handleChangeResourceStartDate}
               pastDate={false}
             />
             <TimePicker
-              id='time-picker-1create-service'
+              id='time-picker-1create-resource'
               refs='time-picker-1'
               value={delegateDuration.startTime}
               onChange={handleStartTimeChange}
@@ -578,13 +536,13 @@ function DelegationCreateFormService(props) {
             >
               <label className='control-label'>{translate('manage_delegation.end_date')}</label>
               <DatePicker
-                id='datepicker2create-service'
+                id='datepicker2create-resource'
                 value={delegateDuration.endDate}
-                onChange={handleChangeServiceEndDate}
+                onChange={handleChangeResourceEndDate}
                 pastDate={false}
               />
               <TimePicker
-                id='time-picker-2create-service'
+                id='time-picker-2create-resource'
                 refs='time-picker-2'
                 value={delegateDuration.endTime}
                 onChange={handleEndTimeChange}
@@ -594,22 +552,34 @@ function DelegationCreateFormService(props) {
             </div>
           )}
         </div>
+        <div className='row form-group'>
+          {/* Chọn chính sách ủy quyền */}
+          <div
+            style={{ marginBottom: '0px' }}
+            className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegatePolicy === undefined ? '' : 'has-error'}`}
+          >
+            <label>
+              {translate('manage_delegation.delegate_policy')}
+              <span className='text-red'>*</span>
+            </label>
+            <SelectBox
+              id='select-delegate-policy-create-resource'
+              className='form-control select2'
+              style={{ width: '100%' }}
+              items={delegationPolicies
+                // .filter((p) => p.delegateType == 'Task')
+                .map((policy) => {
+                  return { value: policy ? policy._id : null, text: policy ? policy.name : '' }
+                })}
+              value={policy}
+              onChange={handleDelegatePolicy}
+              multiple={false}
+              options={{ placeholder: translate('manage_delegation.choose_delegate_policy') }}
+            />
+            <ErrorLabel content={errorDelegatePolicy} />
+          </div>
+        </div>
       </form>
     </DialogModal>
   )
 }
-
-function mapState(state) {
-  const { auth, user, policyDelegation, internalServiceIdentities, externalServiceConsumers } = state
-  return { auth, user, policyDelegation, internalServiceIdentities, externalServiceConsumers }
-}
-
-const actions = {
-  // getPolicies: PolicyActions.getPolicies,
-  getInternalServiceIdentities: InternalServiceIdentityActions.getInternalServiceIdentities,
-  getExternalServiceConsumers: ExternalServiceConsumerActions.getExternalServiceConsumers,
-  createServiceDelegation: DelegationActions.createServiceDelegation
-}
-
-const connectedDelegationCreateFormService = connect(mapState, actions)(withTranslate(DelegationCreateFormService))
-export { connectedDelegationCreateFormService as DelegationCreateFormService }

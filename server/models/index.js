@@ -144,6 +144,7 @@ module.exports = {
 
     // Delegation
     Delegation: require('./delegation/delegation.model'),
+    DelegationPolicy: require('./delegation/delegation.policy.model'),
 
     // Identity server
     ExternalPolicy: require('./identity.service/external.policy.model'),

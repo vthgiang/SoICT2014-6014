@@ -614,7 +614,7 @@ class Routes extends Component {
               {
                 requester: '/requesters-management',
                 name: 'manage_requester',
-                icon: 'fa fa-link'
+                icon: 'fa fa-users'
               }
             ]}
             auth={auth}
@@ -637,7 +637,7 @@ class Routes extends Component {
               {
                 requester: '/resources-management',
                 name: 'manage_resource',
-                icon: 'fa fa-link'
+                icon: 'fa fa-tasks'
               }
             ]}
             auth={auth}
@@ -752,7 +752,7 @@ class Routes extends Component {
               {
                 link: '/authorization-logging',
                 name: 'authorization_logging',
-                icon: 'fa fa-circle-o'
+                icon: 'fa fa-eye'
               }
             ]}
             auth={auth}

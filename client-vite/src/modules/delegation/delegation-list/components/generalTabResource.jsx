@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
+import { useDispatch } from 'react-redux'
+import { useTranslate } from 'react-redux-multilingual'
 import dayjs from 'dayjs'
 import { colorfyDelegationStatus } from './functionHelper'
-import { SystemApiActions } from '../../../system-admin/system-api/system-api-management/redux/actions'
 
-function GeneralTabService(props) {
+export function GeneralTabResource(props) {
+  const dispatch = useDispatch()
+  const translate = useTranslate()
   const [state, setState] = useState({
     delegationID: undefined
   })
-
-  const { systemApis, getSystemApis } = props
 
   // setState từ props mới
   useEffect(() => {
     setState({
       ...state,
       delegationID: props.delegationID,
-      delegationName: props.delegationName,
+      name: props.name,
       description: props.description,
       delegator: props.delegator,
       delegatee: props.delegatee,
@@ -28,37 +27,29 @@ function GeneralTabService(props) {
       revokedDate: props.revokedDate,
       revokeReason: props.revokeReason,
       declineReason: props.declineReason,
-      // delegatePolicy: props.delegatePolicy,
-      delegateApis: props.delegateApis,
+      policy: props.policy,
+      delegateResource: props.delegateResource,
       logs: state.logs
     })
   }, [props.delegationID, props.status])
-
-  useEffect(() => {
-    getSystemApis({
-      page: 1,
-      perPage: 10000
-    })
-  }, [])
 
   const formatTime = (date) => {
     return dayjs(date).format('DD-MM-YYYY hh:mm A')
   }
 
-  const { translate } = props
   const {
-    delegationName,
+    name,
     description,
     delegator,
     delegatee,
-    delegateApis,
+    delegateResource,
     status,
     startDate,
     endDate,
     revokedDate,
     revokeReason,
-    declineReason
-    // delegatePolicy
+    declineReason,
+    policy
   } = state
 
   return (
@@ -66,8 +57,8 @@ function GeneralTabService(props) {
       <div className='row'>
         {/* Mã ủy quyền */}
         <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
-          <label>{translate('manage_delegation.delegationName')}:</label>
-          <span> {delegationName}</span>
+          <label>{translate('manage_delegation.name')}:</label>
+          <span> {name}</span>
         </div>
 
         {/* Mô tả */}
@@ -91,6 +82,16 @@ function GeneralTabService(props) {
 
       <div className='row'>
         <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
+          <label>{translate('manage_delegation.delegateResource')}:</label>
+          <span>
+            {' '}
+            {delegateResource?.name} - {delegateResource?.type}{' '}
+          </span>
+        </div>
+      </div>
+
+      <div className='row'>
+        <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
           <label>{translate('manage_delegation.delegation_period')}:</label>
           <span>
             {' '}
@@ -104,12 +105,12 @@ function GeneralTabService(props) {
         </div>
       </div>
 
-      {/* <div class='row'>
-        <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+      <div className='row'>
+        <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
           <label>{translate('manage_delegation.delegate_policy')}:</label>
-          <span> {delegatePolicy?.policyName}</span>
+          <span> {policy?.name}</span>
         </div>
-      </div> */}
+      </div>
 
       <div className='row'>
         <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
@@ -131,47 +132,6 @@ function GeneralTabService(props) {
           </div>
         </div>
       )}
-      {delegateApis && delegateApis.length > 0 && (
-        <div className='row'>
-          <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
-            <label>{translate('manage_delegation.delegate_apis')}:</label>
-            <table className='table table-hover table-bordered detail-policy-attribute-table not-sort'>
-              <thead>
-                <tr>
-                  <th style={{ width: '30%' }}>
-                    <label>{translate('manage_delegation.api.url')}</label>
-                  </th>
-                  <th style={{ width: '30%' }}>
-                    <label>{translate('manage_delegation.api.action')}</label>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {delegateApis.map((id, index) => {
-                  const api = systemApis.listPaginateApi.find(x => x._id == id)
-                  return (
-                    <tr key={index}>
-                      <td>{api.path}</td>
-                      <td>{api.method}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
-
-function mapState(state) {
-  const { systemApis } = state
-  return { systemApis }
-}
-
-const actionCreators = {
-  getSystemApis: SystemApiActions.getSystemApis
-}
-const generalTabService = connect(mapState, actionCreators)(withTranslate(GeneralTabService))
-export { generalTabService as GeneralTabService }

@@ -8,7 +8,7 @@ export const configurationDelegationTemplate = {
     description: 'Số dòng tiêu đề của bảng',
     value: 1
   },
-  delegationName: {
+  name: {
     columnName: 'Tên ví dụ',
     description: 'Tên tiêu đề ứng với tên ví dụ',
     value: 'Tên ví dụ'
@@ -31,16 +31,16 @@ export const importDelegationTemplate = {
         {
           rowHeader: 1,
           columns: [
-            { key: 'delegationName', value: 'Tên ví dụ' },
+            { key: 'name', value: 'Tên ví dụ' },
             { key: 'description', value: 'Mô tả' }
           ],
           data: [
             {
-              delegationName: 'VD1',
+              name: 'VD1',
               description: 'VD1'
             },
             {
-              delegationName: 'VD2',
+              name: 'VD2',
               description: 'VD2'
             }
           ]

@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import withTranslate from 'react-redux-multilingual/lib/withTranslate'
 
 import { DialogModal } from '../../../../common-components'
-import { LogActivityTabService } from './logActivityTabService'
-import { GeneralTabService } from './generalTabService'
+import { LogActivityTab } from './logActivityTab'
+import { GeneralTabResource } from './generalTabResource'
 import 'moment/locale/vi'
 
-function DelegationDetailInfoService(props) {
+function DelegationDetailInfoResource(props) {
   const [state, setState] = useState({
     showEvaluations: []
   })
@@ -20,11 +20,11 @@ function DelegationDetailInfoService(props) {
     setState({
       ...state,
       delegationID: props.delegationID,
-      delegationName: props.delegationName,
+      name: props.name,
       description: props.description,
       delegator: props.delegator,
       delegatee: props.delegatee,
-      delegateApis: props.delegateApis,
+      delegateResource: props.delegateResource,
       status: props.status,
       startDate: props.startDate,
       endDate: props.endDate,
@@ -32,17 +32,17 @@ function DelegationDetailInfoService(props) {
       revokeReason: props.revokeReason,
       replyStatus: props.replyStatus,
       declineReason: props.declineReason,
-      // delegatePolicy: props.delegatePolicy,
+      policy: props.policy,
       logs: props.logs
     })
   }, [props.delegationID, props.status, props.replyStatus])
 
   return (
     <DialogModal
-      modalID='modal-detail-info-delegation-hooks-Service'
+      modalID='modal-detail-info-delegation-hooks-Resource'
       isLoading={delegation.isLoading}
       title={translate('manage_delegation.detail_info_delegation_task')}
-      formID='form-detail-delegation-hooks-Service'
+      formID='form-detail-delegation-hooks-Resource'
       size={props.size ? props.size : 50}
       hasSaveButton={false}
       hasNote={false}
@@ -64,14 +64,14 @@ function DelegationDetailInfoService(props) {
 
         <div className='tab-content'>
           {/* Thông tin chung */}
-          <GeneralTabService
+          <GeneralTabResource
             id='detail_general_information_service'
             delegationID={delegationID}
-            delegationName={state.delegationName}
+            name={state.name}
             description={state.description}
             delegator={state.delegator}
             delegatee={state.delegatee}
-            delegateApis={state.delegateApis}
+            delegateResource={state.delegateResource}
             status={state.status}
             startDate={state.startDate}
             endDate={state.endDate}
@@ -80,15 +80,15 @@ function DelegationDetailInfoService(props) {
             forReceive={state.forReceive}
             replyStatus={state.replyStatus}
             declineReason={state.declineReason}
-            delegatePolicy={state.delegatePolicy}
+            policy={state.policy}
             logs={state.logs}
           />
 
           {/* Thông tin thuộc tính subject */}
-          <LogActivityTabService
+          <LogActivityTab
             id='detail_log_activity_service'
             delegationID={delegationID}
-            delegationName={state.delegationName}
+            name={state.name}
             description={state.description}
             delegator={state.delegator}
             delegatee={state.delegatee}
@@ -111,5 +111,5 @@ function mapStateToProps(state) {
   return { delegation }
 }
 
-const connectedDelegationDetailInfoService = React.memo(connect(mapStateToProps, null)(withTranslate(DelegationDetailInfoService)))
-export { connectedDelegationDetailInfoService as DelegationDetailInfoService }
+const connectedDelegationDetailInfoResource = React.memo(connect(mapStateToProps, null)(withTranslate(DelegationDetailInfoResource)))
+export { connectedDelegationDetailInfoResource as DelegationDetailInfoResource }
