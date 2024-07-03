@@ -8,7 +8,7 @@ import ViewAllGeneralTask from './viewAllGeneralTask'
 // import useDeepCompareEffect from 'use-deep-compare-effect'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 
-const GeneralTaskChart = (props) => {
+function GeneralTaskChart(props) {
   const tableId = 'general-list-task'
   const defaultConfig = { hiddenColumns: ['5', '6', '7', '8'] }
 
@@ -27,7 +27,7 @@ const GeneralTaskChart = (props) => {
 
   const checkExport = useRef(false)
 
-  let column = [
+  const column = [
     { name: translate('task.task_dashboard.unit'), key: 'name' },
     { name: translate('task.task_dashboard.all_tasks'), key: 'totalTask' },
     { name: translate('task.task_dashboard.all_tasks_inprocess'), key: 'taskInprocess' },
@@ -47,7 +47,7 @@ const GeneralTaskChart = (props) => {
   }, [JSON.stringify(dataTable)])
 
   useEffect(() => {
-    let data1 = getData('general-task-chart')
+    const data1 = getData('general-task-chart')
     if (data1) {
       checkExport.current = true
       setState({
@@ -59,7 +59,7 @@ const GeneralTaskChart = (props) => {
 
   function getData(chartName) {
     let dataChart
-    let data = taskDashboardCharts?.[chartName]
+    const data = taskDashboardCharts?.[chartName]
     if (data) {
       dataChart = data.dataChart
     }
@@ -84,7 +84,7 @@ const GeneralTaskChart = (props) => {
     const listUnitSelect =
       unitNameSelected && unitNameSelected.length > 0 ? unitNameSelected.map((o, index) => ({ STT: index + 1, name: o })) : []
 
-    let exportData = {
+    const exportData = {
       fileName: `${translate('task.task_dashboard.general_unit_task_title_file_export')}`,
       dataSheets: [
         {
@@ -155,7 +155,7 @@ const GeneralTaskChart = (props) => {
     if (tasks?.length > 0) {
       setShowTask({
         ...showDetailTask,
-        tasks: tasks,
+        tasks,
         nameUnit: name,
         rowIndex: index,
         taskType: type
@@ -199,10 +199,10 @@ const GeneralTaskChart = (props) => {
       </a>
     )
   }
-  let data = []
-  let dataTemp = dataTable?.filter((o) => o.name)
-  for (let i in dataTemp) {
-    let bold = dataTemp[i].parent && dataTemp[i].parent !== true ? 'normal' : 'bold'
+  const data = []
+  const dataTemp = dataTable?.filter((o) => o.name)
+  for (const i in dataTemp) {
+    const bold = dataTemp[i].parent && dataTemp[i].parent !== true ? 'normal' : 'bold'
     data[i] = {
       ...dataTemp[i],
       rawData: dataTemp[i],
@@ -240,14 +240,13 @@ const GeneralTaskChart = (props) => {
       _id: dataTemp[i]._id ? dataTemp[i]._id : -1
     }
   }
-  console.log(223, data)
   return (
-    <React.Fragment>
+    <>
       <ViewAllGeneralTask showDetailTask={showDetailTask} />
       <div className='general_task_unit' id='general-list-task-wrapper' style={{ marginTop: '20px' }}>
         <TreeTable
           tableId={tableId}
-          tableSetting={true}
+          tableSetting
           rowPerPage={false}
           behaviour='hide-children'
           column={column}
@@ -298,8 +297,8 @@ const GeneralTaskChart = (props) => {
                     </tbody>
                 </table>
             </div> */}
-      <SlimScroll verticalScroll={true} outerComponentId={'general-list-task-wrapper'} maxHeight={500} activate={true} />
-    </React.Fragment>
+      <SlimScroll verticalScroll outerComponentId='general-list-task-wrapper' maxHeight={500} activate />
+    </>
   )
 }
 

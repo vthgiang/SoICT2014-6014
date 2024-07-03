@@ -1012,6 +1012,28 @@ function proposalPersonnel(data) {
   }
 }
 
+const getCurrentUserProgressTask = (payload) => {
+  return (dispatch) => {
+    dispatch({
+      type: taskManagementConstants.GET_USER_TASK_PROGRESS_REQUEST
+    })
+    taskManagementService
+      .getCurrentUserProgressTask(payload)
+      .then((res) => {
+        dispatch({
+          type: taskManagementConstants.GET_USER_TASK_PROGRESS_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: taskManagementConstants.GET_USER_TASK_PROGRESS_FAILURE,
+          error: err?.response?.data?.content
+        })
+      })
+  }
+}
+
 export const taskManagementActions = {
   getResponsibleTaskByUser,
   getAccountableTaskByUser,
@@ -1053,5 +1075,6 @@ export const taskManagementActions = {
   rejectTaskDelegation,
   editTaskDelegation,
 
-  proposalPersonnel
+  proposalPersonnel,
+  getCurrentUserProgressTask
 }
