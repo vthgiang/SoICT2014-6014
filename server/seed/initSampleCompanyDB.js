@@ -5481,7 +5481,7 @@ const initSampleCompanyDB = async () => {
     newProducts.push(newProduct);
   });
   await Good(vnistDB).insertMany(newProducts);
-  const list_goods = await Good(vnistDB).insertMany(newProducts);
+  // const list_goods = await Good(vnistDB).insertMany(newProducts);
   console.log('Khởi tạo xong danh sách hàng hóa');
   const list_goods_in_stock = await Good(vnistDB).find({});
 
@@ -5801,7 +5801,7 @@ const initSampleCompanyDB = async () => {
         //     }
         // ],
         Array.from({ length: 300 }, (_, index) => ({
-          good: list_goods[index]._id,
+          good: list_goods_in_stock[index]._id,
           contained: 500,
           capacity: 1000,
         })),
