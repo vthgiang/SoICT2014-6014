@@ -858,12 +858,12 @@ function proposalPersonnel(data) {
   )
 }
 
-const getCurrentUserProgressTask = (payload) => {
+const getCurrentUserProgressTask = (data) => {
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/task/diagrams/progress-task/`,
+      url: `${process.env.REACT_APP_SERVER}/process/diagrams/current-user-progress-task`,
       method: 'GET',
-      data: payload
+      params: data
     },
     false,
     false,

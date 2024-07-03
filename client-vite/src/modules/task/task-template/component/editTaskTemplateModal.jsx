@@ -1,11 +1,9 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { taskTemplateActions } from '../redux/actions'
 import { EditTaskTemplate } from './editTaskTemplate'
 import { DialogModal } from '../../../../common-components'
-import { TaskTemplateFormValidator } from './taskTemplateFormValidator'
-import ValidationHelper from '../../../../helpers/validationHelper'
 
 function ModalEditTaskTemplate(props) {
   const [state, setState] = useState({
@@ -50,7 +48,9 @@ function ModalEditTaskTemplate(props) {
             formula: props.taskTemplate.formula,
             priority: props.taskTemplate.priority,
             taskActions: props.taskTemplate.taskActions,
-            taskInformations: props.taskTemplate.taskInformations
+            taskInformations: props.taskTemplate.taskInformations,
+            isMappingTask: props.taskTemplate.isMappingTask,
+            listMappingTask: props.taskTemplate.listMappingTask
           },
           showActionForm: true
         }
@@ -60,103 +60,7 @@ function ModalEditTaskTemplate(props) {
 
   const handleSubmit = () => {
     const { editingTemplate } = state
-    console.log(editingTemplate)
     props.editTaskTemplate(editingTemplate._id, editingTemplate)
-  }
-
-  const isTaskTemplateFormValidated = () => {
-    if (!state.editingTemplate._id) return false
-    let result =
-      validateTaskTemplateRead(state.editingTemplate.readByEmployees, false) &&
-      validateTaskTemplateName(state.editingTemplate.name, false) &&
-      validateTaskTemplateDesc(state.editingTemplate.description, false) &&
-      validateTaskTemplateFormula(state.editingTemplate.formula, false) &&
-      validateTaskTemplateUnit(state.editingTemplate.organizationalUnit, false)
-    return result
-  }
-
-  const validateTaskTemplateName = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateName(props.translate, value)
-
-    if (willUpdateState) {
-      let { editingTemplate } = state
-      editingTemplate.name = value
-      editingTemplate.errorOnName = message
-      setState({
-        ...state,
-        editingTemplate
-      })
-    }
-    return message == undefined
-  }
-
-  const validateTaskTemplateDesc = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
-
-    if (willUpdateState) {
-      let { editingTemplate } = state
-      editingTemplate.description = value
-      editingTemplate.errorOnDescription = message
-      setState({
-        ...state,
-        editingTemplate
-      })
-    }
-    return message == undefined
-  }
-
-  const validateTaskTemplateFormula = (value, willUpdateState = true) => {
-    let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value)
-
-    if (willUpdateState) {
-      let { editingTemplate } = state
-      editingTemplate.formula = value
-      editingTemplate.errorOnFormula = msg
-      setState({
-        ...state,
-        editingTemplate
-      })
-    }
-    return msg == undefined
-  }
-
-  const validateTaskTemplateUnit = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
-
-    if (willUpdateState) {
-      setState((state) => {
-        return {
-          ...state,
-          editingTemplate: {
-            // update lại unit, và reset các selection phía sau
-            ...state.editingTemplate,
-            organizationalUnit: value,
-            errorOnUnit: message,
-            readByEmployees: [],
-            responsibleEmployees: [],
-            accountableEmployees: [],
-            consultedEmployees: [],
-            informedEmployees: []
-          }
-        }
-      })
-    }
-    return message == undefined
-  }
-
-  const validateTaskTemplateRead = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateArrayLength(props.translate, value)
-
-    if (willUpdateState) {
-      let { editingTemplate } = state
-      editingTemplate.readByEmployees = value
-      editingTemplate.errorOnRead = message
-      setState({
-        ...state,
-        editingTemplate
-      })
-    }
-    return message == undefined
   }
 
   const onChangeTemplateData = (value) => {
@@ -164,10 +68,9 @@ function ModalEditTaskTemplate(props) {
       ...state,
       editingTemplate: value
     })
-    console.log(state.editingTemplate)
   }
 
-  const { department, user, translate, tasktemplates } = props
+  const { user, translate } = props
   const { editingTemplate, taskTemplateId } = state
 
   return (
@@ -180,14 +83,12 @@ function ModalEditTaskTemplate(props) {
       // disableSubmit={!isTaskTemplateFormValidated()}
       size={100}
     >
-      <React.Fragment>
-        <EditTaskTemplate
-          isTaskTemplate={true}
-          taskTemplate={editingTemplate}
-          taskTemplateId={taskTemplateId}
-          onChangeTemplateData={onChangeTemplateData}
-        />
-      </React.Fragment>
+      <EditTaskTemplate
+        isTaskTemplate
+        taskTemplate={editingTemplate}
+        taskTemplateId={taskTemplateId}
+        onChangeTemplateData={onChangeTemplateData}
+      />
     </DialogModal>
   )
 }

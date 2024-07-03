@@ -1,35 +1,29 @@
 const TaskProcessService = require('./taskProcess.service');
-const NotificationServices = require(`../../notification/notification.service`);
-const { sendEmail } = require(`../../../helpers/emailHelper`);
-const Logger = require(`../../../logs`);
+const NotificationServices = require('../../notification/notification.service');
+const { sendEmail } = require('../../../helpers/emailHelper');
+const Logger = require('../../../logs');
+const rabbitmq = require('../../../rabbitmq/client');
+const listRpcQueue = require('../../../rabbitmq/listRpcQueue');
 
-/**
- * hàm lấy tất cả các process
- * @param {*} req
- * @param {*} res
- */
-exports.get = async (req, res) => {
+const get = async (req, res) => {
   if (req.query.type === 'template') {
-    this.getAllXmlDiagrams(req, res);
+    getAllXmlDiagrams(req, res);
   } else if (req.query.type === 'task') {
-    this.getAllTaskProcess(req, res);
+    getAllTaskProcess(req, res);
   }
 };
 
-/**
- * Lấy tất cả diagram
- */
-exports.getAllXmlDiagrams = async (req, res) => {
+const getAllXmlDiagrams = async (req, res) => {
   try {
-    var data = await TaskProcessService.getAllXmlDiagram(req.portal, req.query);
-    await Logger.info(req.user.email, `get all xml diagram `, req.portal);
+    const data = await TaskProcessService.getAllXmlDiagram(req.portal, req.query);
+    await Logger.info(req.user.email, 'get all xml diagram', req.portal);
     res.status(200).json({
       success: true,
       messages: ['get_all_success'],
       content: data,
     });
   } catch (error) {
-    await Logger.error(req.user.email, `get all xml diagram `, req.portal);
+    await Logger.error(req.user.email, 'get all xml diagram', req.portal);
     res.status(400).json({
       success: false,
       messages: ['get_all_err'],
@@ -37,20 +31,18 @@ exports.getAllXmlDiagrams = async (req, res) => {
     });
   }
 };
-/**
- * Lấy  diagram theo id
- */
-exports.getXmlDiagramById = async (req, res) => {
+
+const getXmlDiagramById = async (req, res) => {
   try {
-    var data = await TaskProcessService.getXmlDiagramById(req.portal, req.params);
-    await Logger.info(req.user.email, `get all xml diagram `, req.portal);
+    const data = await TaskProcessService.getXmlDiagramById(req.portal, req.params);
+    await Logger.info(req.user.email, 'get xml diagram by id', req.portal);
     res.status(200).json({
       success: true,
       messages: ['get_by_id_success'],
       content: data,
     });
   } catch (error) {
-    await Logger.error(req.user.email, `get all xml diagram `, req.portal);
+    await Logger.error(req.user.email, 'get xml diagram by id', req.portal);
     res.status(400).json({
       success: false,
       messages: ['get_by_id_err'],
@@ -58,20 +50,18 @@ exports.getXmlDiagramById = async (req, res) => {
     });
   }
 };
-/**
- * tạo mới diagram
- */
-exports.createXmlDiagram = async (req, res) => {
+
+const createXmlDiagram = async (req, res) => {
   try {
-    var data = await TaskProcessService.createXmlDiagram(req.portal, req.body);
-    await Logger.info(req.user.email, `create xml diagram `, req.portal);
+    const data = await TaskProcessService.createXmlDiagram(req.portal, req.body);
+    await Logger.info(req.user.email, 'create xml diagram', req.portal);
     res.status(200).json({
       success: true,
       messages: ['create_success'],
       content: data,
     });
   } catch (error) {
-    await Logger.error(req.user.email, `create xml diagram `, req.portal);
+    await Logger.error(req.user.email, 'create xml diagram', req.portal);
     res.status(400).json({
       success: false,
       messages: ['create_error'],
@@ -80,20 +70,17 @@ exports.createXmlDiagram = async (req, res) => {
   }
 };
 
-/**
- * chỉnh sửa mới diagram
- */
-exports.editXmlDiagram = async (req, res) => {
+const editXmlDiagram = async (req, res) => {
   try {
-    var data = await TaskProcessService.editXmlDiagram(req.portal, req.params, req.body);
-    await Logger.info(req.user.email, `edit xml diagram `, req.portal);
+    const data = await TaskProcessService.editXmlDiagram(req.portal, req.params, req.body);
+    await Logger.info(req.user.email, 'edit xml diagram', req.portal);
     res.status(200).json({
       success: true,
       messages: ['edit_success'],
       content: data,
     });
   } catch (error) {
-    await Logger.error(req.user.email, `edit xml diagram `, req.portal);
+    await Logger.error(req.user.email, 'edit xml diagram', req.portal);
     res.status(400).json({
       success: false,
       messages: ['edit_failure'],
@@ -102,21 +89,36 @@ exports.editXmlDiagram = async (req, res) => {
   }
 };
 
-/**
- * xóa diagram
- */
-exports.deleteXmlDiagram = async (req, res) => {
+const deleteXmlDiagram = async (req, res) => {
   try {
-    var data = await TaskProcessService.deleteXmlDiagram(req.portal, req.params.diagramId, req.query);
+    const data = await TaskProcessService.deleteXmlDiagram(req.portal, req.params.diagramId, req.query);
+    await Logger.info(req.user.email, 'delete xml diagram', req.portal);
+    res.status(200).json({
+      success: true,
+      messages: ['delete_success'],
+      content: data,
+    });
+  } catch (error) {
+    await Logger.error(req.user.email, 'delete xml diagram', req.portal);
+    res.status(400).json({
+      success: false,
+      messages: ['delete_failure'],
+      content: error,
+    });
+  }
+};
 
-    await Logger.info(req.user.email, `delete xml diagram `, req.portal);
+const deleteTaskProcess = async (req, res) => {
+  try {
+    const data = await TaskProcessService.deleteTaskProcess(req.portal, req.params.taskProcessId, req.query);
+    await Logger.info(req.user.email, 'delete taskProcess', req.portal);
     res.status(200).json({
       success: true,
       messages: ['delete_success'],
       content: data,
     });
   } catch (error) {
-    await Logger.error(req.user.email, `edit xml diagram `, req.portal);
+    await Logger.error(req.user.email, 'delete taskProcess', req.portal);
     res.status(400).json({
       success: false,
       messages: ['delete_failure'],
@@ -124,39 +126,18 @@ exports.deleteXmlDiagram = async (req, res) => {
     });
   }
 };
-exports.deleteTaskProcess = async (req, res) => {
+
+const getProcessById = async (req, res) => {
   try {
-    var data = await TaskProcessService.deleteTaskProcess(req.portal, req.params.taskProcessId, req.query);
-    // console.log(data);
-    await Logger.info(req.user.email, `delete taskProcess `, req.portal);
-    res.status(200).json({
-      success: true,
-      messages: ['delete_success'],
-      content: data,
-    });
-  } catch (error) {
-    await Logger.error(req.user.email, `edit xml diagram `, req.portal);
-    res.status(400).json({
-      success: false,
-      messages: ['delete_failure'],
-      content: error,
-    });
-  }
-};
-/**
- * Lấy  process theo id
- */
-exports.getProcessById = async (req, res) => {
-  try {
-    var data = await TaskProcessService.getProcessById(req.portal, req.params);
-    await Logger.info(req.user.email, `get Process by id `, req.portal);
+    const data = await TaskProcessService.getProcessById(req.portal, req.params);
+    await Logger.info(req.user.email, 'get Process by id', req.portal);
     res.status(200).json({
       success: true,
       messages: ['get_by_id_success'],
       content: data,
     });
   } catch (error) {
-    await Logger.error(req.user.email, `get Process by id `, req.portal);
+    await Logger.error(req.user.email, 'get Process by id', req.portal);
     res.status(400).json({
       success: false,
       messages: ['get_by_id_err'],
@@ -165,23 +146,13 @@ exports.getProcessById = async (req, res) => {
   }
 };
 
-/**
- * Tạo công việc theo quy trình
- * @param {*} req
- * @param {*} res
- */
-exports.createTaskByProcess = async (req, res) => {
+const createTaskByProcess = async (req, res) => {
   try {
-    let data = await TaskProcessService.createTaskByProcess(req.portal, req.params.processId, req.body);
-    let process = data.process;
-    let mails = data.mailInfo;
-    for (let i in mails) {
-      let task = mails[i].task;
-      console.log('task', task.organizationalUnit);
-      let user = mails[i].user;
-      let email = mails[i].email;
-      let html = mails[i].html;
-      let mailData = {
+    const data = await TaskProcessService.createTaskByProcess(req.portal, req.params.processId, req.body);
+    const { process, mailInfo } = data;
+    for (const mail of mailInfo) {
+      const { task, user, email, html, collaboratedEmail, collaboratedHtml, managersOfOrganizationalUnitThatHasCollaborated } = mail;
+      const mailData = {
         organizationalUnits: task.organizationalUnit,
         title: 'Tạo mới công việc',
         level: 'general',
@@ -190,31 +161,28 @@ exports.createTaskByProcess = async (req, res) => {
         users: user,
         associatedDataObject: {
           dataType: 1,
-          description: `<strong>${req.user.name}</strong>: đã tạo mới công việc theo quy trình `,
+          description: `<strong>${req.user.name}</strong>: đã tạo mới công việc theo quy trình`,
         },
       };
 
-      // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
-      let collaboratedEmail = mails[i].collaboratedEmail;
-      let collaboratedHtml = mails[i].collaboratedHtml;
-      let collaboratedData = {
+      const collaboratedData = {
         organizationalUnits: task.organizationalUnit._id,
         title: 'Tạo mới công việc được phối hợp với đơn vị bạn',
         level: 'general',
         content: collaboratedHtml,
         sender: task.organizationalUnit.name,
-        users: mails[i].managersOfOrganizationalUnitThatHasCollaborated,
+        users: managersOfOrganizationalUnitThatHasCollaborated,
       };
 
       NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData);
-      sendEmail(email, 'Tạo mới công việc hành công', '', html);
+      sendEmail(email, 'Tạo mới công việc thành công', '', html);
 
       NotificationServices.createNotification(req.portal, task.organizationalUnit.company, collaboratedData);
-      collaboratedEmail &&
-        collaboratedEmail.length !== 0 &&
+      if (collaboratedEmail && collaboratedEmail.length !== 0) {
         sendEmail(collaboratedEmail, 'Đơn vị bạn được phối hợp thực hiện công việc mới', '', collaboratedHtml);
+      }
     }
-    await Logger.info(req.user.email, `create_task_by_process`, req.portal);
+    await Logger.info(req.user.email, 'create_task_by_process', req.portal);
 
     res.status(200).json({
       success: true,
@@ -222,7 +190,7 @@ exports.createTaskByProcess = async (req, res) => {
       content: process,
     });
   } catch (error) {
-    await Logger.error(req.user.email, `create_task_by_process`, req.portal);
+    await Logger.error(req.user.email, 'create_task_by_process', req.portal);
     res.status(400).json({
       success: false,
       messages: ['create_task_by_process_failure'],
@@ -231,47 +199,27 @@ exports.createTaskByProcess = async (req, res) => {
   }
 };
 
-/**
- * lấy tất cả danh sách quy trình công việc
- * @param {*} req
- * @param {*} res
- */
-exports.getAllTaskProcess = async (req, res) => {
-  // try {
-  var data = await TaskProcessService.getAllTaskProcess(req.portal, req.query);
-  await Logger.info(req.user.email, `get_all_task_process_success`, req.portal);
+const getAllTaskProcess = async (req, res) => {
+  const data = await TaskProcessService.getAllTaskProcess(req.portal, req.query);
+  await Logger.info(req.user.email, 'get_all_task_process_success', req.portal);
   res.status(200).json({
     success: true,
     messages: ['get_all_task_process_success'],
     content: data,
   });
-  // } catch (error) {
-  // 	await Logger.error(req.user.email, `get_all_task_process_failure`, req.portal);
-  // 	res.status(400).json({
-  // 		success: false,
-  // 		messages: ['get_all_task_process_failure'],
-  // 		content: error,
-  // 	});
-  // }
 };
 
-/**
- * cập nhật diagram
- * @param {*} req
- * @param {*} res
- */
-
-exports.updateDiagram = async (req, res) => {
+const updateDiagram = async (req, res) => {
   try {
-    var data = await TaskProcessService.updateDiagram(req.portal, req.params, req.body);
-    await Logger.info(req.user.email, `update diagram`, req.portal);
+    const data = await TaskProcessService.updateDiagram(req.portal, req.params, req.body);
+    await Logger.info(req.user.email, 'update diagram', req.portal);
     res.status(200).json({
       success: true,
       messages: ['update_task_process_success'],
       content: data,
     });
   } catch (error) {
-    await Logger.error(req.user.email, `update diagram`, req.portal);
+    await Logger.error(req.user.email, 'update diagram', req.portal);
     res.status(400).json({
       success: false,
       messages: ['update_task_process_failure'],
@@ -280,17 +228,41 @@ exports.updateDiagram = async (req, res) => {
   }
 };
 
-exports.getListUserProgressTask = async (request, response) => {
+const editProcessInfo = async (req, res) => {
+  const data = await TaskProcessService.editProcessInfo(req.portal, req.params, req.body);
+  await Logger.info(req.user.email, 'update info process', req.portal);
+  res.status(200).json({
+    success: true,
+    messages: ['edit_info_process_success'],
+    content: data,
+  });
+};
+
+const importProcessTemplate = async (req, res) => {
+  const result = await TaskProcessService.importProcessTemplate(req.portal, req.body.data, req.body.idUser);
+  await Logger.info(req.user.email, 'import process', req.portal);
+  res.status(200).json({
+    success: true,
+    messages: ['import_process_success'],
+    content: result,
+  });
+};
+
+const getListUserProgressTask = async (req, res) => {
   try {
-	  await Logger.info(request.user.email, `update diagram`, request.portal);
-	  console.log(request)
-    response.status(200).json({
+    const { currentRole, month, year } = req.query;
+    const response = await rabbitmq.gRPC(
+      'taskProcess.getListUserProgressTask',
+      JSON.stringify({ currentRole, month, year, portal: req.portal }),
+      listRpcQueue.TASK_SERVICE
+    );
+    res.status(200).json({
       success: true,
-      messages: ['update_task_process_success'],
-      content: [],
+      messages: ['import_process_success'],
+      content: JSON.parse(response),
     });
   } catch (error) {
-    await Logger.error(request.user.email, `update diagram`, request.portal);
+    await Logger.error(req.user.email, 'get list user progress task failed', req.portal);
     res.status(400).json({
       success: false,
       messages: ['get_list_progress_task_failure'],
@@ -299,52 +271,19 @@ exports.getListUserProgressTask = async (request, response) => {
   }
 };
 
-/**
- * cập nhật thông tin quy trình công việc
- * @param {*} req
- * @param {*} res
- */
-exports.editProcessInfo = async (req, res) => {
-  // try {
-  var data = await TaskProcessService.editProcessInfo(req.portal, req.params, req.body);
-  await Logger.info(req.user.email, `update info process`, req.portal);
-  // console.log(data);
-  res.status(200).json({
-    success: true,
-    messages: ['edit_info_process_success'],
-    content: data,
-  });
-  // } catch (error) {
-  // 	await Logger.error(req.user.email, `update info process`, req.portal);
-  // 	res.status(400).json({
-  // 		success: false,
-  // 		messages: ['edit_info_process_failure'],
-  // 		content: error,
-  // 	});
-  // }
-};
-
-/**
- * impoort file excel mẫu quy trình
- * @param {*} req
- * @param {*} res
- */
-
-exports.importProcessTemplate = async (req, res) => {
-  // try {
-  let result = await TaskProcessService.importProcessTemplate(req.portal, req.body.data, req.body.idUser);
-  await Logger.info(req.user.email, `import process`, req.portal);
-  res.status(200).json({
-    success: true,
-    messages: ['import_process_success'],
-    content: result,
-  });
-  // } catch (error) {
-  // 	await Logger.error(req.user.email, `import process`, req.portal);
-  // 	res.status(400).json({
-  // 		success: false,
-  // 		messages: ['import_process_failure'],
-  // 		content: error,
-  // 	});
-  // }
+module.exports = {
+  get,
+  getAllXmlDiagrams,
+  getXmlDiagramById,
+  createXmlDiagram,
+  editXmlDiagram,
+  deleteXmlDiagram,
+  deleteTaskProcess,
+  getProcessById,
+  createTaskByProcess,
+  getAllTaskProcess,
+  updateDiagram,
+  getListUserProgressTask,
+  editProcessInfo,
+  importProcessTemplate,
 };

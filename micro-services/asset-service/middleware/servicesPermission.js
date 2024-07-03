@@ -481,7 +481,6 @@ exports.links = [
             { path: '/task/task-templates/:id', method: 'DELETE' },
             { path: '/task/task-templates/:id', method: 'PATCH' },
             { path: '/task/task-templates/import', method: 'POST' },
-            { path: '/task/diagrams/progress-task', method: 'GET' },
 
 
             // Asset-type

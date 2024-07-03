@@ -4,13 +4,14 @@ const { auth } = require(`../../../middleware`);
 
 const TaskProcessController = require('./taskProcess.controller');
 
+router.get('/diagrams/current-user-progress-task', auth, TaskProcessController.getListUserProgressTask);
+
 router.get('/', auth, TaskProcessController.get);
 router.get('/diagrams/:diagramId', auth, TaskProcessController.getXmlDiagramById);
 router.get('/process/:processId', auth, TaskProcessController.getProcessById);
 
 router.post('/diagrams', auth, TaskProcessController.createXmlDiagram);
 router.post('/diagrams/import', auth, TaskProcessController.importProcessTemplate);
-router.get('/diagrams/progress-task', auth, TaskProcessController.getListUserProgressTask);
 
 router.patch('/diagrams/:diagramId', auth, TaskProcessController.editXmlDiagram);
 router.patch('/processes/:processId/diagram', auth, TaskProcessController.updateDiagram);
@@ -22,3 +23,4 @@ router.delete('/:taskProcessId', auth, TaskProcessController.deleteTaskProcess);
 router.post('/processes/:processId/tasks/create', auth, TaskProcessController.createTaskByProcess);
 
 module.exports = router;
+

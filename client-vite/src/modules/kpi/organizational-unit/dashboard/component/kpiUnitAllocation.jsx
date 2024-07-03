@@ -41,9 +41,12 @@ function KpiUnitAllocation() {
   }
 
   useEffect(() => {
-    dispatch(UserActions.getAllUserSameDepartment(currentRole))
     if (currentUserUnitId) dispatch(dashboardOrganizationalUnitKpiActions.getAllAllocationAssignUnitResult(currentUserUnitId))
-  }, [dispatch, currentUserUnitId])
+  }, [currentUserUnitId])
+
+  useEffect(() => {
+    dispatch(UserActions.getAllUserSameDepartment(currentRole))
+  }, [dispatch])
 
   useEffect(() => {
     if (kpiAllocationUnitResult) {

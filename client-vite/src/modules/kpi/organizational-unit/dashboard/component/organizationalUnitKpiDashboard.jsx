@@ -256,10 +256,6 @@ function OrganizationalUnitKpiDashboard(props) {
   if (day.length < 2) day = `0${day}`
   const defaultDate = [monthDate, year].join('-')
 
-  const handleAllocationKpiUnitToEmployee = () => {
-    console.log('123')
-  }
-
   if (childrenOrganizationalUnit) {
     return (
       <>

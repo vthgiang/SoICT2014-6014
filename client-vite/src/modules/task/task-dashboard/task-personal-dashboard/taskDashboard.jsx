@@ -16,6 +16,7 @@ import { DatePicker, LazyLoadComponent, ExportExcel } from '../../../../common-c
 import { convertTime } from '../../../../helpers/stringMethod'
 import { filterDifference } from '../../../../helpers/taskModuleHelpers'
 import { getStorage } from '../../../../config'
+import EmployeeProcessTask from './employeeProcessTask'
 
 const initState = () => {
   const d = new Date()
@@ -124,12 +125,6 @@ function TaskDashboard(props) {
     dispatch(taskManagementActions.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
     dispatch(taskManagementActions.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
     dispatch(taskManagementActions.getTimeSheetOfUser(getStorage('userId'), month, year))
-    const payload = {
-      currentUserId: getStorage('userId'),
-      month,
-      year
-    }
-    dispatch(taskManagementActions.getCurrentUserProgressTask(payload))
   }, [dispatch])
 
   const convertType = (value) => {
@@ -839,69 +834,7 @@ function TaskDashboard(props) {
       </div>
 
       {/* Danh sách công việc đã hoàn thành của các nhân viên trong phòng ban */}
-      <div className='row'>
-        <div className='col-xs-12 col-md-12'>
-          <div className='box box-primary'>
-            <div className='box-header with-border'>
-              <div className='box-title'>Thống kê tiến độ làm việc của các nhân viên trong phòng ban</div>
-            </div>
-            {/* <div className='box-body qlcv'>
-              <div className='form-inline'>
-                <div className='form-group'>
-                  <label style={{ width: 'auto' }}>Tháng</label>
-                  <DatePicker
-                    id='month-time-sheet-log'
-                    dateFormat='month-year'
-                    value={monthTimeSheetLog}
-                    onChange={handleChangeMonthTimeSheetLog}
-                    disabled={false}
-                  />
-                </div>
-                <button className='btn btn-primary' onClick={getUserTimeSheetLogs}>
-                  Thống kê
-                </button>
-                <ExportExcel id='export-personal-timesheets-logs' style={{ right: 0 }} exportData={dataTimeSheetLogsExport} />
-              </div>
-              <div>
-                <p className='pull-right' style={{ fontWeight: 'bold' }}>
-                  Kết quả
-                  <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
-                    {!tasks.isLoading ? getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')}
-                  </span>
-                </p>
-              </div>
-              <table className='table table-hover table-striped table-bordered' id='table-user-timesheetlogs'>
-                <thead>
-                  <tr>
-                    <th style={{ width: 80 }}>STT</th>
-                    <th>Tên công việc</th>
-                    <th>Thời gian bắt đầu</th>
-                    <th>Thời gian kết thúc</th>
-                    <th>Loại bấm giờ</th>
-                    <th className='col-sort'>Thời gian bấm</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userTimeSheetLogs.map((tsl, index) => {
-                    return (
-                      tsl?.acceptLog && (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{tsl.name}</td>
-                          <td>{dayjs(tsl.startedAt).format('DD-MM-YYYY h:mm:ss A')}</td>
-                          <td>{dayjs(tsl.stoppedAt).format('DD-MM-YYYY h:mm:ss A')}</td>
-                          <td>{convertType(tsl.autoStopped)}</td>
-                          <td>{convertTime(tsl.duration)}</td>
-                        </tr>
-                      )
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div> */}
-          </div>
-        </div>
-      </div>
+      <EmployeeProcessTask />
     </>
   )
 }

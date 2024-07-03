@@ -10,13 +10,9 @@ open
     return conn.createChannel();
   })
   .then(function (ch) {
-    return ch.assertQueue(q).then(function (ok) {
+    return ch.assertQueue(q).then(function () {
       return ch.consume(q, async function (msg) {
-        // console.log(
-        //   `[ ${new Date()} ] Message received: ${JSON.stringify(
-        //     JSON.parse(msg.content.toString('utf8')),
-        //   )}`,
-        // );
+        console.log(`[ ${new Date()} ] Message received: ${JSON.stringify(JSON.parse(msg.content.toString('utf8')))}`);
         if (msg !== null) {
           let response = {};
           let msgContent = JSON.parse(msg.content.toString('utf8'));

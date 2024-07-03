@@ -1,4 +1,5 @@
 const TaskTemplateService = require('../modules/task/task-template/taskTemplate.service');
+const TaskProcessService = require('../modules/task/tasks-process/taskProcess.service')
 
 const call_service = async (link, params) => {
   switch (link[1]) {
@@ -11,6 +12,13 @@ const call_service = async (link, params) => {
     }
     default:
       break;
+  }
+
+  if (link[0] === 'taskProcess') {
+    if (link[1] === 'getListUserProgressTask') {
+      const { currentRole, month, year, portal } = params;
+      return await TaskProcessService.getListUserProgressTask(currentRole, month, year, portal);
+    }
   }
 };
 const internalCall = async (link, params) => {
