@@ -34,7 +34,8 @@
     "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js",
     "init-kpi-vnist-2": "node seed/initOrganizationalUnitKPIDataVnist2.js",
     "y-init-sw-unit": "node seed/initSWUnit.js",
-    "y-init-sw-project": "node seed/initSWProjectData.js"
+    "y-init-sw-project": "node seed/initSWProjectData.js",
+    "y-init-employee-capacity": "node seed/initSWOtherEmpCapacity.js"
   },
   "keywords": [],
   "author": "",
