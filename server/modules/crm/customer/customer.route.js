@@ -10,7 +10,7 @@ const data = [
 
 router.get('/', auth, CustomerController.getCustomers);
 
-router.get('/:id', auth, CustomerController.getCustomerById);
+// router.get('/:id', auth, CustomerController.getCustomerById);
 router.get('/:id/point', auth, CustomerController.getCustomerPoint);
 
 router.post('/', auth, uploadFile([{ name: 'file', path: '/crm/customer-files' }], 'array'), CustomerController.createCustomer);
@@ -24,6 +24,8 @@ router.patch('/:id/promotion/use', auth, CustomerController.usePromotion);
 router.get('/:id/promotions', auth, CustomerController.getCustomerPromotions);
 router.delete('/:id/promotion', auth, CustomerController.deletePromotion);
 
+router.post("/forecast", auth, CustomerController.createCustomerForecast);
+router.get("/forecast-response/:idToPredict", auth, CustomerController.predictResponseCustomer);
 
 router.delete('/:id', auth, CustomerController.deleteCustomer);
 

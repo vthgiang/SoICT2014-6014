@@ -4,10 +4,8 @@ import { withTranslate } from 'react-redux-multilingual'
 import Swal from 'sweetalert2'
 import isEqual from 'lodash/isEqual'
 import dayjs from 'dayjs'
-
 import { taskManagementActions } from '../../task-management/redux/actions'
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions'
-
 import { DistributionOfEmployee } from './distributionOfEmployee'
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart'
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart'
@@ -18,14 +16,13 @@ import { InprocessOfUnitTask } from './processOfUnitTasks'
 import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar'
 import GeneralTaskChart from './generalTaskChart'
 import { CurrentTaskTimesheetLogInOrganizationalUnit } from './currentTaskTimesheetLogInOrganizationalUnit'
-
 import { SelectMulti, DatePicker, LazyLoadComponent, forceCheckOrVisible, ExportExcel } from '../../../../common-components/index'
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { showListInSwal } from '../../../../helpers/showListInSwal'
+import EmployeeProcessTask from '../task-personal-dashboard/employeeProcessTask'
 
 const formatString = (value) => {
   if (value && typeof value === 'string') {
-    let part = value.split('-')
+    const part = value.split('-')
     return [part[1], part[0]].join('-')
   }
   return value
@@ -55,7 +52,7 @@ const DEFAULT_SEARCH = {
   'all-time-sheet-log-by-unit': {}
 }
 
-//let dataSearch = DEFAULT_SEARCH
+// let dataSearch = DEFAULT_SEARCH
 let INFO_SEARCH = {
   // bộ lọc tìm kiếm
   unitsSelected: null,
@@ -101,9 +98,9 @@ function TaskOrganizationUnitDashboard(props) {
     }
 
     if (!unitsSelected && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-      let childrenOrganizationalUnit = [],
-        queue = [],
-        currentOrganizationalUnit
+      const childrenOrganizationalUnit = []
+      const queue = []
+      let currentOrganizationalUnit
       if (dashboardEvaluationEmployeeKpiSet) {
         currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
       }
@@ -111,10 +108,10 @@ function TaskOrganizationUnitDashboard(props) {
         childrenOrganizationalUnit.push(currentOrganizationalUnit)
         queue.push(currentOrganizationalUnit)
         while (queue.length > 0) {
-          let v = queue.shift()
+          const v = queue.shift()
           if (v.children) {
             for (let i = 0; i < v.children.length; i++) {
-              let u = v.children[i]
+              const u = v.children[i]
               queue.push(u)
               childrenOrganizationalUnit.push(u)
             }
@@ -125,10 +122,10 @@ function TaskOrganizationUnitDashboard(props) {
       if (!Array.isArray(organizationalUnitId)) {
         organizationalUnitId = organizationalUnitId.split(' ')
       }
-      let data = {
+      const data = {
         ...DEFAULT_SEARCH,
         'common-params': {
-          organizationalUnitId: organizationalUnitId,
+          organizationalUnitId,
           startMonth: state.startMonth,
           endMonth: state.endMonth
         }
@@ -171,8 +168,8 @@ function TaskOrganizationUnitDashboard(props) {
   const handleSearchData = async () => {
     const { startMonth, endMonth, unitsSelected } = INFO_SEARCH
 
-    let startMonthObj = new Date(startMonth)
-    let endMonthObj = new Date(endMonth)
+    const startMonthObj = new Date(startMonth)
+    const endMonthObj = new Date(endMonth)
 
     if (startMonthObj.getTime() > endMonthObj.getTime()) {
       const { translate } = props
@@ -192,19 +189,19 @@ function TaskOrganizationUnitDashboard(props) {
     } else {
       setState({
         ...state,
-        startMonth: startMonth,
+        startMonth,
         startMonthTitle: formatString(startMonth),
-        endMonth: endMonth,
+        endMonth,
         endMonthTitle: formatString(endMonth),
-        unitsSelected: unitsSelected
+        unitsSelected
       })
 
-      let data = {
+      const data = {
         ...dataSearch.current,
         'common-params': {
           organizationalUnitId: unitsSelected,
-          startMonth: startMonth,
-          endMonth: endMonth
+          startMonth,
+          endMonth
         }
       }
       props.getOrganizationTaskDashboardChart(data)
@@ -212,7 +209,7 @@ function TaskOrganizationUnitDashboard(props) {
   }
 
   const getUnitName = (arrayUnit, arrUnitId) => {
-    let data = []
+    const data = []
     arrayUnit &&
       arrayUnit.forEach((x) => {
         arrUnitId &&
@@ -233,7 +230,7 @@ function TaskOrganizationUnitDashboard(props) {
   }
 
   const handleDataExport = (data) => {
-    let { dataExport } = state
+    const { dataExport } = state
     if (!isEqual(dataExport, data)) {
       setState({
         ...state,
@@ -243,7 +240,7 @@ function TaskOrganizationUnitDashboard(props) {
   }
 
   const handleDataTimeSheetsExport = (data) => {
-    let { dataTimeSheetsExport } = state
+    const { dataTimeSheetsExport } = state
     if (!isEqual(dataTimeSheetsExport, data)) {
       setState({
         ...state,
@@ -262,23 +259,24 @@ function TaskOrganizationUnitDashboard(props) {
     const { startMonth, endMonth } = INFO_SEARCH
     const { unitsSelected } = state
 
-    let data1 = {
+    const data1 = {
       ...data,
       'common-params': {
         organizationalUnitId: unitsSelected,
-        startMonth: startMonth,
-        endMonth: endMonth
+        startMonth,
+        endMonth
       }
     }
     props.getOrganizationTaskDashboardChart(data1)
   }
 
   const isLoading = (chartName) => {
-    let x = taskDashboardCharts?.[chartName]?.isLoading
+    const x = taskDashboardCharts?.[chartName]?.isLoading
     return x
   }
 
-  let currentOrganizationalUnit, currentOrganizationalUnitLoading
+  let currentOrganizationalUnit
+  let currentOrganizationalUnitLoading
 
   if (dashboardEvaluationEmployeeKpiSet) {
     currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
@@ -307,450 +305,436 @@ function TaskOrganizationUnitDashboard(props) {
     })
   }
   return (
-    <React.Fragment>
+    <>
       {currentOrganizationalUnit ? (
-        <React.Fragment>
-          <div className='qlcv'>
-            <div className='form-inline' style={{ marginBottom: 10 }}>
-              <div className='form-group'>
-                <label style={{ width: 'auto' }} className='form-control-static'>
-                  {translate('kpi.evaluation.dashboard.organizational_unit')}
-                </label>
-                {selectBoxUnit && selectBoxUnit.length && (
-                  <SelectMulti
-                    id='multiSelectOrganizationalUnitInTaskUnit'
-                    items={selectBoxUnit.map((item) => {
-                      return { value: item.id, text: item.name }
-                    })}
-                    options={{
-                      nonSelectedText: translate('task.task_management.select_department'),
-                      allSelectedText: translate('kpi.evaluation.dashboard.all_unit')
-                    }}
-                    onChange={handleChangeOrganizationUnit}
-                    value={INFO_SEARCH.unitsSelected ? INFO_SEARCH.unitsSelected : undefined}
-                  ></SelectMulti>
-                )}
-              </div>
-              <div className='form-group'>
-                <label style={{ width: 'auto' }}>{translate('task.task_management.from')}</label>
-                <DatePicker
-                  id='monthStartInOrganizationUnitDashboard'
-                  dateFormat='month-year'
-                  value={startMonthTitle}
-                  onChange={handleSelectMonthStart}
-                  disabled={false}
+        <div className='qlcv'>
+          <div className='form-inline' style={{ marginBottom: 10 }}>
+            <div className='form-group'>
+              <label style={{ width: 'auto' }} className='form-control-static'>
+                {translate('kpi.evaluation.dashboard.organizational_unit')}
+              </label>
+              {selectBoxUnit && selectBoxUnit.length && (
+                <SelectMulti
+                  id='multiSelectOrganizationalUnitInTaskUnit'
+                  items={selectBoxUnit.map((item) => {
+                    return { value: item.id, text: item.name }
+                  })}
+                  options={{
+                    nonSelectedText: translate('task.task_management.select_department'),
+                    allSelectedText: translate('kpi.evaluation.dashboard.all_unit')
+                  }}
+                  onChange={handleChangeOrganizationUnit}
+                  value={INFO_SEARCH.unitsSelected ? INFO_SEARCH.unitsSelected : undefined}
                 />
-              </div>
-              <div className='form-group'>
-                <label style={{ width: 'auto' }}>{translate('task.task_management.to')}</label>
-                <DatePicker
-                  id='monthEndInOrganizationUnitDashboard'
-                  dateFormat='month-year'
-                  value={endMonthTitle}
-                  onChange={handleSelectMonthEnd}
-                  disabled={false}
-                />
-              </div>
-
-              <div className='form-group'>
-                <button className='btn btn-success' onClick={() => handleSearchData()}>
-                  {translate('task.task_management.search')}
-                </button>
-              </div>
+              )}
+            </div>
+            <div className='form-group'>
+              <label style={{ width: 'auto' }}>{translate('task.task_management.from')}</label>
+              <DatePicker
+                id='monthStartInOrganizationUnitDashboard'
+                dateFormat='month-year'
+                value={startMonthTitle}
+                onChange={handleSelectMonthStart}
+                disabled={false}
+              />
+            </div>
+            <div className='form-group'>
+              <label style={{ width: 'auto' }}>{translate('task.task_management.to')}</label>
+              <DatePicker
+                id='monthEndInOrganizationUnitDashboard'
+                dateFormat='month-year'
+                value={endMonthTitle}
+                onChange={handleSelectMonthEnd}
+                disabled={false}
+              />
             </div>
 
-            {/* Tổng quan công việc đơn vị */}
-            <div className='nav-tabs-custom'>
-              <ul className='nav nav-tabs'>
-                <li className='active'>
-                  <a href='#general' data-toggle='tab' onClick={() => handleNavTabs()}>
-                    Tổng quan
-                  </a>
-                </li>
-                <li>
-                  <a href='#calender' data-toggle='tab' onClick={() => handleNavTabs(true)}>
-                    {translate('task.task_management.tasks_calendar')}
-                  </a>
-                </li>
-              </ul>
+            <div className='form-group'>
+              <button className='btn btn-success' onClick={() => handleSearchData()}>
+                {translate('task.task_management.search')}
+              </button>
+            </div>
+          </div>
 
-              <div className='tab-content '>
-                <div className='tab-pane active' id='general'>
-                  {/* Tổng quan công việc */}
-                  <div className='row'>
-                    <div className='col-xs-12'>
-                      <div className='box box-primary'>
-                        <div className='box-header with-border'>
-                          <div className='box-title'>
-                            {unitsSelected && unitsSelected.length < 2 ? (
-                              <>
-                                <span>{`${translate('task.task_dashboard.general_unit_task')} ${getUnitName(selectBoxUnit, unitsSelected)
-                                  .map((o) => o)
-                                  .join(', ')} `}</span>
-                                <span>
-                                  {`${startMonthTitle}`}
-                                  <i className='fa fa-fw fa-caret-right'></i>
-                                  {`${endMonthTitle}`}
-                                </span>
-                              </>
-                            ) : (
-                              <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
-                                <span>{`${translate('task.task_dashboard.general_unit_task')} `}</span>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}>{unitsSelected && unitsSelected.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
-                                <span>
-                                  {`${startMonthTitle}`}
-                                  <i className='fa fa-fw fa-caret-right'></i>
-                                  {`${endMonthTitle}`}{' '}
-                                </span>
-                              </span>
-                            )}
-                          </div>
-                          {dataExport && (
-                            <ExportExcel
-                              id='export-general-task'
-                              buttonName={translate('general.export')}
-                              exportData={dataExport}
-                              style={{ marginTop: 0 }}
-                            />
-                          )}
-                        </div>
+          {/* Tổng quan công việc đơn vị */}
+          <div className='nav-tabs-custom'>
+            <ul className='nav nav-tabs'>
+              <li className='active'>
+                <a href='#general' data-toggle='tab' onClick={() => handleNavTabs()}>
+                  Tổng quan
+                </a>
+              </li>
+              <li>
+                <a href='#calender' data-toggle='tab' onClick={() => handleNavTabs(true)}>
+                  {translate('task.task_management.tasks_calendar')}
+                </a>
+              </li>
+            </ul>
 
-                        <div className='box-body qlcv'>
-                          {!isLoading('general-task-chart') ? (
-                            <GeneralTaskChart
-                              startMonthTitle={startMonthTitle}
-                              endMonthTitle={endMonthTitle}
-                              unitNameSelected={unitsSelected && getUnitName(selectBoxUnit, unitsSelected)}
-                              handleDataExport={handleDataExport}
-                            />
-                          ) : (
-                            <div>{translate('general.loading')}</div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Đóng góp công việc */}
-                  <div className='row'>
-                    <div className='col-xs-12'>
-                      <div className='box box-primary'>
-                        <div className='box-header with-border'>
-                          <div className='box-title'>
-                            {translate('task.task_management.distribution_Of_Employee')}
-                            {unitsSelected && unitsSelected.length < 2 ? (
-                              <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
+            <div className='tab-content '>
+              <div className='tab-pane active' id='general'>
+                {/* Tổng quan công việc */}
+                <div className='row'>
+                  <div className='col-xs-12'>
+                    <div className='box box-primary'>
+                      <div className='box-header with-border'>
+                        <div className='box-title'>
+                          {unitsSelected && unitsSelected.length < 2 ? (
+                            <>
+                              <span>{`${translate('task.task_dashboard.general_unit_task')} ${getUnitName(selectBoxUnit, unitsSelected)
                                 .map((o) => o)
                                 .join(', ')} `}</span>
-                            ) : (
-                              <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                              <span>
+                                {`${startMonthTitle}`}
+                                <i className='fa fa-fw fa-caret-right' />
+                                {`${endMonthTitle}`}
                               </span>
-                            )}
-                            {startMonthTitle}
-                            <i className='fa fa-fw fa-caret-right'></i>
-                            {endMonthTitle}
-                          </div>
-                        </div>
-                        <div className='box-body qlcv'>
-                          <LazyLoadComponent once={true}>
-                            {!isLoading('employee-distribution-chart') ? (
-                              <DistributionOfEmployee
-                                handleChangeDataSearch={handleChangeDataSearch}
-                                getDataSearchChart={getDataSearchChart}
-                              />
-                            ) : (
-                              <div>{translate('general.loading')}</div>
-                            )}
-                          </LazyLoadComponent>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Tiến độ công việc */}
-                  <div className='row'>
-                    <div className='col-xs-12'>
-                      <div className='box box-primary'>
-                        <div className='box-header with-border'>
-                          <div className='box-title'>
-                            {translate('task.task_management.calc_progress')}
-                            {unitsSelected && unitsSelected.length < 2 ? (
-                              <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
-                                .map((o) => o)
-                                .join(', ')} `}</span>
-                            ) : (
-                              <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
-                              </span>
-                            )}
-                            {startMonthTitle}
-                            <i className='fa fa-fw fa-caret-right'></i>
-                            {endMonthTitle}
-                          </div>
-                        </div>
-                        <div className='box-body qlcv'>
-                          <LazyLoadComponent once={true}>
-                            {!isLoading('in-process-unit-chart') ? (
-                              <InprocessOfUnitTask
-                                unitSelected={unitsSelected}
-                                unitNameSelected={unitsSelected && getUnitName(selectBoxUnit, unitsSelected)}
-                              />
-                            ) : (
-                              <div>{translate('general.loading')}</div>
-                            )}
-                          </LazyLoadComponent>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Miền công việc + trạng thái công việc  */}
-                  <div className='row'>
-                    <div className='col-xs-6'>
-                      <div className='box box-primary'>
-                        <div className='box-header with-border'>
-                          <div className='box-title'>
-                            {translate('task.task_management.dashboard_area_result')}
-                            {unitsSelected && unitsSelected.length < 2 ? (
-                              <>
-                                <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
-                                  .map((o) => o)
-                                  .join(', ')} `}</span>
-                              </>
-                            ) : (
-                              <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
-                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
-                              </span>
-                            )}
-                            {startMonthTitle}
-                            <i className='fa fa-fw fa-caret-right'></i>
-                            {endMonthTitle}
-                          </div>
-                        </div>
-                        <div className='box-body qlcv'>
-                          <LazyLoadComponent once={true}>
-                            {!isLoading('task-results-domain-chart') ? (
-                              <DomainOfTaskResultsChart
-                                handleChangeDataSearch={handleChangeDataSearch}
-                                getDataSearchChart={getDataSearchChart}
-                                TaskOrganizationUnitDashboard={true}
-                              />
-                            ) : (
-                              <div>{translate('general.loading')}</div>
-                            )}
-                          </LazyLoadComponent>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='col-xs-6'>
-                      <div className='box box-primary'>
-                        <div className='box-header with-border'>
-                          <div className='box-title'>
-                            {translate('task.task_management.detail_status_task')}
-                            {unitsSelected && unitsSelected.length < 2 ? (
-                              <>
-                                <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
-                                  .map((o) => o)
-                                  .join(', ')} `}</span>
-                              </>
-                            ) : (
-                              <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
-                              </span>
-                            )}
-                            {startMonthTitle}
-                            <i className='fa fa-fw fa-caret-right'></i>
-                            {endMonthTitle}
-                          </div>
-                        </div>
-                        <div className='box-body qlcv' style={{ height: '384px' }}>
-                          <LazyLoadComponent once={true}>
-                            {!isLoading('task-status-chart') ? (
-                              <TaskStatusChart TaskOrganizationUnitDashboard={true} />
-                            ) : (
-                              <div>{translate('general.loading')}</div>
-                            )}
-                          </LazyLoadComponent>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* kết quả trung bình công việc */}
-                  <div className='row'>
-                    <div className='col-xs-12'>
-                      <div className='box box-primary'>
-                        <div className='box-header with-border'>
-                          <div className='box-title'>
-                            {translate('task.task_management.detail_average_results')}
-                            {unitsSelected && unitsSelected.length < 2 ? (
-                              <>
-                                <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
-                                  .map((o) => o)
-                                  .join(', ')} `}</span>
-                              </>
-                            ) : (
-                              <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
-                              </span>
-                            )}
-                            {startMonthTitle}
-                            <i className='fa fa-fw fa-caret-right'></i>
-                            {endMonthTitle}
-                          </div>
-                        </div>
-                        <div className='box-body qlcv'>
-                          {/* <LazyLoadComponent once={true}> */}
-                          {!isLoading('average-results-chart') ? (
-                            <AverageResultsOfTaskInOrganizationalUnit
-                              handleChangeDataSearch={handleChangeDataSearch}
-                              getDataSearchChart={getDataSearchChart}
-                            />
+                            </>
                           ) : (
-                            <div className='col-xs-12'>{translate('general.loading')}</div>
-                          )}
-                          {/* </LazyLoadComponent> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/*Dashboard tải công việc */}
-                  <div className='row'>
-                    <div className='col-xs-12'>
-                      {/* // <LazyLoadComponent once={true}> */}
-                      {!isLoading('load-task-organization-chart') ? (
-                        <LoadTaskOrganizationChart
-                          units={selectBoxUnit}
-                          idsUnit={unitsSelected}
-                          startMonthTitle={startMonthTitle}
-                          endMonthTitle={endMonthTitle}
-                          getUnitName={getUnitName}
-                          showUnitTask={showUnitGeneraTask}
-                          typeChart={'followTime'}
-                          chartData={taskDashboardCharts}
-                        />
-                      ) : (
-                        <div>{translate('general.loading')}</div>
-                      )}
-                      {/* </LazyLoadComponent> */}
-                    </div>
-                  </div>
-
-                  {/* Danh sách nhân viên đang bấm giờ */}
-                  <div className='row'>
-                    <div className='col-md-12'>
-                      <div className='box box-solid'>
-                        <CurrentTaskTimesheetLogInOrganizationalUnit
-                          organizationalUnitIds={unitsSelected}
-                          listUnitSelect={selectBoxUnit}
-                          getUnitName={getUnitName}
-                          showUnitTask={showUnitGeneraTask}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Thống kê bấm giờ */}
-                  <div className='row'>
-                    <div className='col-xs-12 col-md-12'>
-                      <div className='box box-primary'>
-                        <div className='box-header with-border'>
-                          <div className='box-title'>
-                            {translate('task.task_dashboard.statistical_timesheet_logs')}
-                            {unitsSelected && unitsSelected.length < 2 ? (
-                              <>
-                                <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
-                                  .map((o) => o)
-                                  .join(', ')} `}</span>
-                              </>
-                            ) : (
-                              <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                            <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
+                              <span>{`${translate('task.task_dashboard.general_unit_task')} `}</span>
+                              <a style={{ cursor: 'pointer', fontWeight: 'bold' }}>{unitsSelected && unitsSelected.length}</a>
+                              <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                              <span>
+                                {`${startMonthTitle}`}
+                                <i className='fa fa-fw fa-caret-right' />
+                                {`${endMonthTitle}`}{' '}
                               </span>
-                            )}
-                            {startMonthTitle}
-                            <i className='fa fa-fw fa-caret-right'></i>
-                            {endMonthTitle}
-                            <a onClick={() => showTimeSheetDoc()}>
-                              <i className='fa fa-question-circle' style={{ cursor: 'pointer', marginLeft: '5px' }} />
-                            </a>
-                          </div>
-                          {<ExportExcel id='export-timesheets-logs' style={{ right: 0 }} exportData={dataTimeSheetsExport} />}
-                        </div>
-                        <div className='box-body qlcv'>
-                          {!isLoading('all-time-sheet-logs-by-unit') ? (
-                            // <LazyLoadComponent once={true}>
-                            <AllTimeSheetLogsByUnit
-                              startMonthTitle={startMonthTitle}
-                              endMonthTitle={endMonthTitle}
-                              unitsSelected={unitsSelected ? getUnitName(selectBoxUnit, unitsSelected) : []}
-                              handleDataTimeSheetsExport={handleDataTimeSheetsExport}
-                            />
-                          ) : (
-                            // </LazyLoadComponent>
-                            <div>{translate('general.loading')}</div>
+                            </span>
                           )}
                         </div>
+                        {dataExport && (
+                          <ExportExcel
+                            id='export-general-task'
+                            buttonName={translate('general.export')}
+                            exportData={dataExport}
+                            style={{ marginTop: 0 }}
+                          />
+                        )}
+                      </div>
+
+                      <div className='box-body qlcv'>
+                        {!isLoading('general-task-chart') ? (
+                          <GeneralTaskChart
+                            startMonthTitle={startMonthTitle}
+                            endMonthTitle={endMonthTitle}
+                            unitNameSelected={unitsSelected && getUnitName(selectBoxUnit, unitsSelected)}
+                            handleDataExport={handleDataExport}
+                          />
+                        ) : (
+                          <div>{translate('general.loading')}</div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Tab lịch công việc */}
-                <div className='tab-pane' id='calender'>
-                  {/* Biểu đồ gantt */}
-                  <div className='row'>
-                    <div className='col-xs-12'>
-                      <div className='box box-primary'>
-                        <div className='box-header with-border'>
-                          <div className='box-title'>
-                            {translate('task.task_management.tasks_calendar')}
-                            {unitsSelected && unitsSelected.length < 2 ? (
-                              <>
-                                <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
-                                  .map((o) => o)
-                                  .join(', ')} `}</span>
-                              </>
-                            ) : (
-                              <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
-                              </span>
-                            )}
-                            {startMonthTitle}
-                            <i className='fa fa-fw fa-caret-right'></i>
-                            {endMonthTitle}
-                          </div>
+                {/* Đóng góp công việc */}
+                <div className='row'>
+                  <div className='col-xs-12'>
+                    <div className='box box-primary'>
+                      <div className='box-header with-border'>
+                        <div className='box-title'>
+                          {translate('task.task_management.distribution_Of_Employee')}
+                          {unitsSelected && unitsSelected.length < 2 ? (
+                            <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
+                              .map((o) => o)
+                              .join(', ')} `}</span>
+                          ) : (
+                            <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
+                              <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
+                              <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                            </span>
+                          )}
+                          {startMonthTitle}
+                          <i className='fa fa-fw fa-caret-right' />
+                          {endMonthTitle}
                         </div>
+                      </div>
+                      <div className='box-body qlcv'>
+                        <LazyLoadComponent once>
+                          {!isLoading('employee-distribution-chart') ? (
+                            <DistributionOfEmployee
+                              handleChangeDataSearch={handleChangeDataSearch}
+                              getDataSearchChart={getDataSearchChart}
+                            />
+                          ) : (
+                            <div>{translate('general.loading')}</div>
+                          )}
+                        </LazyLoadComponent>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tiến độ công việc */}
+                <div className='row'>
+                  <div className='col-xs-12'>
+                    <div className='box box-primary'>
+                      <div className='box-header with-border'>
+                        <div className='box-title'>
+                          {translate('task.task_management.calc_progress')}
+                          {unitsSelected && unitsSelected.length < 2 ? (
+                            <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
+                              .map((o) => o)
+                              .join(', ')} `}</span>
+                          ) : (
+                            <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
+                              <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
+                              <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                            </span>
+                          )}
+                          {startMonthTitle}
+                          <i className='fa fa-fw fa-caret-right' />
+                          {endMonthTitle}
+                        </div>
+                      </div>
+                      <div className='box-body qlcv'>
+                        <LazyLoadComponent once>
+                          {!isLoading('in-process-unit-chart') ? (
+                            <InprocessOfUnitTask
+                              unitSelected={unitsSelected}
+                              unitNameSelected={unitsSelected && getUnitName(selectBoxUnit, unitsSelected)}
+                            />
+                          ) : (
+                            <div>{translate('general.loading')}</div>
+                          )}
+                        </LazyLoadComponent>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Miền công việc + trạng thái công việc  */}
+                <div className='row'>
+                  <div className='col-xs-6'>
+                    <div className='box box-primary'>
+                      <div className='box-header with-border'>
+                        <div className='box-title'>
+                          {translate('task.task_management.dashboard_area_result')}
+                          {unitsSelected && unitsSelected.length < 2 ? (
+                            <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
+                              .map((o) => o)
+                              .join(', ')} `}</span>
+                          ) : (
+                            <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
+                              <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                              <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
+                              <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                            </span>
+                          )}
+                          {startMonthTitle}
+                          <i className='fa fa-fw fa-caret-right' />
+                          {endMonthTitle}
+                        </div>
+                      </div>
+                      <div className='box-body qlcv'>
+                        <LazyLoadComponent once>
+                          {!isLoading('task-results-domain-chart') ? (
+                            <DomainOfTaskResultsChart
+                              handleChangeDataSearch={handleChangeDataSearch}
+                              getDataSearchChart={getDataSearchChart}
+                              TaskOrganizationUnitDashboard
+                            />
+                          ) : (
+                            <div>{translate('general.loading')}</div>
+                          )}
+                        </LazyLoadComponent>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-xs-6'>
+                    <div className='box box-primary'>
+                      <div className='box-header with-border'>
+                        <div className='box-title'>
+                          {translate('task.task_management.detail_status_task')}
+                          {unitsSelected && unitsSelected.length < 2 ? (
+                            <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
+                              .map((o) => o)
+                              .join(', ')} `}</span>
+                          ) : (
+                            <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
+                              <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
+                              <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                            </span>
+                          )}
+                          {startMonthTitle}
+                          <i className='fa fa-fw fa-caret-right' />
+                          {endMonthTitle}
+                        </div>
+                      </div>
+                      <div className='box-body qlcv' style={{ height: '384px' }}>
+                        <LazyLoadComponent once>
+                          {!isLoading('task-status-chart') ? (
+                            <TaskStatusChart TaskOrganizationUnitDashboard />
+                          ) : (
+                            <div>{translate('general.loading')}</div>
+                          )}
+                        </LazyLoadComponent>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* kết quả trung bình công việc */}
+                <div className='row'>
+                  <div className='col-xs-12'>
+                    <div className='box box-primary'>
+                      <div className='box-header with-border'>
+                        <div className='box-title'>
+                          {translate('task.task_management.detail_average_results')}
+                          {unitsSelected && unitsSelected.length < 2 ? (
+                            <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
+                              .map((o) => o)
+                              .join(', ')} `}</span>
+                          ) : (
+                            <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
+                              <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
+                              <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                            </span>
+                          )}
+                          {startMonthTitle}
+                          <i className='fa fa-fw fa-caret-right' />
+                          {endMonthTitle}
+                        </div>
+                      </div>
+                      <div className='box-body qlcv'>
                         {/* <LazyLoadComponent once={true}> */}
-                        {!isLoading('gantt-chart') ? (
-                          <GanttCalendar
+                        {!isLoading('average-results-chart') ? (
+                          <AverageResultsOfTaskInOrganizationalUnit
                             handleChangeDataSearch={handleChangeDataSearch}
                             getDataSearchChart={getDataSearchChart}
-                            unit={true}
                           />
                         ) : (
-                          <div>{translate('general.loading')}</div>
+                          <div className='col-xs-12'>{translate('general.loading')}</div>
                         )}
                         {/* </LazyLoadComponent> */}
                       </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Dashboard tải công việc */}
+                <div className='row'>
+                  <div className='col-xs-12'>
+                    {/* // <LazyLoadComponent once={true}> */}
+                    {!isLoading('load-task-organization-chart') ? (
+                      <LoadTaskOrganizationChart
+                        units={selectBoxUnit}
+                        idsUnit={unitsSelected}
+                        startMonthTitle={startMonthTitle}
+                        endMonthTitle={endMonthTitle}
+                        getUnitName={getUnitName}
+                        showUnitTask={showUnitGeneraTask}
+                        typeChart='followTime'
+                        chartData={taskDashboardCharts}
+                      />
+                    ) : (
+                      <div>{translate('general.loading')}</div>
+                    )}
+                    {/* </LazyLoadComponent> */}
+                  </div>
+                </div>
+
+                {/* Danh sách nhân viên đang bấm giờ */}
+                <div className='row'>
+                  <div className='col-md-12'>
+                    <div className='box box-solid'>
+                      <CurrentTaskTimesheetLogInOrganizationalUnit
+                        organizationalUnitIds={unitsSelected}
+                        listUnitSelect={selectBoxUnit}
+                        getUnitName={getUnitName}
+                        showUnitTask={showUnitGeneraTask}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Thống kê bấm giờ */}
+                <div className='row'>
+                  <div className='col-xs-12 col-md-12'>
+                    <div className='box box-primary'>
+                      <div className='box-header with-border'>
+                        <div className='box-title'>
+                          {translate('task.task_dashboard.statistical_timesheet_logs')}
+                          {unitsSelected && unitsSelected.length < 2 ? (
+                            <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
+                              .map((o) => o)
+                              .join(', ')} `}</span>
+                          ) : (
+                            <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
+                              <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
+                              <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                            </span>
+                          )}
+                          {startMonthTitle}
+                          <i className='fa fa-fw fa-caret-right' />
+                          {endMonthTitle}
+                          <a onClick={() => showTimeSheetDoc()}>
+                            <i className='fa fa-question-circle' style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                          </a>
+                        </div>
+                        <ExportExcel id='export-timesheets-logs' style={{ right: 0 }} exportData={dataTimeSheetsExport} />
+                      </div>
+                      <div className='box-body qlcv'>
+                        {!isLoading('all-time-sheet-logs-by-unit') ? (
+                          // <LazyLoadComponent once={true}>
+                          <AllTimeSheetLogsByUnit
+                            startMonthTitle={startMonthTitle}
+                            endMonthTitle={endMonthTitle}
+                            unitsSelected={unitsSelected ? getUnitName(selectBoxUnit, unitsSelected) : []}
+                            handleDataTimeSheetsExport={handleDataTimeSheetsExport}
+                          />
+                        ) : (
+                          // </LazyLoadComponent>
+                          <div>{translate('general.loading')}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {/* Tab lịch công việc */}
+              <div className='tab-pane' id='calender'>
+                {/* Biểu đồ gantt */}
+                <div className='row'>
+                  <div className='col-xs-12'>
+                    <div className='box box-primary'>
+                      <div className='box-header with-border'>
+                        <div className='box-title'>
+                          {translate('task.task_management.tasks_calendar')}
+                          {unitsSelected && unitsSelected.length < 2 ? (
+                            <span>{` ${getUnitName(selectBoxUnit, unitsSelected)
+                              .map((o) => o)
+                              .join(', ')} `}</span>
+                          ) : (
+                            <span onClick={() => showUnitGeneraTask(selectBoxUnit, unitsSelected)} style={{ cursor: 'pointer' }}>
+                              <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitsSelected && unitsSelected.length}</a>
+                              <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                            </span>
+                          )}
+                          {startMonthTitle}
+                          <i className='fa fa-fw fa-caret-right' />
+                          {endMonthTitle}
+                        </div>
+                      </div>
+                      {/* <LazyLoadComponent once={true}> */}
+                      {!isLoading('gantt-chart') ? (
+                        <GanttCalendar handleChangeDataSearch={handleChangeDataSearch} getDataSearchChart={getDataSearchChart} unit />
+                      ) : (
+                        <div>{translate('general.loading')}</div>
+                      )}
+                      {/* </LazyLoadComponent> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <EmployeeProcessTask />
             </div>
           </div>
-        </React.Fragment>
+        </div>
       ) : (
         currentOrganizationalUnitLoading && (
           <div className='box'>
@@ -760,7 +744,7 @@ function TaskOrganizationUnitDashboard(props) {
           </div>
         )
       )}
-    </React.Fragment>
+    </>
   )
 }
 

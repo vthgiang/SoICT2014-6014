@@ -1,5 +1,6 @@
 const CustomerService = require('./customer.service');
 const Logger = require(`../../../logs`);
+const axios = require('axios')
 /**
  * Các controller cho phần Quản lý thông tin khách hàng
  */
@@ -58,7 +59,7 @@ exports.getCustomerById = async (req, res) => {
  */
 exports.getCustomerPoint = async (req, res) => {
     try {
-      
+
         const customerPoint = await CustomerService.getCustomerPoint(req.portal, req.user.company._id, req.params.id);
         await Logger.info(req.user.email, ' get_customer_point_success ', req.portal);
         res.status(200).json({
@@ -192,7 +193,7 @@ exports.editCustomerPoint = async (req, res) => {
  */
 exports.addPromotion = async (req, res) => {
     try {
-        const newCustomer = await CustomerService.addPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id, );
+        const newCustomer = await CustomerService.addPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id,);
         await Logger.info(req.user.email, 'add_customer_promotion_success');
         res.status(200).json({
             success: true,
@@ -262,7 +263,7 @@ exports.deleteCustomer = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
- exports.deletePromotion = async (req, res) => {
+exports.deletePromotion = async (req, res) => {
     try {
         const newCustomer = await CustomerService.deletePromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
         await Logger.info(req.user.email, 'delete_customer_promotion_success');
@@ -285,7 +286,7 @@ exports.deleteCustomer = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
- exports.usePromotion = async (req, res) => {
+exports.usePromotion = async (req, res) => {
     try {
         const newCustomer = await CustomerService.usePromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
         await Logger.info(req.user.email, 'use_customer_promotion_success');
@@ -304,12 +305,52 @@ exports.deleteCustomer = async (req, res) => {
     }
 }
 
+exports.createCustomerForecast = async (req, res) => {
+    try {
+        const newCustomerForecast = await CustomerService.createCustomerForecast(req.portal, req.body);
+        await Logger.info(req.user.email, ' create_customer_forecast_success ', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['create_customer_forecast_success'],
+            content: newCustomerForecast
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ' create_customer_forecast_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['create_customer_forecast_failed'],
+            content: error
+        })
+    }
+}
+
+exports.predictResponseCustomer = async (req, res) => {
+    try {
+        const customerForecastId = req.params.idToPredict;
+        const response = await axios.get(`${process.env.PYTHON_URL_SERVER}/api/dxclan/response_predict/${customerForecastId}`);
+        const data = response.data?.predict_response;
+        const newCustomerForecast = await CustomerService.editPredictCustomerForecast(req.portal, data, customerForecastId)
+        res.status(200).json({
+            success: true,
+            messages: ['get predict response success'],
+            content: newCustomerForecast
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'get predict response', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get predict response failed'],
+            content: error
+        })
+    }
+}
+
 /**
  * chinh sua khuyen mai khach hang
  * @param {*} req 
  * @param {*} res 
  */
- exports.editPromotion = async (req, res) => {
+exports.editPromotion = async (req, res) => {
     try {
         const newCustomer = await CustomerService.editPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
         await Logger.info(req.user.email, 'edit_customer_promotion_success');

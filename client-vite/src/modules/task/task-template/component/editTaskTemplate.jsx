@@ -1,19 +1,20 @@
-import React, { Component, useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { taskTemplateActions } from '../redux/actions'
-import { ActionForm } from '../component/actionsTemplate'
+import { ActionForm } from './actionsTemplate'
 import { SelectBox, ErrorLabel, QuillEditor } from '../../../../common-components'
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator'
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper'
 import { InformationForm } from './informationsTemplate'
 import { getStorage } from '../../../../config'
 import ValidationHelper from '../../../../helpers/validationHelper'
+import { createUnitKpiActions } from '../../../kpi/organizational-unit/creation/redux/actions'
 
-const EditTaskTemplate = (props) => {
+function EditTaskTemplate(props) {
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole'),
     editingTemplate: {
@@ -29,10 +30,18 @@ const EditTaskTemplate = (props) => {
       formula: '',
       priority: 3,
       taskActions: [],
-      taskInformations: []
+      taskInformations: [],
+      isMappingTask: false,
+      listMappingTask: []
     },
-    showMore: props.isProcess ? false : true
+    showMore: !props.isProcess
   })
+  const dispatch = useDispatch()
+  const createKpiUnit = useSelector((selector) => selector.createKpiUnit)
+
+  useEffect(() => {
+    dispatch(createUnitKpiActions.getKPIParent({ roleId: localStorage.getItem('currentRole') }))
+  }, [])
 
   useEffect(() => {
     // get department of current user
@@ -49,7 +58,7 @@ const EditTaskTemplate = (props) => {
 
   useEffect(() => {
     if (props.taskTemplateId !== state.taskTemplateId) {
-      let editingTemplate = {
+      const editingTemplate = {
         ...props.taskTemplate,
         quillDescriptionDefault: props.taskTemplate?.description
       }
@@ -58,7 +67,7 @@ const EditTaskTemplate = (props) => {
         return {
           ...state,
           taskTemplateId: props.taskTemplateId,
-          editingTemplate: editingTemplate,
+          editingTemplate,
           errorOnName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
           errorOnDescription: undefined,
           errorOnRead: undefined,
@@ -71,12 +80,9 @@ const EditTaskTemplate = (props) => {
   }, [props.taskTemplateId])
 
   useEffect(() => {
-    const { department } = props
-    const { editingTemplate } = state
-
     // dùng cho công việc có quy trình
     if (props.isProcess && props.id !== state.id) {
-      let { info, listOrganizationalUnit } = props
+      const { info } = props
       setState((state) => {
         return {
           ...state,
@@ -88,9 +94,8 @@ const EditTaskTemplate = (props) => {
                 ? info.collaboratedWithOrganizationalUnits.map((item) => {
                     if (typeof item === 'object') {
                       return item._id
-                    } else {
-                      return item
                     }
+                    return item
                   })
                 : [],
             name: info && info.name ? info.name : '',
@@ -100,9 +105,8 @@ const EditTaskTemplate = (props) => {
                 ? info.responsibleEmployees.map((item) => {
                     if (typeof item === 'object') {
                       return item._id
-                    } else {
-                      return item
                     }
+                    return item
                   })
                 : [],
             accountableEmployees:
@@ -110,9 +114,8 @@ const EditTaskTemplate = (props) => {
                 ? info.accountableEmployees.map((item) => {
                     if (typeof item === 'object') {
                       return item._id
-                    } else {
-                      return item
                     }
+                    return item
                   })
                 : [],
             consultedEmployees:
@@ -120,9 +123,8 @@ const EditTaskTemplate = (props) => {
                 ? info.consultedEmployees.map((item) => {
                     if (typeof item === 'object') {
                       return item._id
-                    } else {
-                      return item
                     }
+                    return item
                   })
                 : [],
             informedEmployees:
@@ -130,9 +132,8 @@ const EditTaskTemplate = (props) => {
                 ? info.informedEmployees.map((item) => {
                     if (typeof item === 'object') {
                       return item._id
-                    } else {
-                      return item
                     }
+                    return item
                   })
                 : [],
             description: info && info.description ? info.description : '',
@@ -144,12 +145,12 @@ const EditTaskTemplate = (props) => {
             taskActions: info && info.taskActions ? info.taskActions : [],
             taskInformations: info && info.taskInformations ? info.taskInformations : []
           },
-          showMore: props.isProcess ? false : true,
+          showMore: !props.isProcess,
           showActionForm: true
         }
       })
       props.getDepartment()
-      let { user } = props
+      const { user } = props
       let defaultUnit
       if (user && user.organizationalUnitsOfUser)
         defaultUnit = user.organizationalUnitsOfUser.find(
@@ -185,7 +186,9 @@ const EditTaskTemplate = (props) => {
           formula: props.taskTemplate.formula,
           priority: props.taskTemplate.priority,
           taskActions: props.taskTemplate.taskActions,
-          taskInformations: props.taskTemplate.taskInformations
+          taskInformations: props.taskTemplate.taskInformations,
+          isMappingTask: props.taskTemplate.isMappingTask,
+          listMappingTask: props.taskTemplate.listMappingTask
         },
         showActionForm: true
       })
@@ -194,7 +197,7 @@ const EditTaskTemplate = (props) => {
     // Khi truy vấn lấy các đơn vị mà user là manager đã có kết quả, và thuộc tính đơn vị của editingTemplate chưa được thiết lập
     else if (editingTemplate.organizationalUnit === '' && department.departmentsThatUserIsManager) {
       // Tìm unit mà currentRole của user đang thuộc về
-      let defaultUnit = department.departmentsThatUserIsManager.find(
+      const defaultUnit = department.departmentsThatUserIsManager.find(
         (item) =>
           item.managers.includes(state.currentRole) ||
           item.deputyManagers.includes(state.currentRole) ||
@@ -217,28 +220,65 @@ const EditTaskTemplate = (props) => {
     }
   }, [props.taskTemplateId])
 
+  const validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
+    const { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 0)
+
+    if (willUpdateState) {
+      const { editingTemplate } = state
+      editingTemplate.numberOfDaysTaken = value
+      editingTemplate.errorOnNumberOfDaysTaken = message
+      setState({
+        ...state,
+        editingTemplate
+      })
+    }
+    props.onChangeTemplateData(state.editingTemplate)
+    return message === undefined
+  }
+
+  const handleTaskTemplateFormula = (event) => {
+    const { value } = event.target
+    validateTaskTemplateFormula(value, true)
+  }
+
+  const validateTaskTemplateFormula = (value, willUpdateState = true) => {
+    const msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value)
+
+    if (willUpdateState) {
+      const { editingTemplate } = state
+      editingTemplate.formula = value
+      editingTemplate.errorOnFormula = msg
+      setState({
+        ...state,
+        editingTemplate
+      })
+    }
+    props.onChangeTemplateData(state.editingTemplate)
+    return msg == undefined
+  }
+
   /**
    * Xử lý form lớn tasktemplate
    */
-  const isTaskTemplateFormValidated = () => {
-    if (!state.editingTemplate._id) return false
-    let result =
-      validateTaskTemplateRead(state.editingTemplate.readByEmployees, false) &&
-      validateTaskTemplateName(state.editingTemplate.name, false) &&
-      validateTaskTemplateDesc(state.editingTemplate.description, false) &&
-      validateTaskTemplateFormula(state.editingTemplate.formula, false) &&
-      validateTaskTemplateUnit(state.editingTemplate.organizationalUnit, false)
-    return result
-  }
+  // const isTaskTemplateFormValidated = () => {
+  //   if (!state.editingTemplate._id) return false
+  //   const result =
+  //     validateTaskTemplateRead(state.editingTemplate.readByEmployees, false) &&
+  //     validateTaskTemplateName(state.editingTemplate.name, false) &&
+  //     validateTaskTemplateDesc(state.editingTemplate.description, false) &&
+  //     validateTaskTemplateFormula(state.editingTemplate.formula, false) &&
+  //     validateTaskTemplateUnit(state.editingTemplate.organizationalUnit, false)
+  //   return result
+  // }
 
   const handleTaskTemplateName = (event) => {
-    let value = event.target.value
+    const { value } = event.target
     props.isProcess && props.handleChangeName(value)
     validateTaskTemplateName(value, true)
   }
 
   const validateTaskTemplateName = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateName(props.translate, value)
+    const { message } = ValidationHelper.validateName(props.translate, value)
 
     if (willUpdateState) {
       state.editingTemplate.name = value
@@ -258,10 +298,10 @@ const EditTaskTemplate = (props) => {
   }
 
   const validateTaskTemplateDesc = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateEmpty(props.translate, value)
+    const { message } = ValidationHelper.validateEmpty(props.translate, value)
 
     if (willUpdateState) {
-      let { editingTemplate } = state
+      const { editingTemplate } = state
       editingTemplate.description = value
       editingTemplate.errorOnDescription = message
       setState({
@@ -274,49 +314,12 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskTemplateNumberOfDaysTaken = (event) => {
-    let value = event.target.value
+    const { value } = event.target
     validateTaskTemplateNumberOfDaysTaken(value, true)
   }
 
-  const validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 0)
-
-    if (willUpdateState) {
-      let { editingTemplate } = state
-      editingTemplate.numberOfDaysTaken = value
-      editingTemplate.errorOnNumberOfDaysTaken = message
-      setState({
-        ...state,
-        editingTemplate
-      })
-    }
-    props.onChangeTemplateData(state.editingTemplate)
-    return message === undefined
-  }
-
-  const handleTaskTemplateFormula = (event) => {
-    let value = event.target.value
-    validateTaskTemplateFormula(value, true)
-  }
-
-  const validateTaskTemplateFormula = (value, willUpdateState = true) => {
-    let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value)
-
-    if (willUpdateState) {
-      let { editingTemplate } = state
-      editingTemplate.formula = value
-      editingTemplate.errorOnFormula = msg
-      setState({
-        ...state,
-        editingTemplate
-      })
-    }
-    props.onChangeTemplateData(state.editingTemplate)
-    return msg == undefined
-  }
-
   const handleChangeTaskPriority = (event) => {
-    let { editingTemplate } = state
+    const { editingTemplate } = state
     editingTemplate.priority = event.target.value
     setState({
       ...state,
@@ -326,13 +329,13 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskTemplateUnit = (value) => {
-    let singleValue = value[0] // SelectBox một lựa chọn
+    const singleValue = value[0] // SelectBox một lựa chọn
     if (validateTaskTemplateUnit(singleValue, true)) {
       const { department } = props
 
       if (department !== undefined && department.departmentsThatUserIsManager !== undefined) {
         // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
-        let dept = department.departmentsThatUserIsManager.find((item) => item._id === singleValue)
+        const dept = department.departmentsThatUserIsManager.find((item) => item._id === singleValue)
         if (dept) {
           // props.getChildrenOfOrganizationalUnits(singleValue);
           props.getRoleSameDepartment(dept.manager)
@@ -368,7 +371,6 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleChangeCollaboratedWithOrganizationalUnits = (value) => {
-    console.log(value)
     setState((state) => {
       return {
         ...state,
@@ -383,16 +385,14 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskTemplateRead = (value) => {
-    console.log(value)
-
     validateTaskTemplateRead(value, true)
   }
 
   const validateTaskTemplateRead = (value, willUpdateState = true) => {
-    let { message } = ValidationHelper.validateArrayLength(props.translate, value)
+    const { message } = ValidationHelper.validateArrayLength(props.translate, value)
 
     if (willUpdateState) {
-      let { editingTemplate } = state
+      const { editingTemplate } = state
       editingTemplate.readByEmployees = value
       editingTemplate.errorOnRead = message
       setState({
@@ -405,7 +405,7 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskTemplateResponsible = (value) => {
-    let { editingTemplate } = state
+    const { editingTemplate } = state
     editingTemplate.responsibleEmployees = value
     setState({
       ...state,
@@ -416,7 +416,7 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskTemplateAccountable = (value) => {
-    let { editingTemplate } = state
+    const { editingTemplate } = state
     editingTemplate.accountableEmployees = value
     setState({
       ...state,
@@ -427,7 +427,7 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskTemplateConsult = (value) => {
-    let { editingTemplate } = state
+    const { editingTemplate } = state
     editingTemplate.consultedEmployees = value
     setState({
       ...state,
@@ -437,7 +437,7 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskTemplateInform = (value) => {
-    let { editingTemplate } = state
+    const { editingTemplate } = state
     editingTemplate.informedEmployees = value
 
     setState({
@@ -448,7 +448,7 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskActionsChange = (data) => {
-    let { editingTemplate } = state
+    const { editingTemplate } = state
     const change = { ...state.editingTemplate, taskActions: data }
     // console.log(change);
     // console.log(data);
@@ -465,10 +465,8 @@ const EditTaskTemplate = (props) => {
   }
 
   const handleTaskInformationsChange = (data) => {
-    let { editingTemplate } = state
+    const { editingTemplate } = state
     const change = { ...state.editingTemplate, taskInformations: data }
-    console.log(change)
-    console.log(data)
     setState((state) => {
       return {
         ...state,
@@ -490,37 +488,23 @@ const EditTaskTemplate = (props) => {
     })
   }
 
-  var units,
-    taskActions,
-    taskInformations,
-    listRole,
-    usercompanys,
-    userdepartments,
-    departmentsThatUserIsManager,
-    listRoles = []
+  let listRole
+  let listRoles = []
   var { editingTemplate, id, showMore, taskTemplateId } = state
 
-  const { department, user, translate, tasktemplates } = props
+  const { department, user, translate } = props
   const { isProcess } = props
-  if (editingTemplate && editingTemplate.taskActions) taskActions = editingTemplate.taskActions
-  if (editingTemplate && editingTemplate.taskInformations) taskInformations = editingTemplate.taskInformations
 
-  if (user.organizationalUnitsOfUser) {
-    units = user.organizationalUnitsOfUser
-  }
-  if (department.departmentsThatUserIsManager) {
-    departmentsThatUserIsManager = department.departmentsThatUserIsManager
-  }
   if (user.usersInUnitsOfCompany) {
     listRole = user.usersInUnitsOfCompany
-    for (let x in listRole) {
+    for (const x in listRole) {
       listRoles.push(Object.values(listRole[x].managers))
       listRoles.push(Object.values(listRole[x].deputyManagers))
       listRoles.push(Object.values(listRole[x].employees))
     }
     listRole = []
-    for (let x in listRoles) {
-      for (let i in listRoles[x]) {
+    for (const x in listRoles) {
+      for (const i in listRoles[x]) {
         if (listRole.indexOf(listRoles[x][i]) === -1) {
           listRole = listRole.concat(listRoles[x][i])
         }
@@ -528,28 +512,35 @@ const EditTaskTemplate = (props) => {
     }
     listRoles = listRole
   }
-  if (user.usercompanys) usercompanys = user.usercompanys
-  if (user.userdepartments) userdepartments = user.userdepartments
 
   // var usersOfChildrenOrganizationalUnit;
   // if (user && user.usersOfChildrenOrganizationalUnit) {
   //     usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
   // }
-  var usersInUnitsOfCompany
+  let usersInUnitsOfCompany
   if (user && user.usersInUnitsOfCompany) {
     usersInUnitsOfCompany = user.usersInUnitsOfCompany
   }
 
-  var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany)
+  const allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany)
   // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
-  // console.log("editingTemplate", editingTemplate)
+  const handleIsShowMappingTaskTemplates = ($event) => {
+    const checkValue = $event.target.checked
+    setState((prevState) => ({
+      ...prevState,
+      editingTemplate: {
+        ...prevState.editingTemplate,
+        isMappingTask: checkValue
+      }
+    }))
+  }
   return (
-    <React.Fragment>
-      {/**Form chứa thông tin của mẫu công việc đang sửa */}
+    <>
+      {/** Form chứa thông tin của mẫu công việc đang sửa */}
       <div className='row'>
         <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-          {/**Tên mẫu công việc này */}
+          {/** Tên mẫu công việc này */}
           <div className={`form-group ${state.editingTemplate.errorOnName === undefined ? '' : 'has-error'}`}>
             <label className='control-label'>
               {translate('task_template.tasktemplate_name')} <span style={{ color: 'red' }}>*</span>
@@ -564,7 +555,7 @@ const EditTaskTemplate = (props) => {
             <ErrorLabel content={state.editingTemplate.errorOnName} />
           </div>
 
-          {/**Đơn vị của mẫu công việc */}
+          {/** Đơn vị của mẫu công việc */}
           <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? '' : 'has-error'}`}>
             <label className='control-label'>
               {translate('task_template.unit')} <span style={{ color: 'red' }}>*</span>
@@ -601,7 +592,7 @@ const EditTaskTemplate = (props) => {
                 options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
                 onChange={handleChangeCollaboratedWithOrganizationalUnits}
                 value={editingTemplate.collaboratedWithOrganizationalUnits}
-                multiple={true}
+                multiple
               />
             </div>
           )}
@@ -609,7 +600,7 @@ const EditTaskTemplate = (props) => {
 
         {!isProcess && (
           <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-            {/**Role có quyền xem mẫu công việc này */}
+            {/** Role có quyền xem mẫu công việc này */}
             <div className={`form-group ${state.editingTemplate.errorOnRead === undefined ? '' : 'has-error'}`}>
               <label className='control-label'>
                 {translate('task_template.permission_view')} <span style={{ color: 'red' }}>*</span>
@@ -624,7 +615,7 @@ const EditTaskTemplate = (props) => {
                   })}
                   onChange={handleTaskTemplateRead}
                   value={editingTemplate.readByEmployees}
-                  multiple={true}
+                  multiple
                   options={{ placeholder: `${translate('task_template.permission_view')}` }}
                 />
               )}
@@ -634,7 +625,7 @@ const EditTaskTemplate = (props) => {
         )}
 
         <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-          {/**Độ ưu tiên mẫu công việc này */}
+          {/** Độ ưu tiên mẫu công việc này */}
           <div className='form-group'>
             <label className='control-label'>{translate('task.task_management.priority')}</label>
             <select className='form-control' value={editingTemplate.priority} onChange={handleChangeTaskPriority}>
@@ -648,7 +639,7 @@ const EditTaskTemplate = (props) => {
         </div>
 
         <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-          {/**Mô tả mẫu công việc này */}
+          {/** Mô tả mẫu công việc này */}
           <div className={`form-group `}>
             <label className='control-label' htmlFor='inputDescriptionTaskTemplate'>
               {translate('task_template.description')} <span style={{ color: 'red' }}>*</span>
@@ -669,7 +660,7 @@ const EditTaskTemplate = (props) => {
       <div className='row'>
         <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
           <div className='form-group'>
-            {/**Người thực hiện mẫu công việc này */}
+            {/** Người thực hiện mẫu công việc này */}
             <label className='control-label'>{translate('task_template.performer')}</label>
             {allUnitsMember && editingTemplate.responsibleEmployees && (
               <SelectBox
@@ -683,13 +674,13 @@ const EditTaskTemplate = (props) => {
                 items={allUnitsMember}
                 onChange={handleTaskTemplateResponsible}
                 value={editingTemplate.responsibleEmployees}
-                multiple={true}
+                multiple
                 options={{ placeholder: `${translate('task_template.performer')}` }}
               />
             )}
           </div>
           <div className='form-group'>
-            {/**Người phê duyệt mẫu công việc này */}
+            {/** Người phê duyệt mẫu công việc này */}
             <label className='control-label'>{translate('task_template.approver')}</label>
             {allUnitsMember && editingTemplate.accountableEmployees && (
               <SelectBox
@@ -703,13 +694,13 @@ const EditTaskTemplate = (props) => {
                 items={allUnitsMember}
                 onChange={handleTaskTemplateAccountable}
                 value={editingTemplate.accountableEmployees}
-                multiple={true}
+                multiple
                 options={{ placeholder: `${translate('task_template.approver')}` }}
               />
             )}
           </div>
           <div className='form-group'>
-            {/**Người hỗ trọ mẫu công việc này */}
+            {/** Người hỗ trọ mẫu công việc này */}
             <label className='control-label'>{translate('task_template.consultant')}</label>
             {allUnitsMember && editingTemplate.consultedEmployees && (
               <SelectBox
@@ -721,13 +712,13 @@ const EditTaskTemplate = (props) => {
                 items={allUnitsMember}
                 onChange={handleTaskTemplateConsult}
                 value={editingTemplate.consultedEmployees}
-                multiple={true}
+                multiple
                 options={{ placeholder: `${translate('task_template.consultant')}` }}
               />
             )}
           </div>
           <div className='form-group'>
-            {/**Người quan sát mẫu công việc này */}
+            {/** Người quan sát mẫu công việc này */}
             <label className='control-label'>{translate('task_template.observer')}</label>
             {allUnitsMember && editingTemplate.informedEmployees && (
               <SelectBox
@@ -736,7 +727,7 @@ const EditTaskTemplate = (props) => {
                 style={{ width: '100%' }}
                 items={allUnitsMember}
                 onChange={handleTaskTemplateInform}
-                multiple={true}
+                multiple
                 value={editingTemplate.informedEmployees}
                 options={{ placeholder: `${translate('task_template.observer')}` }}
               />
@@ -748,7 +739,7 @@ const EditTaskTemplate = (props) => {
           <div>
             {isProcess && (
               <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-                {/**Số ngày hoàn thành công việc dự kiến */}
+                {/** Số ngày hoàn thành công việc dự kiến */}
                 <div className={`form-group ${state.editingTemplate.errorOnNumberOfDaysTaken === undefined ? '' : 'has-error'}`}>
                   <label className='control-label' htmlFor='inputNumberOfDaysTaken'>
                     {translate('task_template.numberOfDaysTaken')}
@@ -758,7 +749,7 @@ const EditTaskTemplate = (props) => {
                     className='form-control'
                     id='inputNumberOfDaysTaken'
                     value={editingTemplate.numberOfDaysTaken}
-                    placeholder={'Nhập số ngày hoàn thành dự kiến'}
+                    placeholder='Nhập số ngày hoàn thành dự kiến'
                     onChange={handleTaskTemplateNumberOfDaysTaken}
                   />
                   <ErrorLabel content={state.editingTemplate.errorOnNumberOfDaysTaken} />
@@ -767,7 +758,7 @@ const EditTaskTemplate = (props) => {
             )}
 
             <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-              {/**Công thức tính điểm mẫu công việc này */}
+              {/** Công thức tính điểm mẫu công việc này */}
               <div className={`form-group ${state.editingTemplate.errorOnFormula === undefined ? '' : 'has-error'}`}>
                 <label className='control-label' htmlFor='inputFormula'>
                   {translate('task_template.formula')}
@@ -823,12 +814,12 @@ const EditTaskTemplate = (props) => {
       {showMore && (
         <div className='row'>
           <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-            {/**Các hoạt động mẫu công việc này */}
+            {/** Các hoạt động mẫu công việc này */}
             <ActionForm initialData={editingTemplate.taskActions} onDataChange={handleTaskActionsChange} type={`edit-${taskTemplateId}`} />
           </div>
 
           <div className={`${isProcess ? 'col-lg-12' : 'col-sm-6'}`}>
-            {/**Các hoạt động mẫu công việc này */}
+            {/** Các hoạt động mẫu công việc này */}
             <InformationForm
               initialData={editingTemplate.taskInformations}
               onDataChange={handleTaskInformationsChange}
@@ -842,18 +833,39 @@ const EditTaskTemplate = (props) => {
           <a style={{ cursor: 'pointer' }} onClick={clickShowMore}>
             {showMore ? (
               <span>
-                Show less <i className='fa fa-angle-double-up'></i>
+                Show less <i className='fa fa-angle-double-up' />
               </span>
             ) : (
               <span>
-                Show more <i className='fa fa-angle-double-down'></i>
+                Show more <i className='fa fa-angle-double-down' />
               </span>
             )}
           </a>
           <br />
         </div>
       )}
-    </React.Fragment>
+
+      {createKpiUnit?.parent && (
+        <div className='row'>
+          <div className='form-check form-switch col-sm-12 pb-[16px]'>
+            <input
+              className='form-check-input'
+              type='checkbox'
+              role='switch'
+              id='flexSwitchCheckDefault'
+              checked={editingTemplate.isMappingTask}
+              onChange={handleIsShowMappingTaskTemplates}
+            />
+            <label className='form-check-label' htmlFor='flexSwitchCheckDefault'>
+              Ánh xạ mẫu công việc ra tập các công việc
+            </label>
+          </div>
+          {/* {isShowMappingTaskTemplates && (
+            <MappingTaskTemplateIntoListTasks isProcess={isProcess} onChangeListMappingTask={onChangeListMappingTask} />
+          )} */}
+        </div>
+      )}
+    </>
   )
 }
 

@@ -1612,6 +1612,32 @@ const LINKS = [
     components: getComponentsInLink("/marketing-campaign"),
   },
   {
+    url: "/marketing-dashboard",
+    description: "Thống kê hiệu quả tiếp thị",
+    category: LINK_CATEGORY.KPI.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/marketing-dashboard"),
+  },
+  {
+    url: "/marketing-forecast",
+    description: "Thống kê hiệu quả tiếp thị",
+    category: LINK_CATEGORY.KPI.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/marketing-forecast"),
+  },
+  {
     url: "/marketing-campaign-id",
     description: "Quản lý chiến dịch tiếp thị",
     category: LINK_CATEGORY.KPI.name,

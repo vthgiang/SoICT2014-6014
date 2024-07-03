@@ -64,14 +64,15 @@
 }
 #general-tasks-wraper div{
     max-height: 400px;
+    overflow-y: scroll;
 }
 #select-task-from-list{
     height: 500px;
-    overflow-y: scroll; 
+    overflow-y: scroll;
 }
 #select-risk-response-plan{
     height: 300px;
-    overflow-y: scroll; 
+    overflow-y: scroll;
 }
 #risk-response-plan-table{
     font-family: Arial, Helvetica, sans-serif;

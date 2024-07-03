@@ -320,6 +320,8 @@ export default {
       marketing_cost: 'Costs',
       marketing_action: 'Action',
       marketing_channels_select: 'Select Channel',
+      marketing_dashboard: 'Marketing Dashboard',
+      marketing_forecast: 'Marketing Forecast',
 
       // QUẢN LÝ KẾ HOẠCH SẢN XUẤT
       manage_plans: 'Manage Plans',
