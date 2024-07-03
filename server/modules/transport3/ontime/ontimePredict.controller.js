@@ -205,6 +205,29 @@ exports.getTopLateStocks = async (req, res) => {
     }
 }
 
+exports.getOrderStatus = async (req, res) => {
+    const { month, year } = req.query;
+    try {
+        let data = await OntimePredictService.getOrderStatus(req.portal, { month: parseInt(month), year: parseInt(year) });
+        await Log.info(req.user.email, "GET_ORDER_STATUS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_order_status_success"],
+            content: data
+        });
+    } catch (error) {
+
+        await Log.error(req.user.email, "GET_ORDER_STATUS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_order_status_fail"],
+            content: error.message
+        });
+    } 
+}
+
 exports.predictOnTimeDelivery = async (req, res) => {
     try {
         let { scheduleId } = req.params;

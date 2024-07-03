@@ -56,8 +56,8 @@ function DeliveryLateDay (props) {
                 x: 'x',
                 columns: [
                     listMonth(),
-                    // generateDeliveryLateDayAverage(),
-                    ['deliveryLateDayAverage', 2.5, 1.2, 3.6, 4, 3.2, 3]
+                    generateDeliveryLateDayAverage(),
+                    // ['deliveryLateDayAverage', 2.5, 1.2, 3.6, 4, 3.2, 3]
                 ],
                 type: 'spline',
                 names: {

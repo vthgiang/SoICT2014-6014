@@ -38,8 +38,8 @@ function LateProducts ({monthToSearch}) {
             bindto: LateProducts.current,
             data: {
                 columns: [
-                    ['Số lần giao trễ hạn', 30, 25, 12, 9, 7]
-                    // getLateProductNumber()
+                    // ['Số lần giao trễ hạn', 30, 25, 12, 9, 7]
+                    getLateProductNumber()
                 ],
                 type: 'bar',
                 labels: true
@@ -52,8 +52,8 @@ function LateProducts ({monthToSearch}) {
             axis: {
                 x: {
                     type: 'category',
-                    categories: ['Mascara Mabeline', 'Bộ chăm sóc da simple', 'Đèn LED trị mụn', 'Máy massage mặt và cổ SKG', 'Bộ dầu gội, xả Pantene Pro - V']
-                    // categories: listProductsName()
+                    // categories: ['Mascara Mabeline', 'Bộ chăm sóc da simple', 'Đèn LED trị mụn', 'Máy massage mặt và cổ SKG', 'Bộ dầu gội, xả Pantene Pro - V']
+                    categories: listProductsName()
                 },
                 y: {
                     label: 'lần'

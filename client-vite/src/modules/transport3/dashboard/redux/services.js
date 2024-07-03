@@ -91,6 +91,19 @@ const getTopLateStocks = (query) => {
   )
 }
 
+const getOrderStatus = (query) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/orderStatus`,
+      method: 'GET',
+      params: query
+    },
+    false,
+    true,
+    'transport3.ontime'
+  )
+}
+
 export const DashboardService = {
   getOntimeDeliveryRate,
   getOnTimeDeliveryRatesPerMonth,
@@ -98,5 +111,6 @@ export const DashboardService = {
   getDeliveryLateDayAveragePerMonth,
   getTopLateDeliveryDay,
   getTopLateProducts,
-  getTopLateStocks
+  getTopLateStocks,
+  getOrderStatus
 }

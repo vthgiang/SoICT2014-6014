@@ -49,8 +49,8 @@ function DayOfWeek ({monthToSearch}) {
             bindto: DayOfWeek.current,
             data: {
                 columns: [
-                    // getLateOrderNumber()
-                    ['Số đơn hàng trễ hạn', 15, 9, 7, 6, 4]
+                    getLateOrderNumber()
+                    // ['Số đơn hàng trễ hạn', 15, 9, 7, 6, 4]
                 ],
                 type: 'bar',
                 labels: true
@@ -63,8 +63,8 @@ function DayOfWeek ({monthToSearch}) {
             axis: {
                 x: {
                     type: 'category',
-                    // categories: listDayOfWeek()
-                    categories: ['Thứ 6', 'Thứ 2', 'Thứ 3', 'Thứ 5', 'Thứ 4']
+                    categories: listDayOfWeek()
+                    // categories: ['Thứ 6', 'Thứ 2', 'Thứ 3', 'Thứ 5', 'Thứ 4']
                 },
                 y: {
                     label: 'đơn'

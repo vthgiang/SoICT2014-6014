@@ -38,8 +38,8 @@ function LateStocks ({monthToSearch}) {
             bindto: LateStocks.current,
             data: {
                 columns: [
-                    ['Số lượng đơn hàng lấy sản phẩm từ kho trễ hạn', 20, 11]
-                    // getLateOrderNumber()
+                    // ['Số lượng đơn hàng lấy sản phẩm từ kho trễ hạn', 20, 11]
+                    getLateOrderNumber()
                 ],
                 type: 'bar',
                 labels: true

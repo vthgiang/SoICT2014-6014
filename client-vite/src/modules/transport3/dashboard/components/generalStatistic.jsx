@@ -9,6 +9,8 @@ import { RequestActions } from "../../../production/common-production/request-ma
 import { ShipperActions } from "../../../transportation/shipper/redux/actions";
 import { vehicleActions } from "../../../transportation/vehicle/redux/actions";
 import { UserActions } from '@modules/super-admin/user/redux/actions'
+import { OrderActions } from '@modules/transport3/order/redux/actions'
+import { ScheduleActions } from '@modules/transport3/schedule/redux/actions';
 import { OrdersInfoChart } from "./charts/ordersInfoChart";
 import { TransportationCostChart } from "./charts/costChart";
 import { OnTimeDeliveryChart } from "./charts/ontimeDeliveryChart";
@@ -23,6 +25,8 @@ function GeneralStatistic(props) {
     let dispatch = useDispatch()
     const currentRole = localStorage.getItem('currentRole')
     const userdepartments = useSelector((state) => state.user.userdepartments)
+    const listOrders = useSelector(state => state.orders.listOrders)
+    const listSchedules = useSelector(state => state.T3schedule.listSchedules?.schedules)
 
     // Khởi tạo state
     const [state, setState] = useState({
@@ -30,12 +34,6 @@ function GeneralStatistic(props) {
         page: 1,
         perPage: 5,
         monthToSearch: dayjs().format("MM-YYYY"),
-        inProcessRequests: 0,
-        failRequests: 0,
-        successRequests: 0,
-        isUsingVehicle: 0,
-        notUseVehicle: 0,
-        totalRequests: 0,
         journeyTotalCostPerDay: "",
         isWorkingShipper: "",
         notWorkingShipper: "",
@@ -43,9 +41,8 @@ function GeneralStatistic(props) {
     })
     const [selectedData, setSelectedData] = useState()
 
-    const { requestManagements, translate, vehicle, journey, shipper, socket } = props;
-    const { page, perPage, totalRequests, monthToSearch, inProcessRequests, failRequests, successRequests, isUsingVehicle,
-        notUseVehicle, journeyTotalCostPerDay, isWorkingShipper, notWorkingShipper, totalTransportationCost } = state;
+    const { requestManagements, translate, journey, shipper, socket } = props;
+    const { page, perPage, monthToSearch, journeyTotalCostPerDay, isWorkingShipper, notWorkingShipper, totalTransportationCost } = state;
 
     useEffect(() => {
         const { currentRole } = state
@@ -57,7 +54,39 @@ function GeneralStatistic(props) {
 
     useEffect(() => {
         dispatch(UserActions.getAllUserSameDepartment(currentRole))
-      }, [dispatch])
+        dispatch(OrderActions.getAllOrder())
+        dispatch(ScheduleActions.getAllSchedule())
+    }, [dispatch])
+
+    const ordersOfSchedulesCount = () => {
+        let orderCount = 0
+        listSchedules?.forEach(schedule => {
+            orderCount += schedule.orders?.length || 0
+        });
+        return orderCount
+    }
+
+    const estimateLateOrderCount = () => {
+        let orderCount = 0
+        listSchedules?.forEach(schedule => {
+            schedule.orders?.forEach(order => {
+                if((order.status == 1 || order.status == 2) && order.estimatedOntime == 0)
+                    orderCount +=1
+            })
+        });
+        return orderCount
+    }
+
+    const processingOrderCount = () => {
+        let orderCount = 0
+        listSchedules?.forEach(schedule => {
+            schedule.orders?.forEach(order => {
+                if(order.status == 2)
+                    orderCount +=1
+            })
+        });
+        return orderCount 
+    }
 
     useEffect(() => {
         if (journey.journeyWithCost) {
@@ -79,37 +108,6 @@ function GeneralStatistic(props) {
             })
         }
     }, [shipper])
-
-    useEffect(() => {
-        if (requestManagements?.listRequests.length > 0) {
-            let requests = requestManagements.listRequests;
-            let inProcess = requests.filter((request) => request.status == 3);
-            let success = requests.filter((request) => request.status == 4);
-            let fail = requests.filter((request) => request.status == 5);
-
-            setState({
-                ...state,
-                inProcessRequests: inProcess.length,
-                failRequests: fail.length,
-                successRequests: success.length,
-                totalRequests: requests.length,
-            })
-        }
-    }, [requestManagements])
-
-    useEffect(() => {
-        if (vehicle.listVehicle.length > 0) {
-            let listVehicle = vehicle.listVehicle;
-            let isUsingVehicle = listVehicle.filter((vehicle) => vehicle.status == 1);
-            let notUseVehicle = listVehicle.filter((vehicle) => vehicle.status == 2);
-
-            setState({
-                ...state,
-                isUsingVehicle: isUsingVehicle.length,
-                notUseVehicle: notUseVehicle.length
-            })
-        }
-    }, [vehicle])
 
     useEffect(() => {
         socket.io.on('request status dashboard', data => {
@@ -197,7 +195,7 @@ function GeneralStatistic(props) {
                         <div className="info-box-content">
                           <span className="info-box-text">Tổng số</span>
                           <a className="info-box-number"
-                             style={{cursor: 'pointer', fontSize: '20px'}}>{totalRequests} đơn</a>
+                             style={{cursor: 'pointer', fontSize: '20px'}}>{listOrders.length} đơn</a>
                         </div>
                             </div>
                         </div>
@@ -207,14 +205,14 @@ function GeneralStatistic(props) {
                             <div className="info-box">
                                 <span className="info-box-icon bg-blue"><i className="fa fa-motorcycle" /></span>
                                 <div className="info-box-content">
-                                    <span className="info-box-text">Số lượng xe</span>
-                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>{isUsingVehicle}/{isUsingVehicle + notUseVehicle}</a>
-                                    <span>đang hoạt động</span>
+                                    <span className="info-box-text">Đơn hàng</span>
+                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>{ordersOfSchedulesCount()}/{listOrders.length}</a>
+                                    <span>đã được lập kế hoạch</span>
                                 </div>
                             </div>
                         </div>
                         {/* Chưa khởi tạo KPI */}
-                        <div className="col-md-3 col-sm-6 form-inline">
+                        {/* <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
                                 <span className="info-box-icon bg-aqua"><i className="fa fa-users" /></span>
                                 <div className="info-box-content">
@@ -223,9 +221,9 @@ function GeneralStatistic(props) {
                                     <span>đang làm việc</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         {/* Chưa khởi tạo KPI */}
-                        <div className="col-md-3 col-sm-6 form-inline">
+                        {/* <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
                                 <span className="info-box-icon bg-yellow"><i className="fa fa-usd" /></span>
                                 <div className="info-box-content">
@@ -236,14 +234,14 @@ function GeneralStatistic(props) {
                                     </a>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
                                 <span className="info-box-icon bg-aqua"><i className="fa fa-users" /></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Đơn hàng</span>
-                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>0 / 0</a>
-                                    <span>đang được giao</span>
+                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>{processingOrderCount()} / {ordersOfSchedulesCount()}</a>
+                                    <span>chưa hoặc đang được giao</span>
                                 </div>
                             </div>
                         </div>
@@ -252,7 +250,7 @@ function GeneralStatistic(props) {
                                 <span className="info-box-icon bg-aqua"><i className="fa fa-users" /></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Đơn hàng</span>
-                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>0 / 0</a>
+                                    <a className="info-box-number" style={{ cursor: 'pointer', fontSize: '20px' }}>{estimateLateOrderCount()}/ {processingOrderCount()}</a>
                                     <span>có khả năng trễ hạn</span>
                                 </div>
                             </div>
@@ -282,7 +280,7 @@ function GeneralStatistic(props) {
                                                     </div>
                                                     <div className="box-body">
                                                         <OrdersInfoChart
-                                                            transportationRequests={{ inProcessRequests, successRequests, failRequests, totalRequests }}
+                                                            monthToSearch={monthToSearch}
                                                         />
                                                     </div>
                                                 </div>

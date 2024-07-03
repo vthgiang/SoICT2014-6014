@@ -131,6 +131,25 @@ const getTopLateStocks = (month, year) => {
   }
 }
 
+const getOrderStatus = (month, year) => {
+  return (dispatch) => {
+    dispatch({ type: transportationConstants.GET_ORDER_STATUS })
+    const query = { month, year };
+  DashboardService.getOrderStatus(query)
+    .then((response) => {
+      dispatch({
+        type: transportationConstants.GET_ORDER_STATUS_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: transportationConstants.GET_ORDER_STATUS_FAILED
+      })
+    })
+  }
+}
+
 export const DashboardActions = {
   getOntimeDeliveryRate,
   getOnTimeDeliveryRatesPerMonth,
@@ -138,5 +157,6 @@ export const DashboardActions = {
   getDeliveryLateDayAveragePerMonth,
   getTopLateDeliveryDay,
   getTopLateProducts,
-  getTopLateStocks
+  getTopLateStocks,
+  getOrderStatus
 }

@@ -394,6 +394,38 @@ exports.getTopLateStocks = async (portal, { month, year }) => {
     return top5Stocks;   
 }
 
+exports.getOrderStatus = async (portal, { month, year }) => {
+    const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});
+    if (!transport3Schedules) {
+        throw new Error('Schedule not found');
+    }
+    let ordersStatus = {
+        1: 0, // Chưa giao
+        2: 0, // Đang giao
+        3: 0, // Thất bại
+        4: 0  // Thành công
+    };
+
+    transport3Schedules.forEach((transport3Schedule) => {
+        transport3Schedule.orders.forEach((order) => {
+            if (order.status) {
+                const orderDate = new Date(order.beginTime);
+                const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
+                const orderYear = orderDate.getFullYear(); // Năm
+
+                if (orderMonth === month && orderYear === year) {
+                    if (ordersStatus.hasOwnProperty(order.status)) {
+                        ordersStatus[order.status] += 1;
+                    } else {
+                        ordersStatus[order.status] = 0;
+                    }
+                }
+            }
+        });
+    })
+    return ordersStatus
+}
+
 exports.UpdateEstimatedOntimeDeliveryInfo = async (portal, scheduleId) => {
     const transport3Schedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).findById(scheduleId);   
     if (!transport3Schedule) {

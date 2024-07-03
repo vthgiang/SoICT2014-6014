@@ -10,7 +10,8 @@ const initialState = {
     deliveryLateDayAverage: [],
     topLateDeliveryDay: [],
     topLateProducts: [],
-    topLateStocks: []
+    topLateStocks: [],
+    orderStatus: {}
 }
 
 export function dashboard(state = initialState, action) {
@@ -37,7 +38,6 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 onTimeDeliveryData: action.payload,
@@ -49,7 +49,6 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 estimatedOnTimeDeliveryData: action.payload,
@@ -61,7 +60,6 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 deliveryLateDayAverage: action.payload,
@@ -73,7 +71,6 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_TOP_LATE_DELIVERY_DAY_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 topLateDeliveryDay: action.payload,
@@ -85,7 +82,6 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_TOP_LATE_PRODUCTS_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 topLateProducts: action.payload,
@@ -97,10 +93,20 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_TOP_LATE_STOCKS_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 topLateStocks: action.payload,
+                isLoading: false
+            }
+        case transportationConstants.GET_ORDER_STATUS:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_ORDER_STATUS_SUCCESS:
+            return {
+                ...state,
+                orderStatus: action.payload,
                 isLoading: false
             }
         default:
