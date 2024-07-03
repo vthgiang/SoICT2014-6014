@@ -2026,44 +2026,6 @@ export default {
         tasks_add_attribute: 'Attributes of tasks',
         attribute_select: 'Select attribute',
         attribute_not_selected: 'Attribute not selected'
-      },
-      wizard: {
-        authorization_ui: 'UI Authorization',
-        authorization_service: 'Service Authorization',
-        requirement_description:
-          'Requirements consist of a rule and attributes that are lists of key-value pairs. The system prioritizes requirement proposals with the rule EQUALS -> CONTAINS -> BELONGS',
-        requirement_note: 'Note: You can edit all requirements in last step',
-        rule_description:
-          'Select a rule, then the system will propose list of attributes that can satisfy all Requesters above if possible',
-        proposed_attributes: 'Proposed attributes',
-        name: 'Name',
-        value: 'Value',
-        next: 'Next',
-        requester: {
-          title: 'Choose Requesters',
-          description_ui: 'Select the Users that will receive access rights to UI components',
-          description_service: 'Select the Services that will receive access rights to API',
-          choose: 'Choose Requesters',
-          authorized: 'Authorized Requesters',
-          proposed_requirement: 'Proposed Requester’s requirement'
-        },
-        resource: {
-          title: 'Choose Resources',
-          description_ui: 'Select the Link or Component, which is the object that will be accessed by Requesters',
-          description_service: 'Select the API, which is the object that will be accessed by Services',
-          choose: 'Choose Resources',
-          authorized: 'Authorized Resources',
-          proposed_requirement: 'Proposed Resource’s requirement'
-        },
-        role: {
-          title: 'Choose Roles',
-          note: 'Note: If role requirements are not selected, all roles will be authorized',
-          description_ui: 'Optional, select Roles of Requester (only apply for Requesters that are User)',
-          description_service: 'Optional, select Roles of Requester (only apply for Requesters that are User)',
-          choose: 'Choose Roles',
-          authorized: 'Authorized Roles',
-          proposed_requirement: 'Proposed Role’s requirement'
-        }
       }
     },
 
@@ -2204,6 +2166,44 @@ export default {
         tasks_add_attribute: 'Attributes of tasks',
         attribute_select: 'Select attribute',
         attribute_not_selected: 'Attribute not selected'
+      },
+      wizard: {
+        authorization_ui: 'UI Authorization',
+        authorization_service: 'Service Authorization',
+        requirement_description:
+          'Requirements consist of a rule and attributes that are lists of key-value pairs. The system prioritizes requirement proposals with the rule EQUALS -> CONTAINS -> BELONGS',
+        requirement_note: 'Note: You can edit all requirements in last step',
+        rule_description:
+          'Select a rule, then the system will propose list of attributes that can satisfy all Requesters above if possible',
+        proposed_attributes: 'Proposed attributes',
+        name: 'Name',
+        value: 'Value',
+        next: 'Next',
+        requester: {
+          title: 'Choose Requesters',
+          description_ui: 'Select the Users that will receive access rights to UI components',
+          description_service: 'Select the Services that will receive access rights to API',
+          choose: 'Choose Requesters',
+          authorized: 'Authorized Requesters',
+          proposed_requirement: 'Proposed Requester’s requirement'
+        },
+        resource: {
+          title: 'Choose Resources',
+          description_ui: 'Select the Link or Component, which is the object that will be accessed by Requesters',
+          description_service: 'Select the API, which is the object that will be accessed by Services',
+          choose: 'Choose Resources',
+          authorized: 'Authorized Resources',
+          proposed_requirement: 'Proposed Resource’s requirement'
+        },
+        role: {
+          title: 'Choose Roles',
+          note: 'Note: If role requirements are not selected, all roles will be authorized',
+          description_ui: 'Optional, select Roles of Requester (only apply for Requesters that are User)',
+          description_service: 'Optional, select Roles of Requester (only apply for Requesters that are User)',
+          choose: 'Choose Roles',
+          authorized: 'Authorized Roles',
+          proposed_requirement: 'Proposed Role’s requirement'
+        }
       }
     },
     
