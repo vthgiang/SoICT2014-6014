@@ -222,7 +222,7 @@ export function PolicyTable() {
         delegatorDescription={translate('manage_delegation_policy.wizard.delegator.description_service')}
         delegateeDescription={translate('manage_delegation_policy.wizard.delegatee.description_service')}
         delegateObjectDescription={translate('manage_delegation_policy.wizard.delegateObject.description_service')}
-        filterDelegator={(x) => x.type === 'Service'}
+        filterDelegator={(x) => x.type === 'Service' || x.type === 'User'}
         filterDelegatee={(x) => x.type === 'Service'}
         filterDelegateObject={(x) => x.type === 'SystemApi'}
       />
