@@ -50,7 +50,7 @@ const initDB = async () => {
     if (!systemDB) throw ('Error! Cannot connect to MongoDB. Please check connection. :(');
 
     /**
-     * 2. Xóa dữ liệu db cũ và khởi tạo dữ liệu config 
+     * 2. Xóa dữ liệu db cũ và khởi tạo dữ liệu config
      */
     systemDB.dropDatabase();
     console.log("@Setup new database.");

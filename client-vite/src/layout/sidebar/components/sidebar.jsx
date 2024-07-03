@@ -445,32 +445,6 @@ class SideBar extends Component {
                     name: 'menu.kpi_member_manager',
                     icon: 'fa fa-circle-o',
                     path: '/kpi-member/manager'
-                  },
-                  {
-                    name: 'menu.kpi_allocation_title',
-                    icon: 'fa fa-file-powerpoint-o',
-                    list: [
-                      {
-                        name: 'menu.kpi_allocation_affected_factor_management',
-                        icon: 'fa fa-circle-o',
-                        path: '/kpi-allocation/affected-factor-management'
-                      },
-                      {
-                        name: 'menu.kpi_allocation_allocation_management',
-                        icon: 'fa fa-circle-o',
-                        path: '/kpi-allocation/allocation-management'
-                      },
-                      {
-                        name: 'menu.kpi_allocation_config_management',
-                        icon: 'fa fa-circle-o',
-                        path: '/kpi-allocation/config-management'
-                      },
-                      {
-                        name: 'menu.kpi_allocation_task_package_management',
-                        icon: 'fa fa-circle-o',
-                        path: '/kpi-allocation/task_package_management'
-                      }
-                    ]
                   }
                 ]
               }}
@@ -949,7 +923,7 @@ class SideBar extends Component {
                     icon: 'fa fa-dollar',
                     path: '/manage-sales-order'
                   },
-              
+
                   {
                     name: 'menu.forecast_sales_order',
                     icon: 'fa fa-dollar',
@@ -965,7 +939,7 @@ class SideBar extends Component {
                   //   icon: 'fa fa-shopping-cart',
                   //   path: '/manage-purchase-order'
                   // },
-                  
+
                   // {
                   //   name: 'menu.manage_tax',
                   //   icon: 'fa fa-money',
@@ -1000,6 +974,16 @@ class SideBar extends Component {
                     name: 'menu.marketing_campaign',
                     icon: 'fa fa-file-text-o',
                     path: '/marketing-campaign'
+                  },
+                  {
+                    name: 'menu.marketing_dashboard',
+                    icon: 'fa fa-dashboard',
+                    path: '/marketing-dashboard'
+                  },
+                  {
+                    name: 'menu.marketing_forecast',
+                    icon: 'fa fa-dollar',
+                    path: '/marketing-forecast'
                   }
                 ]
               }}

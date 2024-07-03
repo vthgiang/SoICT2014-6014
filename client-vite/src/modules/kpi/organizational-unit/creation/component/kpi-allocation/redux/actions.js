@@ -71,6 +71,7 @@ const handleAssignAllocation = (payload) => {
           type: ConfigManagementConstant.ASSIGN_ALLOCATION_REQUEST_SUCCESS,
           payload: response.data.content
         })
+        window.$('#allocation-kpi-into-unit').modal('hide')
       })
       .catch(() => {
         dispatch({

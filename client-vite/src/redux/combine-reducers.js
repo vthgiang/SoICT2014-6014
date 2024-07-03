@@ -358,7 +358,7 @@ const appReducer = combineReducers({
   }),
 
   // order
- 
+
   quotes,
   discounts,
   serviceLevelAgreements,

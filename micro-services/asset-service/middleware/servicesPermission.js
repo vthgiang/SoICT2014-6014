@@ -342,7 +342,7 @@ exports.links = [
             // Employee KPI management dashboard
             { path: '/kpi/employee/management/employee-kpi-sets/:id/copy', method: 'POST' },
 
-            // Employee KPI evaluate 
+            // Employee KPI evaluate
             { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets', method: 'GET' },
             { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id', method: 'GET' },
             { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id', method: 'PATCH' },
@@ -556,7 +556,7 @@ exports.links = [
             { path: '/supplies-request/purchase-request', method: 'POST' },
             { path: '/supplies-request/purchase-request/:id', method: 'PUT' },
             { path: '/supplies-request/purchase-request/:id', method: 'DELETE' },
-            //supplies dashboard 
+            //supplies dashboard
             { path: '/supplies/dashboard-supplies', method: 'GET' },
 
             // Recommend-procure
