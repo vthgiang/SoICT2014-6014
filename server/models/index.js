@@ -101,11 +101,13 @@ module.exports = {
     InventoryForecast: require('./production/warehouse/inventoryForecast.model'),
     // Customer Management
     Customer: require('./customer-care/customer.model'),
+    CustomerForecast: require('./customer-care/customerForecast.model'),
     CustomerCare: require('./customer-care/customerCare.model'),
     CustomerCareType: require('./customer-care/customerCareType.model'),
     CustomerGroup: require('./customer-care/customerGroup.model'),
     CustomerStatus: require('./customer-care/customerStatus.model'),
     CustomerRankPoint: require('./customer-care/customerRankPoint.model'),
+    CustomerMarketing: require('./customer-care/customerMarketing.model'),
     Product: require('./customer-care/product.model'),
     ProductCategory: require('./customer-care/productCategory.model'),
     ProductDiscount: require('./customer-care/productDiscount.model'),

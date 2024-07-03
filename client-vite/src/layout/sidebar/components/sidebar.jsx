@@ -969,6 +969,16 @@ class SideBar extends Component {
                     name: 'menu.marketing_campaign',
                     icon: 'fa fa-file-text-o',
                     path: '/marketing-campaign'
+                  },
+                  {
+                    name: 'menu.marketing_dashboard',
+                    icon: 'fa fa-dashboard',
+                    path: '/marketing-dashboard'
+                  },
+                  {
+                    name: 'menu.marketing_forecast',
+                    icon: 'fa fa-dollar',
+                    path: '/marketing-forecast'
                   }
                 ]
               }}

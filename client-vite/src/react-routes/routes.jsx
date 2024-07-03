@@ -181,8 +181,10 @@ const BusinessDepartment = lazy(() => import('../modules/production/order/busine
 const Payment = lazy(() => import('../modules/production/order/payment/components'))
 const BankAccount = lazy(() => import('../modules/production/order/bank-account/components'))
 const OrderRequestManagement = lazy(() => import('../modules/production/order/request-management/components'))
-const MarketingCampaign = lazy(() => import('../modules/production/order/marketing/components'))
-const MarketingCampaignDetail = lazy(() => import('../modules/production/order/marketing/components/CampaignDetail'))
+const MarketingCampaign = lazy(() => import('../modules/production/order/marketing/marketing-management/components'))
+const MarketingDashboard = lazy(() => import('../modules/production/order/marketing/marketing-dashboard/components'))
+const MarketingForecast = lazy(() => import('../modules/production/order/marketing/marketing-forecast/components'))
+const MarketingCampaignDetail = lazy(() => import('../modules/production/order/marketing/marketing-management/components/CampaignDetail.jsx'))
 
 // plans
 const PlanManagement = lazy(() => import("../modules/plan/components"))
@@ -3299,7 +3301,7 @@ class Routes extends Component {
               {
                 link: '/marketing-campaign',
                 name: 'marketing_campaign',
-                icon: 'fa fa-bandcamp'
+                icon: 'fa fa-file-text-o'
               }
             ]}
             auth={auth}
@@ -3309,6 +3311,44 @@ class Routes extends Component {
             pageName='marketing_campaign'
             layout={Layout}
             component={MarketingCampaign}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key='order-marketing-dashboard'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/marketing-dashboard',
+                name: 'marketing_dashboard',
+                icon: 'fa fa-dashboard'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/marketing-dashboard'
+            path='/marketing-dashboard'
+            pageName='marketing_dashboard'
+            layout={Layout}
+            component={MarketingDashboard}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key='order-marketing-forecast'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/marketing-forecast',
+                name: 'marketing_forecast',
+                icon: 'fa fa-dollar'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/marketing-forecast'
+            path='/marketing-forecast'
+            pageName='marketing_forecast'
+            layout={Layout}
+            component={MarketingForecast}
           />
           <PrivateRoute
             isLoading={false}
