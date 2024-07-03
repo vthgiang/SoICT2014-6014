@@ -31,6 +31,8 @@ import { service } from '../modules/super-admin/service/redux/reducers'
 import { attribute } from '../modules/super-admin/attribute/redux/reducers'
 import { policy } from '../modules/super-admin/policy/redux/reducers'
 import { policyDelegation } from '../modules/super-admin/policy-delegation/redux/reducers'
+import { policyAuthorization } from '../modules/super-admin/policy-authorization/redux/reducers'
+import { authorizationLogging } from '../modules/super-admin/authorization-logging/redux/reducers'
 
 import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers'
 import { discipline } from '../modules/human-resource/commendation-discipline/redux/reducers'
@@ -240,6 +242,8 @@ const appReducer = combineReducers({
   attribute,
   policy,
   policyDelegation,
+  policyAuthorization,
+  authorizationLogging,
   apis,
   apiRegistration,
   component,

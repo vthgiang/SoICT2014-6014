@@ -798,6 +798,14 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/authorization-policies-management',
+        apis: ['@all'],
+    },
+    {
+        url: '/authorization-logging',
+        apis: ['@all'],
+    },
+    {
         url: '/external-service-consumers-management',
         apis: ['@all'],
     },

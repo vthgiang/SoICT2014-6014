@@ -4,6 +4,8 @@ const {
 
 const { Resource } = require('../../../models');
 
+const AuthorizationPolicyService = require('../../authorization/policy/policy.service')
+
 exports.find = async (portal, queryParams = {}) => {
   let query = {};
 
@@ -151,5 +153,12 @@ exports.updateAttributes = async (portal, id, data) => {
     { new: true }
   ).populate('refId');
 
+  await AuthorizationPolicyService.checkAllPolicies(portal);
+
   return enrich(resource);
+}
+
+exports.findByIds = async(portal, ids) => {
+  const resources = await Resource(connect(DB_CONNECTION, portal)).find( {_id: {$in: ids} }).populate('refId');
+  return resources.map(x => enrich(x));
 }

@@ -6,6 +6,7 @@ import { SelectMulti, PaginateBar, DataTableSetting } from '../../../../common-c
 import { ResourceActions } from '../redux/actions'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import ResourceEditForm from './resourceEditForm'
+import { PolicyActions } from '../../../super-admin/policy-authorization/redux/actions'
 
 function ManageResource(props) {
   const tableIdContructor = 'table-manage-resource'
@@ -23,7 +24,7 @@ function ManageResource(props) {
   })
 
   const { resource, attribute } = props
-  const { translate, getAttribute, getResources } = props
+  const { translate, getAttribute, getResources, getAllPolicies } = props
   const { currentRow, tableId, type, name, page } = state
 
   const setPage = (page) => {
@@ -85,6 +86,7 @@ function ManageResource(props) {
   useEffect(() => {
     getResources({ page, perPage: limit })
     getAttribute()
+    getAllPolicies()
   }, [])
 
   // Cac ham xu ly du lieu voi modal
@@ -251,7 +253,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   getResources: ResourceActions.get,
-  getAttribute: AttributeActions.getAttributes
+  getAttribute: AttributeActions.getAttributes,
+  getAllPolicies: PolicyActions.getAllPolicies
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManageResource))

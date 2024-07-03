@@ -56,6 +56,8 @@ const ManageAttribute = lazy(() => import('../modules/super-admin/attribute/comp
 const ManagePolicy = lazy(() => import('../modules/super-admin/policy/components'))
 const ManageApi = lazy(() => import('../modules/super-admin/api/api-management/components/apiManagement'))
 const ManagePolicyDelegation = lazy(() => import('../modules/super-admin/policy-delegation/components'))
+const ManagePolicyAuthorization = lazy(() => import('../modules/super-admin/policy-authorization/components'))
+const AuthorizationLogging = lazy(() => import('../modules/super-admin/authorization-logging/components'))
 const ApiRegistration = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistration'))
 const ApiRegistrationEmployee = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistrationEmployee'))
 const ManageDepartment = lazy(() => import('../modules/super-admin/organizational-unit/components'))
@@ -714,6 +716,52 @@ class Routes extends Component {
             pageName='manage_policy_delegation'
             layout={Layout}
             component={ManagePolicyDelegation}
+          />
+          <PrivateRoute
+            isLoading={this.props.policyAuthorization.isLoading}
+            key='authorization-policies-management'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/authorization-policies-management',
+                name: 'manage_policy_authorization',
+                icon: 'fa fa-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/authorization-policies-management'
+            path='/authorization-policies-management'
+            pageName='manage_policy_authorization'
+            layout={Layout}
+            component={ManagePolicyAuthorization}
+          />
+          <PrivateRoute
+            isLoading={this.props.authorizationLogging.isLoading}
+            key='authorization-logging'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/authorization-logging',
+                name: 'authorization_logging',
+                icon: 'fa fa-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/authorization-logging'
+            path='/authorization-logging'
+            pageName='authorization_logging'
+            layout={Layout}
+            component={AuthorizationLogging}
           />
           <PrivateRoute
             isLoading={this.props.api?.isLoading}

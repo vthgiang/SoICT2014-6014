@@ -279,13 +279,22 @@ class SideBar extends Component {
                         path: '/policies-management'
                       },
                       {
+                        name: 'menu.manage_policy_authorization_v2',
+                        icon: 'fa fa-circle-o',
+                        path: '/authorization-policies-management'
+                      },
+                      {
                         name: 'menu.manage_policy_delegation',
                         icon: 'fa fa-circle-o',
                         path: '/delegation-policies-management'
                       }
                     ]
                   },
-
+                  {
+                    name: 'menu.authorization_logging',
+                    icon: 'fa fa-link',
+                    path: '/authorization-logging'
+                  },
                   {
                     name: 'menu.manage_api',
                     icon: 'fa fa-link',
