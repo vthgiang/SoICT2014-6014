@@ -13,5 +13,6 @@ router.get("/roles/:id", auth, RoleController.getRole);
 router.patch("/roles/:id", auth, RoleController.editRole);
 router.delete("/roles/:id", auth, RoleController.deleteRole);
 router.post("/roles/attributes", auth, RoleController.createRoleAttribute);
+router.patch("/roles/attributes/:id", auth, RoleController.editRoleAttribute);
 
 module.exports = router;

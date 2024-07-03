@@ -90,7 +90,7 @@ exports.login = async (data) => {
  * @param {*} id : id người dùng
  * @param {*} token
  */
-exports.logout = async (portal, id, requestToken) => {
+exports.revokeToken = async (portal, id, requestToken) => {
     let service = await Service(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!service?.tokens || !service.tokens.some(x => x == requestToken)) {
@@ -101,11 +101,19 @@ exports.logout = async (portal, id, requestToken) => {
         service.tokens = service?.tokens.filter(currentElement => currentElement !== requestToken);
     }
 
-    // let delegations = await Delegation(connect(DB_CONNECTION, portal)).find({ delegatee: id });
-    // delegations.forEach(async delegation => {
-    //     await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, 'logout', new Date())
-    // })
-
     await service.save();
+    return service;
+};
+
+/**
+ * Đăng xuất tài khoản người dùng
+ * @param {*} id : id người dùng
+ */
+exports.revokeAllToken = async (portal, id) => {
+    const service = await Service(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+        { _id: id },
+        { tokens: [] }
+    )
+
     return service;
 };

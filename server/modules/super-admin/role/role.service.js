@@ -227,6 +227,54 @@ exports.createRoleAttribute = async (portal, data) => {
 }
 
 /**
+ * Chỉnh sửa thông tin role
+ * @id id role
+ * @data dữ liệu chỉnh sửa, mặc định không truyền vào thì là {}
+ */
+exports.editRoleAttribute = async (portal, id, data) => {
+    const role = await Role(connect(DB_CONNECTION, portal)).findById(id);
+
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, '')))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    // array[i] = { ...array[i], name: attribute.attributeName };
+                    resArray = [...resArray, array[i]];
+                }
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    const attrArray = await filterValidAttributeArray(data.attributes);
+    const dataAttr = attrArray.map(attr => {
+        return {
+            attributeId: attr.attributeId,
+            // name: attr.name.trim(),
+            value: attr.value.trim(),
+            description: attr.description?.trim(),
+        }
+    });
+    if (data.attributes) {
+        role.attributes = dataAttr;
+    }
+
+    await role.save();
+
+    return role;
+}
+
+/**
  * Tạo root role cho công ty
  * @data dữ liệu tạo
  * @companyID id công ty

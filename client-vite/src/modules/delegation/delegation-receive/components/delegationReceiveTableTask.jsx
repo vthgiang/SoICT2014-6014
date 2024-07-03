@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import { PaginateBar, SmartTable, ToolTip, ConfirmNotification } from '../../../../common-components'
+import dayjs from 'dayjs'
+import { PaginateBar, SmartTable, ConfirmNotification } from '../../../../common-components'
 
 import { DelegationDetailInfoTask } from '../../delegation-list/components/delegationDetailInfoTask'
 
 import { DelegationActions } from '../redux/actions'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import dayjs from 'dayjs'
 import { colorfyDelegationStatus } from '../../delegation-list/components/functionHelper'
 
 function DelegationReceiveTableTask(props) {
@@ -18,7 +18,7 @@ function DelegationReceiveTableTask(props) {
 
   // Khởi tạo state
   const [state, setState] = useState({
-    delegationName: '',
+    name: '',
     pageTask: 1,
     perPageTask: getLimit,
     tableId: getTableId
@@ -26,10 +26,10 @@ function DelegationReceiveTableTask(props) {
   const [selectedData, setSelectedData] = useState()
 
   const { delegationReceive, translate } = props
-  const { delegationName, pageTask, perPageTask, curentRowDetail, tableId } = state
+  const { name, pageTask, perPageTask, curentRowDetail, tableId } = state
 
   useEffect(() => {
-    props.getDelegationsTask({ delegationName, pageTask, perPageTask, delegateType: 'Task' })
+    props.getDelegationsTask({ name, pageTask, perPageTask, delegateType: 'Task' })
   }, [])
 
   /**
@@ -40,7 +40,7 @@ function DelegationReceiveTableTask(props) {
     const { value } = e.target
     setState({
       ...state,
-      delegationName: value
+      name: value
     })
   }
 
@@ -49,7 +49,7 @@ function DelegationReceiveTableTask(props) {
    */
   const handleSubmitSearch = () => {
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask,
       pageTask: 1,
       delegateType: 'Task'
@@ -71,7 +71,7 @@ function DelegationReceiveTableTask(props) {
     })
 
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask,
       pageTask: parseInt(pageNumber),
       delegateType: 'Task'
@@ -89,7 +89,7 @@ function DelegationReceiveTableTask(props) {
       pageTask: 1
     })
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask: parseInt(number),
       pageTask: 1,
       delegateType: 'Task'
@@ -102,10 +102,11 @@ function DelegationReceiveTableTask(props) {
 
   const confirmDelegation = (id) => {
     props.confirmDelegation({
-      delegationId: id
+      delegationId: id,
+      delegateType: 'Task'
     })
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask,
       delegateType: 'Task',
       pageTask: delegationReceive && delegationReceive.listsTask && delegationReceive.listsTask.length === 1 ? pageTask - 1 : pageTask
@@ -115,10 +116,11 @@ function DelegationReceiveTableTask(props) {
   const rejectDelegation = (id) => {
     props.rejectDelegation({
       delegationId: id,
-      reason: window.$(`#rejectReason-${id}`).val()
+      reason: window.$(`#rejectReason-${id}`).val(),
+      delegateType: 'Task'
     })
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask,
       delegateType: 'Task',
       pageTask: delegationReceive && delegationReceive.listsTask && delegationReceive.listsTask.length === 1 ? pageTask - 1 : pageTask
@@ -149,25 +151,25 @@ function DelegationReceiveTableTask(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <DelegationDetailInfoTask
         delegationID={curentRowDetail && curentRowDetail._id}
-        delegationName={curentRowDetail && curentRowDetail.delegationName}
+        name={curentRowDetail && curentRowDetail.name}
         description={curentRowDetail && curentRowDetail.description}
         delegator={curentRowDetail && curentRowDetail.delegator}
         delegatee={curentRowDetail && curentRowDetail.delegatee}
         delegatePrivileges={curentRowDetail && curentRowDetail.delegatePrivileges}
         delegateType={curentRowDetail && curentRowDetail.delegateType}
         delegateRole={curentRowDetail && curentRowDetail.delegateRole}
-        delegateTask={curentRowDetail && curentRowDetail.delegateTask}
-        delegateTaskRoles={curentRowDetail && curentRowDetail.delegateTaskRoles}
+        delegateObject={curentRowDetail && curentRowDetail.delegateObject}
+        delegateTaskRoles={curentRowDetail && curentRowDetail.metaData.delegateTaskRoles}
         status={curentRowDetail && curentRowDetail.status}
         allPrivileges={curentRowDetail && curentRowDetail.allPrivileges}
         startDate={curentRowDetail && curentRowDetail.startDate}
         endDate={curentRowDetail && curentRowDetail.endDate}
         revokedDate={curentRowDetail && curentRowDetail.revokedDate}
         revokeReason={curentRowDetail && curentRowDetail.revokeReason}
-        forReceive={true}
+        forReceive
         replyStatus={curentRowDetail && curentRowDetail.replyStatus}
         declineReason={curentRowDetail && curentRowDetail.declineReason}
         delegatePolicy={curentRowDetail && curentRowDetail.delegatePolicy}
@@ -180,13 +182,13 @@ function DelegationReceiveTableTask(props) {
 
           {/* Tìm kiếm */}
           <div className='form-group'>
-            <label className='form-control-static'>{translate('manage_delegation.delegationName')}</label>
+            <label className='form-control-static'>{translate('manage_delegation.name')}</label>
             <input
               type='text'
               className='form-control'
-              name='delegationNameTask'
+              name='nameTask'
               onChange={handleChangeDelegationName}
-              placeholder={translate('manage_delegation.delegationName')}
+              placeholder={translate('manage_delegation.name')}
               autoComplete='off'
             />
           </div>
@@ -203,11 +205,11 @@ function DelegationReceiveTableTask(props) {
         </div>
 
         <SmartTable
-          disableCheckbox={true}
+          disableCheckbox
           tableId={tableId}
           columnData={{
             index: translate('manage_delegation.index'),
-            delegationName: translate('manage_delegation.delegationName'),
+            name: translate('manage_delegation.name'),
             delegateType: translate('manage_delegation.delegateType'),
             delegateObjectTask: translate('manage_delegation.delegateObjectTask'),
             delegateTaskRoles: translate('manage_delegation.delegateObjectTaskRole'),
@@ -223,7 +225,7 @@ function DelegationReceiveTableTask(props) {
                 {translate('manage_delegation.index')}
               </th>
             ),
-            delegationName: <th>{translate('manage_delegation.delegationName')}</th>,
+            name: <th>{translate('manage_delegation.name')}</th>,
             // delegateType: <th>{translate('manage_delegation.delegateType')}</th>,
             delegateObjectTask: <th>{translate('manage_delegation.delegateObjectTask')}</th>,
             delegateTaskRoles: <th>{translate('manage_delegation.delegateObjectTaskRole')}</th>,
@@ -240,12 +242,14 @@ function DelegationReceiveTableTask(props) {
               return {
                 id: item?._id,
                 index: <td>{index + 1}</td>,
-                delegationName: <td>{item?.delegationName}</td>,
+                name: <td>{item?.name}</td>,
                 // delegateType: <td>{translate('manage_delegation.delegateType' + item?.delegateType)}</td>,
-                delegateObjectTask: <td>{item.delegateTask ? item.delegateTask.name : ''}</td>,
+                delegateObjectTask: <td>{item.delegateObject ? item.delegateObject.name : ''}</td>,
                 delegateTaskRoles: (
                   <td>
-                    {item.delegateTaskRoles ? item.delegateTaskRoles.map((r) => translate('task.task_management.' + r)).join(', ') : ''}
+                    {item.metaData?.delegateTaskRoles
+                      ? item.metaData?.delegateTaskRoles.map((r) => translate(`task.task_management.${r}`)).join(', ')
+                      : ''}
                   </td>
                 ),
                 delegator: <td>{item?.delegator.name}</td>,
@@ -280,7 +284,7 @@ function DelegationReceiveTableTask(props) {
                       <ConfirmNotification
                         icon='success'
                         title={translate('manage_delegation.confirm_delegation')}
-                        content={`<h4 style='color: green'><div>${translate('manage_delegation.confirm_delegation')}</div> <div>"${item.delegationName}"</div></h4>`}
+                        content={`<h4 style='color: green'><div>${translate('manage_delegation.confirm_delegation')}</div> <div>"${item.name}"</div></h4>`}
                         name='thumb_up'
                         className='text-blue'
                         func={() => confirmDelegation(item._id)}
@@ -290,7 +294,7 @@ function DelegationReceiveTableTask(props) {
                       <ConfirmNotification
                         icon='error'
                         title={translate('manage_delegation.reject_reason')}
-                        content={`<h4 style='color: red'><div>${translate('manage_delegation.reject_delegation')}</div> <div>"${item.delegationName}"</div></h4>
+                        content={`<h4 style='color: red'><div>${translate('manage_delegation.reject_delegation')}</div> <div>"${item.name}"</div></h4>
                                         <br> <div class="form-group">
                                             <label>${translate('manage_delegation.reject_reason')}</label>
                                             <textarea id="rejectReason-${item._id}" class="form-control" placeholder="${translate('manage_delegation.reject_reason_placeholder')}"></textarea>
@@ -320,14 +324,14 @@ function DelegationReceiveTableTask(props) {
           )
         )}
         <PaginateBar
-          pageTotal={totalPage ? totalPage : 0}
+          pageTotal={totalPage || 0}
           currentPage={pageTask}
           display={listsTask && listsTask.length !== 0 && listsTask.length}
           total={delegationReceive && delegationReceive.totalListTask}
           func={setPage}
         />
       </div>
-    </React.Fragment>
+    </>
   )
 }
 

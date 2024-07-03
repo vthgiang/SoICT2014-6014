@@ -1,20 +1,12 @@
 import { sendRequest } from '../../../../helpers/requestHelper'
 
-export const policyServices = {
-  getPolicies,
-  deletePolicies,
-  createPolicy,
-  editPolicy
-}
-
 function getPolicies(queryData) {
-  console.log('policy')
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/policy/policies-delegation`,
+      url: `${process.env.REACT_APP_SERVER}/delegation/policy/policies`,
       method: 'GET',
       params: {
-        policyName: queryData?.policyName ? queryData.policyName : '',
+        name: queryData?.name ? queryData.name : '',
         page: queryData?.page ? queryData.page : null,
         perPage: queryData?.perPage ? queryData.perPage : null
       }
@@ -28,7 +20,7 @@ function getPolicies(queryData) {
 function deletePolicies(data) {
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/policy/policies-delegation`,
+      url: `${process.env.REACT_APP_SERVER}/delegation/policy/policies`,
       method: 'DELETE',
       data: {
         policyIds: data?.policyIds
@@ -43,7 +35,7 @@ function deletePolicies(data) {
 function createPolicy(data) {
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/policy/policies-delegation`,
+      url: `${process.env.REACT_APP_SERVER}/delegation/policy/policies`,
       method: 'POST',
       data
     },
@@ -56,7 +48,7 @@ function createPolicy(data) {
 function editPolicy(id, data) {
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/policy/policies-delegation/${id}`,
+      url: `${process.env.REACT_APP_SERVER}/delegation/policy/policies/${id}`,
       method: 'PATCH',
       data
     },
@@ -64,4 +56,37 @@ function editPolicy(id, data) {
     true,
     'super_admin.policy'
   )
+}
+
+function getPolicyById(id) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/delegation/policy/policies/${id}`,
+      method: 'GET'
+    },
+    false,
+    true,
+    'super_admin.policy'
+  )
+}
+
+function getDetailedPolicyById(id) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/delegation/policy/detail/${id}`,
+      method: 'GET'
+    },
+    false,
+    true,
+    'super_admin.policy'
+  )
+}
+
+export const policyServices = {
+  getPolicies,
+  deletePolicies,
+  createPolicy,
+  editPolicy,
+  getPolicyById,
+  getDetailedPolicyById
 }

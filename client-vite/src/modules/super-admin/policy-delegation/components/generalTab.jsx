@@ -6,9 +6,9 @@ import ValidationHelper from '../../../../helpers/validationHelper'
 
 function GeneralTab(props) {
   const [state, setState] = useState({
-    policyName: '',
+    name: '',
     description: '',
-    policyNameError: {
+    nameError: {
       message: undefined,
       status: true
     }
@@ -20,7 +20,7 @@ function GeneralTab(props) {
       setState({
         ...state,
         policyID: props.policyID,
-        policyName: props.policyName,
+        name: props.name,
         description: props.description
       })
     }
@@ -36,10 +36,10 @@ function GeneralTab(props) {
 
     setState({
       ...state,
-      policyName: value,
-      policyNameError: result
+      name: value,
+      nameError: result
     })
-    props.handleChange('policyName', value)
+    props.handleChange('name', value)
   }
 
   /**
@@ -56,18 +56,18 @@ function GeneralTab(props) {
   }
 
   const { translate } = props
-  const { policyName, description, policyNameError } = state
+  const { name, description, nameError } = state
 
   return (
     <div id={props.id} className='tab-pane active'>
       {/* Tên ví dụ */}
-      <div className={`form-group ${policyNameError.status ? '' : 'has-error'}`}>
+      <div className={`form-group ${nameError.status ? '' : 'has-error'}`}>
         <label>
-          {translate('manage_delegation_policy.policyName')}
+          {translate('manage_delegation_policy.name')}
           <span className='text-red'>*</span>
         </label>
-        <input type='text' className='form-control' value={policyName} onChange={handlePolicyName} />
-        <ErrorLabel content={policyNameError.message} />
+        <input type='text' className='form-control' value={name} onChange={handlePolicyName} />
+        <ErrorLabel content={nameError.message} />
       </div>
 
       {/* Mô tả ví dụ */}
@@ -80,8 +80,7 @@ function GeneralTab(props) {
 }
 
 function mapState(state) {
-  const { policyDelegation } = state
-  return { policyDelegation }
+  return {}
 }
 
 const actionCreators = {}

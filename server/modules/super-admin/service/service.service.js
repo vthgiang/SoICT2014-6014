@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const {
     Service,
+    Requester,
 } = require(`../../../models`);
 const bcrypt = require('bcryptjs');
 const generator = require('generate-password');
@@ -112,6 +113,14 @@ exports.createService = async (portal, data, company) => {
 
     await this.sendMailAboutCreatedAccount(data.email, data.password, portal);
 
+    // sync new Service to Requester
+    await Requester(connect(DB_CONNECTION, portal)).create({
+        name: service.name,
+        refId: service._id,
+        type: 'Service',
+        attributes: []
+    });
+    
     return service;
 };
 
@@ -295,6 +304,16 @@ exports.editService = async (portal, id, data) => {
 
     await service.save();
 
+    // sync Service to Requester
+    await Requester(connect(DB_CONNECTION, portal)).updateOne(
+        {
+            refId: service._id
+        },
+        {
+            $set: { name: service.name }
+        }
+    );
+
     return service;
 };
 
@@ -305,6 +324,11 @@ exports.editService = async (portal, id, data) => {
 exports.deleteService = async (portal, id) => {
     var deleteService = await Service(connect(DB_CONNECTION, portal)).deleteOne({
         _id: id,
+    });
+
+    // sync new Service to Requester
+    await Requester(connect(DB_CONNECTION, portal)).deleteOne({
+        refId: id,
     });
 
     return deleteService;
@@ -318,6 +342,13 @@ exports.deleteServiceByEmail = async (portal, email) => {
     var deleteService = await Service(connect(DB_CONNECTION, portal)).findOneAndDelete({
         email: email,
     }, { $new: true });
+
+    if (deleteService) {
+        // sync new User to Requester
+        await Requester(connect(DB_CONNECTION, portal)).deleteOne({
+            refId: deleteService._id,
+        });
+    }
 
     return deleteService;
 };

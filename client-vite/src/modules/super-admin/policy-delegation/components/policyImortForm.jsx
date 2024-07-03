@@ -89,7 +89,7 @@ function PolicyImportForm(props) {
         modalID={`modal-import-file-policy-hooks`}
         isLoading={false}
         formID={`form-import-file-policy-hooks`}
-        title={translate('human_resource.add_data_by_excel')}
+        title={translate('human_delegatee.add_data_by_excel')}
         func={save}
         disableSubmit={!isFormValidated()}
         size={50}
@@ -105,7 +105,7 @@ function PolicyImportForm(props) {
           </div>
           <div className='row'>
             <div className='col-md-4 col-xs-12'>
-              <label>{translate('human_resource.choose_file')}</label>
+              <label>{translate('human_delegatee.choose_file')}</label>
               <ImportFileExcel
                 id={'file-import-policy'}
                 configData={configData ? configData : configurationPolicyTemplate}

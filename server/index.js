@@ -41,6 +41,7 @@ const router = express.Router();
 router.use('/auth', require('./modules/auth/auth.route'));
 router.use('/auth-service', require('./modules/auth-service/auth.route'));
 router.use('/requester', require('./modules/auth-service/requester/requester.route'));
+router.use('/resource', require('./modules/auth-service/resource/resource.route'));
 
 router.use('/annualLeave', require('./modules/human-resource/annual-leave/annualLeave.route'));
 router.use('/commendation', require('./modules/human-resource/commendation/commendation.route'));
@@ -71,7 +72,7 @@ router.use('/kpi/organizational-unit/dashboard', require('./modules/kpi/organiza
 router.use('/kpi/organizational-unit/management', require('./modules/kpi/organizational-unit/management/management.route'));
 router.use('/kpi/template', require('./modules/kpi/template/template.route'));
 router.use('/kpi/allocation', require('./modules/kpi/kpi-allocation/config-setting/configSetting.route'));
-router.use('/kpi/allocation/task-package', require('./modules/kpi/kpi-allocation/task-package/taskPackage.route'))
+router.use('/kpi/allocation/task-package', require('./modules/kpi/kpi-allocation/task-package/taskPackage.route'));
 
 router.use('/notifications', require('./modules/notification/notification.route'));
 
@@ -101,14 +102,27 @@ router.use('/system-admin/system-page', require('./modules/system-admin/system-p
 // router.use('/system-admin/identity-service', require('./modules/identity.service/identity.service.route'));
 
 // Router service identity
-router.use('/authorization/authorize-service-consumer', require('./modules/authorization/authorize-service-consumer/authorize-service-consumer.route'));
+router.use(
+    '/authorization/authorize-service-consumer',
+    require('./modules/authorization/authorize-service-consumer/authorize-service-consumer.route')
+);
 router.use('/authorization/external-policies', require('./modules/authorization/external-policies/external-policies.route'));
-router.use('/authorization/external-service-consumers', require('./modules/authorization/external-service-consumers/external-service-consumers.route'));
+router.use(
+    '/authorization/external-service-consumers',
+    require('./modules/authorization/external-service-consumers/external-service-consumers.route')
+);
 router.use('/authorization/internal-policies', require('./modules/authorization/internal-policies/internal-policies.route'));
-router.use('/authorization/internal-service-identities', require('./modules/authorization/internal-service-identities/internal-service-identities.route'));
+router.use(
+    '/authorization/internal-service-identities',
+    require('./modules/authorization/internal-service-identities/internal-service-identities.route')
+);
 router.use('/authorization/logging', require('./modules/authorization/logging/logging.route'));
 
+// Router new authorization
+router.use('/authorization/policy', require('./modules/authorization/policy/policy.route'));
+
 // Router Quản lý ủy quyền
+router.use('/delegation/policy', require('./modules/delegation/policy/policy.route'));
 router.use('/delegation', require('./modules/delegation/delegation.route'));
 
 router.use('/task', require('./modules/task/task-management/task.route'));
@@ -162,15 +176,18 @@ router.use(
 );
 router.use('/asset-template', require('./modules/manufacturing-process/manufacturing-asset-template/assetTemplate.route'));
 
-router.use("/dashboard-unit", require("./modules/dashboard-unit/dashboardUnit.route"));
-router.use("/layout", require("./modules/production/warehouse/layout/layout.route"));
-router.use("/inventory-warehouse", require("./modules/production/warehouse/inventory-warehouse/inventory-warehouse.route"));
+router.use('/dashboard-unit', require('./modules/dashboard-unit/dashboardUnit.route'));
+router.use('/layout', require('./modules/production/warehouse/layout/layout.route'));
+router.use('/inventory-warehouse', require('./modules/production/warehouse/inventory-warehouse/inventory-warehouse.route'));
 
 // manufacturing-process
-router.use("/manufacturing-chain", require("./modules/manufacturing-process/template-production-line/productionLineTemplate.route"));
-router.use("/report-issue", require("./modules/manufacturing-process/manage-issue/manageIssue.route"));
-router.use("/manager-manufacturing-process", require("./modules/manufacturing-process/manufacturing-process-manager/manufacturingProcessManager.route"));
-router.use("/asset-template", require("./modules/manufacturing-process/manufacturing-asset-template/assetTemplate.route"));
+router.use('/manufacturing-chain', require('./modules/manufacturing-process/template-production-line/productionLineTemplate.route'));
+router.use('/report-issue', require('./modules/manufacturing-process/manage-issue/manageIssue.route'));
+router.use(
+    '/manager-manufacturing-process',
+    require('./modules/manufacturing-process/manufacturing-process-manager/manufacturingProcessManager.route')
+);
+router.use('/asset-template', require('./modules/manufacturing-process/manufacturing-asset-template/assetTemplate.route'));
 
 // CRM
 app.use('/crm/customers', require('./modules/crm/customer/customer.route'));
@@ -219,7 +236,7 @@ app.use('/business-department', require('./modules/production/order/business-dep
 app.use('/news-feed', require('./modules/news-feed/newsFeed.route'));
 app.use('/marketing-campaign', require('./modules/production/order/marketing-campaign/marketingCampaign.route'));
 app.use('/marketing-effective', require('./modules/production/order/marketing-effective/marketingEffective.route'));
-app.use('/forecasts', require('./modules/production/order/forecast/sales-forecast/salesForecast.route')) 
+app.use('/forecasts', require('./modules/production/order/forecast/sales-forecast/salesForecast.route'))
 
 // project
 app.use('/projects', require('./modules/project/project-management/project.route'));
@@ -242,14 +259,14 @@ app.use('/transport-process', require('./modules/production/transport/transportP
 app.use('/transport-department', require('./modules/production/transport/transportDepartment/transportDepartment.route'));
 
 // transportation module
-app.use("/transportation/vehicle", require("./modules/transportation/vehicle/vehicle.route"));
-app.use("/transportation/delivery-plan", require("./modules/transportation/delivery-plan/deliveryPlan.route"));
-app.use("/transportation/journeys", require("./modules/transportation/journey/journey.route"));
-app.use("/transportation/shippers", require("./modules/transportation/shipper-report/shipperReport.route"));
-app.use("/transportation/costs", require("./modules/transportation/cost/transportationCost.route"));
-app.use("/transportation/cost-formula", require("./modules/transportation/cost-formula/costFormula.route"));
-app.use("/transportation/manage-shipper", require("./modules/transportation/manage-shipper/manageShipper.route"));
-app.use("/transportation/dashboard", require("./modules/transportation/dashboard/dashboard.route"));
+app.use('/transportation/vehicle', require('./modules/transportation/vehicle/vehicle.route'));
+app.use('/transportation/delivery-plan', require('./modules/transportation/delivery-plan/deliveryPlan.route'));
+app.use('/transportation/journeys', require('./modules/transportation/journey/journey.route'));
+app.use('/transportation/shippers', require('./modules/transportation/shipper-report/shipperReport.route'));
+app.use('/transportation/costs', require('./modules/transportation/cost/transportationCost.route'));
+app.use('/transportation/cost-formula', require('./modules/transportation/cost-formula/costFormula.route'));
+app.use('/transportation/manage-shipper', require('./modules/transportation/manage-shipper/manageShipper.route'));
+app.use('/transportation/dashboard', require('./modules/transportation/dashboard/dashboard.route'));
 
 // transport3
 app.use('/transport3', require('./modules/transport3/order/order.route'));
@@ -260,22 +277,21 @@ app.use('/transport3', require('./modules/transport3/ontime/ontimePredict.route'
 app.use('/transport3', require('./modules/transport3/issue/issue.route'));
 
 // transportation module
-app.use("/transportation/vehicle", require("./modules/transportation/vehicle/vehicle.route"));
-app.use("/transportation/delivery-plan", require("./modules/transportation/delivery-plan/deliveryPlan.route"));
-app.use("/transportation/journeys", require("./modules/transportation/journey/journey.route"));
-app.use("/transportation/shippers", require("./modules/transportation/shipper-report/shipperReport.route"));
-app.use("/transportation/costs", require("./modules/transportation/cost/transportationCost.route"));
-app.use("/transportation/cost-formula", require("./modules/transportation/cost-formula/costFormula.route"));
-app.use("/transportation/manage-shipper", require("./modules/transportation/manage-shipper/manageShipper.route"));
+app.use('/transportation/vehicle', require('./modules/transportation/vehicle/vehicle.route'));
+app.use('/transportation/delivery-plan', require('./modules/transportation/delivery-plan/deliveryPlan.route'));
+app.use('/transportation/journeys', require('./modules/transportation/journey/journey.route'));
+app.use('/transportation/shippers', require('./modules/transportation/shipper-report/shipperReport.route'));
+app.use('/transportation/costs', require('./modules/transportation/cost/transportationCost.route'));
+app.use('/transportation/cost-formula', require('./modules/transportation/cost-formula/costFormula.route'));
+app.use('/transportation/manage-shipper', require('./modules/transportation/manage-shipper/manageShipper.route'));
 
-app.use("/projects", require("./modules/project/project-management/project.route"));
-app.use("/projects", require("./modules/project/project-phase/projectPhase.route"));
-app.use("/project-templates", require("./modules/project-template/projectTemplate.route"));
-app.use("/projects", require("./modules/project/project-proposal/projectProposal.route"))
-
+app.use('/projects', require('./modules/project/project-management/project.route'));
+app.use('/projects', require('./modules/project/project-phase/projectPhase.route'));
+app.use('/project-templates', require('./modules/project-template/projectTemplate.route'));
+app.use('/projects', require('./modules/project/project-proposal/projectProposal.route'));
 
 // capacity
-app.use("/capacities", require("./modules/capacity/capacity.route"));
+app.use('/capacities', require('./modules/capacity/capacity.route'));
 
 app.use(router);
 

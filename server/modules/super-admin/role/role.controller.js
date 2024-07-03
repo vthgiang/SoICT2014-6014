@@ -95,6 +95,29 @@ exports.createRoleAttribute = async (req, res) => {
     }
 };
 
+exports.editRoleAttribute = async (req, res) => {
+    try {
+        const role = await RoleService.editRoleAttribute(req.portal, req.params.id, req.body);
+
+        await PolicyService.checkAllPolicies(req.portal);
+
+        Logger.info(req.user.email, 'edit_role_attribute_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_role_attribute_success'],
+            content: role
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'edit_role_attribute_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_role_attribute_faile'],
+            content: error
+        });
+    }
+};
+
 exports.editRole = async (req, res) => {
     try {
         let { notEditRoleInfo } = req.query;

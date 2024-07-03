@@ -23,7 +23,7 @@ module.exports = async (server) => {
   global.SOCKET_IO = require("socket.io")(server, {
     cors: {
       origin: [
-        "http://localhost:3000",
+        "http://localhost:9000",
         "https://dxclan.com",
         "https://dxclan.com:3000",
         "https://dx.vietanhviavet.com",
