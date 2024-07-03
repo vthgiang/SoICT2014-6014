@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { withTranslate } from "react-redux-multilingual"
-import { ErrorLabel, SelectBox, ToolTip, UploadFile } from "../../../../common-components"
+import { ErrorLabel, ImportFileExcel, SelectBox, ToolTip, UploadFile } from "../../../../common-components"
 import { assetCapacities, DEFAULT_VALUE, fakeAssetRequireTypes, TASK_ACTION_TYPE } from "./consts"
 import { TagActions } from "../../../bidding/tags/redux/actions"
 import ValidationHelper from "../../../../helpers/validationHelper"
@@ -12,6 +12,7 @@ import { convertToDate, getListDepartments } from "../../projects/components/fun
 import { getListMembersInProject } from "../../../task/projectMemberHelper"
 import { ProjectTaskViewInGantt } from "./projectTaskViewInGantt"
 import moment from "moment"
+import ExcelReader from "./excelReader"
 
 const ProjectTasksTab = (props) => {
   const {
@@ -70,23 +71,6 @@ const ProjectTasksTab = (props) => {
   const listMembersInProject = listUsersWithUnit && listUsersWithUnit?.length > 0 && listMembersInProjectWithUnit && listMembersInProjectWithUnit?.length > 0 ? getListMembersInProject(listMembersInProjectWithUnit, listUsersWithUnit) : []
 
   // Get assets to check capacities in tasks
-
-
-
-  // console.log("projectTasks: ", projectTasks)
-
-  // logs some thing
-  // console.log("listCapacity: ", listCapacityOptions)
-  // console.log("projectKPITarget: ", projectKPITarget)
-  // console.log("projectKPITarget: ", generalProjectInfo)
-  // console.log("projectMembers: ", projectMembers)
-  // console.log("projectAssets: ", projectMembers)
-  // console.log("user: ", user)
-  // console.log("requireAsset: ", )
-
-  // Test moment js
-
-
   const initTaskData = {
     name: '',
     code: '',
@@ -148,12 +132,13 @@ const ProjectTasksTab = (props) => {
     taskKPIWeight,
   } = currentTask
 
-  console.log("requireAsset: ", requireAsset)
-
   const listPrevTask =
     projectTasks?.map((x) => {
       return { text: x.code, value: x.code?.trim() }
     }) ?? []
+
+  // Data on file
+  const [errorUpload, setErrorUpload] = useState('')
 
   const handleChangeCurrentTask = (e, key = '') => {
     const name = e?.target?.name
@@ -165,7 +150,6 @@ const ProjectTasksTab = (props) => {
       value = e
     }
     if (keyChange === 'kpiInTask') {
-      // console.log("e: ", e)
       value = e[0]
     }
 
@@ -305,10 +289,8 @@ const ProjectTasksTab = (props) => {
     })
   }
 
-  // console.log("requireAsset: ", requireAsset)
 
   const handleChangeCurrentTaskAssetTypeOrCapacity = (e, key) => {
-    // console.log("e: ", e[0])
     let value = ''
     if (key === 'currentAssetType') {
       value = e[0]
@@ -576,17 +558,93 @@ const ProjectTasksTab = (props) => {
     })
   }
 
-  // console.log("currentTask: ", currentTask)
-  // console.log("projectTasks: ", projectTasks)
   const covertRequireAssignee = (requireAssignee, listCapacityOptions) => {
     if (requireAssignee && Object.keys(requireAssignee)?.length) {
       Object.keys(requireAssignee)
     }
   }
+  const onDataLoad = (data) => {
+
+    let taskData = []
+    if (data && data?.length) {
+      data.forEach((item) => {
+        const { kpiInTask, requireAsset } = item
+        let kpiInTaskToAdd = ""
+        let requireAssetToAdd = []
+        let itemToPush = {
+          ...item
+        }
+
+        if (kpiInTask) {
+          let kpiFind = listKPIOptions.find((item) => item.text === kpiInTask)
+          if (kpiFind) {
+            kpiInTaskToAdd = kpiFind?.value
+            itemToPush = { 
+              ...item,
+              kpiInTask: kpiInTaskToAdd
+            }
+          } else {
+            setErrorUpload("Lỗi! Tồn tại công việc trong file import có KPI ứng với công việc không hợp lệ!")
+            return
+          }
+        } else {
+          setErrorUpload("Lỗi! Tồn tại công việc trong file import có KPI ứng với công việc không hợp lệ!")
+          return
+        }
+
+        if (requireAsset && requireAsset?.length) {
+          requireAsset.forEach((requireAssetItem) => {
+            let requireAssetItemToAdd = {
+              ...requireAssetItem
+            }
+            const { type } = requireAssetItem
+            if (type) {
+              // let requireTypeFind = listAssetsInProject
+              let typeFind = listAssetsTypes.find((item) => {
+                return item.text === type
+              })
+              if (!typeFind) {
+                setErrorUpload("Lỗi! Tồn tại công việc trong file import có yêu loại cầu tài sản không hợp lệ")
+                return
+              }
+              requireAssetItemToAdd = {
+                ...requireAssetItem,
+                type: typeFind.value
+              }
+              requireAssetToAdd.push({
+                ...requireAssetItemToAdd
+              })              
+            } else {
+              setErrorUpload("Lỗi! Tồn tại công việc trong file import có yêu loại cầu tài sản không hợp lệ")
+              return
+            }
+          })
+        }
+
+        taskData.push({
+          ...itemToPush,
+          requireAsset: [...requireAssetToAdd]
+        })
+        
+      })
+    }
+
+    if (!errorUpload) {
+      setProjectTasks([...taskData])
+    }
+  }
+  
   return (
     <React.Fragment>
       <div className="pt-2 flex justify-end">
-        <UploadFile />
+        <a 
+          href="/data/Upload/task_sample_import.xlsx" // Đường dẫn đến file mẫu trong thư mục public
+          download 
+          className="btn btn-secondary mt-2 underline"
+        >
+          Mẫu file import
+        </a>
+        <ExcelReader onDataLoad={onDataLoad} setErrorUpload={setErrorUpload}/>
       </div>
       <div>
         <fieldset className="scheduler-border">
@@ -596,6 +654,9 @@ const ProjectTasksTab = (props) => {
           </a>
           <br />
           <CreateTagForm id={`${currentIndex}-${id}`} /> */}
+          <div className="has-error">
+            <ErrorLabel content={errorUpload} />
+          </div>
           <div className="col-lg-6 col-md-12">
             <fieldset className="scheduler-border">
               <legend>Thông tin chung về công việc</legend>
@@ -968,7 +1029,7 @@ const ProjectTasksTab = (props) => {
                           <SelectBox
                             id={`${actionType}-require-asset-type-select-box-${currentIndex}-${requireAsset?.currentAssetType}-${projectId}`}
                             className='form-control select'
-                            style={{ width: '100%' }}
+                            // style={{ width: '100%' }}
                             items={fakeAssetRequireTypes}
                             value={requireAsset?.currentAssetRequireType}
                             onChange={(e) => handleChangeCurrentTaskAssetTypeOrCapacity(e, 'currentAssetRequireType')}
@@ -980,6 +1041,7 @@ const ProjectTasksTab = (props) => {
                           <a className={`save ${'text-green'}`}
                             title={translate('general.save')}
                             onClick={handleAddAssetInCurrentTask}
+                            style={{ width: '100%' }}
                           >
                             <i className='material-icons'>add_circle</i>
                           </a>
@@ -1040,15 +1102,15 @@ const ProjectTasksTab = (props) => {
 
         {/* Hiển thị Thông tin bảng hoặc  */}
         <div className='box-tools' style={{ marginBottom: '5px' }}>
-        <div className='btn-group'>
-          <button type='button' onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${isTable ? 'btn-danger' : 'active'}`}>
-            Bảng
-          </button>
-          <button type='button' onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${!isTable ? 'btn-danger' : 'active'}`}>
-            Biểu đồ Gantt
-          </button>
+          <div className='btn-group'>
+            <button type='button' onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${isTable ? 'btn-danger' : 'active'}`}>
+              Bảng
+            </button>
+            <button type='button' onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${!isTable ? 'btn-danger' : 'active'}`}>
+              Biểu đồ Gantt
+            </button>
+          </div>
         </div>
-      </div>
       <br />
       {!isTable ? (
         <ProjectTaskViewInGantt

@@ -42,6 +42,9 @@ const assetCapacities = [
   }
 ]
 
+const requiredFields = ['code', 'name', 'kpiInTask', 'taskKPIWeight', 'estimateNormalTime', 'preceedingTasks', 'degree', 'english', 'year_of_exp', 'backend', 'frontend', 'docker', 'ci_cd', 'manual_test', 'unit_test', 'automation_test', 'type', 'number', 'capacityValue', 'requireType'];
+
+
 export {
   TABs,
   fakeProjectTypeList,
@@ -50,5 +53,6 @@ export {
   TASK_ACTION_TYPE,
   DEFAULT_VALUE,
   assetCapacities,
-  fakeAssetRequireTypes
+  fakeAssetRequireTypes,
+  requiredFields
 }
