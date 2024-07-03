@@ -3,6 +3,11 @@ import { connect } from 'react-redux'
 import { useTranslate, withTranslate } from 'react-redux-multilingual'
 import parse from 'html-react-parser'
 
+const convertTimestampToDate = (timestamp) => {
+  const date = new Date(timestamp)
+  return date.toISOString().split('T')[0]
+}
+
 function ViewTaskTemplate({ isProcess, taskTemplate, listUser }) {
   const [showMore] = useState(false)
   const translate = useTranslate()
@@ -266,7 +271,7 @@ function ViewTaskTemplate({ isProcess, taskTemplate, listUser }) {
       <div className='row row-equal-height'>
         <div className={`${isProcess ? 'col-lg-12 col-sm-12' : 'col-xs-12 col-sm-12 col-md-12 col-lg-12'}`} style={{ padding: 10 }}>
           <div className='description-box' style={{ height: '100%' }}>
-            <h4>Danh sách các nhiệm vụ được ánh xạ bởi mẫu công việc</h4>
+            <h4 className='mb-[16px]'>Danh sách các nhiệm vụ được ánh xạ bởi mẫu công việc</h4>
 
             {!taskTemplate?.isMappingTask ? (
               <strong>Không có nhiệm vụ được ánh xạ bởi mẫu công việc này</strong>
@@ -284,7 +289,6 @@ function ViewTaskTemplate({ isProcess, taskTemplate, listUser }) {
                     <th title='Thời gian tối đa hoàn thành'>Thời gian tối đa hoàn thành</th>
                   </tr>
                 </thead>
-                {console.log(taskTemplate)}
 
                 {taskTemplate?.listMappingTask?.length === 0 ? (
                   <tr>
@@ -302,8 +306,8 @@ function ViewTaskTemplate({ isProcess, taskTemplate, listUser }) {
                           <td dangerouslySetInnerHTML={{ __html: item.taskDescription }} />
                           <td>{item.target}</td>
                           <td>{item.unit}</td>
-                          <td>{item.startDate}</td>
-                          <td>{item.endDate}</td>
+                          <td>{convertTimestampToDate(item.startDate)}</td>
+                          <td>{convertTimestampToDate(item.endDate)}</td>
                           <td>{item.durations} h</td>
                         </tr>
                       )

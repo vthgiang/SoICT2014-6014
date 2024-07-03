@@ -1,15 +1,5 @@
 import { sendRequest } from '../../../../../helpers/requestHelper'
 
-export const dashboardOrganizationalUnitKpiServices = {
-  getAllEmployeeKpiInOrganizationalUnit,
-  getAllEmployeeKpiInChildrenOrganizationalUnit,
-
-  getAllEmployeeKpiSetInOrganizationalUnit,
-
-  getAllTaskOfOrganizationalUnit,
-  getAllTaskOfChildrenOrganizationalUnit
-}
-
 /** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
 function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId, month) {
   return sendRequest(
@@ -94,4 +84,39 @@ function getAllTaskOfChildrenOrganizationalUnit(roleId, month, organizationalUni
       organizationalUnitId
     }
   })
+}
+
+const getAllAllocationAssignUnitResult = (unitId) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/dashboard/allocation-assign-unit-result/${unitId}`,
+      method: 'GET'
+    },
+    false,
+    false
+  )
+}
+
+const handleSaveAllocationResultUnit = (payload) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/dashboard/allocation-assign-unit-result/save`,
+      method: 'POST',
+      data: payload
+    },
+    true,
+    true
+  )
+}
+
+export const dashboardOrganizationalUnitKpiServices = {
+  getAllEmployeeKpiInOrganizationalUnit,
+  getAllEmployeeKpiInChildrenOrganizationalUnit,
+
+  getAllEmployeeKpiSetInOrganizationalUnit,
+
+  getAllTaskOfOrganizationalUnit,
+  getAllTaskOfChildrenOrganizationalUnit,
+  getAllAllocationAssignUnitResult,
+  handleSaveAllocationResultUnit
 }

@@ -101,8 +101,6 @@ function TaskManagement(props) {
     currentTaskIdDelegation
   } = state
 
-  console.log(data)
-
   function initState() {
     const userId = getStorage('userId')
     const tableId = 'tree-table-task-management'
@@ -781,7 +779,8 @@ function TaskManagement(props) {
             progress: convertProgressData(currentTasks[n].progress, currentTasks[n].startDate, currentTasks[n].endDate),
             totalLoggedTime: getTotalTimeSheetLogs(currentTasks[n].timesheetLogs),
             parent: currentTasks[n].parent ? currentTasks[n].parent._id : null,
-            attributes: currentTasks[n].attributes ? currentTasks[n].attributes : []
+            attributes: currentTasks[n].attributes ? currentTasks[n].attributes : [],
+            isAutomaticallyCreated: currentTasks[n]?.isAutomaticallyCreated
           }
           let archived = null
           if (currentTasks[n].status === 'finished' || currentTasks[n].status === 'delayed' || currentTasks[n].status === 'canceled') {
@@ -995,7 +994,7 @@ function TaskManagement(props) {
             <button
               className='btn btn-primary'
               type='button'
-              style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+              style={{ marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
               title='Dạng bảng'
               onClick={() => handleDisplayType('table')}
             >
@@ -1004,7 +1003,7 @@ function TaskManagement(props) {
             <button
               className='btn btn-primary'
               type='button'
-              style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+              style={{ marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
               title='Dạng cây'
               onClick={() => handleDisplayType('tree')}
             >
@@ -1013,7 +1012,7 @@ function TaskManagement(props) {
             <button
               className='btn btn-primary'
               type='button'
-              style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+              style={{ marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
               title='Dạng danh sách'
               onClick={() => handleDisplayType('list')}
             >
@@ -1022,7 +1021,7 @@ function TaskManagement(props) {
             <button
               className='btn btn-primary'
               type='button'
-              style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
+              style={{ marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }}
               onClick={() => {
                 window.$('#tasks-filter').slideToggle()
               }}

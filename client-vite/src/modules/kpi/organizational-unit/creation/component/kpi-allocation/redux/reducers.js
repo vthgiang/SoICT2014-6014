@@ -4,22 +4,10 @@ const initState = {
   company: '',
   numberGeneration: 0,
   solutionSize: 0,
-  hmcr: 0,
-  par: 0,
-  bandwidth: 0,
-  alpha: 0,
-  beta: 0,
-  gamma: 0,
   isAutomatically: false,
   defaultSetting: {
     numberGeneration: 0,
-    solutionSize: 0,
-    hmcr: 0,
-    par: 0,
-    bandwidth: 0,
-    alpha: 0,
-    beta: 0,
-    gamma: 0
+    solutionSize: 0
   },
   isLoading: false,
   allocationResult: {}
