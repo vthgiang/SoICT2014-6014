@@ -305,6 +305,85 @@ exports.authFunc = (checkPage = true) => {
 };
 exports.auth = this.authFunc();
 
+
+exports.verifyTokenFunc = () => {
+    return async (req, res, next) => {
+        try {
+            /**
+             * 2 types of utk:
+             * - token được tạo cho phiên đăng nhập của người dùng
+             * - token cho phép người dùng dùng previlegeAPI
+             */
+
+            const token = req.header("utk"); //JWT nhận từ người dùng
+            if (!token) throw ["access_denied_4001"];
+
+            /**
+             * Giải mã token gửi lên để check dữ liệu trong token
+             */
+            let verified;
+            try {
+                verified = jwt.verify(token, process.env.TOKEN_SECRET);
+            } catch (error) {
+                throw ["access_denied_4002"];
+            }
+
+            req.user = verified;
+            req.token = token;
+            req.thirdParty = verified.thirdParty;
+            req.portal = req.thirdParty ? verified.portal : (!req.user.company
+                ? process.env.DB_NAME
+                : req.user.company.shortName);
+
+            if (!req.thirdParty) {
+                /**
+                 * 1. Trường hợp service được gọi từ ứng dụng dxclan
+                 */
+
+                // Kiểm tra xem token có nằm trong mảng tokens model User
+                if (req.user) {
+                    const user = await User(
+                        connect(DB_CONNECTION, req.portal)
+                    ).findById(req.user._id).select("tokens");
+                    let userParse = user.toObject();
+
+                    const checkToken = userParse?.tokens?.find(element => element === req.token);
+                    if (!checkToken)
+                        throw ['access_denied_4003']
+                }
+            } else {
+                /**
+                 * 2. Trường hợp service được gọi từ bên thứ 3
+                 */
+                console.log('### API ARE CALLED FROM THIRD PARTY');
+
+                // Kiểm tra xem token có nằm trong mảng tokens model Service
+                if (req.user) {
+                    const service = await Service(
+                        connect(DB_CONNECTION, req.portal)
+                    ).findById(req.user._id).select("tokens");
+                    let serviceParse = service.toObject();
+
+                    const checkToken = serviceParse?.tokens?.find(element => element === req.token);
+                    if (!checkToken)
+                        throw ['access_denied_4003']
+                }
+
+                console.log('### THIRD PARTY ARE AUTHORIZED');
+            }
+
+            next();
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({
+                success: false,
+                messages: Array.isArray(error) ? error : ['auth_error'],
+                content: error
+            });
+        }
+    };
+};
+exports.verifyToken = this.verifyTokenFunc();
 /**
  * Middleware check và lấy dữ liệu về file mà client người đến
  * @arrData : mảng các đối tượng chứa name - tên của thuộc tính lưu dữ liệu file
