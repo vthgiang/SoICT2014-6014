@@ -998,7 +998,7 @@ const ProjectTasksTab = (props) => {
                             value={requireAsset?.currentAssetType}
                             onChange={(e) => handleChangeCurrentTaskAssetTypeOrCapacity(e, 'currentAssetType')}
                             multiple={false}
-                            options={{ placeholder: 'Chọn loại tài sản' }}
+                            options={{ placeholder: 'Loại tài sản' }}
                           />
                         </td>
                         <td>
@@ -1022,7 +1022,7 @@ const ProjectTasksTab = (props) => {
                             value={requireAsset?.currentAssetCapacity}
                             onChange={(e) => handleChangeCurrentTaskAssetTypeOrCapacity(e, 'currentAssetCapacity')}
                             multiple={false}
-                            options={{ placeholder: 'Chọn năng lực sử dụng' }}
+                            options={{ placeholder: 'Năng lực SD' }}
                           />
                         </td>
                         <td>
@@ -1034,7 +1034,7 @@ const ProjectTasksTab = (props) => {
                             value={requireAsset?.currentAssetRequireType}
                             onChange={(e) => handleChangeCurrentTaskAssetTypeOrCapacity(e, 'currentAssetRequireType')}
                             multiple={false}
-                            options={{ placeholder: 'Chọn loại yêu cầu' }}
+                            options={{ placeholder: 'Loại yêu cầu' }}
                           />
                         </td>
                         <td>

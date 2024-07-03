@@ -2929,6 +2929,19 @@ const LINKS = [
     ],
     components: getComponentsInLink("/project/project-proposal"),
   },
+  {
+    url: "/project/project-statistic",
+    description: "Thống kê danh sách dự án",
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      // ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/project/project-statistic"),
+  },
 
   {
     url: "/user-guide",
