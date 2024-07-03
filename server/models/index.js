@@ -41,6 +41,7 @@ module.exports = {
     TaskPackageAllocation: require('./kpi/taskPackageAllocation.model'),
     TaskType: require('./kpi/taskType.model'),
     AllocationUnitResult: require('./kpi/allocationResult.model'),
+    AllocationTaskAssigned: require('./task/allocationTask.model'),
 
     Notification: require('./notification/notification.model'),
     ManualNotification: require('./notification/manualNotification.model'),

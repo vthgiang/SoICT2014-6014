@@ -97,7 +97,7 @@ const EmployeeKpiEvaluationDashboard = lazy(() => import('../modules/kpi/evaluat
 // allocation
 const AffectedFactorManagement = lazy(() => import('../modules/kpi/kpi-allocation/affected-factor-management/component/index'))
 const AllocationManagement = lazy(() => import('../modules/kpi/kpi-allocation/allocation-management/component/index'))
-const ConfigManagement = lazy(() => import('../modules/kpi/kpi-allocation/config-management/component/index'))
+// const ConfigManagement = lazy(() => import('../modules/kpi/kpi-allocation/config-management/component/index'))
 const TaskPackageManagement = lazy(() => import('../modules/kpi/kpi-allocation/task-package-management/component/index'))
 
 const TaskManagement = lazy(() => import('../modules/task/task-management/component/taskManagement'))
@@ -1917,7 +1917,7 @@ class Routes extends Component {
             layout={Layout}
             component={AllocationManagement}
           />
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={false}
             key='kpi_allocation_config_management'
             arrPage={[
@@ -1935,7 +1935,7 @@ class Routes extends Component {
             pageName='kpi_allocation_config_management'
             layout={Layout}
             component={ConfigManagement}
-          />
+          /> */}
           <PrivateRoute
             isLoading={false}
             key='kpi_allocation_task_package_management'

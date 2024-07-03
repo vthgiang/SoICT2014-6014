@@ -1,10 +1,10 @@
-import React, { Component, useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
+import React, { useEffect, useState } from 'react'
+import { connect, useDispatch } from 'react-redux'
+import { useTranslate, withTranslate } from 'react-redux-multilingual'
 import { Link } from 'react-router-dom'
-
+import Swal from 'sweetalert2'
+import dayjs from 'dayjs'
 import { taskManagementActions } from '../../task-management/redux/actions'
-
 import { TaskStatusChart } from './taskStatusChart'
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart'
 import { GanttCalendar } from './ganttCalendar'
@@ -12,149 +12,139 @@ import { AverageResultsOfTask } from './averageResultsOfTask'
 import GeneralTaskPersonalChart from './generalTaskPersonalChart'
 import { InprocessTask } from './inprocessTask'
 import { LoadTaskChart } from './loadTaskChart'
-
 import { DatePicker, LazyLoadComponent, ExportExcel } from '../../../../common-components'
-import Swal from 'sweetalert2'
-import dayjs from 'dayjs'
-
 import { convertTime } from '../../../../helpers/stringMethod'
 import { filterDifference } from '../../../../helpers/taskModuleHelpers'
 import { getStorage } from '../../../../config'
+import EmployeeProcessTask from './employeeProcessTask'
+
+const initState = () => {
+  const d = new Date()
+  const month = d.getMonth() + 1
+  const year = d.getFullYear()
+  let startMonth
+  let endMonth
+  let startYear
+
+  if (month > 3) {
+    startMonth = month - 3
+    startYear = year
+  } else {
+    startMonth = month - 3 + 12
+    startYear = year - 1
+  }
+  if (startMonth < 10) startMonth = `0${startMonth}`
+  if (month < 10) {
+    endMonth = `0${month}`
+  } else {
+    endMonth = month
+  }
+
+  const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 }
+
+  const INFO_SEARCH = {
+    startMonth: [startYear, startMonth].join('-'),
+    endMonth: [year, endMonth].join('-'),
+
+    startMonthTitle: [startMonth, startYear].join('-'),
+    endMonthTitle: [endMonth, year].join('-')
+  }
+
+  // const SEARCH_FOR_WEIGHT_TASK = {
+  //   taskStartMonth: [startYear, startMonth].join('-'),
+  //   taskEndMonth: [year, endMonth].join('-'),
+
+  //   startMonthTitle: [startMonth, startYear].join('-'),
+  //   endMonthTitle: [endMonth, year].join('-')
+  // }
+
+  return {
+    userID: '',
+
+    dataStatus: DATA_STATUS.NOT_AVAILABLE,
+
+    startMonth: INFO_SEARCH.startMonth,
+    endMonth: INFO_SEARCH.endMonth,
+
+    startMonthTitle: INFO_SEARCH.startMonthTitle,
+    endMonthTitle: INFO_SEARCH.endMonthTitle,
+    type: 'status',
+    monthTimeSheetLog: INFO_SEARCH.endMonthTitle
+  }
+}
+
+const initInfoSearch = () => {
+  const d = new Date()
+  const month = d.getMonth() + 1
+  const year = d.getFullYear()
+  let startMonth
+  let endMonth
+  let startYear
+
+  if (month > 3) {
+    startMonth = month - 3
+    startYear = year
+  } else {
+    startMonth = month - 3 + 12
+    startYear = year - 1
+  }
+  if (startMonth < 10) startMonth = `0${startMonth}`
+  if (month < 10) {
+    endMonth = `0${month}`
+  } else {
+    endMonth = month
+  }
+
+  return {
+    startMonth: [startYear, startMonth].join('-'),
+    endMonth: [year, endMonth].join('-'),
+
+    startMonthTitle: [startMonth, startYear].join('-'),
+    endMonthTitle: [endMonth, year].join('-')
+  }
+}
+
 function TaskDashboard(props) {
-  const { tasks, translate } = props
-
+  const { tasks } = props
   const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable, loadingResponsible } = tasks
-
   const [state, setState] = useState(initState())
   const [infoSearch, setInfoSearch] = useState(initInfoSearch())
-  function initState() {
-    let d = new Date(),
-      month = d.getMonth() + 1,
-      year = d.getFullYear()
-    let startMonth, endMonth, startYear
-
-    if (month > 3) {
-      startMonth = month - 3
-      startYear = year
-    } else {
-      startMonth = month - 3 + 12
-      startYear = year - 1
-    }
-    if (startMonth < 10) startMonth = '0' + startMonth
-    if (month < 10) {
-      endMonth = '0' + month
-    } else {
-      endMonth = month
-    }
-
-    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 }
-
-    const INFO_SEARCH = {
-      startMonth: [startYear, startMonth].join('-'),
-      endMonth: [year, endMonth].join('-'),
-
-      startMonthTitle: [startMonth, startYear].join('-'),
-      endMonthTitle: [endMonth, year].join('-')
-    }
-
-    const SEARCH_FOR_WEIGHT_TASK = {
-      taskStartMonth: [startYear, startMonth].join('-'),
-      taskEndMonth: [year, endMonth].join('-'),
-
-      startMonthTitle: [startMonth, startYear].join('-'),
-      endMonthTitle: [endMonth, year].join('-')
-    }
-
-    return {
-      userID: '',
-
-      dataStatus: DATA_STATUS.NOT_AVAILABLE,
-
-      startMonth: INFO_SEARCH.startMonth,
-      endMonth: INFO_SEARCH.endMonth,
-
-      startMonthTitle: INFO_SEARCH.startMonthTitle,
-      endMonthTitle: INFO_SEARCH.endMonthTitle,
-      type: 'status',
-      monthTimeSheetLog: INFO_SEARCH.endMonthTitle
-    }
-  }
-
-  function initInfoSearch() {
-    let d = new Date(),
-      month = d.getMonth() + 1,
-      year = d.getFullYear()
-    let startMonth, endMonth, startYear
-
-    if (month > 3) {
-      startMonth = month - 3
-      startYear = year
-    } else {
-      startMonth = month - 3 + 12
-      startYear = year - 1
-    }
-    if (startMonth < 10) startMonth = '0' + startMonth
-    if (month < 10) {
-      endMonth = '0' + month
-    } else {
-      endMonth = month
-    }
-
-    return {
-      startMonth: [startYear, startMonth].join('-'),
-      endMonth: [year, endMonth].join('-'),
-
-      startMonthTitle: [startMonth, startYear].join('-'),
-      endMonthTitle: [endMonth, year].join('-')
-    }
-  }
-
   const { startMonth, endMonth, monthTimeSheetLog } = state
+  const dispatch = useDispatch()
+  const translate = useTranslate()
 
   useEffect(() => {
     const { startMonth, endMonth } = state
-    let d = new Date(),
-      month = d.getMonth() + 1,
-      year = d.getFullYear()
+    const d = new Date()
+    const month = d.getMonth() + 1
+    const year = d.getFullYear()
 
-    props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-    props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-    props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-    props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-    props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-    props.getTimeSheetOfUser(getStorage('userId'), month, year)
-  }, [])
-
-  const generateDataPoints = (noOfDps) => {
-    let xVal = 1,
-      yVal = 100
-    let dps = []
-    for (let i = 0; i < noOfDps; i++) {
-      yVal = yVal + Math.round(5 + Math.random() * (-5 - 5))
-      dps.push({ x: xVal, y: yVal })
-      xVal++
-    }
-    return dps
-  }
+    dispatch(taskManagementActions.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+    dispatch(taskManagementActions.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+    dispatch(taskManagementActions.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+    dispatch(taskManagementActions.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+    dispatch(taskManagementActions.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+    dispatch(taskManagementActions.getTimeSheetOfUser(getStorage('userId'), month, year))
+  }, [dispatch])
 
   const convertType = (value) => {
     // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
-    if (value == 1) {
+    if (value === 1) {
       return 'Bấm giờ'
-    } else if (value == 2) {
-      return 'Bấm hẹn giờ'
-    } else {
-      return 'Bấm bù giờ'
     }
+    if (value === 2) {
+      return 'Bấm hẹn giờ'
+    }
+    return 'Bấm bù giờ'
   }
 
   const formatMonth = (value) => {
-    let monthTitle = value.slice(5, 7) + '-' + value.slice(0, 4)
+    const monthTitle = `${value.slice(5, 7)}-${value.slice(0, 4)}`
     return monthTitle
   }
 
   const handleSelectMonthStart = (value) => {
-    let month = value.slice(3, 7) + '-' + value.slice(0, 2)
+    const month = `${value.slice(3, 7)}-${value.slice(0, 2)}`
     setInfoSearch({
       ...infoSearch,
       startMonth: month
@@ -162,7 +152,7 @@ function TaskDashboard(props) {
   }
 
   const handleSelectMonthEnd = (value) => {
-    let month = value.slice(3, 7) + '-' + value.slice(0, 2)
+    const month = `${value.slice(3, 7)}-${value.slice(0, 2)}`
     setInfoSearch({
       ...infoSearch,
       endMonth: month
@@ -171,8 +161,8 @@ function TaskDashboard(props) {
 
   const handleSearchData = async () => {
     const { startMonth, endMonth } = infoSearch
-    let startMonthObj = new Date(startMonth)
-    let endMonthObj = new Date(endMonth)
+    const startMonthObj = new Date(startMonth)
+    const endMonthObj = new Date(endMonth)
 
     if (startMonthObj.getTime() > endMonthObj.getTime()) {
       const { translate } = props
@@ -185,8 +175,8 @@ function TaskDashboard(props) {
     } else {
       setState({
         ...state,
-        startMonth: startMonth,
-        endMonth: endMonth
+        startMonth,
+        endMonth
       })
       setInfoSearch({
         ...infoSearch,
@@ -194,11 +184,11 @@ function TaskDashboard(props) {
         endMonthTitle: formatMonth(endMonth)
       })
 
-      await props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-      await props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-      await props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-      await props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
-      await props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true)
+      dispatch(taskManagementActions.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+      dispatch(taskManagementActions.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+      dispatch(taskManagementActions.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+      dispatch(taskManagementActions.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
+      dispatch(taskManagementActions.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true))
     }
   }
 
@@ -210,29 +200,28 @@ function TaskDashboard(props) {
   }
 
   const getUserTimeSheetLogs = () => {
-    let { monthTimeSheetLog } = state
+    const { monthTimeSheetLog } = state
     if (monthTimeSheetLog) {
-      let d = monthTimeSheetLog.split('-')
-      let month = d[0]
-      let year = d[1]
-      let userId = getStorage('userId')
-      props.getTimeSheetOfUser(userId, month, year)
+      const d = monthTimeSheetLog.split('-')
+      const month = d[0]
+      const year = d[1]
+      const userId = getStorage('userId')
+      dispatch(taskManagementActions.getTimeSheetOfUser(userId, month, year))
     }
   }
 
   const getTotalTimeSheet = (ts) => {
     let total = 0
     for (let i = 0; i < ts.length; i++) {
-      let tslog = ts[i]
+      const tslog = ts[i]
       if (typeof tslog.duration === 'number' && tslog.acceptLog) {
-        total = total + Number(tslog.duration)
+        total += Number(tslog.duration)
       }
     }
     return convertTime(total)
   }
 
   const showLoadTaskDoc = () => {
-    const { translate } = props
     Swal.fire({
       icon: 'question',
       html: `<h3 style="color: red"><div>Tải công việc cá nhân</div> </h3>
@@ -255,7 +244,6 @@ function TaskDashboard(props) {
   }
 
   const showTimeSheetLogsDescription = () => {
-    const { translate } = props
     Swal.fire({
       icon: 'question',
       html: `<h3 style="color: red"><div>Thống kê bấm giờ cá nhân</div> </h3>
@@ -311,25 +299,23 @@ function TaskDashboard(props) {
     })
   }
 
-  let { startMonthTitle, endMonthTitle } = infoSearch
-  let { userTimeSheetLogs } = tasks // Thống kê bấm giờ
+  const { startMonthTitle, endMonthTitle } = infoSearch
+  const { userTimeSheetLogs } = tasks // Thống kê bấm giờ
 
-  console.log('timesheet', userTimeSheetLogs)
-
-  let amountResponsibleTask = 0,
-    amountTaskCreated = 0,
-    amountAccountableTasks = 0,
-    amountConsultedTasks = 0,
-    amountInformedTasks = 0
+  let amountResponsibleTask = 0
+  let amountTaskCreated = 0
+  let amountAccountableTasks = 0
+  let amountConsultedTasks = 0
+  let amountInformedTasks = 0
   let totalTasks = 0
-  let newNumTask = [],
-    listTasksGeneral = []
+  let newNumTask = []
+  let listTasksGeneral = []
   // Tinh tong so luong cong viec co trang thai Inprogess
-  let responsibleTasks = [],
-    creatorTasks = [],
-    accountableTasks = [],
-    consultedTasks = [],
-    informedTasks = []
+  let responsibleTasks = []
+  let creatorTasks = []
+  let accountableTasks = []
+  let consultedTasks = []
+  let informedTasks = []
 
   if (!loadingResponsible && !loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable) {
     // Tinh so luong tat ca cac task người này là người thực hiện
@@ -367,7 +353,7 @@ function TaskDashboard(props) {
     totalTasks = newNumTask.length
   }
 
-  let dataTimeSheetLogsExport = {
+  const dataTimeSheetLogsExport = {
     fileName: `${translate('task.task_dashboard.statistical_timesheet_logs')} ${state.monthTimeSheetLog}`,
     dataSheets: [
       {
@@ -399,9 +385,9 @@ function TaskDashboard(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <div className='qlcv' style={{ textAlign: 'left' }}>
-        {/**Chọn ngày bắt đầu */}
+        {/** Chọn ngày bắt đầu */}
         <div className='form-inline'>
           <div className='form-group'>
             <label style={{ width: 'auto' }}>{translate('task.task_management.from')}</label>
@@ -414,7 +400,7 @@ function TaskDashboard(props) {
             />
           </div>
 
-          {/**Chọn ngày kết thúc */}
+          {/** Chọn ngày kết thúc */}
           <div className='form-group'>
             <label style={{ width: 'auto' }}>{translate('task.task_management.to')}</label>
             <DatePicker
@@ -426,7 +412,7 @@ function TaskDashboard(props) {
             />
           </div>
 
-          {/**button tìm kiếm data để vẽ biểu đồ */}
+          {/** button tìm kiếm data để vẽ biểu đồ */}
           <div className='form-group'>
             <button type='button' className='btn btn-success' onClick={handleSearchData}>
               {translate('kpi.evaluation.employee_evaluation.search')}
@@ -638,14 +624,14 @@ function TaskDashboard(props) {
               <div className='box-title'>
                 {`Tổng quan công việc `}
                 {startMonthTitle}
-                <i className='fa fa-fw fa-caret-right'></i>
+                <i className='fa fa-fw fa-caret-right' />
                 {endMonthTitle} {`(${listTasksGeneral ? listTasksGeneral.length : 0} công việc)`}
               </div>
               <a onClick={() => showGeneralTaskDescription()}>
                 <i className='fa fa-question-circle' style={{ cursor: 'pointer', marginLeft: '5px' }} />
               </a>
             </div>
-            <LazyLoadComponent once={true}>
+            <LazyLoadComponent once>
               {listTasksGeneral && listTasksGeneral.length > 0 ? (
                 <GeneralTaskPersonalChart tasks={listTasksGeneral} />
               ) : loadingInformed && loadingConsulted && loadingAccountable ? (
@@ -665,11 +651,11 @@ function TaskDashboard(props) {
             <div className='box-header with-border'>
               <div className='box-title'>
                 {translate('task.task_management.tasks_calendar')} {startMonthTitle}
-                <i className='fa fa-fw fa-caret-right'></i>
+                <i className='fa fa-fw fa-caret-right' />
                 {endMonthTitle}
               </div>
             </div>
-            <LazyLoadComponent once={true}>
+            <LazyLoadComponent once>
               <GanttCalendar tasks={tasks} unit={false} />
             </LazyLoadComponent>
           </div>
@@ -683,12 +669,12 @@ function TaskDashboard(props) {
             <div className='box-header with-border'>
               <div className='box-title'>
                 {translate('task.task_management.dashboard_area_result')} {startMonthTitle}
-                <i className='fa fa-fw fa-caret-right'></i>
+                <i className='fa fa-fw fa-caret-right' />
                 {endMonthTitle}
               </div>
             </div>
             <div className='box-body qlcv'>
-              <LazyLoadComponent once={true}>
+              <LazyLoadComponent once>
                 <DomainOfTaskResultsChart startMonth={startMonth} endMonth={endMonth} />
               </LazyLoadComponent>
             </div>
@@ -701,7 +687,7 @@ function TaskDashboard(props) {
             <div className='box-header with-border'>
               <div className='box-title'>
                 {translate('task.task_management.detail_average_results')} {startMonthTitle}
-                <i className='fa fa-fw fa-caret-right'></i>
+                <i className='fa fa-fw fa-caret-right' />
                 {endMonthTitle}
               </div>
               {/* <a onClick={showAverageResultDescriptions}>
@@ -709,7 +695,7 @@ function TaskDashboard(props) {
                             </a> */}
             </div>
             <div className='box-body'>
-              <LazyLoadComponent once={true}>
+              <LazyLoadComponent once>
                 <AverageResultsOfTask startMonth={startMonth} endMonth={endMonth} />
               </LazyLoadComponent>
             </div>
@@ -722,12 +708,12 @@ function TaskDashboard(props) {
             <div className='box-header with-border'>
               <div className='box-title'>
                 {translate('task.task_management.detail_status_task')} {startMonthTitle}
-                <i className='fa fa-fw fa-caret-right'></i>
+                <i className='fa fa-fw fa-caret-right' />
                 {endMonthTitle}
               </div>
             </div>
             <div className='box-body qlcv'>
-              <LazyLoadComponent once={true}>
+              <LazyLoadComponent once>
                 <TaskStatusChart startMonth={startMonth} endMonth={endMonth} />
               </LazyLoadComponent>
             </div>
@@ -738,7 +724,7 @@ function TaskDashboard(props) {
             <div className='box-header with-border'>
               <div className='box-title' style={{ marginRight: '5px' }}>
                 {translate('task.task_management.calc_progress')} {startMonthTitle}
-                <i className='fa fa-fw fa-caret-right'></i>
+                <i className='fa fa-fw fa-caret-right' />
                 {endMonthTitle}
               </div>
               <a onClick={showDetailInprocessChart}>
@@ -746,7 +732,7 @@ function TaskDashboard(props) {
               </a>
             </div>
             <div className='box-body qlcv'>
-              <LazyLoadComponent once={true}>
+              <LazyLoadComponent once>
                 <InprocessTask startMonth={startMonth} endMonth={endMonth} tasks={tasks.tasks} />
               </LazyLoadComponent>
             </div>
@@ -754,14 +740,14 @@ function TaskDashboard(props) {
         </div>
       </div>
 
-      {/*Biểu đồ dashboard tải công việc */}
+      {/* Biểu đồ dashboard tải công việc */}
       <div className='row'>
         <div className='col-xs-12'>
           <div className='box box-primary'>
             <div className='box-header with-border'>
               <div className='box-title'>
                 {translate('task.task_management.load_task_chart')} {startMonthTitle}
-                <i className='fa fa-fw fa-caret-right'></i>
+                <i className='fa fa-fw fa-caret-right' />
                 {endMonthTitle}
               </div>
               <a onClick={() => showLoadTaskDoc()}>
@@ -770,7 +756,7 @@ function TaskDashboard(props) {
             </div>
 
             <div className='box-body qlcv'>
-              <LazyLoadComponent once={true}>
+              <LazyLoadComponent once>
                 <LoadTaskChart startMonth={startMonth} endMonth={endMonth} />
               </LazyLoadComponent>
             </div>
@@ -846,7 +832,10 @@ function TaskDashboard(props) {
           </div>
         </div>
       </div>
-    </React.Fragment>
+
+      {/* Danh sách công việc đã hoàn thành của các nhân viên trong phòng ban */}
+      <EmployeeProcessTask />
+    </>
   )
 }
 

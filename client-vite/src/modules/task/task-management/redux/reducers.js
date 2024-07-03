@@ -1,7 +1,7 @@
 import { taskManagementConstants } from './constants'
 
-var findIndex = (array, id) => {
-  var result = -1
+const findIndex = (array, id) => {
+  let result = -1
   array.forEach((value, index) => {
     if (value._id === id) {
       result = index
@@ -19,11 +19,12 @@ export function tasks(
     totalCount: 0,
     totalDocs: 0,
     tasks: [],
-    pages: 0
+    pages: 0,
+    listProgressTask: []
   },
   action
 ) {
-  var index = -1
+  let index = -1
   switch (action.type) {
     case taskManagementConstants.GETALL_TASK_REQUEST:
       return {
@@ -659,8 +660,8 @@ export function tasks(
       }
 
     case taskManagementConstants.GETTASK_BYPROJECT_SUCCESS:
-      let updateTaskProjectPaginateId = state.tasksByProjectPaginate?.map((task) => task._id) || []
-      let updateTaskProjectId = state.tasks?.map((task) => task._id) || []
+      const updateTaskProjectPaginateId = state.tasksByProjectPaginate?.map((task) => task._id) || []
+      const updateTaskProjectId = state.tasks?.map((task) => task._id) || []
       return {
         ...state,
         tasksByProjectPaginate: action.payload.docs?.filter((doc) => updateTaskProjectPaginateId?.includes(doc._id)),
@@ -769,15 +770,14 @@ export function tasks(
           taskDashboardCharts: charts,
           isLoading: false
         }
-      } else {
-        for (const i of Object.keys(result)) {
-          result = { ...result, [i]: { ...result[i], isLoading: false } }
-        }
-        return {
-          ...state,
-          taskDashboardCharts: result,
-          isLoading: false
-        }
+      }
+      for (const i of Object.keys(result)) {
+        result = { ...result, [i]: { ...result[i], isLoading: false } }
+      }
+      return {
+        ...state,
+        taskDashboardCharts: result,
+        isLoading: false
       }
 
     case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_FAILURE:
@@ -964,6 +964,22 @@ export function tasks(
         ...state,
         error: action.error,
         isLoading: false
+      }
+    case taskManagementConstants.GET_USER_TASK_PROGRESS_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case taskManagementConstants.GET_USER_TASK_PROGRESS_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case taskManagementConstants.GET_USER_TASK_PROGRESS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        listProgressTask: action.payload
       }
 
     default:
