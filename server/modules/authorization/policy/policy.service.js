@@ -86,6 +86,27 @@ exports.filterPoliciesSatisfiedRoleRequirement = async (portal, activePolicies, 
     return satisfiedRolePolicies;
 }
 
+/**
+ * Filter authorization dynamic assignments that satisfied role requirements
+ * @param {*} activeAssignments list of policy dynamic assignments
+ * @param {*} role role of user
+ * @returns Authorization dynamic assignments that satisfied role requirements
+ */
+exports.filterAssignmentsSatisfiedRoleRequirement = async (portal, activeAssignments, role) => {
+    if (!activeAssignments || !activeAssignments.length) {
+        return []
+    };
+    const authorizationAttributeIds = (await Attribute(connect(DB_CONNECTION, portal))
+        .find({type: {$in: ['Authorization', 'Mixed']}})
+        .select('_id')).map(x => x.id);
+
+    const satisfiedRoleAssignments = activeAssignments.filter((x) =>
+        this.ruleCheck(authorizationAttributeIds, [role], x.policyId.roleRequirements.attributes, x.policyId.roleRequirements.rule)?.length > 0
+    );
+
+    return satisfiedRoleAssignments;
+}
+
 // Tạo mới mảng Ví dụ
 exports.createPolicy = async (portal, data) => {
     let newPolicy;
