@@ -104,7 +104,7 @@ const handleStartAssignAllocation = async (portal, responseServerOutput, respons
         const unitKpiSetObject = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).create({
           organizationalUnit: new ObjectId(unit._id),
           creator: new ObjectId(userDetail._id),
-          date: new Date(currentYear, currentMonth + 1, 1),
+          date: new Date(currentYear, currentMonth, 1),
           kpis,
           automaticPoint: 0,
           employeePoint: 0,
