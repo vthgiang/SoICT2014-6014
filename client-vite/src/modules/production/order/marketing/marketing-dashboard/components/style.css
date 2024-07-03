@@ -9,6 +9,47 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.item-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.item-content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.item-icon {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  display: flex;
+}
+
+.item-action-close {
+  margin-right: 3px;
+}
+
+.item-action-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.item-action-button1{
+  background-color: #28a745;
 }
 
 .circular_progress_text_inside {
@@ -49,6 +90,8 @@
   display: flex;
   align-items: center;
   gap: 10px; /* Adjust the gap between elements as needed */
+  justify-content: space-between;
+  padding-right: 75px;
 }
 
 .form-control-static {

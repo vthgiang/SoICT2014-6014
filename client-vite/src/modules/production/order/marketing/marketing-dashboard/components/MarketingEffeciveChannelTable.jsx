@@ -8,7 +8,8 @@ import Paper from '@mui/material/Paper'
 import { styled } from '@mui/material/styles'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
-import { Loading } from '../../../../../common-components'
+import { Loading } from '../../../../../../common-components'
+import './style.css'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -70,22 +71,22 @@ function MarketingEffeciveChannelTable({ isLoading, marketingEffectiveChannel })
           {isLoading && (
             <StyledTableRow>
               <StyledTableCell component='th' scope='row'>
-                <Loading />
+               <Loading styleInner={{position: "relative"}}/>
               </StyledTableCell>
               <StyledTableCell>
-                <Loading />
+                <Loading styleInner={{position: "relative"}}/>
               </StyledTableCell>
               <StyledTableCell>
-                <Loading />
+                <Loading styleInner={{position: "relative"}}/>
               </StyledTableCell>
               <StyledTableCell>
-                <Loading />
+                <Loading styleInner={{position: "relative"}}/>
               </StyledTableCell>
               <StyledTableCell>
-                <Loading />
+                <Loading styleInner={{position: "relative"}}/>
               </StyledTableCell>
               <StyledTableCell>
-                <Loading />
+                <Loading styleInner={{position: "relative"}}/>
               </StyledTableCell>
             </StyledTableRow>
           )}

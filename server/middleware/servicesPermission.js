@@ -1421,6 +1421,14 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/marketing-dashboard',
+        apis: ['@all'],
+    },
+    {
+        url: '/marketing-forecast',
+        apis: ['@all'],
+    },
+    {
         url: '/marketing-campaign-id',
         apis: ['@all'],
     },
