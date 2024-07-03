@@ -170,7 +170,7 @@ const addEmployeeCapacity = async () => {
     "nguyenphucnhatnam.vnist@gmail.com",
     "nguyenthioanh.vnist@gmail.com",
     "vuthiquynh.vnist@gmail.com",
-    "nguyenminhthanh.vnist@gmail.com",
+    "nguyenminhthanhsw.vnist@gmail.com",
     "dangquoctu.vnist@gmail.com",
   ]; // Replace with your actual list of emails
 

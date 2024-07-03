@@ -40,6 +40,8 @@ function ListProjectNew(props) {
     data: []
   })
 
+  // console.log("state.data: ", state.data)
+
   const { project, translate, user, assetsManager } = props
   const userId = getStorage('userId')
   const { projectName, startDate, endDate, page, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state
@@ -65,14 +67,16 @@ function ListProjectNew(props) {
     props.getListTag()
     props.getListCapacity()
     props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
-    props.getProjectsDispatch({ calledId: 'user_all', userId })
+    // props.getProjectsDispatch({ calledId: 'user_all', userId })
   }, [])
 
   useEffect(() => {
     let data = []
     if (user?.isLoading === false && project?.isLoading === false && assetsManager?.isLoading === false) {
+      // console.log("project: ", project?.data?.paginate)
       let currentProjects = _cloneDeep(project.data.paginate) // Sao chép ra mảng mới
       for (let n in currentProjects) {
+        // console.log("currentProject: ", n, currentProjects[n]) 
         data[n] = {
           ...currentProjects[n],
           rawData: currentProjects[n],
@@ -85,7 +89,7 @@ function ListProjectNew(props) {
           member: currentProjects[n]?.responsibleEmployees ? (
             <ToolTip dataTooltip={currentProjects[n]?.responsibleEmployees.map((o) => o.name)} />
           ) : null,
-          asset: currentProjects[n]?.assets ? <ToolTip dataTooltip={currentProjects[n]?.assets.map((o) => o.assetName)} /> : null,
+          asset: currentProjects[n]?.assets ? <div>{currentProjects[n]?.assets.map((item) => item?.assetName).join(", ")}</div> : null,
           action: ['view'],
           proposalLink: (<a 
                           className="cursor-pointer ml-2 underline" 
@@ -103,6 +107,7 @@ function ListProjectNew(props) {
         }
       }
 
+      // console.log("data: ", data)
       setState({
         ...state,
         data: data
@@ -112,7 +117,7 @@ function ListProjectNew(props) {
 
   // Sau khi add project mới hoặc edit project thì call lại tất cả list project
   const handleAfterCreateProject = () => {
-    let data = {
+    let params = {
       calledId: 'paginate',
       projectName: projectName,
       endDate: endDate,
@@ -123,7 +128,7 @@ function ListProjectNew(props) {
       projectManager: projectManager,
       userId: userId
     }
-    props.getProjectsDispatch(data)
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
   }
 
   // Thay đổi tên dự án
