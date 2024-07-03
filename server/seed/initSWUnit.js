@@ -1251,7 +1251,7 @@ const days = [
       identityCardNumber: 27201000003,
       identityCardDate: new Date("2015-10-20"),
       identityCardAddress: "Bắc Ninh",
-      emailInCompany: "nguyenvietdang.vnist@gmail.com",
+      emailInCompany: "nguyenvietdangsw.vnist@gmail.com",
       nationality: "Việt Nam",
       atmNumber: "104870480003",
       bankName: "ViettinBank",
