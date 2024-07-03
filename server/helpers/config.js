@@ -431,6 +431,13 @@ const LINKS = [
     components: getComponentsInLink("/requesters-management"),
   },
   {
+      url: '/resources-management',
+      description: 'Quản lý tài nguyên của công ty',
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink('/resources-management'),
+  },
+  {
     url: "/apis-management",
     description: "Quản lý API web của công ty",
     category: LINK_CATEGORY.RBAC.name,

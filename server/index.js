@@ -41,6 +41,7 @@ const router = express.Router();
 router.use('/auth', require('./modules/auth/auth.route'));
 router.use('/auth-service', require('./modules/auth-service/auth.route'));
 router.use('/requester', require('./modules/auth-service/requester/requester.route'));
+router.use('/resource', require('./modules/auth-service/resource/resource.route'));
 
 router.use('/annualLeave', require('./modules/human-resource/annual-leave/annualLeave.route'));
 router.use('/commendation', require('./modules/human-resource/commendation/commendation.route'));

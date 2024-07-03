@@ -786,6 +786,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/resources-management',
+        apis: ['@all'],
+    },
+    {
         url: '/attributes-management',
         apis: ['@all'],
     },
