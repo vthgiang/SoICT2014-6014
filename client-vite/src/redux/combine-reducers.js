@@ -10,6 +10,8 @@ import { privilegeApis } from '../modules/system-admin/system-api/system-api-pri
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers'
 import { systemAdminPage, systemPage } from '../modules/system-admin/system-page/redux/reducers'
 import { systemSetting } from '../modules/system-admin/system-setting/redux/reducers'
+import { requester } from '../modules/system-admin/requester-management/redux/reducers'
+import { resource } from '../modules/system-admin/resource-management/redux/reducers'
 import { internalServiceIdentities } from '../modules/system-admin/internal-service-identity/redux/reducers'
 import { internalPolicies } from '../modules/system-admin/internal-policy/redux/reducers'
 import { externalPolicies } from '../modules/system-admin/external-policy/redux/reducers'
@@ -25,9 +27,12 @@ import { department } from '../modules/super-admin/organizational-unit/redux/red
 import { role } from '../modules/super-admin/role/redux/reducers'
 import { system } from '../modules/super-admin/system/redux/reducers'
 import { user } from '../modules/super-admin/user/redux/reducers'
+import { service } from '../modules/super-admin/service/redux/reducers'
 import { attribute } from '../modules/super-admin/attribute/redux/reducers'
 import { policy } from '../modules/super-admin/policy/redux/reducers'
 import { policyDelegation } from '../modules/super-admin/policy-delegation/redux/reducers'
+import { policyAuthorization } from '../modules/super-admin/policy-authorization/redux/reducers'
+import { authorizationLogging } from '../modules/super-admin/authorization-logging/redux/reducers'
 
 import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers'
 import { discipline } from '../modules/human-resource/commendation-discipline/redux/reducers'
@@ -133,7 +138,7 @@ import { purchaseOrders } from '../modules/production/order/purchase-order/redux
 import { quotes } from '../modules/production/order/quote/redux/reducers'
 import { salesOrders } from '../modules/production/order/sales-order/redux/reducers'
 import { serviceLevelAgreements } from '../modules/production/order/service-level-agreement/redux/reducers'
-
+import { forecasts } from '../modules/production/order/forecast/redux/reducers'
 
 // plan
 import { plan } from '../modules/plan/redux/reducers'
@@ -231,11 +236,16 @@ const appReducer = combineReducers({
   // admin
   system,
   user,
+  service,
   role,
   link,
+  requester,
+  resource,
   attribute,
   policy,
   policyDelegation,
+  policyAuthorization,
+  authorizationLogging,
   apis,
   apiRegistration,
   component,
@@ -355,7 +365,7 @@ const appReducer = combineReducers({
   }),
 
   // order
- 
+
   quotes,
   discounts,
   serviceLevelAgreements,
@@ -364,7 +374,7 @@ const appReducer = combineReducers({
   bankAccounts,
   payments,
   purchaseOrders,
-
+  forecasts,
   // plane
   plan,
 

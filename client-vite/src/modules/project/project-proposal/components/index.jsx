@@ -12,6 +12,12 @@ import ProposalScheduleGanttEmployee from "./proposalScheduleGanttEmployee";
 import KpiBarChart from "./kpiStatistic";
 import ProposalScheduleGanttAsset from "./proposalScheduleGanttAsset";
 import ProposalScheduleGanttTask from "./proposalScheduleGanttTask";
+import { ProjectCreateEditForm } from "../../project-create/components/projectCreateEditForm";
+import { PROJECT_ACTION_FORM } from "../../projects/constants";
+import { KPIEmployees } from "./kpiEmployees";
+import AlgorithmModal from "./algorithmModal";
+import { useLocation } from 'react-router-dom';
+
 
 function ProjectProposalPage(props) {
   const formatCurrencyVND = (amount) => {
@@ -46,6 +52,7 @@ function ProjectProposalPage(props) {
   })
   const [algorithm, setAlgorithm] = useState()
   const [isShowPrevProposal, setIsShowPrevProposal] = useState(false)
+  const [isShowPreviewProject, setIsShowPreviewProject] = useState(false)
   const [scheduleType, setScheduleType] = useState(scheduleOptions[0]?.value)
   const [isShowShedule, setIsShowSchedule] = useState(false)
 
@@ -59,6 +66,43 @@ function ProjectProposalPage(props) {
     isLoading, 
     projectProposalData
   } = projectProposal
+
+  const [algorithmParams, setAlgorithmParams] = useState({
+    hs: {
+      HMS: 60,
+      bw: 1,
+      PAR: 0.5,
+      HMCR: 0.9,
+      maxIter: 30000
+    },
+    dlhs: {
+      HMS: 60,
+      Max_FEs: 30000,
+      R: 100,
+      numOfSub: 4,
+      PSLSize: 5,
+      BW_max: 2,
+      BW_min: 1,
+    }
+  })
+
+  const { proposals } = currentProject || {}
+
+  const column = [
+    { name: 'Mã công việc', key: 'code' },
+    { name: 'Tên công việc', key: 'name' },
+    { name: 'Công việc tiền nhiệm', key: 'preceedingTasks'},
+    { name: 'Ngày bắt đầu', key: 'startDate' },
+    { name: 'Ngày kết thúc', key: 'endDate' },
+    { name: 'Nhân viên', key: 'assignee' },
+    { name: 'Tài sản', key: 'assets' },
+  ]
+
+  const location = useLocation()
+
+
+  console.log("algorithmParams: ", algorithmParams)
+  
 
   const handleChangeCurrentProject = (e) => {
     setState(prevState => ({
@@ -80,12 +124,28 @@ function ProjectProposalPage(props) {
 
   const handleProposalForProject = () => {
     props.proposalForProjectDispatch(currentProject._id, {
-      algorithm: algorithm
+      algorithm,
+      algorithmParams: algorithm === proposalAlgorithmItems[0]?.value ? algorithmParams.dlhs : algorithmParams.hs 
     })
     setIsShowSchedule(false)
     setIsShowPrevProposal(false)
     setScheduleType(scheduleOptions[0]?.value)
   }
+
+  useEffect(() => {
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId });
+  }, [page, perPage]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    if (id) {
+      setState({
+        ...state,
+        currentProject: projectData && projectData?.length ? projectData?.find((item) => item?._id === id) : {}
+      })
+    }
+  }, [location, projectData?.length]);
 
   useEffect(() => {
     if (!isLoading && projectProposalData) {
@@ -99,24 +159,6 @@ function ProjectProposalPage(props) {
       }));
     }
   }, [isLoading, projectProposalData]);
-
-
-  useEffect(() => {
-    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId });
-  }, [page, perPage]);
-
-  const { proposals } = currentProject
-
-
-  const column = [
-    { name: 'Mã công việc', key: 'code' },
-    { name: 'Tên công việc', key: 'name' },
-    { name: 'Công việc tiền nhiệm', key: 'preceedingTasks'},
-    { name: 'Ngày bắt đầu', key: 'startDate' },
-    { name: 'Ngày kết thúc', key: 'endDate' },
-    { name: 'Nhân viên', key: 'assignee' },
-    { name: 'Tài sản', key: 'assets' },
-  ]
 
   const convertAssignmentToTableData = (assignments) => {
     let data = []
@@ -201,7 +243,69 @@ function ProjectProposalPage(props) {
     }
   };
 
-  // console.log('proposals: ', proposals)
+  const generateColors = (numColors) => {
+    const colors = [];
+    for (let i = 0; i < numColors; i++) {
+      const hue =  160 +  ((i * 240) / numColors); // Hues between 120 (green) and 240 (blue)
+      colors.push(`hsla(${hue}, 100%, 50%, 0.4)`);
+    }
+    return colors;
+  };
+
+  const converDataKPIOfEmployees = (currentProject, kpiOfEmployees) => {
+    const { responsibleEmployees, kpiTarget, usersInProject} = currentProject
+      
+    let labels = [];
+    let datasets = [];
+
+    if (responsibleEmployees && kpiOfEmployees && kpiTarget && usersInProject) {
+      // Create a mapping of employee _id to their names
+      const employeeNameMap = responsibleEmployees.reduce((acc, employee) => {
+        const userFind = usersInProject.find((item) => item.userId === employee?._id)
+        acc[userFind.employeeId] = employee?.name;
+        return acc;
+      }, {});
+
+      // Create a mapping of KPI _id to their names
+      const kpiNameMap = kpiTarget.reduce((acc, kpi) => {
+        acc[kpi._id] = kpi?.type?.name;
+        return acc;
+      }, {});
+
+      // Get the KPI labels (names) from the kpiNameMap
+      labels = Object.keys(kpiNameMap).map(kpiId => kpiNameMap[kpiId]);
+
+      // Iterate through kpiOfEmployees to structure the data
+      Object.keys(kpiOfEmployees).forEach((employeeId) => {
+        const employeeData = kpiOfEmployees[employeeId];
+        const dataEntry = {
+          label: employeeNameMap[employeeId],
+          data: Object.keys(employeeData).map(kpiId => employeeData[kpiId]),
+          backgroundColor: '',
+          borderColor: '',
+          borderWidth: 1
+        };
+        datasets.push(dataEntry);
+      });
+
+      // Generate colors for each employee
+      const colors = generateColors(datasets.length);
+
+      // Assign colors to each dataset
+      datasets = datasets.map((entry, index) => ({
+        ...entry,
+        backgroundColor: colors[index],
+        borderColor: colors[index].replace('0.4', '1')
+      }));
+    }
+
+    return { labels, datasets };
+  };
+
+  const openModal = (algorithm) => {
+    console.log("vao day")
+    window.$(`#modal-params-${algorithm}`).modal('show')
+  }
 
   return (
     <React.Fragment>
@@ -220,7 +324,7 @@ function ProjectProposalPage(props) {
                   style={{ width: '100%' }}
                   items={projectOptions}
                   options={{
-                    placeholder: "--- Chon du an can phan bo nguon luc ---"
+                    placeholder: "--- Chọn dự án ---"
                   }}
                   value={currentProject?._id}
                   onChange={handleChangeCurrentProject}
@@ -230,6 +334,15 @@ function ProjectProposalPage(props) {
                 <label>
                   {'Chiến lược phân bổ'}
                   <span className='text-red'>*</span>
+                  <span>
+                    <a 
+                      className="inline-block cursor-pointer ml-2" 
+                      onClick={() => openModal(algorithm)}
+                      aria-haspopup="true"
+                      aria-expanded="true"
+                    > Xem thông tin và cấu hình tham số
+                    </a>
+                  </span>
                 </label>
                 <SelectBox
                   id={`proposal-project-algorithm-id`}
@@ -237,7 +350,7 @@ function ProjectProposalPage(props) {
                   style={{ width: '100%' }}
                   items={proposalAlgorithmItems}
                   options={{
-                    placeholder: "--- Chon chien luoc phan bo nguon luc ---"
+                    placeholder: "--- Chọn chiến lược ---"
                   }}
                   value={algorithm}
                   onChange={handleChangeAlgorithm}
@@ -258,6 +371,63 @@ function ProjectProposalPage(props) {
             </div>
             {/* </div> */}
           </form>
+          <div>
+            {currentProject && currentProject?._id && (
+              <div>
+                <a 
+                  className="inline-block mt-8 cursor-pointer ml-2" 
+                  onClick={() => setIsShowPreviewProject((prev) => !prev)}
+                  aria-haspopup="true"
+                  aria-expanded="true"
+                >
+                  <div className="flex items-center">
+                    <span>{isShowPreviewProject ? 'Ẩn thông tin dự án' : 'Xem thông tin dự án'}</span>
+                    {isShowPreviewProject ? (
+                      <svg
+                        className="-mr-1 ml-2 h-5 w-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 12.707a1 1 0 001.414 0L10 9.414l3.293 3.293a1 1 0 001.414-1.414l-4-4a1 1 0 00-1.414 0l-4 4a1 1 0 000 1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="-mr-1 ml-2 h-5 w-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </a> 
+                {isShowPreviewProject && 
+                  <div>
+                    <ProjectCreateEditForm 
+                      actionType={PROJECT_ACTION_FORM.EDIT}
+                      projectEdit={currentProject}
+                      projectEditId={currentProject?._id}
+                      submitFunction={props.editProjectDispatch}
+                      />
+                  </div>
+                }
+                <AlgorithmModal algorithm={algorithm} algorithmParams={algorithmParams} setAlgorithmParams={setAlgorithmParams} />
+              </div>
+            )}
+          
+          </div>
           {!isLoading && proposals && proposals?.assignment?.length && 
             <a 
               className="inline-block mt-8 cursor-pointer ml-2" 
@@ -298,33 +468,13 @@ function ProjectProposalPage(props) {
                 )}
               </div>
             </a> 
-            // <button
-            //   type="button"
-            //   className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            //   id="options-menu"
-            //   aria-haspopup="true"
-            //   aria-expanded="true"
-            //   // onClick={}
-            // >
-            //   Options
-            //   <svg
-            //     className="-mr-1 ml-2 h-5 w-5"
-            //     xmlns="http://www.w3.org/2000/svg"
-            //     viewBox="0 0 20 20"
-            //     fill="currentColor"
-            //     aria-hidden="true"
-            //   >
-            //     <path
-            //       fillRule="evenodd"
-            //       d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            //       clipRule="evenodd"
-            //     />
-            //   </svg>
-            // </button>
           }
           {isLoading && (
-            <div className="min-height-96 flex justify-center items-center mt-8">
-              Đang thực hiện phân bổ ... 
+            <div className="min-height-96 flex justify-center mt-8">
+              <span className="pr-2">Đang thực hiện phân bổ ...</span>
+              <div className="mt-[1.5px]">
+                <Loading />
+              </div>
             </div>
           )}
           { !isLoading && isShowPrevProposal && proposals && proposals?.assignment && proposals?.assignment?.length && (
@@ -390,7 +540,10 @@ function ProjectProposalPage(props) {
                     <div className="w-full lg:w-[65%] bg-gray-100 content-box">
                       <KpiBarChart kpiTarget={currentProject?.kpiTarget} kpiAssignment={proposals?.kpiAssignment} />
                     </div>
-                    
+                  </div>
+                  <div className="text-center py-4 font-semibold">KPI cho nhân viên</div>
+                  <div className="flex justify-center">
+                    <KPIEmployees data={converDataKPIOfEmployees(currentProject, proposals?.kpiOfEmployees)} />
                   </div>
                 </div>
               </div>
@@ -447,7 +600,8 @@ function mapState(state) {
 
 const actions = {
   getProjectsDispatch: ProjectActions.getProjectsDispatch,
-  proposalForProjectDispatch: ProjectProposalActions.proposalForProjectDispatch
+  proposalForProjectDispatch: ProjectProposalActions.proposalForProjectDispatch,
+  editProjectDispatch: ProjectActions.editProjectDispatch,
 }
 
 export default connect(mapState, actions)(withTranslate(ProjectProposalPage))

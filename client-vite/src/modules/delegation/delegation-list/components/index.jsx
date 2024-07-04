@@ -7,7 +7,7 @@ import { DelegationTable } from './delegationTable'
 
 import { DelegationTableTask } from './delegationTableTask'
 
-import { DelegationTableService } from './delegationTableService'
+import { DelegationTableResource } from './delegationTableResource'
 
 function ManageDelegation(props) {
   const { translate } = props
@@ -26,8 +26,8 @@ function ManageDelegation(props) {
           </a>
         </li>
         <li>
-          <a title={translate('manage_delegation.delegateTypeService')} data-toggle='tab' href='#service_delegation'>
-            {translate('manage_delegation.delegateTypeService')}
+          <a title={translate('manage_delegation.delegateTypeResource')} data-toggle='tab' href='#resource_delegation'>
+            {translate('manage_delegation.delegateTypeResource')}
           </a>
         </li>
       </ul>
@@ -40,8 +40,8 @@ function ManageDelegation(props) {
           <DelegationTableTask />
         </div>
 
-        <div className='tab-pane' id='service_delegation'>
-          <DelegationTableService />
+        <div className='tab-pane' id='resource_delegation'>
+          <DelegationTableResource />
         </div>
       </div>
     </div>

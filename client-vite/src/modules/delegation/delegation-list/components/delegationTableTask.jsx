@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import { RevokeNotification, DeleteNotification, PaginateBar, SmartTable, ToolTip } from '../../../../common-components'
+import dayjs from 'dayjs'
+import { RevokeNotification, DeleteNotification, PaginateBar, SmartTable } from '../../../../common-components'
 
 import { DelegationCreateFormTask } from './delegationCreateFormTask'
 import { DelegationEditFormTask } from './delegationEditFormTask'
@@ -14,9 +15,7 @@ import { RoleActions } from '../../../super-admin/role/redux/actions'
 
 import { DelegationActions } from '../redux/actions'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import dayjs from 'dayjs'
 import { colorfyDelegationStatus } from './functionHelper'
-import { performTaskAction } from '../../../task/task-perform/redux/actions'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 
 function DelegationTableTask(props) {
@@ -28,17 +27,17 @@ function DelegationTableTask(props) {
 
   // Khởi tạo state
   const [state, setState] = useState({
-    delegationName: '',
+    name: '',
     pageTask: 1,
     perPageTask: getLimit,
     tableId: getTableId
   })
   const [selectedData, setSelectedData] = useState()
 
-  const { delegationName, pageTask, perPageTask, currentRow, curentRowDetail, tableId } = state
+  const { name, pageTask, perPageTask, currentRow, curentRowDetail, tableId } = state
 
   useEffect(() => {
-    props.getDelegationsTask({ delegationName, pageTask, perPageTask, delegateType: 'Task' })
+    props.getDelegationsTask({ name, pageTask, perPageTask, delegateType: 'Task' })
     props.getUser()
     props.getRoles()
     props.getLinks({ type: 'active' })
@@ -57,7 +56,7 @@ function DelegationTableTask(props) {
     const { value } = e.target
     setState({
       ...state,
-      delegationName: value
+      name: value
     })
   }
 
@@ -66,7 +65,7 @@ function DelegationTableTask(props) {
    */
   const handleSubmitSearch = () => {
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask,
       pageTask: 1,
       delegateType: 'Task'
@@ -88,7 +87,7 @@ function DelegationTableTask(props) {
     })
 
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask,
       pageTask: parseInt(pageNumber),
       delegateType: 'Task'
@@ -106,7 +105,7 @@ function DelegationTableTask(props) {
       pageTask: 1
     })
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask: parseInt(number),
       pageTask: 1,
       delegateType: 'Task'
@@ -122,7 +121,7 @@ function DelegationTableTask(props) {
       delegationIds: [id]
     })
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask,
       delegateType: 'Task',
       pageTask: delegation && delegation.listsTask && delegation.listsTask.length === 1 ? pageTask - 1 : pageTask
@@ -135,7 +134,7 @@ function DelegationTableTask(props) {
       reason: window.$(`#revokeReason-${id}`).val()
     })
     props.getDelegationsTask({
-      delegationName,
+      name,
       perPageTask,
       delegateType: 'Task',
       pageTask: delegation && delegation.listsTask && delegation.listsTask.length === 1 ? pageTask - 1 : pageTask
@@ -179,7 +178,6 @@ function DelegationTableTask(props) {
   let lists = []
   if (delegation) {
     lists = delegation.listsTask
-    console.log(delegation)
   }
 
   const totalPage = delegation && Math.ceil(delegation.totalListTask / perPageTask)
@@ -189,44 +187,43 @@ function DelegationTableTask(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       {user && user.organizationalUnitsOfUser && (
         <DelegationEditFormTask
-          delegateTask={currentRow && currentRow.delegateTask}
+          delegateObject={currentRow && currentRow.delegateObject}
           delegationID={currentRow && currentRow._id}
-          delegationName={currentRow && currentRow.delegationName}
+          name={currentRow && currentRow.name}
           description={currentRow && currentRow.description}
-          delegator={currentRow && currentRow.delegator}
-          delegatee={currentRow && currentRow.delegatee}
+          delegator={currentRow && currentRow.delegator?.refId}
+          delegatee={currentRow && currentRow.delegatee?.refId}
           delegateType={currentRow && currentRow.delegateType}
-          delegateTaskRoles={currentRow && currentRow.delegateTaskRoles}
+          delegateTaskRoles={currentRow && currentRow.metaData.delegateTaskRoles}
           status={currentRow && currentRow.status}
           startDate={currentRow && currentRow.startDate}
           endDate={currentRow && currentRow.endDate}
-          delegatePolicy={currentRow && currentRow.delegatePolicy}
-          showChooseRevoke={currentRow && currentRow.endDate != null ? true : false}
+          policy={currentRow && currentRow.policy}
+          showChooseRevoke={!!(currentRow && currentRow.endDate != null)}
         />
       )}
       <DelegationDetailInfoTask
         delegationID={curentRowDetail && curentRowDetail._id}
-        delegationName={curentRowDetail && curentRowDetail.delegationName}
+        name={curentRowDetail && curentRowDetail.name}
         description={curentRowDetail && curentRowDetail.description}
         delegator={curentRowDetail && curentRowDetail.delegator}
         delegatee={curentRowDetail && curentRowDetail.delegatee}
         delegatePrivileges={curentRowDetail && curentRowDetail.delegatePrivileges}
         delegateType={curentRowDetail && curentRowDetail.delegateType}
-        delegateRole={curentRowDetail && curentRowDetail.delegateRole}
-        delegateTask={curentRowDetail && curentRowDetail.delegateTask}
-        delegateTaskRoles={curentRowDetail && curentRowDetail.delegateTaskRoles}
+        delegateObject={curentRowDetail && curentRowDetail.delegateObject}
+        delegateTaskRoles={curentRowDetail && curentRowDetail.metaData.delegateTaskRoles}
         status={curentRowDetail && curentRowDetail.status}
-        allPrivileges={curentRowDetail && curentRowDetail.allPrivileges}
+        allPrivileges={curentRowDetail && curentRowDetail.metaData.allPrivileges}
         startDate={curentRowDetail && curentRowDetail.startDate}
         endDate={curentRowDetail && curentRowDetail.endDate}
         revokedDate={curentRowDetail && curentRowDetail.revokedDate}
         revokeReason={curentRowDetail && curentRowDetail.revokeReason}
         replyStatus={curentRowDetail && curentRowDetail.replyStatus}
         declineReason={curentRowDetail && curentRowDetail.declineReason}
-        delegatePolicy={curentRowDetail && curentRowDetail.delegatePolicy}
+        policy={curentRowDetail && curentRowDetail.policy}
         logs={curentRowDetail && curentRowDetail.logs}
       />
 
@@ -269,13 +266,13 @@ function DelegationTableTask(props) {
 
           {/* Tìm kiếm */}
           <div className='form-group'>
-            <label className='form-control-static'>{translate('manage_delegation.delegationName')}</label>
+            <label className='form-control-static'>{translate('manage_delegation.name')}</label>
             <input
               type='text'
               className='form-control'
-              name='delegationNameTask'
+              name='nameTask'
               onChange={handleChangeDelegationName}
-              placeholder={translate('manage_delegation.delegationName')}
+              placeholder={translate('manage_delegation.name')}
               autoComplete='off'
             />
           </div>
@@ -293,11 +290,11 @@ function DelegationTableTask(props) {
         </div>
 
         <SmartTable
-          disableCheckbox={true}
+          disableCheckbox
           tableId={tableId}
           columnData={{
             index: translate('manage_delegation.index'),
-            delegationName: translate('manage_delegation.delegationName'),
+            name: translate('manage_delegation.name'),
             // delegateType: translate('manage_delegation.delegateType'),
             delegateObjectTask: translate('manage_delegation.delegateObjectTask'),
             delegateTaskRoles: translate('manage_delegation.delegateObjectTaskRole'),
@@ -313,7 +310,7 @@ function DelegationTableTask(props) {
                 {translate('manage_delegation.index')}
               </th>
             ),
-            delegationName: <th>{translate('manage_delegation.delegationName')}</th>,
+            name: <th>{translate('manage_delegation.name')}</th>,
             // delegateType: <th>{translate('manage_delegation.delegateType')}</th>,
             delegateObjectTask: <th>{translate('manage_delegation.delegateObjectTask')}</th>,
             delegateTaskRoles: <th>{translate('manage_delegation.delegateObjectTaskRole')}</th>,
@@ -330,12 +327,14 @@ function DelegationTableTask(props) {
               return {
                 id: item?._id,
                 index: <td>{index + 1}</td>,
-                delegationName: <td>{item?.delegationName}</td>,
+                name: <td>{item?.name}</td>,
                 // delegateType: <td>{translate('manage_delegation.delegateType' + item?.delegateType)}</td>,
-                delegateObjectTask: <td>{item.delegateTask ? item.delegateTask.name : ''}</td>,
+                delegateObjectTask: <td>{item.delegateObject ? item.delegateObject.name : ''}</td>,
                 delegateTaskRoles: (
                   <td>
-                    {item.delegateTaskRoles ? item.delegateTaskRoles.map((r) => translate('task.task_management.' + r)).join(', ') : ''}
+                    {item.metaData.delegateTaskRoles
+                      ? item.metaData.delegateTaskRoles.map((r) => translate(`task.task_management.${r}`)).join(', ')
+                      : ''}
                   </td>
                 ),
                 delegatee: <td>{item?.delegatee.name}</td>,
@@ -381,7 +380,7 @@ function DelegationTableTask(props) {
                         content={translate('manage_delegation.delete')}
                         data={{
                           id: item._id,
-                          info: item.delegationName
+                          info: item.name
                         }}
                         func={handleDelete}
                       />
@@ -390,7 +389,7 @@ function DelegationTableTask(props) {
                         content={translate('manage_delegation.revoke_request')}
                         data={{
                           id: item._id,
-                          info: item.delegationName
+                          info: item.name
                         }}
                         func={handleRevoke}
                       />
@@ -412,14 +411,14 @@ function DelegationTableTask(props) {
           (typeof lists === 'undefined' || lists.length === 0) && <div className='table-info-panel'>{translate('confirm.no_data')}</div>
         )}
         <PaginateBar
-          pageTotal={totalPage ? totalPage : 0}
+          pageTotal={totalPage || 0}
           currentPage={pageTask}
           display={lists && lists.length !== 0 && lists.length}
           total={delegation && delegation.totalListTask}
           func={setPage}
         />
       </div>
-    </React.Fragment>
+    </>
   )
 }
 

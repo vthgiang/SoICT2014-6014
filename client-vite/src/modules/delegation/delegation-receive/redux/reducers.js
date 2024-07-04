@@ -1,7 +1,7 @@
 import { delegationConstants } from './constants'
 
-var findIndex = (array, id) => {
-  var result = -1
+const findIndex = (array, id) => {
+  let result = -1
   array.forEach((value, index) => {
     if (value._id === id) {
       result = index
@@ -13,15 +13,18 @@ var findIndex = (array, id) => {
 const initialState = {
   listsRole: [],
   listsTask: [],
+  listsResource: [],
   isLoading: false,
   error: null,
   totalList: 0,
-  totalListTask: 0
+  totalListTask: 0,
+  totalListResource: 0
 }
 
 export function delegationReceive(state = initialState, action) {
   let index = -1
   let indexTask = -1
+  let indexResource = -1
   switch (action.type) {
     case delegationConstants.GET_ALL_DELEGATIONS_REQUEST:
     case delegationConstants.GET_ALL_DELEGATIONS_TASK_REQUEST:
@@ -41,7 +44,6 @@ export function delegationReceive(state = initialState, action) {
         error: action.error
       }
     case delegationConstants.GET_ALL_DELEGATIONS_SUCCESS:
-      console.log(action.payload.data)
       return {
         ...state,
         listsRole: action.payload.data,
@@ -58,6 +60,11 @@ export function delegationReceive(state = initialState, action) {
       if (indexTask !== -1) {
         state.listsTask[indexTask] = action.payload
       }
+
+      indexResource = findIndex(state.listsResource, action.payload._id)
+      if (indexResource !== -1) {
+        state.listsResource[indexResource] = action.payload
+      }
       return {
         ...state,
         isLoading: false
@@ -72,6 +79,11 @@ export function delegationReceive(state = initialState, action) {
       if (indexTask !== -1) {
         state.listsTask[indexTask] = action.payload
       }
+
+      indexResource = findIndex(state.listsResource, action.payload._id)
+      if (indexResource !== -1) {
+        state.listsResource[indexResource] = action.payload
+      }
       return {
         ...state,
         isLoading: false
@@ -79,8 +91,15 @@ export function delegationReceive(state = initialState, action) {
     case delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS:
       return {
         ...state,
-        listsTask: action.payload.dataTask,
-        totalListTask: action.payload.totalListTask,
+        listsTask: action.payload.data,
+        totalListTask: action.payload.totalList,
+        isLoading: false
+      }
+    case delegationConstants.GET_ALL_DELEGATIONS_RESOURCE_SUCCESS:
+      return {
+        ...state,
+        listsResource: action.payload.data,
+        totalListResource: action.payload.totalList,
         isLoading: false
       }
     default:

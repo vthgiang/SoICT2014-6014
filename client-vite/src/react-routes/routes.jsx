@@ -49,12 +49,15 @@ const TrainingPlan = lazy(() => import('../modules/training/course/components/co
 const CourseOfUser = lazy(() => import('../modules/training/course/user/components/course'))
 
 const ManageUser = lazy(() => import('../modules/super-admin/user/components'))
+const ManageService = lazy(() => import('../modules/super-admin/service/components'))
 const ManageRole = lazy(() => import('../modules/super-admin/role/components'))
 const ManageLink = lazy(() => import('../modules/super-admin/link/components'))
 const ManageAttribute = lazy(() => import('../modules/super-admin/attribute/components'))
 const ManagePolicy = lazy(() => import('../modules/super-admin/policy/components'))
 const ManageApi = lazy(() => import('../modules/super-admin/api/api-management/components/apiManagement'))
 const ManagePolicyDelegation = lazy(() => import('../modules/super-admin/policy-delegation/components'))
+const ManagePolicyAuthorization = lazy(() => import('../modules/super-admin/policy-authorization/components'))
+const AuthorizationLogging = lazy(() => import('../modules/super-admin/authorization-logging/components'))
 const ApiRegistration = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistration'))
 const ApiRegistrationEmployee = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistrationEmployee'))
 const ManageDepartment = lazy(() => import('../modules/super-admin/organizational-unit/components'))
@@ -96,7 +99,7 @@ const EmployeeKpiEvaluationDashboard = lazy(() => import('../modules/kpi/evaluat
 // allocation
 const AffectedFactorManagement = lazy(() => import('../modules/kpi/kpi-allocation/affected-factor-management/component/index'))
 const AllocationManagement = lazy(() => import('../modules/kpi/kpi-allocation/allocation-management/component/index'))
-const ConfigManagement = lazy(() => import('../modules/kpi/kpi-allocation/config-management/component/index'))
+// const ConfigManagement = lazy(() => import('../modules/kpi/kpi-allocation/config-management/component/index'))
 const TaskPackageManagement = lazy(() => import('../modules/kpi/kpi-allocation/task-package-management/component/index'))
 
 const TaskManagement = lazy(() => import('../modules/task/task-management/component/taskManagement'))
@@ -173,15 +176,17 @@ const SalesStatistics = lazy(() => import('../modules/production/order/sales-sta
 const Forecast = lazy(() => import('../modules/production/order/forecast/components'))
 const Discount = lazy(() => import('../modules/production/order/discount/components'))
 const Quote = lazy(() => import('../modules/production/order/quote/components'))
-const SalesOrderDashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
+const Dashboard = lazy(() => import('../modules/production/order/sales-order-dashboard/components'))
 
 const ServiceLevelAgreement = lazy(() => import('../modules/production/order/service-level-agreement/components'))
 const BusinessDepartment = lazy(() => import('../modules/production/order/business-department/components'))
 const Payment = lazy(() => import('../modules/production/order/payment/components'))
 const BankAccount = lazy(() => import('../modules/production/order/bank-account/components'))
 const OrderRequestManagement = lazy(() => import('../modules/production/order/request-management/components'))
-const MarketingCampaign = lazy(() => import('../modules/production/order/marketing/components'))
-const MarketingCampaignDetail = lazy(() => import('../modules/production/order/marketing/components/CampaignDetail'))
+const MarketingCampaign = lazy(() => import('../modules/production/order/marketing/marketing-management/components'))
+const MarketingDashboard = lazy(() => import('../modules/production/order/marketing/marketing-dashboard/components'))
+const MarketingForecast = lazy(() => import('../modules/production/order/marketing/marketing-forecast/components'))
+const MarketingCampaignDetail = lazy(() => import('../modules/production/order/marketing/marketing-management/components/CampaignDetail.jsx'))
 
 // plans
 const PlanManagement = lazy(() => import("../modules/plan/components"))
@@ -268,6 +273,8 @@ const SystemApiManagement = lazy(() => import('../modules/system-admin/system-ap
 const PrivilegeApiManagement = lazy(
   () => import('../modules/system-admin/system-api/system-api-privilege/components/privilegeApiManagement')
 )
+const ManageRequester = lazy(() => import('../modules/system-admin/requester-management/components'))
+const ManageResource = lazy(() => import('../modules/system-admin/resource-management/components'))
 const InternalServiceIdentityManagement = lazy(() => import('../modules/system-admin/internal-service-identity/components'))
 const ExternalServiceConsumerManagement = lazy(() => import('../modules/super-admin/external-service-consumer/components'))
 const InternalPolicyManagement = lazy(() => import('../modules/system-admin/internal-policy/components'))
@@ -527,6 +534,29 @@ class Routes extends Component {
             component={ManageUser}
           />
           <PrivateRoute
+            isLoading={this.props.service.isLoading}
+            key='services-management'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/services-management',
+                name: 'manage_service',
+                icon: 'fa fa-cogs'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/services-management'
+            path='/services-management'
+            pageName='manage_service'
+            layout={Layout}
+            component={ManageService}
+          />
+          <PrivateRoute
             isLoading={this.props.role.isLoading}
             arrPage={[
               {
@@ -571,6 +601,52 @@ class Routes extends Component {
             pageName='manage_link'
             layout={Layout}
             component={ManageLink}
+          />
+          <PrivateRoute
+            isLoading={this.props.requester.isLoading}
+            key='requesters-management'
+            arrPage={[
+              {
+                requester: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                requester: '/requesters-management',
+                name: 'manage_requester',
+                icon: 'fa fa-users'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/requesters-management'
+            path='/requesters-management'
+            pageName='manage_requester'
+            layout={Layout}
+            component={ManageRequester}
+          />
+          <PrivateRoute
+            isLoading={this.props.resource.isLoading}
+            key='resources-management'
+            arrPage={[
+              {
+                requester: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                requester: '/resources-management',
+                name: 'manage_resource',
+                icon: 'fa fa-tasks'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/resources-management'
+            path='/resources-management'
+            pageName='manage_resource'
+            layout={Layout}
+            component={ManageResource}
           />
           <PrivateRoute
             isLoading={this.props.attribute.isLoading}
@@ -640,6 +716,52 @@ class Routes extends Component {
             pageName='manage_policy_delegation'
             layout={Layout}
             component={ManagePolicyDelegation}
+          />
+          <PrivateRoute
+            isLoading={this.props.policyAuthorization.isLoading}
+            key='authorization-policies-management'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/authorization-policies-management',
+                name: 'manage_policy_authorization',
+                icon: 'fa fa-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/authorization-policies-management'
+            path='/authorization-policies-management'
+            pageName='manage_policy_authorization'
+            layout={Layout}
+            component={ManagePolicyAuthorization}
+          />
+          <PrivateRoute
+            isLoading={this.props.authorizationLogging.isLoading}
+            key='authorization-logging'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/authorization-logging',
+                name: 'authorization_logging',
+                icon: 'fa fa-eye'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/authorization-logging'
+            path='/authorization-logging'
+            pageName='authorization_logging'
+            layout={Layout}
+            component={AuthorizationLogging}
           />
           <PrivateRoute
             isLoading={this.props.api?.isLoading}
@@ -1867,7 +1989,7 @@ class Routes extends Component {
             layout={Layout}
             component={AllocationManagement}
           />
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={false}
             key='kpi_allocation_config_management'
             arrPage={[
@@ -1885,7 +2007,7 @@ class Routes extends Component {
             pageName='kpi_allocation_config_management'
             layout={Layout}
             component={ConfigManagement}
-          />
+          /> */}
           <PrivateRoute
             isLoading={false}
             key='kpi_allocation_task_package_management'
@@ -3100,7 +3222,7 @@ class Routes extends Component {
             path='/manage-sales-order-dashboard'
             pageName='manage_sales_order_dashboard'
             layout={Layout}
-            component={SalesOrderDashboard}
+            component={Dashboard}
           />
 
           <PrivateRoute
@@ -3251,7 +3373,7 @@ class Routes extends Component {
               {
                 link: '/marketing-campaign',
                 name: 'marketing_campaign',
-                icon: 'fa fa-bandcamp'
+                icon: 'fa fa-file-text-o'
               }
             ]}
             auth={auth}
@@ -3261,6 +3383,44 @@ class Routes extends Component {
             pageName='marketing_campaign'
             layout={Layout}
             component={MarketingCampaign}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key='order-marketing-dashboard'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/marketing-dashboard',
+                name: 'marketing_dashboard',
+                icon: 'fa fa-dashboard'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/marketing-dashboard'
+            path='/marketing-dashboard'
+            pageName='marketing_dashboard'
+            layout={Layout}
+            component={MarketingDashboard}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key='order-marketing-forecast'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/marketing-forecast',
+                name: 'marketing_forecast',
+                icon: 'fa fa-dollar'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/marketing-forecast'
+            path='/marketing-forecast'
+            pageName='marketing_forecast'
+            layout={Layout}
+            component={MarketingForecast}
           />
           <PrivateRoute
             isLoading={false}

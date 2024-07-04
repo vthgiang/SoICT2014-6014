@@ -4,6 +4,7 @@ import { useTranslate } from 'react-redux-multilingual'
 import { Backdrop, Box, CircularProgress, Tab, Tabs } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import KpiAllocationEachUnitResult from './kpiAllocationEachUnitResult'
+import EditFormKpiUnit from './editFormKpiUnit'
 import { ConfigParametersAction } from './redux/actions'
 
 function CustomTabPanel(props) {
@@ -154,6 +155,18 @@ function AllocationResult({ listUnitKpi }) {
     setListResource(departmentsWithKpi)
   }
 
+  const updatePlannedValue = (departmentName, kpiDescription, newValue) => {
+    const department = responseOutput.content.list_unit_kpi.find((dept) => dept.unit_name === departmentName)
+    if (!department) return false
+
+    const metric = department.unit_list_metric.find((kpi) => kpi.description === kpiDescription)
+    if (!metric) return false
+
+    metric.planed_value = newValue
+
+    return true
+  }
+
   const handleStartAssignAllocation = () => {
     const param = {
       responseServerOutput: responseOutput,
@@ -161,6 +174,39 @@ function AllocationResult({ listUnitKpi }) {
       listUnitKpi
     }
     dispatch(ConfigParametersAction.handleAssignAllocation(param))
+  }
+
+  const [isOpenModal, setIsOpenModal] = useState(false)
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false)
+    window.$('#allocation-kpi-into-unit').modal('show')
+  }
+
+  const handleSetTabSelectedUnitKpiTree = (updateData) => {
+    setTabSelectedUnitKpiTree(updateData)
+    updateData.units.forEach((item) => {
+      updatePlannedValue(item.unit_name, updateData.description, item.planed_value)
+    })
+    handleCloseModal()
+  }
+
+  const handleOpenModal = () => {
+    setIsOpenModal(true)
+    window.$('#allocation-kpi-into-unit').modal('hide')
+  }
+
+  const renderEditFormKpiUnit = () => {
+    if (allocationResult !== undefined)
+      return (
+        <EditFormKpiUnit
+          isOpenModal={isOpenModal}
+          tabSelectedUnitKpiTree={tabSelectedUnitKpiTree}
+          handleSetTabSelectedUnitKpiTree={handleSetTabSelectedUnitKpiTree}
+          handleCloseModal={handleCloseModal}
+        />
+      )
+    return null
   }
 
   return (
@@ -184,7 +230,7 @@ function AllocationResult({ listUnitKpi }) {
             {listTab.map((_, index) => {
               return (
                 <CustomTabPanel value={value} index={index}>
-                  <KpiAllocationEachUnitResult tabSelectedUnitKpiTree={tabSelectedUnitKpiTree} />
+                  <KpiAllocationEachUnitResult tabSelectedUnitKpiTree={tabSelectedUnitKpiTree} handleOpenModal={handleOpenModal} />
                 </CustomTabPanel>
               )
             })}
@@ -196,6 +242,7 @@ function AllocationResult({ listUnitKpi }) {
           </button>
         </div>
       </div>
+      {renderEditFormKpiUnit()}
     </>
   )
 }

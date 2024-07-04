@@ -10,7 +10,7 @@ class Loading extends Component {
     return (
       <React.Fragment>
         <span>
-          <div className='loader'></div>
+          <div className='loader' style={{...this.props.styleInner}}></div>
         </span>
         <div className='bg-loader' id='loading-data' style={{ display: 'block' }}></div>
       </React.Fragment>

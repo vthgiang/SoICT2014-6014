@@ -4,8 +4,6 @@ const Terms = require('../helpers/config');
 const linksPermission = require('../middleware/servicesPermission').links;
 const categoryChild = require('./CategoryChild.json');
 const listProducts = require('./ListProduct.json');
-const marketingCampaign = require('./MarketingCampaign.json');
-const marketingEffective = require('./MarketingEffective.json');
 const saleOrders = require('./SaleOrders.json');
 const listCustomer = require('./Customer.json');
 const listTransport3Orders = require('./transport3orders.json');
@@ -54,7 +52,6 @@ const {
   Bill,
   Category,
   Good,
-  MarketingCampaign,
   SalesOrder,
 
   Tax,
@@ -219,7 +216,6 @@ const initSampleCompanyDB = async () => {
     if (!db.models.Lot) Lot(db);
     if (!db.models.Category) Category(db);
     if (!db.models.Good) Good(db);
-    if (!db.models.MarketingCampaign) MarketingCampaign(db);
     if (!db.models.Tax) Tax(db);
     if (!db.models.ServiceLevelAgreement) ServiceLevelAgreement(db);
     if (!db.models.Discount) Discount(db);
@@ -243,10 +239,8 @@ const initSampleCompanyDB = async () => {
     if (!db.models.ManufacturingPlan) ManufacturingPlan(db);
     if (!db.models.ManufacturingCommand) ManufacturingCommand(db);
     if (!db.models.ManufacturingQualityError) ManufacturingQualityError(db);
-    if (!db.models.ManufacturingQualityCriteria)
-      ManufacturingQualityCriteria(db);
-    if (!db.models.ManufacturingQualityInspection)
-      ManufacturingQualityInspection(db);
+    if (!db.models.ManufacturingQualityCriteria) ManufacturingQualityCriteria(db);
+    if (!db.models.ManufacturingQualityInspection) ManufacturingQualityInspection(db);
     if (!db.models.ManufacturingRouting) ManufacturingRouting(db);
 
     if (!db.models.TransportDepartment) TransportDepartment(db);
@@ -254,6 +248,10 @@ const initSampleCompanyDB = async () => {
     if (!db.models.TransportRequirement) TransportRequirement(db);
     if (!db.models.TransportPlan) TransportPlan(db);
     if (!db.models.TransportSchedule) TransportSchedule(db);
+    if (!db.models.Transport3Employee) Transport3Employee(db);
+    if (!db.models.Transport3Order) Transport3Order(db);
+    if (!db.models.Transport3Schedule) Transport3Schedule(db);
+    if (!db.models.Transport3Vehicle) Transport3Vehicle(db);
     if (!db.models.AllocationConfigSetting) AllocationConfigSetting(db);
     if (!db.models.DeliverySchedule) DeliverySchedule(db);
     if (!db.models.ProductRequestManagement) ProductRequestManagement(db);
@@ -1143,14 +1141,7 @@ const initSampleCompanyDB = async () => {
       'Nhà máy sản xuất thuốc bột của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
     managers: [quanDocNhaMayThuocBot._id],
     deputyManagers: [],
-    employees: [
-      nvNhaMayThuocBot._id,
-      nvXuongNguyenLieu._id,
-      nvXuongXay._id,
-      nvXuongTron._id,
-      nvXuongNen._id,
-      nvXuongDongGoi._id,
-    ],
+    employees: [nvNhaMayThuocBot._id, nvXuongNguyenLieu._id, nvXuongXay._id, nvXuongTron._id, nvXuongNen._id, nvXuongDongGoi._id],
     parent: Directorate._id,
   });
   const nhamaythuocnuoc = await OrganizationalUnit(vnistDB).create({
@@ -1282,37 +1273,37 @@ const initSampleCompanyDB = async () => {
       company: vnist._id,
     },
     {
-      name: 'Lê Đàm Quân',
+      name: 'Lê Đàm Quân test',
       email: 'ldq.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Nguyễn Minh Chiến',
+      name: 'Nguyễn Minh Chiến test',
       email: 'nmc.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Chu Văn Thành',
+      name: 'Chu Văn Thành test',
       email: 'cvt.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Nguyễn Hoàng Thương',
+      name: 'Nguyễn Hoàng Thương test',
       email: 'nht.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Dương Đăng Quang',
+      name: 'Dương Đăng Quang test',
       email: 'ddq.vnist@gmail.com',
       password: hash,
       company: vnist._id,
     },
     {
-      name: 'Nguyễn Khánh Duy',
+      name: 'Nguyễn Khánh Duy test',
       email: 'nkd.vnist@gmail.com',
       password: hash,
       company: vnist._id,
@@ -1371,6 +1362,102 @@ const initSampleCompanyDB = async () => {
       password: hash,
       company: vnist._id,
     },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
+    // {
+    //   name: 'Đinh Thị Ngọc Anh test1tst2tes3',
+    //   email: 'dádasdtna.vnist@gmail.com',
+    //   password: hash,
+    //   company: vnist._id,
+    // },
   ]);
 
   //Khởi tạo Role cho bộ phận kinh doanh
@@ -1446,27 +1533,23 @@ const initSampleCompanyDB = async () => {
   //Kết thúc phần khởi tạo role cho phòng nhân sự
 
   //Khởi tạo Role cho phòng kế hoạch
-  const thanhVienPhongKeHoach2 = await Role(vnistDB).create({
-    parents: [roleEmployee._id],
-    name: 'Thành viên phòng kế hoạch công ty VNIST 2',
-    type: roleChucDanh._id,
-  });
+  // const thanhVienPhongKeHoach2 = await Role(vnistDB).create({
+  //   parents: [roleEmployee._id],
+  //   name: 'Thành viên phòng kế hoạch công ty VNIST 2',
+  //   type: roleChucDanh._id,
+  // });
 
-  const phoPhongPhongKeHoach2 = await Role(vnistDB).create({
-    parents: [roleDeputyManager._id, thanhVienPhongKeHoach2._id],
-    name: 'Phó phòng phòng kế hoạch công ty VNIST 2',
-    type: roleChucDanh._id,
-  });
+  // const phoPhongPhongKeHoach2 = await Role(vnistDB).create({
+  //   parents: [roleDeputyManager._id, thanhVienPhongKeHoach2._id],
+  //   name: 'Phó phòng phòng kế hoạch công ty VNIST 2',
+  //   type: roleChucDanh._id,
+  // });
 
-  const giamDocPhongKeHoach2 = await Role(vnistDB).create({
-    parents: [
-      roleManager._id,
-      thanhVienPhongKeHoach2._id,
-      phoPhongPhongKeHoach2._id,
-    ],
-    name: 'Trưởng phòng phòng kế hoạch công ty VNIST 2',
-    type: roleChucDanh._id,
-  });
+  // const giamDocPhongKeHoach2 = await Role(vnistDB).create({
+  //   parents: [roleManager._id, thanhVienPhongKeHoach2._id, phoPhongPhongKeHoach2._id],
+  //   name: 'Trưởng phòng phòng kế hoạch công ty VNIST 2',
+  //   type: roleChucDanh._id,
+  // });
   //Kết thúc phần khởi tạo role cho phòng kế hoạch
 
   //Khởi tạo Role cho giám đốc
@@ -1534,25 +1617,41 @@ const initSampleCompanyDB = async () => {
     },
   ]);
 
-  const phongKeHoach2 = await OrganizationalUnit(vnistDB).insertMany([
-    {
-      name: 'Phòng Kế hoạch công ty VNIST 2',
-      description: 'Phòng Kế hoạch công ty VNIST 2',
-      managers: [giamDocPhongKeHoach2._id],
-      parent: Directorate2._id,
-      deputyManagers: [phoPhongPhongKeHoach2._id],
-      employees: [thanhVienPhongKeHoach2._id],
-    },
-  ]);
+  // const phongKeHoach2 = await OrganizationalUnit(vnistDB).insertMany([
+  //   {
+  //     name: 'Phòng Kế hoạch công ty VNIST 2',
+  //     description: 'Phòng Kế hoạch công ty VNIST 2',
+  //     managers: [giamDocPhongKeHoach2._id],
+  //     parent: Directorate2._id,
+  //     deputyManagers: [phoPhongPhongKeHoach2._id],
+  //     employees: [thanhVienPhongKeHoach2._id],
+  //   },
+  // ]);
 
   await UserRole(vnistDB).insertMany([
     {
-      userId: users2[0]._id,
+      userId: users2[22]._id,
+      roleId: giamDoc2._id,
+    },
+    {
+      userId: users2[23]._id,
+      roleId: phoGiamDoc2._id,
+    },
+    {
+      userId: users2[24]._id,
+      roleId: thanhVienBanGiamDoc2._id,
+    },
+    {
+      userId: users2[22]._id,
       roleId: giamDocPhongChamSocKhachHang2._id,
     },
     {
-      userId: users2[1]._id,
+      userId: users2[0]._id,
       roleId: phoPhongPhongChamSocKhachHang2._id,
+    },
+    {
+      userId: users2[1]._id,
+      roleId: thanhVienPhongChamSocKhachHang2._id,
     },
     {
       userId: users2[2]._id,
@@ -1567,12 +1666,16 @@ const initSampleCompanyDB = async () => {
       roleId: thanhVienPhongChamSocKhachHang2._id,
     },
     {
-      userId: users2[5]._id,
+      userId: users2[22]._id,
       roleId: giamDocPhongNhanSu2._id,
     },
     {
-      userId: users2[6]._id,
+      userId: users2[5]._id,
       roleId: phoPhongPhongNhanSu2._id,
+    },
+    {
+      userId: users2[6]._id,
+      roleId: thanhVienPhongNhanSu2._id,
     },
     {
       userId: users2[7]._id,
@@ -1587,12 +1690,16 @@ const initSampleCompanyDB = async () => {
       roleId: thanhVienPhongNhanSu2._id,
     },
     {
-      userId: users2[10]._id,
+      userId: users2[22]._id,
       roleId: giamDocPhongKinhDoanh2._id,
     },
     {
-      userId: users2[11]._id,
+      userId: users2[10]._id,
       roleId: phoPhongPhongKinhDoanh2._id,
+    },
+    {
+      userId: users2[11]._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
     },
     {
       userId: users2[12]._id,
@@ -1612,40 +1719,104 @@ const initSampleCompanyDB = async () => {
     },
     {
       userId: users2[16]._id,
-      roleId: giamDocPhongKeHoach2._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
     },
     {
       userId: users2[17]._id,
-      roleId: phoPhongPhongKeHoach2._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
     },
     {
       userId: users2[18]._id,
-      roleId: thanhVienPhongKeHoach2._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
     },
     {
       userId: users2[19]._id,
-      roleId: thanhVienPhongKeHoach2._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
     },
     {
       userId: users2[20]._id,
-      roleId: thanhVienPhongKeHoach2._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
     },
     {
       userId: users2[21]._id,
-      roleId: thanhVienPhongKeHoach2._id,
+      roleId: thanhVienPhongKinhDoanh2._id,
     },
-    {
-      userId: users2[22]._id,
-      roleId: giamDoc2._id,
-    },
-    {
-      userId: users2[23]._id,
-      roleId: phoGiamDoc2._id,
-    },
-    {
-      userId: users2[24]._id,
-      roleId: thanhVienBanGiamDoc2._id,
-    },
+    // {
+    //   userId: users2[22]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[23]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[24]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[25]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[26]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[27]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[28]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[29]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[30]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[31]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[32]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[33]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[34]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[35]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[36]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[37]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[38]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[39]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
+    // {
+    //   userId: users2[40]._id,
+    //   roleId: thanhVienPhongKinhDoanh2._id,
+    // },
   ]);
 
   /**
@@ -1688,9 +1859,7 @@ const initSampleCompanyDB = async () => {
         } else {
           if (url?.apis?.length > 0) {
             url.apis.map((api) => {
-              checkDuplicate = dataApis.filter(
-                (item) => item.path === api.path && item.method === api.method
-              );
+              checkDuplicate = dataApis.filter((item) => item.path === api.path && item.method === api.method);
               if (checkDuplicate?.length === 0) {
                 dataApis.push(api);
               }
@@ -1779,13 +1948,8 @@ const initSampleCompanyDB = async () => {
     });
 
     let dataSystemComponents = systemLinks.map((link) => link.components);
-    dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [
-      ...arr1,
-      ...arr2,
-    ]);
-    dataSystemComponents.filter(
-      (component, index) => dataSystemComponents.indexOf(component) === index
-    );
+    dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [...arr1, ...arr2]);
+    dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
     const systemComponents = await SystemComponent(systemDB)
       .find({ _id: { $in: dataSystemComponents } })
       .populate({ path: 'roles' });
@@ -1829,13 +1993,7 @@ const initSampleCompanyDB = async () => {
   };
   let linkArrData = await SystemLink(systemDB).find();
   let linkArr = linkArrData.map((link) => link._id);
-  let roleArr = [
-    roleSuperAdmin,
-    roleAdmin,
-    roleManager,
-    roleDeputyManager,
-    roleEmployee,
-  ];
+  let roleArr = [roleSuperAdmin, roleAdmin, roleManager, roleDeputyManager, roleEmployee];
   await createCompanyLinks(linkArr, roleArr);
   await createCompanyComponents(linkArr);
 
@@ -1893,8 +2051,7 @@ const initSampleCompanyDB = async () => {
       code: '7480201',
       // parents: [majorsParent[0]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 1
@@ -1902,8 +2059,7 @@ const initSampleCompanyDB = async () => {
       code: '7480202',
       // parents: [majorsParent[0]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 2
@@ -1911,8 +2067,7 @@ const initSampleCompanyDB = async () => {
       code: '7480101',
       // parents: [majorsParent[1]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 3
@@ -1920,8 +2075,7 @@ const initSampleCompanyDB = async () => {
       code: '7480102',
       // parents: [majorsParent[1]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 4
@@ -1929,8 +2083,7 @@ const initSampleCompanyDB = async () => {
       code: '7480103',
       // parents: [majorsParent[1]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 5
@@ -1938,8 +2091,7 @@ const initSampleCompanyDB = async () => {
       code: '7480104',
       // parents: [majorsParent[1]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 6
@@ -1947,8 +2099,7 @@ const initSampleCompanyDB = async () => {
       code: '7480106',
       // parents: [majorsParent[1]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 7
@@ -1956,8 +2107,7 @@ const initSampleCompanyDB = async () => {
       code: '7480108',
       // parents: [majorsParent[1]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 8
@@ -1965,8 +2115,7 @@ const initSampleCompanyDB = async () => {
       code: '7460101',
       // parents: [majorsParent[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 9
@@ -1974,8 +2123,7 @@ const initSampleCompanyDB = async () => {
       code: '7480108',
       // parents: [majorsParent[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 10
@@ -1983,8 +2131,7 @@ const initSampleCompanyDB = async () => {
       code: '7460112',
       // parents: [majorsParent[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 11
@@ -1992,8 +2139,7 @@ const initSampleCompanyDB = async () => {
       code: '7460115',
       // parents: [majorsParent[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 12
@@ -2001,8 +2147,7 @@ const initSampleCompanyDB = async () => {
       code: '7460117',
       // parents: [majorsParent[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
   ]);
 
@@ -2013,8 +2158,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'OSCE',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 1
@@ -2022,8 +2166,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'OSCP',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 2
@@ -2031,8 +2174,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'CEH',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 3
@@ -2040,8 +2182,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'CISSP',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 4
@@ -2049,8 +2190,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'CHFI',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 5
@@ -2058,8 +2198,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'CSPA',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 6
@@ -2067,8 +2206,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'CSPA',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 7
@@ -2076,8 +2214,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'OSWE',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 8
@@ -2085,8 +2222,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'GPEN',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
     {
       // 9
@@ -2094,8 +2230,7 @@ const initSampleCompanyDB = async () => {
       abbreviation: 'GXPN',
       majors: [majors[2]._id],
       company: vnist._id,
-      score:
-        Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
+      score: Math.floor(Math.random() * (max_score - min_score + 1)) + min_score,
     },
   ]);
 
@@ -3423,13 +3558,7 @@ const initSampleCompanyDB = async () => {
       typeRegisterForUse: 2,
       description: 'Điều hòa Panasonic 9.000BTU',
       detailInfo: [],
-      readByRoles: [
-        giamDoc._id,
-        roleAdmin._id,
-        roleSuperAdmin._id,
-        roleManager._id,
-        thanhVienBGĐ._id,
-      ],
+      readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id],
       usageLogs: [],
       // bảo trì thiết bị
       maintainanceLogs: [
@@ -3493,14 +3622,7 @@ const initSampleCompanyDB = async () => {
       typeRegisterForUse: 2,
       description: 'Máy tính cây',
       detailInfo: [],
-      readByRoles: [
-        roleAdmin._id,
-        roleSuperAdmin._id,
-        roleManager._id,
-        thanhVienBGĐ._id,
-        truongPhongHC._id,
-        phoPhongHC._id,
-      ],
+      readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id, truongPhongHC._id, phoPhongHC._id],
       usageLogs: [],
       // bảo trì thiết bị
       maintainanceLogs: [
@@ -3564,14 +3686,7 @@ const initSampleCompanyDB = async () => {
       typeRegisterForUse: 2,
       description: 'Máy tính cây',
       detailInfo: [],
-      readByRoles: [
-        roleAdmin._id,
-        roleSuperAdmin._id,
-        roleManager._id,
-        nvPhongHC._id,
-        truongPhongHC._id,
-        phoPhongHC._id,
-      ],
+      readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleManager._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
       usageLogs: [],
       // bảo trì thiết bị
       maintainanceLogs: [
@@ -3635,13 +3750,7 @@ const initSampleCompanyDB = async () => {
       typeRegisterForUse: 2,
       description: 'Máy tính cây',
       detailInfo: [],
-      readByRoles: [
-        roleAdmin._id,
-        roleManager._id,
-        nvPhongHC._id,
-        truongPhongHC._id,
-        phoPhongHC._id,
-      ],
+      readByRoles: [roleAdmin._id, roleManager._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
       usageLogs: [],
       // bảo trì thiết bị
       maintainanceLogs: [
@@ -3705,13 +3814,7 @@ const initSampleCompanyDB = async () => {
       typeRegisterForUse: 3,
       description: 'Máy tính cây',
       detailInfo: [],
-      readByRoles: [
-        giamDoc._id,
-        roleAdmin._id,
-        roleSuperAdmin._id,
-        roleManager._id,
-        thanhVienBGĐ._id,
-      ],
+      readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id],
       usageLogs: [],
       // bảo trì thiết bị
       maintainanceLogs: [],
@@ -3768,14 +3871,7 @@ const initSampleCompanyDB = async () => {
       typeRegisterForUse: 3,
       description: 'Máy xay nguyên liệu',
       detailInfo: [],
-      readByRoles: [
-        giamDoc._id,
-        roleAdmin._id,
-        roleSuperAdmin._id,
-        roleManager._id,
-        thanhVienBGĐ._id,
-        quanDocNhaMayThuocBot._id,
-      ],
+      readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id, quanDocNhaMayThuocBot._id],
       usageLogs: [],
       maintainanceLogs: [],
       incidentLogs: [
@@ -3825,14 +3921,7 @@ const initSampleCompanyDB = async () => {
       typeRegisterForUse: 3,
       description: 'Máy trộn nguyên liệu',
       detailInfo: [],
-      readByRoles: [
-        giamDoc._id,
-        roleAdmin._id,
-        roleSuperAdmin._id,
-        roleManager._id,
-        thanhVienBGĐ._id,
-        quanDocNhaMayThuocBot._id,
-      ],
+      readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id, quanDocNhaMayThuocBot._id],
       usageLogs: [],
       maintainanceLogs: [],
       incidentLogs: [
@@ -3882,14 +3971,7 @@ const initSampleCompanyDB = async () => {
       typeRegisterForUse: 3,
       description: 'Máy nén thuốc viên',
       detailInfo: [],
-      readByRoles: [
-        giamDoc._id,
-        roleAdmin._id,
-        roleSuperAdmin._id,
-        roleManager._id,
-        thanhVienBGĐ._id,
-        quanDocNhaMayThuocBot._id,
-      ],
+      readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, thanhVienBGĐ._id, quanDocNhaMayThuocBot._id],
       usageLogs: [],
       maintainanceLogs: [],
       incidentLogs: [
@@ -3943,14 +4025,7 @@ const initSampleCompanyDB = async () => {
     typeRegisterForUse: 3,
     description: 'BK',
     detailInfo: [],
-    readByRoles: [
-      giamDoc._id,
-      roleAdmin._id,
-      roleSuperAdmin._id,
-      roleManager._id,
-      truongPhongHC._id,
-      phoPhongHC._id,
-    ],
+    readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleManager._id, truongPhongHC._id, phoPhongHC._id],
     usageLogs: [],
     // bảo trì thiết bị
     maintainanceLogs: [],
@@ -3996,14 +4071,7 @@ const initSampleCompanyDB = async () => {
     typeRegisterForUse: 3,
     description: 'Phòng họp',
     detailInfo: [],
-    readByRoles: [
-      giamDoc._id,
-      roleAdmin._id,
-      thanhVienBGĐ._id,
-      nvPhongHC._id,
-      truongPhongHC._id,
-      phoPhongHC._id,
-    ],
+    readByRoles: [giamDoc._id, roleAdmin._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
     usageLogs: [{}],
     // bảo trì thiết bị
     maintainanceLogs: [],
@@ -4697,9 +4765,7 @@ const initSampleCompanyDB = async () => {
      ----------------------------------------------------------------------------------------------- */
 
   // TẠO DỮ LIỆU ĐĂNG KÝ CẤP VẬT TƯ
-  const suppliesPurchaseRequests = await SuppliesPurchaseRequest(
-    vnistDB
-  ).insertMany([
+  const suppliesPurchaseRequests = await SuppliesPurchaseRequest(vnistDB).insertMany([
     {
       company: vnist._id,
       recommendNumber: 'DNMS20220421.231192',
@@ -5099,15 +5165,11 @@ const initSampleCompanyDB = async () => {
     },
   ];
 
-  const manufacturingMills = await ManufacturingMill(vnistDB).insertMany(
-    manufacturingMillsData
-  );
+  const manufacturingMills = await ManufacturingMill(vnistDB).insertMany(manufacturingMillsData);
 
   console.log('Tạo dữ liệu xưởng sản xuất');
 
-  const manufacturingWorks0 = await ManufacturingWorks(vnistDB).findById(
-    manufacturingWorks[0]._id
-  );
+  const manufacturingWorks0 = await ManufacturingWorks(vnistDB).findById(manufacturingWorks[0]._id);
   manufacturingWorks0.manufacturingMills = [
     manufacturingMills[0]._id,
     manufacturingMills[1]._id,
@@ -5122,22 +5184,12 @@ const initSampleCompanyDB = async () => {
   ];
   await manufacturingWorks0.save();
 
-  const manufacturingWorks1 = await ManufacturingWorks(vnistDB).findById(
-    manufacturingWorks[1]._id
-  );
-  manufacturingWorks1.manufacturingMills = [
-    manufacturingMills[3]._id,
-    manufacturingMills[4]._id,
-  ];
+  const manufacturingWorks1 = await ManufacturingWorks(vnistDB).findById(manufacturingWorks[1]._id);
+  manufacturingWorks1.manufacturingMills = [manufacturingMills[3]._id, manufacturingMills[4]._id];
   await manufacturingWorks1.save();
 
-  const manufacturingWorks2 = await ManufacturingWorks(vnistDB).findById(
-    manufacturingWorks[2]._id
-  );
-  manufacturingWorks2.manufacturingMills = [
-    manufacturingMills[5]._id,
-    manufacturingMills[6]._id,
-  ];
+  const manufacturingWorks2 = await ManufacturingWorks(vnistDB).findById(manufacturingWorks[2]._id);
+  manufacturingWorks2.manufacturingMills = [manufacturingMills[5]._id, manufacturingMills[6]._id];
   await manufacturingWorks2.save();
 
   /*---------------------------------------------------------------------------------------------
@@ -5202,12 +5254,6 @@ const initSampleCompanyDB = async () => {
   });
   await Category(vnistDB).insertMany(listCategoryChild1);
 
-  var listMarketing = marketingCampaign.map((subCat) => {
-    return {
-      ...subCat,
-    };
-  });
-  await MarketingCampaign(vnistDB).insertMany(listMarketing);
   /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU HÀNG HÓA
@@ -5427,9 +5473,7 @@ const initSampleCompanyDB = async () => {
       salesPriceVariance: 9000,
     };
 
-    let category = listCategoryChild1.find(
-      (category) => category.code === product.categories_id
-    );
+    let category = listCategoryChild1.find((category) => category.code === product.categories_id);
     if (category) {
       newProduct.category = category._id;
     }
@@ -5810,11 +5854,7 @@ const initSampleCompanyDB = async () => {
       unit: 'mét khối',
       capacity: 200,
       contained: 10,
-      child: [
-        listBinLocationChilds[0]._id,
-        listBinLocationChilds[1]._id,
-        listBinLocationChilds[2]._id,
-      ],
+      child: [listBinLocationChilds[0]._id, listBinLocationChilds[1]._id, listBinLocationChilds[2]._id],
       enableGoods: [
         {
           good: listGood[0]._id,
@@ -5875,9 +5915,7 @@ const initSampleCompanyDB = async () => {
     },
   ];
 
-  const manufacturingPlans = await ManufacturingPlan(vnistDB).insertMany(
-    manufacturingPlansData
-  );
+  const manufacturingPlans = await ManufacturingPlan(vnistDB).insertMany(manufacturingPlansData);
 
   console.log('Tạo kế hoạch sản xuất');
 
@@ -5957,20 +5995,14 @@ const initSampleCompanyDB = async () => {
     },
   ];
 
-  const manufacturingCommands = await ManufacturingCommand(vnistDB).insertMany(
-    manufacturingCommandData
-  );
+  const manufacturingCommands = await ManufacturingCommand(vnistDB).insertMany(manufacturingCommandData);
 
   console.log('Tạo lệnh sản xuất');
 
   // Gán lệnh SX vào trong kế hoạch sản xuất
 
-  const manufacturingPlansNumber0 = await ManufacturingPlan(vnistDB).findById(
-    manufacturingPlans[0]._id
-  );
-  manufacturingPlansNumber0.manufacturingCommands.push(
-    manufacturingCommands[0]._id
-  );
+  const manufacturingPlansNumber0 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[0]._id);
+  manufacturingPlansNumber0.manufacturingCommands.push(manufacturingCommands[0]._id);
   await manufacturingPlansNumber0.save();
 
   // ****************** Tạo mẫu dữ liệu mẫu lịch làm việc cho xưởng và công nhân********************
@@ -6041,9 +6073,7 @@ const initSampleCompanyDB = async () => {
     },
   ];
 
-  const workSchedules = await WorkSchedule(vnistDB).insertMany(
-    workScheduleData
-  );
+  const workSchedules = await WorkSchedule(vnistDB).insertMany(workScheduleData);
 
   let workSchedule0 = await WorkSchedule(vnistDB).find({
     _id: {
@@ -6616,9 +6646,7 @@ const initSampleCompanyDB = async () => {
     },
   ];
 
-  const manufacturingQualityCriterias = await ManufacturingQualityCriteria(
-    vnistDB
-  ).insertMany(manufacturingQualityCriteriaData);
+  const manufacturingQualityCriterias = await ManufacturingQualityCriteria(vnistDB).insertMany(manufacturingQualityCriteriaData);
 
   console.log('Tạo dữ liệu tiêu chí kiểm tra chất lượng sản phẩm');
 
@@ -6716,9 +6744,7 @@ const initSampleCompanyDB = async () => {
     },
   ];
 
-  const manufacturingQualityErrors = await ManufacturingQualityError(
-    vnistDB
-  ).insertMany(manufacturingQualityErrorData);
+  const manufacturingQualityErrors = await ManufacturingQualityError(vnistDB).insertMany(manufacturingQualityErrorData);
 
   console.log('Tạo dữ liệu lỗi sản phẩm');
 
@@ -6734,10 +6760,7 @@ const initSampleCompanyDB = async () => {
         inspectionNum: 80,
         passedNum: 75,
         errorNum: 5,
-        errorList: [
-          manufacturingQualityErrors[0]._id,
-          manufacturingQualityErrors[1]._id,
-        ],
+        errorList: [manufacturingQualityErrors[0]._id, manufacturingQualityErrors[1]._id],
         final: 1,
       },
     },
@@ -6771,9 +6794,7 @@ const initSampleCompanyDB = async () => {
     },
   ];
 
-  const manufacturingQualityInspections = await ManufacturingQualityInspection(
-    vnistDB
-  ).insertMany(manufacturingQualityInspectionData);
+  const manufacturingQualityInspections = await ManufacturingQualityInspection(vnistDB).insertMany(manufacturingQualityInspectionData);
 
   /***************** Tạo dữ liệu định tuyến sản xuất ************************/
   const manufacturingRoutingData = [
@@ -6892,9 +6913,7 @@ const initSampleCompanyDB = async () => {
     },
   ];
 
-  const manufacturingRoutings = await ManufacturingRouting(vnistDB).insertMany(
-    manufacturingRoutingData
-  );
+  const manufacturingRoutings = await ManufacturingRouting(vnistDB).insertMany(manufacturingRoutingData);
 
   console.log('Tạo dữ liệu định tuyến sản xuất');
 
@@ -6906,9 +6925,7 @@ const initSampleCompanyDB = async () => {
       createdAt: new Date(),
     },
   ];
-  const customerCareUnits = await CustomerCareUnit(vnistDB).insertMany(
-    CustomerUnitData
-  );
+  const customerCareUnits = await CustomerCareUnit(vnistDB).insertMany(CustomerUnitData);
 
   // ****************** Tạo mẫu dữ liệu khách hàng********************
   console.log('Tạo mẫu dữ liệu nhóm khách hàng');
@@ -7147,10 +7164,8 @@ const initSampleCompanyDB = async () => {
     for (let j = 0; j < 50; j++) {
       const name = await getRandomCustomerName();
       const now = new Date();
-      const month =
-        now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
-      const year =
-        now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
+      const month = now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
+      const year = now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
       const customer = {
         owner: [users[(j % 3) + 5]._id],
         customerStatus: [customerStatuss[j % 5]._id],
@@ -7221,10 +7236,8 @@ const initSampleCompanyDB = async () => {
   let listCustomerData1 = [];
   for (let i = 0; i < 200; i++) {
     const now = new Date();
-    const month =
-      now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
-    const year =
-      now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
+    const month = now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
+    const year = now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
     await Customer(vnistDB).create({
       owner: [users[(i % 3) + 5]._id],
       customerStatus: [customerStatuss[i % 5]._id],
@@ -7305,10 +7318,8 @@ const initSampleCompanyDB = async () => {
     for (let j = 0; j < 50; j++) {
       const careName = await getRamdomCareName();
       const now = new Date();
-      const month =
-        now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
-      const year =
-        now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
+      const month = now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
+      const year = now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
       let care = {
         customerCareStaffs: [users[(j % 3) + 5]._id],
         customerCareTypes: [customerCareTypes[j % 3]._id],
@@ -7700,22 +7711,14 @@ const initSampleCompanyDB = async () => {
   function getRandomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
   }
-  async function insertSalesOrdersInBatches(
-    saleOrders,
-    newProducts,
-    listMarketing
-  ) {
+  async function insertSalesOrdersInBatches(saleOrders, newProducts, listMarketing) {
     let listSales = [];
     let batchPromises = [];
     let products_in_stock = await Good(vnistDB).find({});
     for (let i = 0; i < 100; i++) {
       let salesOrder = saleOrders[i];
-      let product = products_in_stock.find(
-        (product) => product.code === String(salesOrder.product_id)
-      );
-      let marketingCampaign = listMarketing.find(
-        (marketing) => marketing.code == salesOrder.campaign_id
-      );
+      let product = products_in_stock.find((product) => product.code === String(salesOrder.product_id));
+      let marketingCampaign = listMarketing.find((marketing) => marketing.code == salesOrder.campaign_id);
 
       let customer = getRandomElement(listCustomers);
       let user = getRandomElement(users);
@@ -8937,14 +8940,8 @@ const initSampleCompanyDB = async () => {
       department: transportDepartment[0]._id,
     },
   ]);
-  await TransportRequirement(vnistDB).updateOne(
-    { _id: transportRequirement[0]._id },
-    { $set: { transportPlan: transportPlan[0]._id } }
-  );
-  await TransportRequirement(vnistDB).updateOne(
-    { _id: transportRequirement[2]._id },
-    { $set: { transportPlan: transportPlan[0]._id } }
-  );
+  await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[0]._id }, { $set: { transportPlan: transportPlan[0]._id } });
+  await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[2]._id }, { $set: { transportPlan: transportPlan[0]._id } });
 
   const transportSchedule = await TransportSchedule(vnistDB).insertMany([
     {
@@ -9000,38 +8997,26 @@ const initSampleCompanyDB = async () => {
 
   console.log('Khởi tạo xong dữ liệu vận chuyển');
 
-  /*---------------------------------------------------------------------------------------------
-      -----------------------------------------------------------------------------------------------
-          TẠO DỮ LIỆU CẤU HÌNH GIẢI THUẬT CHO GIẢI THUẬT PHÂN BỔ KPI
-      -----------------------------------------------------------------------------------------------
-      ----------------------------------------------------------------------------------------------- */
-  console.log('Khởi tạo cấu hình giải thuật cho giải thuật phân bổ KPI');
+  // /*---------------------------------------------------------------------------------------------
+  //     -----------------------------------------------------------------------------------------------
+  //         TẠO DỮ LIỆU CẤU HÌNH GIẢI THUẬT CHO GIẢI THUẬT PHÂN BỔ KPI
+  //     -----------------------------------------------------------------------------------------------
+  //     ----------------------------------------------------------------------------------------------- */
+  // console.log('Khởi tạo cấu hình giải thuật cho giải thuật phân bổ KPI');
 
-  await AllocationConfigSetting(vnistDB).create({
-    company: vnist._id,
-    numberGeneration: 5000,
-    solutionSize: 40,
-    hmcr: 0.83,
-    par: 0.75,
-    bandwidth: 0.5,
-    alpha: 0.4,
-    beta: 0.6,
-    gamma: 0.6,
-    isAutomatically: true,
-    defaultSetting: {
-      numberGeneration: 5000,
-      solutionSize: 40,
-      hmcr: 0.83,
-      par: 0.75,
-      bandwidth: 0.5,
-      alpha: 0.4,
-      beta: 0.6,
-      gamma: 0.6,
-      isAutomatically: true,
-    },
-  });
+  // await AllocationConfigSetting(vnistDB).create({
+  //   company: vnist._id,
+  //   numberGeneration: 200,
+  //   solutionSize: 50,
+  //   isAutomatically: true,
+  //   defaultSetting: {
+  //     numberGeneration: 200,
+  //     solutionSize: 50,
+  //     isAutomatically: true,
+  //   },
+  // });
 
-  console.log('Khởi tạo xong cấu hình giải thuật cho giải thuật phân bổ KPI');
+  // console.log('Khởi tạo xong cấu hình giải thuật cho giải thuật phân bổ KPI');
 
   /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------

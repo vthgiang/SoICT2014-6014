@@ -40,13 +40,23 @@ function ListProjectNew(props) {
     data: []
   })
 
-  const { project, translate, user } = props
+  const { project, translate, user, assetsManager } = props
   const userId = getStorage('userId')
   const { projectName, startDate, endDate, page, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state
 
+  // Khởi tạo danh sách các cột
+  let column = [
+    { name: translate('project.name'), key: 'name' },
+    { name: translate('project.startDateProject'), key: 'startDate' },
+    { name: translate('project.endDateProject'), key: 'endDate' },
+    { name: translate('project.manager'), key: 'manager' },
+    { name: translate('project.memberProject'), key: 'member' },
+    { name: 'Tài sản', key: 'asset' },
+    { name: 'Trạng thái', key: 'status' },
+    { name: 'Link đến trang phân bổ', key: 'proposalLink' }
+  ]
+
   useEffect(() => {
-    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
-    props.getProjectsDispatch({ calledId: 'user_all', userId })
     props.getAllUserInAllUnitsOfCompany()
     props.getAllOrganizationalUnitKpiSet(null, 1)
     props.getAllAsset({
@@ -54,11 +64,13 @@ function ListProjectNew(props) {
     })
     props.getListTag()
     props.getListCapacity()
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
+    props.getProjectsDispatch({ calledId: 'user_all', userId })
   }, [])
 
   useEffect(() => {
     let data = []
-    if (user?.isLoading === false && project?.isLoading === false) {
+    if (user?.isLoading === false && project?.isLoading === false && assetsManager?.isLoading === false) {
       let currentProjects = _cloneDeep(project.data.paginate) // Sao chép ra mảng mới
       for (let n in currentProjects) {
         data[n] = {
@@ -74,7 +86,16 @@ function ListProjectNew(props) {
             <ToolTip dataTooltip={currentProjects[n]?.responsibleEmployees.map((o) => o.name)} />
           ) : null,
           asset: currentProjects[n]?.assets ? <ToolTip dataTooltip={currentProjects[n]?.assets.map((o) => o.assetName)} /> : null,
-          action: ['view']
+          action: ['view'],
+          proposalLink: (<a 
+                          className="cursor-pointer ml-2 underline" 
+                          aria-haspopup="true"
+                          aria-expanded="true"
+                          href={`/project/project-proposal?id=${currentProjects[n]?._id}`}
+                        > Link
+                        </a>),
+          status: currentProjects[n]?.proposals?.assignment ? <span className="text-green-500">{'Đã có dự liệu phân bổ'}</span> : <span className="text-red-500">{'Chưa có dữ liệu phân bổ'}</span>,
+        
         }
 
         if (checkIfAbleToCRUDProject({ project, user, currentProjectId: currentProjects[n]._id })) {
@@ -301,16 +322,6 @@ function ListProjectNew(props) {
       })
     }
   }
-
-  // Khởi tạo danh sách các cột
-  let column = [
-    { name: translate('project.name'), key: 'name' },
-    { name: translate('project.startDate'), key: 'startDate' },
-    { name: translate('project.endDate'), key: 'endDate' },
-    { name: translate('project.manager'), key: 'manager' },
-    { name: translate('project.member'), key: 'member' },
-    { name: 'Danh sách tài sản', key: 'asset' }
-  ]
 
   const totalPage = project && Math.ceil(project.data.totalDocs / perPage)
 
