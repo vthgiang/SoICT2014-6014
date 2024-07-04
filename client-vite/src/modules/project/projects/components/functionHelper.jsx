@@ -988,3 +988,29 @@ export const calculateRecommendation = async (taskData, aimTime) => {
   // Trả về kết quả cuối cùng
   return ans
 }
+
+export const getListDepartmentsFromListUsers = (listUsersWithUnit) => {
+  return listUsersWithUnit.map((item) => {
+    return {
+      text: item?.text,
+      value: item?.unit
+    }
+  })
+}
+
+export const getUserIdToText = (listDepartments) => {
+  const idToText = {};
+  if (!listDepartments || !listDepartments?.length) {
+    return {}
+  }
+  listDepartments.forEach(department => {
+    // console.log("department: ", department)
+    if (department?.value && department?.value?.length > 0) {
+      department.value.forEach(member => {
+        idToText[member.value] = member.text;
+      });
+    }
+  });
+
+  return idToText
+}
