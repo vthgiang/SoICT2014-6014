@@ -31,7 +31,8 @@ function OntimeDeliveryPredict(props) {
   ]
 
   const handleParameterTuning = async () => {
-    dispatch(ScheduleActions.postHyperparameter())
+    await dispatch(ScheduleActions.postHyperparameter());
+    dispatch(ScheduleActions.getHyperparamter());
   }
   return (
     <>
