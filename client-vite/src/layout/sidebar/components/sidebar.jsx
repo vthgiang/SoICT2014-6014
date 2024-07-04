@@ -542,11 +542,11 @@ class SideBar extends Component {
                     icon: 'fa fa-flash',
                     path: '/bidding-project-template'
                   },
-                  {
-                    name: 'menu.manage_tag',
-                    icon: 'fa fa-tags',
-                    path: '/tags-management'
-                  }
+                  // {
+                  //   name: 'menu.manage_tag',
+                  //   icon: 'fa fa-tags',
+                  //   path: '/tags-management'
+                  // }
                 ]
               }}
             />
@@ -571,6 +571,11 @@ class SideBar extends Component {
                     name: 'menu.project_proposal',
                     icon: 'fa fa-flash',
                     path: '/project/project-proposal'
+                  },
+                  {
+                    name: 'menu.tags_management',
+                    icon: 'fa fa-tags',
+                    path: '/tags-management'
                   },
                   {
                     name: 'menu.project_report',
