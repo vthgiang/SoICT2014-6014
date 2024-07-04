@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DatePicker } from "../../../../common-components";
+import { ProjectStatusQuantityStatistic } from "./projectQuantityStatistic";
+import { BiddingPackageStatusQuantityStatistic } from "./biddingPackageStatistic";
+import { EmployeeStatusQuantityStatistic } from "./employeeStatusQuantityStatistic";
+import { AssetStatusQuantityStatistic } from "./assetStatusQuantityStatistic";
 
 function ProjectStatisticPage(props) {
   const { translate } = props
@@ -48,7 +52,7 @@ function ProjectStatisticPage(props) {
 
         {/* Project Quantity => TODO split component */}
         <div className='row'>
-          <div className='col-md-3 col-sm-6 form-inline'>
+          <div className='col-md-6 col-sm-6 form-inline'>
             <div className='info-box'>
               <span className='info-box-icon bg-yellow'>
                 <i className='fa fa-archive'></i>
@@ -60,49 +64,26 @@ function ProjectStatisticPage(props) {
               </div>
             </div>
           </div>
-          <div className='col-md-3 col-sm-6 form-inline'>
+          <div className='col-md-6 col-sm-6 form-inline'>
             <div className='info-box'>
               <span className='info-box-icon bg-aqua'>
                 <i className='fa fa-handshake-o'></i>
               </span>
               <div className='info-box-content'>
-                <span className='info-box-text'>Tổng số nhân viên</span>
+                <span className='info-box-text'>Tổng số gói thầu</span>
                 <span style={{ fontWeight: 600, fontSize: '20px' }}>{200}</span>
               </div>
             </div>
-          </div>
-          <div className='col-md-3 col-sm-6 form-inline'>
-            <div className='info-box'>
-              <span className='info-box-icon bg-green'>
-                <i className='fa fa-tasks'></i>
-              </span>
-              <div className='info-box-content'>
-                <span className='info-box-text'>Tổng số dự án chưa thực hiện</span>
-                <span style={{ fontWeight: 600, fontSize: '20px' }}>{12}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className='col-md-3 col-sm-6 form-inline'>
-            <div className='info-box'>
-              <span className='info-box-icon bg-green'>
-                <i className='fa fa-tasks'></i>
-              </span>
-              <div className='info-box-content'>
-                <span className='info-box-text'>Tổng số tài sản</span>
-                <span style={{ fontWeight: 600, fontSize: '20px' }}>{12}</span>
-              </div>
-            </div>
-          </div>
+          </div>  
         </div>
         <div className='box'>
-          <ul class='todo-list'>
+          <ul className='todo-list'>
             <li>
-              <span class='handle'>
-                <i class='fa fa-ellipsis-v'></i>
-                <i class='fa fa-ellipsis-v'></i>
+              <span className='handle'>
+                <i className='fa fa-ellipsis-v'></i>
+                <i className='fa fa-ellipsis-v'></i>
               </span>
-              <span class='text'>
+              <span className='text'>
                 {/* {numOfBP >= 10 && <span style={{ fontWeight: 600, color: "red", lineHeight: 2 }}>* Hiện đang có 10 gói thầu đang thực hiện, hãy tạm dừng tìm kiếm gói thầu mới để đảm bảo tiến độ *<br /></span>} */}
                 <span style={{ fontWeight: 600, color: 'green', lineHeight: 2 }}>
                   Xem danh sách dự án tại{' '}
@@ -115,7 +96,53 @@ function ProjectStatisticPage(props) {
           </ul>
         </div>
 
-        
+        <div className="row">
+          <div className="col-md-6">
+            <ProjectStatusQuantityStatistic />
+          </div>
+          <div className="col-md-6">
+            <BiddingPackageStatusQuantityStatistic />
+          </div>
+        </div>
+
+        <div className="row text-3xl py-2 px-5">
+          Thống kê về nguồn nhân viên, tài sản
+        </div>
+
+        <div className='row'>
+          <div className='col-md-6 col-sm-6 form-inline'>
+            <div className='info-box'>
+              <span className='info-box-icon bg-green'>
+                <i className='fa fa-user'></i>
+              </span>
+              <div className='info-box-content'>
+                <span className='info-box-text'>Tổng số nhân viên</span>
+                <span style={{ fontWeight: 600, fontSize: '20px' }}>{200}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className='col-md-6 col-sm-6 form-inline'>
+            <div className='info-box'>
+              <span className='info-box-icon bg-red'>
+                <i className='fa fa-tasks'></i>
+              </span>
+              <div className='info-box-content'>
+                <span className='info-box-text'>Tổng số tài sản</span>
+                <span style={{ fontWeight: 600, fontSize: '20px' }}>{12}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-6">
+            <EmployeeStatusQuantityStatistic />
+          </div>
+          <div className="col-md-6">
+            <AssetStatusQuantityStatistic />
+          </div>
+        </div>
 
 
       </div>
