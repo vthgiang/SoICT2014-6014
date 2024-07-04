@@ -17,9 +17,6 @@ const InventoryForecastSchema = new Schema(
     forecastSixMonth:{
         type: Number,
     },
-    forecastInventory:{
-        type: Number,
-    }
   },
   {
     timestamps: true,

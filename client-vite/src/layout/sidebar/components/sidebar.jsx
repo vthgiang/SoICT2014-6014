@@ -74,6 +74,13 @@ class SideBar extends Component {
                 icon: 'fa fa-home'
               }}
             />
+            <Item
+              item={{
+                name: 'menu.overview_dashboard',
+                path: '/overview-dashboard',
+                icon: 'fa fa-home'
+              }}
+            />
 
             {/* Quản lý rủi ro */}
 

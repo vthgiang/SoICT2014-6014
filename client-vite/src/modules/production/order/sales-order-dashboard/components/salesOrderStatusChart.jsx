@@ -29,7 +29,7 @@ class SalesOrderStatusChart extends Component {
     let salesOrdersCounter = {}
 
     if (this.props.salesOrders) {
-      salesOrdersCounter = this.props.salesOrders.salesOrdersCounter
+      salesOrdersCounter = this.props.salesOrders?.salesOrdersCounter
     }
     let dataPieChart = []
     if (salesOrdersCounter && type === 1) {

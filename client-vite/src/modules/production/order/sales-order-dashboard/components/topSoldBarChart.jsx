@@ -57,8 +57,8 @@ function TopSoldBarChart(props) {
     let dataBarChart = setDataBarChart()
 
     let topGoodsSoldTitle = []
-    if (props.salesOrders && props.salesOrders.topGoodsSold) {
-      topGoodsSoldTitle = props.salesOrders.topGoodsSold.map((element) => element.name)
+    if (props.salesOrders && props.salesOrders?.topGoodsSold) {
+      topGoodsSoldTitle = props.salesOrders?.topGoodsSold.map((element) => element.name)
     }
 
     removePreviousChart()

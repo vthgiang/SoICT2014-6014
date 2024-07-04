@@ -1,11 +1,11 @@
 const axios = require('axios');
-const {
-    SalesForecast
-} = require(`../../../../../models`);
+const { SalesForecast } = require(`../../../../../models`);
+const { connect } = require(`../../../../../helpers/dbHelper`);
 
-const { connect
-} = require(`../../../../../helpers/dbHelper`);
-
+exports.saveForecasts = async (forecasts, portal) => {
+    const dbConnection = connect(DB_CONNECTION, portal);
+    await SalesForecast(dbConnection).insertMany(forecasts);
+};
 
 exports.getAllForecasts = async (query, portal) => {
     let { page, limit } = query;
@@ -21,8 +21,9 @@ exports.getAllForecasts = async (query, portal) => {
 
     const dbConnection = connect(DB_CONNECTION, portal);
 
+    let allForecasts;
     if (!page || !limit) {
-        let allForecasts = await SalesForecast(dbConnection)
+        allForecasts = await SalesForecast(dbConnection)
             .find(option)
             .populate([
                 {
@@ -30,9 +31,8 @@ exports.getAllForecasts = async (query, portal) => {
                     select: "code name"
                 }
             ]);
-        return { allForecasts };
     } else {
-        let allForecasts = await SalesForecast(dbConnection).paginate(option, {
+        allForecasts = await SalesForecast(dbConnection).paginate(option, {
             page,
             limit,
             populate: [{
@@ -40,59 +40,66 @@ exports.getAllForecasts = async (query, portal) => {
                 select: "code name"
             }]
         });
-        return { allForecasts };
     }
-};
 
-exports.getForecastById = async (id, portal) => {
-    const dbConnection = connect(DB_CONNECTION, portal);
-    return await SalesForecast(dbConnection).findById(id).populate([
-        {
-            path: "good",
-            select: "code name"
+    // Tính tổng các giá trị dự báo theo good
+    let totalForecasts = {};
+
+    (allForecasts.docs || allForecasts).forEach(forecast => {
+        if (!forecast.good || !forecast.good._id) {
+            console.error(`Forecast with ID ${forecast._id} has an invalid or missing 'good' reference.`);
+            return;
         }
-    ]);
+        const goodId = forecast.good._id.toString();
+        if (!totalForecasts[goodId]) {
+            totalForecasts[goodId] = {
+                goodId: goodId,
+                goodName: forecast.good.name || 'Unknown',
+                totalForecastOrders: 0,
+                totalForecastThreeMonth: 0,
+                totalForecastSixMonth: 0
+            };
+        }
+
+        totalForecasts[goodId].totalForecastOrders += forecast.forecastOrders || 0;
+        totalForecasts[goodId].totalForecastThreeMonth += forecast.forecastThreeMonth || 0;
+        totalForecasts[goodId].totalForecastSixMonth += forecast.forecastSixMonth || 0;
+    });
+
+    // Chuyển đối tượng tổng kết thành mảng
+    let totalForecastsArray = Object.values(totalForecasts);
+
+    return { 
+        totalForecasts: totalForecastsArray
+    };
 };
 
+exports.getTop5Products = async (query, portal) => {
+    let result = await exports.getAllForecasts(query, portal);
+    let totalForecastsArray = result.totalForecasts;
 
+    let top5OneMonth = [...totalForecastsArray].sort((a, b) => b.totalForecastOrders - a.totalForecastOrders).slice(0, 5);
+    let top5ThreeMonth = [...totalForecastsArray].sort((a, b) => b.totalForecastThreeMonth - a.totalForecastThreeMonth).slice(0, 5);
+    let top5SixMonth = [...totalForecastsArray].sort((a, b) => b.totalForecastSixMonth - a.totalForecastSixMonth).slice(0, 5);
 
-// exports.getForecast = async (portal) => {
-//     try {
-//         const dbConnection = connect(DB_CONNECTION, portal);
+    return { 
+        top5OneMonth,
+        top5ThreeMonth,
+        top5SixMonth
+    };
+};
 
-//         const orders = await SalesOrder(dbConnection).find();
-//         const transformedOrders = orders.map(order => ({
-//             order_id: order._id.toString(),
-//             date: order.createdAt.toISOString(),
-//             quantity: order.goods.reduce((total, good) => total + good.quantity, 0),
-//             total_amount: order.paymentAmount,
-//             order_status: order.status.toString(),
-//             sales_channel: order.salesChannel,
-//             marketing_id: order.marketingCampaign ? order.marketingCampaign.toString() : '',
-//             product_id: order.goods.map(good => good.good.toString()).join(', '),
-//             product_name: order.goods.map(good => good.name).join(', '),
-//             product_description: order.goods.map(good => good.description).join(', '),
-//         }));
+exports.getBottom5Products = async (query, portal) => {
+    let result = await exports.getAllForecasts(query, portal);
+    let totalForecastsArray = result.totalForecasts;
 
-//         const response = await axios.post('http://localhost:5000/forecast', transformedOrders);
+    let bottom5OneMonth = [...totalForecastsArray].sort((a, b) => a.totalForecastOrders - b.totalForecastOrders).slice(0, 5);
+    let bottom5ThreeMonth = [...totalForecastsArray].sort((a, b) => a.totalForecastThreeMonth - b.totalForecastThreeMonth).slice(0, 5);
+    let bottom5SixMonth = [...totalForecastsArray].sort((a, b) => a.totalForecastSixMonth - b.totalForecastSixMonth).slice(0, 5);
 
-//         const forecastResults = response.data.forecast;
-
-//         // Lưu kết quả vào database
-//         await Promise.all(forecastResults.map(async result => {
-//             const forecast = new Forecast({
-//                 good: result.product_id,
-//                 forecastOrders: result.forecastOrders,
-//                 forecastThreeMonth: result.forecastThreeMonth,
-//                 forecastSixMonth: result.forecastSixMonth,
-//                 forecastInventory: result.forecastInventory
-//             });
-//             await forecast.save();
-//         }));
-
-//         return forecastResults;
-//     } catch (error) {
-//         console.error('Error in calling Python API:', error);
-//         throw new Error('Failed to get forecast');
-//     }
-// };
+    return { 
+        bottom5OneMonth,
+        bottom5ThreeMonth,
+        bottom5SixMonth
+    };
+};

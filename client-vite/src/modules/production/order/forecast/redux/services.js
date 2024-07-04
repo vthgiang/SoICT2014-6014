@@ -1,20 +1,54 @@
-import { sendRequest } from '../../../../../helpers/requestHelper'
+import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const forecastServices = {
-    getForecasts,
-}
+    createForecast,
+    getTop5Products,
+    getBottom5Products,
+    getAllForecasts // Thêm hàm này
+};
 
-function getForecasts(queryData) {
+function createForecast() {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/forecasts`,
-            method: "GET",
-            params: {
-                code: queryData !== undefined ? queryData.code : "",
-                good: queryData !== undefined ? queryData.good : "",
-                page: queryData !== undefined ? queryData.page : null,
-                limit: queryData !== undefined ? queryData.limit : null
-            }
+            method: "POST"
+        },
+        false,
+        true,
+        "manage_forecast"
+    );
+}
+
+function getTop5Products() {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/forecasts/top5`,
+            method: "GET"
+        },
+        false,
+        true,
+        "manage_forecast"
+    );
+}
+
+function getBottom5Products() {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/forecasts/bottom5`,
+            method: "GET"
+        },
+        false,
+        true,
+        "manage_forecast"
+    );
+}
+
+// Thêm hàm này
+function getAllForecasts() {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/forecasts`,
+            method: "GET"
         },
         false,
         true,

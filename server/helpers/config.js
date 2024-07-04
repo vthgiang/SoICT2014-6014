@@ -330,6 +330,19 @@ const LINKS = [
     components: getComponentsInLink("/home"),
   },
   {
+    url: "/overview-dashboard",
+    description: `Thống kê`,
+    category: LINK_CATEGORY.COMMON.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/overview-dashboard"),
+  },
+  {
     url: "/notifications",
     description: "Thông báo",
     category: LINK_CATEGORY.COMMON.name,

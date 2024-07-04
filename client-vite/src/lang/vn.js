@@ -97,6 +97,7 @@ export default {
     },
     menu: {
       home: 'Trang chủ',
+      overview_dashboard: 'Thống kê',
       /** Quản lý rủi ro */
       bayesian_network_config: 'Cấu hình mạng rủi ro',
       risk_response_plan: 'Quản lý biện pháp ứng phó rủi ro',

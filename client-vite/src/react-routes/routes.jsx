@@ -285,6 +285,7 @@ const ManageRoleDefault = lazy(() => import('../modules/system-admin/root-role/c
 const ComponentsDefaultManagement = lazy(() => import('../modules/system-admin/system-component/components'))
 const ManageSystem = lazy(() => import('../modules/super-admin/system/components'))
 const DashboardUnitForAdmin = lazy(() => import('../modules/dashboard-unit/components/dashboardUnitForAdmin'))
+const OverviewDashboard = lazy(() => import('../modules/overview-dashboard/components'))
 class Routes extends Component {
   render() {
     const { auth, company, user, role, link, component, department, employeesManager } = this.props
@@ -468,6 +469,18 @@ class Routes extends Component {
             pageName='home'
             layout={Layout}
             component={Home}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key='overview-dashboard'
+            arrPage={[{ link: '/overview-dashboard', name: 'overview_dashboard', icon: 'fa fa-home' }]}
+            auth={auth}
+            exact
+            link='/overview-dashboard'
+            path='/overview-dashboard'
+            pageName='overview_dashboard'
+            layout={Layout}
+            component={OverviewDashboard}
           />
           <PrivateRoute
             isLoading={this.props.company.isLoading}

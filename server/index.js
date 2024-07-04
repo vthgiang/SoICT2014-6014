@@ -161,7 +161,7 @@ router.use(
 router.use('/bin-locations', require('./modules/production/warehouse/bin-location/binLocation.route'));
 router.use('/lot', require('./modules/production/warehouse/inventory/inventory.route'));
 router.use('/bills', require('./modules/production/warehouse/bill/bill.route'));
-
+router.use('inventory-forecast', require('./modules/production/warehouse/inventory-forecast/inventoryForecast.route'))
 router.use('/examples', require('./modules/example/example.route'));
 router.use('/documents', require('./modules/document/document.route'));
 
