@@ -394,6 +394,20 @@ const LINKS = [
     components: getComponentsInLink("/links-management"),
   },
   {
+      url: '/authorization-policies-management',
+      description: 'Quản lý chính sách của công ty',
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink('/authorization-policies-management'),
+  },
+  {
+      url: "/authorization-logging",
+      description: "Quản lý log truy cập phân quyền",
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink("/authorization-logging"),
+  },
+  {
     url: "/attributes-management",
     description: "Quản lý thuộc tính phân quyền",
     category: LINK_CATEGORY.RBAC.name,
@@ -429,6 +443,13 @@ const LINKS = [
     category: LINK_CATEGORY.RBAC.name,
     roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
     components: getComponentsInLink("/requesters-management"),
+  },
+  {
+      url: '/resources-management',
+      description: 'Quản lý tài nguyên của công ty',
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink('/resources-management'),
   },
   {
     url: "/apis-management",
@@ -1589,6 +1610,32 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/marketing-campaign"),
+  },
+  {
+    url: "/marketing-dashboard",
+    description: "Thống kê hiệu quả tiếp thị",
+    category: LINK_CATEGORY.KPI.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/marketing-dashboard"),
+  },
+  {
+    url: "/marketing-forecast",
+    description: "Thống kê hiệu quả tiếp thị",
+    category: LINK_CATEGORY.KPI.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/marketing-forecast"),
   },
   {
     url: "/marketing-campaign-id",

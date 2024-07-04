@@ -1,0 +1,11 @@
+table.policy-attribute-table td {
+    vertical-align: middle !important
+}
+
+table.detail-policy-attribute-table td:last-child, table.detail-policy-attribute-table th:last-child {
+    text-align: left !important;
+}
+
+table.detail-policy-attribute-table td {
+    vertical-align: middle !important
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { RequesterActions } from '../redux/actions'
 import { AttributeActions } from '../../../super-admin/attribute/redux/actions'
@@ -7,22 +7,130 @@ import { DialogModal, AttributeTable } from '../../../../common-components'
 import ValidationHelper from '../../../../helpers/validationHelper'
 
 function RequesterEditForm(props) {
-  const [state, setState] = useState({})
+  const [state, setState] = useState({
+    oldPolicies: []
+  })
 
   const { requester, translate, editRequester, getAttribute, i } = props
   const { id, name, type, attributes } = state
 
+  const allPolicies = useSelector((x) => x.policyAuthorization.list)
+
   useEffect(() => {
-    if (requester.id !== state.id || requester.attributes !== state.attributes) {
+    if (requester.id !== state.id) {
+      const oldPolicies = allPolicies.filter(
+        (x) => ruleCheck([requester], x.requesterRequirements.attributes, x.requesterRequirements.rule).length > 0
+      )
       setState({
         ...state,
         id: requester.id,
         name: requester.name,
         type: requester.type,
-        attributes: requester.attributes.map((a, index) => (a = { ...a, addOrder: index }))
+        attributes: requester.attributes.map((a, index) => (a = { ...a, addOrder: index })),
+        oldPolicies
       })
     }
-  }, [requester.id, requester.attributes])
+  }, [requester.id])
+
+  const attributeList = useSelector((x) => x.attribute.lists.filter((x) => ['Mixed', 'Authorization'].includes(x.type)))
+  const attributeIdList = attributeList.map((x) => x._id)
+
+  const ruleCheck = (objects, policyAttributes, policyRule) => {
+    let satisfied = []
+    let count = 0
+    if (!policyAttributes || policyAttributes.length === 0 || !policyRule) {
+      return satisfied
+    }
+
+    // Kiểm tra rule EQUALS
+    // 1. Nếu rule là EQUALS
+    if (policyRule === 'EQUALS') {
+      // 2. Với mỗi user lấy ra những element có tập thuộc tính giống hệt trong chính sách (số lượng thuộc tính == và giá trị giống)
+      objects.forEach((element) => {
+        const attributes = element.attributes.filter((x) => attributeIdList.includes(x.attributeId.toString()))
+        // Kiểm tra length
+        if (attributes.length > 0 && attributes.length === policyAttributes.length) {
+          attributes.forEach((uAttr) => {
+            policyAttributes.forEach((pAttr) => {
+              // Kiểm tra id thuộc tính và value
+              if (pAttr.attributeId === uAttr.attributeId && pAttr.value === uAttr.value) {
+                count++
+              }
+            })
+          })
+          if (count === policyAttributes.length) {
+            // Nếu count bằng với length policy attribute thì add element vào array
+            satisfied = [...satisfied, element]
+          }
+          // Reset count
+          count = 0
+        }
+      })
+    }
+
+    // Kiểm tra rule BELONGS
+    // 1. Nếu rule là BELONGS
+    if (policyRule === 'BELONGS') {
+      // 2. Với mỗi element lấy ra những element mà thuộc tính là tập con thuộc tính trong chính sách (số lượng thuộc tính <= và giá trị giống)
+      objects.forEach((element) => {
+        const attributes = element.attributes.filter((x) => attributeIdList.includes(x.attributeId.toString()))
+        // Kiểm tra length
+        if (attributes.length > 0 && attributes.length <= policyAttributes.length) {
+          attributes.forEach((uAttr) => {
+            policyAttributes.forEach((pAttr) => {
+              // Kiểm tra id thuộc tính và value
+              if (pAttr.attributeId === uAttr.attributeId && pAttr.value === uAttr.value) {
+                count++
+              }
+            })
+          })
+          if (count === attributes.length) {
+            // Nếu count == với length element attribute thì add element vào array
+            satisfied = [...satisfied, element]
+          }
+          // Reset count
+          count = 0
+        }
+      })
+    }
+
+    // Kiểm tra rule CONTAINS
+    // 1. Nếu rule là CONTAINS
+    if (policyRule === 'CONTAINS') {
+      // 2. Với mỗi element lấy ra những element mà thuộc tính là tập cha thuộc tính trong chính sách (số lượng thuộc tính >= và giá trị giống)
+      objects.forEach((element) => {
+        const attributes = element.attributes.filter((x) => attributeIdList.includes(x.attributeId.toString()))
+        // Kiểm tra length
+        if (attributes.length > 0 && attributes.length >= policyAttributes.length) {
+          attributes.forEach((uAttr) => {
+            policyAttributes.forEach((pAttr) => {
+              // Kiểm tra id thuộc tính và value
+              if (pAttr.attributeId === uAttr.attributeId && pAttr.value === uAttr.value) {
+                count++
+              }
+            })
+          })
+          if (count === policyAttributes.length) {
+            // Nếu count == với length policy attribute thì add element vào array
+            satisfied = [...satisfied, element]
+          }
+          // Reset count
+          count = 0
+        }
+      })
+    }
+
+    return satisfied
+  }
+
+  const newRequester = {
+    attributes: state.attributes ?? []
+  }
+  const newPolicies = allPolicies.filter(
+    (x) => ruleCheck([newRequester], x.requesterRequirements.attributes, x.requesterRequirements.rule).length > 0
+  )
+  // const newSatifiedPolicies = newPolicies.filter((x) => !state.oldPolicies.includes(x))
+  // const removedPolicies = state.oldPolicies.filter((x) => !newPolicies.includes(x))
 
   // Function lưu các trường thông tin vào state
   const handleChange = (name, value) => {
@@ -113,6 +221,28 @@ function RequesterEditForm(props) {
           handleChangeAddRowAttribute={handleChangeAddRowAttribute}
           i={i}
         />
+
+        <div className='form-group'>
+          <label>Satified authorization policies (before editing):</label>
+          {state.oldPolicies.map((x) => x.name).toString()}
+        </div>
+
+        <div className='form-group'>
+          <label>Satified authorization policies (after editing):</label>
+          {newPolicies.map((x) => x.name).toString()}
+        </div>
+        {/* <div className='form-group'>
+          <label>
+            New policies applied: 
+          </label>
+          {newSatifiedPolicies.map(x => x.name).toString()}
+        </div>
+        <div className='form-group'>
+          <label>
+            Policies removed:
+          </label>
+          {removedPolicies.map(x => x.name).toString()}
+        </div> */}
       </form>
     </DialogModal>
   )

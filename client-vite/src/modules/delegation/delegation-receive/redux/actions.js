@@ -1,13 +1,6 @@
 import { delegationConstants } from './constants'
 import { delegationServices } from './services'
 
-export const DelegationActions = {
-  getDelegations,
-  confirmDelegation,
-  rejectDelegation,
-  getDelegationsTask
-}
-
 function getDelegations(queryData) {
   return (dispatch) => {
     dispatch({
@@ -15,9 +8,8 @@ function getDelegations(queryData) {
     })
 
     delegationServices
-      .getDelegations(queryData)
+      .getDelegations(queryData, 'Role')
       .then((res) => {
-        console.log(res.data.content)
         dispatch({
           type: delegationConstants.GET_ALL_DELEGATIONS_SUCCESS,
           payload: res.data.content
@@ -39,10 +31,8 @@ function getDelegationsTask(queryData) {
     })
 
     delegationServices
-      .getDelegationsTask(queryData)
+      .getDelegations(queryData, 'Task')
       .then((res) => {
-        console.log(res.data.content)
-
         dispatch({
           type: delegationConstants.GET_ALL_DELEGATIONS_TASK_SUCCESS,
           payload: res.data.content
@@ -51,6 +41,29 @@ function getDelegationsTask(queryData) {
       .catch((error) => {
         dispatch({
           type: delegationConstants.GET_ALL_DELEGATIONS_TASK_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+function getDelegationsResource(queryData) {
+  return (dispatch) => {
+    dispatch({
+      type: delegationConstants.GET_ALL_DELEGATIONS_RESOURCE_REQUEST
+    })
+
+    delegationServices
+      .getDelegations(queryData, 'Resource')
+      .then((res) => {
+        dispatch({
+          type: delegationConstants.GET_ALL_DELEGATIONS_RESOURCE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: delegationConstants.GET_ALL_DELEGATIONS_RESOURCE_FAILURE,
           error
         })
       })
@@ -104,4 +117,12 @@ function rejectDelegation(data) {
         })
       })
   }
+}
+
+export const DelegationActions = {
+  getDelegations,
+  confirmDelegation,
+  rejectDelegation,
+  getDelegationsTask,
+  getDelegationsResource
 }

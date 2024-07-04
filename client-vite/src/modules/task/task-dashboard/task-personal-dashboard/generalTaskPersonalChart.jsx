@@ -11,40 +11,39 @@ import urgentIcon from './warning.png'
 import todoIcon from './to-do-list.png'
 import { getRoleInTask, checkPrioritySetColor, formatPriority, getProjectName } from '../../../../helpers/taskModuleHelpers'
 
-const GeneralTaskPersonalChart = (props) => {
+function GeneralTaskPersonalChart(props) {
   const { translate, project } = props
   const [state, setState] = useState({
     userId: localStorage.getItem('userId')
   })
 
   useEffect(() => {
-    console.count()
     dayjs.extend(isSameOrAfter)
     const { tasks } = props
-    let overdueTask = [],
-      delayTask = [],
-      intimeTask = [],
-      urgentTask = [],
-      todoTask = [],
-      deadlineNow = [],
-      deadlineincoming = []
+    const overdueTask = []
+    const delayTask = []
+    const intimeTask = []
+    let urgentTask = []
+    let todoTask = []
+    let deadlineNow = []
+    const deadlineincoming = []
     // xu ly du lieu
     if (tasks && tasks.length) {
-      for (let i in tasks) {
-        let created = dayjs(tasks[i].createdAt)
-        let start = dayjs(tasks[i].startDate)
-        let end = dayjs(tasks[i].endDate)
-        let now = dayjs(new Date())
-        let duration = end.diff(start, 'day')
-        let createdToNow = now.diff(created, 'day')
-        let nowToEnd = end.diff(now, 'day')
+      for (const i in tasks) {
+        const created = dayjs(tasks[i].createdAt)
+        const start = dayjs(tasks[i].startDate)
+        const end = dayjs(tasks[i].endDate)
+        const now = dayjs(new Date())
+        const duration = end.diff(start, 'day')
+        const createdToNow = now.diff(created, 'day')
+        const nowToEnd = end.diff(now, 'day')
 
         if (dayjs(tasks[i].endDate).isSameOrAfter(dayjs(new Date()))) {
           const nowDate = new Date()
 
           // Lấy công việc khẩn cấp
-          let minimumWorkingTime = getPercent(nowDate, tasks[i].startDate, tasks[i].endDate)
-          let percentDifference = minimumWorkingTime - tasks[i].progress
+          const minimumWorkingTime = getPercent(nowDate, tasks[i].startDate, tasks[i].endDate)
+          const percentDifference = minimumWorkingTime - tasks[i].progress
 
           if (tasks[i].priority === 1 && tasks[i].progress < minimumWorkingTime && percentDifference >= 50) {
             urgentTask = [...urgentTask, { ...tasks[i], createdToNow }]
@@ -63,26 +62,26 @@ const GeneralTaskPersonalChart = (props) => {
           }
 
           // Lấy công việc cần làm
-          if (tasks[i].priority === 5 && tasks[i].progress < minimumWorkingTime && 0 < percentDifference && percentDifference < 10) {
+          if (tasks[i].priority === 5 && tasks[i].progress < minimumWorkingTime && percentDifference > 0 && percentDifference < 10) {
             todoTask = [...todoTask, { ...tasks[i], createdToNow }]
           }
-          if (tasks[i].priority === 4 && tasks[i].progress < minimumWorkingTime && 10 < percentDifference && percentDifference < 20) {
+          if (tasks[i].priority === 4 && tasks[i].progress < minimumWorkingTime && percentDifference > 10 && percentDifference < 20) {
             todoTask = [...todoTask, { ...tasks[i], createdToNow }]
           }
-          if (tasks[i].priority === 3 && tasks[i].progress < minimumWorkingTime && 20 < percentDifference && percentDifference < 30) {
+          if (tasks[i].priority === 3 && tasks[i].progress < minimumWorkingTime && percentDifference > 20 && percentDifference < 30) {
             todoTask = [...todoTask, { ...tasks[i], createdToNow }]
           }
-          if (tasks[i].priority === 2 && tasks[i].progress < minimumWorkingTime && 30 < percentDifference && percentDifference < 40) {
+          if (tasks[i].priority === 2 && tasks[i].progress < minimumWorkingTime && percentDifference > 30 && percentDifference < 40) {
             todoTask = [...todoTask, { ...tasks[i], createdToNow }]
           }
-          if (tasks[i].priority === 1 && tasks[i].progress < minimumWorkingTime && 40 < percentDifference && percentDifference < 50) {
+          if (tasks[i].priority === 1 && tasks[i].progress < minimumWorkingTime && percentDifference > 40 && percentDifference < 50) {
             todoTask = [...todoTask, { ...tasks[i], createdToNow }]
           }
         } else {
           let tasksExpireUrgent = []
           const nowDate = new Date()
           // Quá hạn (cv cấp 1, 2, 3, 4, 5 :25 %, 20%, 15%,10%, 5% số ngày đã quá )
-          let delay = getPercentExpire(nowDate, tasks[i].startDate, tasks[i].endDate)
+          const delay = getPercentExpire(nowDate, tasks[i].startDate, tasks[i].endDate)
           if (tasks[i].priority === 1 && delay > 25) {
             tasksExpireUrgent = [...tasksExpireUrgent, { ...tasks[i], createdToNow }]
           } else if (tasks[i].priority === 2 && delay > 20) {
@@ -101,33 +100,33 @@ const GeneralTaskPersonalChart = (props) => {
         }
 
         if (now > end) {
-          //viec Quá hạn
-          let add = {
+          // viec Quá hạn
+          const add = {
             ...tasks[i],
             nowToEnd: -parseInt(nowToEnd)
           }
           overdueTask.push(add)
         } else {
-          let processDay = Math.floor((tasks[i].progress * duration) / 100)
-          let startToNow = now.diff(start, 'days')
+          const processDay = Math.floor((tasks[i].progress * duration) / 100)
+          const startToNow = now.diff(start, 'days')
           // Công việc hạn sắp tới
           if (nowToEnd <= 7) {
-            let add = {
+            const add = {
               ...tasks[i],
               totalDays: nowToEnd
             }
             deadlineincoming.push(add)
           }
           if (startToNow > processDay) {
-            //viec chậm tiến độ
-            let add = {
+            // viec chậm tiến độ
+            const add = {
               ...tasks[i],
               nowToEnd
             }
             delayTask.push(add)
           } else if (startToNow <= processDay) {
             // Đúng tiến độ
-            let add = {
+            const add = {
               ...tasks[i],
               nowToEnd
             }
@@ -166,36 +165,36 @@ const GeneralTaskPersonalChart = (props) => {
   }, [props.tasks])
 
   const getPercent = (nowDate, startDate, endDate) => {
-    let start = new Date(startDate)
-    let end = new Date(endDate)
+    const start = new Date(startDate)
+    const end = new Date(endDate)
 
     // lấy khoảng thời gian làm việc
-    let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24)
+    const workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24)
     // lấy khoản thời gian làm việc tính đến ngày hiện tại
     // tính phần trăm phải làm trong 1 ngày
-    let percentOneDay = 100 / workingTime
+    const percentOneDay = 100 / workingTime
     // % tiến độ tối thiểu phải làm được trong time hiện tại
-    let workingTimeNow = Math.round((nowDate - start) / 1000 / 60 / 60 / 24)
+    const workingTimeNow = Math.round((nowDate - start) / 1000 / 60 / 60 / 24)
     return workingTimeNow * percentOneDay
   }
 
   const getPercentExpire = (nowDate, startDate, endDate) => {
-    let start = new Date(startDate)
-    let end = new Date(endDate)
+    const start = new Date(startDate)
+    const end = new Date(endDate)
     // lấy khoảng thời gian làm việc
-    let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24)
+    const workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24)
     // tính phần trăm phải làm trong ngày
-    let percentOneDay = 100 / workingTime
+    const percentOneDay = 100 / workingTime
     // Tính số ngày quá hạn
-    let deadline2 = Math.round((nowDate - end) / 1000 / 60 / 60 / 24)
+    const deadline2 = Math.round((nowDate - end) / 1000 / 60 / 60 / 24)
     // tính phần trăm chậm tiến độ. số ngày quá hạn nhân với phần trăm phải làm trong 1 ngày
     return percentOneDay * deadline2
   }
 
   const convertToDays = (milliSeconds) => {
-    let hours = Math.floor(milliSeconds / (60 * 60 * 1000))
+    const hours = Math.floor(milliSeconds / (60 * 60 * 1000))
     milliSeconds -= hours * (60 * 60 * 1000)
-    let minutes = Math.floor(milliSeconds / (60 * 1000))
+    const minutes = Math.floor(milliSeconds / (60 * 1000))
     return { hours, minutes }
   }
 
@@ -221,7 +220,7 @@ const GeneralTaskPersonalChart = (props) => {
     })
   }
 
-  //chú thích sắp hết hạn
+  // chú thích sắp hết hạn
   const showTaskDeadLineDescription = () => {
     Swal.fire({
       html: `<h4<div>Công việc còn nhiều nhất 7 ngày nữa là đến hạn</div></h4>`
@@ -232,7 +231,6 @@ const GeneralTaskPersonalChart = (props) => {
   const formatTime = (date) => {
     return dayjs(date).format('DD-MM-YYYY hh:mm A')
   }
-  console.log('state.urgentTask', state.urgentTask)
   return (
     <div className='qlcv box-body'>
       <div className='nav-tabs-custom'>
@@ -262,7 +260,7 @@ const GeneralTaskPersonalChart = (props) => {
           </li>
           <li>
             <a className='general-task-type' href='#allGeneralTaskDeedlineNow' data-toggle='tab'>
-              {`Hạn hôm nay`}&nbsp;<span>{`(${state.deadlineNow ? state.deadlineNow.length : 0})`}</span>
+              Hạn hôm nay&nbsp;<span>{`(${state.deadlineNow ? state.deadlineNow.length : 0})`}</span>
             </a>
           </li>
           <li>
@@ -303,7 +301,7 @@ const GeneralTaskPersonalChart = (props) => {
                           <span className='task-name'>{obj.name}</span>
                           {obj.taskProject ? (
                             <>
-                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true'></i>
+                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true' />
                               <a className='task-project-name' title='dự án'>
                                 {getProjectName(obj.taskProject, project && project.data && project.data.list)}
                               </a>
@@ -343,7 +341,7 @@ const GeneralTaskPersonalChart = (props) => {
                                   className='fillmult'
                                   data-width={`${obj.progress}%`}
                                   style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? '#dc0000' : '#28a745' }}
-                                ></div>
+                                />
                                 <span className='perc'>{obj.progress}%</span>
                               </div>
                             </div>
@@ -394,7 +392,7 @@ const GeneralTaskPersonalChart = (props) => {
                           <span className='task-name'>{obj.name}</span>
                           {obj.taskProject ? (
                             <>
-                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true'></i>
+                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true' />
                               <a className='task-project-name' title='dự án'>
                                 {getProjectName(obj.taskProject, project && project.data && project.data.list)}
                               </a>
@@ -436,7 +434,7 @@ const GeneralTaskPersonalChart = (props) => {
                                   className='fillmult'
                                   data-width={`${obj.progress}%`}
                                   style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? '#dc0000' : '#28a745' }}
-                                ></div>
+                                />
                                 <span className='perc'>{obj.progress}%</span>
                               </div>
                             </div>
@@ -487,7 +485,7 @@ const GeneralTaskPersonalChart = (props) => {
                           <span className='task-name'>{obj.name}</span>
                           {obj.taskProject ? (
                             <>
-                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true'></i>
+                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true' />
                               <a className='task-project-name' title='dự án'>
                                 {getProjectName(obj.taskProject, project && project.data && project.data.list)}
                               </a>
@@ -529,7 +527,7 @@ const GeneralTaskPersonalChart = (props) => {
                                   className='fillmult'
                                   data-width={`${obj.progress}%`}
                                   style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? '#dc0000' : '#28a745' }}
-                                ></div>
+                                />
                                 <span className='perc'>{obj.progress}%</span>
                               </div>
                             </div>
@@ -580,7 +578,7 @@ const GeneralTaskPersonalChart = (props) => {
                           <span className='task-name'>{obj.name}</span>
                           {obj.taskProject ? (
                             <>
-                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true'></i>
+                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true' />
                               <a className='task-project-name' title='dự án'>
                                 {getProjectName(obj.taskProject, project && project.data && project.data.list)}
                               </a>
@@ -626,7 +624,7 @@ const GeneralTaskPersonalChart = (props) => {
                                   className='fillmult'
                                   data-width={`${obj.progress}%`}
                                   style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? '#dc0000' : '#28a745' }}
-                                ></div>
+                                />
                                 <span className='perc'>{obj.progress}%</span>
                               </div>
                             </div>
@@ -685,7 +683,7 @@ const GeneralTaskPersonalChart = (props) => {
                           <span className='task-name'>{obj.name}</span>
                           {obj.taskProject ? (
                             <>
-                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true'></i>
+                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true' />
                               <a className='task-project-name' title='dự án'>
                                 {getProjectName(obj.taskProject, project && project.data && project.data.list)}
                               </a>
@@ -732,7 +730,7 @@ const GeneralTaskPersonalChart = (props) => {
                                   className='fillmult'
                                   data-width={`${obj.progress}%`}
                                   style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? '#dc0000' : '#28a745' }}
-                                ></div>
+                                />
                                 <span className='perc'>{obj.progress}%</span>
                               </div>
                             </div>
@@ -789,7 +787,7 @@ const GeneralTaskPersonalChart = (props) => {
                           <span className='task-name'>{obj?.name}</span>
                           {obj?.taskProject ? (
                             <>
-                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true'></i>
+                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true' />
                               <a className='task-project-name' title='dự án'>
                                 {getProjectName(obj.taskProject, project && project.data && project.data.list)}
                               </a>
@@ -835,7 +833,7 @@ const GeneralTaskPersonalChart = (props) => {
                                   className='fillmult'
                                   data-width={`${obj?.progress}%`}
                                   style={{ width: `${obj?.progress}%`, backgroundColor: obj?.progress < 50 ? '#dc0000' : '#28a745' }}
-                                ></div>
+                                />
                                 <span className='perc'>{obj?.progress}%</span>
                               </div>
                             </div>
@@ -887,7 +885,7 @@ const GeneralTaskPersonalChart = (props) => {
                           <span className='task-name'>{obj.name}</span>
                           {obj.taskProject && (
                             <>
-                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true'></i>
+                              <i className='fa fa-angle-right angle-right-custom' aria-hidden='true' />
                               <a className='task-project-name' title='dự án'>
                                 {getProjectName(obj.taskProject, project && project.data && project.data.list)}
                               </a>
@@ -929,7 +927,7 @@ const GeneralTaskPersonalChart = (props) => {
                                   className='fillmult'
                                   data-width={`${obj.progress}%`}
                                   style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? '#dc0000' : '#28a745' }}
-                                ></div>
+                                />
                                 <span className='perc'>{obj.progress}%</span>
                               </div>
                             </div>
@@ -962,12 +960,12 @@ const GeneralTaskPersonalChart = (props) => {
         </div>
       </div>
       {/* <SlimScroll verticalScroll={true} outerComponentId={"allGeneralTaskUrgent"} maxHeight={400} activate={true} /> */}
-      <SlimScroll verticalScroll={true} outerComponentId={'allGeneralTaskTodo'} maxHeight={400} activate={true} />
-      <SlimScroll verticalScroll={true} outerComponentId={'allGeneralTaskOverdue'} maxHeight={400} activate={true} />
-      <SlimScroll verticalScroll={true} outerComponentId={'allGeneralTaskDelay'} maxHeight={400} activate={true} />
-      <SlimScroll verticalScroll={true} outerComponentId={'allGeneralTaskDeedlineNow'} maxHeight={400} activate={true} />
-      <SlimScroll verticalScroll={true} outerComponentId={'allGeneralTaskDeedlineIncoming'} maxHeight={400} activate={true} />
-      <SlimScroll verticalScroll={true} outerComponentId={'allGeneralTaskIntime'} maxHeight={400} activate={true} />
+      <SlimScroll verticalScroll outerComponentId='allGeneralTaskTodo' maxHeight={400} activate />
+      <SlimScroll verticalScroll outerComponentId='allGeneralTaskOverdue' maxHeight={400} activate />
+      <SlimScroll verticalScroll outerComponentId='allGeneralTaskDelay' maxHeight={400} activate />
+      <SlimScroll verticalScroll outerComponentId='allGeneralTaskDeedlineNow' maxHeight={400} activate />
+      <SlimScroll verticalScroll outerComponentId='allGeneralTaskDeedlineIncoming' maxHeight={400} activate />
+      <SlimScroll verticalScroll outerComponentId='allGeneralTaskIntime' maxHeight={400} activate />
     </div>
   )
 }

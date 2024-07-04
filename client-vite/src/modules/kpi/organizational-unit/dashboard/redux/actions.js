@@ -111,10 +111,54 @@ function getAllTaskOfChildrenOrganizationalUnit(roleId, month, organizationalUni
   }
 }
 
+const getAllAllocationAssignUnitResult = (unitId) => {
+  return (dispatch) => {
+    dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_KPI_UNIT_ALLOCATION_REQUEST })
+
+    dashboardOrganizationalUnitKpiServices
+      .getAllAllocationAssignUnitResult(unitId)
+      .then((res) => {
+        dispatch({
+          type: dashboardOrganizationalUnitKpiConstants.GET_KPI_UNIT_ALLOCATION_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: dashboardOrganizationalUnitKpiConstants.GET_KPI_UNIT_ALLOCATION_FAILURE,
+          payload: error
+        })
+      })
+  }
+}
+
+const handleSaveAllocationResultUnit = (payload) => {
+  return (dispatch) => {
+    dispatch({ type: dashboardOrganizationalUnitKpiConstants.SAVE_KPI_UNIT_ALLOCATION_REQUEST })
+
+    dashboardOrganizationalUnitKpiServices
+      .handleSaveAllocationResultUnit(payload)
+      .then((res) => {
+        dispatch({
+          type: dashboardOrganizationalUnitKpiConstants.SAVE_KPI_UNIT_ALLOCATION_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: dashboardOrganizationalUnitKpiConstants.SAVE_KPI_UNIT_ALLOCATION_FAILURE,
+          payload: error
+        })
+      })
+  }
+}
+
 export const dashboardOrganizationalUnitKpiActions = {
   getAllEmployeeKpiInOrganizationalUnit,
   getAllEmployeeKpiInChildrenOrganizationalUnit,
   getAllEmployeeKpiSetInOrganizationalUnit,
   getAllTaskOfOrganizationalUnit,
-  getAllTaskOfChildrenOrganizationalUnit
+  getAllTaskOfChildrenOrganizationalUnit,
+  getAllAllocationAssignUnitResult,
+  handleSaveAllocationResultUnit
 }

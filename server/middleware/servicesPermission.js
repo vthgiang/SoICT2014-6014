@@ -786,11 +786,23 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/resources-management',
+        apis: ['@all'],
+    },
+    {
         url: '/attributes-management',
         apis: ['@all'],
     },
     {
         url: '/policies-management',
+        apis: ['@all'],
+    },
+    {
+        url: '/authorization-policies-management',
+        apis: ['@all'],
+    },
+    {
+        url: '/authorization-logging',
         apis: ['@all'],
     },
     {
@@ -1418,6 +1430,14 @@ exports.links = [
     },
     {
         url: '/marketing-campaign',
+        apis: ['@all'],
+    },
+    {
+        url: '/marketing-dashboard',
+        apis: ['@all'],
+    },
+    {
+        url: '/marketing-forecast',
         apis: ['@all'],
     },
     {

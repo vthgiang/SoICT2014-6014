@@ -124,7 +124,7 @@ exports.updateAttributes = async (req, res) => {
 
 exports.getAccessibleResources = async (req, res) => {
   try {
-    const resources = await RequesterService.getAccessibleResources(req.portal ?? req.header.portal ?? req.body.portal, req.params.id);
+    const resources = await RequesterService.getAccessibleResources(req.portal ?? req.header.portal ?? req.body.portal, req.params.id, req.currentRole);
 
     await Logger.info(req.body.email ?? '', 'get_accessible_resources_success');
     res.status(200).json({
@@ -133,11 +133,12 @@ exports.getAccessibleResources = async (req, res) => {
         content: resources
     });
   } catch (error) {
-      await Logger.error(req.body.email ?? '', 'get_accessible_resources_faile');
-      res.status(400).json({
-          success: false,
-          messages: Array.isArray(error) ? error : ['get_accessible_resources_faile'],
-          content: error
-      });
+    console.log(error)
+    await Logger.error(req.body.email ?? '', 'get_accessible_resources_faile');
+    res.status(400).json({
+        success: false,
+        messages: Array.isArray(error) ? error : ['get_accessible_resources_faile'],
+        content: error
+    });
   }
 }

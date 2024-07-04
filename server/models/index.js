@@ -6,6 +6,10 @@ module.exports = {
     Policy: require('./auth/policy.model'),
     Service: require('./auth-service/service.model'),
     Requester: require('./auth-service/requester.model'),
+    Resource: require('./auth-service/resource.model'),
+    AuthorizationPolicy: require('./auth-service/authorization.policy.model'),
+    AuthorizationAccessLog: require('./auth-service/authorization.log.model'),
+    DynamicAssignment: require('./auth-service/dynamic.assignment.model'),
 
     Document: require('./document/document.model'),
     DocumentCategory: require('./document/documentCategory.model'),
@@ -41,6 +45,7 @@ module.exports = {
     TaskPackageAllocation: require('./kpi/taskPackageAllocation.model'),
     TaskType: require('./kpi/taskType.model'),
     AllocationUnitResult: require('./kpi/allocationResult.model'),
+    AllocationTaskAssigned: require('./task/allocationTask.model'),
 
     Notification: require('./notification/notification.model'),
     ManualNotification: require('./notification/manualNotification.model'),
@@ -100,11 +105,13 @@ module.exports = {
     InventoryForecast: require('./production/warehouse/inventoryForecast.model'),
     // Customer Management
     Customer: require('./customer-care/customer.model'),
+    CustomerForecast: require('./customer-care/customerForecast.model'),
     CustomerCare: require('./customer-care/customerCare.model'),
     CustomerCareType: require('./customer-care/customerCareType.model'),
     CustomerGroup: require('./customer-care/customerGroup.model'),
     CustomerStatus: require('./customer-care/customerStatus.model'),
     CustomerRankPoint: require('./customer-care/customerRankPoint.model'),
+    CustomerMarketing: require('./customer-care/customerMarketing.model'),
     Product: require('./customer-care/product.model'),
     ProductCategory: require('./customer-care/productCategory.model'),
     ProductDiscount: require('./customer-care/productDiscount.model'),
@@ -137,6 +144,7 @@ module.exports = {
 
     // Delegation
     Delegation: require('./delegation/delegation.model'),
+    DelegationPolicy: require('./delegation/delegation.policy.model'),
 
     // Identity server
     ExternalPolicy: require('./identity.service/external.policy.model'),

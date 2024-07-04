@@ -8,7 +8,8 @@ const initState = {
   organizationalUnitKpiSetsOfChildUnit: null,
   employeeKpisOfChildUnit: null,
   isLoading: false,
-  error: null
+  error: null,
+  kpiAllocationUnitResult: {}
 }
 
 export function dashboardOrganizationalUnitKpi(state = initState, action) {
@@ -109,11 +110,23 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
         isLoading: false
       }
     case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_FAILURE:
+    case dashboardOrganizationalUnitKpiConstants.GET_KPI_UNIT_ALLOCATION_FAILURE:
       return {
         ...state,
         error: action.payload,
         loading: false,
         isLoading: false
+      }
+    case dashboardOrganizationalUnitKpiConstants.GET_KPI_UNIT_ALLOCATION_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case dashboardOrganizationalUnitKpiConstants.GET_KPI_UNIT_ALLOCATION_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        kpiAllocationUnitResult: action.payload
       }
 
     default:
