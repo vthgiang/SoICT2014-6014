@@ -34,6 +34,10 @@ exports.getAllSchedule = async (portal, query, currentRole) => {
     .populate('employee');
 }
 
+exports.getScheduleById = async (portal, scheduleId) => {
+  return Transport3Schedule(connect(DB_CONNECTION, portal)).findById(scheduleId)
+}
+
 // Tạo mới 1 lịch trình
 exports.createSchedule = async (portal, data) => {
   // Tạo lịch trình cho từng vehicle

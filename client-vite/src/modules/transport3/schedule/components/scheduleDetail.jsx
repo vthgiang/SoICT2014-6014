@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {withTranslate} from 'react-redux-multilingual'
 import {CrmCustomerActions} from '@modules/crm/customer/redux/actions'
 import {formatDate, formatToTimeZoneDate} from '@helpers/formatDate'
@@ -7,10 +7,15 @@ import ValidationHelper from '@helpers/validationHelper'
 import '@modules/crm/customer/components/customer.css'
 import {MapContainer} from 'react-leaflet';
 import {StockActions} from '@modules/production/warehouse/stock-management/redux/actions.js';
+import { ScheduleActions } from '../redux/actions'
+import { useDispatch, useSelector } from 'react-redux'
 
 function ScheduleDetail(props) {
+  let dispatch = useDispatch()
   let initialState = {}
   const [state, setState] = useState(initialState)
+  let ontimePredictResults = useSelector(state => state.T3schedule?.predictOntimeDeliveryResults)
+  // let schedule = useSelector(state => state.T3schedule?.schedule)
 
   const {schedule} = props
 
@@ -20,7 +25,6 @@ function ScheduleDetail(props) {
     3: 'Vận chuyển giữa kho'
   }
 
-  console.log(schedule?.orders)
   // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
   const orderStatus = {
     1: 'Chưa giao hàng',
@@ -35,6 +39,24 @@ function ScheduleDetail(props) {
     2: 'Đang thực hiện',
     3: 'Đã hoàn thành'
   }
+
+  const displayOntimeStatus = (status) => {
+    if (status === 1) return 'Đúng hạn';
+    if (status === 0) return 'Trễ hạn';
+    return 'Chưa dự báo';
+  }
+
+  const handlePredictOntimeDelivery = (schedule) => {
+    dispatch(ScheduleActions.predictOntimeDelivery(schedule._id))
+  };
+
+  useEffect(() => {
+    if (ontimePredictResults) {
+      // Tải lại danh sách đơn hàng mới được dự báo
+      dispatch(ScheduleActions.getScheduleById(schedule?._id));
+    }
+  }, [ontimePredictResults, dispatch, schedule?._id]);
+
   return (
     <>
       <DialogModal
@@ -78,6 +100,26 @@ function ScheduleDetail(props) {
                     </div>
                   </div>
                 </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div className="form-group">
+                        <strong>Khả năng giao hàng đúng hạn:</strong>
+                        <span> 90% </span>
+                      </div>
+                      <div className="dropdown" style={{ marginLeft: '20px' }}>
+                        <button
+                          type="button"
+                          className="btn btn-success"
+                          data-toggle="modal"
+                          onClick={()=> handlePredictOntimeDelivery(schedule)}
+                        >
+                          Dự báo lại
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="col-md-6">
                 <div className="row">
@@ -117,6 +159,7 @@ function ScheduleDetail(props) {
                       <th>Điểm đến</th>
                       <th>Ngày tạo</th>
                       <th>Ngày cập nhật</th>
+                      <th>Khả năng giao đúng hạn</th>
                       <th>Trạng thái</th>
                     </tr>
                     </thead>
@@ -129,6 +172,10 @@ function ScheduleDetail(props) {
                         <td>{order.order.address}</td>
                         <td>{formatDate(order.order.createdAt)}</td>
                         <td>{formatDate(order.order.updatedAt)}</td>
+                        <td style={order.estimatedOntime === 1 ? {color: 'green'} :
+                          order.estimatedOntime === 0 ? {color: 'red'} : {color: 'black'}}>
+                            {displayOntimeStatus(order.estimatedOntime)}
+                        </td>
                         <td style={order.status === 4 ? {color: 'red'} :
                           order.status === 3 ? {color: 'green'} : {color: 'black'}}
                         >{orderStatus[order.status]}</td>

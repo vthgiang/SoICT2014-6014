@@ -28,7 +28,6 @@ function ScheduleTable(props) {
   const [selectedSchedule, setSelectedSchedule] = useState(null);
 
   let listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules)
-  let ontimePredictResults = useSelector(state => state.T3schedule.predictOntimeDeliveryResults.predict_ontime)
 
   let dispatch = useDispatch()
   useEffect(() => {
@@ -62,12 +61,6 @@ function ScheduleTable(props) {
     })
   }
 
-  const handlePredictOntimeDelivery = (schedule) => {
-    window.$(`#modal-ontime-delivery-results`).modal('show')
-    setSelectedSchedule(schedule);
-    dispatch(ScheduleActions.predictOntimeDelivery(schedule._id))
-  }
-
   const columns = [
     'STT',
     'Mã lịch trình',
@@ -95,6 +88,8 @@ function ScheduleTable(props) {
     });
     window.$(`#modal-detail-schedule`).modal('show')
   }
+
+  
   let {totalPages, page} = state
   return (
     <>
@@ -202,11 +197,6 @@ function ScheduleTable(props) {
                         data={{id: schedule._id}}
                         // func={handleDeleteVehicle}
                       />
-                      <button
-                       onClick={()=> handlePredictOntimeDelivery(schedule)}
-                      >
-                        Dự báo
-                      </button>
                     </td>
                   </td>
                 </tr>

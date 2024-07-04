@@ -5,6 +5,7 @@ const initState = {
   isAutoScheduling: false,
   listAutoSchedules: null,
   listSchedules: [],
+  schedule: {},
   listStocsWithLatLng: [],
   predictOntimeDeliveryResults: [],
   hyperparameters: []
@@ -24,6 +25,22 @@ export function schedule(state = initState, action) {
         listSchedules: action.payload
       }
     case ScheduleConstants.GET_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        schedule: action.payload
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_FAILURE:
       return {
         ...state,
         isLoading: false

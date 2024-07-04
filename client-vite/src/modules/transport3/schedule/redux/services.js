@@ -23,6 +23,19 @@ const getAllSchedule = (query) => {
   )
 }
 
+const getScheduleById = (scheduleId) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/schedule/${scheduleId}`,
+      method: 'GET',
+      params: query
+    },
+    false,
+    true,
+    'transport3.schedule'
+  )
+}
+
 const getAllStocksWithLatlng = async () => {
   const res = await StockServices.getAllStocks()
   // eslint-disable-next-line no-restricted-syntax
@@ -87,6 +100,7 @@ const getHyperparamter = (query) => {
 
 export { 
   getAllSchedule, 
+  getScheduleById,
   getAllStocksWithLatlng, 
   createSchedule, 
   predictOntimeDelivery, 
