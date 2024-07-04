@@ -6423,7 +6423,9 @@ export default {
           done: 'Đã hoàn thành',
           progessing: 'Đang lấy hàng',
           waiting: 'Chờ lấy hàng'
-        }
+        },
+        number_orders: 'Số order/wave',
+        generate: 'Khởi tạo'
       }
     },
 

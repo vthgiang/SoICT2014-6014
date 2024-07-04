@@ -36,6 +36,6 @@ RoutePickingSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
   if (!db.models.RoutePicking)
-    return db.model('RoutePicking', RoutePickingSchema);
+    return db.model('RoutePickings', RoutePickingSchema);
   return db.models.RoutePicking;
 };

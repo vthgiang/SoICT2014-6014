@@ -1,22 +1,20 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
-import { RoutePickingActions } from '../redux/actions'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { RoutePickingActions } from '../redux/actions';
 
-import { DataTableSetting, DeleteNotification, PaginateBar } from '../../../../../common-components'
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar } from '../../../../../common-components';
 
-// import ExampleCreateForm from './exampleCreateForm'
-// import ExampleEditForm from './exampleEditForm'
-import RoutePickingDefaultInfo from './routePickingDetailInfo'
-// import ExampleImportForm from './exampleImortForm'
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import RoutePickingDefaultInfo from './routePickingDetailInfo';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { formatToTimeZoneDate } from '../../../../../helpers/formatDate';
 
 class RoutePickingManagementTable extends Component {
   constructor(props) {
-    super(props)
-    const tableId = 'table-manage-route-class'
-    const defaultConfig = { limit: 5 }
-    const limit = getTableConfiguration(tableId, defaultConfig).limit
+    super(props);
+    const tableId = 'table-manage-route-class';
+    const defaultConfig = { limit: 5 };
+    const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
     this.state = {
       routeName: '',
@@ -24,123 +22,111 @@ class RoutePickingManagementTable extends Component {
       perPage: limit,
       tableId,
       detailModalId: 1,
-    }
+      ordersNumber: '',
+      startDate: '',
+      endDate: ''
+    };
   }
 
   componentDidMount() {
-    let { routeName, page, perPage } = this.state
-    this.props.getAllRoutes()
+    let { routeName, page, perPage } = this.state;
+    this.props.getAllRoutes({ routeName, perPage, page });
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.routes !== prevProps.routes) {
+      // Cập nhật lại state khi props thay đổi để re-render
+      this.setState({
+        listChemins: this.props.routes.listChemins
+      });
+    }
+  }
 
-  /**
-   * Hàm xử lý khi tên ví dụ thay đổi
-   * @param {*} e
-   */
-  handleChangeExampleName = (e) => {
-    const { value } = e.target
+  handleChangeOrderNumber = (e) => {
+    const { value } = e.target;
     this.setState({
-      exampleName: value
-    })
-  }
+      ordersNumber: value
+    });
+  };
 
-  /**
-   * Hàm xử lý khi click nút tìm kiếm
-   */
   handleSubmitSearch = () => {
-    const { exampleName, perPage } = this.state
+    const { ordersNumber, perPage, startDate, endDate } = this.state;
 
-    this.setState((state) => {
-      return {
-        ...state,
-        page: 1
-      }
-    })
-    this.props.getAllRoutes({ exampleName, perPage, page: 1 })
-  }
+    this.setState({
+      page: 1
+    }, () => {
+      this.props.getAllRoutes({ ordersNumber, perPage, page: 1, startDate, endDate });
+    });
+  };
 
-  /**
-   * Hàm xử lý khi click chuyển trang
-   * @param {*} pageNumber Số trang định chuyển
-   */
+  handleStartDateChange = (value) => {
+    this.setState({
+      startDate: value
+    });
+  };
+
+  handleEndDateChange = (value) => {
+    this.setState({
+      endDate: value
+    });
+  };
+
+  handleSubmitGenerateWave = () => {
+    let { startDate, endDate, ordersNumber } = this.state;
+    let data = {
+      ordersNumber,
+      startDate: startDate ? formatToTimeZoneDate(startDate) : '',
+      endDate: endDate ? formatToTimeZoneDate(endDate) : ''
+    };
+    this.props.createRoutePicking(data);
+  };
+
   setPage = (pageNumber) => {
-    const { exampleName, perPage } = this.state
+    const { ordersNumber, perPage, startDate, endDate } = this.state;
 
-    this.setState((state) => {
-      return {
-        ...state,
-        page: parseInt(pageNumber)
-      }
-    })
+    this.setState({
+      page: parseInt(pageNumber)
+    }, () => {
+      this.props.getAllRoutes({ ordersNumber, perPage, page: parseInt(pageNumber), startDate, endDate });
+    });
+  };
 
-    this.props.getAllRoutes({ exampleName, perPage, page: parseInt(pageNumber) })
-  }
-
-  /**
-   * Hàm xử lý thiết lập giới hạn hiển thị số bản ghi
-   * @param {*} number số bản ghi sẽ hiển thị
-   */
   setLimit = (number) => {
-    const { exampleName, page } = this.state
+    const { ordersNumber, page, startDate, endDate } = this.state;
 
-    this.setState((state) => {
-      return {
-        ...state,
-        perPage: parseInt(number)
-      }
-    })
-    this.props.getAllRoutes({ exampleName, perPage: parseInt(number), page })
-  }
+    this.setState({
+      perPage: parseInt(number)
+    }, () => {
+      this.props.getAllRoutes({ ordersNumber, perPage: parseInt(number), page, startDate, endDate });
+    });
+  };
 
-  /**
-   * Hàm xử lý khi click xóa 1 ví dụ
-   * @param {*} id của ví dụ cần xóa
-   */
   handleDelete = (id) => {
-    const { example } = this.props
-    const { exampleName, perPage, page } = this.state
+    // Hàm xóa logic ở đây
+  };
 
-    // this.props.deleteExamples({
-    //   exampleIds: [id]
-    // })
-    // console.log('55555')
-    // this.props.getAllRoutes({
-    //   exampleName,
-    //   perPage,
-    //   page: example?.lists?.length === 1 ? page - 1 : page
-    // })
-  }
-
-  /**
-   * Hàm xử lý khi click edit một ví vụ
-   * @param {*} example thông tin của ví dụ cần chỉnh sửa
-   */
   handleEdit = (example) => {
     this.setState(
       {
         currentRow: example
       },
       () => window.$('#modal-edit-example').modal('show')
-    )
-  }
+    );
+  };
 
   handleShowDetailInfo = async (chemin) => {
-    // const { detailModalId } = this.state
-    // await this.props.getRoute(chemin._id)
     await this.setState(
       {
         routeDetail: chemin
       },
       () => window.$(`#modal-detail-info-route-picking`).modal('show')
-    )
-  }
-
-
+    );
+  };
 
   render() {
-    const { translate, routes } = this.props
-    const { page, perPage, currentRow, tableId, routeDetail } = this.state
-    console.log(routeDetail)
+    const { translate, routes } = this.props;
+    const { page, perPage, tableId, routeDetail } = this.state;
+
     return (
       <React.Fragment>
         {routeDetail && (
@@ -151,16 +137,6 @@ class RoutePickingManagementTable extends Component {
         <div className='box-body qlcv'>
           <div className='form-inline'>
             <div className='dropdown pull-right' style={{ marginBottom: 15 }}>
-              {/* button thêm mới */}
-              <button
-                type='button'
-                className='btn btn-success dropdown-toggle pull-right'
-                data-toggle='dropdown'
-                aria-expanded='true'
-                title={translate('manage_example.add_title')}
-              >
-                {translate('manage_example.add')}
-              </button>
               <ul className='dropdown-menu pull-right' style={{ marginTop: 0 }}>
                 <li>
                   <a
@@ -183,33 +159,39 @@ class RoutePickingManagementTable extends Component {
               </ul>
             </div>
 
-            {/* Tên ví dụ cần tìm kiếm*/}
             <div className='form-group'>
-              <label className='form-control-static'>{translate('manage_example.exampleName')}</label>
+              <label className='form-control-static'>{translate('manage_warehouse.storage_management.number_orders')}</label>
               <input
                 type='text'
                 className='form-control'
-                name='exampleName'
-                onChange={this.handleChangeExampleName}
-                placeholder={translate('manage_example.exampleName')}
+                name='ordersNumber'
+                onChange={this.handleChangeOrderNumber}
+                placeholder={translate('manage_warehouse.storage_management.number_orders')}
                 autoComplete='off'
               />
             </div>
+            <div className='form-group'>
+              <label style={{ width: 'auto' }}>Từ</label>
+              <DatePicker id='date_picker_dashboard_start_index' value={this.state.startDate} onChange={this.handleStartDateChange} disabled={false} />
+            </div>
 
-            {/* Nút tìm kiếm */}
+            <div className='form-group'>
+              <label style={{ width: 'auto' }}>Đến</label>
+              <DatePicker id='date_picker_dashboard_end_index' value={this.state.endDate} onChange={this.handleEndDateChange} disabled={false} />
+            </div>
+
             <div className='form-group'>
               <button
                 type='button'
                 className='btn btn-success'
-                title={translate('manage_example.search')}
-                onClick={this.handleSubmitSearch}
+                title={translate('manage_warehouse.storage_management.generate')}
+                onClick={this.handleSubmitGenerateWave}
               >
-                {translate('manage_example.search')}
+                {translate('manage_warehouse.storage_management.generate')}
               </button>
             </div>
           </div>
 
-          {/* Bảng hiển thị danh sách ví dụ */}
           <table id={tableId} className='table table-striped table-bordered table-hover'>
             <thead>
               <tr>
@@ -235,82 +217,57 @@ class RoutePickingManagementTable extends Component {
               </tr>
             </thead>
             <tbody>
-              {routes.listChemins &&
-                routes.listChemins.length !== 0 &&
+              {routes.listChemins && routes.listChemins.length > 0 ? (
                 routes.listChemins.map((chemin, index) => (
-                  <tr key={index}>
-                    <td>{index + 1 + (page - 1) * perPage}</td>
-                    <td>{chemin.waveId}</td>
-                    <td>
-                      {chemin.orderId.map(order => order.code).join(', ')}
-                    </td>
-                    <td>
-                      {chemin.listInfoOrders.map(order => (
+                  chemin ? (
+                    <tr key={index}>
+                      <td>{index + 1 + (page - 1) * perPage}</td>
+                      <td>{chemin.waveId}</td>
+                      <td>{chemin.orderId.map(order => order.code).join(', ')}</td>
+                      <td>{chemin.listInfoOrders.map(order => (
                         <div style={{ maxWidth: '400px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {order.good.name}
                         </div>
-                      ))}
-                    </td>
-                    <td>{chemin.distanceRoute}</td>
-
-                    <td style={{ textAlign: 'center' }}>
-                      <a
-                        className='edit text-green'
-                        style={{ width: '5px' }}
-                        title={translate('manage_example.detail_info_example')}
-                        onClick={() => this.handleShowDetailInfo(chemin)}
-                      >
-                        <i className='material-icons'>visibility</i>
-                      </a>
-                      {/* <a
-                        className='edit text-yellow'
-                        style={{ width: '5px' }}
-                        title={translate('manage_example.edit')}
-                        onClick={() => this.handleEdit(chemin)}
-                      >
-                        <i className='material-icons'>edit</i>
-                      </a>
-                      <DeleteNotification
-                        content={translate('manage_example.delete')}
-                        data={{
-                          id: chemin._id,
-                          info: chemin.exampleName
-                        }}
-                        func={this.handleDelete}
-                      /> */}
-                    </td>
-                  </tr>
-                ))}
+                      ))}</td>
+                      <td>{chemin.distanceRoute}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <a
+                          className='edit text-green'
+                          style={{ width: '5px' }}
+                          title={translate('manage_example.detail_info_example')}
+                          onClick={() => this.handleShowDetailInfo(chemin)}
+                        >
+                          <i className='material-icons'>visibility</i>
+                        </a>
+                      </td>
+                    </tr>
+                  ) : null
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">{translate('confirm.no_data')}</td>
+                </tr>
+              )}
             </tbody>
           </table>
           {routes.isLoading ? (
             <div className='table-info-panel'>{translate('confirm.loading')}</div>
-          ) : (
-            (typeof routes.listChemins === 'undefined' || routes.listChemins.length === 0) && <div className='table-info-panel'>{translate('confirm.no_data')}</div>
-          )}
-          {/* <PaginateBar
-            pageTotal={totalPage ? totalPage : 0}
-            currentPage={page}
-            display={lists && lists.length !== 0 && lists.length}
-            total={routes && routes.totalList}
-            func={this.setPage}
-          /> */}
+          ) : null}
         </div>
-      </React.Fragment >
-    )
+      </React.Fragment>
+    );
   }
 }
 
 function mapStateToProps(state) {
-  const { routes } = state
+  const { routes } = state;
 
-  return { routes }
+  return { routes };
 }
 
 const mapDispatchToProps = {
   getAllRoutes: RoutePickingActions.getAllChemins,
+  createRoutePicking: RoutePickingActions.createRoutePicking
+};
 
-  // deleteExamples: exampleActions.deleteExamples
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RoutePickingManagementTable))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RoutePickingManagementTable));

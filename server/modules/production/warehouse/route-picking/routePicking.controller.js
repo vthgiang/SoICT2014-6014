@@ -1,5 +1,6 @@
 const RoutePickingService = require('./routePicking.service');
 const Log = require(`../../../../logs`);
+const axios = require('axios');
 
 exports.getAllChemins = async (req, res) => {
     try {
@@ -41,3 +42,34 @@ exports.getChemin = async (req, res) => {
         })
     }
 }
+
+exports.createRoutePicking = async (req, res) => {
+    try {
+        let data = req.body;
+        const responseAI = await axios.post(`${process.env.PYTHON_URL_SERVER}/api/dxclan/order_picking/simulate_wave`, data);
+        
+        // Check if responseAI does not exist or responseAI.data.message is 2
+        if (!responseAI || responseAI.data.message === 2) {
+            await Log.error(req.user.email, 'CREATE_ROUTE_PICKING', req.portal);
+            return res.status(400).json({
+                success: false,
+                messages: ['create_route_picking_failed_due_to_invalid_response'],
+                content: 'Invalid response from AI service'
+            });
+        }
+
+        await Log.info(req.user.email, "CREATE_ROUTE_PICKING", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["create_route_picking_success"],
+            // content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, 'CREATE_ROUTE_PICKING', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['create_route_picking_failed'],
+            content: error.message
+        });
+    }
+};

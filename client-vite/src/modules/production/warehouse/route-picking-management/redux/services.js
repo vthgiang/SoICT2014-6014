@@ -2,7 +2,8 @@ import { sendRequest } from '@helpers/requestHelper.jsx'
 
 export const RoutePickingServices = {
   getAllChemins,
-  getChemin
+  getChemin,
+  createRoutePicking
   // deleteExamples,
   // createExample,
   // editExample
@@ -33,33 +34,19 @@ function getChemin(id) {
     'manage_warehouse.route_picking_management'
   )
 }
-// function deleteExamples(data) {
-//   return sendRequest(
-//     {
-//       url: `${process.env.REACT_APP_SERVER}/examples`,
-//       method: 'DELETE',
-//       data: {
-//         exampleIds: data?.exampleIds
-//       }
-//     },
-//     true,
-//     true,
-//     'manage_example'
-//   )
-// }
 
-// function createExample(data) {
-//   return sendRequest(
-//     {
-//       url: `${process.env.REACT_APP_SERVER}/examples`,
-//       method: 'POST',
-//       data
-//     },
-//     true,
-//     true,
-//     'manage_example'
-//   )
-// }
+function createRoutePicking(data) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/route-picking/simulate_wave`,
+      method: 'POST',
+      data
+    },
+    true,
+    true,
+    'manage_warehouse.simulate_wave'
+  )
+}
 
 // function editExample(id, data) {
 //   return sendRequest(
