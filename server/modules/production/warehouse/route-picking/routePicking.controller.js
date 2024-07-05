@@ -73,3 +73,16 @@ exports.createRoutePicking = async (req, res) => {
         });
     }
 };
+
+exports.getAllRoutePickings = async (req, res) => {
+    try {
+        const routePicking = await RoutePickingService.getAllRoutePickings('vnist')
+        res.status(200).json(routePicking);
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ['get_route_picking_failed'],
+            content: error.message
+        })
+    }
+}

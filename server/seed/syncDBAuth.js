@@ -74,9 +74,9 @@ const syncDBAuth = async () => {
         shortName: 'vnist',
     });
 
-    vnistDB.dropCollection('resources')
-    vnistDB.dropCollection('requesters')
-    vnistDB.dropCollection('services')
+    // vnistDB.dropCollection('resources')
+    // vnistDB.dropCollection('requesters')
+    // vnistDB.dropCollection('services')
     /**
      * 1.1 Khởi tạo model cho db
      */

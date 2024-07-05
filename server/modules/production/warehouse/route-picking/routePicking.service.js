@@ -34,3 +34,18 @@ exports.getChemin = async (id, portal) => {
       },
     ]);
 };
+
+exports.getAllRoutePickings = async (portal) => {
+  return RoutePicking(connect(DB_CONNECTION, portal))
+    .find()
+    .populate([
+      {
+        path: 'orderId',
+        select: 'code',
+      },
+      {
+        path: 'listInfoOrders.good',
+        select: 'name',
+      },
+    ]);
+};
