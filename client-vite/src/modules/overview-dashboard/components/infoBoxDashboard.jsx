@@ -1,9 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useEffect } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { formatCurrency } from '../../../helpers/formatCurrency';
+import { ScheduleActions } from '../../transport3/schedule/redux/actions';
+import { OrderActions } from '../../transport3/order/redux/actions';
+import { withRouter } from 'react-router-dom';
 
 function InfoBox(props) {
+  let dispatch = useDispatch()
   let salesOrdersCounter = {};
   let quoteCounter = {};
 
@@ -17,6 +22,30 @@ function InfoBox(props) {
 
   if (!props.salesOrders || !props.quotes) {
     return <div>Đang tải...</div>;
+  }
+
+  const listSchedules = useSelector(state => state.T3schedule.listSchedules?.schedules)
+  const listOrders = useSelector(state => state.orders?.listOrders)
+
+  useEffect(() => {
+    dispatch(ScheduleActions.getAllSchedule())
+    dispatch(OrderActions.getAllOrder)
+  }, [dispatch])
+
+  const lateOrderCount = () => {
+    let orderCount = 0
+    listSchedules?.forEach(schedule => {
+      schedule.orders?.forEach(order => {
+        if(order.timeArrive > order.estimateTimeArrive){
+          orderCount += 1
+        }
+      })
+    });
+    return orderCount
+  }
+
+  const handleShowDetailDashboard = () => {
+    props.history.push('/manage-transport3-dashboard')
   }
 
   return (
@@ -45,6 +74,23 @@ function InfoBox(props) {
           </div>
         </div>
       </div>
+      <div className='col-md-4 col-sm-6 col-xs-6'>
+        <div className='info-box with-border'>
+          <span className='info-box-icon bg-orange'>
+            <i className='fa fa-hand-o-right'></i>
+          </span>
+          <div className='info-box-content' title='Tổng tiền mua hàng'>
+            <span className='info-box-text'>Đơn hàng</span>
+            <span className='info-box-number'>{lateOrderCount() || 0} / {listOrders.length || 0}</span>
+            <span>trễ hạn</span>
+            <button 
+              style={{position: 'absolute', top: '10px', right: '30px'}}
+              onClick={()=> handleShowDetailDashboard()}
+            >Xem chi tiết
+            </button>
+          </div>
+        </div>
+      </div>
       
     </div>
   );
@@ -57,4 +103,4 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(InfoBox));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(withRouter(InfoBox)));

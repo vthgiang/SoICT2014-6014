@@ -20,10 +20,11 @@ const getOntimeDeliveryRate = () => {
     }
 }
 
-const getOnTimeDeliveryRatesPerMonth = () => {
+const getOnTimeDeliveryRatesPerMonth = (month, year) => {
   return (dispatch) => {
       dispatch({ type: transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH })
-    DashboardService.getOnTimeDeliveryRatesPerMonth()
+      const query = { month, year };
+    DashboardService.getOnTimeDeliveryRatesPerMonth(query)
       .then((response) => {
         dispatch({
           type: transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS,
@@ -38,10 +39,11 @@ const getOnTimeDeliveryRatesPerMonth = () => {
   }
 }
 
-const getEstimatedOnTimeDeliveryRatesPerMonth = () => {
+const getEstimatedOnTimeDeliveryRatesPerMonth = (month, year) => {
   return (dispatch) => {
       dispatch({ type: transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH })
-    DashboardService.getEstimatedOnTimeDeliveryRatesPerMonth()
+      const query = { month, year };
+    DashboardService.getEstimatedOnTimeDeliveryRatesPerMonth(query)
       .then((response) => {
         dispatch({
           type: transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS,
@@ -56,10 +58,11 @@ const getEstimatedOnTimeDeliveryRatesPerMonth = () => {
   }
 }
 
-const getDeliveryLateDayAveragePerMonth = () => {
+const getDeliveryLateDayAveragePerMonth = (month, year) => {
   return (dispatch) => {
       dispatch({ type: transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH })
-    DashboardService.getDeliveryLateDayAveragePerMonth()
+      const query = { month, year };
+    DashboardService.getDeliveryLateDayAveragePerMonth(query)
       .then((response) => {
         dispatch({
           type: transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH_SUCCESS,
@@ -74,9 +77,89 @@ const getDeliveryLateDayAveragePerMonth = () => {
   }
 }
 
+const getTopLateDeliveryDay = (month, year) => {
+  return (dispatch) => {
+    dispatch({ type: transportationConstants.GET_TOP_LATE_DELIVERY_DAY })
+    const query = { month, year };
+  DashboardService.getTopLateDeliveryDay(query)
+    .then((response) => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_DELIVERY_DAY_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_DELIVERY_DAY_FAILED
+      })
+    })
+  }
+}
+
+const getTopLateProducts = (month, year) => {
+  return (dispatch) => {
+    dispatch({ type: transportationConstants.GET_TOP_LATE_PRODUCTS })
+    const query = { month, year };
+  DashboardService.getTopLateProducts(query)
+    .then((response) => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_PRODUCTS_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_PRODUCTS_FAILED
+      })
+    })
+  }
+}
+
+const getTopLateStocks = (month, year) => {
+  return (dispatch) => {
+    dispatch({ type: transportationConstants.GET_TOP_LATE_STOCKS })
+    const query = { month, year };
+  DashboardService.getTopLateStocks(query)
+    .then((response) => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_STOCKS_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: transportationConstants.GET_TOP_LATE_STOCKS_FAILED
+      })
+    })
+  }
+}
+
+const getOrderStatus = (month, year) => {
+  return (dispatch) => {
+    dispatch({ type: transportationConstants.GET_ORDER_STATUS })
+    const query = { month, year };
+  DashboardService.getOrderStatus(query)
+    .then((response) => {
+      dispatch({
+        type: transportationConstants.GET_ORDER_STATUS_SUCCESS,
+        payload: response.data.content
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: transportationConstants.GET_ORDER_STATUS_FAILED
+      })
+    })
+  }
+}
+
 export const DashboardActions = {
   getOntimeDeliveryRate,
   getOnTimeDeliveryRatesPerMonth,
   getEstimatedOnTimeDeliveryRatesPerMonth,
-  getDeliveryLateDayAveragePerMonth
+  getDeliveryLateDayAveragePerMonth,
+  getTopLateDeliveryDay,
+  getTopLateProducts,
+  getTopLateStocks,
+  getOrderStatus
 }

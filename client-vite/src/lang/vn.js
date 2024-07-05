@@ -108,7 +108,7 @@ export default {
       task_pert: 'Phân tích xác suất thành công',
       task_pert_dash: 'Phân tích quy trình',
       system_administration: 'Quản trị hệ thống',
-      forecast_model_management: 'Quản lý mô hình dự báo',
+      forecast_model_management: 'Quản lý tham số mô hình',
       OTD_forecast_model_management: 'Quản lý mô hình dự báo khả năng giao hàng đúng hạn',
       manage_configuration: 'Cấu hình hệ thống',
       manage_system: 'Sao lưu phục hồi',

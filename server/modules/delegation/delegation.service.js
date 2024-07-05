@@ -20,7 +20,7 @@ const taskTemplateModel = require('../../models/task/taskTemplate.model');
 const PolicyService = require('../super-admin/policy/policy.service');
 const NotificationServices = require(`../notification/notification.service`);
 const InternalServiceIdentityServices = require('../authorization/internal-service-identities/internal-service-identities.service');
-const ExternalServiceConsumer = require('../authorization/external-service-consumers/external-service-consumers.service');
+const ExternalServiceConsumer = require('../../../server/modules/authorization/external-service-consumers/external-service-consumers.service');
 const { SystemApiServices } = require('../system-admin/system-api/system-api-management/systemApi.service');
 
 // Tạo mới mảng Ví dụ

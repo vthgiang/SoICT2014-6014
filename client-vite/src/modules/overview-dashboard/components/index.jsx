@@ -1,5 +1,6 @@
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import moment from 'moment'
 import { withTranslate } from 'react-redux-multilingual'
 import { SalesOrderActions } from '../../production/order/sales-order/redux/actions'
 import { QuoteActions } from '../../production/order/quote/redux/actions'
@@ -10,6 +11,8 @@ import TopCareBarChart from '../../production/order/sales-order-dashboard/compon
 import SalesOrderStatusChart from '../../production/order/sales-order-dashboard/components/salesOrderStatusChart'
 import TopSoldBarChart from '../../production/order/sales-order-dashboard/components/topSoldBarChart'
 import InfoBox from '../../production/order/sales-order-dashboard/components/infoBox'
+// import OnTimeDeliveryChart from '../../transport3/dashboard/components/charts/ontimeDeliveryChart'
+import { OnTimeDeliveryChart } from '../../transport3/dashboard/components/charts/ontimeDeliveryChart'
 
 import { formatToTimeZoneDate } from '../../../helpers/formatDate'
 import InfoBoxDashboard from './infoBoxDashboard'
@@ -21,6 +24,7 @@ function OverviewDashboard(props) {
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole')
   })
+  const [monthToSearch, setMonthToSearch] = useState(moment().format("MM-YYYY"));
 
   useEffect(() => {
     const { currentRole } = state
@@ -56,6 +60,8 @@ function OverviewDashboard(props) {
       startDate: startDate ? formatToTimeZoneDate(startDate) : '',
       endDate: endDate ? formatToTimeZoneDate(endDate) : ''
     }
+    const updatedMonthToSearch = endDate ? moment(endDate, "DD-MM-YYYY").format("MM-YYYY") : moment().format("MM-YYYY");
+    setMonthToSearch(updatedMonthToSearch);
     props.countSalesOrder(data)
     props.getTopGoodsSold(data)
     props.getSalesForDepartments(data)
@@ -95,6 +101,13 @@ function OverviewDashboard(props) {
 
             <div className='col-xs-6'>
               <SalesOrderStatusChart />
+            </div>
+            <div className='col-xs-6'>
+              <div className='box'>
+                <div className='box-header with-border' style={{ paddingTop: '30px' }}>
+                  <OnTimeDeliveryChart monthToSearch = {monthToSearch}/>
+                </div>
+              </div>
             </div>
           </div>
           

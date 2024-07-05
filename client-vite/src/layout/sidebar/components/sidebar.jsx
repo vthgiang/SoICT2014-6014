@@ -28,10 +28,10 @@ class SideBar extends Component {
     const { translate, auth } = this.props
     const { user, links } = this.props.auth
 
-    let module_transport = localStorage.getItem('module-tranport');
+    let module_transport = localStorage.getItem('module-transport');
     if(!module_transport) {
       module_transport = 1;
-      localStorage.setItem('module-tranport', 1);
+      localStorage.setItem('module-transport', 1);
     }
 
     return (

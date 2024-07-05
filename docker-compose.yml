@@ -13,8 +13,8 @@ services:
       - service-db:/data/log
     networks:
       - vnist-network
-  client:
-#    container_name: client
+  client-service:
+    container_name: client-service
     image: node:16-alpine
     ports:
       - "9000:3000"
@@ -26,8 +26,8 @@ services:
     command: sh -c "cd /app && npm install -f && npm i @material-ui/core -f && npm start"
     networks:
       - vnist-network
-  server:
-#    container_name: server
+  server-service:
+    container_name: server-service
     image: node:16-alpine
     ports:
       - "8000:8000"
