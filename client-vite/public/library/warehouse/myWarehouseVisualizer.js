@@ -39,53 +39,15 @@ $(document).ready(function () {
     }
   })
 
-  function createRoutePicking() {
-    const getRoutePicking = async () => {
-      return await $.ajax({
-        url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        },
-        type: 'GET',
-        crossDomain: true,
-        dataType: 'json'
-      })
-    }
-    getRoutePicking()
-      .then((response) => {
-        console.log('response:', response)
-        const records = response.map((item, index) => {
-          return {
-            recid: index + 1,
-            waveId: item.waveId,
-            orderId: item.orderId.code.join(', '),
-            good: item.listInfoOrders.map((order) => order.name).join(', '),
-            distanceRoute: item.distanceRoute
-          }
-        })
-
-        // Thêm dữ liệu vào grid
-        w2ui['newGrid'].add(records)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-
-    // Tạo grid mới
-    var newGrid = $().w2grid({
-      name: 'newGrid',
-      header: 'RoutePicking',
-      style: 'width: 100%; height: 80%;',
-      show: {
-        selectColumn: true
+  const getRoutePicking = async () => {
+    return await $.ajax({
+      url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
       },
-      reorderColumns: true,
-      columns: [
-        { field: 'waveId', caption: 'WaveID', size: '50px', sortable: true, attr: 'align=center' },
-        { field: 'orderId', caption: 'Các đơn hàng', size: '200px', sortable: true, resizable: true },
-        { field: 'good', caption: 'Sản phẩm', size: '300px', sortable: true, resizable: true },
-        { field: 'distanceRoute', caption: 'Distance Route', size: '150px', sortable: true, resizable: true }
-      ]
+      type: 'GET',
+      crossDomain: true,
+      dataType: 'json'
     })
   }
 
@@ -255,72 +217,138 @@ $(document).ready(function () {
 
                   break
 
-                case 'toggleOrderPickingGrid':
-                  var mainPanel = this.owner.get('main').content
-
-                  if (mainPanel.get('right').mdvPreHideSize) {
-                    mainPanel.sizeTo('right', mainPanel.get('right').mdvPreHideSize) //Must operate on preview, not main (bug)
-                    delete mainPanel.get('right').mdvPreHideSize
-                  } else {
-                    mainPanel.get('right').mdvPreHideSize = mainPanel.get('right').size
-                    mainPanel.get('left').mdvPreHideSize = mainPanel.get('left').size
-                    mainPanel.sizeTo('right', '40%')
-                  }
-
-                  // Hàm lấy dữ liệu từ API
-                  const getRoutePicking = async () => {
-                    return await $.ajax({
-                      url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
-                      headers: {
-                        'Access-Control-Allow-Origin': '*'
-                      },
-                      type: 'GET',
-                      crossDomain: true,
-                      dataType: 'json'
-                    })
-                  }
-
-                  // Lấy dữ liệu từ API và khởi tạo grid với dữ liệu
-                  getRoutePicking()
-                    .then((response) => {
-                      console.log('response:', response)
-                      const records = response.map((item, index) => {
-                        return {
-                          recid: index + 1,
-                          waveId: item.waveId,
-                          orderId: item.orderId.map((order) => order.code).join(', '),
-                          good: item.listInfoOrders.map((order) => order.good.name).join(','),
-                          distanceRoute: item.distanceRoute
-                        }
-                      })
-
-                      // Tạo grid mới với records
-                      var newGrid = $().w2grid({
-                        name: 'newGrid',
-                        header: 'Route Picking',
-                        style: 'width: 100%; height: 40%;',
-                        show: {
-                          selectColumn: true
-                        },
-                        reorderColumns: true,
-                        columns: [
-                          { field: 'waveId', caption: 'WaveID', size: '60px', sortable: true, attr: 'align=center' },
-                          { field: 'orderId', caption: 'Các đơn hàng', sortable: true, resizable: true },
-                          { field: 'good', caption: 'Sản phẩm', size: '150px', sortable: true, resizable: true },
-                          { field: 'distanceRoute', caption: 'Distance Route', sortable: true, resizable: true }
-                        ],
-                        records: records
-                      })
-
-                      // Thêm grid mới vào mainPanel
-                      mainPanel.content('right', newGrid)
-                    })
-                    .catch((error) => {
-                      console.log(error)
-                    })
-
-                  break
-
+                  case 'toggleOrderPickingGrid':
+                    var mainPanel = this.owner.get('main').content;
+                
+                    if (mainPanel.get('right').mdvPreHideSize) {
+                        mainPanel.sizeTo('right', mainPanel.get('right').mdvPreHideSize); //Must operate on preview, not main (bug)
+                        delete mainPanel.get('right').mdvPreHideSize;
+                    } else {
+                        mainPanel.get('right').mdvPreHideSize = mainPanel.get('right').size;
+                        mainPanel.get('left').mdvPreHideSize = mainPanel.get('left').size;
+                        mainPanel.sizeTo('right', '40%');
+                    }
+                
+                    // Kiểm tra và xóa bỏ các grid cũ nếu tồn tại
+                    if (w2ui.newGrid) w2ui.newGrid.destroy();
+                    if (w2ui.detailGrid) w2ui.detailGrid.destroy();
+                
+                    // Tạo container cho cả hai grid
+                    var container = document.createElement('div');
+                    container.style.width = '100%';
+                    container.style.height = '100%';
+                    container.style.display = 'flex';
+                    container.style.flexDirection = 'column';
+                
+                    // Tạo element cho newGrid
+                    var newGridElement = document.createElement('div');
+                    newGridElement.id = 'newGridElement';
+                    newGridElement.style.flex = '1';
+                    newGridElement.style.height = '40%';
+                    container.appendChild(newGridElement);
+                
+                    // Tạo element cho detailGrid
+                    var detailGridElement = document.createElement('div');
+                    detailGridElement.id = 'detailGridElement';
+                    detailGridElement.style.flex = '1';
+                    detailGridElement.style.height = '60%';
+                    container.appendChild(detailGridElement);
+                
+                    // Thêm container vào mainPanel
+                    mainPanel.content('right', container);
+                
+                    // Hàm lấy dữ liệu từ API
+                    const getRoutePicking = async () => {
+                        return await $.ajax({
+                            url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
+                            headers: {
+                                'Access-Control-Allow-Origin': '*'
+                            },
+                            type: 'GET',
+                            crossDomain: true,
+                            dataType: 'json'
+                        });
+                    };
+                
+                    // Lấy dữ liệu từ API và khởi tạo grid với dữ liệu
+                    getRoutePicking()
+                        .then((response) => {
+                            console.log('response:', response);
+                            const records = response.map((item, index) => {
+                                return {
+                                    recid: index + 1,
+                                    waveId: item.waveId,
+                                    orderId: item.orderId.map((order) => order.code).join(', '),
+                                    good: item.listInfoOrders.map((order) => order.good.name).join(', '),
+                                    distanceRoute: item.distanceRoute,
+                                    details: item.listInfoOrders // Thêm chi tiết đơn hàng vào records
+                                };
+                            });
+                
+                            // Tạo grid chính với records
+                            var newGrid = $().w2grid({
+                                name: 'newGrid',
+                                header: 'Danh sách các lộ trình lấy hàng',
+                                box: '#newGridElement',
+                                style: 'width: 100%; height: 100%;',
+                                show: {
+                                    header: true,
+                                    selectColumn: true // Sử dụng cột chọn
+                                },
+                                reorderColumns: true,
+                                columns: [
+                                    { field: 'waveId', caption: 'WaveID', size: '60px', sortable: true, attr: 'align=center' },
+                                    { field: 'orderId', caption: 'Các đơn hàng', sortable: true, resizable: true },
+                                    { field: 'good', caption: 'Sản phẩm', size: '150px', sortable: true, resizable: true },
+                                    { field: 'distanceRoute', caption: 'Distance Route', sortable: true, resizable: true }
+                                ],
+                                records: records,
+                                onClick: function (event) {
+                                    // Hủy chọn tất cả các dòng trước khi chọn dòng mới
+                                    this.selectNone();
+                                    var record = this.get(event.recid);
+                                    this.select(event.recid);
+                
+                                    w2ui['detailGrid'].clear();
+                                    w2ui['detailGrid'].add(record.details.map((detail, index) => {
+                                        return {
+                                            recid: index + 1,
+                                            location: detail.location,
+                                            good: detail.good.name,
+                                            quantity_taken: detail.quantity_taken
+                                        };
+                                    }));
+                                }
+                            });
+                
+                            // Tạo grid chi tiết rỗng ban đầu
+                            var detailGrid = $().w2grid({
+                                name: 'detailGrid',
+                                header: 'Chi tiết lộ trình',
+                                box: '#detailGridElement',
+                                style: 'width: 100%; height: 100%;',
+                                show: {
+                                    header: true,
+                                    selectColumn: true // Sử dụng cột chọn
+                                },
+                                reorderColumns: true,
+                                columns: [
+                                    { field: 'location', caption: 'Location', size: '150px', sortable: true, resizable: true },
+                                    { field: 'good', caption: 'Good', size: '150px', sortable: true, resizable: true },
+                                    { field: 'quantity_taken', caption: 'Quantity Taken', size: '100px', sortable: true, resizable: true }
+                                ],
+                                records: []
+                            });
+                
+                            // Thêm grid vào container
+                            newGrid.render();
+                            detailGrid.render();
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                
+                    break;
                 case 'language':
                   fnSetLanguageIndex(aTargets[1])
                   break
