@@ -10,18 +10,27 @@ class SalesOrderStatusChart extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      type: 1
+      type: 1,
+      loading: true
     }
   }
 
   componentDidMount() {
-    this.pieChart()
+    if (this.props.salesOrders && this.props.salesOrders.salesOrdersCounter) {
+      this.setState({ loading: false })
+      this.pieChart()
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.salesOrders !== this.props.salesOrders || prevState.type !== this.state.type) {
+      this.setState({ loading: false })
+      this.pieChart()
+    }
   }
 
   handleChangeType = (type) => {
-    this.setState({
-      type
-    })
+    this.setState({ type })
   }
 
   setDataPieChart = () => {
@@ -29,33 +38,35 @@ class SalesOrderStatusChart extends Component {
     let salesOrdersCounter = {}
 
     if (this.props.salesOrders) {
-      salesOrdersCounter = this.props.salesOrders?.salesOrdersCounter
-    }
-    let dataPieChart = []
-    if (salesOrdersCounter && type === 1) {
-      dataPieChart = [
-        ['Chờ phê duyệt', salesOrdersCounter.totalNumberWithStauts[1]],
-        ['Đã phê duyệt', salesOrdersCounter.totalNumberWithStauts[2]],
-        ['Yêu cầu sản xuất', salesOrdersCounter.totalNumberWithStauts[3]],
-        ['Đã lập kế hoạch sản xuất', salesOrdersCounter.totalNumberWithStauts[4]],
-        ['Đã yêu cầu sản xuất', salesOrdersCounter.totalNumberWithStauts[5]],
-        ['Đang giao hàng', salesOrdersCounter.totalNumberWithStauts[6]],
-        ['Đã giao hàng', salesOrdersCounter.totalNumberWithStauts[7]],
-        ['Đã hủy', salesOrdersCounter.totalNumberWithStauts[8]]
-      ]
+      salesOrdersCounter = this.props.salesOrders.salesOrdersCounter || {}
     }
 
-    if (salesOrdersCounter && type === 2) {
-      dataPieChart = [
-        ['Chờ phê duyệt', salesOrdersCounter.totalMoneyWithStatus[1]],
-        ['Đã phê duyệt', salesOrdersCounter.totalMoneyWithStatus[2]],
-        ['Yêu cầu sản xuất', salesOrdersCounter.totalMoneyWithStatus[3]],
-        ['Đã lập kế hoạch sản xuất', salesOrdersCounter.totalMoneyWithStatus[4]],
-        ['Đã yêu cầu sản xuất', salesOrdersCounter.totalMoneyWithStatus[5]],
-        ['Đang giao hàng', salesOrdersCounter.totalMoneyWithStatus[6]],
-        ['Đã giao hàng', salesOrdersCounter.totalMoneyWithStatus[7]],
-        ['Đã hủy', salesOrdersCounter.totalMoneyWithStatus[8]]
-      ]
+    let dataPieChart = []
+
+    if (salesOrdersCounter && salesOrdersCounter.totalNumberWithStauts && salesOrdersCounter.totalMoneyWithStatus) {
+      if (type === 1) {
+        dataPieChart = [
+          ['Chờ phê duyệt', salesOrdersCounter.totalNumberWithStauts[1] || 0],
+          ['Đã phê duyệt', salesOrdersCounter.totalNumberWithStauts[2] || 0],
+          ['Yêu cầu sản xuất', salesOrdersCounter.totalNumberWithStauts[3] || 0],
+          ['Đã lập kế hoạch sản xuất', salesOrdersCounter.totalNumberWithStauts[4] || 0],
+          ['Đã yêu cầu sản xuất', salesOrdersCounter.totalNumberWithStauts[5] || 0],
+          ['Đang giao hàng', salesOrdersCounter.totalNumberWithStauts[6] || 0],
+          ['Đã giao hàng', salesOrdersCounter.totalNumberWithStauts[7] || 0],
+          ['Đã hủy', salesOrdersCounter.totalNumberWithStauts[8] || 0]
+        ]
+      } else if (type === 2) {
+        dataPieChart = [
+          ['Chờ phê duyệt', salesOrdersCounter.totalMoneyWithStatus[1] || 0],
+          ['Đã phê duyệt', salesOrdersCounter.totalMoneyWithStatus[2] || 0],
+          ['Yêu cầu sản xuất', salesOrdersCounter.totalMoneyWithStatus[3] || 0],
+          ['Đã lập kế hoạch sản xuất', salesOrdersCounter.totalMoneyWithStatus[4] || 0],
+          ['Đã yêu cầu sản xuất', salesOrdersCounter.totalMoneyWithStatus[5] || 0],
+          ['Đang giao hàng', salesOrdersCounter.totalMoneyWithStatus[6] || 0],
+          ['Đã giao hàng', salesOrdersCounter.totalMoneyWithStatus[7] || 0],
+          ['Đã hủy', salesOrdersCounter.totalMoneyWithStatus[8] || 0]
+        ]
+      }
     }
     return dataPieChart
   }
@@ -73,41 +84,45 @@ class SalesOrderStatusChart extends Component {
   pieChart = () => {
     let dataPieChart = this.setDataPieChart()
     this.removePreviousChart()
-    let chart = c3.generate({
-      bindto: this.refs.amountPieChart,
+    if (dataPieChart.length > 0) {
+      let chart = c3.generate({
+        bindto: this.refs.amountPieChart,
 
-      data: {
-        columns: dataPieChart,
-        type: 'pie'
-      },
+        data: {
+          columns: dataPieChart,
+          type: 'pie'
+        },
 
-      pie: {
-        label: {
-          format: function (value, ratio, id) {
-            return value ? formatCurrency(value) : ''
+        pie: {
+          label: {
+            format: function (value, ratio, id) {
+              return value ? formatCurrency(value) : ''
+            }
           }
-        }
-      },
+        },
 
-      tooltip: {
-        format: {
-          title: function (d) {
-            return d
-          },
-          value: function (value) {
-            return value
+        tooltip: {
+          format: {
+            title: function (d) {
+              return d
+            },
+            value: function (value) {
+              return value
+            }
           }
-        }
-      },
+        },
 
-      legend: {
-        show: true
-      }
-    })
+        legend: {
+          show: true
+        }
+      })
+    }
   }
 
   render() {
-    this.pieChart()
+    if (this.state.loading) {
+      return <div>Loading...</div>
+    }
     return (
       <div className='box'>
         <div className='box-header with-border'>

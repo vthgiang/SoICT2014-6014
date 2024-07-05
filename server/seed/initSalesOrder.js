@@ -164,7 +164,7 @@ const initSalesOrder = async () => {
                         //     },
                         // ],
                         shippingFee: 10000,
-                        deliveryTime: salesOrder.date,
+                        createdAt: salesOrder.date,
                         coin: 500,
                         paymentAmount: (salesOrder.price * salesOrder.orders * 11) / 10 + 10000,
                         note: "Khách hàng quen thuộc",

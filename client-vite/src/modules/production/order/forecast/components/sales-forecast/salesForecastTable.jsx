@@ -78,7 +78,7 @@ const SalesForecastTable = () => {
                 ) : (
                     <tbody>
                         <tr>
-                            <td colSpan="6" style={{ textAlign: 'center' }}>No forecasts available.</td>
+                            <td colSpan="6" style={{ textAlign: 'center' }}>Không có dữ liệu.</td>
                         </tr>
                     </tbody>
                 )}

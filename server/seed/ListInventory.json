@@ -261,15 +261,6 @@
         "month":5
     },
     {
-        "product_id":2001819,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":2598757,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -529,15 +520,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":2598757,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":4418081,
@@ -801,15 +783,6 @@
         "month":5
     },
     {
-        "product_id":4418081,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":5469215,
         "date_block_num":1,
         "item_cnt_month":10,
@@ -1071,15 +1044,6 @@
         "month":5
     },
     {
-        "product_id":5469215,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":5517433,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -1339,15 +1303,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":5517433,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":6398613,
@@ -1611,15 +1566,6 @@
         "month":5
     },
     {
-        "product_id":6398613,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":6707617,
         "date_block_num":1,
         "item_cnt_month":27,
@@ -1879,15 +1825,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":6707617,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":6927817,
@@ -2151,15 +2088,6 @@
         "month":5
     },
     {
-        "product_id":6927817,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":7350639,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -2419,15 +2347,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":7350639,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":11189615,
@@ -2691,15 +2610,6 @@
         "month":5
     },
     {
-        "product_id":11189615,
-        "date_block_num":30,
-        "item_cnt_month":45,
-        "max_storage":50,
-        "current_inventory":5,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":11345710,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -2959,15 +2869,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":11345710,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":14387874,
@@ -3231,15 +3132,6 @@
         "month":5
     },
     {
-        "product_id":14387874,
-        "date_block_num":30,
-        "item_cnt_month":42,
-        "max_storage":50,
-        "current_inventory":8,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":14678691,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -3499,15 +3391,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":14678691,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":15166034,
@@ -3771,15 +3654,6 @@
         "month":5
     },
     {
-        "product_id":15166034,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":16162173,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -4039,15 +3913,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":16162173,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":16915984,
@@ -4311,15 +4176,6 @@
         "month":5
     },
     {
-        "product_id":16915984,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":19556880,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -4579,15 +4435,6 @@
         "current_inventory":35,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":19556880,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":19681749,
@@ -4851,15 +4698,6 @@
         "month":5
     },
     {
-        "product_id":19681749,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":19761153,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -5119,15 +4957,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":19761153,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":20521578,
@@ -5391,15 +5220,6 @@
         "month":5
     },
     {
-        "product_id":20521578,
-        "date_block_num":30,
-        "item_cnt_month":29,
-        "max_storage":50,
-        "current_inventory":21,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":21171009,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -5659,15 +5479,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":21171009,
-        "date_block_num":30,
-        "item_cnt_month":49,
-        "max_storage":50,
-        "current_inventory":1,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":21601483,
@@ -5931,15 +5742,6 @@
         "month":5
     },
     {
-        "product_id":21601483,
-        "date_block_num":30,
-        "item_cnt_month":13,
-        "max_storage":50,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":23014297,
         "date_block_num":1,
         "item_cnt_month":33,
@@ -6199,15 +6001,6 @@
         "current_inventory":20,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":23014297,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":23296068,
@@ -6471,15 +6264,6 @@
         "month":5
     },
     {
-        "product_id":23296068,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":24388904,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -6739,15 +6523,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":24388904,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":25662103,
@@ -7011,15 +6786,6 @@
         "month":5
     },
     {
-        "product_id":25662103,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":29408823,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -7279,15 +7045,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":29408823,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":29436675,
@@ -7551,15 +7308,6 @@
         "month":5
     },
     {
-        "product_id":29436675,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":31202048,
         "date_block_num":1,
         "item_cnt_month":11,
@@ -7819,15 +7567,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":31202048,
-        "date_block_num":30,
-        "item_cnt_month":13,
-        "max_storage":50,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":31638205,
@@ -8091,15 +7830,6 @@
         "month":5
     },
     {
-        "product_id":31638205,
-        "date_block_num":30,
-        "item_cnt_month":13,
-        "max_storage":50,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":34573146,
         "date_block_num":1,
         "item_cnt_month":23,
@@ -8361,15 +8091,6 @@
         "month":5
     },
     {
-        "product_id":34573146,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":34573784,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -8629,15 +8350,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":34573784,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":35087712,
@@ -8901,15 +8613,6 @@
         "month":5
     },
     {
-        "product_id":35087712,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":35243295,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -9169,15 +8872,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":35243295,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":36607951,
@@ -9441,15 +9135,6 @@
         "month":5
     },
     {
-        "product_id":36607951,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":37496496,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -9709,15 +9394,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":37496496,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":42899542,
@@ -9981,15 +9657,6 @@
         "month":5
     },
     {
-        "product_id":42899542,
-        "date_block_num":30,
-        "item_cnt_month":66,
-        "max_storage":100,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":44834030,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -10249,15 +9916,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":44834030,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":44939991,
@@ -10521,15 +10179,6 @@
         "month":5
     },
     {
-        "product_id":44939991,
-        "date_block_num":30,
-        "item_cnt_month":51,
-        "max_storage":100,
-        "current_inventory":49,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":45287355,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -10789,15 +10438,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":45287355,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":48427720,
@@ -11061,15 +10701,6 @@
         "month":5
     },
     {
-        "product_id":48427720,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":48720087,
         "date_block_num":1,
         "item_cnt_month":59,
@@ -11329,15 +10960,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":48720087,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":50242250,
@@ -11601,15 +11223,6 @@
         "month":5
     },
     {
-        "product_id":50242250,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":50456519,
         "date_block_num":1,
         "item_cnt_month":27,
@@ -11869,15 +11482,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":50456519,
-        "date_block_num":30,
-        "item_cnt_month":51,
-        "max_storage":100,
-        "current_inventory":49,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":50460399,
@@ -12141,15 +11745,6 @@
         "month":5
     },
     {
-        "product_id":50460399,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":50723696,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -12409,15 +12004,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":50723696,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":52184516,
@@ -12681,15 +12267,6 @@
         "month":5
     },
     {
-        "product_id":52184516,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":52188800,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -12949,15 +12526,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":52188800,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":54781910,
@@ -13221,15 +12789,6 @@
         "month":5
     },
     {
-        "product_id":54781910,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":55163582,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -13491,15 +13050,6 @@
         "month":5
     },
     {
-        "product_id":55163582,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":55617083,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -13759,15 +13309,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":55617083,
-        "date_block_num":30,
-        "item_cnt_month":10,
-        "max_storage":50,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":55747001,
@@ -14031,15 +13572,6 @@
         "month":5
     },
     {
-        "product_id":55747001,
-        "date_block_num":30,
-        "item_cnt_month":53,
-        "max_storage":100,
-        "current_inventory":47,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":56446427,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -14301,15 +13833,6 @@
         "month":5
     },
     {
-        "product_id":56446427,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":57734293,
         "date_block_num":1,
         "item_cnt_month":27,
@@ -14569,15 +14092,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":57734293,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":58300224,
@@ -14841,15 +14355,6 @@
         "month":5
     },
     {
-        "product_id":58300224,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":58309742,
         "date_block_num":1,
         "item_cnt_month":10,
@@ -15109,15 +14614,6 @@
         "current_inventory":23,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":58309742,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":58587472,
@@ -15381,15 +14877,6 @@
         "month":5
     },
     {
-        "product_id":58587472,
-        "date_block_num":30,
-        "item_cnt_month":9,
-        "max_storage":50,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":59436595,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -15651,15 +15138,6 @@
         "month":5
     },
     {
-        "product_id":59436595,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":59481641,
         "date_block_num":1,
         "item_cnt_month":11,
@@ -15919,15 +15397,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":59481641,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":60343372,
@@ -16191,15 +15660,6 @@
         "month":5
     },
     {
-        "product_id":60343372,
-        "date_block_num":30,
-        "item_cnt_month":36,
-        "max_storage":50,
-        "current_inventory":14,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":62755202,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -16459,15 +15919,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":62755202,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":66621360,
@@ -16731,15 +16182,6 @@
         "month":5
     },
     {
-        "product_id":66621360,
-        "date_block_num":30,
-        "item_cnt_month":10,
-        "max_storage":50,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":66845263,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -16999,15 +16441,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":66845263,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":67315141,
@@ -17271,15 +16704,6 @@
         "month":5
     },
     {
-        "product_id":67315141,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":67545395,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -17541,15 +16965,6 @@
         "month":5
     },
     {
-        "product_id":67545395,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":67708834,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -17809,15 +17224,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":67708834,
-        "date_block_num":30,
-        "item_cnt_month":10,
-        "max_storage":50,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":67723876,
@@ -18081,15 +17487,6 @@
         "month":5
     },
     {
-        "product_id":67723876,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":67734872,
         "date_block_num":1,
         "item_cnt_month":31,
@@ -18351,15 +17748,6 @@
         "month":5
     },
     {
-        "product_id":67734872,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":67905472,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -18619,15 +18007,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":67905472,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":68573034,
@@ -18891,15 +18270,6 @@
         "month":5
     },
     {
-        "product_id":68573034,
-        "date_block_num":30,
-        "item_cnt_month":41,
-        "max_storage":50,
-        "current_inventory":9,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":68938308,
         "date_block_num":1,
         "item_cnt_month":22,
@@ -19161,15 +18531,6 @@
         "month":5
     },
     {
-        "product_id":68938308,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":70671464,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -19429,15 +18790,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":70671464,
-        "date_block_num":30,
-        "item_cnt_month":28,
-        "max_storage":50,
-        "current_inventory":22,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":72849628,
@@ -19701,15 +19053,6 @@
         "month":5
     },
     {
-        "product_id":72849628,
-        "date_block_num":30,
-        "item_cnt_month":34,
-        "max_storage":50,
-        "current_inventory":16,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":73101711,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -19969,15 +19312,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":73101711,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":73180722,
@@ -20241,15 +19575,6 @@
         "month":5
     },
     {
-        "product_id":73180722,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":73247696,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -20509,15 +19834,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":73247696,
-        "date_block_num":30,
-        "item_cnt_month":28,
-        "max_storage":50,
-        "current_inventory":22,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":73324895,
@@ -20781,15 +20097,6 @@
         "month":5
     },
     {
-        "product_id":73324895,
-        "date_block_num":30,
-        "item_cnt_month":40,
-        "max_storage":50,
-        "current_inventory":10,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":73332663,
         "date_block_num":1,
         "item_cnt_month":49,
@@ -21051,15 +20358,6 @@
         "month":5
     },
     {
-        "product_id":73332663,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":73354133,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -21319,15 +20617,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":73354133,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":73364613,
@@ -21591,15 +20880,6 @@
         "month":5
     },
     {
-        "product_id":73364613,
-        "date_block_num":30,
-        "item_cnt_month":13,
-        "max_storage":50,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":73473260,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -21859,15 +21139,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":73473260,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":73750157,
@@ -22131,15 +21402,6 @@
         "month":5
     },
     {
-        "product_id":73750157,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":73776290,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -22399,15 +21661,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":73776290,
-        "date_block_num":30,
-        "item_cnt_month":9,
-        "max_storage":50,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":73833910,
@@ -22671,15 +21924,6 @@
         "month":5
     },
     {
-        "product_id":73833910,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":73989385,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -22939,15 +22183,6 @@
         "current_inventory":29,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":73989385,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":74012396,
@@ -23211,15 +22446,6 @@
         "month":5
     },
     {
-        "product_id":74012396,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":74037420,
         "date_block_num":1,
         "item_cnt_month":92,
@@ -23479,15 +22705,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":74037420,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":74343963,
@@ -23751,15 +22968,6 @@
         "month":5
     },
     {
-        "product_id":74343963,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":74346405,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -24019,15 +23227,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":74346405,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":74361944,
@@ -24291,15 +23490,6 @@
         "month":5
     },
     {
-        "product_id":74361944,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":74595908,
         "date_block_num":1,
         "item_cnt_month":10,
@@ -24561,15 +23751,6 @@
         "month":5
     },
     {
-        "product_id":74595908,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":74737816,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -24829,15 +24010,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":74737816,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":75031062,
@@ -25101,15 +24273,6 @@
         "month":5
     },
     {
-        "product_id":75031062,
-        "date_block_num":30,
-        "item_cnt_month":99,
-        "max_storage":100,
-        "current_inventory":1,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":75049792,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -25369,15 +24532,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":75049792,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":75142258,
@@ -25641,15 +24795,6 @@
         "month":5
     },
     {
-        "product_id":75142258,
-        "date_block_num":30,
-        "item_cnt_month":10,
-        "max_storage":50,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":75326733,
         "date_block_num":1,
         "item_cnt_month":27,
@@ -25909,15 +25054,6 @@
         "current_inventory":18,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":75326733,
-        "date_block_num":30,
-        "item_cnt_month":63,
-        "max_storage":100,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":75329276,
@@ -26181,15 +25317,6 @@
         "month":5
     },
     {
-        "product_id":75329276,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":75355716,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -26449,15 +25576,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":75355716,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":75540026,
@@ -26721,15 +25839,6 @@
         "month":5
     },
     {
-        "product_id":75540026,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":75721837,
         "date_block_num":1,
         "item_cnt_month":24,
@@ -26991,15 +26100,6 @@
         "month":5
     },
     {
-        "product_id":75721837,
-        "date_block_num":30,
-        "item_cnt_month":31,
-        "max_storage":50,
-        "current_inventory":19,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":75945178,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -27259,15 +26359,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":75945178,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":75984007,
@@ -27531,15 +26622,6 @@
         "month":5
     },
     {
-        "product_id":75984007,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":76164066,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -27801,15 +26883,6 @@
         "month":5
     },
     {
-        "product_id":76164066,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":76262844,
         "date_block_num":1,
         "item_cnt_month":29,
@@ -28069,15 +27142,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":76262844,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":76273910,
@@ -28341,15 +27405,6 @@
         "month":5
     },
     {
-        "product_id":76273910,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":76368945,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -28609,15 +27664,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":76368945,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":76383441,
@@ -28881,15 +27927,6 @@
         "month":5
     },
     {
-        "product_id":76383441,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":76466969,
         "date_block_num":1,
         "item_cnt_month":70,
@@ -29149,15 +28186,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":76466969,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":76537581,
@@ -29421,15 +28449,6 @@
         "month":5
     },
     {
-        "product_id":76537581,
-        "date_block_num":30,
-        "item_cnt_month":10,
-        "max_storage":50,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":77445959,
         "date_block_num":1,
         "item_cnt_month":55,
@@ -29689,15 +28708,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":77445959,
-        "date_block_num":30,
-        "item_cnt_month":28,
-        "max_storage":50,
-        "current_inventory":22,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":77712163,
@@ -29961,15 +28971,6 @@
         "month":5
     },
     {
-        "product_id":77712163,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":77745744,
         "date_block_num":1,
         "item_cnt_month":11,
@@ -30229,15 +29230,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":77745744,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":78929046,
@@ -30501,15 +29493,6 @@
         "month":5
     },
     {
-        "product_id":78929046,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":78946581,
         "date_block_num":1,
         "item_cnt_month":106,
@@ -30769,15 +29752,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":78946581,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":80660987,
@@ -31041,15 +30015,6 @@
         "month":5
     },
     {
-        "product_id":80660987,
-        "date_block_num":30,
-        "item_cnt_month":6,
-        "max_storage":50,
-        "current_inventory":44,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":80950221,
         "date_block_num":1,
         "item_cnt_month":78,
@@ -31309,15 +30274,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":80950221,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":80960314,
@@ -31581,15 +30537,6 @@
         "month":5
     },
     {
-        "product_id":80960314,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":80978495,
         "date_block_num":1,
         "item_cnt_month":23,
@@ -31849,15 +30796,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":80978495,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":81159816,
@@ -32121,15 +31059,6 @@
         "month":5
     },
     {
-        "product_id":81159816,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":81572518,
         "date_block_num":1,
         "item_cnt_month":74,
@@ -32389,15 +31318,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":81572518,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":82642262,
@@ -32661,15 +31581,6 @@
         "month":5
     },
     {
-        "product_id":82642262,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":83925994,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -32931,15 +31842,6 @@
         "month":5
     },
     {
-        "product_id":83925994,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":84471533,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -33199,15 +32101,6 @@
         "current_inventory":41,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":84471533,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":85086742,
@@ -33471,15 +32364,6 @@
         "month":5
     },
     {
-        "product_id":85086742,
-        "date_block_num":30,
-        "item_cnt_month":73,
-        "max_storage":100,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":85087026,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -33739,15 +32623,6 @@
         "current_inventory":18,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":85087026,
-        "date_block_num":30,
-        "item_cnt_month":32,
-        "max_storage":50,
-        "current_inventory":18,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":86127321,
@@ -34011,15 +32886,6 @@
         "month":5
     },
     {
-        "product_id":86127321,
-        "date_block_num":30,
-        "item_cnt_month":50,
-        "max_storage":50,
-        "current_inventory":0,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":86966889,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -34279,15 +33145,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":86966889,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":87043792,
@@ -34551,15 +33408,6 @@
         "month":5
     },
     {
-        "product_id":87043792,
-        "date_block_num":30,
-        "item_cnt_month":54,
-        "max_storage":100,
-        "current_inventory":46,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":87056067,
         "date_block_num":1,
         "item_cnt_month":24,
@@ -34819,15 +33667,6 @@
         "current_inventory":15,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":87056067,
-        "date_block_num":30,
-        "item_cnt_month":57,
-        "max_storage":100,
-        "current_inventory":43,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":87941257,
@@ -35091,15 +33930,6 @@
         "month":5
     },
     {
-        "product_id":87941257,
-        "date_block_num":30,
-        "item_cnt_month":13,
-        "max_storage":50,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":87981660,
         "date_block_num":1,
         "item_cnt_month":51,
@@ -35359,15 +34189,6 @@
         "current_inventory":45,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":87981660,
-        "date_block_num":30,
-        "item_cnt_month":72,
-        "max_storage":100,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":88011606,
@@ -35631,15 +34452,6 @@
         "month":5
     },
     {
-        "product_id":88011606,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":88821249,
         "date_block_num":1,
         "item_cnt_month":46,
@@ -35899,15 +34711,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":88821249,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":89506697,
@@ -36171,15 +34974,6 @@
         "month":5
     },
     {
-        "product_id":89506697,
-        "date_block_num":30,
-        "item_cnt_month":83,
-        "max_storage":100,
-        "current_inventory":17,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":89591885,
         "date_block_num":1,
         "item_cnt_month":38,
@@ -36439,15 +35233,6 @@
         "current_inventory":48,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":89591885,
-        "date_block_num":30,
-        "item_cnt_month":47,
-        "max_storage":50,
-        "current_inventory":3,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":90504695,
@@ -36711,15 +35496,6 @@
         "month":5
     },
     {
-        "product_id":90504695,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":90726651,
         "date_block_num":1,
         "item_cnt_month":60,
@@ -36979,15 +35755,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":90726651,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":90984718,
@@ -37251,15 +36018,6 @@
         "month":5
     },
     {
-        "product_id":90984718,
-        "date_block_num":30,
-        "item_cnt_month":63,
-        "max_storage":100,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":91379871,
         "date_block_num":1,
         "item_cnt_month":48,
@@ -37519,15 +36277,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":91379871,
-        "date_block_num":30,
-        "item_cnt_month":40,
-        "max_storage":50,
-        "current_inventory":10,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":91533035,
@@ -37791,15 +36540,6 @@
         "month":5
     },
     {
-        "product_id":91533035,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":91829352,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -38061,15 +36801,6 @@
         "month":5
     },
     {
-        "product_id":91829352,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":92137013,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -38329,15 +37060,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":92137013,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":93828594,
@@ -38601,15 +37323,6 @@
         "month":5
     },
     {
-        "product_id":93828594,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":94776620,
         "date_block_num":1,
         "item_cnt_month":25,
@@ -38871,15 +37584,6 @@
         "month":5
     },
     {
-        "product_id":94776620,
-        "date_block_num":30,
-        "item_cnt_month":55,
-        "max_storage":100,
-        "current_inventory":45,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":95011333,
         "date_block_num":1,
         "item_cnt_month":9,
@@ -39139,15 +37843,6 @@
         "current_inventory":29,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":95011333,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":95056670,
@@ -39411,15 +38106,6 @@
         "month":5
     },
     {
-        "product_id":95056670,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":95897926,
         "date_block_num":1,
         "item_cnt_month":25,
@@ -39679,15 +38365,6 @@
         "current_inventory":10,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":95897926,
-        "date_block_num":30,
-        "item_cnt_month":47,
-        "max_storage":50,
-        "current_inventory":3,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":95898645,
@@ -39951,15 +38628,6 @@
         "month":5
     },
     {
-        "product_id":95898645,
-        "date_block_num":30,
-        "item_cnt_month":44,
-        "max_storage":50,
-        "current_inventory":6,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":95901054,
         "date_block_num":1,
         "item_cnt_month":28,
@@ -40219,15 +38887,6 @@
         "current_inventory":13,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":95901054,
-        "date_block_num":30,
-        "item_cnt_month":45,
-        "max_storage":50,
-        "current_inventory":5,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":95905918,
@@ -40491,15 +39150,6 @@
         "month":5
     },
     {
-        "product_id":95905918,
-        "date_block_num":30,
-        "item_cnt_month":37,
-        "max_storage":50,
-        "current_inventory":13,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":96301892,
         "date_block_num":1,
         "item_cnt_month":47,
@@ -40761,15 +39411,6 @@
         "month":5
     },
     {
-        "product_id":96301892,
-        "date_block_num":30,
-        "item_cnt_month":46,
-        "max_storage":50,
-        "current_inventory":4,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":96545685,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -41029,15 +39670,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":96545685,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":96809572,
@@ -41301,15 +39933,6 @@
         "month":5
     },
     {
-        "product_id":96809572,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":96935359,
         "date_block_num":1,
         "item_cnt_month":35,
@@ -41569,15 +40192,6 @@
         "current_inventory":23,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":96935359,
-        "date_block_num":30,
-        "item_cnt_month":59,
-        "max_storage":100,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":97057130,
@@ -41841,15 +40455,6 @@
         "month":5
     },
     {
-        "product_id":97057130,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":97823540,
         "date_block_num":1,
         "item_cnt_month":110,
@@ -42109,15 +40714,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":97823540,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":97929881,
@@ -42381,15 +40977,6 @@
         "month":5
     },
     {
-        "product_id":97929881,
-        "date_block_num":30,
-        "item_cnt_month":48,
-        "max_storage":50,
-        "current_inventory":2,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":97930518,
         "date_block_num":1,
         "item_cnt_month":27,
@@ -42651,15 +41238,6 @@
         "month":5
     },
     {
-        "product_id":97930518,
-        "date_block_num":30,
-        "item_cnt_month":31,
-        "max_storage":50,
-        "current_inventory":19,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":97932562,
         "date_block_num":1,
         "item_cnt_month":22,
@@ -42919,15 +41497,6 @@
         "current_inventory":11,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":97932562,
-        "date_block_num":30,
-        "item_cnt_month":41,
-        "max_storage":50,
-        "current_inventory":9,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":98023604,
@@ -43191,15 +41760,6 @@
         "month":5
     },
     {
-        "product_id":98023604,
-        "date_block_num":30,
-        "item_cnt_month":56,
-        "max_storage":100,
-        "current_inventory":44,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":99156609,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -43459,15 +42019,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":99156609,
-        "date_block_num":30,
-        "item_cnt_month":28,
-        "max_storage":50,
-        "current_inventory":22,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":100366241,
@@ -43731,15 +42282,6 @@
         "month":5
     },
     {
-        "product_id":100366241,
-        "date_block_num":30,
-        "item_cnt_month":65,
-        "max_storage":100,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":100367883,
         "date_block_num":1,
         "item_cnt_month":41,
@@ -43999,15 +42541,6 @@
         "current_inventory":47,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":100367883,
-        "date_block_num":30,
-        "item_cnt_month":96,
-        "max_storage":100,
-        "current_inventory":4,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":100897235,
@@ -44271,15 +42804,6 @@
         "month":5
     },
     {
-        "product_id":100897235,
-        "date_block_num":30,
-        "item_cnt_month":59,
-        "max_storage":100,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":101301227,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -44539,15 +43063,6 @@
         "current_inventory":19,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":101301227,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":101656782,
@@ -44811,15 +43326,6 @@
         "month":5
     },
     {
-        "product_id":101656782,
-        "date_block_num":30,
-        "item_cnt_month":13,
-        "max_storage":50,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":101861199,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -45079,15 +43585,6 @@
         "current_inventory":29,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":101861199,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":102122394,
@@ -45351,15 +43848,6 @@
         "month":5
     },
     {
-        "product_id":102122394,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":102576603,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -45619,15 +44107,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":102576603,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":103467604,
@@ -45891,15 +44370,6 @@
         "month":5
     },
     {
-        "product_id":103467604,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":103808027,
         "date_block_num":1,
         "item_cnt_month":23,
@@ -46159,15 +44629,6 @@
         "current_inventory":19,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":103808027,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":104192913,
@@ -46431,15 +44892,6 @@
         "month":5
     },
     {
-        "product_id":104192913,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":104367403,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -46699,15 +45151,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":104367403,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":105695828,
@@ -46971,15 +45414,6 @@
         "month":5
     },
     {
-        "product_id":105695828,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":105710028,
         "date_block_num":1,
         "item_cnt_month":72,
@@ -47239,15 +45673,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":105710028,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":105725699,
@@ -47511,15 +45936,6 @@
         "month":5
     },
     {
-        "product_id":105725699,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":106043939,
         "date_block_num":1,
         "item_cnt_month":92,
@@ -47779,15 +46195,6 @@
         "current_inventory":10,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":106043939,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":107038037,
@@ -48051,15 +46458,6 @@
         "month":5
     },
     {
-        "product_id":107038037,
-        "date_block_num":30,
-        "item_cnt_month":52,
-        "max_storage":100,
-        "current_inventory":48,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":107338883,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -48319,15 +46717,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":107338883,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":107453690,
@@ -48591,15 +46980,6 @@
         "month":5
     },
     {
-        "product_id":107453690,
-        "date_block_num":30,
-        "item_cnt_month":29,
-        "max_storage":50,
-        "current_inventory":21,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":109249941,
         "date_block_num":1,
         "item_cnt_month":36,
@@ -48859,15 +47239,6 @@
         "current_inventory":18,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":109249941,
-        "date_block_num":30,
-        "item_cnt_month":53,
-        "max_storage":100,
-        "current_inventory":47,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":109393454,
@@ -49131,15 +47502,6 @@
         "month":5
     },
     {
-        "product_id":109393454,
-        "date_block_num":30,
-        "item_cnt_month":63,
-        "max_storage":100,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":109403033,
         "date_block_num":1,
         "item_cnt_month":92,
@@ -49401,15 +47763,6 @@
         "month":5
     },
     {
-        "product_id":109403033,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":110483322,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -49669,15 +48022,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":110483322,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":110938120,
@@ -49941,15 +48285,6 @@
         "month":5
     },
     {
-        "product_id":110938120,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":111231565,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -50209,15 +48544,6 @@
         "current_inventory":29,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":111231565,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":111231618,
@@ -50481,15 +48807,6 @@
         "month":5
     },
     {
-        "product_id":111231618,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":111524746,
         "date_block_num":1,
         "item_cnt_month":30,
@@ -50749,15 +49066,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":111524746,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":112086654,
@@ -51021,15 +49329,6 @@
         "month":5
     },
     {
-        "product_id":112086654,
-        "date_block_num":30,
-        "item_cnt_month":48,
-        "max_storage":50,
-        "current_inventory":2,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":112099693,
         "date_block_num":1,
         "item_cnt_month":74,
@@ -51289,15 +49588,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":112099693,
-        "date_block_num":30,
-        "item_cnt_month":84,
-        "max_storage":100,
-        "current_inventory":16,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":112990508,
@@ -51561,15 +49851,6 @@
         "month":5
     },
     {
-        "product_id":112990508,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":114193983,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -51829,15 +50110,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":114193983,
-        "date_block_num":30,
-        "item_cnt_month":5,
-        "max_storage":50,
-        "current_inventory":45,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":115011763,
@@ -52101,15 +50373,6 @@
         "month":5
     },
     {
-        "product_id":115011763,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":115690938,
         "date_block_num":1,
         "item_cnt_month":54,
@@ -52371,15 +50634,6 @@
         "month":5
     },
     {
-        "product_id":115690938,
-        "date_block_num":30,
-        "item_cnt_month":38,
-        "max_storage":50,
-        "current_inventory":12,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":115958681,
         "date_block_num":1,
         "item_cnt_month":11,
@@ -52639,15 +50893,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":115958681,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":117031543,
@@ -52911,15 +51156,6 @@
         "month":5
     },
     {
-        "product_id":117031543,
-        "date_block_num":30,
-        "item_cnt_month":28,
-        "max_storage":50,
-        "current_inventory":22,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":117081402,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -53179,15 +51415,6 @@
         "current_inventory":37,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":117081402,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":117090822,
@@ -53451,15 +51678,6 @@
         "month":5
     },
     {
-        "product_id":117090822,
-        "date_block_num":30,
-        "item_cnt_month":61,
-        "max_storage":100,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":117901638,
         "date_block_num":1,
         "item_cnt_month":34,
@@ -53719,15 +51937,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":117901638,
-        "date_block_num":30,
-        "item_cnt_month":58,
-        "max_storage":100,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":118015579,
@@ -53991,15 +52200,6 @@
         "month":5
     },
     {
-        "product_id":118015579,
-        "date_block_num":30,
-        "item_cnt_month":44,
-        "max_storage":50,
-        "current_inventory":6,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":118036962,
         "date_block_num":1,
         "item_cnt_month":27,
@@ -54259,15 +52459,6 @@
         "current_inventory":22,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":118036962,
-        "date_block_num":30,
-        "item_cnt_month":64,
-        "max_storage":100,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":118900403,
@@ -54531,15 +52722,6 @@
         "month":5
     },
     {
-        "product_id":118900403,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":121622214,
         "date_block_num":1,
         "item_cnt_month":102,
@@ -54799,15 +52981,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":121622214,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":122473637,
@@ -55071,15 +53244,6 @@
         "month":5
     },
     {
-        "product_id":122473637,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":123204494,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -55339,15 +53503,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":123204494,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":125485858,
@@ -55611,15 +53766,6 @@
         "month":5
     },
     {
-        "product_id":125485858,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":125730758,
         "date_block_num":1,
         "item_cnt_month":24,
@@ -55881,15 +54027,6 @@
         "month":5
     },
     {
-        "product_id":125730758,
-        "date_block_num":30,
-        "item_cnt_month":48,
-        "max_storage":50,
-        "current_inventory":2,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":125779715,
         "date_block_num":1,
         "item_cnt_month":48,
@@ -56149,15 +54286,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":125779715,
-        "date_block_num":30,
-        "item_cnt_month":56,
-        "max_storage":100,
-        "current_inventory":44,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":126146318,
@@ -56421,15 +54549,6 @@
         "month":5
     },
     {
-        "product_id":126146318,
-        "date_block_num":30,
-        "item_cnt_month":54,
-        "max_storage":100,
-        "current_inventory":46,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":127197643,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -56689,15 +54808,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":127197643,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":127686689,
@@ -56961,15 +55071,6 @@
         "month":5
     },
     {
-        "product_id":127686689,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":128812081,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -57229,15 +55330,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":128812081,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":129297082,
@@ -57501,15 +55593,6 @@
         "month":5
     },
     {
-        "product_id":129297082,
-        "date_block_num":30,
-        "item_cnt_month":29,
-        "max_storage":50,
-        "current_inventory":21,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":129297715,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -57769,15 +55852,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":129297715,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":129297930,
@@ -58041,15 +56115,6 @@
         "month":5
     },
     {
-        "product_id":129297930,
-        "date_block_num":30,
-        "item_cnt_month":10,
-        "max_storage":50,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":129298088,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -58309,15 +56374,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":129298088,
-        "date_block_num":30,
-        "item_cnt_month":9,
-        "max_storage":50,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":129298132,
@@ -58581,15 +56637,6 @@
         "month":5
     },
     {
-        "product_id":129298132,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":129300123,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -58849,15 +56896,6 @@
         "current_inventory":23,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":129300123,
-        "date_block_num":30,
-        "item_cnt_month":35,
-        "max_storage":50,
-        "current_inventory":15,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":129301513,
@@ -59121,15 +57159,6 @@
         "month":5
     },
     {
-        "product_id":129301513,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":129304038,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -59389,15 +57418,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":129304038,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":129351461,
@@ -59661,15 +57681,6 @@
         "month":5
     },
     {
-        "product_id":129351461,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":129351813,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -59929,15 +57940,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":129351813,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":129459054,
@@ -60201,15 +58203,6 @@
         "month":5
     },
     {
-        "product_id":129459054,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":130179295,
         "date_block_num":1,
         "item_cnt_month":29,
@@ -60469,15 +58462,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":130179295,
-        "date_block_num":30,
-        "item_cnt_month":46,
-        "max_storage":50,
-        "current_inventory":4,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":130398472,
@@ -60741,15 +58725,6 @@
         "month":5
     },
     {
-        "product_id":130398472,
-        "date_block_num":30,
-        "item_cnt_month":47,
-        "max_storage":50,
-        "current_inventory":3,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":132098603,
         "date_block_num":1,
         "item_cnt_month":50,
@@ -61009,15 +58984,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":132098603,
-        "date_block_num":30,
-        "item_cnt_month":34,
-        "max_storage":50,
-        "current_inventory":16,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":132125559,
@@ -61281,15 +59247,6 @@
         "month":5
     },
     {
-        "product_id":132125559,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":132131093,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -61549,15 +59506,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":132131093,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":133688741,
@@ -61821,15 +59769,6 @@
         "month":5
     },
     {
-        "product_id":133688741,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":133688987,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -62089,15 +60028,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":133688987,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":133689079,
@@ -62361,15 +60291,6 @@
         "month":5
     },
     {
-        "product_id":133689079,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":133689359,
         "date_block_num":1,
         "item_cnt_month":86,
@@ -62629,15 +60550,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":133689359,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":133689539,
@@ -62901,15 +60813,6 @@
         "month":5
     },
     {
-        "product_id":133689539,
-        "date_block_num":30,
-        "item_cnt_month":29,
-        "max_storage":50,
-        "current_inventory":21,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":133689754,
         "date_block_num":1,
         "item_cnt_month":22,
@@ -63169,15 +61072,6 @@
         "current_inventory":37,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":133689754,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":133690105,
@@ -63441,15 +61335,6 @@
         "month":5
     },
     {
-        "product_id":133690105,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":133690121,
         "date_block_num":1,
         "item_cnt_month":88,
@@ -63709,15 +61594,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":133690121,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":133690424,
@@ -63981,15 +61857,6 @@
         "month":5
     },
     {
-        "product_id":133690424,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":133690735,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -64249,15 +62116,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":133690735,
-        "date_block_num":30,
-        "item_cnt_month":28,
-        "max_storage":50,
-        "current_inventory":22,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":133691587,
@@ -64521,15 +62379,6 @@
         "month":5
     },
     {
-        "product_id":133691587,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":133810672,
         "date_block_num":1,
         "item_cnt_month":87,
@@ -64789,15 +62638,6 @@
         "current_inventory":19,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":133810672,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":133813532,
@@ -65061,15 +62901,6 @@
         "month":5
     },
     {
-        "product_id":133813532,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":133813937,
         "date_block_num":1,
         "item_cnt_month":28,
@@ -65329,15 +63160,6 @@
         "current_inventory":35,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":133813937,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":133814062,
@@ -65601,15 +63423,6 @@
         "month":5
     },
     {
-        "product_id":133814062,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":133821238,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -65869,15 +63682,6 @@
         "current_inventory":20,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":133821238,
-        "date_block_num":30,
-        "item_cnt_month":7,
-        "max_storage":50,
-        "current_inventory":43,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":134652690,
@@ -66141,15 +63945,6 @@
         "month":5
     },
     {
-        "product_id":134652690,
-        "date_block_num":30,
-        "item_cnt_month":64,
-        "max_storage":100,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":134750203,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -66409,15 +64204,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":134750203,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":134800045,
@@ -66681,15 +64467,6 @@
         "month":5
     },
     {
-        "product_id":134800045,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":136157116,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -66949,15 +64726,6 @@
         "current_inventory":42,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":136157116,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":136541736,
@@ -67221,15 +64989,6 @@
         "month":5
     },
     {
-        "product_id":136541736,
-        "date_block_num":30,
-        "item_cnt_month":41,
-        "max_storage":50,
-        "current_inventory":9,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":136816245,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -67489,15 +65248,6 @@
         "current_inventory":23,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":136816245,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":137912762,
@@ -67761,15 +65511,6 @@
         "month":5
     },
     {
-        "product_id":137912762,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":138491636,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -68029,15 +65770,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":138491636,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":140523294,
@@ -68301,15 +66033,6 @@
         "month":5
     },
     {
-        "product_id":140523294,
-        "date_block_num":30,
-        "item_cnt_month":9,
-        "max_storage":50,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":140865472,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -68569,15 +66292,6 @@
         "current_inventory":38,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":140865472,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":141232483,
@@ -68841,15 +66555,6 @@
         "month":5
     },
     {
-        "product_id":141232483,
-        "date_block_num":30,
-        "item_cnt_month":60,
-        "max_storage":100,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":141247622,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -69109,15 +66814,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":141247622,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":142778495,
@@ -69381,15 +67077,6 @@
         "month":5
     },
     {
-        "product_id":142778495,
-        "date_block_num":30,
-        "item_cnt_month":31,
-        "max_storage":50,
-        "current_inventory":19,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":144354367,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -69649,15 +67336,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":144354367,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":145236329,
@@ -69921,15 +67599,6 @@
         "month":5
     },
     {
-        "product_id":145236329,
-        "date_block_num":30,
-        "item_cnt_month":43,
-        "max_storage":50,
-        "current_inventory":7,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":145399495,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -70189,15 +67858,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":145399495,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":145680551,
@@ -70461,15 +68121,6 @@
         "month":5
     },
     {
-        "product_id":145680551,
-        "date_block_num":30,
-        "item_cnt_month":5,
-        "max_storage":50,
-        "current_inventory":45,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":146272717,
         "date_block_num":1,
         "item_cnt_month":24,
@@ -70729,15 +68380,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":146272717,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":146499055,
@@ -71001,15 +68643,6 @@
         "month":5
     },
     {
-        "product_id":146499055,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":147206921,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -71269,15 +68902,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":147206921,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":147570724,
@@ -71541,15 +69165,6 @@
         "month":5
     },
     {
-        "product_id":147570724,
-        "date_block_num":30,
-        "item_cnt_month":49,
-        "max_storage":50,
-        "current_inventory":1,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":147966695,
         "date_block_num":1,
         "item_cnt_month":94,
@@ -71809,15 +69424,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":147966695,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":148052603,
@@ -72081,15 +69687,6 @@
         "month":5
     },
     {
-        "product_id":148052603,
-        "date_block_num":30,
-        "item_cnt_month":10,
-        "max_storage":50,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":148845226,
         "date_block_num":1,
         "item_cnt_month":23,
@@ -72349,15 +69946,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":148845226,
-        "date_block_num":30,
-        "item_cnt_month":58,
-        "max_storage":100,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":149932258,
@@ -72621,15 +70209,6 @@
         "month":5
     },
     {
-        "product_id":149932258,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":150695791,
         "date_block_num":1,
         "item_cnt_month":23,
@@ -72889,15 +70468,6 @@
         "current_inventory":37,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":150695791,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":150781018,
@@ -73161,15 +70731,6 @@
         "month":5
     },
     {
-        "product_id":150781018,
-        "date_block_num":30,
-        "item_cnt_month":28,
-        "max_storage":50,
-        "current_inventory":22,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":150815091,
         "date_block_num":1,
         "item_cnt_month":82,
@@ -73429,15 +70990,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":150815091,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":151047669,
@@ -73701,15 +71253,6 @@
         "month":5
     },
     {
-        "product_id":151047669,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":151952919,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -73969,15 +71512,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":151952919,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":153416263,
@@ -74241,15 +71775,6 @@
         "month":5
     },
     {
-        "product_id":153416263,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":155563797,
         "date_block_num":1,
         "item_cnt_month":81,
@@ -74511,15 +72036,6 @@
         "month":5
     },
     {
-        "product_id":155563797,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":155563945,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -74779,15 +72295,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":155563945,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":155564520,
@@ -75051,15 +72558,6 @@
         "month":5
     },
     {
-        "product_id":155564520,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":155564740,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -75319,15 +72817,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":155564740,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":155767650,
@@ -75591,15 +73080,6 @@
         "month":5
     },
     {
-        "product_id":155767650,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":158681363,
         "date_block_num":1,
         "item_cnt_month":62,
@@ -75859,15 +73339,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":158681363,
-        "date_block_num":30,
-        "item_cnt_month":41,
-        "max_storage":50,
-        "current_inventory":9,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":158720374,
@@ -76131,15 +73602,6 @@
         "month":5
     },
     {
-        "product_id":158720374,
-        "date_block_num":30,
-        "item_cnt_month":32,
-        "max_storage":50,
-        "current_inventory":18,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":158810802,
         "date_block_num":1,
         "item_cnt_month":106,
@@ -76399,15 +73861,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":158810802,
-        "date_block_num":30,
-        "item_cnt_month":92,
-        "max_storage":100,
-        "current_inventory":8,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":158972054,
@@ -76671,15 +74124,6 @@
         "month":5
     },
     {
-        "product_id":158972054,
-        "date_block_num":30,
-        "item_cnt_month":81,
-        "max_storage":100,
-        "current_inventory":19,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":158999649,
         "date_block_num":1,
         "item_cnt_month":51,
@@ -76939,15 +74383,6 @@
         "current_inventory":18,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":158999649,
-        "date_block_num":30,
-        "item_cnt_month":45,
-        "max_storage":50,
-        "current_inventory":5,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":159887971,
@@ -77211,15 +74646,6 @@
         "month":5
     },
     {
-        "product_id":159887971,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":160102489,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -77479,15 +74905,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":160102489,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":160221777,
@@ -77751,15 +75168,6 @@
         "month":5
     },
     {
-        "product_id":160221777,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":160263018,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -78019,15 +75427,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":160263018,
-        "date_block_num":30,
-        "item_cnt_month":29,
-        "max_storage":50,
-        "current_inventory":21,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":160407346,
@@ -78291,15 +75690,6 @@
         "month":5
     },
     {
-        "product_id":160407346,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":161404719,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -78559,15 +75949,6 @@
         "current_inventory":23,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":161404719,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":161405521,
@@ -78831,15 +76212,6 @@
         "month":5
     },
     {
-        "product_id":161405521,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":161496880,
         "date_block_num":1,
         "item_cnt_month":46,
@@ -79099,15 +76471,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":161496880,
-        "date_block_num":30,
-        "item_cnt_month":50,
-        "max_storage":50,
-        "current_inventory":0,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":162148842,
@@ -79371,15 +76734,6 @@
         "month":5
     },
     {
-        "product_id":162148842,
-        "date_block_num":30,
-        "item_cnt_month":32,
-        "max_storage":50,
-        "current_inventory":18,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":162210555,
         "date_block_num":1,
         "item_cnt_month":11,
@@ -79639,15 +76993,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":162210555,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":162734947,
@@ -79911,15 +77256,6 @@
         "month":5
     },
     {
-        "product_id":162734947,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":163543524,
         "date_block_num":1,
         "item_cnt_month":27,
@@ -80179,15 +77515,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":163543524,
-        "date_block_num":30,
-        "item_cnt_month":50,
-        "max_storage":50,
-        "current_inventory":0,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":163550992,
@@ -80451,15 +77778,6 @@
         "month":5
     },
     {
-        "product_id":163550992,
-        "date_block_num":30,
-        "item_cnt_month":58,
-        "max_storage":100,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":163713265,
         "date_block_num":1,
         "item_cnt_month":22,
@@ -80719,15 +78037,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":163713265,
-        "date_block_num":30,
-        "item_cnt_month":29,
-        "max_storage":50,
-        "current_inventory":21,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":163882213,
@@ -80991,15 +78300,6 @@
         "month":5
     },
     {
-        "product_id":163882213,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":164483934,
         "date_block_num":1,
         "item_cnt_month":34,
@@ -81259,15 +78559,6 @@
         "current_inventory":17,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":164483934,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":164756938,
@@ -81531,15 +78822,6 @@
         "month":5
     },
     {
-        "product_id":164756938,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":165989862,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -81799,15 +79081,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":165989862,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":167012865,
@@ -82071,15 +79344,6 @@
         "month":5
     },
     {
-        "product_id":167012865,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":167429610,
         "date_block_num":1,
         "item_cnt_month":32,
@@ -82339,15 +79603,6 @@
         "current_inventory":15,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":167429610,
-        "date_block_num":30,
-        "item_cnt_month":67,
-        "max_storage":100,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":167431552,
@@ -82611,15 +79866,6 @@
         "month":5
     },
     {
-        "product_id":167431552,
-        "date_block_num":30,
-        "item_cnt_month":9,
-        "max_storage":50,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":167432515,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -82879,15 +80125,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":167432515,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":168067501,
@@ -83151,15 +80388,6 @@
         "month":5
     },
     {
-        "product_id":168067501,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":168944874,
         "date_block_num":1,
         "item_cnt_month":55,
@@ -83419,15 +80647,6 @@
         "current_inventory":22,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":168944874,
-        "date_block_num":30,
-        "item_cnt_month":51,
-        "max_storage":100,
-        "current_inventory":49,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":168946336,
@@ -83691,15 +80910,6 @@
         "month":5
     },
     {
-        "product_id":168946336,
-        "date_block_num":30,
-        "item_cnt_month":45,
-        "max_storage":50,
-        "current_inventory":5,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":168953188,
         "date_block_num":1,
         "item_cnt_month":124,
@@ -83959,15 +81169,6 @@
         "current_inventory":43,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":168953188,
-        "date_block_num":30,
-        "item_cnt_month":99,
-        "max_storage":100,
-        "current_inventory":1,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":168957775,
@@ -84231,15 +81432,6 @@
         "month":5
     },
     {
-        "product_id":168957775,
-        "date_block_num":30,
-        "item_cnt_month":35,
-        "max_storage":50,
-        "current_inventory":15,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":169567511,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -84499,15 +81691,6 @@
         "current_inventory":14,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":169567511,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":169626424,
@@ -84771,15 +81954,6 @@
         "month":5
     },
     {
-        "product_id":169626424,
-        "date_block_num":30,
-        "item_cnt_month":28,
-        "max_storage":50,
-        "current_inventory":22,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":171185004,
         "date_block_num":1,
         "item_cnt_month":52,
@@ -85041,15 +82215,6 @@
         "month":5
     },
     {
-        "product_id":171185004,
-        "date_block_num":30,
-        "item_cnt_month":49,
-        "max_storage":50,
-        "current_inventory":1,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":171193582,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -85309,15 +82474,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":171193582,
-        "date_block_num":30,
-        "item_cnt_month":34,
-        "max_storage":50,
-        "current_inventory":16,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":172305521,
@@ -85581,15 +82737,6 @@
         "month":5
     },
     {
-        "product_id":172305521,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":172318066,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -85849,15 +82996,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":172318066,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":172957307,
@@ -86121,15 +83259,6 @@
         "month":5
     },
     {
-        "product_id":172957307,
-        "date_block_num":30,
-        "item_cnt_month":15,
-        "max_storage":50,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":173727722,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -86389,15 +83518,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":173727722,
-        "date_block_num":30,
-        "item_cnt_month":37,
-        "max_storage":50,
-        "current_inventory":13,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":173975939,
@@ -86661,15 +83781,6 @@
         "month":5
     },
     {
-        "product_id":173975939,
-        "date_block_num":30,
-        "item_cnt_month":57,
-        "max_storage":100,
-        "current_inventory":43,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":174037915,
         "date_block_num":1,
         "item_cnt_month":28,
@@ -86929,15 +84040,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":174037915,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":174301048,
@@ -87201,15 +84303,6 @@
         "month":5
     },
     {
-        "product_id":174301048,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":174369429,
         "date_block_num":1,
         "item_cnt_month":26,
@@ -87469,15 +84562,6 @@
         "current_inventory":20,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":174369429,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":175453407,
@@ -87741,15 +84825,6 @@
         "month":5
     },
     {
-        "product_id":175453407,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":175877407,
         "date_block_num":1,
         "item_cnt_month":39,
@@ -88009,15 +85084,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":175877407,
-        "date_block_num":30,
-        "item_cnt_month":45,
-        "max_storage":50,
-        "current_inventory":5,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":176251118,
@@ -88281,15 +85347,6 @@
         "month":5
     },
     {
-        "product_id":176251118,
-        "date_block_num":30,
-        "item_cnt_month":76,
-        "max_storage":100,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":176301614,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -88549,15 +85606,6 @@
         "current_inventory":39,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":176301614,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":176599682,
@@ -88821,15 +85869,6 @@
         "month":5
     },
     {
-        "product_id":176599682,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":177164342,
         "date_block_num":1,
         "item_cnt_month":54,
@@ -89089,15 +86128,6 @@
         "current_inventory":15,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":177164342,
-        "date_block_num":30,
-        "item_cnt_month":36,
-        "max_storage":50,
-        "current_inventory":14,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":177913884,
@@ -89361,15 +86391,6 @@
         "month":5
     },
     {
-        "product_id":177913884,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":177921446,
         "date_block_num":1,
         "item_cnt_month":79,
@@ -89629,15 +86650,6 @@
         "current_inventory":27,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":177921446,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":179547004,
@@ -89901,15 +86913,6 @@
         "month":5
     },
     {
-        "product_id":179547004,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":180364270,
         "date_block_num":1,
         "item_cnt_month":10,
@@ -90169,15 +87172,6 @@
         "current_inventory":29,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":180364270,
-        "date_block_num":30,
-        "item_cnt_month":29,
-        "max_storage":50,
-        "current_inventory":21,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":181237205,
@@ -90441,15 +87435,6 @@
         "month":5
     },
     {
-        "product_id":181237205,
-        "date_block_num":30,
-        "item_cnt_month":35,
-        "max_storage":50,
-        "current_inventory":15,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":181500386,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -90709,15 +87694,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":181500386,
-        "date_block_num":30,
-        "item_cnt_month":33,
-        "max_storage":50,
-        "current_inventory":17,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":182139698,
@@ -90981,15 +87957,6 @@
         "month":5
     },
     {
-        "product_id":182139698,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":182301240,
         "date_block_num":1,
         "item_cnt_month":38,
@@ -91251,15 +88218,6 @@
         "month":5
     },
     {
-        "product_id":182301240,
-        "date_block_num":30,
-        "item_cnt_month":48,
-        "max_storage":50,
-        "current_inventory":2,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":182814650,
         "date_block_num":1,
         "item_cnt_month":28,
@@ -91519,15 +88477,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":182814650,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":183718179,
@@ -91791,15 +88740,6 @@
         "month":5
     },
     {
-        "product_id":183718179,
-        "date_block_num":30,
-        "item_cnt_month":58,
-        "max_storage":100,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":183734155,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -92059,15 +88999,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":183734155,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":183948383,
@@ -92331,15 +89262,6 @@
         "month":5
     },
     {
-        "product_id":183948383,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":184218427,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -92599,15 +89521,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":184218427,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":184617161,
@@ -92871,15 +89784,6 @@
         "month":5
     },
     {
-        "product_id":184617161,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":184901447,
         "date_block_num":1,
         "item_cnt_month":24,
@@ -93139,15 +90043,6 @@
         "current_inventory":34,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":184901447,
-        "date_block_num":30,
-        "item_cnt_month":9,
-        "max_storage":50,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":186290944,
@@ -93411,15 +90306,6 @@
         "month":5
     },
     {
-        "product_id":186290944,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":186293187,
         "date_block_num":1,
         "item_cnt_month":20,
@@ -93679,15 +90565,6 @@
         "current_inventory":33,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":186293187,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":186554889,
@@ -93951,15 +90828,6 @@
         "month":5
     },
     {
-        "product_id":186554889,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":187579216,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -94219,15 +91087,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":187579216,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":188382147,
@@ -94491,15 +91350,6 @@
         "month":5
     },
     {
-        "product_id":188382147,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":188914423,
         "date_block_num":1,
         "item_cnt_month":93,
@@ -94761,15 +91611,6 @@
         "month":5
     },
     {
-        "product_id":188914423,
-        "date_block_num":30,
-        "item_cnt_month":152,
-        "max_storage":300,
-        "current_inventory":0,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":189326595,
         "date_block_num":1,
         "item_cnt_month":19,
@@ -95029,15 +91870,6 @@
         "current_inventory":39,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":189326595,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":189604369,
@@ -95301,15 +92133,6 @@
         "month":5
     },
     {
-        "product_id":189604369,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":190405308,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -95569,15 +92392,6 @@
         "current_inventory":26,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":190405308,
-        "date_block_num":30,
-        "item_cnt_month":7,
-        "max_storage":50,
-        "current_inventory":43,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":190468358,
@@ -95841,15 +92655,6 @@
         "month":5
     },
     {
-        "product_id":190468358,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":190516091,
         "date_block_num":1,
         "item_cnt_month":9,
@@ -96109,15 +92914,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":190516091,
-        "date_block_num":30,
-        "item_cnt_month":10,
-        "max_storage":50,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":190703638,
@@ -96381,15 +93177,6 @@
         "month":5
     },
     {
-        "product_id":190703638,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":190704377,
         "date_block_num":1,
         "item_cnt_month":25,
@@ -96649,15 +93436,6 @@
         "current_inventory":38,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":190704377,
-        "date_block_num":30,
-        "item_cnt_month":24,
-        "max_storage":50,
-        "current_inventory":26,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":190705166,
@@ -96921,15 +93699,6 @@
         "month":5
     },
     {
-        "product_id":190705166,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":191592683,
         "date_block_num":1,
         "item_cnt_month":57,
@@ -97189,15 +93958,6 @@
         "current_inventory":29,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":191592683,
-        "date_block_num":30,
-        "item_cnt_month":14,
-        "max_storage":50,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":191649163,
@@ -97461,15 +94221,6 @@
         "month":5
     },
     {
-        "product_id":191649163,
-        "date_block_num":30,
-        "item_cnt_month":61,
-        "max_storage":100,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":191650844,
         "date_block_num":1,
         "item_cnt_month":24,
@@ -97731,15 +94482,6 @@
         "month":5
     },
     {
-        "product_id":191650844,
-        "date_block_num":30,
-        "item_cnt_month":60,
-        "max_storage":100,
-        "current_inventory":40,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":191653859,
         "date_block_num":1,
         "item_cnt_month":36,
@@ -97999,15 +94741,6 @@
         "current_inventory":12,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":191653859,
-        "date_block_num":30,
-        "item_cnt_month":47,
-        "max_storage":50,
-        "current_inventory":3,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":191657189,
@@ -98271,15 +95004,6 @@
         "month":5
     },
     {
-        "product_id":191657189,
-        "date_block_num":30,
-        "item_cnt_month":57,
-        "max_storage":100,
-        "current_inventory":43,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":191690638,
         "date_block_num":1,
         "item_cnt_month":52,
@@ -98539,15 +95263,6 @@
         "current_inventory":23,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":191690638,
-        "date_block_num":30,
-        "item_cnt_month":37,
-        "max_storage":50,
-        "current_inventory":13,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":191740391,
@@ -98811,15 +95526,6 @@
         "month":5
     },
     {
-        "product_id":191740391,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":192196939,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -99079,15 +95785,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":192196939,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":192896478,
@@ -99351,15 +96048,6 @@
         "month":5
     },
     {
-        "product_id":192896478,
-        "date_block_num":30,
-        "item_cnt_month":18,
-        "max_storage":50,
-        "current_inventory":32,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":192986021,
         "date_block_num":1,
         "item_cnt_month":25,
@@ -99619,15 +96307,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":192986021,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":193054945,
@@ -99891,15 +96570,6 @@
         "month":5
     },
     {
-        "product_id":193054945,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":193180694,
         "date_block_num":1,
         "item_cnt_month":18,
@@ -100159,15 +96829,6 @@
         "current_inventory":32,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":193180694,
-        "date_block_num":30,
-        "item_cnt_month":22,
-        "max_storage":50,
-        "current_inventory":28,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":193180803,
@@ -100431,15 +97092,6 @@
         "month":5
     },
     {
-        "product_id":193180803,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":193492866,
         "date_block_num":1,
         "item_cnt_month":17,
@@ -100699,15 +97351,6 @@
         "current_inventory":29,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":193492866,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":193504415,
@@ -100971,15 +97614,6 @@
         "month":5
     },
     {
-        "product_id":193504415,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":193638088,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -101239,15 +97873,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":193638088,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":193735723,
@@ -101511,15 +98136,6 @@
         "month":5
     },
     {
-        "product_id":193735723,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":193891481,
         "date_block_num":1,
         "item_cnt_month":16,
@@ -101781,15 +98397,6 @@
         "month":5
     },
     {
-        "product_id":193891481,
-        "date_block_num":30,
-        "item_cnt_month":13,
-        "max_storage":50,
-        "current_inventory":37,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":193891736,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -102049,15 +98656,6 @@
         "current_inventory":29,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":193891736,
-        "date_block_num":30,
-        "item_cnt_month":20,
-        "max_storage":50,
-        "current_inventory":30,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":193993541,
@@ -102321,15 +98919,6 @@
         "month":5
     },
     {
-        "product_id":193993541,
-        "date_block_num":30,
-        "item_cnt_month":8,
-        "max_storage":50,
-        "current_inventory":42,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":194038540,
         "date_block_num":1,
         "item_cnt_month":90,
@@ -102589,15 +99178,6 @@
         "current_inventory":20,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":194038540,
-        "date_block_num":30,
-        "item_cnt_month":17,
-        "max_storage":50,
-        "current_inventory":33,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":194067155,
@@ -102861,15 +99441,6 @@
         "month":5
     },
     {
-        "product_id":194067155,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":194121829,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -103129,15 +99700,6 @@
         "current_inventory":30,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":194121829,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":195866795,
@@ -103401,15 +99963,6 @@
         "month":5
     },
     {
-        "product_id":195866795,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":196022903,
         "date_block_num":1,
         "item_cnt_month":14,
@@ -103669,15 +100222,6 @@
         "current_inventory":36,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":196022903,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":196207027,
@@ -103941,15 +100485,6 @@
         "month":5
     },
     {
-        "product_id":196207027,
-        "date_block_num":30,
-        "item_cnt_month":25,
-        "max_storage":50,
-        "current_inventory":25,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":196215025,
         "date_block_num":1,
         "item_cnt_month":12,
@@ -104209,15 +100744,6 @@
         "current_inventory":31,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":196215025,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":196319310,
@@ -104481,15 +101007,6 @@
         "month":5
     },
     {
-        "product_id":196319310,
-        "date_block_num":30,
-        "item_cnt_month":11,
-        "max_storage":50,
-        "current_inventory":39,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":196548124,
         "date_block_num":1,
         "item_cnt_month":94,
@@ -104749,15 +101266,6 @@
         "current_inventory":21,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":196548124,
-        "date_block_num":30,
-        "item_cnt_month":27,
-        "max_storage":50,
-        "current_inventory":23,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":196548132,
@@ -105021,15 +101529,6 @@
         "month":5
     },
     {
-        "product_id":196548132,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":196856729,
         "date_block_num":1,
         "item_cnt_month":44,
@@ -105291,15 +101790,6 @@
         "month":5
     },
     {
-        "product_id":196856729,
-        "date_block_num":30,
-        "item_cnt_month":16,
-        "max_storage":50,
-        "current_inventory":34,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":208495943,
         "date_block_num":1,
         "item_cnt_month":31,
@@ -105559,15 +102049,6 @@
         "current_inventory":49,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":208495943,
-        "date_block_num":30,
-        "item_cnt_month":64,
-        "max_storage":100,
-        "current_inventory":36,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":208768265,
@@ -105831,15 +102312,6 @@
         "month":5
     },
     {
-        "product_id":208768265,
-        "date_block_num":30,
-        "item_cnt_month":34,
-        "max_storage":50,
-        "current_inventory":16,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":212968069,
         "date_block_num":1,
         "item_cnt_month":13,
@@ -106099,15 +102571,6 @@
         "current_inventory":16,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":212968069,
-        "date_block_num":30,
-        "item_cnt_month":6,
-        "max_storage":50,
-        "current_inventory":44,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":213495531,
@@ -106371,15 +102834,6 @@
         "month":5
     },
     {
-        "product_id":213495531,
-        "date_block_num":30,
-        "item_cnt_month":38,
-        "max_storage":50,
-        "current_inventory":12,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":213525610,
         "date_block_num":1,
         "item_cnt_month":31,
@@ -106641,15 +103095,6 @@
         "month":5
     },
     {
-        "product_id":213525610,
-        "date_block_num":30,
-        "item_cnt_month":44,
-        "max_storage":50,
-        "current_inventory":6,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":215069917,
         "date_block_num":1,
         "item_cnt_month":26,
@@ -106909,15 +103354,6 @@
         "current_inventory":28,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":215069917,
-        "date_block_num":30,
-        "item_cnt_month":47,
-        "max_storage":50,
-        "current_inventory":3,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":216475645,
@@ -107181,15 +103617,6 @@
         "month":5
     },
     {
-        "product_id":216475645,
-        "date_block_num":30,
-        "item_cnt_month":32,
-        "max_storage":50,
-        "current_inventory":18,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":249033649,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -107449,15 +103876,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":249033649,
-        "date_block_num":30,
-        "item_cnt_month":12,
-        "max_storage":50,
-        "current_inventory":38,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":253169428,
@@ -107721,15 +104139,6 @@
         "month":5
     },
     {
-        "product_id":253169428,
-        "date_block_num":30,
-        "item_cnt_month":42,
-        "max_storage":50,
-        "current_inventory":8,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":262054581,
         "date_block_num":1,
         "item_cnt_month":15,
@@ -107991,15 +104400,6 @@
         "month":5
     },
     {
-        "product_id":262054581,
-        "date_block_num":30,
-        "item_cnt_month":19,
-        "max_storage":50,
-        "current_inventory":31,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":262680353,
         "date_block_num":1,
         "item_cnt_month":49,
@@ -108259,15 +104659,6 @@
         "current_inventory":24,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":262680353,
-        "date_block_num":30,
-        "item_cnt_month":37,
-        "max_storage":50,
-        "current_inventory":13,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":262680676,
@@ -108531,15 +104922,6 @@
         "month":5
     },
     {
-        "product_id":262680676,
-        "date_block_num":30,
-        "item_cnt_month":91,
-        "max_storage":100,
-        "current_inventory":9,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":271324125,
         "date_block_num":1,
         "item_cnt_month":21,
@@ -108799,15 +105181,6 @@
         "current_inventory":19,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":271324125,
-        "date_block_num":30,
-        "item_cnt_month":23,
-        "max_storage":50,
-        "current_inventory":27,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":272053123,
@@ -109071,15 +105444,6 @@
         "month":5
     },
     {
-        "product_id":272053123,
-        "date_block_num":30,
-        "item_cnt_month":41,
-        "max_storage":50,
-        "current_inventory":9,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":272055921,
         "date_block_num":1,
         "item_cnt_month":22,
@@ -109339,15 +105703,6 @@
         "current_inventory":23,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":272055921,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":273350686,
@@ -109611,15 +105966,6 @@
         "month":5
     },
     {
-        "product_id":273350686,
-        "date_block_num":30,
-        "item_cnt_month":55,
-        "max_storage":100,
-        "current_inventory":45,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":273373960,
         "date_block_num":1,
         "item_cnt_month":49,
@@ -109879,15 +106225,6 @@
         "current_inventory":14,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":273373960,
-        "date_block_num":30,
-        "item_cnt_month":56,
-        "max_storage":100,
-        "current_inventory":44,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":273383061,
@@ -110151,15 +106488,6 @@
         "month":5
     },
     {
-        "product_id":273383061,
-        "date_block_num":30,
-        "item_cnt_month":52,
-        "max_storage":100,
-        "current_inventory":48,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":273633499,
         "date_block_num":1,
         "item_cnt_month":32,
@@ -110419,15 +106747,6 @@
         "current_inventory":25,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":273633499,
-        "date_block_num":30,
-        "item_cnt_month":21,
-        "max_storage":50,
-        "current_inventory":29,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":274046223,
@@ -110691,15 +107010,6 @@
         "month":5
     },
     {
-        "product_id":274046223,
-        "date_block_num":30,
-        "item_cnt_month":59,
-        "max_storage":100,
-        "current_inventory":41,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":274567901,
         "date_block_num":1,
         "item_cnt_month":40,
@@ -110959,15 +107269,6 @@
         "current_inventory":8,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":274567901,
-        "date_block_num":30,
-        "item_cnt_month":65,
-        "max_storage":100,
-        "current_inventory":35,
-        "year":2024,
-        "month":6
     },
     {
         "product_id":274780231,
@@ -111231,15 +107532,6 @@
         "month":5
     },
     {
-        "product_id":274780231,
-        "date_block_num":30,
-        "item_cnt_month":30,
-        "max_storage":50,
-        "current_inventory":20,
-        "year":2024,
-        "month":6
-    },
-    {
         "product_id":274917979,
         "date_block_num":1,
         "item_cnt_month":56,
@@ -111499,14 +107791,5 @@
         "current_inventory":3,
         "year":2024,
         "month":5
-    },
-    {
-        "product_id":274917979,
-        "date_block_num":30,
-        "item_cnt_month":26,
-        "max_storage":50,
-        "current_inventory":24,
-        "year":2024,
-        "month":6
     }
 ]
