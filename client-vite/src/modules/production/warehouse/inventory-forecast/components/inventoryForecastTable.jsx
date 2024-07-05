@@ -6,93 +6,90 @@ const InventoryForecastTable = () => {
     const dispatch = useDispatch();
     const forecasts = useSelector(state => state.forecasts.forecasts);
     const isLoading = useSelector(state => state.forecasts.isLoading);
+    const error = useSelector(state => state.forecasts.error);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [forecastsPerPage, setForecastsPerPage] = useState(10);
 
-    // Get current forecasts
-    const indexOfLastForecast = currentPage * forecastsPerPage;
-    const indexOfFirstForecast = indexOfLastForecast - forecastsPerPage;
-    const currentForecasts = forecasts.slice(indexOfFirstForecast, indexOfLastForecast);
+    useEffect(() => {
+        // Gọi API để lấy dữ liệu dự báo khi trang tải
+        dispatch(forecastActions.getAllForecasts());
+    }, [dispatch]);
 
-    // Change page
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    // Handle change forecasts per page
-    const handleChangeForecastsPerPage = (e) => {
-        setForecastsPerPage(Number(e.target.value));
-        setCurrentPage(1); // reset to the first page
-    };
-
-    // Handle forecast button click
     const handleForecastButtonClick = () => {
         dispatch(forecastActions.createForecast());
     };
 
+    // Get current forecasts
+    const forecastsPerPage = 10; // Mặc định 10 sản phẩm trên mỗi trang
+    const indexOfLastForecast = currentPage * forecastsPerPage;
+    const indexOfFirstForecast = indexOfLastForecast - forecastsPerPage;
+    const currentForecasts = forecasts.slice(indexOfFirstForecast, indexOfFirstForecast + forecastsPerPage);
+
+    // Change page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div className="form-group">
-                    <label htmlFor="forecastsPerPage">Số lượng sản phẩm: </label>
-                    <select
-                        id="forecastsPerPage"
-                        value={forecastsPerPage}
-                        onChange={handleChangeForecastsPerPage}
-                        className="form-control"
-                        style={{ width: 'auto', display: 'inline-block', marginLeft: '10px' }}
-                    >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                    </select>
-                </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '10px', marginTop: '10px' }}>
                 <button
                     className="btn btn-primary"
-                    style={{ marginRight: '10px' }}
+                    style={{ marginRight: '20px', backgroundColor: '#28a745', borderColor: '#28a745' }}
                     onClick={handleForecastButtonClick}
                 >
                     Dự báo
                 </button>
             </div>
-            {isLoading ? (
-                <p>Loading...</p>
-            ) : forecasts.length > 0 ? (
-                <div>
-                    <table className='table table-striped table-bordered table-hover' style={{ marginTop: '15px' }}>
-                        <thead>
-                            <tr>
-                                <th>Mã sản phẩm</th>
-                                <th>Tên sản phẩm</th>
-                                <th>Dự báo một tháng</th>
-                                <th>Dự báo ba tháng</th>
-                                <th>Dự báo sáu tháng</th>
+            <table className='table table-striped table-bordered table-hover' style={{ marginTop: '15px' }}>
+                <thead>
+                    <tr>
+                        <th>Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Dự báo một tháng</th>
+                        <th>Dự báo ba tháng</th>
+                        <th>Dự báo sáu tháng</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                {isLoading ? (
+                    <tbody>
+                        <tr>
+                            <td colSpan="6" style={{ textAlign: 'center' }}>Đang tải...</td>
+                        </tr>
+                    </tbody>
+                ) : error ? (
+                    <tbody>
+                        <tr>
+                            <td colSpan="6" style={{ textAlign: 'center' }}>Error: {error}</td>
+                        </tr>
+                    </tbody>
+                ) : forecasts.length > 0 ? (
+                    <tbody>
+                        {currentForecasts.map(forecast => (
+                            <tr key={forecast._id}>
+                                <td>{forecast.good ? forecast.good.code : 'N/A'}</td>
+                                <td>{forecast.good ? forecast.good.name : 'N/A'}</td>
+                                <td>{forecast.good ? forecast.good.description : 'N/A'}</td>
+                                <td>{forecast.inventoryForecast}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {currentForecasts.map(forecast => (
-                                <tr key={forecast._id}>
-                                    <td>{forecast.good ? forecast.good.code : 'N/A'}</td>
-                                    <td>{forecast.good ? forecast.good.name : 'N/A'}</td>
-                                    <td>{forecast.inventoryForecast}</td>
-                                    <td>{forecast.forecastThreeMonth}</td>
-                                    <td>{forecast.forecastSixMonth}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className="pagination-wrapper" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Pagination
-                            forecastsPerPage={forecastsPerPage}
-                            totalForecasts={forecasts.length}
-                            paginate={paginate}
-                            currentPage={currentPage}
-                        />
-                    </div>
-                </div>
-            ) : (
-                <p>No forecasts available.</p>
-            )}
+                        ))}
+
+                    </tbody>
+                ) : (
+                    <tbody>
+                        <tr>
+                            <td colSpan="6" style={{ textAlign: 'center' }}>Không có dữ liệu.</td>
+                        </tr>
+                    </tbody>
+                )}
+            </table>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '15px' }}>
+                <Pagination
+                    forecastsPerPage={forecastsPerPage}
+                    totalForecasts={forecasts.length}
+                    paginate={paginate}
+                    currentPage={currentPage}
+                />
+            </div>
         </div>
     );
 };

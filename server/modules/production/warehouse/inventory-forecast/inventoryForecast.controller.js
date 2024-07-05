@@ -39,3 +39,23 @@ exports.createForecast = async (req, res) => {
         });
     }
 };
+
+exports.getAllForecasts = async (req, res) => {
+    try {
+        let allForecasts = await forecastService.getAllForecasts(req.query, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_all_forecasts_successfully"],
+            content: allForecasts.totalForecasts
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_ALL_FORECASTS", req.portal);
+        console.error('Error in getting all forecasts:', error);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_all_forecasts_failed"],
+            content: error.message
+        });
+    }
+};

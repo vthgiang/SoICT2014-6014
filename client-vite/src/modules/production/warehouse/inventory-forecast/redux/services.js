@@ -15,3 +15,14 @@ function createForecast() {
         "manage_forecast"
     );
 }
+function getAllForecasts() {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/forecasts`,
+            method: "GET"
+        },
+        false,
+        true,
+        "manage_forecast"
+    );
+}
