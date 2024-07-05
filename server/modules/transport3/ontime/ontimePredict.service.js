@@ -29,26 +29,36 @@ exports.getOnTimeDeliveryRates = async (portal, data) => {
     return onTimeRate;
 }
 
-exports.getOnTimeDeliveryRatesPerMonth = async (portal, data) => {
+exports.getOnTimeDeliveryRatesPerMonth = async (portal, { month, year }) => {
     // Fetch all transport schedules from the database
     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});
 
     // Create a map to store the counts for each month
     let monthlyCounts = {};
 
+    // Initialize an array to store the months we need to calculate
+    let months = [];
+    for (let i = 5; i >= 0; i--) {
+        let date = moment({ year, month: month - 1 }).subtract(i, 'months');
+        months.push(date.format('MM-YYYY'));
+        monthlyCounts[date.format('MM-YYYY')] = { onTimeCount: 0, totalCount: 0 };
+    }
+
+    // Reverse the months array to make the input month the last element
+    months.reverse();
+    console.log(months.reverse())
+
     // Iterate over all schedules and their orders
     transport3Schedules.forEach((schedule) => {
         schedule.orders.forEach((order) => {
             if (order.status === 3) {
-                const month = moment(order.timeArrive).format('MM-YYYY'); // Get the month and year of the order
+                const orderMonth = moment(order.timeArrive).format('MM-YYYY');
 
-                if (!monthlyCounts[month]) {
-                    monthlyCounts[month] = { onTimeCount: 0, totalCount: 0 };
-                }
-
-                monthlyCounts[month].totalCount += 1;
-                if (order.timeArrive <= order.estimateTimeArrive) {
-                    monthlyCounts[month].onTimeCount += 1;
+                if (monthlyCounts[orderMonth]) {
+                    monthlyCounts[orderMonth].totalCount += 1;
+                    if (order.timeArrive <= order.estimateTimeArrive) {
+                        monthlyCounts[orderMonth].onTimeCount += 1;
+                    }
                 }
             }
         });
@@ -56,42 +66,13 @@ exports.getOnTimeDeliveryRatesPerMonth = async (portal, data) => {
 
     // Calculate the on-time delivery rate for each month
     let monthlyOnTimeRates = [];
-    for (let month in monthlyCounts) {
+    for (let month of months) {
         const { onTimeCount, totalCount } = monthlyCounts[month];
         const onTimeRate = totalCount > 0 ? (onTimeCount / totalCount) * 100 : 0;
         monthlyOnTimeRates.push({ month, onTimeRate });
     }
 
-
-    function fillMissingData(data) {
-        // Helper function to get month difference
-        function getMonthDifference(startDate, endDate) {
-          return endDate.getMonth() - startDate.getMonth() + (12 * (endDate.getFullYear() - startDate.getFullYear()));
-        }
-      
-        // Define the range of months we want to fill
-        const startDate = new Date("2024-01-01");
-        const endDate = new Date("2024-06-01");
-      
-        // Generate all required months
-        let allMonths = [];
-        let currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
-          allMonths.push(currentDate);
-          currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-        }
-      
-        // Fill in missing months with onTimeRate = 0
-        let filledData = allMonths.map(month => {
-          const monthStr = (month.getMonth() + 1).toString().padStart(2, '0') + '-' + month.getFullYear();
-          const existingEntry = data.find(entry => entry.month === monthStr);
-          return existingEntry ? existingEntry : { month: monthStr, onTimeRate: 0 };
-        });
-      
-        return filledData;
-      }
-
-    return fillMissingData(monthlyOnTimeRates);
+    return monthlyOnTimeRates;
 }
 
 exports.getEstimatedOnTimeDeliveryRates = async (portal, data) => {
@@ -118,69 +99,51 @@ exports.getEstimatedOnTimeDeliveryRates = async (portal, data) => {
     return onTimeRate;
 }
 
-exports.getEstimatedOnTimeDeliveryRatesPerMonth = async (portal, data) => {
+exports.getEstimatedOnTimeDeliveryRatesPerMonth = async (portal, { month, year }) => {
     // Fetch all transport schedules from the database
     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});
-
-    // Create a map to store the counts for each month
+    
+    // Tạo bản đồ để lưu số lượng cho mỗi tháng
     let monthlyCounts = {};
 
-    // Iterate over all schedules and their orders
+    // Khởi tạo mảng chứa các tháng cần tính toán
+    let months = [];
+    for (let i = 5; i >= 0; i--) {
+        let date = moment({ year, month: month - 1 }).subtract(i, 'months');
+        months.push(date.format('MM-YYYY'));
+        monthlyCounts[date.format('MM-YYYY')] = { onTimeCount: 0, totalCount: 0 };
+    }
+
+    // Đảo ngược mảng months để đảm bảo tháng đầu vào nằm cuối cùng
+    months.reverse();
+    console.log(months.reverse())
+
+    // Lặp qua tất cả lịch trình và đơn hàng của chúng
     transport3Schedules.forEach((schedule) => {
         schedule.orders.forEach((order) => {
             if (order.status === 3) {
-                const month = moment(order.timeArrive).format('MM-YYYY'); // Get the month and year of the order
+                const orderMonth = moment(order.timeArrive).format('MM-YYYY');
 
-                if (!monthlyCounts[month]) {
-                    monthlyCounts[month] = { onTimeCount: 0, totalCount: 0 };
-                }
-
-                monthlyCounts[month].totalCount += 1;
-                if (order.estimatedOntime == 1) {
-                    monthlyCounts[month].onTimeCount += 1;
+                if (monthlyCounts[orderMonth]) {
+                    monthlyCounts[orderMonth].totalCount += 1;
+                    if (order.estimatedOntime == 1) {
+                        monthlyCounts[orderMonth].onTimeCount += 1;
+                    }
                 }
             }
         });
     });
 
-    // Calculate the on-time delivery rate for each month
+    // Tính toán tỷ lệ giao hàng đúng hạn cho mỗi tháng
     let monthlyOnTimeRates = [];
-    for (let month in monthlyCounts) {
+    for (let month of months) {
         const { onTimeCount, totalCount } = monthlyCounts[month];
         const onTimeRate = totalCount > 0 ? (onTimeCount / totalCount) * 100 : 0;
         monthlyOnTimeRates.push({ month, onTimeRate });
     }
 
-    function fillMissingData(data) {
-        // Helper function to get month difference
-        function getMonthDifference(startDate, endDate) {
-          return endDate.getMonth() - startDate.getMonth() + (12 * (endDate.getFullYear() - startDate.getFullYear()));
-        }
-      
-        // Define the range of months we want to fill
-        const startDate = new Date("2024-01-01");
-        const endDate = new Date("2024-06-01");
-      
-        // Generate all required months
-        let allMonths = [];
-        let currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
-          allMonths.push(currentDate);
-          currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-        }
-      
-        // Fill in missing months with onTimeRate = 0
-        let filledData = allMonths.map(month => {
-          const monthStr = (month.getMonth() + 1).toString().padStart(2, '0') + '-' + month.getFullYear();
-          const existingEntry = data.find(entry => entry.month === monthStr);
-          return existingEntry ? existingEntry : { month: monthStr, onTimeRate: 0 };
-        });
-      
-        return filledData;
-      }
-
-    return fillMissingData(monthlyOnTimeRates);
-}
+    return monthlyOnTimeRates;
+};
 
 exports.getDeliveryLateDayAverage = async (portal, data) => {
     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({})
@@ -205,26 +168,96 @@ exports.getDeliveryLateDayAverage = async (portal, data) => {
 
 }
 
-exports.getDeliveryLateDayAveragePerMonth = async (portal, data) => {
+// exports.getDeliveryLateDayAveragePerMonth = async (portal, { month, year }) => {
+//     // Fetch all transport schedules from the database
+//     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});
+
+//     // Create a map to store the late day sum and total count for each month
+//     let monthlyLateDays = {};
+
+//     // Iterate over all schedules and their orders
+//     transport3Schedules.forEach((schedule) => {
+//         schedule.orders.forEach((order) => {
+//             if (order.status === 3) {
+//                 const month = moment(order.timeArrive).format('MM-YYYY'); // Get the month and year of the order
+
+//                 if (!monthlyLateDays[month]) {
+//                     monthlyLateDays[month] = { lateDaySum: 0, totalCount: 0 };
+//                 }
+
+//                 monthlyLateDays[month].totalCount += 1;
+//                 if (order.timeArrive > order.estimateTimeArrive) {
+//                     monthlyLateDays[month].lateDaySum += (order.timeArrive - order.estimateTimeArrive) / (60 * 60 * 24 * 1000); // Convert milliseconds to days
+//                 }
+//             }
+//         });
+//     });
+
+//     // Calculate the average late days for each month
+//     let monthlyLateDayAverages = [];
+//     for (let month in monthlyLateDays) {
+//         const { lateDaySum, totalCount } = monthlyLateDays[month];
+//         const lateDayAverage = totalCount > 0 ? lateDaySum / totalCount : 0;
+//         monthlyLateDayAverages.push({ month, lateDayAverage });
+//     }
+
+//     function fillMissingData(data) {
+//         // Helper function to get month difference
+//         function getMonthDifference(startDate, endDate) {
+//           return endDate.getMonth() - startDate.getMonth() + (12 * (endDate.getFullYear() - startDate.getFullYear()));
+//         }
+      
+//         // Define the range of months we want to fill
+//         const startDate = new Date("2024-01-01");
+//         const endDate = new Date("2024-06-01");
+      
+//         // Generate all required months
+//         let allMonths = [];
+//         let currentDate = new Date(startDate);
+//         while (currentDate <= endDate) {
+//           allMonths.push(currentDate);
+//           currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+//         }
+      
+//         // Fill in missing months with lateDayAverage = 0
+//         let filledData = allMonths.map(month => {
+//           const monthStr = (month.getMonth() + 1).toString().padStart(2, '0') + '-' + month.getFullYear();
+//           const existingEntry = data.find(entry => entry.month === monthStr);
+//           return existingEntry ? existingEntry : { month: monthStr, lateDayAverage: 0 };
+//         });
+      
+//         return filledData;
+//       }
+
+//     return fillMissingData(monthlyLateDayAverages);
+// }
+
+exports.getDeliveryLateDayAveragePerMonth = async (portal, { month, year }) => {
     // Fetch all transport schedules from the database
     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});
 
     // Create a map to store the late day sum and total count for each month
     let monthlyLateDays = {};
 
+    // Initialize an array to store the months we need to calculate
+    let months = [];
+    for (let i = 5; i >= 0; i--) {
+        let date = moment({ year, month: month - 1 }).subtract(i, 'months');
+        months.push(date.format('MM-YYYY'));
+        monthlyLateDays[date.format('MM-YYYY')] = { lateDaySum: 0, totalCount: 0 };
+    }
+
     // Iterate over all schedules and their orders
     transport3Schedules.forEach((schedule) => {
         schedule.orders.forEach((order) => {
             if (order.status === 3) {
-                const month = moment(order.timeArrive).format('MM-YYYY'); // Get the month and year of the order
+                const orderMonth = moment(order.timeArrive).format('MM-YYYY');
 
-                if (!monthlyLateDays[month]) {
-                    monthlyLateDays[month] = { lateDaySum: 0, totalCount: 0 };
-                }
-
-                monthlyLateDays[month].totalCount += 1;
-                if (order.timeArrive > order.estimateTimeArrive) {
-                    monthlyLateDays[month].lateDaySum += (order.timeArrive - order.estimateTimeArrive) / (60 * 60 * 24 * 1000); // Convert milliseconds to days
+                if (monthlyLateDays[orderMonth]) {
+                    monthlyLateDays[orderMonth].totalCount += 1;
+                    if (order.timeArrive > order.estimateTimeArrive) {
+                        monthlyLateDays[orderMonth].lateDaySum += (order.timeArrive - order.estimateTimeArrive) / (60 * 60 * 24 * 1000); // Convert milliseconds to days
+                    }
                 }
             }
         });
@@ -232,45 +265,19 @@ exports.getDeliveryLateDayAveragePerMonth = async (portal, data) => {
 
     // Calculate the average late days for each month
     let monthlyLateDayAverages = [];
-    for (let month in monthlyLateDays) {
+    for (let month of months) {
         const { lateDaySum, totalCount } = monthlyLateDays[month];
         const lateDayAverage = totalCount > 0 ? lateDaySum / totalCount : 0;
         monthlyLateDayAverages.push({ month, lateDayAverage });
     }
 
-    function fillMissingData(data) {
-        // Helper function to get month difference
-        function getMonthDifference(startDate, endDate) {
-          return endDate.getMonth() - startDate.getMonth() + (12 * (endDate.getFullYear() - startDate.getFullYear()));
-        }
-      
-        // Define the range of months we want to fill
-        const startDate = new Date("2024-01-01");
-        const endDate = new Date("2024-06-01");
-      
-        // Generate all required months
-        let allMonths = [];
-        let currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
-          allMonths.push(currentDate);
-          currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-        }
-      
-        // Fill in missing months with lateDayAverage = 0
-        let filledData = allMonths.map(month => {
-          const monthStr = (month.getMonth() + 1).toString().padStart(2, '0') + '-' + month.getFullYear();
-          const existingEntry = data.find(entry => entry.month === monthStr);
-          return existingEntry ? existingEntry : { month: monthStr, lateDayAverage: 0 };
-        });
-      
-        return filledData;
-      }
+    return monthlyLateDayAverages;
+};
 
-    return fillMissingData(monthlyLateDayAverages);
-}
 
 exports.getTopLateDeliveryDay = async (portal, { month, year }) => {
-    const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});  
+    const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({}); 
+    console.log(transport3Schedules) 
     if (!transport3Schedules) {
         throw new Error('Schedule not found');
     } 

@@ -70,8 +70,10 @@ exports.getEstimatedOnTimeDeliveryRates = async (req, res) => {
 }
 
 exports.getEstimatedOnTimeDeliveryRatesPerMonth = async (req, res) => {
+    const { month, year } = req.query;
     try {
-        let data = await OntimePredictService.getEstimatedOnTimeDeliveryRatesPerMonth(req.portal, req.query);
+        let data = await OntimePredictService.getEstimatedOnTimeDeliveryRatesPerMonth(req.portal, { month: parseInt(month), year: parseInt(year) });
+
         await Log.info(req.user.email, "GET_ESTIMATED_ONTIME_DELIVERY_RATES_PER_MONTH", req.portal);
 
         res.status(200).json({
@@ -115,8 +117,9 @@ exports.getDeliveryLateDayAverage = async (req, res) => {
 }
 
 exports.getDeliveryLateDayAveragePerMonth = async (req, res) => {
+    const { month, year } = req.query;
     try {
-        let data = await OntimePredictService.getDeliveryLateDayAveragePerMonth(req.portal, req.query);
+        let data = await OntimePredictService.getDeliveryLateDayAveragePerMonth(req.portal, { month: parseInt(month), year: parseInt(year) });
         await Log.info(req.user.email, "GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH", req.portal);
 
         res.status(200).json({

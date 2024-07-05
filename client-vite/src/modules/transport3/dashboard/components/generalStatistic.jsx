@@ -321,7 +321,7 @@ function GeneralStatistic(props) {
                                                         <div className="box-title">Tỉ lệ giao hàng đúng hạn</div>
                                                     </div>
                                                     <div className="box-body">
-                                                        <OnTimeDeliveryChart
+                                                        <OnTimeDeliveryChart monthToSearch={monthToSearch}
                                                         />
                                                     </div>
                                                 </div>
@@ -334,7 +334,7 @@ function GeneralStatistic(props) {
                                                         <div className="box-title">Số ngày trễ hạn trung bình</div>
                                                     </div>
                                                     <div className="box-body">
-                                                        <DeliveryLateDay
+                                                        <DeliveryLateDay monthToSearch={monthToSearch}
                                                         />
                                                     </div>
                                                 </div>

@@ -20,10 +20,11 @@ const getOntimeDeliveryRate = () => {
     }
 }
 
-const getOnTimeDeliveryRatesPerMonth = () => {
+const getOnTimeDeliveryRatesPerMonth = (month, year) => {
   return (dispatch) => {
       dispatch({ type: transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH })
-    DashboardService.getOnTimeDeliveryRatesPerMonth()
+      const query = { month, year };
+    DashboardService.getOnTimeDeliveryRatesPerMonth(query)
       .then((response) => {
         dispatch({
           type: transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS,
@@ -38,10 +39,11 @@ const getOnTimeDeliveryRatesPerMonth = () => {
   }
 }
 
-const getEstimatedOnTimeDeliveryRatesPerMonth = () => {
+const getEstimatedOnTimeDeliveryRatesPerMonth = (month, year) => {
   return (dispatch) => {
       dispatch({ type: transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH })
-    DashboardService.getEstimatedOnTimeDeliveryRatesPerMonth()
+      const query = { month, year };
+    DashboardService.getEstimatedOnTimeDeliveryRatesPerMonth(query)
       .then((response) => {
         dispatch({
           type: transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS,
@@ -56,10 +58,11 @@ const getEstimatedOnTimeDeliveryRatesPerMonth = () => {
   }
 }
 
-const getDeliveryLateDayAveragePerMonth = () => {
+const getDeliveryLateDayAveragePerMonth = (month, year) => {
   return (dispatch) => {
       dispatch({ type: transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH })
-    DashboardService.getDeliveryLateDayAveragePerMonth()
+      const query = { month, year };
+    DashboardService.getDeliveryLateDayAveragePerMonth(query)
       .then((response) => {
         dispatch({
           type: transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH_SUCCESS,

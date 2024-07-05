@@ -7,13 +7,16 @@ import moment from 'moment';
 import { DashboardActions } from '../../redux/actions';
 import { withRouter } from 'react-router-dom';
 
-function DeliveryLateDay (props) {
+function DeliveryLateDay ({monthToSearch}) {
     const dispatch = useDispatch()
     const T3Dashboard = useSelector((state) => state.T3dashboard)
+    console.log(T3Dashboard.deliveryLateDayAverage)
+    console.log(monthToSearch)
 
     useEffect(() => {
-        dispatch(DashboardActions.getDeliveryLateDayAveragePerMonth())
-    },[dispatch]);
+        const [month, year] = monthToSearch.split('-');
+        dispatch(DashboardActions.getDeliveryLateDayAveragePerMonth(month, year))
+    },[dispatch, monthToSearch]);
 
     const DeliveryLateDay = useRef(null);
     useEffect(() => {
@@ -22,16 +25,12 @@ function DeliveryLateDay (props) {
 
     const listMonth = () => {
         const arr = ['x']
-        const currentDate = new Date()
-        const currentMonth = currentDate.getMonth() + 1;
-        const currentYear = currentDate.getFullYear();
 
-        const monthList = Array.from({length: currentMonth}, (_, i) => {
-            const month = (i + 1).toString().padStart(2, '0');
-            return `${month}-${currentYear}`
+        const formatData = T3Dashboard.deliveryLateDayAverage.map((item) => {
+            return item.month
         })
 
-        return arr.concat(monthList)
+        return arr.concat(formatData)
     }
 
     const generateDeliveryLateDayAverage = () => {

@@ -3,15 +3,12 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import moment from 'moment';
 import { DashboardActions } from '../../redux/actions';
 import { kpiTemplateActions } from '../../../../kpi/organizational-unit/template/redux/actions';
 import { withRouter } from 'react-router-dom';
-import { DialogModal } from '../../../../../common-components';
-import improveOTDRate from './improveOTDRate';
 import ImproveOTDRate from './improveOTDRate';
 
-function OnTimeDeliveryChart(props) {
+function OnTimeDeliveryChart({monthToSearch}) {
     const dispatch = useDispatch()
     const T3Dashboard = useSelector((state) => state.T3dashboard)
     const kpitemplates = useSelector((state) => state.kpitemplates.items)
@@ -27,26 +24,21 @@ function OnTimeDeliveryChart(props) {
     });
 
     useEffect(() => {
-        dispatch(DashboardActions.getOnTimeDeliveryRatesPerMonth())
-        dispatch(DashboardActions.getEstimatedOnTimeDeliveryRatesPerMonth())
+        const [month, year] = monthToSearch.split('-');
+        dispatch(DashboardActions.getOnTimeDeliveryRatesPerMonth(month, year))
+        dispatch(DashboardActions.getEstimatedOnTimeDeliveryRatesPerMonth(month, year))
         dispatch(kpiTemplateActions.getKpiTemplates())
-    }, [dispatch]);
-
-
+    }, [dispatch, monthToSearch]);
 
     // Khởi tạo PieChart bằng C3
     const listMonth = () => {
         const arr = ['x']
-        const currentDate = new Date()
-        const currentMonth = currentDate.getMonth() + 1;
-        const currentYear = currentDate.getFullYear();
 
-        const monthList = Array.from({ length: currentMonth }, (_, i) => {
-            const month = (i + 1).toString().padStart(2, '0');
-            return `${month}-${currentYear}`
+        const formatData = T3Dashboard.onTimeDeliveryData.map((item) => {
+            return item.month
         })
 
-        return arr.concat(monthList)
+        return arr.concat(formatData)
     }
 
     const generateActualOntimeRate = () => {
@@ -86,7 +78,7 @@ function OnTimeDeliveryChart(props) {
 
         const target = kpi.target;
         const months = listMonth();
-        const targetArray = ['plannedOntimeDeliveryRate', ...Array(months.length - 2).fill(target)];
+        const targetArray = ['plannedOntimeDeliveryRate', ...Array(months.length - 1).fill(target)];
         return targetArray;
     }
 
@@ -94,10 +86,8 @@ function OnTimeDeliveryChart(props) {
     let plannedOntimeDeliveryRate;
     try {
         plannedOntimeDeliveryRate = getKpiTargetArray(kpitemplates, kpiName);
-        console.log('Planned Ontime Delivery Rate:', plannedOntimeDeliveryRate);
     } catch (error) {
         console.error(error.message);
-        // Xử lý lỗi nếu cần thiết, ví dụ: gán giá trị mặc định
         plannedOntimeDeliveryRate = ['plannedOntimeDeliveryRate', 0, 0, 0, 0, 0, 0];
     }
 
@@ -115,10 +105,6 @@ function OnTimeDeliveryChart(props) {
                     generateActualOntimeRate(),
                     generateEstimatedOntimeRate(),
                     plannedOntimeDeliveryRate
-                    // getKpiTargetArray(kpitemplates, "Tỉ lệ giao hàng đúng hạn")
-                    // ['actualOntimeDeliveryRate', 87, 92, 93, 85, 90, 92],
-                    // ['estimatedOntimeDeliveryRate', 88, 92, 90, 87, 89, 91],
-                    // ['plannedOntimeDeliveryRate', 90, 90, 90, 90, 90, 90],
                 ],
                 type: 'spline',
                 names: {
@@ -147,29 +133,13 @@ function OnTimeDeliveryChart(props) {
             color: {
                 pattern: ['#0793de', '#f5b105', '#000000']
             },
-
-            // tooltip: {
-            //     format: {
-            //         title: function (d) { return d; },
-            //         value: function (value) {
-            //             return value;
-            //         }
-            //     }
-            // },
-
-            // legend: {
-            //     show: true
-            // }
         });
     }
 
     return (
         <React.Fragment>
-            {/* <button onClick={() => props.getCostOfAllJourney({})}>Test</button> */}
-            {/* <section ref={ontimeDeliveryChart}></section> */}
             <section ref={ontimeDeliveryChart}>
             </section>
-            {/* {JSON.stringify(T3Dashboard)} */}
             <button
                 style={{
                     position: 'absolute',
@@ -182,7 +152,6 @@ function OnTimeDeliveryChart(props) {
                 Tăng tỉ lệ giao hàng đúng hạn
             </button>
             <ImproveOTDRate showModal={showModal} setShowModal={setShowModal} />
-            {/* <RetrainingModel showModal={showModal} setShowModal={setShowModal} /> */}
         </React.Fragment>
     );
 }
