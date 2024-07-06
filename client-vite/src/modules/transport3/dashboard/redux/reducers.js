@@ -7,7 +7,11 @@ const initialState = {
     totalList: 0,
     onTimeDeliveryData: [],
     estimatedOnTimeDeliveryData: [],
-    deliveryLateDayAverage: []
+    deliveryLateDayAverage: [],
+    topLateDeliveryDay: [],
+    topLateProducts: [],
+    topLateStocks: [],
+    orderStatus: {}
 }
 
 export function dashboard(state = initialState, action) {
@@ -28,23 +32,12 @@ export function dashboard(state = initialState, action) {
                 externalSessionId: action.payload,
                 isLoading: false,
             }
-        // case transportationConstants.GET_ON_TIME_DELIVERY_RATE:
-        //     return {
-        //         ...state,
-        //         isLoading: true
-        //     }
-        // case transportationConstants.GET_ON_TIME_DELIVERY_RATE_SUCCESS:
-        //     return {
-        //         onTimeDeliveryData: action.payload,
-        //         isLoading: false
-        //     }
         case transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH:
             return {
                 ...state,
                 isLoading: true
             }
         case transportationConstants.GET_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 onTimeDeliveryData: action.payload,
@@ -56,7 +49,6 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_ESTIMATED_ON_TIME_DELIVERY_RATE_PER_MONTH_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 estimatedOnTimeDeliveryData: action.payload,
@@ -68,10 +60,53 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 deliveryLateDayAverage: action.payload,
+                isLoading: false
+            }
+        case transportationConstants.GET_TOP_LATE_DELIVERY_DAY:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_TOP_LATE_DELIVERY_DAY_SUCCESS:
+            return {
+                ...state,
+                topLateDeliveryDay: action.payload,
+                isLoading: false
+            }
+        case transportationConstants.GET_TOP_LATE_PRODUCTS:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_TOP_LATE_PRODUCTS_SUCCESS:
+            return {
+                ...state,
+                topLateProducts: action.payload,
+                isLoading: false
+            }
+        case transportationConstants.GET_TOP_LATE_STOCKS:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_TOP_LATE_STOCKS_SUCCESS:
+            return {
+                ...state,
+                topLateStocks: action.payload,
+                isLoading: false
+            }
+        case transportationConstants.GET_ORDER_STATUS:
+            return {
+                ...state,
+                isLoading: true
+            }
+        case transportationConstants.GET_ORDER_STATUS_SUCCESS:
+            return {
+                ...state,
+                orderStatus: action.payload,
                 isLoading: false
             }
         default:

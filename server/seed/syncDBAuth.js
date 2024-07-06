@@ -74,9 +74,23 @@ const syncDBAuth = async () => {
         shortName: 'vnist',
     });
 
-    vnistDB.dropCollection('resources')
-    vnistDB.dropCollection('requesters')
-    vnistDB.dropCollection('services')
+    try {
+        const collections = await vnistDB.db.listCollections().toArray();
+        const dropIfExists = async (collectionName) => {
+            if (collections.some(col => col.name === collectionName)) {
+            await vnistDB.dropCollection(collectionName);
+                console.log(`Dropped collection: ${collectionName}`);
+            } else {
+                console.log(`Collection ${collectionName} does not exist.`);
+            }
+        };
+
+        await dropIfExists('resources');
+        await dropIfExists('requesters');
+        await dropIfExists('services');
+    } catch (error) {
+        console.error('Error dropping collections:', error);
+    }
     /**
      * 1.1 Khởi tạo model cho db
      */

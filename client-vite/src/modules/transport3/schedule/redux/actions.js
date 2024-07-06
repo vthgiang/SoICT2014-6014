@@ -14,6 +14,18 @@ const getAllSchedule = () => {
   }
 }
 
+const getScheduleById = (scheduleId) => {
+  return async (dispatch) => {
+    dispatch({ type: ScheduleConstants.GET_SCHEDULE_BY_ID_REQUEST })
+    try {
+      const res = await ScheduleServices.getScheduleById(scheduleId)
+      dispatch({ type: ScheduleConstants.GET_SCHEDULE_BY_ID_SUCCESS, payload: res.data })
+    } catch (error) {
+      dispatch({ type: ScheduleConstants.GET_SCHEDULE_BY_ID_FAILURE })
+    }
+  }
+}
+
 const getAllStocksWithLatlng = () => {
   return async (dispatch) => {
     dispatch({ type: ScheduleConstants.GET_SCHEDULE_WITH_LATLNG_REQUEST })
@@ -55,26 +67,64 @@ const autoSchedule = (data) => {
 }
 
 const predictOntimeDelivery = (scheduleId) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: ScheduleConstants.PREDICT_ONTIME_DELIVERY_REQUEST })
-  ScheduleServices.predictOntimeDelivery(scheduleId)
-    .then((response) => {
+    try{
+      const response = await ScheduleServices.predictOntimeDelivery(scheduleId)
       dispatch({
         type: ScheduleConstants.PREDICT_ONTIME_DELIVERY_SUCCESS,
         payload: response.data.content
       })
-    })
-    .catch(() => {
+    } catch (error) {
       dispatch({
-        type: ScheduleConstants.PREDICT_ONTIME_DELIVERY_FAILURE
+        type: ScheduleConstants.PREDICT_ONTIME_DELIVERY_FAILURE,
+        payload: error
       })
-    })
+    }
   }
 }
+
+const postHyperparameter = () => {
+  return async (dispatch) => {
+    dispatch({ type: ScheduleConstants.POST_HYPERPARAMETER });
+    try {
+      const response = await ScheduleServices.hyperparamaterTuning();
+      dispatch({
+        type: ScheduleConstants.POST_HYPERPARAMETER_SUCCESS,
+        payload: response.data.content,
+      });
+    } catch (error) {
+      dispatch({
+        type: ScheduleConstants.POST_HYPERPARAMETER_FAILURE,
+      });
+    }
+  };
+};
+
+const getHyperparamter = () => {
+  return async (dispatch) => {
+    dispatch({ type: ScheduleConstants.GET_HYPERPARAMETER });
+    try {
+      const response = await ScheduleServices.getHyperparamter();
+      dispatch({
+        type: ScheduleConstants.GET_HYPERPARAMETER_SUCCESS,
+        payload: response.data.content,
+      });
+    } catch (error) {
+      dispatch({
+        type: ScheduleConstants.GET_HYPERPARAMETER_FAILURE,
+      });
+    }
+  };
+};
+
 export const ScheduleActions = {
   getAllSchedule,
+  getScheduleById,
   getAllStocksWithLatlng,
   createSchedule,
   autoSchedule,
-  predictOntimeDelivery
+  predictOntimeDelivery,
+  postHyperparameter,
+  getHyperparamter
 }

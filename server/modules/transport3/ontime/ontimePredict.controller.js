@@ -70,8 +70,10 @@ exports.getEstimatedOnTimeDeliveryRates = async (req, res) => {
 }
 
 exports.getEstimatedOnTimeDeliveryRatesPerMonth = async (req, res) => {
+    const { month, year } = req.query;
     try {
-        let data = await OntimePredictService.getEstimatedOnTimeDeliveryRatesPerMonth(req.portal, req.query);
+        let data = await OntimePredictService.getEstimatedOnTimeDeliveryRatesPerMonth(req.portal, { month: parseInt(month), year: parseInt(year) });
+
         await Log.info(req.user.email, "GET_ESTIMATED_ONTIME_DELIVERY_RATES_PER_MONTH", req.portal);
 
         res.status(200).json({
@@ -115,8 +117,9 @@ exports.getDeliveryLateDayAverage = async (req, res) => {
 }
 
 exports.getDeliveryLateDayAveragePerMonth = async (req, res) => {
+    const { month, year } = req.query;
     try {
-        let data = await OntimePredictService.getDeliveryLateDayAveragePerMonth(req.portal, req.query);
+        let data = await OntimePredictService.getDeliveryLateDayAveragePerMonth(req.portal, { month: parseInt(month), year: parseInt(year) });
         await Log.info(req.user.email, "GET_DELIVERY_LATE_DAY_AVERAGE_PER_MONTH", req.portal);
 
         res.status(200).json({
@@ -134,6 +137,98 @@ exports.getDeliveryLateDayAveragePerMonth = async (req, res) => {
             content: error.message
         });
     }
+}
+
+exports.getTopLateDeliveryDay = async (req, res) => {
+    const { month, year } = req.query;
+    try {
+        let data = await OntimePredictService.getTopLateDeliveryDay(req.portal, { month: parseInt(month), year: parseInt(year) });
+        await Log.info(req.user.email, "GET_TOP_LATE_DAY_OF_WEEK", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_late_day_of_week_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_TOP_LATE_DAY_OF_WEEK", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_late_day_of_week_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.getTopLateProducts = async (req, res) => {
+    const { month, year } = req.query;
+    try {
+        let data = await OntimePredictService.getTopLateProducts(req.portal, { month: parseInt(month), year: parseInt(year) });
+        await Log.info(req.user.email, "GET_TOP_LATE_PRODUCTS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_late_products_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_TOP_LATE_PRODUCTS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_late_products_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.getTopLateStocks = async (req, res) => {
+    const { month, year } = req.query;
+    try {
+        let data = await OntimePredictService.getTopLateStocks(req.portal, { month: parseInt(month), year: parseInt(year) });
+        await Log.info(req.user.email, "GET_TOP_LATE_STOCKS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_late_stocks_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_TOP_LATE_STOCKS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_late_stocks_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.getOrderStatus = async (req, res) => {
+    const { month, year } = req.query;
+    try {
+        let data = await OntimePredictService.getOrderStatus(req.portal, { month: parseInt(month), year: parseInt(year) });
+        await Log.info(req.user.email, "GET_ORDER_STATUS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_order_status_success"],
+            content: data
+        });
+    } catch (error) {
+
+        await Log.error(req.user.email, "GET_ORDER_STATUS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_order_status_fail"],
+            content: error.message
+        });
+    } 
 }
 
 exports.predictOnTimeDelivery = async (req, res) => {
@@ -164,7 +259,6 @@ exports.retrainingModel = async (req, res) => {
     try {
         const responseAI = await axios.get(`${process.env.PYTHON_URL_SERVER}/api/dxclan/ontime_predict/retrain/`);
         await Log.info(req.user.email, "RETRAINING_MODEL", req.portal);
-        console.log(responseAI.data)
 
         res.status(200).json({
             success: true,
@@ -181,5 +275,45 @@ exports.retrainingModel = async (req, res) => {
             content: error.message
         });
     } 
+}
+
+exports.hyperparamaterTuning = async (req, res) => {
+    try {
+        let data = await OntimePredictService.HyperparamaterTuning(req.portal);
+        await Log.info(req.user.email, "HYPERPARAMETER_TUNING", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["hyperparameter_tuning_success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "HYPERPARAMETER_TUNING", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["hyperparameter_tuning_fail"],
+            content: error.message
+        });
+    } 
+}
+
+exports.getHyperparamter = async(req, res) => {
+    try {
+        let data = await OntimePredictService.getHyperparamter(req.portal);
+        await Log.info(req.user.email, "GET_HYPERPARAMETER", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_hyperparameter_success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_HYPERPARAMETER", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_hyperparameter_fail"],
+            content: error.message
+        });
+    }
 }
 

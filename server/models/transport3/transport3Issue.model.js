@@ -10,7 +10,11 @@ const Transport3IssueSchema = new Schema(
     },
     schedule: {
       type: Schema.Types.ObjectId,
-      ref: 'Transport3Issue'
+      ref: 'Transport3Schedule'
+    },
+    order: {
+      type: Schema.Types.ObjectId,
+      ref: 'Transport3Order'
     },
     type: {
       // 1: Lỗi xe, 2: Lỗi tuyến đường, 3: Lỗi hàng hóa 4: Lỗi khác

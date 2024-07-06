@@ -28,10 +28,10 @@ class SideBar extends Component {
     const { translate, auth } = this.props
     const { user, links } = this.props.auth
 
-    let module_transport = localStorage.getItem('module-tranport');
+    let module_transport = localStorage.getItem('module-transport');
     if(!module_transport) {
       module_transport = 1;
-      localStorage.setItem('module-tranport', 1);
+      localStorage.setItem('module-transport', 1);
     }
 
     return (
@@ -71,6 +71,13 @@ class SideBar extends Component {
               item={{
                 name: 'menu.home',
                 path: '/home',
+                icon: 'fa fa-home'
+              }}
+            />
+            <Item
+              item={{
+                name: 'menu.overview_dashboard',
+                path: '/overview-dashboard',
                 icon: 'fa fa-home'
               }}
             />
@@ -1023,6 +1030,11 @@ class SideBar extends Component {
                     name: 'menu.dashboard_bill',
                     icon: 'fa fa-dashboard',
                     path: '/dashboard-bill'
+                  },
+                  {
+                    name: 'menu.inventory_forecast',
+                    icon: 'fa fa-dashboard',
+                    path: '/inventory-forecast'
                   },
                   {
                     name: 'menu.stock_management',

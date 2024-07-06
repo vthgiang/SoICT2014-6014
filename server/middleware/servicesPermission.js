@@ -1221,6 +1221,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/inventory-forecast',
+        apis: ['@all'],
+    },
+    {
         url: '/dashboard-bill',
         apis: ['@all'],
     },
@@ -1268,10 +1272,10 @@ exports.links = [
         url: '/forecast-sales-order',
         apis: ['@all'],
     },
-    // {
-    //     url: '/manage-purchase-order',
-    //     apis: ['@all'],
-    // },
+    {
+        url: '/overview-dashboard',
+        apis: ['@all'],
+    },
     // {
     //     url: '/manage-quote',
     //     apis: ['@all'],

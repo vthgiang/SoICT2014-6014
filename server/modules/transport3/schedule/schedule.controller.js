@@ -19,6 +19,24 @@ exports.getAllSchedule = async (req, res) => {
   }
 };
 
+exports.getScheduleById = async (req, res) => {
+  try {
+    let { scheduleId } = req.params;
+    let schedule = await ScheduleService.getScheduleById(req.portal, scheduleId);
+    res.status(200).json({
+      schedules,
+      messages: ['Lấy thông tin lịch trình thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while fetching schedules ${error}`);
+    res.status(400).json({
+      messages: [
+        'Lấy thông tin lịch trình thất bại'
+      ]
+    });
+  }
+}
+
 // Tạo mới 1 lịch trình
 exports.createSchedule = async (req, res) => {
   try {
@@ -80,4 +98,21 @@ exports.getOrdersTransporting = async (req, res) => {
       messages: ['Lấy thông tin đơn hàng đang vận chuyển thất bại' + error]
     });
   }
+}
+
+exports.getMySchedule = async (req, res) => {
+    try {
+        let schedules = await ScheduleService.getMySchedule(req.portal, req.user);
+        res.status(200).json({
+        schedules,
+        messages: ['Lấy thông tin lịch trình thành công']
+        });
+    } catch (error) {
+        Log.error(`Error while fetching schedules ${error}`);
+        res.status(400).json({
+        messages: [
+            'Lấy thông tin lịch trình thất bại'
+        ]
+        });
+    }
 }
