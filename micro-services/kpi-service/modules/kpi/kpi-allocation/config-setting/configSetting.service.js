@@ -164,7 +164,7 @@ const handleStartAllocation = async (portal, kpiData) => {
             end_date: formatDate(item.endDate),
             duration: item.durations,
             company_unit_id: company_unit_detail.id,
-            affected_factor: item.affected_factor,
+            factor: item.factor,
           };
         });
 
@@ -178,19 +178,21 @@ const handleStartAllocation = async (portal, kpiData) => {
 
     // format listEnvironmentTaskScore
     const listEnvironmentTaskScore = listTask.map((item) => {
-      const affected_factor_env = item.affected_factor.find((value) => value.affected_factor_type === 'Environment');
+      const { company, event, outdoor, online } = item.factor;
+      const affected_factor_env = (company + event + outdoor + online) / 4;
       return {
         task_id: item.task_id,
-        mean_score: affected_factor_env.score,
+        mean_score: affected_factor_env,
       };
     });
 
     // format listProductTaskScore
     const listProductTaskScore = listTask.map((item) => {
-      const affected_factor_product = item.affected_factor.find((value) => value.affected_factor_type === 'Product');
+      const { contract, sales, newCustomer, document } = item.factor;
+      const affected_factor_product = (contract + sales + newCustomer + document) / 4;
       return {
         task_id: item.task_id,
-        mean_score: affected_factor_product.score,
+        mean_score: affected_factor_product,
       };
     });
 
