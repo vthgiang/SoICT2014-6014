@@ -29,6 +29,7 @@ module.exports = async (server) => {
         "https://dxclan.com:3000",
         "https://dx.vietanhviavet.com",
         "https://dx.vietanhviavet.com:3000",
+        "https://dxclan.datn.live",
       ],
       allowedHeaders: ["my-custom-header"],
       credentials: true,
