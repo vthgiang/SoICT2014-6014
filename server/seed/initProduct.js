@@ -122,7 +122,7 @@ const initProduct = async () => {
         newProducts.push(newProduct);
     });
     await Good(vnistDB).insertMany(newProducts);
-    // const list_goods = await Good(vnistDB).insertMany(newProducts);
+    
     console.log('Khởi tạo xong danh sách hàng hóa');
 }
 initProduct().then(() => {
