@@ -19,6 +19,7 @@ import OrderDetail from '@modules/transport3/order/components/orderDetail.jsx';
 import { color } from 'd3'
 import OntimeDeliveryResults from './ontimeDeliveryResults';
 import ProgressBar from "@ramonak/react-progress-bar";
+import ScheduleDetail from '@modules/transport3/schedule/components/scheduleDetail.jsx';
 
 function ScheduleTable(props) {
   const TableId = 'schedule-table'
@@ -27,7 +28,6 @@ function ScheduleTable(props) {
   const [selectedSchedule, setSelectedSchedule] = useState(null);
 
   let listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules)
-  let ontimePredictResults = useSelector(state => state.T3schedule.predictOntimeDeliveryResults.predict_ontime)
 
   let dispatch = useDispatch()
   useEffect(() => {
@@ -61,12 +61,6 @@ function ScheduleTable(props) {
     })
   }
 
-  const handlePredictOntimeDelivery = (schedule) => {
-    window.$(`#modal-ontime-delivery-results`).modal('show')
-    setSelectedSchedule(schedule);
-    dispatch(ScheduleActions.predictOntimeDelivery(schedule._id))
-  }
-
   const columns = [
     'STT',
     'Mã lịch trình',
@@ -87,14 +81,20 @@ function ScheduleTable(props) {
     4: 'Thất bại'
   }
 
-  const handleShowDetailInfo = (id) => {
-
+  const handleShowDetailInfo = (schedule_id) => {
+    setState({
+      ...state,
+      currentDetail: listSchedules?.find(schedule => schedule._id === schedule_id)
+    });
+    window.$(`#modal-detail-schedule`).modal('show')
   }
-  let {totalPages, page} = state
 
+  
+  let {totalPages, page} = state
   return (
     <>
       <ScheduleCreateForm code={state.code}/>
+      <ScheduleDetail schedule={state.currentDetail}/>
       <div className="nav-tabs-custom">
         <div className="box-body qlcv">
           <div className="form-inline">
@@ -197,11 +197,6 @@ function ScheduleTable(props) {
                         data={{id: schedule._id}}
                         // func={handleDeleteVehicle}
                       />
-                      {/*<button*/}
-                      {/*  onClick={()=> handlePredictOntimeDelivery(schedule)}*/}
-                      {/*>*/}
-                      {/*  Dự báo**/}
-                      {/*</button>*/}
                     </td>
                   </td>
                 </tr>

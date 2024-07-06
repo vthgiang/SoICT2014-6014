@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import SalesOrderDashboard from './salesOrderDashboard'
+import ForecastDashboard from '../components/forecast/forecastDashboard'
 
 function Dashboard(props) {
   const [state, setState] = useState({
@@ -35,7 +36,7 @@ function Dashboard(props) {
       {type === 1 && <SalesOrderDashboard />}
 
     
-      {type === 2}
+      {type === 2 && <ForecastDashboard />}
 
     </div>
   )

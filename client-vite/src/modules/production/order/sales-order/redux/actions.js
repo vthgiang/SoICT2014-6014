@@ -13,7 +13,7 @@ export const SalesOrderActions = {
   countSalesOrder,
   getTopGoodsSold,
   getSalesForDepartments,
-  getNumberWorksSalesOrder
+  getNumberWorksSalesOrder,
 }
 
 function createNewSalesOrder(data) {

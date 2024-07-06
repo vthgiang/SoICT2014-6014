@@ -68,3 +68,11 @@ exports.confirmEmployeeTransport3 = async (portal, employeeId) => {
 exports.removeEmployeeTransport3 = async (portal, employeeId) => {
     await Transport3Employee(connect(DB_CONNECTION, portal)).deleteOne({_id: employeeId});
 }
+
+exports.getInfoEmployeeTransport3 = async (portal, employeeId) => {
+  return await Employee(connect(DB_CONNECTION, portal)).findOne({_id: employeeId});
+}
+
+exports.getMyEmployees = async (portal, user) => {
+  return await Employee(connect(DB_CONNECTION, portal)).findOne({emailInCompany: user.email});
+}

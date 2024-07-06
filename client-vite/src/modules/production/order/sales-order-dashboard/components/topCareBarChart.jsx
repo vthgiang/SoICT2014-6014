@@ -6,7 +6,6 @@ import { QuoteActions } from '../../quote/redux/actions'
 import c3 from 'c3'
 import 'c3/c3.css'
 
-import { DatePicker, SelectBox } from '../../../../../common-components'
 import { formatToTimeZoneDate } from '../../../../../helpers/formatDate'
 
 function TopCareBarChart(props) {
@@ -132,32 +131,7 @@ function TopCareBarChart(props) {
       <div className='box-header with-border'>
         <i className='fa fa-bar-chart-o' />
         <h3 className='box-title'>Top sản phẩm được quan tâm (theo số lượng)</h3>
-        <div className='form-inline'>
-          <div className='form-group'>
-            <label style={{ width: 'auto' }}>Từ</label>
-            <DatePicker
-              id='date_picker_dashboard_start_top_care'
-              value={state.startDate}
-              onChange={handleStartDateChange}
-              disabled={false}
-            />
-          </div>
 
-          {/**Chọn ngày kết thúc */}
-          <div className='form-group'>
-            <label style={{ width: 'auto' }}>Đến</label>
-            <DatePicker id='date_picker_dashboard_end_top_care' value={state.endDate} onChange={handleEndDateChange} disabled={false} />
-          </div>
-          {/* <div className="form-group">
-                            <label className="form-control-static">Chọn Top</label>
-                            <input className="form-control" type="number" placeholder="Mặc định bằng 5" style={{ width: "175px" }} />
-                        </div> */}
-          <div className='form-group' style={{ marginLeft: '20px' }}>
-            <button className='btn btn-success' onClick={() => handleSunmitSearch()}>
-              Tìm kiếm
-            </button>
-          </div>
-        </div>
         <div ref={topCareBarChart} id='topCareBarChart'></div>
       </div>
     </div>
