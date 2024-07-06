@@ -61,8 +61,7 @@ services:
     volumes:
       - ./micro-services/kpi-service:/app
       - ./micro-services/kpi-service/node_modules:/app/node_modules
-    command: sh -c "cd /app && npm install -f && npm start"
-    working_dir: /app
+    command: sh -c "cd /app && apk update && apk add --no-cache krb5-dev g++ make python3 py3-pip && npm install -f && npm start"
     networks:
       - vnist-network
   task-service:
@@ -75,8 +74,7 @@ services:
     volumes:
       - ./micro-services/task-service:/app
       - ./micro-services/task-service/node_modules:/app/node_modules
-    command: sh -c "cd /app && npm install -f && npm start"
-    working_dir: /app
+    command: sh -c "cd /app && apk update && apk add --no-cache krb5-dev g++ make python3 py3-pip && npm install -f && npm start"
     networks:
       - vnist-network
 volumes:
