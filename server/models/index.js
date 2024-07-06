@@ -16,6 +16,8 @@ module.exports = {
     DocumentDomain: require('./document/documentDomain.model'),
     DocumentArchive: require('./document/documentArchive.model'),
 
+    HyperParameter: require('./AImodel/hyperparameter.model'),
+
     AnnualLeave: require('./human-resource/annualLeave.model'),
     Commendation: require('./human-resource/commendation.model'),
     Discipline: require('./human-resource/discipline.model'),

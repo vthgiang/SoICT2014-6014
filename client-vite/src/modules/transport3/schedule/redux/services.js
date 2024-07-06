@@ -23,6 +23,19 @@ const getAllSchedule = (query) => {
   )
 }
 
+const getScheduleById = (scheduleId) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/schedule/${scheduleId}`,
+      method: 'GET',
+      params: query
+    },
+    false,
+    true,
+    'transport3.schedule'
+  )
+}
+
 const getAllStocksWithLatlng = async () => {
   const res = await StockServices.getAllStocks()
   // eslint-disable-next-line no-restricted-syntax
@@ -58,4 +71,39 @@ const predictOntimeDelivery = (scheduleId) => {
   'transport3.schedule')
 }
 
-export { getAllSchedule, getAllStocksWithLatlng, createSchedule, predictOntimeDelivery }
+const hyperparamaterTuning = (query) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/hyperparamaterTuning`,
+      method: 'POST',
+      params: query
+    },
+    false,
+    true,
+    'transport3.schedule'
+  )
+}
+
+const getHyperparamter = (query) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/hyperparameter`,
+      method: 'GET',
+      params: query
+    },
+    false,
+    true,
+    'transport3.schedule'
+  )
+}
+
+
+export { 
+  getAllSchedule, 
+  getScheduleById,
+  getAllStocksWithLatlng, 
+  createSchedule, 
+  predictOntimeDelivery, 
+  hyperparamaterTuning,
+  getHyperparamter
+}

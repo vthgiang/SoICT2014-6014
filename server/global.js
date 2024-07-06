@@ -24,6 +24,7 @@ module.exports = async (server) => {
     cors: {
       origin: [
         "http://localhost:9000",
+        "http://localhost:3000",
         "https://dxclan.com",
         "https://dxclan.com:3000",
         "https://dx.vietanhviavet.com",

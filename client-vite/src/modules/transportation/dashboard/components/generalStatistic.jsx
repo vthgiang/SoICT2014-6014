@@ -131,7 +131,7 @@ function GeneralStatistic(props) {
 
     // const totalPage = example && Math.ceil(requestManagements.totalDocs / perPage);
     const handleChangeModule = (value) => {
-        localStorage.setItem('module-tranport', value);
+        localStorage.setItem('module-transport', value);
         if(value == 1){
           // navigate to transportation dashboard
           window.location.href = '/transportation-dashboard';
@@ -160,12 +160,12 @@ function GeneralStatistic(props) {
 
                           <label style={{ width: "auto", marginLeft: "60%" }}>Chọn module</label>
                           <SelectBox
-                            id={`select-module-tranport`}
+                            id={`select-module-transport`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[{ value: '1', text: 'Transportation' }, { value: '2', text: 'Transport 3' }]}
                             onChange={handleChangeModule}
-                            value={localStorage.getItem('module-tranport') ? localStorage.getItem('module-tranport') : '1'}
+                            value={localStorage.getItem('module-transport') ? localStorage.getItem('module-transport') : '1'}
                             multiple={false}
                           />
                         </div>

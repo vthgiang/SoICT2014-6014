@@ -5,8 +5,10 @@ const initState = {
   isAutoScheduling: false,
   listAutoSchedules: null,
   listSchedules: [],
+  schedule: {},
   listStocsWithLatLng: [],
-  predictOntimeDeliveryResults: []
+  predictOntimeDeliveryResults: [],
+  hyperparameters: []
 }
 
 export function schedule(state = initState, action) {
@@ -23,6 +25,22 @@ export function schedule(state = initState, action) {
         listSchedules: action.payload
       }
     case ScheduleConstants.GET_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        schedule: action.payload
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_FAILURE:
       return {
         ...state,
         isLoading: false
@@ -92,6 +110,37 @@ export function schedule(state = initState, action) {
           ...state,
           isLoading: false
         }
+      case ScheduleConstants.POST_HYPERPARAMETER:
+          return {
+              ...state,
+              isLoading: true
+          }
+      case ScheduleConstants.POST_HYPERPARAMETER_SUCCESS:
+          return {
+              ...state,
+              isLoading: false
+          }
+      case ScheduleConstants.POST_HYPERPARAMETER_FAILURE:
+          return {
+              ...state,
+              isLoading: false
+          }
+      case ScheduleConstants.GET_HYPERPARAMETER:
+          return {
+              ...state,
+              isLoading: true
+          }
+      case ScheduleConstants.GET_HYPERPARAMETER_SUCCESS:
+          return {
+              ...state,
+              hyperparameters: action.payload,
+              isLoading: false
+          }
+      case ScheduleConstants.GET_HYPERPARAMETER_FAILURE:
+          return {
+              ...state,
+              isLoading: false
+          }
     default:
       return state
   }

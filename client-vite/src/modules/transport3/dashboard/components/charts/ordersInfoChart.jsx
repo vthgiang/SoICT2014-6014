@@ -1,53 +1,58 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../production/common-production/request-management/redux/actions';
+import { DashboardActions } from '../../redux/actions';
 
-function OrdersInfoChart (props) {
-    const { monthToSearch, transportationRequests } = props
+function OrdersInfoChart ({monthToSearch}) {
+    const dispatch = useDispatch()
+    const T3orderStatus = useSelector((state) => state.T3dashboard.orderStatus)
     const transportationPieChart = useRef(null);
-    const [state, setState] = useState({
-        inProcessRequests: 0,
-        failRequests: 0,
-        successRequests: 0,
-        isDelivering: 0
-    });
-
-    const { inProcessRequests, failRequests, successRequests, isDelivering } = state;
 
     useEffect(() => {
         pieChart();
-    }, [inProcessRequests, failRequests, successRequests]);
-
+    });
     useEffect(() => {
-        props.getAllRequestByCondition({ monthToSearch: monthToSearch, requestType: 4});
-    }, [])
+        const [month, year] = monthToSearch.split('-');
+        dispatch(DashboardActions.getOrderStatus(month, year))
+    }, [dispatch, monthToSearch]);
 
-    useEffect(() => {
-        if (transportationRequests) {
-            setState({
-                ...state,
-                inProcessRequests: transportationRequests.totalRequests - transportationRequests.failRequests - transportationRequests.successRequests - transportationRequests.inProcessRequests,
-                isDelivering: transportationRequests.inProcessRequests,
-                failRequests: transportationRequests.failRequests,
-                successRequests: transportationRequests.successRequests
-            })
+    const convertOrderStatusToArray = () => {
+        const statusMap = {
+            1: 'Chưa giao',
+            2: 'Đang giao',
+            3: 'Thành công',
+            4: 'Thất bại'
+        };
+    
+        let resultArray = [];
+    
+        if (T3orderStatus && typeof T3orderStatus === 'object') {
+            for (const [status, count] of Object.entries(T3orderStatus)) {
+                const numericStatus = parseInt(status, 10);  // Chuyển đổi khóa sang số nguyên
+                if (statusMap.hasOwnProperty(numericStatus)) {
+                    resultArray.push([statusMap[numericStatus], count]);
+                }
+            }
         }
-    }, [transportationRequests])
+        console.log(resultArray)
+        return resultArray;
+    }
 
     // Khởi tạo PieChart bằng C3
     const pieChart = () => {
         let chart = c3.generate({
             bindto: transportationPieChart.current,
             data: {
-                columns: [
-                    ['Chưa giao', inProcessRequests],
-                    ['Đang giao', isDelivering],
-                    ['Thất bại', failRequests],
-                    ['Thành công', successRequests],
-                ],
+                columns: 
+                    // [['Chưa giao', 1],
+                    // ['Đang giao', 2],
+                    // ['Thành công', 3],
+                    // ['Thất bại', 4]],
+                    convertOrderStatusToArray()
+                ,
                 type: 'pie',
                 colors: {
                     'Chưa giao': '#3383f2',
