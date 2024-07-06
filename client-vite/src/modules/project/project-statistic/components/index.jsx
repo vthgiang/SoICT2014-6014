@@ -229,8 +229,7 @@ function ProjectStatisticPage(props) {
   return (
     <React.Fragment>
       <div className='qlcv' style={{ textAlign: 'left' }}>
-        {/**Chọn ngày bắt đầu */}
-        <div className='form-inline'>
+        {/* <div className='form-inline'>
           <div className='form-group'>
             <label style={{ width: 'auto' }}>{translate('task.task_management.from')}</label>
             <DatePicker
@@ -242,7 +241,6 @@ function ProjectStatisticPage(props) {
             />
           </div>
 
-          {/**Chọn ngày kết thúc */}
           <div className='form-group'>
             <label style={{ width: 'auto' }}>{translate('task.task_management.to')}</label>
             <DatePicker
@@ -254,7 +252,6 @@ function ProjectStatisticPage(props) {
             />
           </div>
 
-          {/**button tìm kiếm data để vẽ biểu đồ */}
           <div className='form-group'>
             <button type='button' className='btn btn-success'
               onClick={handleUpdateData}
@@ -262,7 +259,7 @@ function ProjectStatisticPage(props) {
               {translate('kpi.evaluation.employee_evaluation.search')}
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Project Quantity => TODO split component */}
         <div className='row'>
