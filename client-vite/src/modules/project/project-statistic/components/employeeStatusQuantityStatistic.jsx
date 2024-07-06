@@ -17,27 +17,16 @@ const EmployeeStatusQuantityStatistic = (props) => {
 
     categories = ['Rảnh rỗi', 'Đang thực hiện công việc']
     employeeColumns = []
-    // 1: hoạt động, 0: ngưng hoạt động, 2: đang chờ kết quả dự thầu, 3: Đang thực hiện gói thầu, 4:hoàn thành
-    // const numberOfReadyToAssign = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 1)?.length
-    // const numberOfIsWorking = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 0)?.length
-    // const numberOfWaitForBidding = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 2)?.length
-    // const numberOfInProcess = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 3)?.length
-    // const numberOfComplete = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 4)?.length
+    const { employeeQuantityStatistic } = props
+    const {
+      numberOfReadyToAssign,
+      numberOfIsWorking
+    } = employeeQuantityStatistic
 
-    const numberOfReadyToAssign = 12
-    const numberOfIsWorking = 8
-    // const numberOfWaitForBidding = 2
-    // const numberOfInProcess = 1
-    // const numberOfComplete = 4
-
-    // employeeColumns = ["Số lượng gói thầu theo trạng thái", numberOfReadyToAssign, numberOfIsWorking, numberOfWaitForBidding, numberOfInProcess, numberOfComplete];
-
+   
     employeeColumns = [
       ['Rảnh rỗi', numberOfReadyToAssign],
       ['Đang thực hiện công việc', numberOfIsWorking],
-      // ['Đang thực hiện', numberOfInProcess],
-      // ['Ngưng hoạt động', numberOfIsWorking],
-      // ['Hoàn thành', numberOfComplete]
     ]
 
     return {
@@ -85,45 +74,11 @@ const EmployeeStatusQuantityStatistic = (props) => {
       tooltip: {
         format: {
           value: function (value, ratio, id, index) {
-            return value
+            const percentage = (ratio * 100).toFixed(2) + '%';
+            return value + ' (' + percentage + ')';
           }
         }
       }
-
-      // padding: {
-      //     top: 20,
-      //     bottom: 20,
-      //     right: 20
-      // },
-
-      // data: {
-      //     columns: dataChart,
-      //     type: "bar",
-      //     labels: true,
-      //     color: function (color, d) {
-      //         return catColor[d.x];
-      //     }
-      // },
-      // bar: {
-      //     width: {
-      //         ratio: 0.2
-      //     }
-      // },
-
-      // axis: {
-      //     x: {
-      //         type: 'categories',
-      //         categories: categories,
-      //         label: "Trạng thái"
-      //     },
-      //     y: {
-      //         label: "Số lượng gói thầu",
-      //     },
-      // },
-
-      // zoom: {
-      //     enabled: false
-      // }
     })
   }
 
