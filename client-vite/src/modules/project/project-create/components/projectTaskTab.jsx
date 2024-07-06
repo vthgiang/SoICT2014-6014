@@ -8,7 +8,7 @@ import ValidationHelper from "../../../../helpers/validationHelper"
 import { getAssetCapaciyNameFromValue, getAssetTypeFromTypeId, getCapacityKeyText, getCapacityOptions, getCapacityValueText, getListAssetFromIds, getListAssetIDsFromAssetGroups, getListAssetTypes, getListCapacityValues, getOptionTextFromValueInSelectBoxItems } from "../../../../helpers/assetHelper"
 import ProjectModuleValidationHelper from "../../../../helpers/projectModuleValidationHelpers"
 import { getEmployeeSelectBoxItemsWithEmployeeData } from "../../../task/organizationalUnitHelper"
-import { convertToDate, getListDepartments } from "../../projects/components/functionHelper"
+import { convertAssetRequireToText, convertKPIIdToText, convertRequireAssigneeToText, convertToDate, getListDepartments } from "../../projects/components/functionHelper"
 import { getListMembersInProject } from "../../../task/projectMemberHelper"
 import { ProjectTaskViewInGantt } from "./projectTaskViewInGantt"
 import moment from "moment"
@@ -633,6 +633,8 @@ const ProjectTasksTab = (props) => {
       setProjectTasks([...taskData])
     }
   }
+
+  console.log("listcapacities: ", listCapacityOptions)
   
   return (
     <React.Fragment>
@@ -1143,9 +1145,13 @@ const ProjectTasksTab = (props) => {
                   <td>{item?.preceedingTasks?.join(', ')}</td>
                   <td>{item?.estimateNormalTime}</td>
                   <td>{item?.tags && item?.tags.join(", ")}</td>
-                  <td>{item?.kpiInTask}</td>
-                  <td>{JSON.stringify(item?.requireAssignee)}</td>
-                  <td>{JSON.stringify(item?.requireAsset)}</td>
+                  <td>{convertKPIIdToText(item?.kpiInTask, listKPIOptions, translate)}</td>
+                  <td>
+                    <ToolTip dataTooltip={convertRequireAssigneeToText(item?.requireAssignee, listCapacityOptions, translate)} />
+                  </td>
+                  <td>
+                    <ToolTip dataTooltip={convertAssetRequireToText(item?.requireAsset, listAssetsTypes, assetCapacities, translate)} />
+                  </td>
                   <td>
                     <a
                       className='edit'
