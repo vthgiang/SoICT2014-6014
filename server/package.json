@@ -20,7 +20,7 @@
     "init-sample-company": "node seed/initSampleCompanyDB.js",
     "init-sample-organizational-unit-kpi": "node seed/initOrganizationalUnitKPIData.js",
     "init-human-resource-data": "node seed/initHumanResourceData.js",
-    "init": "node seed/initDB.js && node seed/initSampleCompanyDB.js && node seed/initOrganizationalUnitKPIData.js && node seed/initHumanResourceData.js && node seed/initLayoutWarehouseData.js && node seed/initInventoryWarehouseData.js",
+    "init": "node seed/initDB.js && node seed/initSampleCompanyDB.js && node seed/initOrganizationalUnitKPIData.js && node seed/initHumanResourceData.js",
     "init-risk-module": "node seed/initDB.js && node seed/initSampleCompanyDB.js && node seed/initOrganizationalUnitKPIData.js && node seed/initHumanResourceData.js && node seed/initTaskTemplate && node seed/initRisk.js && node seed/initBayesDataset.js",
     "init-pert-data": "node seed/initTaskTemplate.js",
     "init-bayes-dataset": "node seed/initBayesDataset.js",
