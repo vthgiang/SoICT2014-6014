@@ -614,7 +614,6 @@ function mapState(state) {
 }
 
 const actions = {
-  createProjectDispatch: ProjectActions.createProjectDispatch,
   getProjectsDispatch: ProjectActions.getProjectsDispatch,
   deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
   createProjectDispatch: ProjectActions.createProjectDispatch,
