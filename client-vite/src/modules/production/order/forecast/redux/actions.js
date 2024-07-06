@@ -5,7 +5,8 @@ export const forecastActions = {
     createForecast,
     getTop5Products,
     getBottom5Products,
-    getAllForecasts // Thêm hành động này
+    getAllForecasts, 
+    countSalesForecast 
 };
 
 function createForecast() {
@@ -68,7 +69,6 @@ function getBottom5Products() {
     }
 }
 
-// Thêm hàm này
 function getAllForecasts() {
     return (dispatch) => {
         dispatch({ type: forecastConstants.GET_ALL_FORECASTS_REQUEST });
@@ -83,6 +83,27 @@ function getAllForecasts() {
             .catch((error) => {
                 dispatch({
                     type: forecastConstants.GET_ALL_FORECASTS_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+// Thêm hàm này
+function countSalesForecast() {
+    return (dispatch) => {
+        dispatch({ type: forecastConstants.GET_COUNT_FORECASTS_REQUEST });
+
+        forecastServices.countSalesForecast()
+            .then((res) => {
+                dispatch({
+                    type: forecastConstants.GET_COUNT_FORECASTS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: forecastConstants.GET_COUNT_FORECASTS_FAILURE,
                     error
                 });
             });

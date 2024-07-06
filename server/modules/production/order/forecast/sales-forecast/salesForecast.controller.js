@@ -100,3 +100,26 @@ exports.getBottom5Products = async (req, res) => {
         });
     }
 };
+
+exports.countSalesForecast = async (req, res) => {
+    try {
+        let totalForecasts = await forecastService.countSalesForecast(req.query, req.portal);
+
+        await Log.info(req.user.email, "GET_TOTAL_FORECASTS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_total_forecasts_successfully"],
+            content: totalForecasts
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TOTAL_FORECASTS", req.portal);
+        console.error('Error in getting total forecasts:', error);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_total_forecasts_failed"],
+            content: error.message
+        });
+    }
+};

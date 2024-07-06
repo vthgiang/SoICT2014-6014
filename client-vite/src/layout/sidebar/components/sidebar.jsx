@@ -1022,6 +1022,11 @@ class SideBar extends Component {
                     path: '/dashboard-bill'
                   },
                   {
+                    name: 'menu.inventory_forecast',
+                    icon: 'fa fa-dashboard',
+                    path: '/inventory-forecast'
+                  },
+                  {
                     name: 'menu.stock_management',
                     icon: 'fa fa-bank',
                     path: '/stock-management'

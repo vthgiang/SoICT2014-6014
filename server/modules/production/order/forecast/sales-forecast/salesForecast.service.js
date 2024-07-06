@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { SalesForecast } = require(`../../../../../models`);
+const { SalesForecast,SalesOrder } = require(`../../../../../models`);
 const { connect } = require(`../../../../../helpers/dbHelper`);
 
 exports.saveForecasts = async (forecasts, portal) => {
@@ -21,6 +21,33 @@ exports.getAllForecasts = async (query, portal) => {
 
     const dbConnection = connect(DB_CONNECTION, portal);
 
+    // Lấy tháng có giá trị createdAt lớn nhất trong SalesOrder
+    const latestOrder = await SalesOrder(dbConnection).findOne().sort({ createdAt: -1 });
+    if (!latestOrder) {
+        return { totalForecasts: [] };
+    }
+
+    const latestMonth = latestOrder.createdAt.getMonth() + 1;
+    const latestYear = latestOrder.createdAt.getFullYear();
+    const firstDayOfMonth = new Date(latestYear, latestMonth - 1, 1);
+    const lastDayOfMonth = new Date(latestYear, latestMonth, 0);
+
+    // console.log(`First day of latest month: ${firstDayOfMonth}`);
+    // console.log(`Last day of latest month: ${lastDayOfMonth}`);
+
+    const salesOrders = await SalesOrder(dbConnection).find({
+        createdAt: {
+            $gte: firstDayOfMonth,
+            $lt: lastDayOfMonth
+        }
+    }).populate({
+        path: "goods.good",
+        select: "code name"
+    });
+
+    // console.log(`Sales Orders for the latest month: ${JSON.stringify(salesOrders, null, 2)}`);
+
+    // Lấy tất cả dự báo
     let allForecasts;
     if (!page || !limit) {
         allForecasts = await SalesForecast(dbConnection)
@@ -42,9 +69,34 @@ exports.getAllForecasts = async (query, portal) => {
         });
     }
 
-    // Tính tổng các giá trị dự báo theo good
+    // console.log(`Forecasts: ${JSON.stringify(allForecasts.docs || allForecasts, null, 2)}`);
+
+    // Tính tổng các giá trị dự báo theo good và thêm giá trị thực tế từ SalesOrder
     let totalForecasts = {};
 
+    // Thêm giá trị thực tế từ SalesOrder
+    salesOrders.forEach(order => {
+        order.goods.forEach(item => {
+            if (!item.good || !item.good._id) {
+                console.error(`Order item with missing 'good' reference.`);
+                return;
+            }
+            const goodId = item.good._id.toString();
+            if (!totalForecasts[goodId]) {
+                totalForecasts[goodId] = {
+                    goodId: goodId,
+                    goodName: item.good.name || 'Unknown',
+                    totalCurrentMonth: 0,
+                    totalForecastOrders: 0,
+                    totalForecastThreeMonth: 0,
+                    totalForecastSixMonth: 0
+                };
+            }
+            totalForecasts[goodId].totalCurrentMonth += item.quantity || 0;
+        });
+    });
+
+    // Thêm giá trị dự báo từ SalesForecast
     (allForecasts.docs || allForecasts).forEach(forecast => {
         if (!forecast.good || !forecast.good._id) {
             console.error(`Forecast with ID ${forecast._id} has an invalid or missing 'good' reference.`);
@@ -55,12 +107,12 @@ exports.getAllForecasts = async (query, portal) => {
             totalForecasts[goodId] = {
                 goodId: goodId,
                 goodName: forecast.good.name || 'Unknown',
+                totalCurrentMonth: 0,
                 totalForecastOrders: 0,
                 totalForecastThreeMonth: 0,
                 totalForecastSixMonth: 0
             };
         }
-
         totalForecasts[goodId].totalForecastOrders += forecast.forecastOrders || 0;
         totalForecasts[goodId].totalForecastThreeMonth += forecast.forecastThreeMonth || 0;
         totalForecasts[goodId].totalForecastSixMonth += forecast.forecastSixMonth || 0;
@@ -69,10 +121,13 @@ exports.getAllForecasts = async (query, portal) => {
     // Chuyển đối tượng tổng kết thành mảng
     let totalForecastsArray = Object.values(totalForecasts);
 
+    
+
     return { 
         totalForecasts: totalForecastsArray
     };
 };
+
 
 exports.getTop5Products = async (query, portal) => {
     let result = await exports.getAllForecasts(query, portal);
@@ -101,5 +156,20 @@ exports.getBottom5Products = async (query, portal) => {
         bottom5OneMonth,
         bottom5ThreeMonth,
         bottom5SixMonth
+    };
+};
+
+exports.countSalesForecast = async (query, portal) => {
+    let result = await exports.getAllForecasts(query, portal);
+    let totalForecastsArray = result.totalForecasts;
+
+    let totalOneMonth = totalForecastsArray.reduce((sum, forecast) => sum + (forecast.totalForecastOrders || 0), 0);
+    let totalThreeMonth = totalForecastsArray.reduce((sum, forecast) => sum + (forecast.totalForecastThreeMonth || 0), 0);
+    let totalSixMonth = totalForecastsArray.reduce((sum, forecast) => sum + (forecast.totalForecastSixMonth || 0), 0);
+
+    return {
+        totalOneMonth,
+        totalThreeMonth,
+        totalSixMonth
     };
 };

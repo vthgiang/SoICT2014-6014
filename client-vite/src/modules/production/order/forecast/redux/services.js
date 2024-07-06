@@ -4,7 +4,8 @@ export const forecastServices = {
     createForecast,
     getTop5Products,
     getBottom5Products,
-    getAllForecasts // Thêm hàm này
+    getAllForecasts, // Đã thêm hàm này
+    countSalesForecast // Thêm hàm này
 };
 
 function createForecast() {
@@ -43,11 +44,23 @@ function getBottom5Products() {
     );
 }
 
-// Thêm hàm này
 function getAllForecasts() {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/forecasts`,
+            method: "GET"
+        },
+        false,
+        true,
+        "manage_forecast"
+    );
+}
+
+// Thêm hàm này
+function countSalesForecast() {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/forecasts/count`,
             method: "GET"
         },
         false,

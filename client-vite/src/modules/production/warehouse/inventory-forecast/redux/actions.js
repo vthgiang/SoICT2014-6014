@@ -2,7 +2,8 @@ import { forecastConstants } from './constants';
 import { forecastServices } from './services';
 
 export const forecastActions = {
-    createForecast
+    createForecast,
+    getAllForecasts
 };
 
 function createForecast() {

@@ -18,6 +18,7 @@ import { RiskManagement } from '../modules/risk/risk-list/components'
 import { BayesianNetworkConfig } from '../modules/risk/risk-bayes-config/components'
 import { RiskDashboard } from '../modules/risk/risk-dash-board/components'
 import { RiskResponsePlanManagement } from '../modules/risk/risk-response-plan/components'
+import InventoryForecastTable from '../modules/production/warehouse/inventory-forecast/components'
 
 const Home = lazy(() => import('../modules/home/components'))
 const NotFound = lazy(() => import('../modules/not-found/components'))
@@ -157,6 +158,7 @@ const InventoryManagement = lazy(() => import('../modules/production/warehouse/i
 const StockRequestManagement = lazy(() => import('../modules/production/warehouse/request-management/components'))
 const StogareManagement = lazy(() => import('../modules/production/warehouse/storage-management/components'))
 const RoutePickingManagement = lazy(() => import('../modules/production/warehouse/route-picking-management/components'))
+const InvenToryForecastTable = lazy(() => import('../modules/production/warehouse/inventory-forecast/components'))
 // Customer Management
 const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
 const CrmDashBoardUnit = lazy(() => import("../modules/crm/crmUnitDashboard/components"))
@@ -2735,6 +2737,45 @@ class Routes extends Component {
             pageName='dashboard_bill'
             layout={Layout}
             component={BillDashBoard}
+          />
+                    <PrivateRoute
+            isLoading={false}
+            key='dashboard-inventory'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/dashboard-inventory',
+                name: 'dashboard_inventory',
+                icon: 'fa fa-dashboard'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/dashboard-inventory'
+            path='/dashboard-inventory'
+            pageName='dashboard_inventory'
+            layout={Layout}
+            component={InventoryDashBoard}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key='inventory-forecast'
+            arrPage={[
+              { link: '/', name: 'inventory_forecast', icon: 'fa fa-home' },
+              {
+                link: '/inventory_forecast',
+                name: 'inventory_forecast',
+                icon: 'fa fa-dashboard'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/inventory-forecast'
+            path='/inventory-forecast'
+            pageName='inventory_forecast'
+            layout={Layout}
+            component={InventoryForecastTable}
           />
 
           <PrivateRoute

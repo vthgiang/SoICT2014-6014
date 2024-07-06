@@ -1378,6 +1378,18 @@ const LINKS = [
   },
 
   {
+    url: "/inventory-forecast",
+    description: "Dự báo tồn kho",
+    category: LINK_CATEGORY.REPORT.name,
+    roles: [
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/inventory-forecast"),
+  },
+
+  {
     url: "/dashboard-inventory",
     description: "Bảng tin quản lý hàng tồn",
     category: LINK_CATEGORY.WAREHOUSE.name,

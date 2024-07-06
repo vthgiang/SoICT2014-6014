@@ -1221,6 +1221,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/inventory-forecast',
+        apis: ['@all'],
+    },
+    {
         url: '/dashboard-bill',
         apis: ['@all'],
     },
