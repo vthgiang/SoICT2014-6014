@@ -3,7 +3,8 @@ const {
     InventoryForecast
 } = require(`../../../../models`);
 
-const { connect } = require("../../../../helpers/dbHelper");
+const { connect
+} = require(`../../../../helpers/dbHelper`);
 
 
 exports.saveForecasts = async (forecasts, portal) => {
@@ -34,6 +35,7 @@ exports.getAllForecasts = async (query, portal) => {
                     select: "code name"
                 }
             ]);
+        console.log(allForecasts)    
         return { allForecasts };
     } else {
         let allForecasts = await InventoryForecast(dbConnection).paginate(option, {
@@ -44,6 +46,7 @@ exports.getAllForecasts = async (query, portal) => {
                 select: "code name"
             }]
         });
+        console.log(allForecasts)    
         return { allForecasts };
     }
 };

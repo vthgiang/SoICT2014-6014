@@ -5,7 +5,7 @@ const Log = require(`../../../../logs`);
 exports.createForecast = async (req, res) => {
     try {
         // Gọi đến server Python để dự báo
-        const pythonResponse = await axios.post(`${process.env.PYTHON_URL_SERVER}/api/dxclan/forecast/orders`, req.body);
+        const pythonResponse = await axios.post('http://localhost:8080/api/dxclan/forecast/inventory', req.body);
 
         // Kiểm tra phản hồi từ server Python
         if (pythonResponse.data.success) {
@@ -35,27 +35,6 @@ exports.createForecast = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ["create_forecast_failed"],
-            content: error.message
-        });
-    }
-};
-
-exports.getAllForecasts = async (req, res) => {
-    try {
-        let allForecasts = await forecastService.getAllForecasts(req.query, req.portal);
-        console.log("hello")
-        res.status(200).json({
-            success: true,
-            messages: ["get_all_forecasts_successfully"],
-            content: allForecasts.allForecasts
-        });
-    } catch (error) {
-        await Log.error(req.user.email, "GET_ALL_FORECASTS", req.portal);
-        console.error('Error in getting all forecasts:', error);
-
-        res.status(400).json({
-            success: false,
-            messages: ["get_all_forecasts_failed"],
             content: error.message
         });
     }
