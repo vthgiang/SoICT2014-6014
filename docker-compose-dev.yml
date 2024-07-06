@@ -40,7 +40,7 @@ services:
     volumes:
       - ./server:/app
       - ./server/node_modules:/app/node_modules
-    command: sh -c "cd /app && npm install -f && npm start"
+    command: sh -c "cd /app && npm install -f && npm run dev"
     networks:
       - vnist-network
   rabbitmq:

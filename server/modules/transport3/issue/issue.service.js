@@ -41,5 +41,7 @@ exports.getMyIssues = async (portal, user) => {
     .populate('schedule')
     .populate('order')
     .populate('receiver_solve');
-  return issues.filter(issue => issue.schedule.employee.some(employee => employee._id.toString() === myEmployee._id.toString()));
+
+  console.log(issues);
+  return issues.filter(issue => issue.schedule.employees.some(employee => employee._id.toString() === myEmployee._id.toString()));
 }

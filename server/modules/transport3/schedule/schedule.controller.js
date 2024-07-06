@@ -10,10 +10,10 @@ exports.getAllSchedule = async (req, res) => {
       messages: ['Lấy thông tin lịch trình thành công']
     });
   } catch (error) {
-    Log.error(`Error while fetching schedules ${error}`);
+    Log.error(`Error while fetching all schedules ${error}`);
     res.status(400).json({
       messages: [
-        'Lấy thông tin lịch trình thất bại'
+        'Lấy thông tin lịch trình thất bại' + error
       ]
     });
   }
@@ -28,10 +28,10 @@ exports.getScheduleById = async (req, res) => {
       messages: ['Lấy thông tin lịch trình thành công']
     });
   } catch (error) {
-    Log.error(`Error while fetching schedules ${error}`);
+    Log.error(`Error while fetching schedule ${error}`);
     res.status(400).json({
       messages: [
-        'Lấy thông tin lịch trình thất bại'
+        'Lấy thông tin lịch trình thất bại' + error
       ]
     });
   }
@@ -108,10 +108,10 @@ exports.getMySchedule = async (req, res) => {
         messages: ['Lấy thông tin lịch trình thành công']
         });
     } catch (error) {
-        Log.error(`Error while fetching schedules ${error}`);
+        Log.error(`Error while fetching my schedules ${error}`);
         res.status(400).json({
         messages: [
-            'Lấy thông tin lịch trình thất bại'
+            'Lấy thông tin lịch trình thất bại' + error
         ]
         });
     }
