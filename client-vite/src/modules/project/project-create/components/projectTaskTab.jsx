@@ -633,8 +633,6 @@ const ProjectTasksTab = (props) => {
       setProjectTasks([...taskData])
     }
   }
-
-  console.log("listcapacities: ", listCapacityOptions)
   
   return (
     <React.Fragment>
