@@ -97,6 +97,7 @@ export default {
     },
     menu: {
       home: 'Trang chủ',
+      overview_dashboard: 'Thống kê',
       /** Quản lý rủi ro */
       bayesian_network_config: 'Cấu hình mạng rủi ro',
       risk_response_plan: 'Quản lý biện pháp ứng phó rủi ro',
@@ -107,7 +108,7 @@ export default {
       task_pert: 'Phân tích xác suất thành công',
       task_pert_dash: 'Phân tích quy trình',
       system_administration: 'Quản trị hệ thống',
-      forecast_model_management: 'Quản lý mô hình dự báo',
+      forecast_model_management: 'Quản lý tham số mô hình',
       OTD_forecast_model_management: 'Quản lý mô hình dự báo khả năng giao hàng đúng hạn',
       manage_configuration: 'Cấu hình hệ thống',
       manage_system: 'Sao lưu phục hồi',
@@ -222,6 +223,7 @@ export default {
       inventory_management: 'Quản lý lô hàng',
       storage_management: 'Quản lý thông tin lưu trữ',
       route_picking_management: 'Quản lý tuyến đường lấy hàng',
+      inventory_forecast: 'Dự báo tồn kho',
 
       manage_kpi_unit: 'KPI đơn vị',
       manage_kpi_personal: 'KPI cá nhân',
@@ -333,7 +335,7 @@ export default {
       marketing_campaign: 'Quản lý chiến dịch tiếp thị',
       marketing_campaign_detail: 'Chi tiết chiến dịch tiếp thị',
       marketing_channels_select: 'Chọn kênh chiến dịch tiếp thị',
-      marketing_dashboard: 'Thống kê hiệu quả tiếp thị',
+     
       marketing_forecast: 'Dự báo hiệu quả tiếp thị',
 
       // Quản lý kế hoạch sản xuất

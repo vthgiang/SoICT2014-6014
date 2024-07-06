@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Terms = require('../helpers/config');
 const linksPermission = require('../middleware/servicesPermission').links;
-const categoryChild = require('./CategoryChild.json');
-const listProducts = require('./ListProduct.json');
 const saleOrders = require('./SaleOrders.json');
 const listCustomer = require('./Customer.json');
 const listTransport3Orders = require('./transport3orders.json');
@@ -5219,40 +5217,34 @@ const initSampleCompanyDB = async () => {
     },
   ]);
 
-  console.log('Khởi tạo dữ liệu danh mục hàng hóa cha');
-  var listCategoryChild = await Category(vnistDB).insertMany([
-    {
-      name: 'Dạng bột',
-      code: 'CTP001',
-      parent: listCategory[0]._id,
-      description: 'Thuốc dạng bột',
-    },
-    {
-      name: 'Dạng viên',
-      code: 'CTP002',
-      parent: listCategory[0]._id,
-      description: 'Thuốc dạng viên',
-    },
-    {
-      name: 'Dạng nước',
-      code: 'CTP003',
-      parent: listCategory[0]._id,
-      description: 'Thuốc dạng nước',
-    },
-    {
-      name: 'Dạng cốm',
-      code: 'CTP004',
-      parent: listCategory[0]._id,
-      description: 'Thuốc dạng cốm',
-    },
-  ]);
-  var listCategoryChild1 = categoryChild.map((subCat) => {
-    return {
-      ...subCat,
-      parent: listCategory[0]._id, // Gán _id của danh mục cha đầu tiên cho tất cả danh mục con, bạn có thể thay đổi điều này nếu muốn phân biệt
-    };
-  });
-  await Category(vnistDB).insertMany(listCategoryChild1);
+  // console.log('Khởi tạo dữ liệu danh mục hàng hóa cha');
+  // var listCategoryChild = await Category(vnistDB).insertMany([
+  //   {
+  //     name: 'Dạng bột',
+  //     code: 'CTP001',
+  //     parent: listCategory[0]._id,
+  //     description: 'Thuốc dạng bột',
+  //   },
+  //   {
+  //     name: 'Dạng viên',
+  //     code: 'CTP002',
+  //     parent: listCategory[0]._id,
+  //     description: 'Thuốc dạng viên',
+  //   },
+  //   {
+  //     name: 'Dạng nước',
+  //     code: 'CTP003',
+  //     parent: listCategory[0]._id,
+  //     description: 'Thuốc dạng nước',
+  //   },
+  //   {
+  //     name: 'Dạng cốm',
+  //     code: 'CTP004',
+  //     parent: listCategory[0]._id,
+  //     description: 'Thuốc dạng cốm',
+  //   },
+  // ]);
+  
 
   /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
@@ -5441,48 +5433,7 @@ const initSampleCompanyDB = async () => {
     },
   ]);
 
-  console.log('Khởi tạo dữ liệu hàng hóa');
-  let newProducts = [];
-
-  listProducts.forEach((product) => {
-    let newProduct = {
-      company: vnist._id,
-      name: product.name,
-      code: product.code,
-      type: 'product',
-      baseUnit: 'Chiếc',
-      unit: [],
-      sourceType: '1',
-      quantity: 20,
-      description: product.description,
-      materials: [
-        {
-          good: listGood[4]._id,
-          quantity: 5,
-        },
-      ],
-      numberExpirationDate: 800,
-      manufacturingMills: [
-        {
-          manufacturingMill: manufacturingMills[12]._id,
-          productivity: 100,
-          personNumber: 3,
-        },
-      ],
-      pricePerBaseUnit: product.pricePerBaseUnit,
-      salesPriceVariance: 9000,
-    };
-
-    let category = listCategoryChild1.find((category) => category.code === product.categories_id);
-    if (category) {
-      newProduct.category = category._id;
-    }
-
-    newProducts.push(newProduct);
-  });
-  await Good(vnistDB).insertMany(newProducts);
-  const list_goods = await Good(vnistDB).insertMany(newProducts);
-  console.log('Khởi tạo xong danh sách hàng hóa');
+  
   const list_goods_in_stock = await Good(vnistDB).find({});
 
   /*---------------------------------------------------------------------------------------------
@@ -5801,7 +5752,7 @@ const initSampleCompanyDB = async () => {
         //     }
         // ],
         Array.from({ length: 300 }, (_, index) => ({
-          good: list_goods[index]._id,
+          good: list_goods_in_stock[index]._id,
           contained: 500,
           capacity: 1000,
         })),

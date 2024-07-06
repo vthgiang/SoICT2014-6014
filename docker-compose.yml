@@ -14,7 +14,7 @@ services:
     networks:
       - vnist-network
   client:
-#    container_name: client
+    # container_name: client-service
     image: node:16-alpine
     ports:
       - "9000:3000"
@@ -27,7 +27,7 @@ services:
     networks:
       - vnist-network
   server:
-#    container_name: server
+    # container_name: server-service
     image: node:16-alpine
     ports:
       - "8000:8000"

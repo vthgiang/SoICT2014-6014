@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import SalesForecastTable  from './sales-forecast/salesForecastTable'
-
+import MarketingForecastComponent from '../../marketing/marketing-forecast/components/marketingForecast'
 function Forecast(props) {
   const [state, setState] = useState({
     type: 1
@@ -29,19 +29,14 @@ function Forecast(props) {
             {'Dự báo chiến dịch tiếp thị'}
           </a>
         </li>
-        <li>
-          <a href='#customer-forecast' data-toggle='tab' onClick={() => handleChangeType(3)}>
-            {'Tỉ lệ phản hồi khách hàng'}
-          </a>
-        </li>
+        
         
       </ul>
       {/* Phiếu thu */}
       {type === 1 && <SalesForecastTable /> }
 
-      {/* Phiếu chi */}
-      {type === 2 }
-      {type===3 }
+    
+      {type===2 && <MarketingForecastComponent />}
  
     </div>
   )

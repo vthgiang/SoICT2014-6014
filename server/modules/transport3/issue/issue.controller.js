@@ -34,7 +34,26 @@ exports.createIssue = async (req, res) => {
     await Log.error(req.user.email, 'CREATE_ISSUE', req.portal);
     res.status(400).json({
       status: 400,
-      messages: ['Tạo vấn đề thất bại'],
+      messages: ['Tạo vấn đề thất bại' + error],
+    });
+  }
+}
+
+// van de cua toi
+exports.getMyIssues = async (req, res) => {
+  try {
+    const issues = await IssueService.getMyIssues(req.portal, req.user);
+    await Log.info(req.user.email, 'GET_MY_ISSUES', req.portal);
+    res.status(200).json({
+      status: 200,
+      messages: ['Lấy danh sách vấn đề của tôi thành công'],
+      data: issues
+    });
+  } catch (error) {
+    await Log.error(req.user.email, 'GET_MY_ISSUES', req.portal);
+    res.status(400).json({
+      status: 400,
+      messages: ['Lấy danh sách vấn đề của tôi thất bại' + error],
     });
   }
 }

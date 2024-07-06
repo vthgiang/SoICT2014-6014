@@ -17,7 +17,28 @@ function MarketingCampaign(props) {
 
   const { type } = state
   return (
-   <MarketingCampaignComponent /> 
+    <div className='nav-tabs-custom'>
+      <ul className='nav nav-tabs'>
+        <li className='active'>
+          <a href='#marketing' data-toggle='tab' onClick={() => handleChangeType(1)}>
+            {'Quản lý chiến dịch tiếp thị'}
+          </a>
+        </li>
+        <li>
+          <a href='#discount' data-toggle='tab' onClick={() => handleChangeType(2)}>
+            {'Giảm giá'}
+          </a>
+        </li>
+        
+        
+      </ul>
+      {/* Phiếu thu */}
+      {type === 1 && <MarketingCampaignComponent /> }
+
+    
+      {type===2 && <DiscountManagementTable />}
+ 
+    </div>
   )
 }
 
