@@ -27,6 +27,7 @@
     "init-layout-warehouse-data": "node seed/initLayoutWarehouseData.js",
     "init-inventory-warehouse-data": "node seed/initInventoryWarehouseData.js",
     "init-total-order": "node seed/initTotalOrder.js",
+    "init-transport3": "node seed/initTransport3Data.js",
     "init-inventory": "node seed/initInventory.js",
     "init-sales-order": "node seed/initSalesOrder.js",
     "init-product": "node seed/initProduct.js",
