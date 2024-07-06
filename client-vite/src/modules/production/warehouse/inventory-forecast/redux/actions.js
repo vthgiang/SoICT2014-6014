@@ -1,11 +1,6 @@
 import { forecastConstants } from './constants';
 import { forecastServices } from './services';
 
-export const forecastActions = {
-    createForecast,
-    getAllForecasts
-};
-
 function createForecast() {
     return (dispatch) => {
         dispatch({
@@ -47,3 +42,8 @@ function getAllForecasts() {
             });
     }
 }
+
+export const forecastActions = {
+    createForecast,
+    getAllForecasts
+};

@@ -1,10 +1,5 @@
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
-export const forecastServices = {
-    createForecast,
-    getAllForecasts
-};
-
 function createForecast() {
     return sendRequest(
         {
@@ -27,3 +22,8 @@ function getAllForecasts() {
         "manage_forecast.get_forecast"
     );
 }
+
+export const forecastServices = {
+    createForecast,
+    getAllForecasts
+};
