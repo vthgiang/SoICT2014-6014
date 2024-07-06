@@ -18,11 +18,14 @@ const AssetStatusQuantityStatistic = (props) => {
     categories = ['Rảnh rỗi', 'Đang được sử dụng', 'Hỏng hóc', 'Mất', 'Thanh lý']
     assetColoumns = []
 
-    const numberOfReadyToUse = 4
-    const numberOfLost = 1
-    const numberOfInUse = 5
-    const numberOfBroken = 2
-    const numberOfDisposed = 0
+    const { assetQuantityStatistic } = props
+    const {
+      numberOfReadyToUse,
+      numberOfLost,
+      numberOfInUse,
+      numberOfBroken,
+      numberOfDisposed
+    } = assetQuantityStatistic
 
     assetColoumns = [
       ['Rảnh rỗi', numberOfReadyToUse],

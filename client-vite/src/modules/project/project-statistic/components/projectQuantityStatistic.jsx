@@ -5,12 +5,7 @@ import c3 from 'c3'
 import 'c3/c3.css'
 
 const ProjectStatusQuantityStatistic = (props) => {
-  const { biddingPackagesManager, biddingContract, project } = props
   const refProjectStatusQuantity = React.createRef()
-
-  const numofBP = biddingPackagesManager.totalList
-  const numOfContract = biddingContract.totalList
-  const numOfPrj = biddingContract.listBiddingContractStatistic.filter((x) => x.project !== null)?.length ?? project.data.totalDocs
 
   const setDataChart = () => {
     let projectColumns, categories
@@ -24,11 +19,14 @@ const ProjectStatusQuantityStatistic = (props) => {
     // const numberOfInProcess = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 3)?.length
     // const numberOfCanceled = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 4)?.length
 
-    const numberOfInProcess = 3
-    const numberOfDelayed = 0
-    const numberOfWaitForApproval = 2
-    const numberOfFinished = 3
-    const numberOfCanceled = 0
+    const { projectStatisticQuantity } = props
+    const {
+      numberOfInProcess,
+      numberOfDelayed,
+      numberOfWaitForApproval,
+      numberOfFinished,
+      numberOfCanceled
+    } = projectStatisticQuantity
 
     // projectColumns = ["Số lượng gói thầu theo trạng thái", numberOfInProcess, numberOfDelayed, numberOfWaitForApproval, numberOfInProcess, numberOfCanceled];
 
@@ -59,12 +57,11 @@ const ProjectStatusQuantityStatistic = (props) => {
 
   const renderChart = () => {
     removePreviousChart()
-    const { translate } = props
 
-    let { dataChart, categories } = setDataChart()
+    let { dataChart } = setDataChart()
     // let catColor = ['#2ca02c', '#d62728', '#f57b0f', '#bab104', '#1f77b4']
 
-    let chart = c3.generate({
+    c3.generate({
       bindto: refProjectStatusQuantity.current,
       data: {
         // Dữ liệu biểu đồ
@@ -86,45 +83,11 @@ const ProjectStatusQuantityStatistic = (props) => {
       tooltip: {
         format: {
           value: function (value, ratio, id, index) {
-            return value
+            const percentage = (ratio * 100).toFixed(2) + '%';
+            return value + ' (' + percentage + ')';
           }
         }
       }
-
-      // padding: {
-      //     top: 20,
-      //     bottom: 20,
-      //     right: 20
-      // },
-
-      // data: {
-      //     columns: dataChart,
-      //     type: "bar",
-      //     labels: true,
-      //     color: function (color, d) {
-      //         return catColor[d.x];
-      //     }
-      // },
-      // bar: {
-      //     width: {
-      //         ratio: 0.2
-      //     }
-      // },
-
-      // axis: {
-      //     x: {
-      //         type: 'categories',
-      //         categories: categories,
-      //         label: "Trạng thái"
-      //     },
-      //     y: {
-      //         label: "Số lượng gói thầu",
-      //     },
-      // },
-
-      // zoom: {
-      //     enabled: false
-      // }
     })
   }
 

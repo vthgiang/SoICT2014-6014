@@ -17,18 +17,16 @@ const BiddingPackageStatusQuantityStatistic = (props) => {
 
     categories = ['Hoạt động', 'Ngưng hoạt động', 'Đang chờ kết quả dự thầu', 'Đang thực hiện', 'Hoàn thành']
     bidColumns = []
-    // 1: hoạt động, 0: ngưng hoạt động, 2: đang chờ kết quả dự thầu, 3: Đang thực hiện gói thầu, 4:hoàn thành
-    // const numberOfActive = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 1)?.length
-    // const numberOfInactive = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 0)?.length
-    // const numberOfWaitForBidding = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 2)?.length
-    // const numberOfInProcess = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 3)?.length
-    // const numberOfComplete = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 4)?.length
-
-    const numberOfActive = 3
-    const numberOfInactive = 3
-    const numberOfWaitForBidding = 2
-    const numberOfInProcess = 1
-    const numberOfComplete = 4
+   
+    const { biddingPackageQuantityStatistic } = props
+    // console.log("total: ", biddingPackageQuantityStatistic)
+    const {
+      numberOfActive,
+      numberOfInactive,
+      numberOfWaitForBidding,
+      numberOfInProcess,
+      numberOfComplete
+    } = biddingPackageQuantityStatistic
 
     // bidColumns = ["Số lượng gói thầu theo trạng thái", numberOfActive, numberOfInactive, numberOfWaitForBidding, numberOfInProcess, numberOfComplete];
 
@@ -85,45 +83,11 @@ const BiddingPackageStatusQuantityStatistic = (props) => {
       tooltip: {
         format: {
           value: function (value, ratio, id, index) {
-            return value
+            const percentage = (ratio * 100).toFixed(2) + '%';
+            return value + ' (' + percentage + ')';
           }
         }
       }
-
-      // padding: {
-      //     top: 20,
-      //     bottom: 20,
-      //     right: 20
-      // },
-
-      // data: {
-      //     columns: dataChart,
-      //     type: "bar",
-      //     labels: true,
-      //     color: function (color, d) {
-      //         return catColor[d.x];
-      //     }
-      // },
-      // bar: {
-      //     width: {
-      //         ratio: 0.2
-      //     }
-      // },
-
-      // axis: {
-      //     x: {
-      //         type: 'categories',
-      //         categories: categories,
-      //         label: "Trạng thái"
-      //     },
-      //     y: {
-      //         label: "Số lượng gói thầu",
-      //     },
-      // },
-
-      // zoom: {
-      //     enabled: false
-      // }
     })
   }
 
@@ -147,5 +111,5 @@ const mapStateToProps = (state) => state
 
 const mapDispatchToProps = {}
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(withTranslate(BiddingPackageStatusQuantityStatistic))
+const   connectedComponent = connect(mapStateToProps, mapDispatchToProps)(withTranslate(BiddingPackageStatusQuantityStatistic))
 export { connectedComponent as BiddingPackageStatusQuantityStatistic }
