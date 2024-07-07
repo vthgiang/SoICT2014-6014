@@ -680,12 +680,12 @@ function ProjectProposalPage(props) {
                         data-toggle='dropdown'
                         aria-expanded='true'
                         title={"Tạo lập công việc và phân công"}
-                        disabled={isLoading || !proposals || !proposals?.assignment || !proposals?.assignment?.length || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval')}
+                        disabled={isSuccessAssign || isLoading || !proposals || !proposals?.assignment || !proposals?.assignment?.length || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval')}
                       >
                         {"Tạo lập công việc và phân công"}
                       </button>
                       
-                      {isSuccessAssign || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval') &&
+                      {(isSuccessAssign || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval')) &&
                         <div class="italic p-2">
                           Đã thực hiện phân công 
                           <span class="text-green-500">✔</span>
