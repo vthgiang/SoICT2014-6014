@@ -36,9 +36,9 @@ exports.proposalForProject = async (req, res) => {
 exports.assignForProjectFromProposal = async (req, res) => {
   try {
     const projectId = req.params.id
-    let tp = await ProjectProposalService.assignForProjectFromProposal(req.portal || 'vnist', projectId)
-    // await Logger.info(req.user.email, 'proposal_assign_success', req.portal)
-    await Logger.info('proposal_assign_success', req.portal)
+    let tp = await ProjectProposalService.assignForProjectFromProposal(req.portal, projectId)
+    await Logger.info(req.user.email, 'proposal_assign_success', req.portal)
+    // await Logger.info('proposal_assign_success', req.portal)
     
     res.status(200).json({
       success: true,
@@ -47,8 +47,8 @@ exports.assignForProjectFromProposal = async (req, res) => {
     });
 
   } catch (error) {
-    // await Logger.error(req.user.email, error[0], req.portal)
-    await Logger.error(error[0], req.portal)
+    await Logger.error(req.user.email, error[0], req.portal)
+    // await Logger.error(error[0], req.portal)
     res.status(400).json({
       success: false,
       messages: error ? error : ['proposal_assign_fail'],
