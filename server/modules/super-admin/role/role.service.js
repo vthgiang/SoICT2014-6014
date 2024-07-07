@@ -127,7 +127,7 @@ exports.createRole = async (portal, data) => {
         }
     }
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
@@ -175,7 +175,7 @@ exports.createRoleAttribute = async (portal, data) => {
         }
     }
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
@@ -256,7 +256,7 @@ exports.editRoleAttribute = async (portal, id, data) => {
         }
     }
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
@@ -431,7 +431,7 @@ exports.editRole = async (portal, id, data = {}) => {
     }
 
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,

@@ -414,6 +414,13 @@ const LINKS = [
       components: getComponentsInLink('/authorization-policies-management'),
   },
   {
+    url: '/delegation-policies-management',
+    description: 'Quản lý chính sách ủy quyền',
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink('/delegation-policies-management')
+  },
+  {
       url: "/authorization-logging",
       description: "Quản lý log truy cập phân quyền",
       category: LINK_CATEGORY.RBAC.name,
@@ -436,6 +443,19 @@ const LINKS = [
         ROOT_ROLES.ADMIN.name
     ],
     components: getComponentsInLink("/policies-management")
+  },
+  {
+    url: "/delegation-list",
+    description: "Danh sách ủy quyền",
+    category: LINK_CATEGORY.DELEGATION.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER,
+        ROOT_ROLES.DEPUTY_MANAGER,
+        ROOT_ROLES.EMPLOYEE,
+    ],
+    components: getComponentsInLink('/delegation-list')
   },
   {
     url: "/delegation-receive",

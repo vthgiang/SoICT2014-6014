@@ -118,7 +118,7 @@ exports.updateAttributes = async (portal, id, data) => {
     }
   };
 
-  const attrArray = await filterValidAttributeArray(data.attributes);
+  const attrArray = await filterValidAttributeArray(data.attributes ?? []);
   const dataAttr = attrArray.map((attr) => {
       return {
           attributeId: attr.attributeId,

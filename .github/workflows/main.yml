@@ -10,7 +10,6 @@ on:
 
 jobs:
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,6 +18,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
+          port: 2221
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
@@ -30,4 +30,4 @@ jobs:
             git pull
             cp server/.env.example server/.env
             cp client-vite/.env.example client-vite/.env
-            docker-compose up -d --build
+            docker-compose -f docker-compose.yml up -d --build

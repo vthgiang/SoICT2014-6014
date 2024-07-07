@@ -186,7 +186,6 @@ function ProjectStatisticPage(props) {
           })
         }
       }
-      
     }
 
     const totalEmp = employeesData?.length

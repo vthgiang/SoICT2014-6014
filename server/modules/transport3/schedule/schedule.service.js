@@ -1,11 +1,12 @@
 const {
   Transport3Schedule,
-  Stock, Role, Employee
+  Stock, Role, Employee, Transport3Order, Transport3DraftSchedule
 } = require('../../../models');
 
 const {
   connect
 } = require(`../../../helpers/dbHelper`);
+const axios = require('axios');
 
 // Lấy tất cả lịch trình
 exports.getAllSchedule = async (portal, query, currentRole) => {
@@ -26,12 +27,13 @@ exports.getAllSchedule = async (portal, query, currentRole) => {
       }
     })
     .populate({
-      path: 'vehicles',
+      path: 'vehicle',
       populate: {
         path: 'asset'
       }
     })
-    .populate('employee');
+    .populate('draftSchedule')
+    .populate('employees');
 }
 
 exports.getScheduleById = async (portal, scheduleId) => {
@@ -41,30 +43,48 @@ exports.getScheduleById = async (portal, scheduleId) => {
 // Tạo mới 1 lịch trình
 exports.createSchedule = async (portal, data) => {
   // Tạo lịch trình cho từng vehicle
-  let i = 1;
-  for (let vehicle of data.vehicles) {
-    let schedule = data.schedules[vehicle];
-    let query = {
-      code: data.code + '_' + i++,
-      orders: [
-        ...schedule.orders.map(order => ({
-          order: order,
-          status: 1,
-          estimateTimeArrive: null,
-          timeArrive: null,
-          estimateTimeService: null,
-          timeService: null,
-          beginTime: null,
-          dynamicEstimatedTime: null,
-          distance: null
-        }))
-      ],
-      status: 1,
-      vehicles: vehicle,
-      depot: data.depot.find(depot => depot.vehicle === vehicle)?.stock?._id,
-      employee: null,
+  if (data.isAutoSchedule !== true) {
+    let i = 1;
+    for (let vehicle of data.vehicles) {
+      let schedule = data.schedules[vehicle];
+      let query = {
+        code: data.code + '_' + i++,
+        orders: [
+          ...schedule.orders.map(order => ({
+            order: order,
+            status: 1,
+            estimateTimeArrive: null,
+            timeArrive: null,
+            estimateTimeService: null,
+            timeService: null,
+            beginTime: null,
+            dynamicEstimatedTime: null,
+            distance: null
+          }))
+        ],
+        status: 1,
+        vehicle: vehicle,
+        depot: data.depot.find(depot => depot.vehicle === vehicle)?.stock?._id,
+        employees: null,
+      }
+      await Transport3Schedule(connect(DB_CONNECTION, portal)).create(query)
     }
-    await Transport3Schedule(connect(DB_CONNECTION, portal)).create(query)
+  } else {
+    let i = 1;
+    for (let vehicle of data.vehicles) {
+      let query = {
+        code: data.code + '_' + i++,
+        orders: [],
+        status: 1,
+        vehicle: vehicle,
+        depot: null,
+        employees: null,
+        isAutoSchedule: true
+      }
+      await Transport3Schedule(connect(DB_CONNECTION, portal)).create(query)
+    }
+    data.orders = await Transport3Order(connect(DB_CONNECTION, portal)).find({_id: {$in: data.orders}});
+    const res_py = await axios.post(`${process.env.PYTHON_TRANSPORT3_URL}/upload-data`, data);
   }
   return [];
 }
@@ -100,12 +120,47 @@ exports.getMySchedule = async (portal, user) => {
       }
     })
     .populate({
-      path: 'vehicles',
+      path: 'vehicle',
       populate: {
         path: 'asset'
       }
     })
     .populate('depot');
-  allSchedule = allSchedule.filter(schedule => schedule.employee);
-  return allSchedule.filter(schedule => schedule.employee.includes(employee._id));
+  allSchedule = allSchedule.filter(schedule => schedule.employees);
+  return allSchedule.filter(schedule => schedule.employees.includes(employee._id));
+}
+
+exports.getDraftSchedule = async (portal) => {
+  return Transport3DraftSchedule(connect(DB_CONNECTION, portal)).find({});
+}
+
+exports.setScheduleFromDraft = async (portal, data) => {
+  let drafts = await Transport3DraftSchedule(connect(DB_CONNECTION, portal)).find({});
+  // all draft include code
+  drafts = drafts.filter(draft => draft.code.includes(data.code));
+  let note = drafts.filter(draft => draft._id == data._id)[0].note;
+  drafts = drafts.filter(draft => draft.note === note);
+  for (let draft of drafts) {
+    let code = draft.code;
+    let orders = draft.orders;
+    let depot = draft.depot;
+    let schedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).findOne({code: code});
+    let orders_tmp = schedule.orders.map(order => {
+      let order_tmp = orders.filter(order => order._id === order._id);
+      if (order_tmp.length === 0) {
+        return order;
+      } else {
+        return {
+          order,
+          ...order_tmp[0]
+        }
+      }
+    });
+    console.log(orders_tmp);
+    await Transport3Schedule(connect(DB_CONNECTION, portal)).updateMany({code: code}, {
+      orders: orders_tmp,
+      depot: depot
+    });
+  }
+  return [];
 }

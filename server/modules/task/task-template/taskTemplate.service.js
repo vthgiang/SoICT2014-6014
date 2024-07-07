@@ -186,6 +186,7 @@ exports.createTaskTemplate = async (portal, body, userId) => {
         organizationalUnitKpi: item.goalCompanyId.map((goal_id) => {
           return new ObjectId(goal_id);
         }),
+        factor: {...item.factor}
       };
     }),
   });

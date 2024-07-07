@@ -35,10 +35,28 @@ function ScheduleCreateForm(props) {
       vehicles,
       note,
       schedules: schedule,
-      depot: nearestDepot
+      depot: nearestDepot,
+      isAutoSchedule: false
     }
     await dispatch(ScheduleActions.createSchedule(data))
   }
+
+  let listStocsWithLatLng = useSelector(state => state.T3schedule.listStocsWithLatLng);
+
+  const customSave = async () => {
+    let {code, orders, vehicles, note, schedule, nearestDepot} = state
+    let data = {
+      code,
+      orders,
+      vehicles,
+      note,
+      schedules: schedule,
+      depots: listStocsWithLatLng,
+      isAutoSchedule: true
+    }
+    await dispatch(ScheduleActions.createSchedule(data))
+  }
+
   let {
     code, step, orders, vehicles
   } = state
@@ -86,12 +104,12 @@ function ScheduleCreateForm(props) {
     })
   }
 
-  const handleAuToSchedule = () => {
-    dispatch(ScheduleActions.autoSchedule())
-  }
-
-  let isAutoScheduling = useSelector(state => state.T3schedule.isAutoScheduling);
-  let listAutoSchedule = useSelector(state => state.T3schedule.listAutoSchedules);
+  // const handleAuToSchedule = () => {
+  //   dispatch(ScheduleActions.autoSchedule())
+  // }
+  //
+  // let isAutoScheduling = useSelector(state => state.T3schedule.isAutoScheduling);
+  // let listAutoSchedule = useSelector(state => state.T3schedule.listAutoSchedules);
 
   return (
     <>
@@ -106,6 +124,8 @@ function ScheduleCreateForm(props) {
         style={{backgroundColor: 'green'}}
         hasSaveButton={true}
         func={save}
+        customButton={'Lưu và tự động lập lịch'}
+        customFunc={customSave}
       >
         <div className="nav-tabs-custom">
           <ul className="breadcrumbs">
@@ -127,19 +147,18 @@ function ScheduleCreateForm(props) {
                 <span>Lập lịch vận chuyển</span>
               </a>
             </li>
-            {step === 1 && state.orders.length > 0 && state.vehicles.length > 0 && (
-              <>
-                <li style={{marginLeft: '50%'}}>
-                  <div className={'d-flex items-center justify-center'} style={{height: '100%'}}>
-                    Tự động sắp xếp lịch trình tối ưu?
-                    <a id={'autoBtn'} className={'btn btn-primary'} style={{marginLeft: 10}}
-                       onClick={handleAuToSchedule}
-                    >{isAutoScheduling ? 'Đang xử lý...' : listAutoSchedule ? 'Sắp xếp lại' : 'Sắp xếp'}</a>
-                  </div>
-                </li>
-              </>
-            )
-            }
+            {/*{step === 1 && state.orders.length > 0 && state.vehicles.length > 0 && (*/}
+            {/*  <>*/}
+            {/*    <li style={{marginLeft: '50%'}}>*/}
+            {/*      <div className={'d-flex items-center justify-center'} style={{height: '100%'}}>*/}
+            {/*        Tự động sắp xếp lịch trình tối ưu?*/}
+            {/*        <a id={'autoBtn'} className={'btn btn-primary'} style={{marginLeft: 10}}*/}
+            {/*           onClick={handleAuToSchedule}*/}
+            {/*        >{isAutoScheduling ? 'Đang xử lý...' : listAutoSchedule ? 'Sắp xếp lại' : 'Sắp xếp'}</a>*/}
+            {/*      </div>*/}
+            {/*    </li>*/}
+            {/*  </>*/}
+            {/*)}*/}
           </ul>
         </div>
         <form id={`form-add-schedule`}>
