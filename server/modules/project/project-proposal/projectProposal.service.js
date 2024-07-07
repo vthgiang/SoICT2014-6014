@@ -496,7 +496,6 @@ exports.assignForProjectFromProposal = async (portal, id) => {
     }
 
     // Update project status
-    project.status = 'inprocess';
     await Project(connect(DB_CONNECTION, portal)).updateOne({ _id: id }, { status: 'inprocess' });
 
     const { assignment } = project?.proposals;
@@ -550,16 +549,26 @@ exports.assignForProjectFromProposal = async (portal, id) => {
 
       } else {
         // console.log("Task not found in DB, consider creating a new task.");
-        throw ['not_founr_task_in_project']
+        throw ['not_found_task_in_project']
       }
     });
 
     await Promise.all(updateTasksPromises);
 
-    return project;
+    // Find and return the updated project
+    const updatedProject = await Project(connect(DB_CONNECTION, portal)).findOne({
+      _id: id
+    }).populate({ path: 'kpiTarget.type' }).lean().exec();
+
+    return {
+      projectId: id,
+      proposalData: updatedProject?.proposals
+    }
+    
 
   } catch (error) {
     throw error;
   }
 }
+
 

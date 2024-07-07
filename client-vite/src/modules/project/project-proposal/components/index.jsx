@@ -57,6 +57,7 @@ function ProjectProposalPage(props) {
   const [isShowPreviewProject, setIsShowPreviewProject] = useState(false)
   const [scheduleType, setScheduleType] = useState(scheduleOptions[0]?.value)
   const [isShowShedule, setIsShowSchedule] = useState(false)
+  const [isSuccessAssign, setIsSuccessAssign] = useState(false)
 
   const {
     page, 
@@ -66,6 +67,7 @@ function ProjectProposalPage(props) {
 
   const {
     isLoading, 
+    isAssignProposalLoading,
     projectProposalData
   } = projectProposal
 
@@ -100,11 +102,7 @@ function ProjectProposalPage(props) {
     { name: 'Tài sản', key: 'assets' },
   ]
 
-  const location = useLocation()
-
-
-  console.log("algorithmParams: ", algorithmParams)
-  
+  const location = useLocation()  
 
   const handleChangeCurrentProject = (e) => {
     setState(prevState => ({
@@ -366,7 +364,8 @@ function ProjectProposalPage(props) {
       confirmButtonText: props.translate('general.yes')
     }).then((result) => {
       if (result.value) {
-        console.log("API phân công dự án: ", currentProject?._id)
+        props.assignForProjectFromProposal(currentProject?._id)
+        setIsSuccessAssign(true)
       }
     })
   }
@@ -444,8 +443,8 @@ function ProjectProposalPage(props) {
                       onClick={handleProposalForProject}
                       data-toggle='dropdown'
                       aria-expanded='true'
-                      title={"Phân bổ"}
-                      disabled={!isValidateSubmit()}
+                      title={(currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval') ? "Đã phân công, không thể thực hiện phân bổ nữa" : "Phân bổ"}
+                      disabled={!isValidateSubmit() || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval')}
                     >
                       {"Phân bổ"}
                     </button>
@@ -509,7 +508,7 @@ function ProjectProposalPage(props) {
                   )}
                 
                 </div>
-                {!isLoading && proposals && proposals?.assignment?.length && 
+                {proposals && proposals?.assignment?.length && 
                   <a 
                     className="inline-block mt-8 cursor-pointer ml-2" 
                     onClick={() => setIsShowPrevProposal((prev) => !prev)}
@@ -671,7 +670,7 @@ function ProjectProposalPage(props) {
               </div>
             ) : (
               <div>
-                {!isLoading && proposals && proposals?.assignment && proposals?.assignment?.length && (
+                {proposals && proposals?.assignment && proposals?.assignment?.length && (
                   <div className="mt-8">
                     <div className="py-3">
                       <button
@@ -681,10 +680,25 @@ function ProjectProposalPage(props) {
                         data-toggle='dropdown'
                         aria-expanded='true'
                         title={"Tạo lập công việc và phân công"}
-                        disabled={isLoading || !proposals || !proposals?.assignment || !proposals?.assignment?.length}
+                        disabled={isLoading || !proposals || !proposals?.assignment || !proposals?.assignment?.length || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval')}
                       >
                         {"Tạo lập công việc và phân công"}
                       </button>
+                      
+                      {isSuccessAssign || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval') &&
+                        <div class="italic p-2">
+                          Đã thực hiện phân công 
+                          <span class="text-green-500">✔</span>
+                        </div>
+                      }
+                      {isAssignProposalLoading &&
+                        <div className="min-height-96 flex justify-center mt-8">
+                          <span className="pr-2">Đang thực hiện phân công ...</span>
+                          <div className="mt-[1.5px]">
+                            <Loading />
+                          </div>
+                        </div> 
+                      }
                     </div>
                     
                     <div className="box">
@@ -726,6 +740,7 @@ const actions = {
   getProjectsDispatch: ProjectActions.getProjectsDispatch,
   proposalForProjectDispatch: ProjectProposalActions.proposalForProjectDispatch,
   editProjectDispatch: ProjectActions.editProjectDispatch,
+  assignForProjectFromProposal: ProjectProposalActions.assignProjectFromProposalDataDispatch
 }
 
 export default connect(mapState, actions)(withTranslate(ProjectProposalPage))
