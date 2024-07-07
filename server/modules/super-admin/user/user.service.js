@@ -511,7 +511,7 @@ exports.createUser = async (portal, data, company) => {
         }
     }
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
@@ -568,7 +568,7 @@ exports.createUserAttribute = async (portal, data) => {
         }
     }
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
@@ -842,7 +842,7 @@ exports.editUser = async (portal, id, data) => {
     }
 
     if (data.attributes) {
-        const attrArray = await filterValidAttributeArray(data.attributes);
+        const attrArray = await filterValidAttributeArray(data.attributes ?? []);
         const dataAttr = attrArray.map(attr => {
             return {
                 attributeId: attr.attributeId,

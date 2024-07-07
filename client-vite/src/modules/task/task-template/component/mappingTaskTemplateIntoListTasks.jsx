@@ -11,7 +11,8 @@ const initialTaskData = {
   duration: 0,
   taskValue: 0,
   taskValueUnit: '',
-  goalCompanyId: []
+  goalCompanyId: [],
+  factor: []
 }
 
 function MappingTaskTemplateIntoListTasks({ isProcess, onChangeListMappingTask }) {
@@ -20,6 +21,38 @@ function MappingTaskTemplateIntoListTasks({ isProcess, onChangeListMappingTask }
   const [errors, setErrors] = useState({})
   const [listTaskData, setListTaskData] = useState([])
   const createKpiUnit = useSelector((state) => state.createKpiUnit)
+  const [formState, setFormState] = useState({
+    company: '',
+    event: '',
+    outdoor: '',
+    eventAgain: '',
+    contract: '',
+    sales: '',
+    newCustomer: '',
+    document: ''
+  })
+
+  const handleChangeFactor = (e) => {
+    const { name, value } = e.target
+    const numericValue = Number(value)
+    const limitedValue = numericValue > 5 ? 5 : numericValue < 1 ? 1 : numericValue
+
+    setFormState({
+      ...formState,
+      [name]: limitedValue
+    })
+  }
+
+  const fields = [
+    { label: 'Công ty', name: 'company' },
+    { label: 'Sự kiện', name: 'event' },
+    { label: 'Ngoài trời', name: 'outdoor' },
+    { label: 'Trực tuyến', name: 'online' },
+    { label: 'Hợp đồng', name: 'contract' },
+    { label: 'Doanh số', name: 'sales' },
+    { label: 'Khách hàng mới', name: 'newCustomer' },
+    { label: 'Tài liệu', name: 'document' }
+  ]
 
   const inputFields = useMemo(
     () => [
@@ -54,7 +87,7 @@ function MappingTaskTemplateIntoListTasks({ isProcess, onChangeListMappingTask }
   }
 
   const handleAddAction = () => {
-    const assignValue = [...listTaskData, taskData]
+    const assignValue = [...listTaskData, { ...taskData, factor: formState }]
     setListTaskData(assignValue)
     setTaskData(initialTaskData)
     onChangeListMappingTask(assignValue)
@@ -144,6 +177,58 @@ function MappingTaskTemplateIntoListTasks({ isProcess, onChangeListMappingTask }
             </label>
             <DatePicker id='datepicker2' value={taskData.endDate} onChange={(value) => handleChangeDate('endDate', value)} />
             {errors.endDate && <ErrorLabel content={errors.endDate} />}
+          </div>
+        </div>
+
+        <div className='row form-group'>
+          <div className='col-lg-12 col-md-12 col-ms-12 col-xs-12'>
+            <label className='control-label'>
+              Yếu tố môi trường
+              <span className='text-red'>*</span>
+            </label>
+            <div className='flex'>
+              {fields.slice(0, 4).map((field) => (
+                <div key={field.name} className='col-lg-12 col-md-12 col-ms-12 col-xs-12 pl-[0px]'>
+                  <label htmlFor={field.name}>{field.label}</label>
+                  <input
+                    type='number'
+                    min={1}
+                    max={5}
+                    className='form-control'
+                    placeholder={field.label}
+                    name={field.name}
+                    value={formState[field.name]}
+                    onChange={handleChangeFactor}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className='row form-group'>
+          <div className='col-lg-12 col-md-12 col-ms-12 col-xs-12'>
+            <label className='control-label'>
+              Yếu tố sản phẩm giao nộp
+              <span className='text-red'>*</span>
+            </label>
+            <div className='flex'>
+              {fields.slice(4).map((field) => (
+                <div key={field.name} className='col-lg-12 col-md-12 col-ms-12 col-xs-12 pl-[0px]'>
+                  <label htmlFor={field.name}>{field.label}</label>
+                  <input
+                    type='number'
+                    min={1}
+                    max={5}
+                    className='form-control'
+                    placeholder={field.label}
+                    name={field.name}
+                    value={formState[field.name]}
+                    onChange={handleChangeFactor}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
