@@ -242,7 +242,7 @@ Object.assign(BaseDelegationHandler.prototype, {
             // users = [...users, ...annualLeave.userReceiveds];
 
             notification = {
-                users: [delegation.delegatee._id],
+                users: [delegation.delegatee.refId._id ?? delegation.delegatee.refId],
                 organizationalUnits: [],
                 title: 'Nhận ủy quyền - Receive delegation',
                 level: 'general',
@@ -284,7 +284,7 @@ Object.assign(BaseDelegationHandler.prototype, {
             // users = [...users, ...annualLeave.userReceiveds];
 
             notification = {
-                users: [delegation.delegatee._id],
+                users: [delegation.delegatee.refId._id ?? delegation.delegatee.refId],
                 organizationalUnits: [],
                 title: 'Đã thu hồi ủy quyền - Revoked delegation',
                 level: 'general',
@@ -328,7 +328,7 @@ Object.assign(BaseDelegationHandler.prototype, {
             // users = [...users, ...annualLeave.userReceiveds];
 
             notification = {
-                users: [delegation.delegator._id],
+                users: [delegation.delegator.refId._id ?? delegation.delegator.refId],
                 organizationalUnits: [],
                 title: 'Đã xác nhận ủy quyền - Confirmed delegation',
                 level: 'general',
@@ -373,7 +373,7 @@ Object.assign(BaseDelegationHandler.prototype, {
             // users = [...users, ...annualLeave.userReceiveds];
 
             notification = {
-                users: [delegation.delegator._id],
+                users: [delegation.delegator.refId._id ?? delegation.delegator.refId],
                 organizationalUnits: [],
                 title: 'Có yêu cầu từ chối ủy quyền - Request to reject delegation',
                 level: 'general',
