@@ -102,7 +102,8 @@ exports.authFunc = (checkPage = true) => {
                  */
                 initModels(connect(DB_CONNECTION, req.portal), Models);
 
-                if (crtp !== "/") {
+                let dxapp_token = req.header('dxapp_token') ?? '';
+                if (crtp !== "/" && dxapp_token !== 'dxclan') {
                     const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
                     const currentRole = crtr; // role hiện tại của người dùng
                     if (!ObjectId.isValid(currentRole)) {

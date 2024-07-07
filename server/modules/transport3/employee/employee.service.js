@@ -20,7 +20,6 @@ exports.getAllEmployeeTransport3 = async (portal, query, currentRole) => {
   const {page, limit} = query;
 
   let usersInDepartmentOfRole = await userService.getAllEmployeeOfUnitByRole(portal, currentRole);
-  console.log('usersInDepartmentOfRole', usersInDepartmentOfRole)
   let emailsInCompany = usersInDepartmentOfRole?.map((user) => user.userId.email);
   let employeesInDepartmentOfRole = await Employee(connect(DB_CONNECTION, portal)).find({emailInCompany: {$in: emailsInCompany}});
   let employees = await Transport3Employee(connect(DB_CONNECTION, portal)).find({}).populate('employee');

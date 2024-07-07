@@ -16,9 +16,9 @@ import ScheduleCreateForm from './scheduleCreateForm';
 import {ScheduleActions} from '@modules/transport3/schedule/redux/actions';
 import OrderCreateForm from '@modules/transport3/order/components/orderCreateForm.jsx';
 import OrderDetail from '@modules/transport3/order/components/orderDetail.jsx';
-import { color } from 'd3'
+import {color} from 'd3'
 import OntimeDeliveryResults from './ontimeDeliveryResults';
-import ProgressBar from "@ramonak/react-progress-bar";
+import ProgressBar from '@ramonak/react-progress-bar';
 import ScheduleDetail from '@modules/transport3/schedule/components/scheduleDetail.jsx';
 
 function ScheduleTable(props) {
@@ -27,12 +27,13 @@ function ScheduleTable(props) {
   const Limit = getTableConfiguration(TableId, defaultConfig).limit
   const [selectedSchedule, setSelectedSchedule] = useState(null);
 
-  let listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules)
+  let listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules);
 
   let dispatch = useDispatch()
   useEffect(() => {
     dispatch(ScheduleActions.getAllStocksWithLatlng())
     dispatch(ScheduleActions.getAllSchedule())
+    dispatch(ScheduleActions.getDraftSchedule())
   }, [dispatch])
   const [state, setState] = useState({
     page: 1,
@@ -89,7 +90,7 @@ function ScheduleTable(props) {
     window.$(`#modal-detail-schedule`).modal('show')
   }
 
-  
+
   let {totalPages, page} = state
   return (
     <>
@@ -139,9 +140,9 @@ function ScheduleTable(props) {
               </button>
             </div>
           </div>
-            <div>
-              *: Dự báo khả năng giao hàng đúng hạn
-            </div>
+          <div>
+            *: Dự báo khả năng giao hàng đúng hạn
+          </div>
           {/* Bang */}
           <table id={state.tableId} className="table table-striped table-bordered table-hover" style={{marginTop: 20}}>
             <thead>
@@ -173,9 +174,9 @@ function ScheduleTable(props) {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{schedule.code}</td>
-                  <td>{schedule.depot.name}</td>
-                  <td>{schedule.employee ? schedule.employee.map(employee => employee.fullName).join(', ') : 'Chưa có'}</td>
-                  <td>{schedule.vehicles && schedule.vehicles.asset.assetName}</td>
+                  <td>{schedule.depot ? schedule.depot.name : 'Chưa có'}</td>
+                  <td>{schedule.employees ? schedule.employees.map(employee => employee.fullName).join(', ') : 'Chưa có'}</td>
+                  <td>{schedule.vehicle && schedule.vehicle.asset.assetName}</td>
                   <td>{status[schedule.status]}</td>
                   <td>
                     <ProgressBar
@@ -208,8 +209,8 @@ function ScheduleTable(props) {
             </tr>}
             </tbody>
           </table>
-          <OntimeDeliveryResults 
-              schedule={selectedSchedule}
+          <OntimeDeliveryResults
+            schedule={selectedSchedule}
 
           />
           <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={setPage}/>

@@ -22,39 +22,39 @@ const Transport3ScheduleSchema = new Schema(
       },
       // thời gian dự kiến đến
       estimateTimeArrive: {
-        type: Date
+        type: String
       },
       // thời gian đến
       timeArrive: {
-        type: Date
+        type: String
       },
       // thời gian dự kiến phục vụ
       estimateTimeService: {
-        type: Date
+        type: String
       },
       // thời gian phục vụ
       timeService: {
-        type: Date
+        type: String
       },
       // thời gian bắt đầu vận chuyển đơn hàng này
       beginTime: {
-        type: Date
+        type: String
       },
       // thời gian dự kiến đến động
       dynamicEstimatedTime: {
-        type: Date
+        type: String
       },
       // khoảng cách từ depot đến địa chỉ giao hàng (tổng từ depot -> 1 + từ 1 -> 2)
       // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
       distance: {
         type: Number
-      }, 
+      },
       //d
       estimatedOntime: {
         type: Number
       }
     }],
-    vehicles: {
+    vehicle: {
       type: Schema.Types.ObjectId,
       ref: 'Transport3Vehicle'
     },
@@ -62,7 +62,7 @@ const Transport3ScheduleSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Stock'
     },
-    employee: [{
+    employees: [{
       type: Schema.Types.ObjectId,
       ref: 'Employee'
     }],
@@ -71,13 +71,20 @@ const Transport3ScheduleSchema = new Schema(
       type: Number
     },
     beginTime: {
-      type: Date
+      type: String
     },
     endTime: {
-      type: Date
+      type: String
     },
     note: {
       type: String
+    },
+    isAutoSchedule: {
+      type: Boolean
+    },
+    draftSchedule: {
+      type: Schema.Types.ObjectId,
+      ref: 'Transport3Schedule'
     }
   },
   {

@@ -30,4 +30,4 @@ jobs:
             git pull
             cp server/.env.example server/.env
             cp client-vite/.env.example client-vite/.env
-            docker-compose up -d --build
+            docker-compose -f docker-compose.yml up -d --build
