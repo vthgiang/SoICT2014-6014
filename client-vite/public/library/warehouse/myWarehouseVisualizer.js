@@ -3,6 +3,8 @@ const appVersion = '1.1'
 var warehouseList = ['Small']
 let timeOutVar = null //Used by Color Scale Slider and mdvScales
 const pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 5px;' //Panel styling
+let globalWarehouseScene = null
+let currentRouteGroup = null
 
 let languageIndex = 0 //Initially set to English(0)
 // const warehouseList = ["Small","Medium","Large"];
@@ -50,6 +52,102 @@ $(document).ready(function () {
       dataType: 'json'
     })
   }
+
+  function visualize3DRoute(chemins) {
+    if (typeof THREE === 'undefined') {
+        console.error('Three.js is not loaded.');
+        return;
+    }
+
+    if (!globalWarehouseScene) {
+        console.error('Warehouse scene is not available.');
+        return;
+    }
+
+    // Remove the previous route group if it exists
+    if (currentRouteGroup) {
+        globalWarehouseScene.remove(currentRouteGroup);
+        // Dispose of the geometry and materials to free up memory
+        currentRouteGroup.traverse(function (object) {
+            if (object.geometry) object.geometry.dispose();
+            if (object.material) {
+                if (object.material.map) object.material.map.dispose();
+                object.material.dispose();
+            }
+        });
+        currentRouteGroup = null;
+    }
+
+    // Create a new group to hold the route visualization
+    const routeGroup = new THREE.Group();
+
+    // Define materials for the route and waypoints
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 20 });
+    const waypointMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+
+    // Function to create a text texture for waypoint labels
+    function createTextTexture(text) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = 64;
+        canvas.height = 64;
+        context.font = '48px Arial';
+        context.fillStyle = 'black';
+        context.textAlign = 'center';
+        context.fillText(text, canvas.width / 2, canvas.height / 2 + 15);
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    // Detect and handle duplicate points
+    const offset = 20; // Adjust this value as needed
+    const pointMap = new Map();
+    const adjustedChemins = chemins.map(coord => {
+        const key = coord.join(',');
+        if (pointMap.has(key)) {
+            const count = pointMap.get(key) + 1;
+            pointMap.set(key, count);
+            return [coord[0] + count * offset, coord[1] + count * offset, coord[2] + count * offset];
+        } else {
+            pointMap.set(key, 0);
+            return coord;
+        }
+    });
+
+    // Generate the route and waypoints
+    const points = [];
+    adjustedChemins.forEach((coord, index) => {
+        const [x, y, z] = coord;
+
+        // Create a waypoint
+        const waypointGeometry = new THREE.CircleGeometry(10, 32);
+        const waypoint = new THREE.Mesh(waypointGeometry, waypointMaterial);
+        waypoint.position.set(x - 20, z, y);
+        waypoint.rotateX(-Math.PI / 2);
+        routeGroup.add(waypoint);
+
+        // Create and add waypoint label
+        const textTexture = createTextTexture(String(index + 1));
+        const spriteMaterial = new THREE.SpriteMaterial({ map: textTexture });
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.position.set(x - 20, z + 20, y);
+        sprite.scale.set(50, 50, 1);
+        routeGroup.add(sprite);
+
+        // Add points to the route
+        points.push(new THREE.Vector3(x - 20, z, y));
+    });
+
+    // Create and add the route line
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geometry, lineMaterial);
+    routeGroup.add(line);
+
+    // Add the route group to the warehouse scene
+    globalWarehouseScene.add(routeGroup);
+
+    // Store the current route group
+    currentRouteGroup = routeGroup;
+}
 
   parentLayout = $().w2layout({
     name: 'parentLayout',
@@ -145,30 +243,7 @@ $(document).ready(function () {
               )
                 return //Menu, not menu item, clicked on option
               switch (aTargets[0]) {
-                case 'warehouse': //Find programmatically with: w2ui.toolbar.items.find(function(item) {return item.id == "warehouse"}).selected
-                  // const vDropDown = this.items.find(function (item) {
-                  //     return item.id === "warehouse"
-                  // });
-                  // const selected = vDropDown.selected;
-                  // if (vDropDown.selected <= 1) {
-                  //     vDropDown.selected = vDropDown.lastSelected;
-                  //     vDropDown.lastSelected = selected;
-                  //     switch (selected) {
-                  //         case -1:
-                  //         case  0:
-                  //             fnGetFileUploads();
-                  //             break;
-                  //         case  1:
-                  //             fnGetCsvUrls();
-                  //             break;
-                  //     } //switch
-                  // } //if
-                  // else {
-                  //     w2utils.lock(document.body, {spinner: true, opacity: 0});
-                  //     vDropDown.lastSelected = selected;
-                  //     vDropDown.text = "Warehouse: " + vDropDown.items[selected].text;
-                  //     fnShowMyWarehouseVisualizerDemo();
-                  // } //else
+                case 'warehouse':
                   const vDropDown = this.items.find(function (item) {
                     return item.id === 'warehouse'
                   })
@@ -217,138 +292,251 @@ $(document).ready(function () {
 
                   break
 
-                  case 'toggleOrderPickingGrid':
-                    var mainPanel = this.owner.get('main').content;
-                
-                    if (mainPanel.get('right').mdvPreHideSize) {
-                        mainPanel.sizeTo('right', mainPanel.get('right').mdvPreHideSize); //Must operate on preview, not main (bug)
-                        delete mainPanel.get('right').mdvPreHideSize;
-                    } else {
-                        mainPanel.get('right').mdvPreHideSize = mainPanel.get('right').size;
-                        mainPanel.get('left').mdvPreHideSize = mainPanel.get('left').size;
-                        mainPanel.sizeTo('right', '40%');
-                    }
-                
-                    // Kiểm tra và xóa bỏ các grid cũ nếu tồn tại
-                    if (w2ui.newGrid) w2ui.newGrid.destroy();
-                    if (w2ui.detailGrid) w2ui.detailGrid.destroy();
-                
-                    // Tạo container cho cả hai grid
-                    var container = document.createElement('div');
-                    container.style.width = '100%';
-                    container.style.height = '100%';
-                    container.style.display = 'flex';
-                    container.style.flexDirection = 'column';
-                
-                    // Tạo element cho newGrid
-                    var newGridElement = document.createElement('div');
-                    newGridElement.id = 'newGridElement';
-                    newGridElement.style.flex = '1';
-                    newGridElement.style.height = '40%';
-                    container.appendChild(newGridElement);
-                
-                    // Tạo element cho detailGrid
-                    var detailGridElement = document.createElement('div');
-                    detailGridElement.id = 'detailGridElement';
-                    detailGridElement.style.flex = '1';
-                    detailGridElement.style.height = '60%';
-                    container.appendChild(detailGridElement);
-                
-                    // Thêm container vào mainPanel
-                    mainPanel.content('right', container);
-                
-                    // Hàm lấy dữ liệu từ API
-                    const getRoutePicking = async () => {
-                        return await $.ajax({
-                            url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
-                            headers: {
-                                'Access-Control-Allow-Origin': '*'
-                            },
-                            type: 'GET',
-                            crossDomain: true,
-                            dataType: 'json'
-                        });
-                    };
-                
-                    // Lấy dữ liệu từ API và khởi tạo grid với dữ liệu
-                    getRoutePicking()
-                        .then((response) => {
-                            console.log('response:', response);
-                            const records = response.map((item, index) => {
-                                return {
-                                    recid: index + 1,
-                                    waveId: item.waveId,
-                                    orderId: item.orderId.map((order) => order.code).join(', '),
-                                    good: item.listInfoOrders.map((order) => order.good.name).join(', '),
-                                    distanceRoute: item.distanceRoute,
-                                    details: item.listInfoOrders // Thêm chi tiết đơn hàng vào records
-                                };
-                            });
-                
-                            // Tạo grid chính với records
-                            var newGrid = $().w2grid({
-                                name: 'newGrid',
-                                header: 'Danh sách các lộ trình lấy hàng',
-                                box: '#newGridElement',
-                                style: 'width: 100%; height: 100%;',
-                                show: {
-                                    header: true,
-                                    selectColumn: true // Sử dụng cột chọn
-                                },
-                                reorderColumns: true,
-                                columns: [
-                                    { field: 'waveId', caption: 'WaveID', size: '60px', sortable: true, attr: 'align=center' },
-                                    { field: 'orderId', caption: 'Các đơn hàng', sortable: true, resizable: true },
-                                    { field: 'good', caption: 'Sản phẩm', size: '150px', sortable: true, resizable: true },
-                                    { field: 'distanceRoute', caption: 'Distance Route', sortable: true, resizable: true }
-                                ],
-                                records: records,
-                                onClick: function (event) {
-                                    // Hủy chọn tất cả các dòng trước khi chọn dòng mới
-                                    this.selectNone();
-                                    var record = this.get(event.recid);
-                                    this.select(event.recid);
-                
-                                    w2ui['detailGrid'].clear();
-                                    w2ui['detailGrid'].add(record.details.map((detail, index) => {
-                                        return {
-                                            recid: index + 1,
-                                            location: detail.location,
-                                            good: detail.good.name,
-                                            quantity_taken: detail.quantity_taken
-                                        };
-                                    }));
-                                }
-                            });
-                
-                            // Tạo grid chi tiết rỗng ban đầu
-                            var detailGrid = $().w2grid({
-                                name: 'detailGrid',
-                                header: 'Chi tiết lộ trình',
-                                box: '#detailGridElement',
-                                style: 'width: 100%; height: 100%;',
-                                show: {
-                                    header: true,
-                                    selectColumn: true // Sử dụng cột chọn
-                                },
-                                reorderColumns: true,
-                                columns: [
-                                    { field: 'location', caption: 'Location', size: '150px', sortable: true, resizable: true },
-                                    { field: 'good', caption: 'Good', size: '150px', sortable: true, resizable: true },
-                                    { field: 'quantity_taken', caption: 'Quantity Taken', size: '100px', sortable: true, resizable: true }
-                                ],
-                                records: []
-                            });
-                
-                            // Thêm grid vào container
-                            newGrid.render();
-                            detailGrid.render();
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                
-                    break;
+                case 'toggleOrderPickingGrid':
+                  var mainPanel = this.owner.get('main').content
+
+                  if (mainPanel.get('right').mdvPreHideSize) {
+                    mainPanel.sizeTo('right', mainPanel.get('right').mdvPreHideSize) // Must operate on preview, not main (bug)
+                    delete mainPanel.get('right').mdvPreHideSize
+                  } else {
+                    mainPanel.get('right').mdvPreHideSize = mainPanel.get('right').size
+                    mainPanel.get('left').mdvPreHideSize = mainPanel.get('left').size
+                    mainPanel.sizeTo('right', '40%')
+                  }
+
+                  // Kiểm tra và xóa bỏ các grid cũ nếu tồn tại
+                  if (w2ui.newGrid) w2ui.newGrid.destroy()
+                  if (w2ui.detailGrid) w2ui.detailGrid.destroy()
+
+                  // Tạo container cho cả hai grid
+                  var container = document.createElement('div')
+                  container.style.width = '100%'
+                  container.style.height = '100%'
+                  container.style.display = 'flex'
+                  container.style.flexDirection = 'column'
+
+                  // Tạo element cho newGrid
+                  var newGridElement = document.createElement('div')
+                  newGridElement.id = 'newGridElement'
+                  newGridElement.style.flex = '1'
+                  newGridElement.style.height = '40%'
+                  container.appendChild(newGridElement)
+
+                  // Tạo element cho detailGrid
+                  var detailGridElement = document.createElement('div')
+                  detailGridElement.id = 'detailGridElement'
+                  detailGridElement.style.flex = '1'
+                  detailGridElement.style.height = '60%'
+                  container.appendChild(detailGridElement)
+
+                  // Thêm container vào mainPanel
+                  mainPanel.content('right', container)
+
+                  // Lấy dữ liệu từ API và khởi tạo grid với dữ liệu
+                  getRoutePicking()
+                    .then((response) => {
+                      console.log('response:', response)
+                      const records = response.map((item, index) => {
+                        return {
+                          recid: index + 1,
+                          waveId: item.waveId,
+                          orderId: item.orderId.map((order) => order.code).join(', '),
+                          good: item.listInfoOrders.map((order) => order.good.name).join(', '),
+                          distanceRoute: item.distanceRoute,
+                          details: item.listInfoOrders,
+                          chemins: item.chemins // Add chemins to records for 3D visualization
+                        }
+                      })
+
+                      // Tạo grid chính với records
+                      var newGrid = $().w2grid({
+                        name: 'newGrid',
+                        header: 'Danh sách các lộ trình lấy hàng',
+                        box: '#newGridElement',
+                        style: 'width: 100%; height: 100%;',
+                        show: {
+                          header: true,
+                          selectColumn: true // Sử dụng cột chọn
+                        },
+                        reorderColumns: true,
+                        columns: [
+                          { field: 'waveId', caption: 'WaveID', size: '60px', sortable: true, attr: 'align=center' },
+                          { field: 'orderId', caption: 'Các đơn hàng', sortable: true, resizable: true },
+                          { field: 'good', caption: 'Sản phẩm', size: '150px', sortable: true, resizable: true },
+                          { field: 'distanceRoute', caption: 'Distance Route', sortable: true, resizable: true }
+                        ],
+                        records: records,
+                        onClick: function (event) {
+                          // Hủy chọn tất cả các dòng trước khi chọn dòng mới
+                          this.selectNone()
+                          var record = this.get(event.recid)
+                          this.select(event.recid)
+
+                          w2ui['detailGrid'].clear()
+                          w2ui['detailGrid'].add(
+                            record.details.map((detail, index) => {
+                              return {
+                                recid: index + 1,
+                                location: detail.location,
+                                good: detail.good.name,
+                                quantity_taken: detail.quantity_taken
+                              }
+                            })
+                          )
+
+                          // Visualize the 3D route for the selected record
+                          visualize3DRoute(record.chemins)
+                        }
+                      })
+
+                      // Tạo grid chi tiết rỗng ban đầu
+                      var detailGrid = $().w2grid({
+                        name: 'detailGrid',
+                        header: 'Chi tiết lộ trình',
+                        box: '#detailGridElement',
+                        style: 'width: 100%; height: 100%;',
+                        show: {
+                          header: true
+                        },
+                        reorderColumns: true,
+                        columns: [
+                          { field: 'location', caption: 'Location', sortable: true, resizable: true },
+                          { field: 'good', caption: 'Good', size: '300px', sortable: true, resizable: true },
+                          { field: 'quantity_taken', caption: 'Quantity Taken', sortable: true, resizable: true }
+                        ],
+                        records: []
+                      })
+
+                      // Thêm grid vào container
+                      newGrid.render()
+                      detailGrid.render()
+                    })
+                    .catch((error) => {
+                      console.log(error)
+                    })
+
+                  break
+
+                  var mainPanel = this.owner.get('main').content
+
+                  if (mainPanel.get('right').mdvPreHideSize) {
+                    mainPanel.sizeTo('right', mainPanel.get('right').mdvPreHideSize) //Must operate on preview, not main (bug)
+                    delete mainPanel.get('right').mdvPreHideSize
+                  } else {
+                    mainPanel.get('right').mdvPreHideSize = mainPanel.get('right').size
+                    mainPanel.get('left').mdvPreHideSize = mainPanel.get('left').size
+                    mainPanel.sizeTo('right', '40%')
+                  }
+
+                  // Kiểm tra và xóa bỏ các grid cũ nếu tồn tại
+                  if (w2ui.newGrid) w2ui.newGrid.destroy()
+                  if (w2ui.detailGrid) w2ui.detailGrid.destroy()
+
+                  // Tạo container cho cả hai grid
+                  var container = document.createElement('div')
+                  container.style.width = '100%'
+                  container.style.height = '100%'
+                  container.style.display = 'flex'
+                  container.style.flexDirection = 'column'
+
+                  // Tạo element cho newGrid
+                  var newGridElement = document.createElement('div')
+                  newGridElement.id = 'newGridElement'
+                  newGridElement.style.flex = '1'
+                  newGridElement.style.height = '40%'
+                  container.appendChild(newGridElement)
+
+                  // Tạo element cho detailGrid
+                  var detailGridElement = document.createElement('div')
+                  detailGridElement.id = 'detailGridElement'
+                  detailGridElement.style.flex = '1'
+                  detailGridElement.style.height = '60%'
+                  container.appendChild(detailGridElement)
+
+                  // Thêm container vào mainPanel
+                  mainPanel.content('right', container)
+
+                  // Lấy dữ liệu từ API và khởi tạo grid với dữ liệu
+                  getRoutePicking()
+                    .then((response) => {
+                      console.log('response:', response)
+                      const records = response.map((item, index) => {
+                        return {
+                          recid: index + 1,
+                          waveId: item.waveId,
+                          orderId: item.orderId.map((order) => order.code).join(', '),
+                          good: item.listInfoOrders.map((order) => order.good.name).join(', '),
+                          distanceRoute: item.distanceRoute,
+                          details: item.listInfoOrders // Thêm chi tiết đơn hàng vào records
+                        }
+                      })
+
+                      // Tạo grid chính với records
+                      var newGrid = $().w2grid({
+                        name: 'newGrid',
+                        header: 'Danh sách các lộ trình lấy hàng',
+                        box: '#newGridElement',
+                        style: 'width: 100%; height: 100%;',
+                        show: {
+                          header: true,
+                          selectColumn: true // Sử dụng cột chọn
+                        },
+                        reorderColumns: true,
+                        columns: [
+                          { field: 'waveId', caption: 'WaveID', size: '60px', sortable: true, attr: 'align=center' },
+                          { field: 'orderId', caption: 'Các đơn hàng', sortable: true, resizable: true },
+                          { field: 'good', caption: 'Sản phẩm', size: '150px', sortable: true, resizable: true },
+                          { field: 'distanceRoute', caption: 'Distance Route', sortable: true, resizable: true }
+                        ],
+                        records: records,
+                        onClick: function (event) {
+                          // Hủy chọn tất cả các dòng trước khi chọn dòng mới
+                          this.selectNone()
+                          var record = this.get(event.recid)
+                          this.select(event.recid)
+
+                          w2ui['detailGrid'].clear()
+                          w2ui['detailGrid'].add(
+                            record.details.map((detail, index) => {
+                              return {
+                                recid: index + 1,
+                                location: detail.location,
+                                good: detail.good.name,
+                                quantity_taken: detail.quantity_taken
+                              }
+                            })
+                          )
+                        }
+                      })
+
+                      // Tạo grid chi tiết rỗng ban đầu
+                      var detailGrid = $().w2grid({
+                        name: 'detailGrid',
+                        header: 'Chi tiết lộ trình',
+                        box: '#detailGridElement',
+                        style: 'width: 100%; height: 100%;',
+                        show: {
+                          header: true,
+                          selectColumn: true // Sử dụng cột chọn
+                        },
+                        reorderColumns: true,
+                        columns: [
+                          { field: 'location', caption: 'Location', size: '150px', sortable: true, resizable: true },
+                          { field: 'good', caption: 'Good', size: '150px', sortable: true, resizable: true },
+                          { field: 'quantity_taken', caption: 'Quantity Taken', size: '100px', sortable: true, resizable: true }
+                        ],
+                        records: []
+                      })
+
+                      // Thêm grid vào container
+                      newGrid.render()
+                      detailGrid.render()
+                    })
+                    .catch((error) => {
+                      console.log(error)
+                    })
+
+                  break
                 case 'language':
                   fnSetLanguageIndex(aTargets[1])
                   break
@@ -478,6 +666,7 @@ function fnShowMyWarehouseVisualizerDemo() {
   } //else
 
   function fnShowWarehouse(warehouseName, warehouseScene, inventoryData, layoutData) {
+    globalWarehouseScene = warehouseScene.scene
     //var gltfURL = appWarehouses[warehouseIndex].blob ? URL.createObjectURL(appWarehouses[warehouseIndex].blob) : appWarehouses[warehouseIndex].url;
     //var warehouseData = appWarehouses[warehouseIndex].data ? $.extend(true,[],appWarehouses[warehouseIndex].data) : null;  //Deep, unique clone of data
     var warehouseVisual = new dataVisual()
@@ -512,6 +701,7 @@ function fnShowMyWarehouseVisualizerDemo() {
   //Build a Three.js group of warehouse slots.
   //Discussion on Model, View and Projection matrices: http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#the-model-view-and-projection-matrices
   //The slot geomemtry verticies are built using provided x,y,z,width,depth,height,color and meshType (wire/flat) attributes into the properties' 'group';
+
   function fnBuildWarehouse(layoutData) {
     var warehouse = new THREE.Group() //Containing the whole image allows for possible complete transforms later
     warehouse.name = 'warehouseGroup'
@@ -531,67 +721,82 @@ function fnShowMyWarehouseVisualizerDemo() {
 
     // 3D route
     // -------------------------------------------------------------
-    const getRoutePicking = async () => {
-      return await $.ajax({
-        url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        },
-        type: 'GET',
-        crossDomain: true,
-        dataType: 'json'
-      })
-    }
+    // const getRoutePicking = async () => {
+    //   return await $.ajax({
+    //     url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
+    //     headers: {
+    //       'Access-Control-Allow-Origin': '*'
+    //     },
+    //     type: 'GET',
+    //     crossDomain: true,
+    //     dataType: 'json'
+    //   })
+    // }
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 0, linewidth: 10 })
 
-    function createTextTexture(text) {
-      const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d')
-      canvas.width = 64 // Điều chỉnh kích thước canvas nếu cần
-      canvas.height = 64 // Điều chỉnh kích thước canvas nếu cần
-      context.font = '48px Arial' // Điều chỉnh font và kích thước font nếu cần
-      context.fillStyle = 'black' // Màu của văn bản
-      context.textAlign = 'center'
-      context.fillText(text, canvas.width / 2, canvas.height / 2 + 15) // Điều chỉnh vị trí văn bản nếu cần
-      return new THREE.CanvasTexture(canvas)
-    }
+    const points = [];
+    points.push(new THREE.Vector3(2500, 0, 3700))
+    
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    
+    const line = new THREE.Line( geometry, lineMaterial );
+    warehouse.add( line );
+    // function createTextTexture(text) {
+    //   const canvas = document.createElement('canvas')
+    //   const context = canvas.getContext('2d')
+    //   canvas.width = 64 // Điều chỉnh kích thước canvas nếu cần
+    //   canvas.height = 64 // Điều chỉnh kích thước canvas nếu cần
+    //   context.font = '48px Arial' // Điều chỉnh font và kích thước font nếu cần
+    //   context.fillStyle = 'black' // Màu của văn bản
+    //   context.textAlign = 'center'
+    //   context.fillText(text, canvas.width / 2, canvas.height / 2 + 15) // Điều chỉnh vị trí văn bản nếu cần
+    //   return new THREE.CanvasTexture(canvas)
+    // }
+    // const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 10 })
+    // const points = []
 
-    getRoutePicking()
-      .then((response) => {
-        console.log(response)
-        response.forEach((item, itemIndex) => {
-          const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 10 })
-          const points = []
-          item.chemins.forEach((coord, index) => {
-            const x = coord[0]
-            const y = coord[1]
-            const z = coord[2]
+    // points.push(warehouse.add(line))
+    // // points.push(new THREE.Vector3(0, 0, 954));
+    // points.push(new THREE.Vector3(2500, 0, 3700))
+    // const geometry = new THREE.BufferGeometry().setFromPoints(points)
+    // const line = new THREE.Line(geometry, lineMaterial)
+    // warehouse.add(line)
+    // getRoutePicking()
+    //   .then((response) => {
+    //     console.log(response)
+    //     response.forEach((item, itemIndex) => {
+    //       const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 10 })
+    //       const points = []
+    //       item.chemins.forEach((coord, index) => {
+    //         const x = coord[0]
+    //         const y = coord[1]
+    //         const z = coord[2]
 
-            points.push(new THREE.Vector3(x - 20, z, y))
+    //         points.push(new THREE.Vector3(x - 20, z, y))
 
-            const circleGeometry = new THREE.CircleGeometry(10, 32)
-            const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff })
-            const circle = new THREE.Mesh(circleGeometry, circleMaterial)
-            circle.position.set(x - 20, z, y)
-            circle.rotateX(-Math.PI / 2)
-            warehouse.add(circle)
+    //         const circleGeometry = new THREE.CircleGeometry(10, 32)
+    //         const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff })
+    //         const circle = new THREE.Mesh(circleGeometry, circleMaterial)
+    //         circle.position.set(x - 20, z, y)
+    //         circle.rotateX(-Math.PI / 2)
+    //         warehouse.add(circle)
 
-            // Tạo và thêm số thứ tự
-            const textTexture = createTextTexture(String(index + 1))
-            const spriteMaterial = new THREE.SpriteMaterial({ map: textTexture })
-            const sprite = new THREE.Sprite(spriteMaterial)
-            sprite.position.set(x - 20, z + 20, y) // Điều chỉnh vị trí sprite nếu cần
-            sprite.scale.set(50, 50, 1) // Điều chỉnh kích thước sprite nếu cần
-            warehouse.add(sprite)
-          })
-          const geometry = new THREE.BufferGeometry().setFromPoints(points)
-          const line = new THREE.Line(geometry, lineMaterial)
-          warehouse.add(line)
-        })
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-
+    //         // Tạo và thêm số thứ tự
+    //         const textTexture = createTextTexture(String(index + 1))
+    //         const spriteMaterial = new THREE.SpriteMaterial({ map: textTexture })
+    //         const sprite = new THREE.Sprite(spriteMaterial)
+    //         sprite.position.set(x - 20, z + 20, y) // Điều chỉnh vị trí sprite nếu cần
+    //         sprite.scale.set(50, 50, 1) // Điều chỉnh kích thước sprite nếu cần
+    //         warehouse.add(sprite)
+    //       })
+    //       const geometry = new THREE.BufferGeometry().setFromPoints(points)
+    //       const line = new THREE.Line(geometry, lineMaterial)
+    //       warehouse.add(line)
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
     // points.push(new THREE.Vector3(2500, 0, 0))
     // // points.push(new THREE.Vector3(0, 0, 954));
     // points.push(new THREE.Vector3(2500, 0, 3700))
