@@ -26,12 +26,12 @@ exports.getAllSchedule = async (portal, query, currentRole) => {
       }
     })
     .populate({
-      path: 'vehicles',
+      path: 'vehicle',
       populate: {
         path: 'asset'
       }
     })
-    .populate('employee');
+    .populate('employees');
 }
 
 exports.getScheduleById = async (portal, scheduleId) => {
@@ -60,9 +60,9 @@ exports.createSchedule = async (portal, data) => {
         }))
       ],
       status: 1,
-      vehicles: vehicle,
+      vehicle: vehicle,
       depot: data.depot.find(depot => depot.vehicle === vehicle)?.stock?._id,
-      employee: null,
+      employees: null,
     }
     await Transport3Schedule(connect(DB_CONNECTION, portal)).create(query)
   }
@@ -100,12 +100,12 @@ exports.getMySchedule = async (portal, user) => {
       }
     })
     .populate({
-      path: 'vehicles',
+      path: 'vehicle',
       populate: {
         path: 'asset'
       }
     })
     .populate('depot');
-  allSchedule = allSchedule.filter(schedule => schedule.employee);
-  return allSchedule.filter(schedule => schedule.employee.includes(employee._id));
+  allSchedule = allSchedule.filter(schedule => schedule.employees);
+  return allSchedule.filter(schedule => schedule.employees.includes(employee._id));
 }
