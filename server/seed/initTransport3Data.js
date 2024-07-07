@@ -13,6 +13,7 @@ const {
   Customer,
   Good,
   Employee,
+  Transport3DraftSchedule
 } = require('../models');
 
 require('dotenv').config();
@@ -48,6 +49,7 @@ const initTransport3Data = async () => {
     await db.dropCollection('transport3schedules');
     await db.dropCollection('transport3vehicles');
     await db.dropCollection('transport3issues');
+    await db.dropCollection('transport3draftschedules');
   }
 
   const initModels = (db) => {
@@ -56,6 +58,7 @@ const initTransport3Data = async () => {
     Transport3Schedule(db);
     Transport3Vehicle(db);
     Transport3Issue(db);
+    Transport3DraftSchedule(db);
   };
 
   console.log('Xoá dữ liệu transport3 cũ và khởi tạo dữ liệu mới');
@@ -82,6 +85,7 @@ const initTransport3Data = async () => {
   ----------------------------------------------------------------------------------------------- */
   console.log('Khởi tạo dữ liệu đơn vận chuyển');
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const currentTimestamp = Math.floor(Date.now() / 1000);
   const transport3Order = await Transport3Order(vnistDB).create(
     listTransport3Orders.map((order, index) => {
       return {
@@ -91,7 +95,7 @@ const initTransport3Data = async () => {
         address: order.address,
         lat: order.lat,
         lng: order.lng,
-        deliveryTime: order.deliveryTime,
+        deliveryTime: currentTimestamp + index * 86400,
         note: order.note,
         noteAddress: order.noteAddress,
         priority: order.priority,
@@ -164,7 +168,6 @@ const initTransport3Data = async () => {
   const listDepots = await Stock(vnistDB).find({});
   listTransport3Schedules = listTransport3Schedules.slice(0, 15);
 
-  const currentTimestamp = Math.floor(Date.now() / 1000);
   let count = 0;
   let oldCount = 0;
   await Transport3Schedule(vnistDB).create(
@@ -195,6 +198,8 @@ const initTransport3Data = async () => {
         beginTime: status_t !== 1 ? currentTimestamp : null,
         endTime: status_t === 3 ? currentTimestamp + (count - oldCount + 1) * 6000 : null,
         note: schedule.note,
+        isAutoSchedule: false,
+        draftSchedule: null,
       }
     })
   )

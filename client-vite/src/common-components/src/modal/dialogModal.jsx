@@ -47,6 +47,18 @@ class DialogModal extends Component {
     }
   }
 
+  customSave = () => {
+    const { closeOnSave = true, resetOnSave = false, afterSave } = this.props
+    this.props?.customFunc && this.props.customFunc()
+    if (closeOnSave) {
+      this.closeModal(resetOnSave)
+    }
+
+    if (afterSave !== undefined) {
+      afterSave()
+    }
+  }
+
   handleSubmitClient = () => {
     const { closeOnSave = true, resetOnSave = false, afterSave } = this.props
     this.props.func()
@@ -78,7 +90,8 @@ class DialogModal extends Component {
       modalID,
       saveText = undefined,
       note,
-      noTabIndex
+      noTabIndex,
+      customButton = null
     } = this.props
 
     const { isClose } = this.state
@@ -135,6 +148,11 @@ class DialogModal extends Component {
               <div className='row'>
                 <div className='col-xs-8 col-sm-8 col-md-8 col-lg-8'>{hasNote ? note || defaultNote : ''}</div>
                 <div className='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
+                  {customButton && (
+                    <button type='button' className='btn btn-success' onClick={this.customSave}>
+                      {customButton}
+                    </button>
+                  )}
                   {hasSaveButton && (
                     <button type='button' disabled={disableSubmit} className='btn btn-success' onClick={this.save}>
                       {saveText || translate('form.save')}

@@ -2,13 +2,13 @@ import React, {useState, useEffect} from 'react'
 import {withTranslate} from 'react-redux-multilingual'
 import {CrmCustomerActions} from '@modules/crm/customer/redux/actions'
 import {formatDate, formatToTimeZoneDate} from '@helpers/formatDate'
-import {DialogModal, ErrorLabel} from '@common-components'
+import {DialogModal, ErrorLabel, SelectBox} from '@common-components'
 import ValidationHelper from '@helpers/validationHelper'
 import '@modules/crm/customer/components/customer.css'
 import {MapContainer} from 'react-leaflet';
 import {StockActions} from '@modules/production/warehouse/stock-management/redux/actions.js';
-import { ScheduleActions } from '../redux/actions'
-import { useDispatch, useSelector } from 'react-redux'
+import {ScheduleActions} from '../redux/actions'
+import {useDispatch, useSelector} from 'react-redux'
 
 function ScheduleDetail(props) {
   let dispatch = useDispatch()
@@ -16,6 +16,20 @@ function ScheduleDetail(props) {
   const [state, setState] = useState(initialState)
   let ontimePredictResults = useSelector(state => state.T3schedule?.predictOntimeDeliveryResults)
   // let schedule = useSelector(state => state.T3schedule?.schedule)
+  let draftSchedule = useSelector(state => state.T3schedule?.draftSchedule) || [];
+  draftSchedule = draftSchedule.filter(schedule => schedule.code === props.schedule?.code)
+  let draftOptions = [
+    {
+      value: '-1',
+      text: 'Chọn lịch trình tự động'
+    }
+  ]
+  draftOptions = draftOptions.concat(draftSchedule.map(draft => {
+    return {
+      value: draft._id,
+      text: `${draft.code.split('_')[0] + '_' + draft.code.split('_')[1]} - ${draft.note.split('_')[0]} - ${draft.value.toFixed(2)}km - ${draft.orders.length} đơn hàng`
+    }
+  }))
 
   const {schedule} = props
 
@@ -57,6 +71,16 @@ function ScheduleDetail(props) {
     }
   }, [ontimePredictResults, dispatch, schedule?._id]);
 
+  const handleSelectDraftSchedule = async (value) => {
+    value = value[0];
+    let code_t = draftSchedule.find(draft => draft._id == value)?.code.split('_');
+    let data = {
+      _id: value,
+      code: code_t[0] + '_' + code_t[1],
+    }
+    await dispatch(ScheduleActions.setScheduleFromDraft(data));
+    await dispatch(ScheduleActions.getAllSchedule())
+  }
   return (
     <>
       <DialogModal
@@ -105,18 +129,19 @@ function ScheduleDetail(props) {
                     <div className="d-flex justify-content-between align-items-center">
                       <div className="form-group">
                         <strong>Khả năng giao hàng đúng hạn:</strong>
-                        <span> 90% </span>
+                        <span> {schedule.depot ? '90%' : 'Đang lập lịch ...'} </span>
                       </div>
-                      <div className="dropdown" style={{ marginLeft: '20px' }}>
+                      {schedule.depot && <div className="dropdown" style={{marginLeft: '20px'}}>
                         <button
                           type="button"
                           className="btn btn-success"
                           data-toggle="modal"
-                          onClick={()=> handlePredictOntimeDelivery(schedule)}
+                          onClick={() => handlePredictOntimeDelivery(schedule)}
                         >
                           Dự báo lại
                         </button>
                       </div>
+                      }
                     </div>
                   </div>
                 </div>
@@ -126,13 +151,13 @@ function ScheduleDetail(props) {
                   <div className="col-md-6">
                     <div className="form-group">
                       <strong>Nhân viên:</strong>
-                      <span> {schedule.employee ? schedule.employee.map(employee => employee.fullName).join(', ') : 'Chưa có'}</span>
+                      <span> {schedule.employees ? schedule.employees.map(employee => employee.fullName).join(', ') : 'Chưa có'}</span>
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <strong>Phương tiện:</strong>
-                      <span> {schedule.vehicles && schedule.vehicles.asset.assetName}</span>
+                      <span> {schedule.vehicle && schedule.vehicle.asset.assetName}</span>
                     </div>
                   </div>
                 </div>
@@ -140,7 +165,26 @@ function ScheduleDetail(props) {
                   <div className="col-md-6">
                     <div className="form-group">
                       <strong>Kho xuất phát:</strong>
-                      <span> {schedule.depot.name}</span>
+                      <span> {schedule.depot ? schedule.depot.name : 'Đang lập lịch ...'}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="form-group">
+                      <div className="col-md-3 p-0">
+                        <strong>Kế hoạch tự động:</strong>
+                      </div>
+                      <div className="col-md-8">
+                        <SelectBox
+                          id={`draftSchedule`}
+                          className="form-control select2"
+                          style={{width: '100%'}}
+                          items={draftOptions}
+                          value={schedule.draftSchedule ? schedule.draftSchedule._id : '-1'}
+                          onChange={handleSelectDraftSchedule}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -174,7 +218,7 @@ function ScheduleDetail(props) {
                         <td>{formatDate(order.order.updatedAt)}</td>
                         <td style={order.estimatedOntime === 1 ? {color: 'green'} :
                           order.estimatedOntime === 0 ? {color: 'red'} : {color: 'black'}}>
-                            {displayOntimeStatus(order.estimatedOntime)}
+                          {displayOntimeStatus(order.estimatedOntime)}
                         </td>
                         <td style={order.status === 4 ? {color: 'red'} :
                           order.status === 3 ? {color: 'green'} : {color: 'black'}}
@@ -182,7 +226,8 @@ function ScheduleDetail(props) {
                       </tr>
                     )) : (
                       <tr>
-                        <td colSpan="7" className="text-center">Không có dữ liệu</td>
+                        <td colSpan="7"
+                            className="text-center">{schedule.depot ? 'Không có đơn hàng' : 'Đang lập lịch tự động ...'}</td>
                       </tr>
                     )}
                     </tbody>

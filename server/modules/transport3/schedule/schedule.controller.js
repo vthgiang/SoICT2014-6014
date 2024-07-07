@@ -21,7 +21,7 @@ exports.getAllSchedule = async (req, res) => {
 
 exports.getScheduleById = async (req, res) => {
   try {
-    let { scheduleId } = req.params;
+    let {scheduleId} = req.params;
     let schedule = await ScheduleService.getScheduleById(req.portal, scheduleId);
     res.status(200).json({
       schedules,
@@ -101,18 +101,50 @@ exports.getOrdersTransporting = async (req, res) => {
 }
 
 exports.getMySchedule = async (req, res) => {
-    try {
-        let schedules = await ScheduleService.getMySchedule(req.portal, req.user);
-        res.status(200).json({
-        schedules,
-        messages: ['Lấy thông tin lịch trình thành công']
-        });
-    } catch (error) {
-        Log.error(`Error while fetching my schedules ${error}`);
-        res.status(400).json({
-        messages: [
-            'Lấy thông tin lịch trình thất bại' + error
-        ]
-        });
-    }
+  try {
+    let schedules = await ScheduleService.getMySchedule(req.portal, req.user);
+    res.status(200).json({
+      schedules,
+      messages: ['Lấy thông tin lịch trình thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while fetching my schedules ${error}`);
+    res.status(400).json({
+      messages: [
+        'Lấy thông tin lịch trình thất bại' + error
+      ]
+    });
+  }
+}
+
+exports.getDraftSchedule = async (req, res) => {
+  try {
+    let schedules = await ScheduleService.getDraftSchedule(req.portal);
+    res.status(200).json({
+      schedules,
+      messages: ['Lấy thông tin lịch trình thành công']
+    });
+  } catch (error) {
+    await Log.error(`Error while fetching draft schedules ${error}`);
+    res.status(400).json({
+      messages: [
+        'Lấy thông tin lịch trình thất bại' + error
+      ]
+    });
+  }
+}
+
+exports.setScheduleFromDraft = async (req, res) => {
+  try {
+    let schedule = await ScheduleService.setScheduleFromDraft(req.portal, req.body);
+    res.status(200).json({
+      schedule,
+      messages: ['Tạo lịch trình từ bản nháp thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while setting schedule from draft ${error}`);
+    res.status(400).json({
+      messages: ['Tạo lịch trình từ bản nháp thất bại' + error]
+    });
+  }
 }

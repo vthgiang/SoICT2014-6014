@@ -48,7 +48,7 @@ const Transport3ScheduleSchema = new Schema(
       // phục vụ cho việc dự đoán khả năng giao hàng đúng hạn
       distance: {
         type: Number
-      }, 
+      },
       //d
       estimatedOntime: {
         type: Number
@@ -78,6 +78,13 @@ const Transport3ScheduleSchema = new Schema(
     },
     note: {
       type: String
+    },
+    isAutoSchedule: {
+      type: Boolean
+    },
+    draftSchedule: {
+      type: Schema.Types.ObjectId,
+      ref: 'Transport3Schedule'
     }
   },
   {
