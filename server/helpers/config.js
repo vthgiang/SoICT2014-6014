@@ -935,19 +935,19 @@ const LINKS = [
     ],
     components: getComponentsInLink("/bidding-project-template"),
   },
-  {
-    url: "/tags-management",
-    description: "Quản lý danh mục tag",
-    category: LINK_CATEGORY.BIDDING.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/tags-management"),
-  },
+  // {
+  //   url: "/tags-management",
+  //   description: "Quản lý danh mục tag",
+  //   category: LINK_CATEGORY.BIDDING.name,
+  //   roles: [
+  //     ROOT_ROLES.SUPER_ADMIN.name,
+  //     ROOT_ROLES.ADMIN.name,
+  //     ROOT_ROLES.MANAGER.name,
+  //     ROOT_ROLES.DEPUTY_MANAGER.name,
+  //     ROOT_ROLES.EMPLOYEE.name,
+  //   ],
+  //   components: getComponentsInLink("/tags-management"),
+  // },
 
   // KPI
   {
@@ -2502,6 +2502,19 @@ const LINKS = [
     components: getComponentsInLink("/project/projects-list"),
   },
   {
+    url: "/tags-management",
+    description: "Quản lý thẻ công việc (tags)",
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/tags-management"),
+  },
+  {
     url: "/project/project-details",
     description: "Chi tiết dự án",
     category: LINK_CATEGORY.PROJECT.name,
@@ -2928,6 +2941,19 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/project/project-proposal"),
+  },
+  {
+    url: "/project/project-statistic",
+    description: "Thống kê danh sách dự án",
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      // ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/project/project-statistic"),
   },
 
   {

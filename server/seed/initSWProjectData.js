@@ -223,11 +223,12 @@ const initSWProjectData = async () => {
 
   // 4: Fresher
   const sw_NguyenMinhThanh = await Employee(vnistDB).findOne({
-    fullName: "Nguyễn Minh Thành"
+    fullName: "Nguyễn Minh Thành",
   })
 
   const sw_NguyenMinhThanh_User = await User(vnistDB).findOne({
-    name: "Nguyễn Minh Thành"
+    name: "Nguyễn Minh Thành",
+    email: "nguyenminhthanhsw.vnist@gmail.com"
   })
   // console.log("sw_NguyenMinhThanh_User: ", sw_NguyenMinhThanh_User.name, sw_NguyenMinhThanh_User._id, sw_NguyenMinhThanh_User.email)
 

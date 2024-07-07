@@ -374,10 +374,12 @@ export default {
       tasks_list: 'Danh sách công việc',
       phases_list: 'Danh sách giai đoạn',
       issues_list: 'Danh sách vấn đề',
+      tags_management: 'Quản lý thẻ công việc (tags)',
       project_report: 'Báo cáo dự án',
       project_evaluation: 'Thống kê đánh giá',
       project_create: 'Tạo dự án mới',
       project_proposal: 'Phân bổ nguồn lực dự án',
+      project_statistic: 'Thống kê danh sách dự án',
 
       // Quản lý vận chuyển 3
       manage_transport3: 'Quản lý vận chuyển',
