@@ -9,5 +9,6 @@ const ProjectProposalController = require('./projectProposal.controller')
 //   // return
 // })
 router.patch('/project-proposal/:id', auth, ProjectProposalController.proposalForProject)
+router.patch('/project-proposal/assign/:id', ProjectProposalController.assignForProjectFromProposal)
 
 module.exports = router

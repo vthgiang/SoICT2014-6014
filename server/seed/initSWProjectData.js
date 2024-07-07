@@ -2162,6 +2162,7 @@ const initSWProjectData = async () => {
     unitCost: "VND",
     projectManager: [gd_NguyenVanAn_User._id, sw_NguyenVanMinh_User._id],
     creator: gd_NguyenVanAn_User._id,
+    status: "proposal",
     usersInProject: [
       {
         userId: sw_NguyenVanMinh_User._id,
