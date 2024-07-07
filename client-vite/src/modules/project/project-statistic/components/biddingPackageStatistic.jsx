@@ -4,9 +4,9 @@ import { withTranslate } from 'react-redux-multilingual'
 import c3 from 'c3'
 import 'c3/c3.css'
 
-const BiddingStatusQuantityStatistic = (props) => {
+const BiddingPackageStatusQuantityStatistic = (props) => {
   const { biddingPackagesManager, biddingContract, project } = props
-  const refBiddingStatusByQuantity = React.createRef()
+  const refBiddingPackageStatusQuantity = React.createRef()
 
   const numofBP = biddingPackagesManager.totalList
   const numOfContract = biddingContract.totalList
@@ -17,12 +17,16 @@ const BiddingStatusQuantityStatistic = (props) => {
 
     categories = ['Hoạt động', 'Ngưng hoạt động', 'Đang chờ kết quả dự thầu', 'Đang thực hiện', 'Hoàn thành']
     bidColumns = []
-    // 1: hoạt động, 0: ngưng hoạt động, 2: đang chờ kết quả dự thầu, 3: Đang thực hiện gói thầu, 4:hoàn thành
-    const numberOfActive = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 1)?.length
-    const numberOfInactive = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 0)?.length
-    const numberOfWaitForBidding = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 2)?.length
-    const numberOfInProcess = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 3)?.length
-    const numberOfComplete = biddingPackagesManager?.listBiddingPackages.filter((x) => x.status === 4)?.length
+   
+    const { biddingPackageQuantityStatistic } = props
+    // console.log("total: ", biddingPackageQuantityStatistic)
+    const {
+      numberOfActive,
+      numberOfInactive,
+      numberOfWaitForBidding,
+      numberOfInProcess,
+      numberOfComplete
+    } = biddingPackageQuantityStatistic
 
     // bidColumns = ["Số lượng gói thầu theo trạng thái", numberOfActive, numberOfInactive, numberOfWaitForBidding, numberOfInProcess, numberOfComplete];
 
@@ -41,7 +45,7 @@ const BiddingStatusQuantityStatistic = (props) => {
   }
 
   const removePreviousChart = () => {
-    const chart = refBiddingStatusByQuantity.current
+    const chart = refBiddingPackageStatusQuantity.current
 
     if (chart) {
       while (chart.hasChildNodes()) {
@@ -58,7 +62,7 @@ const BiddingStatusQuantityStatistic = (props) => {
     // let catColor = ['#2ca02c', '#d62728', '#f57b0f', '#bab104', '#1f77b4']
 
     let chart = c3.generate({
-      bindto: refBiddingStatusByQuantity.current,
+      bindto: refBiddingPackageStatusQuantity.current,
       data: {
         // Dữ liệu biểu đồ
         columns: dataChart,
@@ -79,7 +83,8 @@ const BiddingStatusQuantityStatistic = (props) => {
       tooltip: {
         format: {
           value: function (value, ratio, id, index) {
-            return value
+            const percentage = (ratio * 100).toFixed(2) + '%';
+            return value + ' (' + percentage + ')';
           }
         }
       }
@@ -88,7 +93,7 @@ const BiddingStatusQuantityStatistic = (props) => {
 
   useEffect(() => {
     renderChart()
-  }, [JSON.stringify(biddingPackagesManager)])
+  }, [])
 
   return (
     <div className='box'>
@@ -96,7 +101,7 @@ const BiddingStatusQuantityStatistic = (props) => {
         <div className='box-title'>Thống kê trạng thái gói thầu</div>
       </div>
       <div className='box-body'>
-        <section ref={refBiddingStatusByQuantity}></section>
+        <section ref={refBiddingPackageStatusQuantity}></section>
       </div>
     </div>
   )
@@ -106,5 +111,5 @@ const mapStateToProps = (state) => state
 
 const mapDispatchToProps = {}
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(withTranslate(BiddingStatusQuantityStatistic))
-export { connectedComponent as BiddingStatusQuantityStatistic }
+const   connectedComponent = connect(mapStateToProps, mapDispatchToProps)(withTranslate(BiddingPackageStatusQuantityStatistic))
+export { connectedComponent as BiddingPackageStatusQuantityStatistic }

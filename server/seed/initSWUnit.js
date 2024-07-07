@@ -561,7 +561,7 @@ const initSWUnitData = async () => {
     {
       // 7: Fresher (4)
       name: "Nguyễn Minh Thành",
-      email: "nguyenminhthanh.vnist@gmail.com",
+      email: "nguyenminhthanhsw.vnist@gmail.com",
       password: hash,
       company: vnist._id
     },
@@ -1251,7 +1251,7 @@ const days = [
       identityCardNumber: 27201000003,
       identityCardDate: new Date("2015-10-20"),
       identityCardAddress: "Bắc Ninh",
-      emailInCompany: "nguyenvietdang.vnist@gmail.com",
+      emailInCompany: "nguyenvietdangsw.vnist@gmail.com",
       nationality: "Việt Nam",
       atmNumber: "104870480003",
       bankName: "ViettinBank",
@@ -2147,7 +2147,7 @@ const days = [
       identityCardNumber: 27201000007,
       identityCardDate: new Date("2015-10-20"),
       identityCardAddress: "Bắc Ninh",
-      emailInCompany: "nguyenminhthanh.vnist@gmail.com",
+      emailInCompany: "nguyenminhthanhsw.vnist@gmail.com",
       nationality: "Việt Nam",
       atmNumber: "104870480007",
       bankName: "ViettinBank",

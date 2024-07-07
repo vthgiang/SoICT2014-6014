@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { withTranslate } from "react-redux-multilingual"
 import getEmployeeSelectBoxItems, { getEmployeeSelectBoxItemsWithEmployeeData } from "../../../task/organizationalUnitHelper"
-import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from "../../projects/components/functionHelper"
+import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments, getListDepartmentsFromListUsers } from "../../projects/components/functionHelper"
 import { DialogModal, ErrorLabel, SelectBox } from "../../../../common-components"
 import ValidationHelper from "../../../../helpers/validationHelper"
 import ModalSalaryMembers from "../../projects/components/modalSalaryMembers"
@@ -17,12 +17,11 @@ const ProjectResourcesTab = (props) => {
     actionType, projectId
   } = props
   const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItemsWithEmployeeData(user.usersInUnitsOfCompany) : []
-  const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
+  // const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
+  const listDepartments = listUsers && listUsers?.length > 0 ? getListDepartmentsFromListUsers(listUsers) : []
   const [currentSalaryMembers, setCurrentSalaryMembers] = useState([])
   const listAssets = assetsManager && assetsManager?.listAssets?.length > 0 ? getAssetSelectBoxItems(assetsManager?.listAssets, translate) : []
   const listAssetGroups = assetsManager && assetsManager?.listAssets?.length > 0 ? getListAssetGroups(assetsManager?.listAssets, translate) : []
-
-  // console.log("listUsers: ", listUsers)
 
   const {
     managers,
