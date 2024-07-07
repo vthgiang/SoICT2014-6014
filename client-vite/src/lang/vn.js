@@ -2589,6 +2589,9 @@ export default {
       role_invalid_policy: 'Vai trò không thỏa mãn chính sách ủy quyền đã chọn',
       task_invalid_policy: 'Công việc không thỏa mãn chính sách ủy quyền đã chọn',
       link_invalid_policy: 'Trang thuộc vai trò không thỏa mãn chính sách ủy quyền đã chọn',
+      resource_invalid_policy: 'Tài nguyên không thỏa mãn chính sách ủy quyền đã chọn',
+      delegator_can_not_access_resources: 'Người ủy quyền không có quyền truy cập vào tài nguyên',
+      delegatee_already_has_access_right: 'Người nhận ủy quyền đã có quyền truy cập vào tài nguyên',
       log_activity_tab: {
         login: 'Đăng nhập vào hệ thống',
         switch_delegate_role: 'Chuyển sang vai trò ủy quyền ',
