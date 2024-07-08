@@ -138,6 +138,7 @@ module.exports = {
     Location: require('./common/location.model'),
     TotalOrder: require('./production/order/totalOrder.model'),
     SalesForecast: require('./production/order/salesForecast.model'),
+    RevenuesForecast: require('./production/order/revenuesForecast.model'),
 
     // plan
     Plan: require('./plan/plan.model'),
