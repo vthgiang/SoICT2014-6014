@@ -1,11 +1,11 @@
 services:
   database:
-#    container_name: database
+    #    container_name: database
     image: mongo
     ports:
       - "9040:27017"
     env_file:
-      - ./micro-services/database-service/.env
+      - ./server/.env
     volumes:
       - ./micro-services/database-service/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - service-db:/data/db
@@ -14,21 +14,22 @@ services:
     networks:
       - vnist-network
   client:
-    # container_name: client-service
+    #    container_name: client
     image: node:16-alpine
     ports:
-      - "9000:3000"
+      - "9000:4173"
     env_file:
       - ./client-vite/.env
     volumes:
       - ./client-vite:/app
       - ./client-vite/node_modules:/app/node_modules
-    command: sh -c "cd /app && npm install -f && npm i @material-ui/core -f && npm start"
+    command: sh -c "cd /app && npm install -f && npm run build && npm run preview"
+    working_dir: /app
     networks:
       - vnist-network
   server:
-    # container_name: server-service
-    image: node:16-alpine
+    #    container_name: server
+    image: tungnguyensnk/qlcv-server:latest
     ports:
       - "8000:8000"
     env_file:
@@ -36,15 +37,15 @@ services:
     volumes:
       - ./server:/app
       - ./server/node_modules:/app/node_modules
-    command: sh -c "cd /app && apk update && apk add --no-cache krb5-dev g++ make python3 py3-pip && npm install -f && npm start"
+    command: sh -c "cd /app && npm install -f && npm start"
     networks:
       - vnist-network
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.13.3-management
     environment:
-        RABBITMQ_DEFAULT_USER: guest
-        RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -52,28 +53,28 @@ services:
       - vnist-network
   kpi-service:
     container_name: kpi-service
-    image: node:16-alpine
+    image: tungnguyensnk/qlcv-server:latest
     # ports:
     #   - "7000:7000"
     env_file:
-      - ./micro-services/kpi-service/.env
+      - ./server/.env
     volumes:
       - ./micro-services/kpi-service:/app
       - ./micro-services/kpi-service/node_modules:/app/node_modules
-    command: sh -c "cd /app && apk update && apk add --no-cache python3 && npm install -f && npm start"
+    command: sh -c "cd /app && npm install -f && npm start"
     networks:
       - vnist-network
   task-service:
     container_name: task-service
-    image: node:16-alpine
+    image: tungnguyensnk/qlcv-server:latest
     # ports:
     #   - "6000:6000"
     env_file:
-      - ./micro-services/task-service/.env
+      - ./server/.env
     volumes:
       - ./micro-services/task-service:/app
       - ./micro-services/task-service/node_modules:/app/node_modules
-    command: sh -c "cd /app && apk update && apk add --no-cache python3 && npm install -f && npm start"
+    command: sh -c "cd /app && npm install -f && npm start"
     networks:
       - vnist-network
   production-service:

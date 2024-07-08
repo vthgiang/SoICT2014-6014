@@ -5520,7 +5520,7 @@ exports.saveTaskAttributes = async (portal, taskId, data) => {
             return [];
         }
     };
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map((attr) => {
         return {
             attributeId: attr.attributeId,

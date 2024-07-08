@@ -226,10 +226,11 @@ function ProjectCreateEditFormModal(props) {
       usersInProject,
       assets,
       kpiTarget,
-      proposals: {
-        startTime: startDate,
-        // tasks: projectTasks
-      },
+      // NOTE: có update proposals hay không ở đây
+      // proposals: {
+      //   startTime: startDate,
+      //   // tasks: projectTasks
+      // },
       tasksData: projectTasks
     }
 

@@ -414,6 +414,13 @@ const LINKS = [
       components: getComponentsInLink('/authorization-policies-management'),
   },
   {
+    url: '/delegation-policies-management',
+    description: 'Quản lý chính sách ủy quyền',
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink('/delegation-policies-management')
+  },
+  {
       url: "/authorization-logging",
       description: "Quản lý log truy cập phân quyền",
       category: LINK_CATEGORY.RBAC.name,
@@ -436,6 +443,19 @@ const LINKS = [
         ROOT_ROLES.ADMIN.name
     ],
     components: getComponentsInLink("/policies-management")
+  },
+  {
+    url: "/delegation-list",
+    description: "Danh sách ủy quyền",
+    category: LINK_CATEGORY.DELEGATION.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER,
+        ROOT_ROLES.DEPUTY_MANAGER,
+        ROOT_ROLES.EMPLOYEE,
+    ],
+    components: getComponentsInLink('/delegation-list')
   },
   {
     url: "/delegation-receive",
@@ -915,19 +935,19 @@ const LINKS = [
     ],
     components: getComponentsInLink("/bidding-project-template"),
   },
-  {
-    url: "/tags-management",
-    description: "Quản lý danh mục tag",
-    category: LINK_CATEGORY.BIDDING.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/tags-management"),
-  },
+  // {
+  //   url: "/tags-management",
+  //   description: "Quản lý danh mục tag",
+  //   category: LINK_CATEGORY.BIDDING.name,
+  //   roles: [
+  //     ROOT_ROLES.SUPER_ADMIN.name,
+  //     ROOT_ROLES.ADMIN.name,
+  //     ROOT_ROLES.MANAGER.name,
+  //     ROOT_ROLES.DEPUTY_MANAGER.name,
+  //     ROOT_ROLES.EMPLOYEE.name,
+  //   ],
+  //   components: getComponentsInLink("/tags-management"),
+  // },
 
   // KPI
   {
@@ -2482,6 +2502,19 @@ const LINKS = [
     components: getComponentsInLink("/project/projects-list"),
   },
   {
+    url: "/tags-management",
+    description: "Quản lý thẻ công việc (tags)",
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/tags-management"),
+  },
+  {
     url: "/project/project-details",
     description: "Chi tiết dự án",
     category: LINK_CATEGORY.PROJECT.name,
@@ -2908,6 +2941,19 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/project/project-proposal"),
+  },
+  {
+    url: "/project/project-statistic",
+    description: "Thống kê danh sách dự án",
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      // ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/project/project-statistic"),
   },
 
   {

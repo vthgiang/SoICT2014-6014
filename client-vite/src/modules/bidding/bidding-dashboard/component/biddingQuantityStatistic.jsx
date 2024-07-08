@@ -83,41 +83,6 @@ const BiddingStatusQuantityStatistic = (props) => {
           }
         }
       }
-
-      // padding: {
-      //     top: 20,
-      //     bottom: 20,
-      //     right: 20
-      // },
-
-      // data: {
-      //     columns: dataChart,
-      //     type: "bar",
-      //     labels: true,
-      //     color: function (color, d) {
-      //         return catColor[d.x];
-      //     }
-      // },
-      // bar: {
-      //     width: {
-      //         ratio: 0.2
-      //     }
-      // },
-
-      // axis: {
-      //     x: {
-      //         type: 'categories',
-      //         categories: categories,
-      //         label: "Trạng thái"
-      //     },
-      //     y: {
-      //         label: "Số lượng gói thầu",
-      //     },
-      // },
-
-      // zoom: {
-      //     enabled: false
-      // }
     })
   }
 

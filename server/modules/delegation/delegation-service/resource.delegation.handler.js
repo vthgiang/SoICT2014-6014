@@ -3,7 +3,8 @@ const {
     Resource,
     Requester,
     DynamicAssignment,
-    DelegationPolicy
+    DelegationPolicy,
+    UserRole
 } = require('../../../models');
 const {
     connect,
@@ -12,6 +13,7 @@ const mongoose = require('mongoose');
 const { isToday, compareDate } = require('../../../helpers/functionHelper');
 const schedule = require('node-schedule');
 const { BaseDelegationHandler } = require('./base.delegation.handler');
+const RequesterService = require('../../auth-service/requester/requester.service')
 
 function ResourceDelegationHandler() {
     BaseDelegationHandler.call(this);
@@ -26,30 +28,24 @@ ResourceDelegationHandler.prototype = Object.create(BaseDelegationHandler.protot
 Object.assign(ResourceDelegationHandler.prototype, {
     constructor: ResourceDelegationHandler,
 
-    isRequesterCanAccessResources: async function(requester, resources) {
-        if (!apis || !apis.length) return true;
-        
-        let parttern = service.apiPrefix;
-        parttern = new RegExp(`^${parttern.replace(/\*/g, '.*')}`);
-        for (let i = 0; i < apis.length; i++){
-            const resource = systemApis.find((x) => x.id == apis[i]);
-
-            if (parttern.test(resource.path)) continue;
-
-            const internalPolicies = service.internalPolicies.filter(
-                (policy) =>
-                    doesPolicyContainResource(policy.resources, resource.path) &&
-                    policy.actions.includes(resource.method) &&
-                    policy.effectiveStartTime.getTime() <= Date.now() &&
-                    policy.effectiveEndTime.getTime() >= Date.now(),
-                );
-            if (internalPolicies.length > 0 && internalPolicies.every((policy) => policy.effect === 'Allow'))
-                continue;
-
-            return false;
+    isRequesterCanAccessResources: async function(portal, requesterId, resourcesId) {
+        const requester = await Requester(connect(DB_CONNECTION, portal)).findById(requesterId);
+        if (requester.type === 'User') {
+            const userRoles = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: requester.refId }).select('roleId');
+            const roleIds = userRoles.map(x => x.roleId);
+            for (let i=0; i<roleIds.length; i++) {
+                const accessibleResources = await RequesterService.getAccessibleResources(portal, requesterId, roleIds[i]);
+                const canAccess = accessibleResources.some(x => x.id == resourcesId);
+                if (canAccess) {
+                    return true;
+                }
+            }
         }
 
-        return true;
+        const accessibleResources = await RequesterService.getAccessibleResources(portal, requesterId);
+        const canAccess = accessibleResources.some(x => x.id == resourcesId);
+        
+        return canAccess;
     },
 
     createDelegation: async function(portal, data, logs = []) {
@@ -77,9 +73,13 @@ Object.assign(ResourceDelegationHandler.prototype, {
             throw ['delegation_name_exist'];
         }
 
-        // if (!isRequesterCanAccessResources(delegator, data.delegateObject)){
-        //     throw ['delegator_can_not_access_resources'];
-        // }
+        if (!(await this.isRequesterCanAccessResources(portal, delegator._id, data.delegateObject))){
+            throw ['delegator_can_not_access_resources'];
+        }
+
+        if ((await this.isRequesterCanAccessResources(portal, delegatee._id, data.delegateObject))){
+            throw ['delegatee_already_has_access_right'];
+        }
 
         await this.checkDelegationPolicy(portal, policy, delegator, delegatee, delegateObject);
 

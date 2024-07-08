@@ -3,19 +3,23 @@ import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { ProjectActions } from '../redux/actions'
 import moment from 'moment'
-import { getEndDateOfProject, renderProjectTypeText } from './functionHelper'
+import { getEndDateOfProject, getUserIdToText, renderProjectTypeText } from './functionHelper'
+import { ToolTip } from '../../../../common-components'
+import { getEmployeeSelectBoxItemsWithEmployeeData } from '../../../task/organizationalUnitHelper'
 
 const DetailContent = (props) => {
-  const { translate, projectDetail, projectDetailId, currentProjectTasks } = props
+  const { translate, projectDetail, projectDetailId, currentProjectTasks, user } = props
 
+  const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItemsWithEmployeeData(user.usersInUnitsOfCompany) : []
+  const idToText = listUsers && listUsers?.length > 0 ? getUserIdToText(listUsers) : {}
   return (
     <div className='description-box' style={{ lineHeight: 1.5 }}>
       <div className='row'>
         {/* Tên dự án */}
-        <div className='col-md-6'>
+        <div className='col-md-12'>
           <div className='form-horizontal'>
             <div className='form-group'>
-              <strong className='col-sm-4'>{translate('project.detail_link')}</strong>
+              <strong className='col-sm-2'>{translate('project.name')}</strong>
               <a className='col-sm-8' href={`/project/project-details?id=${projectDetail?._id}`} target='_blank'>
                 {projectDetail ? projectDetail?.name : null}
               </a>
@@ -24,14 +28,14 @@ const DetailContent = (props) => {
         </div>
 
         {/* Hình thức quản lý dự án */}
-        <div className='col-md-6'>
+        {/* <div className='col-md-6'>
           <div className='form-horizontal'>
             <div className='form-group'>
               <strong className='col-sm-4'>Hình thức quản lý dự án</strong>
               <div className='col-sm-8'>{projectDetail ? translate(renderProjectTypeText(projectDetail?.projectType)) : null}</div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Ngày bắt đầu */}
@@ -53,7 +57,7 @@ const DetailContent = (props) => {
             <div className='form-group'>
               <strong className='col-sm-4'>{translate('project.endDate')}</strong>
               <div className='col-sm-8'>
-                <span>{currentProjectTasks ? moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY') : null}</span>
+                <span>{projectDetail ? moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY') : null}</span>
               </div>
             </div>
           </div>
@@ -62,14 +66,14 @@ const DetailContent = (props) => {
 
       {/* Người quản lý dự án */}
       <div className='row'>
+
+        {/* Đơn vị tính thời gian */}
         <div className='col-md-6'>
           <div className='form-horizontal'>
             <div className='form-group'>
-              <strong className='col-sm-4'>{translate('project.manager')}</strong>
+              <strong className='col-sm-4'>{translate('project.unitTime')}</strong>
               <div className='col-sm-8'>
-                <span>
-                  {projectDetail && projectDetail?.projectManager ? projectDetail?.projectManager.map((o) => o.name).join(', ') : null}
-                </span>
+                <span>{projectDetail && projectDetail?.unitTime ? translate(`project.unit.${projectDetail?.unitTime}`) : null}</span>
               </div>
             </div>
           </div>
@@ -89,29 +93,34 @@ const DetailContent = (props) => {
       </div>
 
       <div className='row'>
-        {/* Thành viên tham gia */}
-        <div className='col-md-6'>
+        <div className='col-md-12'>
           <div className='form-horizontal'>
             <div className='form-group'>
-              <strong className='col-sm-4'>{translate('project.member')}</strong>
+              <strong className='col-sm-2'>{translate('project.manager')}</strong>
               <div className='col-sm-8'>
                 <span>
-                  {projectDetail && projectDetail?.responsibleEmployees
-                    ? projectDetail?.responsibleEmployees.map((o) => o.name).join(', ')
+                  {projectDetail && projectDetail?.projectManager
+                    ? <ToolTip dataTooltip={projectDetail?.projectManager?.map((item) => idToText[item?._id] ? idToText[item?._id] : item?.name)} />
                     : null}
                 </span>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Đơn vị tính thời gian */}
-        <div className='col-md-6'>
+      </div>
+      <div className='row'>
+        
+        {/* Thành viên tham gia */}
+        <div className='col-md-12'>
           <div className='form-horizontal'>
             <div className='form-group'>
-              <strong className='col-sm-4'>{translate('project.unitTime')}</strong>
+              <strong className='col-sm-2'>{translate('project.member')}</strong>
               <div className='col-sm-8'>
-                <span>{projectDetail && projectDetail?.unitTime ? translate(`project.unit.${projectDetail?.unitTime}`) : null}</span>
+                <span>
+                  {projectDetail && projectDetail?.responsibleEmployees
+                    ? <ToolTip dataTooltip={projectDetail?.responsibleEmployees?.map((item) => idToText[item?._id] ? idToText[item?._id] : item?.name)} />
+                    : null}
+                </span>
               </div>
             </div>
           </div>
@@ -122,8 +131,8 @@ const DetailContent = (props) => {
 }
 
 function mapStateToProps(state) {
-  const project = state.project
-  return { project }
+  const { project, user } = state
+  return { project, user }
 }
 
 const mapDispatchToProps = {

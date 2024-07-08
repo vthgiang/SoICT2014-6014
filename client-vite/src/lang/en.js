@@ -2515,6 +2515,9 @@ export default {
       role_invalid_policy: 'Role does not satisfy chosen delegation policy',
       task_invalid_policy: 'Task does not satisfy chosen delegation policy',
       link_invalid_policy: 'Links of role do not satisfy chosen delegation policy',
+      resource_invalid_policy: 'Resource do not satisfy chosen delegation policy',
+      delegator_can_not_access_resources: 'Delegator has no access right to resource',
+      delegatee_already_has_access_right: 'Delegatee already has access right to resource',
       log_activity_tab: {
         login: 'Login to system ',
         switch_delegate_role: 'Switch to delegate role ',
