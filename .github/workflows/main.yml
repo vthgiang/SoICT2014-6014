@@ -24,7 +24,7 @@ jobs:
           script: |
             cd root/
             if [ ! -d "qlcv-refactor" ]; then
-              git clone -b dev git@github.com:VNISTResearch/qlcv-refactor.git
+              git clone -b dev https://github.com/VNISTResearch/qlcv-refactor.git
             fi
             cd qlcv-refactor
             git pull
