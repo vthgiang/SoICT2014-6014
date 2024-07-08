@@ -1,66 +1,62 @@
-import { sendRequest } from '../../../../../helpers/requestHelper'
+import { sendRequest } from '@helpers/requestHelper.jsx'
 
-export const exampleServices = {
-  getExamples,
-  deleteExamples,
-  createExample,
-  editExample
+export const RoutePickingServices = {
+  getAllChemins,
+  getChemin,
+  createRoutePicking
+  // deleteExamples,
+  // createExample,
+  // editExample
 }
 
-function getExamples(queryData) {
+function getAllChemins(queryData) {
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/examples`,
+      url: `${process.env.REACT_APP_SERVER}/route-picking/`,
       method: 'GET',
-      params: {
-        exampleName: queryData?.exampleName ? queryData.exampleName : '',
-        page: queryData?.page ? queryData.page : null,
-        perPage: queryData?.perPage ? queryData.perPage : null
-      }
+      params: queryData
     },
     false,
     true,
-    'manage_example'
+    'manage_warehouse.route_picking_management'
   )
 }
 
-function deleteExamples(data) {
+function getChemin(id) {
+  // console.log(id)
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/examples`,
-      method: 'DELETE',
-      data: {
-        exampleIds: data?.exampleIds
-      }
+      url: `${process.env.REACT_APP_SERVER}/route-picking/chemin-detail/${id}`,
+      method: 'GET'
     },
+    false,
     true,
-    true,
-    'manage_example'
+    'manage_warehouse.route_picking_management'
   )
 }
 
-function createExample(data) {
+function createRoutePicking(data) {
   return sendRequest(
     {
-      url: `${process.env.REACT_APP_SERVER}/examples`,
+      url: `${process.env.REACT_APP_SERVER}/route-picking/simulate_wave`,
       method: 'POST',
       data
     },
     true,
     true,
-    'manage_example'
+    'manage_warehouse.simulate_wave'
   )
 }
 
-function editExample(id, data) {
-  return sendRequest(
-    {
-      url: `${process.env.REACT_APP_SERVER}/examples/${id}`,
-      method: 'PATCH',
-      data
-    },
-    true,
-    true,
-    'manage_example'
-  )
-}
+// function editExample(id, data) {
+//   return sendRequest(
+//     {
+//       url: `${process.env.REACT_APP_SERVER}/examples/${id}`,
+//       method: 'PATCH',
+//       data
+//     },
+//     true,
+//     true,
+//     'manage_example'
+//   )
+// }
