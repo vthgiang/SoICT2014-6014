@@ -335,6 +335,7 @@ exports.create = async (portal, data, userId, company) => {
         const tasksToAdd = data?.tasksData.map((task) => {
             return {
                 ...task,
+                status: 'proposal',
                 taskProject: project._id,
                 preceedingTasks: task?.preceedingTasks && task?.preceedingTasks?.length ? task?.preceedingTasks.map((item) => {
                     return {
