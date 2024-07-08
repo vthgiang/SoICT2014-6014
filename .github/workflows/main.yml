@@ -22,12 +22,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd root/
-            if [ ! -d "qlcv-refactor" ]; then
-              git clone -b dev https://github.com/VNISTResearch/qlcv-refactor.git
-            fi
+            # cd root/
+            # if [ ! -d "qlcv-refactor" ]; then
+            #   git clone -b dev https://github.com/VNISTResearch/qlcv-refactor.git
+            # fi
             cd qlcv-refactor
-            git pull
+            git pull origin dev
             cp server/.env.example server/.env
             cp client-vite/.env.example client-vite/.env
             docker-compose -f docker-compose.yml up -d --build
