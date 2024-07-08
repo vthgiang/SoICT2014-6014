@@ -52,10 +52,10 @@ const AssignTaskInformation = (props) => {
     <div>
       <div className='text-2xl font-bold'>
         Thông tin phân công
-        {projectDetail?.status === 'proposal' || projectDetail?.status === 'wait_for_approval' && 
-          <div>
-            Chưa có thông tin phân công
-          </div>
+        {(projectDetail?.status === 'proposal' || projectDetail?.status === 'wait_for_approval') && 
+          <span className='pl-4 font-italic font-normal text-red-500'>
+            <i>Chưa có thông tin phân công</i>
+          </span>
         }
       </div>
       <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
