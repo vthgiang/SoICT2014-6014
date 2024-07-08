@@ -476,3 +476,99 @@ exports.proposalForProject = async (portal, id, data) => {
     throw error
   }
 }
+
+exports.assignForProjectFromProposal = async (portal, id) => {
+  try {
+    const project = await Project(connect(DB_CONNECTION, portal)).findOne({
+      _id: id
+    }).populate({ path: 'kpiTarget.type' }).lean().exec();
+
+    if (!project) {
+      throw ['project_not_found'];
+    }
+
+    if (!project?.proposals || !project?.proposals?.isComplete || !project?.proposals?.assignment || !project?.proposals?.assignment?.length) {
+      throw ['project_not_complete_proposal'];
+    }
+
+    if (project?.status !== 'proposal' && project?.status !== 'wait_for_approval') {
+      throw ['project_cannot_proposal_assign'];
+    }
+
+    // Update project status
+    await Project(connect(DB_CONNECTION, portal)).updateOne({ _id: id }, { status: 'inprocess' });
+
+    const { assignment } = project?.proposals;
+
+    const updateTasksPromises = assignment.map(async assignmentItem => {
+      const { task, assets, assignee } = assignmentItem;
+      // console.log("task: ", task);
+
+      // Find Task in DB with task info
+      const taskInDB = await Task(connect(DB_CONNECTION, portal)).findOne({
+        taskProject: id,
+        code: task?.code
+      });
+      // console.log("taskInDB: ", taskInDB);
+
+      // Update taskInDB with new task information
+      if (taskInDB) {
+        const updatedFields = {
+          startDate: task?.startDate,
+          endDate: task?.endDate,
+          assignee: assignee?._id,
+          assets: assets && assets?.length ? assets?.map((item) => item?._id) : [],
+          responsibleEmployees: [task?.assignee?._id],
+          status: 'inprocess'
+        };
+
+        taskInDB.set(updatedFields);
+        await taskInDB.save();
+
+        // Update status of all assets assigned to the task
+        const updateAssetsPromises = assets.map(async (asset) => {
+          const assetInDB = await Asset(connect(DB_CONNECTION, portal)).findById(asset?._id);
+          if (assetInDB) {
+            assetInDB.status = 'in_use'; // Update the status
+            if (!assetInDB?.usageLogs || !assetInDB?.usageLogs?.length) {
+              assetInDB.usageLogs = [];
+            }
+            assetInDB.usageLogs.push({
+              startDate: new Date(task?.startDate),
+              endDate: new Date(task?.endDate)
+            });
+            await assetInDB.save();
+            // console.log("Updated asset: ", assetInDB?.assetName);
+          } else {
+            // console.log("Asset not found in DB: ", asset?._id);
+            throw ['not_found_asset_in_task']
+          }
+        });
+
+        await Promise.all(updateAssetsPromises);
+
+      } else {
+        // console.log("Task not found in DB, consider creating a new task.");
+        throw ['not_found_task_in_project']
+      }
+    });
+
+    await Promise.all(updateTasksPromises);
+
+    // Find and return the updated project
+    const updatedProject = await Project(connect(DB_CONNECTION, portal)).findOne({
+      _id: id
+    }).populate({ path: 'kpiTarget.type' }).lean().exec();
+
+    return {
+      projectId: id,
+      proposalData: updatedProject?.proposals
+    }
+    
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+

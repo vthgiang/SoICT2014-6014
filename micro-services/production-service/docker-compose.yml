@@ -1,0 +1,13 @@
+services:
+  production-service:
+    container_name: production-service
+    image: node:alpine
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./node_modules:/app/node_modules
+      - ./:/app
+    command: sh -c "cd /app && npm install && npm start"
