@@ -44,7 +44,8 @@ const checkErrorAuth = (code) => {
     'service_off',
     'fingerprint_invalid',
     'service_permisson_denied',
-    'auth_error'
+    'auth_error',
+    'requester_not_found'
   ]
   if (error_auth.indexOf(code) !== -1) return true
   return false

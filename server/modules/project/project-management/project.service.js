@@ -450,7 +450,6 @@ exports.edit = async (portal, id, data) => {
     let project = await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id });
 
     if (!project) {
-        console.log("vao day")
         throw new Error('Project not found');
     }
 
@@ -554,17 +553,14 @@ exports.edit = async (portal, id, data) => {
 
     // Bước 5: Lấy lại dự án với các thông tin chi tiết
     project = await Project(connect(DB_CONNECTION, portal)).findById(project._id)
-        .populate({ path: "responsibleEmployees", select: "_id email name" })
+        .populate({ path: "responsibleEmployees", select: "_id name" })
         .populate({ path: "projectManager", select: "_id name email" })
         .populate({ path: "creator", select: "_id name email" })
-        .populate({ path: "tasks" });
-
+        .populate({ path: "assets", select: "_id assetName assetType group" })
+        .populate({ path: "responsibleEmployeesWithUnit", select: "unitId listUsers" })
+        .populate({ path: "kpiTarget.type", select: "_id name" })
+        .populate({ path: "tasks"});
     return project;
-
-    return await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id })
-        .populate({ path: "responsibleEmployees", select: "_id name email" })
-        .populate({ path: "projectManager", select: "_id name email" })
-        .populate({ path: "creator", select: "_id name email" })
 }
 
 /**

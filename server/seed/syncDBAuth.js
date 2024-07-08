@@ -108,7 +108,7 @@ const syncDBAuth = async () => {
     initModels(vnistDB);
 
     const superAdmin = await User(vnistDB).findOne({email: 'super.admin.vnist@gmail.com'});
-    
+
     // add components to Resource
     const components = await Component(vnistDB).find();
     const componentResources = components.map(x => ({
@@ -119,7 +119,7 @@ const syncDBAuth = async () => {
         ownerType: 'User',
         attributes: []
     }));
-    
+
     await Resource(vnistDB).insertMany(componentResources);
 
     // add links to Resource
@@ -132,7 +132,7 @@ const syncDBAuth = async () => {
         ownerType: 'User',
         attributes: []
     }));
-    
+
     await Resource(vnistDB).insertMany(linkResources);
 
     // add apis to Resource
@@ -145,7 +145,7 @@ const syncDBAuth = async () => {
         ownerType: 'User',
         attributes: []
     }));
-    
+
     await Resource(vnistDB).insertMany(apiResources);
 
     // add tasks to Resource
@@ -158,7 +158,7 @@ const syncDBAuth = async () => {
         ownerType: 'OrganizationalUnit',
         attributes: []
     }));
-    
+
     await Resource(vnistDB).insertMany(taskResources);
 
     // add Users to Requester
@@ -169,7 +169,7 @@ const syncDBAuth = async () => {
         type: 'User',
         attributes: []
     }));
-    
+
     await Requester(vnistDB).insertMany(userRequesters);
 
 
@@ -208,7 +208,7 @@ const syncDBAuth = async () => {
         type: 'Service',
         attributes: []
     }));
-    
+
     await Requester(vnistDB).insertMany(serviceRequesters);
 
     systemDB.close();
