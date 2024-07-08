@@ -32,7 +32,7 @@ exports.getAllForecasts = async (query, portal) => {
             .populate([
                 {
                     path: "good",
-                    select: "code name"
+                    select: "code name description"
                 }
             ]);
         console.log(allForecasts)    
