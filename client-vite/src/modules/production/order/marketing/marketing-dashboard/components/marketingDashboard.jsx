@@ -149,7 +149,7 @@ const MarketingDashboardComponent = (props) => {
       },
       title: {
         display: true,
-        text: 'COSTS & REVENUE',
+        text: 'Chi phí & Doanh thu',
         font: {
           size: 18,
           weight: 'bold'
@@ -168,7 +168,7 @@ const MarketingDashboardComponent = (props) => {
 
     const transData =
     {
-      label: 'Transactions',
+      label: 'Giao dịch',
       data: trans,
       backgroundColor: color(barChart.findIndex((el) => el === 'transactions'))
     }
@@ -176,7 +176,7 @@ const MarketingDashboardComponent = (props) => {
     const costs = data.length > 0 && data.map(item => item.totalCost);
     const costsData =
     {
-      label: 'Costs',
+      label: 'Chi phí',
       data: costs,
       backgroundColor: color(barChart.findIndex((el) => el === 'costs'))
     }
@@ -184,7 +184,7 @@ const MarketingDashboardComponent = (props) => {
     const clicks = data.length > 0 && data.map(item => item.totalClick);
     const clicksData =
     {
-      label: 'Clicks',
+      label: 'Lượt nhấp chuột',
       data: clicks,
       backgroundColor: color(barChart.findIndex((el) => el === "clicks"))
     }
@@ -192,7 +192,7 @@ const MarketingDashboardComponent = (props) => {
     const revenue = data.length > 0 && data.map(item => item.totalRevenue);
     const revenueData =
     {
-      label: 'Revenue',
+      label: 'Doanh thu',
       data: revenue,
       backgroundColor: color(barChart.findIndex((el) => el === 'revenue'))
     }
@@ -200,7 +200,7 @@ const MarketingDashboardComponent = (props) => {
     const impressions = data.length > 0 && data.map(item => item.totalImpression);
     const impressionsData =
     {
-      label: 'Impressions',
+      label: 'Hiển thị',
       data: impressions,
       backgroundColor: color(barChart.findIndex((el) => el === 'impressions'))
     }
@@ -226,7 +226,7 @@ const MarketingDashboardComponent = (props) => {
     const trans = data.length > 0 && data.map(item => item.totalTransaction);
     const transData =
     {
-      label: '% of Transactions',
+      label: '% tổng Giao dịch',
       data: trans,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -236,7 +236,7 @@ const MarketingDashboardComponent = (props) => {
     const costs = data.length > 0 && data.map(item => item.totalCost);
     const costsData =
     {
-      label: '% of Costs',
+      label: '% tổng Chi phí',
       data: costs,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -246,7 +246,7 @@ const MarketingDashboardComponent = (props) => {
     const clicks = data.length > 0 && data.map(item => item.totalClick);
     const clicksData =
     {
-      label: '% of Clicks',
+      label: '% tổng Lượt nhấp chuột',
       data: clicks,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -256,7 +256,7 @@ const MarketingDashboardComponent = (props) => {
     const revenue = data.length > 0 && data.map(item => item.totalRevenue);
     const revenueData =
     {
-      label: '% of Revenue',
+      label: '% tổng Doanh thu',
       data: revenue,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -266,7 +266,7 @@ const MarketingDashboardComponent = (props) => {
     const impressions = data.length > 0 && data.map(item => item.totalImpression);
     const impressionsData =
     {
-      label: '% of Impressions',
+      label: '% tổng số Hiển thị',
       data: impressions,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -384,13 +384,13 @@ const MarketingDashboardComponent = (props) => {
     {
       title: "Dữ liệu đơn",
       child: [
-        { title: 'Cost', onClick: () => addCard(costCard) },
-        { title: 'Click', onClick: () => addCard(clickCard) },
-        { title: 'Impression', onClick: () => addCard(impressionCard) },
-        { title: 'Session', onClick: () => addCard(sessionCard) },
-        { title: 'CPC', onClick: () => addCard(CPCCard) },
-        { title: 'Transaction', onClick: () => addCard(transactionCard) },
-        { title: 'Revenues', onClick: () => addCard(revenuesCard) },
+        { title: 'Chi phí ', onClick: () => addCard(costCard) },
+        { title: ' Lượt nhấp chuột', onClick: () => addCard(clickCard) },
+        { title: 'Hiển thị ', onClick: () => addCard(impressionCard) },
+        { title: 'Phiên ', onClick: () => addCard(sessionCard) },
+        { title: 'CPC ', onClick: () => addCard(CPCCard) },
+        { title: 'Giao dịch', onClick: () => addCard(transactionCard) },
+        { title: 'Doanh thu', onClick: () => addCard(revenuesCard) },
         { title: 'ROIM', onClick: () => addCard(ROIMCard) },
       ],
     },
@@ -414,23 +414,23 @@ const MarketingDashboardComponent = (props) => {
       title: "Chuyển giá trị",
       child: [
         {
-          title: 'Costs',
+          title: 'Chi phí',
           onClick: () => changeDoughnutCurrent(["costs"])
         },
         {
-          title: 'Clicks',
+          title: 'Lượt nhấp chuột ',
           onClick: () => changeDoughnutCurrent(["clicks"])
         },
         {
-          title: 'Impressions',
+          title: ' Hiển thị',
           onClick: () => changeDoughnutCurrent(["impressions"])
         },
         {
-          title: 'Transactions',
+          title: 'Giao dịch',
           onClick: () => changeDoughnutCurrent(["transactions"])
         },
         {
-          title: 'Revenue',
+          title: 'Doanh thu',
           onClick: () => changeDoughnutCurrent(["revenue"])
         },
       ]
@@ -448,23 +448,23 @@ const MarketingDashboardComponent = (props) => {
       title: "Chuyển giá trị 1",
       child: [
         {
-          title: 'Costs',
+          title: 'Chi phí ',
           onClick: () => changeBarChartValue("costs", 0)
         },
         {
-          title: 'Clicks',
+          title: 'Lượt nhấp chuột',
           onClick: () => changeBarChartValue("clicks", 0)
         },
         {
-          title: 'Impressions',
+          title: 'Hiển thị',
           onClick: () => changeBarChartValue("impressions", 0)
         },
         {
-          title: 'Transactions',
+          title: 'Giao dịch',
           onClick: () => changeBarChartValue("transactions", 0)
         },
         {
-          title: 'Revenue',
+          title: 'Doanh thu',
           onClick: () => changeBarChartValue("revenue", 0)
         },
       ]
@@ -473,23 +473,23 @@ const MarketingDashboardComponent = (props) => {
       title: "Chuyển giá trị 2",
       child: [
         {
-          title: 'Costs',
+          title: 'Chi phí',
           onClick: () => changeBarChartValue("costs", 1)
         },
         {
-          title: 'Clicks',
+          title: 'Lượt nhấp chuột',
           onClick: () => changeBarChartValue("clicks", 1)
         },
         {
-          title: 'Impressions',
+          title: 'Hiển thị',
           onClick: () => changeBarChartValue("impressions", 1)
         },
         {
-          title: 'Transactions',
+          title: 'Giao dịch',
           onClick: () => changeBarChartValue("transactions", 1)
         },
         {
-          title: 'Revenue',
+          title: 'Doanh thu ',
           onClick: () => changeBarChartValue("revenue", 1)
         },
       ]
@@ -688,7 +688,7 @@ const MarketingDashboardComponent = (props) => {
   React.useEffect(() => {
     const costCard = {
       key: "cost",
-      title: "Cost",
+      title: "Chi phí",
       image: <AttachMoneyIcon
         sx={{
           height: '56px',
@@ -707,7 +707,7 @@ const MarketingDashboardComponent = (props) => {
     }
     const clickCard = {
       key: "click",
-      title: "Clicks",
+      title: "Lượt nhấp chuột",
       image: <AdsClickIcon
         sx={{
           height: '56px',
@@ -726,7 +726,7 @@ const MarketingDashboardComponent = (props) => {
     }
     const impressionCard = {
       key: "impression",
-      title: "Impressions",
+      title: "Hiển thị",
       image: <VisibilityIcon
         sx={{
           height: '56px',
@@ -745,7 +745,7 @@ const MarketingDashboardComponent = (props) => {
     }
     const sessionCard = {
       key: "session",
-      title: "Sessions",
+      title: "Phiên ",
       image: <WebAssetIcon
         sx={{
           height: '56px',
@@ -784,7 +784,7 @@ const MarketingDashboardComponent = (props) => {
     }
     const transactionCard = {
       key: "transaction",
-      title: "Transactions",
+      title: "Giao dịch",
       image: <AttachMoneyIcon
         sx={{
           height: '56px',
@@ -803,7 +803,7 @@ const MarketingDashboardComponent = (props) => {
     }
     const revenueCard = {
       key: "revenue",
-      title: "Revenues",
+      title: "Doanh thu",
       image: <LocalAtmIcon
         sx={{
           height: '56px',
@@ -1444,22 +1444,22 @@ const MarketingDashboardComponent = (props) => {
             marginRight: '10px'
           }}
         />
-        <div className='campaign-manage-top-campaign-label'> Top Campaigns</div>
+        <div className='campaign-manage-top-campaign-label'> Top chiến dịch</div>
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
             <TableRow sx={{ backgroundColor: '#asad' }}>
-              <StyledTableCell>Name </StyledTableCell>
+              <StyledTableCell>Tên </StyledTableCell>
               <StyledTableCell>
-                Costs
+              Chi phí
                 <ArrowDropDownIcon />
               </StyledTableCell>
-              <StyledTableCell>Clicks</StyledTableCell>
-              <StyledTableCell>Impressions</StyledTableCell>
-              <StyledTableCell>Transactions</StyledTableCell>
-              <StyledTableCell>Revenue</StyledTableCell>
-              <StyledTableCell>Action</StyledTableCell>
+              <StyledTableCell>Lượt nhấp chuột</StyledTableCell>
+              <StyledTableCell>Hiển thị</StyledTableCell>
+              <StyledTableCell>Giao dịch</StyledTableCell>
+              <StyledTableCell>Doanh thu</StyledTableCell>
+              <StyledTableCell>Hành động</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
