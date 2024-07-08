@@ -39,3 +39,28 @@ exports.createForecast = async (req, res) => {
         });
     }
 };
+
+exports.getAllForecasts = async (req, res) => {
+    try {
+        // Lấy dữ liệu dự báo từ service
+        let allForecasts = await forecastService.getAllForecasts(req.query, req.portal);
+
+        await Log.info(req.user.email, "GET_ALL_FORECASTS", req.portal);
+
+        // Trả về dữ liệu dự báo cho frontend
+        res.status(200).json({
+            success: true,
+            messages: ["get_all_forecasts_successfully"],
+            content: allForecasts.allForecasts
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_ALL_FORECASTS", req.portal);
+        console.error('Error in getting forecasts:', error);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_all_forecasts_failed"],
+            content: error.message
+        });
+    }
+};

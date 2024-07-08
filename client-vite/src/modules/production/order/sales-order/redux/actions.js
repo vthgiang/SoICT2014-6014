@@ -14,6 +14,7 @@ export const SalesOrderActions = {
   getTopGoodsSold,
   getSalesForDepartments,
   getNumberWorksSalesOrder,
+  importSales
 }
 
 function createNewSalesOrder(data) {
@@ -287,4 +288,23 @@ function getNumberWorksSalesOrder(data) {
         })
       })
   }
+}
+
+function importSales(data) {
+  return (dispatch) => {
+    dispatch({ type: SalesOrderConstants.IMPORT_SALES_REQUEST });
+    SalesOrderSevices.importSales(data)
+      .then((res) => {
+        dispatch({ 
+          type: SalesOrderConstants.IMPORT_SALES_SUCCESS, 
+          payload: res.data.content 
+        });
+      })
+      .catch((err) => {
+        dispatch({ 
+          type: SalesOrderConstants.IMPORT_SALES_FAILURE, 
+          error: err 
+        });
+      });
+  };
 }

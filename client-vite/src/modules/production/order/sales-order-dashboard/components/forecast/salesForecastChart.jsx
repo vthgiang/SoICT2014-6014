@@ -70,8 +70,8 @@ const ForecastChart = ({ forecasts, timeFrame, productLimit }) => {
     };
 
     return (
-        <div>
-            <div id="forecastChart" style={{ height: '400px' }}></div>
+        <div className="box">
+            <div id="forecastChart" ></div>
         </div>
     );
 };

@@ -8,7 +8,7 @@ router.get('/count', auth, SalesOrderController.countSalesOrder);
 
 /** Dashboard: Top sản phẩm bán chạy theo số lượng */
 router.get('/get-top-good-sold', auth, SalesOrderController.getTopGoodsSold);
-
+router.post('/imports',auth,SalesOrderController.importSales);
 /** Dashboard: Doanh số bán hàng từng đơn vị */
 router.get('/get-sales-for-departments', auth, SalesOrderController.getSalesForDepartments);
 
