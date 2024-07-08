@@ -97,6 +97,7 @@ export default {
     },
     menu: {
       home: 'Trang chủ',
+      overview_dashboard: 'Thống kê',
       /** Quản lý rủi ro */
       bayesian_network_config: 'Cấu hình mạng rủi ro',
       risk_response_plan: 'Quản lý biện pháp ứng phó rủi ro',
@@ -107,7 +108,7 @@ export default {
       task_pert: 'Phân tích xác suất thành công',
       task_pert_dash: 'Phân tích quy trình',
       system_administration: 'Quản trị hệ thống',
-      forecast_model_management: 'Quản lý mô hình dự báo',
+      forecast_model_management: 'Quản lý tham số mô hình',
       OTD_forecast_model_management: 'Quản lý mô hình dự báo khả năng giao hàng đúng hạn',
       manage_configuration: 'Cấu hình hệ thống',
       manage_system: 'Sao lưu phục hồi',
@@ -222,6 +223,7 @@ export default {
       inventory_management: 'Quản lý lô hàng',
       storage_management: 'Quản lý thông tin lưu trữ',
       route_picking_management: 'Quản lý tuyến đường lấy hàng',
+      inventory_forecast: 'Dự báo tồn kho',
 
       manage_kpi_unit: 'KPI đơn vị',
       manage_kpi_personal: 'KPI cá nhân',
@@ -333,7 +335,7 @@ export default {
       marketing_campaign: 'Quản lý chiến dịch tiếp thị',
       marketing_campaign_detail: 'Chi tiết chiến dịch tiếp thị',
       marketing_channels_select: 'Chọn kênh chiến dịch tiếp thị',
-      marketing_dashboard: 'Thống kê hiệu quả tiếp thị',
+     
       marketing_forecast: 'Dự báo hiệu quả tiếp thị',
 
       // Quản lý kế hoạch sản xuất
@@ -372,10 +374,12 @@ export default {
       tasks_list: 'Danh sách công việc',
       phases_list: 'Danh sách giai đoạn',
       issues_list: 'Danh sách vấn đề',
+      tags_management: 'Quản lý thẻ công việc (tags)',
       project_report: 'Báo cáo dự án',
       project_evaluation: 'Thống kê đánh giá',
       project_create: 'Tạo dự án mới',
       project_proposal: 'Phân bổ nguồn lực dự án',
+      project_statistic: 'Thống kê danh sách dự án',
 
       // Quản lý vận chuyển 3
       manage_transport3: 'Quản lý vận chuyển',
@@ -2585,6 +2589,9 @@ export default {
       role_invalid_policy: 'Vai trò không thỏa mãn chính sách ủy quyền đã chọn',
       task_invalid_policy: 'Công việc không thỏa mãn chính sách ủy quyền đã chọn',
       link_invalid_policy: 'Trang thuộc vai trò không thỏa mãn chính sách ủy quyền đã chọn',
+      resource_invalid_policy: 'Tài nguyên không thỏa mãn chính sách ủy quyền đã chọn',
+      delegator_can_not_access_resources: 'Người ủy quyền không có quyền truy cập vào tài nguyên',
+      delegatee_already_has_access_right: 'Người nhận ủy quyền đã có quyền truy cập vào tài nguyên',
       log_activity_tab: {
         login: 'Đăng nhập vào hệ thống',
         switch_delegate_role: 'Chuyển sang vai trò ủy quyền ',

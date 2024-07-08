@@ -118,6 +118,7 @@ import { stocks } from '../modules/production/warehouse/stock-management/redux/r
 import { storage } from '../modules/production/warehouse/storage-management/redux/reducers'
 import { routes } from '../modules/production/warehouse/route-picking-management/redux/reducers'
 
+import {inventoryForecast} from '../modules/production/warehouse/inventory-forecast/redux/reducers'
 // crm
 import { cares } from '../modules/crm/care/redux/reducers'
 import { careTypes } from '../modules/crm/careType/redux/reducers'
@@ -350,6 +351,7 @@ const appReducer = combineReducers({
   requestManagements,
   storage,
   routes,
+  inventoryForecast,
   // customer management
   crm: combineReducers({
     customers,

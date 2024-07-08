@@ -6,7 +6,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0 --fix",
     "preview": "vite preview --host",
     "start": "env-cmd vite --host",
-    "build": "vite --max-old-space-size=4096 build",
+    "build": "node --max-old-space-size=8000 node_modules/vite/bin/vite.js build",
     "test": "vite test",
     "eject": "vite eject",
     "format": "prettier 'src/**/*.{js,jsx}' --write --config ./.prettierrc"
@@ -116,6 +116,7 @@
     "react-scripts": "^5.0.1",
     "react-sortable-hoc": "^2.0.0",
     "react-sortablejs": "^6.1.4",
+    "react-tabs": "^6.0.2",
     "react-tagsinput": "^3.19.0",
     "react-textarea-autosize": "^8.2.0",
     "react-toastify": "^5.5.0",

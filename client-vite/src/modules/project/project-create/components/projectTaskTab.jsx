@@ -8,7 +8,7 @@ import ValidationHelper from "../../../../helpers/validationHelper"
 import { getAssetCapaciyNameFromValue, getAssetTypeFromTypeId, getCapacityKeyText, getCapacityOptions, getCapacityValueText, getListAssetFromIds, getListAssetIDsFromAssetGroups, getListAssetTypes, getListCapacityValues, getOptionTextFromValueInSelectBoxItems } from "../../../../helpers/assetHelper"
 import ProjectModuleValidationHelper from "../../../../helpers/projectModuleValidationHelpers"
 import { getEmployeeSelectBoxItemsWithEmployeeData } from "../../../task/organizationalUnitHelper"
-import { convertToDate, getListDepartments } from "../../projects/components/functionHelper"
+import { convertAssetRequireToText, convertKPIIdToText, convertRequireAssigneeToText, convertToDate, getListDepartments } from "../../projects/components/functionHelper"
 import { getListMembersInProject } from "../../../task/projectMemberHelper"
 import { ProjectTaskViewInGantt } from "./projectTaskViewInGantt"
 import moment from "moment"
@@ -998,7 +998,7 @@ const ProjectTasksTab = (props) => {
                             value={requireAsset?.currentAssetType}
                             onChange={(e) => handleChangeCurrentTaskAssetTypeOrCapacity(e, 'currentAssetType')}
                             multiple={false}
-                            options={{ placeholder: 'Chọn loại tài sản' }}
+                            options={{ placeholder: 'Loại tài sản' }}
                           />
                         </td>
                         <td>
@@ -1022,7 +1022,7 @@ const ProjectTasksTab = (props) => {
                             value={requireAsset?.currentAssetCapacity}
                             onChange={(e) => handleChangeCurrentTaskAssetTypeOrCapacity(e, 'currentAssetCapacity')}
                             multiple={false}
-                            options={{ placeholder: 'Chọn năng lực sử dụng' }}
+                            options={{ placeholder: 'Năng lực SD' }}
                           />
                         </td>
                         <td>
@@ -1034,7 +1034,7 @@ const ProjectTasksTab = (props) => {
                             value={requireAsset?.currentAssetRequireType}
                             onChange={(e) => handleChangeCurrentTaskAssetTypeOrCapacity(e, 'currentAssetRequireType')}
                             multiple={false}
-                            options={{ placeholder: 'Chọn loại yêu cầu' }}
+                            options={{ placeholder: 'Loại yêu cầu' }}
                           />
                         </td>
                         <td>
@@ -1143,9 +1143,13 @@ const ProjectTasksTab = (props) => {
                   <td>{item?.preceedingTasks?.join(', ')}</td>
                   <td>{item?.estimateNormalTime}</td>
                   <td>{item?.tags && item?.tags.join(", ")}</td>
-                  <td>{item?.kpiInTask}</td>
-                  <td>{JSON.stringify(item?.requireAssignee)}</td>
-                  <td>{JSON.stringify(item?.requireAsset)}</td>
+                  <td>{convertKPIIdToText(item?.kpiInTask, listKPIOptions, translate)}</td>
+                  <td>
+                    <ToolTip dataTooltip={convertRequireAssigneeToText(item?.requireAssignee, listCapacityOptions, translate)} />
+                  </td>
+                  <td>
+                    <ToolTip dataTooltip={convertAssetRequireToText(item?.requireAsset, listAssetsTypes, assetCapacities, translate)} />
+                  </td>
                   <td>
                     <a
                       className='edit'

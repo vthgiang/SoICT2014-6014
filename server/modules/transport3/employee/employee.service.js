@@ -20,7 +20,6 @@ exports.getAllEmployeeTransport3 = async (portal, query, currentRole) => {
   const {page, limit} = query;
 
   let usersInDepartmentOfRole = await userService.getAllEmployeeOfUnitByRole(portal, currentRole);
-  console.log('usersInDepartmentOfRole', usersInDepartmentOfRole)
   let emailsInCompany = usersInDepartmentOfRole?.map((user) => user.userId.email);
   let employeesInDepartmentOfRole = await Employee(connect(DB_CONNECTION, portal)).find({emailInCompany: {$in: emailsInCompany}});
   let employees = await Transport3Employee(connect(DB_CONNECTION, portal)).find({}).populate('employee');
@@ -67,4 +66,12 @@ exports.confirmEmployeeTransport3 = async (portal, employeeId) => {
 
 exports.removeEmployeeTransport3 = async (portal, employeeId) => {
     await Transport3Employee(connect(DB_CONNECTION, portal)).deleteOne({_id: employeeId});
+}
+
+exports.getInfoEmployeeTransport3 = async (portal, employeeId) => {
+  return await Employee(connect(DB_CONNECTION, portal)).findOne({_id: employeeId});
+}
+
+exports.getMyEmployees = async (portal, user) => {
+  return await Employee(connect(DB_CONNECTION, portal)).findOne({emailInCompany: user.email});
 }

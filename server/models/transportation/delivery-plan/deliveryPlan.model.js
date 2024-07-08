@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
-const { Journey } = require("../..");
+// const { Journey } = require("../..");
 
 // Bảng kế hoạch vận chuyển hàng trong 1 ngày
 const DeliveryPlanSchema = new Schema(

@@ -4,6 +4,7 @@ const saleOrders = require('./SaleOrders.json');
 require("dotenv").config();
 const marketingCampaign = require('./MarketingCampaign.json');
 const marketingEffective = require("./MarketingEffective.json");
+
 const initSalesOrder = async () => {
     let connectOptions =
         process.env.DB_AUTHENTICATION === "true"
@@ -36,7 +37,6 @@ const initSalesOrder = async () => {
 
     initModels(vnistDB);
 
-
     var listMarketing1 = marketingCampaign.map((subCat) => {
         return {
             ...subCat,
@@ -66,115 +66,117 @@ const initSalesOrder = async () => {
         return array[Math.floor(Math.random() * array.length)];
     }
 
-    let listSales = [];
+    const batchSize = 1000; // Số lượng bản ghi trong mỗi lô
+    for (let i = 0; i < saleOrders.length; i += batchSize) {
+        let bulkOperations = saleOrders.slice(i, i + batchSize).map((salesOrder) => {
+            let product = products_in_stock.find(
+                (product) => product.code === String(salesOrder.product_id)
+            );
+            let marketingCampaign = listMarketing.find(
+                (marketing) => marketing.code == salesOrder.campaign_id
+            );
 
+            let customer = getRandomElement(listCustomers);
+            let user = getRandomElement(users);
 
-    for (let i = 0; i < saleOrders.length; i++) {
-        let salesOrder = saleOrders[i];
-        let product = products_in_stock.find(
-            (product) => product.code === String(salesOrder.product_id)
-        );
-        let marketingCampaign = listMarketing.find(
-            (marketing) => marketing.code == salesOrder.campaign_id
-        );
+            return {
+                insertOne: {
+                    document: {
+                        code: salesOrder.code,
+                        status: salesOrder.status,
+                        creator: user._id,
+                        customer: customer._id,
+                        customerName: customer.name,
+                        customerPhone: customer.mobilephoneNumber,
+                        customerAddress: customer.address,
+                        customerRepresent: customer.represent,
+                        customerTaxNumber: customer.taxNumber,
+                        customerEmail: customer.email,
+                        approvers: [
+                            {
+                                approver: users[1]._id,
+                                status: 2,
+                            },
+                        ],
+                        priority: 1,
+                        goods: [
+                            {
+                                good: product._id,
+                                pricePerBaseUnit: salesOrder.price,
+                                quantity: salesOrder.orders,
+                                productionCost: salesOrder.purchase_price,
+                                pricePerBaseUnitOrigin: product.pricePerBaseUnit,
+                                salesPriceVariance: product.salesPriceVariance,
+                                serviceLevelAgreements: [
+                                    {
+                                        descriptions: [
+                                            "Đóng gói đúng quy trình",
+                                            "Sản phẩm đi đầu về chất lượng",
+                                        ],
+                                        _id: listServiceLevelAgreements[0]._id,
+                                        title: "Chất lượng sản phẩm đi đầu",
+                                    },
+                                ],
+                                taxs: [
+                                    {
+                                        _id: listTaxs[0]._id,
+                                        code: listTaxs[0]._id,
+                                        name: "VAT",
+                                        description: listTaxs[0]._id,
+                                        percent: 5,
+                                    },
+                                ],
+                                amount: salesOrder.price,
+                                amountAfterDiscount: salesOrder.price,
+                                amountAfterTax: (salesOrder.price * 11) / 10,
+                            },
+                        ],
+                        discounts: [
+                            {
+                                _id: listDistcounts[5]._id,
+                                code: listDistcounts[5].code,
+                                type: listDistcounts[5].type,
+                                formality: listDistcounts[5].formality,
+                                name: listDistcounts[5].name,
+                                effectiveDate: listDistcounts[5].effectiveDate,
+                                expirationDate: listDistcounts[5].expirationDate,
+                                maximumFreeShippingCost: 20000,
+                            },
+                            {
+                                _id: listDistcounts[6]._id,
+                                code: listDistcounts[6].code,
+                                type: listDistcounts[6].type,
+                                formality: listDistcounts[6].formality,
+                                name: listDistcounts[6].name,
+                                effectiveDate: listDistcounts[6].effectiveDate,
+                                expirationDate: listDistcounts[6].expirationDate,
+                                discountedPercentage: 10,
+                            },
+                            {
+                                _id: listDistcounts[7]._id,
+                                code: listDistcounts[7].code,
+                                type: listDistcounts[7].type,
+                                formality: listDistcounts[7].formality,
+                                name: listDistcounts[7].name,
+                                effectiveDate: listDistcounts[7].effectiveDate,
+                                expirationDate: listDistcounts[7].expirationDate,
+                                loyaltyCoin: 1000,
+                            },
+                        ],
+                        shippingFee: 10000,
+                        createdAt: salesOrder.date,
+                        coin: 500,
+                        paymentAmount: (salesOrder.price * salesOrder.orders * 11) / 10 + 10000,
+                        note: "Khách hàng quen thuộc",
+                        marketingCampaign: marketingCampaign._id,
+                    }
+                }
+            };
+        });
 
-        let customer = getRandomElement(listCustomers);
-        let user = getRandomElement(users);
-        let newSaleOrder = {
-            code: salesOrder.code,
-            status: salesOrder.status,
-            creator: user._id,
-            customer: customer._id,
-            customerName: customer.name,
-            customerPhone: customer.mobilephoneNumber,
-            customerAddress: customer.address,
-            customerRepresent: customer.represent,
-            customerTaxNumber: customer.taxNumber,
-            customerEmail: customer.email,
-            approvers: [
-                {
-                    approver: users[1]._id,
-                    status: 2,
-                },
-            ],
-            priority: 1,
-            goods: [
-                {
-                    good: product._id,
-                    pricePerBaseUnit: salesOrder.price,
-                    quantity: salesOrder.orders,
-                    productionCost: salesOrder.purchase_price,
-                    pricePerBaseUnitOrigin: product.pricePerBaseUnit,
-                    salesPriceVariance: product.salesPriceVariance,
-            //         serviceLevelAgreements: [
-            //             {
-            //                 descriptions: [
-            //                     "Đóng gói đúng quy trình",
-            //                     "Sản phẩm đi đầu về chất lượng",
-            //                 ],
-            //                 _id: listServiceLevelAgreements[0]._id,
-            //                 title: "Chất lượng sản phẩm đi đầu",
-            //             },
-            //         ],
-            //         taxs: [
-            //             {
-            //                 _id: listTaxs[0]._id,
-            //                 code: listTaxs[0]._id,
-            //                 name: "VAT",
-            //                 description: listTaxs[0]._id,
-            //                 percent: 5,
-            //             },
-            //         ],
-            //         amount: salesOrder.price,
-            //         amountAfterDiscount: salesOrder.price,
-            //         amountAfterTax: (salesOrder.price * 11) / 10,
-            //     },
-            // ],
-            // discounts: [
-            //     {
-            //         _id: listDistcounts[5]._id,
-            //         code: listDistcounts[5].code,
-            //         type: listDistcounts[5].type,
-            //         formality: listDistcounts[5].formality,
-            //         name: listDistcounts[5].name,
-            //         effectiveDate: listDistcounts[5].effectiveDate,
-            //         expirationDate: listDistcounts[5].expirationDate,
-            //         maximumFreeShippingCost: 20000,
-            //     },
-            //     {
-            //         _id: listDistcounts[6]._id,
-            //         code: listDistcounts[6].code,
-            //         type: listDistcounts[6].type,
-            //         formality: listDistcounts[6].formality,
-            //         name: listDistcounts[6].name,
-            //         effectiveDate: listDistcounts[6].effectiveDate,
-            //         expirationDate: listDistcounts[6].expirationDate,
-            //         discountedPercentage: 10,
-            //     },
-            //     {
-            //         _id: listDistcounts[7]._id,
-            //         code: listDistcounts[7].code,
-            //         type: listDistcounts[7].type,
-            //         formality: listDistcounts[7].formality,
-            //         name: listDistcounts[7].name,
-            //         effectiveDate: listDistcounts[7].effectiveDate,
-            //         expirationDate: listDistcounts[7].expirationDate,
-            //         loyaltyCoin: 1000,
-                },
-            ],
-            shippingFee: 10000,
-            deliveryTime: salesOrder.date,
-            coin: 500,
-            paymentAmount: (salesOrder.price * salesOrder.orders * 11) / 10 + 10000,
-            note: "Khách hàng quen thuộc",
-            marketingCampaign: marketingCampaign._id,
-        };
-
-        listSales.push(newSaleOrder);
-
+        await SalesOrder(vnistDB).bulkWrite(bulkOperations);
+        console.log(`Đã chèn xong lô từ ${i} đến ${i + batchSize - 1}`);
     }
-    await SalesOrder(vnistDB).insertMany(listSales);
-   
 }
 
 initSalesOrder().then(() => {

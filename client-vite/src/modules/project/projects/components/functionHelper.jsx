@@ -988,3 +988,77 @@ export const calculateRecommendation = async (taskData, aimTime) => {
   // Trả về kết quả cuối cùng
   return ans
 }
+
+export const getListDepartmentsFromListUsers = (listUsersWithUnit) => {
+  return listUsersWithUnit.map((item) => {
+    return {
+      text: item?.text,
+      value: item?.unit
+    }
+  })
+}
+
+export const getUserIdToText = (listDepartments) => {
+  const idToText = {};
+  if (!listDepartments || !listDepartments?.length) {
+    return {}
+  }
+  listDepartments.forEach(department => {
+    // console.log("department: ", department)
+    if (department?.value && department?.value?.length > 0) {
+      department.value.forEach(member => {
+        idToText[member.value] = member.text;
+      });
+    }
+  });
+
+  return idToText
+}
+
+export const convertKPIIdToText = (kpiValue, listKPIs, translate) => {
+  let kpiItem = listKPIs?.find((item) => item?.value === kpiValue)
+  if (kpiItem) {
+    return kpiItem?.text
+  } else {
+    return 'NO_KPI_NAME'
+  }
+}
+
+export const convertRequireAssigneeToText = (requireAssignee, listCapacitiesOptions, translate) => {
+  let result = [];
+  if (!requireAssignee || !Object.keys(requireAssignee)) {
+    return []
+  }
+
+  for (let key in requireAssignee) {
+    let capacity = listCapacitiesOptions.find(cap => cap.value === key);
+    
+    if (capacity) {
+      let option = capacity.options.find(opt => opt.value === requireAssignee[key]);
+      
+      if (option) {
+        result.push(`${capacity.text}: ${option.key}`);
+      }
+    }
+  }
+
+  return result;
+};
+
+export const convertAssetRequireToText = (requireAsset, listAssetTypesOptions, listAssetCapacitiesOptions, translate) => {
+  if (!requireAsset) {
+    return []
+  }
+
+  let listAssetRequire = []
+  requireAsset.forEach((requireAssetItem) => {
+    const { requireType, number, type, capacityValue } = requireAssetItem
+    let requireTypeText = requireType === 'optional' ? 'Tùy chọn' : 'Bắt buộc'
+    let typeText = listAssetTypesOptions.find((item) => item?.value === type)?.text || 'NO_TYPE_NAME'
+    let capacityValueText = listAssetCapacitiesOptions.find((item) => item?.value === capacityValue)?.text || 'NO_CAPACITY_NAME'
+
+    listAssetRequire.push(`Loại: ${typeText} - Số lượng: ${number} - Khả năng sử dụng: ${capacityValueText} - Loại yêu cầu: ${requireTypeText}`)
+  })
+
+  return listAssetRequire
+}

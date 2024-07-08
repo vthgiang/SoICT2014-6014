@@ -6,9 +6,11 @@ import {OrderActions} from '@modules/transport3/order/redux/actions';
 import {vehicleActions} from '@modules/transport3/vehicle/redux/actions';
 
 const ScheduleCreateInfo = (props) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules) || [];
+  const listOrdered = listSchedules.map(schedule => schedule.orders).flat().map(order => order.order._id);
   const listOrders = useSelector(state => state.orders.listOrders)
-    .filter(order => order.status === 2 && order.transportType !== 3);
+    .filter(order => order.status === 2 && order.transportType !== 3).filter(order => !listOrdered.includes(order._id));
   const listVehicle = useSelector(state => state.T3vehicle.listVehicle)
 
   useEffect(() => {
@@ -36,7 +38,8 @@ const ScheduleCreateInfo = (props) => {
               <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div className="form-group">
                   <label>Ghi chú</label>
-                  <textarea className="form-control" rows="1" placeholder="Ghi chú" value={props.note} onChange={props.handleNoteChange}/>
+                  <textarea className="form-control" rows="1" placeholder="Ghi chú" value={props.note}
+                            onChange={props.handleNoteChange}/>
                 </div>
               </div>
               <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -94,5 +97,5 @@ const ScheduleCreateInfo = (props) => {
   )
 }
 
-export default withTranslate(ScheduleCreateInfo)
+export default withTranslate(ScheduleCreateInfo);
 

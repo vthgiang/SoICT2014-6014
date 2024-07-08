@@ -20,16 +20,18 @@ module.exports = async (server) => {
    * setup server (từ v3 trở lên phải setup cors): https://socket.io/docs/v4/server-initialization/
    * setup client: https://socket.io/docs/v4/client-initialization/
    */
-  global.SOCKET_IO = require("socket.io")(server, {
+  global.SOCKET_IO = require('socket.io')(server, {
     cors: {
       origin: [
-        "http://localhost:9000",
-        "https://dxclan.com",
-        "https://dxclan.com:3000",
-        "https://dx.vietanhviavet.com",
-        "https://dx.vietanhviavet.com:3000",
+        'http://localhost:9000',
+        'http://localhost:3000',
+        'https://dxclan.com',
+        'https://dxclan.com:3000',
+        'https://dx.vietanhviavet.com',
+        'https://dx.vietanhviavet.com:3000',
+        'https://dxclan.datn.live'
       ],
-      allowedHeaders: ["my-custom-header"],
+      allowedHeaders: ['my-custom-header'],
       credentials: true,
     },
   });

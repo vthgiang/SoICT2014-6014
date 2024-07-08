@@ -17,8 +17,9 @@ const SalesForecastSchema = new Schema(
     forecastSixMonth:{
         type: Number,
     },
-    forecastInventory:{
-        type: Number,
+    marketingCampaign:{
+        type: Schema.Types.ObjectId,
+        ref: 'MarketingCampaign'
     }
   },
   {

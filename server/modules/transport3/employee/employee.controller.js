@@ -38,3 +38,26 @@ exports.removeEmployeeTransport3 = async (req, res) => {
     res.status(500).json({error: error.message});
   }
 }
+
+exports.getInfoEmployeeTransport3 = async (req, res) => {
+  try {
+    const {portal} = req;
+    const {employeeId} = req.params;
+    const result = await EmployeeService.getInfoEmployeeTransport3(portal, employeeId);
+    res.status(200).json(result);
+  } catch (error) {
+    await Log.error(`Error at getInfoEmployeeTransport3: ${error}`);
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.getMyEmployees = async (req, res) => {
+    try {
+        const {portal} = req;
+        const result = await EmployeeService.getMyEmployees(portal, req.user);
+        res.status(200).json(result);
+    } catch (error) {
+        await Log.error(`Error at getMyEmployees: ${error}`);
+        res.status(500).json({error: error.message});
+    }
+}

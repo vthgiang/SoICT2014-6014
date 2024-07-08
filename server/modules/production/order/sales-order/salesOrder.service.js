@@ -577,6 +577,7 @@ exports.getSalesOrderDetail = async (id, portal) => {
 exports.countSalesOrder = async (userId, query, portal) => {
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
     let { startDate, endDate } = query;
+    console.log("Dates received in service:", startDate, endDate); // Log kiểm tra
     let option = {};
     if (users.length) {
         option = {
@@ -588,28 +589,27 @@ exports.countSalesOrder = async (userId, query, portal) => {
         option = {
             ...option,
             createdAt: {
-                $gte: startDate,
-                $lte: endDate
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
             }
         }
     }
 
     let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option);
-    let totalMoneyWithStatus = [0, 0, 0, 0, 0, 0, 0, 0, 0]; //Lấy tổng tiền theo trạng thái
-    let totalNumberWithStauts = [0, 0, 0, 0, 0, 0, 0, 0, 0]; //Lấy số lượng đơn theo trạng thái
+    let totalMoneyWithStatus = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // Lấy tổng tiền theo trạng thái
+    let totalNumberWithStatus = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // Lấy số lượng đơn theo trạng thái
     let totalMoney = 0;
 
-    // Note: cần tìm hiểu về tính tổng tiền tại sao lại là 0
     for (let index = 0; index < allSalesOrders.length; index++) {
         totalMoneyWithStatus[allSalesOrders[index].status] += allSalesOrders[index].paymentAmount;
-        totalNumberWithStauts[allSalesOrders[index].status] += 1;
+        totalNumberWithStatus[allSalesOrders[index].status] += 1;
         if (allSalesOrders[index].status === 7) {
-            totalMoney += allSalesOrders[index].paymentAmount
+            totalMoney += allSalesOrders[index].paymentAmount;
         }
     }
 
-    return { salesOrdersCounter: { count: allSalesOrders.length, totalMoneyWithStatus, totalNumberWithStauts, totalMoney } }
-}
+    return { salesOrdersCounter: { count: allSalesOrders.length, totalMoneyWithStatus, totalNumberWithStatus, totalMoney } };
+};
 
 //Lấy danh sách các sản phẩm bán chạy
 exports.getTopGoodsSold = async (userId, query, portal) => {
@@ -851,7 +851,6 @@ function getArrayTimeFromString(stringDate) {
 
     return [start, end];
 }
-
 
 
 

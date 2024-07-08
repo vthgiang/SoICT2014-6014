@@ -205,12 +205,12 @@ export const getEmployeeSelectBoxItemsWithEmployeeData = (
       }
       var unit = {
         text: unitMember && unitMember.department,
-        value: temp,
+        value: temp.filter((item) => item?.employee && item?.employee?._id),
         unit: unitMember?.id
       }
 
       return unit
-    })
+    }).filter((item) => item?.value && item?.value?.length)
   }
   // console.log("unitMembers: ", unitMembers)
 

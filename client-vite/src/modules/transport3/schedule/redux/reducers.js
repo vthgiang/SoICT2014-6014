@@ -5,8 +5,11 @@ const initState = {
   isAutoScheduling: false,
   listAutoSchedules: null,
   listSchedules: [],
+  schedule: {},
   listStocsWithLatLng: [],
-  predictOntimeDeliveryResults: []
+  predictOntimeDeliveryResults: [],
+  hyperparameters: [],
+  draftSchedule: []
 }
 
 export function schedule(state = initState, action) {
@@ -23,6 +26,22 @@ export function schedule(state = initState, action) {
         listSchedules: action.payload
       }
     case ScheduleConstants.GET_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        schedule: action.payload
+      }
+    case ScheduleConstants.GET_SCHEDULE_BY_ID_FAILURE:
       return {
         ...state,
         isLoading: false
@@ -76,22 +95,84 @@ export function schedule(state = initState, action) {
         isAutoScheduling: false,
         listAutoSchedules: []
       }
-      case ScheduleConstants.PREDICT_ONTIME_DELIVERY_REQUEST:
-        return {
-          ...state,
-          isLoading: true
-        }
-      case ScheduleConstants.PREDICT_ONTIME_DELIVERY_SUCCESS:
-        return {
-          ...state,
-          predictOntimeDeliveryResults: action.payload,
-          isLoading: false
-        }
-      case ScheduleConstants.PREDICT_ONTIME_DELIVERY_FAILURE:
-        return {
-          ...state,
-          isLoading: false
-        }
+    case ScheduleConstants.PREDICT_ONTIME_DELIVERY_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.PREDICT_ONTIME_DELIVERY_SUCCESS:
+      return {
+        ...state,
+        predictOntimeDeliveryResults: action.payload,
+        isLoading: false
+      }
+    case ScheduleConstants.PREDICT_ONTIME_DELIVERY_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.POST_HYPERPARAMETER:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.POST_HYPERPARAMETER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.POST_HYPERPARAMETER_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_HYPERPARAMETER:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.GET_HYPERPARAMETER_SUCCESS:
+      return {
+        ...state,
+        hyperparameters: action.payload,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_HYPERPARAMETER_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_DRAFT_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.GET_DRAFT_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        draftSchedule: action.payload,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_DRAFT_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.SET_SCHEDULE_FROM_DRAFT_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.SET_SCHEDULE_FROM_DRAFT_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.SET_SCHEDULE_FROM_DRAFT_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
     default:
       return state
   }

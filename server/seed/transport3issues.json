@@ -1,0 +1,50 @@
+[
+  {
+    "_id": {"$oid": "667b8f268c615f3ae065adea"},
+    "__v": 0,
+    "createdAt": {"$date": "2024-06-26T03:46:46.763Z"},
+    "description": "",
+    "order": {"$oid": "6677e7960eaef0273c18e027"},
+    "reason": "xe hỏng",
+    "schedule": {"$oid": "6677e7970eaef0273c18e072"},
+    "status": 1,
+    "type": 1,
+    "updatedAt": {"$date": "2024-06-26T03:46:46.763Z"}
+  },
+  {
+    "_id": {"$oid": "667b8f308c615f3ae065ae0e"},
+    "__v": 0,
+    "createdAt": {"$date": "2024-06-26T03:46:56.045Z"},
+    "description": "",
+    "order": {"$oid": "6677e7960eaef0273c18e027"},
+    "reason": "tắc đường",
+    "schedule": {"$oid": "6677e7970eaef0273c18e072"},
+    "status": 2,
+    "type": 2,
+    "updatedAt": {"$date": "2024-06-26T03:46:56.045Z"}
+  },
+  {
+    "_id": {"$oid": "667b93a251d91708498a3348"},
+    "__v": 0,
+    "createdAt": {"$date": "2024-06-26T03:46:46.763Z"},
+    "description": "",
+    "order": {"$oid": "6677e7960eaef0273c18e027"},
+    "reason": "xe nổ",
+    "schedule": {"$oid": "6677e7970eaef0273c18e072"},
+    "status": 3,
+    "type": 1,
+    "updatedAt": {"$date": "2024-06-26T03:46:46.763Z"}
+  },
+  {
+    "_id": {"$oid": "667b95647abc162e2c60c454"},
+    "__v": 0,
+    "createdAt": {"$date": "2024-06-26T04:13:24.775Z"},
+    "description": "",
+    "order": {"$oid": "6677e7960eaef0273c18e027"},
+    "reason": "ngã xe",
+    "schedule": {"$oid": "6677e7970eaef0273c18e072"},
+    "status": 1,
+    "type": 1,
+    "updatedAt": {"$date": "2024-06-26T04:13:24.775Z"}
+  }
+]

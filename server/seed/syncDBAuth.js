@@ -74,9 +74,23 @@ const syncDBAuth = async () => {
         shortName: 'vnist',
     });
 
-    // vnistDB.dropCollection('resources')
-    // vnistDB.dropCollection('requesters')
-    // vnistDB.dropCollection('services')
+    try {
+        const collections = await vnistDB.db.listCollections().toArray();
+        const dropIfExists = async (collectionName) => {
+            if (collections.some(col => col.name === collectionName)) {
+            await vnistDB.dropCollection(collectionName);
+                console.log(`Dropped collection: ${collectionName}`);
+            } else {
+                console.log(`Collection ${collectionName} does not exist.`);
+            }
+        };
+
+        await dropIfExists('resources');
+        await dropIfExists('requesters');
+        await dropIfExists('services');
+    } catch (error) {
+        console.error('Error dropping collections:', error);
+    }
     /**
      * 1.1 Khởi tạo model cho db
      */
@@ -94,7 +108,7 @@ const syncDBAuth = async () => {
     initModels(vnistDB);
 
     const superAdmin = await User(vnistDB).findOne({email: 'super.admin.vnist@gmail.com'});
-    
+
     // add components to Resource
     const components = await Component(vnistDB).find();
     const componentResources = components.map(x => ({
@@ -105,7 +119,7 @@ const syncDBAuth = async () => {
         ownerType: 'User',
         attributes: []
     }));
-    
+
     await Resource(vnistDB).insertMany(componentResources);
 
     // add links to Resource
@@ -118,7 +132,7 @@ const syncDBAuth = async () => {
         ownerType: 'User',
         attributes: []
     }));
-    
+
     await Resource(vnistDB).insertMany(linkResources);
 
     // add apis to Resource
@@ -131,7 +145,7 @@ const syncDBAuth = async () => {
         ownerType: 'User',
         attributes: []
     }));
-    
+
     await Resource(vnistDB).insertMany(apiResources);
 
     // add tasks to Resource
@@ -144,7 +158,7 @@ const syncDBAuth = async () => {
         ownerType: 'OrganizationalUnit',
         attributes: []
     }));
-    
+
     await Resource(vnistDB).insertMany(taskResources);
 
     // add Users to Requester
@@ -155,7 +169,7 @@ const syncDBAuth = async () => {
         type: 'User',
         attributes: []
     }));
-    
+
     await Requester(vnistDB).insertMany(userRequesters);
 
 
@@ -194,7 +208,7 @@ const syncDBAuth = async () => {
         type: 'Service',
         attributes: []
     }));
-    
+
     await Requester(vnistDB).insertMany(serviceRequesters);
 
     systemDB.close();

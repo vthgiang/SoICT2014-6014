@@ -28,10 +28,10 @@ class SideBar extends Component {
     const { translate, auth } = this.props
     const { user, links } = this.props.auth
 
-    let module_transport = localStorage.getItem('module-tranport');
+    let module_transport = localStorage.getItem('module-transport');
     if(!module_transport) {
       module_transport = 1;
-      localStorage.setItem('module-tranport', 1);
+      localStorage.setItem('module-transport', 1);
     }
 
     return (
@@ -71,6 +71,13 @@ class SideBar extends Component {
               item={{
                 name: 'menu.home',
                 path: '/home',
+                icon: 'fa fa-home'
+              }}
+            />
+            <Item
+              item={{
+                name: 'menu.overview_dashboard',
+                path: '/overview-dashboard',
                 icon: 'fa fa-home'
               }}
             />
@@ -535,11 +542,11 @@ class SideBar extends Component {
                     icon: 'fa fa-flash',
                     path: '/bidding-project-template'
                   },
-                  {
-                    name: 'menu.manage_tag',
-                    icon: 'fa fa-tags',
-                    path: '/tags-management'
-                  }
+                  // {
+                  //   name: 'menu.manage_tag',
+                  //   icon: 'fa fa-tags',
+                  //   path: '/tags-management'
+                  // }
                 ]
               }}
             />
@@ -551,9 +558,24 @@ class SideBar extends Component {
                 icon: 'fa fa-folder-open',
                 list: [
                   {
+                    name: 'menu.project_statistic',
+                    icon: 'fa fa-flash',
+                    path: '/project/project-statistic'
+                  },
+                  {
                     name: 'menu.projects_list',
                     icon: 'fa fa-dashboard',
                     path: '/project/projects-list'
+                  },
+                  {
+                    name: 'menu.project_proposal',
+                    icon: 'fa fa-flash',
+                    path: '/project/project-proposal'
+                  },
+                  {
+                    name: 'menu.tags_management',
+                    icon: 'fa fa-tags',
+                    path: '/tags-management'
                   },
                   {
                     name: 'menu.project_report',
@@ -565,11 +587,6 @@ class SideBar extends Component {
                     icon: 'fa fa-user-plus',
                     path: '/project/project-evaluation'
                   },
-                  {
-                    name: 'menu.project_proposal',
-                    icon: 'fa fa-flash',
-                    path: '/project/project-proposal'
-                  }
                   // { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/project/projects-template-list" },
                 ]
               }}
@@ -1013,6 +1030,11 @@ class SideBar extends Component {
                     name: 'menu.dashboard_bill',
                     icon: 'fa fa-dashboard',
                     path: '/dashboard-bill'
+                  },
+                  {
+                    name: 'menu.inventory_forecast',
+                    icon: 'fa fa-dashboard',
+                    path: '/inventory-forecast'
                   },
                   {
                     name: 'menu.stock_management',

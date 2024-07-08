@@ -16,6 +16,8 @@ module.exports = {
     DocumentDomain: require('./document/documentDomain.model'),
     DocumentArchive: require('./document/documentArchive.model'),
 
+    HyperParameter: require('./AImodel/hyperparameter.model'),
+
     AnnualLeave: require('./human-resource/annualLeave.model'),
     Commendation: require('./human-resource/commendation.model'),
     Discipline: require('./human-resource/discipline.model'),
@@ -222,6 +224,7 @@ module.exports = {
     Transport3Schedule: require('./transport3/transport3Schedule.model'),
     Transport3Issue: require('./transport3/transport3Issue.model'),
     DeliverySchedule: require('./transportation/delivery-plan/deliverySchedule.model'),
+    Transport3DraftSchedule: require('./transport3/transport3DraftSchedule.model'),
 
     // New Models
     Capacity: require('./human-resource/capacity.model'),
