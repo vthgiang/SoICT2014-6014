@@ -66,7 +66,7 @@ const initSalesOrder = async () => {
         return array[Math.floor(Math.random() * array.length)];
     }
 
-    const batchSize = 1000; // Số lượng bản ghi trong mỗi lô
+    const batchSize = 10000; // Số lượng bản ghi trong mỗi lô
     for (let i = 0; i < saleOrders.length; i += batchSize) {
         let bulkOperations = saleOrders.slice(i, i + batchSize).map((salesOrder) => {
             let product = products_in_stock.find(
@@ -165,6 +165,7 @@ const initSalesOrder = async () => {
                         ],
                         shippingFee: 10000,
                         createdAt: salesOrder.date,
+                        deliveryTime: salesOrder.date,
                         coin: 500,
                         paymentAmount: (salesOrder.price * salesOrder.orders * 11) / 10 + 10000,
                         note: "Khách hàng quen thuộc",

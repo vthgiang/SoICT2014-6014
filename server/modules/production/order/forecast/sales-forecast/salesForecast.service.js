@@ -78,13 +78,14 @@ exports.getAllForecasts = async (query, portal) => {
     salesOrders.forEach(order => {
         order.goods.forEach(item => {
             if (!item.good || !item.good._id) {
-                console.error(`Order item with missing 'good' reference.`);
+                console.error(`Order item with missing 'good' reference.`); 
                 return;
             }
             const goodId = item.good._id.toString();
             if (!totalForecasts[goodId]) {
                 totalForecasts[goodId] = {
                     goodId: goodId,
+                    goodCode: item.good.code,
                     goodName: item.good.name || 'Unknown',
                     totalCurrentMonth: 0,
                     totalForecastOrders: 0,

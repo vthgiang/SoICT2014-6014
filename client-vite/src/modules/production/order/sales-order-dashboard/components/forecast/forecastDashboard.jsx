@@ -64,9 +64,9 @@ function ForecastDashboard(props) {
                 </div>
 
                 <div className='row'>
-                    <div className='col-xs-12'>
-                        <InfoBoxForecast saleForecast={props.forecasts.countForecasts} timeFrame={timeFrame} />
-                    </div>
+                    
+                    <InfoBoxForecast saleForecast={props.forecasts.countForecasts} timeFrame={timeFrame} />
+                    
                     <div className='col-xs-12'>
                         <ForecastChart forecasts={props.forecasts.forecasts} timeFrame={timeFrame} productLimit={productLimit} />
                     </div>

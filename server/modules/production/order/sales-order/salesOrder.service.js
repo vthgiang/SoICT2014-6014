@@ -1,5 +1,5 @@
 const {
-    SalesOrder, Quote, OrganizationalUnit, ManufacturingWorks, BusinessDepartment
+    SalesOrder, Quote, OrganizationalUnit, ManufacturingWorks, BusinessDepartment,Good, User, ServiceLevelAgreement,Tax, Discount,Customer
 } = require(`../../../../models`);
 
 const {
@@ -147,73 +147,63 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
 }
 
 exports.getAllSalesOrders = async (userId, query, portal) => {
-    //Lấy cấp dưới người ngày quản lý (bao gồm cả người này và các nhân viên phòng ban con)
+    // Lấy cấp dưới người này quản lý (bao gồm cả người này và các nhân viên phòng ban con)
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
     let option = {};
     let { page, limit, code, status, customer, getAll, month, year } = query;
+
     if (users.length && !getAll) {
         option = {
-            $or: [{ creator: users },
-            { approvers: { $elemMatch: { approver: userId } } }],
+            $or: [
+                { creator: { $in: users } },
+                { approvers: { $elemMatch: { approver: userId } } }
+            ],
         };
     }
     if (code) {
-        option.code = new RegExp(code, "i")
+        option.code = new RegExp(code, "i");
     }
     if (status) {
-        option = {
-            ...option,
-            status: { $in: status.map((item) => parseInt(item)) }
-        }
+        option.status = { $in: status.map((item) => parseInt(item)) };
     }
     if (customer) {
-        option.customer = customer
+        option.customer = customer;
     }
     if (month && year) {
-        let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
-        let endOfMonth = new Date(year, month); // cần chỉnh lại
-        option =
-        {
-            ...option,
-            createdAt: { $gte: beginOfMonth, $lt: endOfMonth }
-        }
+        let beginOfMonth = new Date(year, month - 1, 1); // Chỉnh lại để lấy đúng tháng và năm
+        let endOfMonth = new Date(year, month, 0); // Ngày cuối cùng của tháng
+        option.createdAt = { $gte: beginOfMonth, $lt: endOfMonth };
     }
 
-    page = Number(page);
-    limit = Number(limit);
-    if (!page || !limit) {
-        let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option)
-            .populate([{
-                path: 'creator', select: 'name'
-            }, {
-                path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.manufacturingWorks', select: 'code name address description'
-            }, {
-                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
-            }]);
-        return { allSalesOrders }
+    page = Number(page) || 1; // Mặc định là trang 1 nếu không có giá trị
+    limit = Number(limit) || 10; // Mặc định là 10 nếu không có giá trị
+
+    let allSalesOrders;
+    if (getAll) {
+        allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option)
+            .populate([
+                { path: 'creator', select: 'name' },
+                { path: 'customer', select: 'name taxNumber' },
+                { path: 'goods.good', select: 'code name baseUnit' },
+                { path: 'goods.manufacturingWorks', select: 'code name address description' },
+                { path: 'goods.manufacturingPlan', select: 'code status startDate endDate' }
+            ]);
     } else {
-        let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).paginate(option, {
+        allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).paginate(option, {
             page,
             limit,
-            populate: [{
-                path: 'creator', select: 'name'
-            }, {
-                path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.manufacturingWorks', select: 'code name address description'
-            }, {
-                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
-            }]
-        })
-        return { allSalesOrders }
+            populate: [
+                { path: 'creator', select: 'name' },
+                { path: 'customer', select: 'name taxNumber' },
+                { path: 'goods.good', select: 'code name baseUnit' },
+                { path: 'goods.manufacturingWorks', select: 'code name address description' },
+                { path: 'goods.manufacturingPlan', select: 'code status startDate endDate' }
+            ]
+        });
     }
-}
+
+    return { allSalesOrders };
+};
 
 exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
 
@@ -852,8 +842,121 @@ function getArrayTimeFromString(stringDate) {
     return [start, end];
 }
 
+exports.importSales = async (portal, data) => {
+    if (!data?.length) {
+        throw new Error('No data provided');
+    }
+    const vnistDB = connect(DB_CONNECTION, portal);
 
+    // Lấy dữ liệu cần thiết từ cơ sở dữ liệu
+    const users = await User(vnistDB).find({});
+    const listServiceLevelAgreements = await ServiceLevelAgreement(vnistDB).find({});
+    const listTaxs = await Tax(vnistDB).find({});
+    const listDistcounts = await Discount(vnistDB).find({});
 
+    const salesOrdersToInsert = [];
 
+    for (let i = 0; i < data.length; i++) {
+        const salesOrder = data[i];
 
+        // Kiểm tra các trường không được để trống
+        if (!salesOrder.code || !salesOrder.customerName || !salesOrder.productID || !salesOrder.createdAt || !salesOrder.quantity) {
+            throw new Error(`Missing required fields at row ${i + 1}`);
+        }
 
+        // Tìm mã sản phẩm trong bảng Good
+        const product = await Good(vnistDB).findOne({ code: salesOrder.productID });
+        if (!product) {
+            throw new Error(`Product ID ${salesOrder.productID} not found at row ${i + 1}`);
+        }
+
+        // Tìm mã khách hàng trong bảng Customer
+        const customer = await Customer(vnistDB).findOne({ code: salesOrder.customerID });
+        if (!customer) {
+            throw new Error(`Customer ID ${salesOrder.customerID} not found at row ${i + 1}`);
+        }
+
+        salesOrdersToInsert.push({
+            creator: users[1]._id,
+            code: salesOrder.code,
+            customer: customer._id,
+            customerPhone: salesOrder.customerPhone,
+            customerAddress: salesOrder.customerAddress,
+            status: salesOrder.status,
+            approvers: [
+                {
+                    approver: users[1]._id,
+                    status: 2,
+                },
+            ],
+            priority: salesOrder.priority,
+            goods: [
+                {
+                    good: product._id,
+                    pricePerBaseUnit: salesOrder.pricePerBaseUnit,
+                    quantity: salesOrder.quantity,
+                    productionCost: salesOrder.productionCost,
+                    pricePerBaseUnitOrigin: product.pricePerBaseUnit,
+                    salesPriceVariance: product.salesPriceVariance,
+                    serviceLevelAgreements: [
+                        {
+                            descriptions: [
+                                "Đóng gói đúng quy trình",
+                                "Sản phẩm đi đầu về chất lượng",
+                            ],
+                            _id: listServiceLevelAgreements[0]._id,
+                            title: "Chất lượng sản phẩm đi đầu",
+                        },
+                    ],
+                    taxs: [
+                        {
+                            _id: listTaxs[0]._id,
+                            code: listTaxs[0]._id,
+                            name: "VAT",
+                            description: listTaxs[0]._id,
+                            percent: 5,
+                        },
+                    ],
+                    amount: salesOrder.pricePerBaseUnit * salesOrder.quantity,
+                    amountAfterDiscount: salesOrder.pricePerBaseUnit * salesOrder.quantity,
+                    amountAfterTax: (salesOrder.pricePerBaseUnit * salesOrder.quantity * 1.05),
+                },
+            ],
+            discounts: [
+                {
+                    _id: listDistcounts[5]._id,
+                    code: listDistcounts[5].code,
+                    type: listDistcounts[5].type,
+                    formality: listDistcounts[5].formality,
+                    name: listDistcounts[5].name,
+                    effectiveDate: listDistcounts[5].effectiveDate,
+                    expirationDate: listDistcounts[5].expirationDate,
+                    maximumFreeShippingCost: 20000,
+                },
+                {
+                    _id: listDistcounts[6]._id,
+                    code: listDistcounts[6].code,
+                    type: listDistcounts[6].type,
+                    formality: listDistcounts[6].formality,
+                    name: listDistcounts[6].name,
+                    effectiveDate: listDistcounts[6].effectiveDate,
+                    expirationDate: listDistcounts[6].expirationDate,
+                    discountedPercentage: 10,
+                },
+                {
+                    _id: listDistcounts[7]._id,
+                    code: listDistcounts[7].code,
+                    type: listDistcounts[7].type,
+                    formality: listDistcounts[7].formality,
+                    name: listDistcounts[7].name,
+                    effectiveDate: listDistcounts[7].effectiveDate,
+                    expirationDate: listDistcounts[7].expirationDate,
+                    loyaltyCoin: 1000,
+                },
+            ],
+            createdAt: salesOrder.createdAt,
+        });
+    }
+
+    await SalesOrder(vnistDB).insertMany(salesOrdersToInsert);
+};

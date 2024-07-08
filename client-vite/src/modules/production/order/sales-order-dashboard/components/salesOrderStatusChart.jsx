@@ -1,128 +1,120 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
-import { formatCurrency } from '../../../../../helpers/formatCurrency'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { formatCurrency } from '../../../../../helpers/formatCurrency';
 
-import c3 from 'c3'
-import 'c3/c3.css'
+import c3 from 'c3';
+import 'c3/c3.css';
 
 class SalesOrderStatusChart extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      type: 1,
-      loading: true
-    }
+      type: 1
+    };
   }
 
   componentDidMount() {
-    if (this.props.salesOrders && this.props.salesOrders.salesOrdersCounter) {
-      this.setState({ loading: false })
-      this.pieChart()
-    }
+    this.pieChart();
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.salesOrders !== this.props.salesOrders || prevState.type !== this.state.type) {
-      this.setState({ loading: false })
-      this.pieChart()
+      this.pieChart();
     }
   }
 
   handleChangeType = (type) => {
-    this.setState({ type })
+    this.setState({
+      type
+    });
   }
 
   setDataPieChart = () => {
-    const { type } = this.state
-    let salesOrdersCounter = {}
+    const { type } = this.state;
+    let salesOrdersCounter = {};
 
     if (this.props.salesOrders) {
-      salesOrdersCounter = this.props.salesOrders.salesOrdersCounter || {}
+      salesOrdersCounter = this.props.salesOrders.salesOrdersCounter;
     }
 
-    let dataPieChart = []
+    let dataPieChart = [];
 
-    if (salesOrdersCounter && salesOrdersCounter.totalNumberWithStauts && salesOrdersCounter.totalMoneyWithStatus) {
-      if (type === 1) {
-        dataPieChart = [
-          ['Chờ phê duyệt', salesOrdersCounter.totalNumberWithStauts[1] || 0],
-          ['Đã phê duyệt', salesOrdersCounter.totalNumberWithStauts[2] || 0],
-          ['Yêu cầu sản xuất', salesOrdersCounter.totalNumberWithStauts[3] || 0],
-          ['Đã lập kế hoạch sản xuất', salesOrdersCounter.totalNumberWithStauts[4] || 0],
-          ['Đã yêu cầu sản xuất', salesOrdersCounter.totalNumberWithStauts[5] || 0],
-          ['Đang giao hàng', salesOrdersCounter.totalNumberWithStauts[6] || 0],
-          ['Đã giao hàng', salesOrdersCounter.totalNumberWithStauts[7] || 0],
-          ['Đã hủy', salesOrdersCounter.totalNumberWithStauts[8] || 0]
-        ]
-      } else if (type === 2) {
-        dataPieChart = [
-          ['Chờ phê duyệt', salesOrdersCounter.totalMoneyWithStatus[1] || 0],
-          ['Đã phê duyệt', salesOrdersCounter.totalMoneyWithStatus[2] || 0],
-          ['Yêu cầu sản xuất', salesOrdersCounter.totalMoneyWithStatus[3] || 0],
-          ['Đã lập kế hoạch sản xuất', salesOrdersCounter.totalMoneyWithStatus[4] || 0],
-          ['Đã yêu cầu sản xuất', salesOrdersCounter.totalMoneyWithStatus[5] || 0],
-          ['Đang giao hàng', salesOrdersCounter.totalMoneyWithStatus[6] || 0],
-          ['Đã giao hàng', salesOrdersCounter.totalMoneyWithStatus[7] || 0],
-          ['Đã hủy', salesOrdersCounter.totalMoneyWithStatus[8] || 0]
-        ]
-      }
+    if (salesOrdersCounter && salesOrdersCounter.totalNumberWithStatus && type === 1) {
+      dataPieChart = [
+        ['Chờ phê duyệt', salesOrdersCounter.totalNumberWithStatus[1] || 0],
+        ['Đã phê duyệt', salesOrdersCounter.totalNumberWithStatus[2] || 0],
+        ['Yêu cầu sản xuất', salesOrdersCounter.totalNumberWithStatus[3] || 0],
+        ['Đã lập kế hoạch sản xuất', salesOrdersCounter.totalNumberWithStatus[4] || 0],
+        ['Đã yêu cầu sản xuất', salesOrdersCounter.totalNumberWithStatus[5] || 0],
+        ['Đang giao hàng', salesOrdersCounter.totalNumberWithStatus[6] || 0],
+        ['Đã giao hàng', salesOrdersCounter.totalNumberWithStatus[7] || 0],
+        ['Đã hủy', salesOrdersCounter.totalNumberWithStatus[8] || 0]
+      ];
     }
-    return dataPieChart
+
+    if (salesOrdersCounter && salesOrdersCounter.totalMoneyWithStatus && type === 2) {
+      dataPieChart = [
+        ['Chờ phê duyệt', salesOrdersCounter.totalMoneyWithStatus[1] || 0],
+        ['Đã phê duyệt', salesOrdersCounter.totalMoneyWithStatus[2] || 0],
+        ['Yêu cầu sản xuất', salesOrdersCounter.totalMoneyWithStatus[3] || 0],
+        ['Đã lập kế hoạch sản xuất', salesOrdersCounter.totalMoneyWithStatus[4] || 0],
+        ['Đã yêu cầu sản xuất', salesOrdersCounter.totalMoneyWithStatus[5] || 0],
+        ['Đang giao hàng', salesOrdersCounter.totalMoneyWithStatus[6] || 0],
+        ['Đã giao hàng', salesOrdersCounter.totalMoneyWithStatus[7] || 0],
+        ['Đã hủy', salesOrdersCounter.totalMoneyWithStatus[8] || 0]
+      ];
+    }
+    return dataPieChart;
   }
 
   removePreviousChart() {
-    const chart = this.refs.amountPieChart
+    const chart = this.refs.amountPieChart;
     if (chart) {
       while (chart.hasChildNodes()) {
-        chart.removeChild(chart.lastChild)
+        chart.removeChild(chart.lastChild);
       }
     }
   }
 
   // Khởi tạo PieChart bằng C3
   pieChart = () => {
-    let dataPieChart = this.setDataPieChart()
-    this.removePreviousChart()
-    if (dataPieChart.length > 0) {
-      let chart = c3.generate({
-        bindto: this.refs.amountPieChart,
+    let dataPieChart = this.setDataPieChart();
+    this.removePreviousChart();
+    c3.generate({
+      bindto: this.refs.amountPieChart,
 
-        data: {
-          columns: dataPieChart,
-          type: 'pie'
-        },
+      data: {
+        columns: dataPieChart,
+        type: 'pie'
+      },
 
-        pie: {
-          label: {
-            format: function (value, ratio, id) {
-              return value ? formatCurrency(value) : ''
-            }
+      pie: {
+        label: {
+          format: function (value, ratio, id) {
+            return value ? formatCurrency(value) : '';
           }
-        },
-
-        tooltip: {
-          format: {
-            title: function (d) {
-              return d
-            },
-            value: function (value) {
-              return value
-            }
-          }
-        },
-
-        legend: {
-          show: true
         }
-      })
-    }
+      },
+
+      tooltip: {
+        format: {
+          title: function (d) {
+            return d;
+          },
+          value: function (value) {
+            return value;
+          }
+        }
+      },
+
+      legend: {
+        show: true
+      }
+    });
   }
 
   render() {
-    if (this.state.loading) {
-      return <div>Loading...</div>
-    }
     return (
       <div className='box'>
         <div className='box-header with-border'>
@@ -156,15 +148,15 @@ class SalesOrderStatusChart extends Component {
           <div ref='amountPieChart'></div>
         </div>
       </div>
-    )
+    );
   }
 }
 
 function mapStateToProps(state) {
-  const { salesOrders } = state
-  return { salesOrders }
+  const { salesOrders } = state;
+  return { salesOrders };
 }
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderStatusChart))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderStatusChart));

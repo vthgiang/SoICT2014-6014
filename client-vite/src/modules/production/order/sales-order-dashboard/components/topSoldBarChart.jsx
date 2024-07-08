@@ -1,55 +1,57 @@
-import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
-import { SalesOrderActions } from '../../sales-order/redux/actions'
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { SalesOrderActions } from '../../sales-order/redux/actions';
 
-import c3 from 'c3'
-import 'c3/c3.css'
+import c3 from 'c3';
+import 'c3/c3.css';
 
 function TopSoldBarChart(props) {
-  const topSoldBarChart = React.createRef()
+  const topSoldBarChart = React.createRef();
 
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole')
-  })
+  });
 
   useEffect(() => {
-    barChart()
-  }, [props.salesOrders])
+    barChart();
+  }, [props.salesOrders]);
 
   const setDataBarChart = () => {
-    let topGoodsSoldValue = ['Top sản phẩm bán chạy theo số lượng']
+    let topGoodsSoldValue = ['Top sản phẩm bán chạy theo số lượng'];
 
     if (props.salesOrders && props.salesOrders.topGoodsSold) {
-      let topGoodsSoldMap = props.salesOrders.topGoodsSold.map((element) => element.quantity)
-      topGoodsSoldValue = topGoodsSoldValue.concat(topGoodsSoldMap)
+      let topGoodsSoldMap = props.salesOrders.topGoodsSold.map((element) => element.quantity);
+      topGoodsSoldValue = topGoodsSoldValue.concat(topGoodsSoldMap);
     }
     let dataBarChart = {
       columns: [topGoodsSoldValue && topGoodsSoldValue.length ? topGoodsSoldValue.slice(0, 6) : []],
       type: 'bar'
-    }
-    return dataBarChart
-  }
+    };
+    return dataBarChart;
+  };
 
   const removePreviousChart = () => {
-    const chart = topSoldBarChart.current
+    const chart = topSoldBarChart.current;
 
     if (chart) {
       while (chart.hasChildNodes()) {
-        chart.removeChild(chart.lastChild)
+        chart.removeChild(chart.lastChild);
       }
     }
-  }
+  };
 
   const barChart = () => {
-    let dataBarChart = setDataBarChart()
+    let dataBarChart = setDataBarChart();
 
-    let topGoodsSoldTitle = []
+    let topGoodsSoldTitle = [];
     if (props.salesOrders && props.salesOrders?.topGoodsSold) {
-      topGoodsSoldTitle = props.salesOrders?.topGoodsSold.map((element) => element.name)
+      topGoodsSoldTitle = props.salesOrders?.topGoodsSold.map((element) => element.name);
     }
 
-    removePreviousChart()
+    const truncatedTitles = topGoodsSoldTitle.map(title => title.length > 20 ? title.slice(0, 20) + '...' : title);
+
+    removePreviousChart();
 
     let chart = c3.generate({
       bindto: topSoldBarChart.current,
@@ -60,32 +62,33 @@ function TopSoldBarChart(props) {
         }
       },
       axis: {
+        rotated: true, // Chuyển trục để biểu đồ nằm ngang
+        x: {
+          type: 'category',
+          categories: truncatedTitles.length ? truncatedTitles.slice(0, 6) : [],
+        },
         y: {
           label: {
             text: 'Đơn vị tính',
             position: 'outer-middle'
           }
-        },
-        x: {
-          type: 'category',
-          categories: topGoodsSoldTitle && topGoodsSoldTitle.length ? topGoodsSoldTitle.slice(0, 6) : []
         }
       },
       tooltip: {
         format: {
-          title: function (d) {
-            return d
+          title: function (index) {
+            return topGoodsSoldTitle[index];
           },
           value: function (value) {
-            return value
+            return value;
           }
         }
       },
       legend: {
         show: true
       }
-    })
-  }
+    });
+  };
 
   return (
     <div className='box'>
@@ -95,16 +98,16 @@ function TopSoldBarChart(props) {
         <div ref={topSoldBarChart} id='topSoldBarChart'></div>
       </div>
     </div>
-  )
+  );
 }
 
 function mapStateToProps(state) {
-  const { salesOrders } = state
-  return { salesOrders }
+  const { salesOrders } = state;
+  return { salesOrders };
 }
 
 const mapDispatchToProps = {
   getTopGoodsSold: SalesOrderActions.getTopGoodsSold
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TopSoldBarChart))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TopSoldBarChart));

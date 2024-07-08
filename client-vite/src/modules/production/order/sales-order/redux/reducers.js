@@ -40,6 +40,7 @@ export function salesOrders(state = initState, action) {
     case SalesOrderConstants.GET_TOP_GOODS_SOLD_REQUEST:
     case SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_REQUEST:
     case SalesOrderConstants.GET_NUMBER_SALES_ORDER_WORKS_REQUEST:
+    case SalesOrderConstants.IMPORT_SALES_REQUEST:
       return {
         ...state,
         isLoading: true
@@ -57,6 +58,7 @@ export function salesOrders(state = initState, action) {
     case SalesOrderConstants.GET_TOP_GOODS_SOLD_FAILURE:
     case SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_FAILURE:
     case SalesOrderConstants.GET_NUMBER_SALES_ORDER_WORKS_FAILURE:
+    case SalesOrderConstants.IMPORT_SALES_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -158,6 +160,13 @@ export function salesOrders(state = initState, action) {
         numberSalesOrdersWorks: action.payload,
         isLoading: false
       }
+      case SalesOrderConstants.IMPORT_SALES_SUCCESS:
+        return {
+          ...state,
+          listSales: [...state.listSales, action.payload],
+          listPaginate: [...state.listPaginate, action.payload],
+          isLoading: false
+        }
     default:
       return state
   }
