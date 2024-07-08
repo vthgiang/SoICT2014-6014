@@ -11,15 +11,7 @@ const InventoryForecastSchema = new Schema(
     inventoryForecast: {
         type: Number,
     },
-    forecastThreeMonth:{
-        type: Number,
-    },
-    forecastSixMonth:{
-        type: Number,
-    },
-    forecastInventory:{
-        type: Number,
-    }
+    
   },
   {
     timestamps: true,

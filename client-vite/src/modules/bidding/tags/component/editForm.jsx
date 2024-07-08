@@ -54,7 +54,6 @@ const EditTag = (props) => {
   const isFormValidated = () => {
     let { translate } = props
     if (!ValidationHelper.validateName(translate, state.name, 1, 255).status) return false
-    if (state.employees.length === 0) return false
 
     return true
   }
@@ -153,7 +152,7 @@ const EditTag = (props) => {
             </div>
             <div className={`form-group`}>
               <label className='control-label'>
-                Nhân sự phù hợp<span className='text-red'>*</span>
+                Nhân sự phù hợp
               </label>
               {allEmployeeCompany && (
                 <SelectBox
@@ -172,7 +171,6 @@ const EditTag = (props) => {
 
             <div>
               <strong>Độ phù hợp của từng nhân viên:</strong>
-              <span className='text-red'>*</span>
             </div>
             <table id='tags-employeeWithSuitability-edit' className='table not-has-action table-striped table-bordered table-hover'>
               <thead>

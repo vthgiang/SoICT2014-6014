@@ -6,7 +6,8 @@ const {
     Role,
     Company,
     Employee,
-    Attribute
+    Attribute,
+    Requester
 } = require(`../../../models`);
 const bcrypt = require("bcryptjs");
 const generator = require("generate-password");
@@ -510,7 +511,7 @@ exports.createUser = async (portal, data, company) => {
         }
     }
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
@@ -529,6 +530,14 @@ exports.createUser = async (portal, data, company) => {
     });
 
     await this.sendMailAboutCreatedAccount(data.email, password, portal);
+
+    // sync new User to Requester
+    await Requester(connect(DB_CONNECTION, portal)).create({
+        name: user.name,
+        refId: user._id,
+        type: 'User',
+        attributes: []
+    });
 
     return user;
 };
@@ -559,7 +568,7 @@ exports.createUserAttribute = async (portal, data) => {
         }
     }
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
@@ -833,7 +842,7 @@ exports.editUser = async (portal, id, data) => {
     }
 
     if (data.attributes) {
-        const attrArray = await filterValidAttributeArray(data.attributes);
+        const attrArray = await filterValidAttributeArray(data.attributes ?? []);
         const dataAttr = attrArray.map(attr => {
             return {
                 attributeId: attr.attributeId,
@@ -847,6 +856,16 @@ exports.editUser = async (portal, id, data) => {
     }
 
     await user.save();
+
+    // sync User to Requester
+    await Requester(connect(DB_CONNECTION, portal)).updateOne(
+        {
+            refId: user._id
+        },
+        {
+            $set: { name: user.name }
+        }
+    );
 
     // Tìm user trong bảng employees và cập nhật lại email
     // Kiểm tra email mới đã có trong bảng Employees hay chưa.
@@ -911,6 +930,11 @@ exports.deleteUser = async (portal, id) => {
         userId: id,
     });
 
+    // sync new User to Requester
+    await Requester(connect(DB_CONNECTION, portal)).deleteOne({
+        refId: id,
+    });
+
     return deleteUser;
 };
 
@@ -923,10 +947,15 @@ exports.deleteUserByEmail = async (portal, email) => {
         email: email,
     }, { $new: true });
 
-    if (deleteUser)
+    if (deleteUser) {
         await UserRole(connect(DB_CONNECTION, portal)).deleteOne({
             userId: deleteUser._id,
         });
+        // sync new User to Requester
+        await Requester(connect(DB_CONNECTION, portal)).deleteOne({
+            refId: deleteUser._id,
+        });
+    }
 
     return deleteUser;
 };

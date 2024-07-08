@@ -23,22 +23,43 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.logout = async (req, res) => {
+exports.revokeToken = async (req, res) => {
     try {
-        const logout = await AuthService.logout(req.portal, req.body.id, req.body.token);
+        const service = await AuthService.revokeToken(req.portal, req.user._id, req.token);
 
-        await Logger.info(req.user.email, 'logout_suscess', req.portal);
+        await Logger.info(req.user.email, 'revoke_token_suscess', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['logout_success'],
+            messages: ['revoke_token_success'],
             content: {}
         });
     } catch (error) {
         console.log('errorLogOut', error)
-        await Logger.error(req.user.email, 'logout_faile', req.portal);
+        await Logger.error(req.user.email, 'revoke_token_faile', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['logout_faile'],
+            messages: Array.isArray(error) ? error : ['revoke_token_faile'],
+            content: error
+        });
+    }
+};
+
+exports.revokeAllToken = async (req, res) => {
+    try {
+        const service = await AuthService.revokeAllToken(req.portal, req.user._id, req.token);
+
+        await Logger.info(req.user.email, 'revoke_all_token_suscess', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['revoke_all_token_success'],
+            content: {}
+        });
+    } catch (error) {
+        console.log('errorLogOut', error)
+        await Logger.error(req.user.email, 'revoke_all_token_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['revoke_all_token_faile'],
             content: error
         });
     }

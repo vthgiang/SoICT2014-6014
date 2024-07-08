@@ -39,6 +39,7 @@ export function role(state = initState, action) {
     case RoleConstants.DELETE_ROLE_REQUEST:
     case RoleConstants.IMPORT_ROLE_REQUEST:
     case RoleConstants.CREATE_ROLE_ATTRIBUTE_REQUEST:
+    case RoleConstants.EDIT_ROLE_ATTRIBUTE_REQUEST:
       return {
         ...state,
         isLoading: true
@@ -51,6 +52,7 @@ export function role(state = initState, action) {
     case RoleConstants.GET_ROLES_PAGINATE_FAILE:
     case RoleConstants.DELETE_ROLE_FAILE:
     case RoleConstants.CREATE_ROLE_ATTRIBUTE_FAILE:
+    case RoleConstants.EDIT_ROLE_ATTRIBUTE_FAILE:
       return {
         ...state,
         isLoading: false
@@ -95,6 +97,7 @@ export function role(state = initState, action) {
       }
 
     case RoleConstants.EDIT_ROLE_SUCCESS:
+    case RoleConstants.EDIT_ROLE_ATTRIBUTE_SUCCESS:
       index = findIndex(state.list, action.payload._id)
       indexPaginate = findIndex(state.listPaginate, action.payload._id)
 
@@ -150,12 +153,9 @@ export function role(state = initState, action) {
       }
 
     case RoleConstants.CREATE_ROLE_ATTRIBUTE_SUCCESS:
-      console.log(action.payload)
       action.payload.forEach((x) => {
         index = findIndex(state.list, x._id)
         indexPaginate = findIndex(state.listPaginate, x._id)
-        console.log(index)
-        console.log(indexPaginate)
         if (index !== -1) {
           state.list[index] = x
         }
@@ -164,7 +164,6 @@ export function role(state = initState, action) {
           state.listPaginate[indexPaginate] = x
         }
       })
-      console.log('done')
       return {
         ...state,
         isLoading: false

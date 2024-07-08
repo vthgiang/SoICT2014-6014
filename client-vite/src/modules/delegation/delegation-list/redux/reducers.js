@@ -32,11 +32,11 @@ export function delegation(state = initialState, action) {
     case delegationConstants.REVOKE_TASK_DELEGATION_REQUEST:
     case delegationConstants.CREATE_TASK_DELEGATION_REQUEST:
     case delegationConstants.EDIT_TASK_DELEGATION_REQUEST:
-    case delegationConstants.GET_ALL_DELEGATIONS_SERVICE_REQUEST:
-    case delegationConstants.DELETE_SERVICE_DELEGATION_REQUEST:
-    case delegationConstants.REVOKE_SERVICE_DELEGATION_REQUEST:
-    case delegationConstants.CREATE_SERVICE_DELEGATION_REQUEST:
-    case delegationConstants.EDIT_SERVICE_DELEGATION_REQUEST:
+    case delegationConstants.GET_ALL_DELEGATIONS_RESOURCE_REQUEST:
+    case delegationConstants.DELETE_RESOURCE_DELEGATION_REQUEST:
+    case delegationConstants.REVOKE_RESOURCE_DELEGATION_REQUEST:
+    case delegationConstants.CREATE_RESOURCE_DELEGATION_REQUEST:
+    case delegationConstants.EDIT_RESOURCE_DELEGATION_REQUEST:
       return {
         ...state,
         isLoading: true
@@ -51,11 +51,11 @@ export function delegation(state = initialState, action) {
     case delegationConstants.REVOKE_TASK_DELEGATION_FAILURE:
     case delegationConstants.CREATE_TASK_DELEGATION_FAILURE:
     case delegationConstants.EDIT_TASK_DELEGATION_FAILURE:
-    case delegationConstants.GET_ALL_DELEGATIONS_SERVICE_FAILURE:
-    case delegationConstants.DELETE_SERVICE_DELEGATION_FAILURE:
-    case delegationConstants.REVOKE_SERVICE_DELEGATION_FAILURE:
-    case delegationConstants.CREATE_SERVICE_DELEGATION_FAILURE:
-    case delegationConstants.EDIT_SERVICE_DELEGATION_FAILURE:
+    case delegationConstants.GET_ALL_DELEGATIONS_RESOURCE_FAILURE:
+    case delegationConstants.DELETE_RESOURCE_DELEGATION_FAILURE:
+    case delegationConstants.REVOKE_RESOURCE_DELEGATION_FAILURE:
+    case delegationConstants.CREATE_RESOURCE_DELEGATION_FAILURE:
+    case delegationConstants.EDIT_RESOURCE_DELEGATION_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -135,38 +135,38 @@ export function delegation(state = initialState, action) {
         ...state,
         isLoading: false
       }
-    case delegationConstants.GET_ALL_DELEGATIONS_SERVICE_SUCCESS:
+    case delegationConstants.GET_ALL_DELEGATIONS_RESOURCE_SUCCESS:
       return {
         ...state,
-        listsService: action.payload.data,
-        totalListService: action.payload.totalList,
+        listsResource: action.payload.data,
+        totalListResource: action.payload.totalList,
         isLoading: false
       }
-    case delegationConstants.DELETE_SERVICE_DELEGATION_SUCCESS:
+    case delegationConstants.DELETE_RESOURCE_DELEGATION_SUCCESS:
       return {
         ...state,
-        listsService: state.listsService.filter((delegation) => !action.delegationIds.includes(delegation?._id)),
+        listsResource: state.listsResource.filter((delegation) => !action.delegationIds.includes(delegation?._id)),
         isLoading: false
       }
-    case delegationConstants.REVOKE_SERVICE_DELEGATION_SUCCESS:
-      index = findIndex(state.listsService, action.payload._id)
+    case delegationConstants.REVOKE_RESOURCE_DELEGATION_SUCCESS:
+      index = findIndex(state.listsResource, action.payload._id)
       if (index !== -1) {
-        state.listsService[index] = action.payload
+        state.listsResource[index] = action.payload
       }
       return {
         ...state,
         isLoading: false
       }
-    case delegationConstants.CREATE_SERVICE_DELEGATION_SUCCESS:
+    case delegationConstants.CREATE_RESOURCE_DELEGATION_SUCCESS:
       return {
         ...state,
-        listsService: [...state.listsService, ...action.payload],
+        listsResource: [...state.listsResource, action.payload],
         isLoading: false
       }
-    case delegationConstants.EDIT_SERVICE_DELEGATION_SUCCESS:
-      index = findIndex(state.listsService, action.payload[0])
+    case delegationConstants.EDIT_RESOURCE_DELEGATION_SUCCESS:
+      index = findIndex(state.listsResource, action.payload[0])
       if (index !== -1) {
-        state.listsService[index] = action.payload[1]
+        state.listsResource[index] = action.payload[1]
       }
       return {
         ...state,

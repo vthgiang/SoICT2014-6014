@@ -28,10 +28,10 @@ class SideBar extends Component {
     const { translate, auth } = this.props
     const { user, links } = this.props.auth
 
-    let module_transport = localStorage.getItem('module-tranport');
+    let module_transport = localStorage.getItem('module-transport');
     if(!module_transport) {
       module_transport = 1;
-      localStorage.setItem('module-tranport', 1);
+      localStorage.setItem('module-transport', 1);
     }
 
     return (
@@ -71,6 +71,13 @@ class SideBar extends Component {
               item={{
                 name: 'menu.home',
                 path: '/home',
+                icon: 'fa fa-home'
+              }}
+            />
+            <Item
+              item={{
+                name: 'menu.overview_dashboard',
+                path: '/overview-dashboard',
                 icon: 'fa fa-home'
               }}
             />
@@ -256,8 +263,13 @@ class SideBar extends Component {
                   },
                   {
                     name: 'menu.manage_requester',
-                    icon: 'fa fa-link',
+                    icon: 'fa fa-users',
                     path: '/requesters-management'
+                  },
+                  {
+                    name: 'menu.manage_resource',
+                    icon: 'fa fa-tasks',
+                    path: '/resources-management'
                   },
                   {
                     name: 'menu.manage_attribute',
@@ -274,13 +286,22 @@ class SideBar extends Component {
                         path: '/policies-management'
                       },
                       {
+                        name: 'menu.manage_policy_authorization_v2',
+                        icon: 'fa fa-circle-o',
+                        path: '/authorization-policies-management'
+                      },
+                      {
                         name: 'menu.manage_policy_delegation',
                         icon: 'fa fa-circle-o',
                         path: '/delegation-policies-management'
                       }
                     ]
                   },
-
+                  {
+                    name: 'menu.authorization_logging',
+                    icon: 'fa fa-eye',
+                    path: '/authorization-logging'
+                  },
                   {
                     name: 'menu.manage_api',
                     icon: 'fa fa-link',
@@ -440,32 +461,6 @@ class SideBar extends Component {
                     name: 'menu.kpi_member_manager',
                     icon: 'fa fa-circle-o',
                     path: '/kpi-member/manager'
-                  },
-                  {
-                    name: 'menu.kpi_allocation_title',
-                    icon: 'fa fa-file-powerpoint-o',
-                    list: [
-                      {
-                        name: 'menu.kpi_allocation_affected_factor_management',
-                        icon: 'fa fa-circle-o',
-                        path: '/kpi-allocation/affected-factor-management'
-                      },
-                      {
-                        name: 'menu.kpi_allocation_allocation_management',
-                        icon: 'fa fa-circle-o',
-                        path: '/kpi-allocation/allocation-management'
-                      },
-                      {
-                        name: 'menu.kpi_allocation_config_management',
-                        icon: 'fa fa-circle-o',
-                        path: '/kpi-allocation/config-management'
-                      },
-                      {
-                        name: 'menu.kpi_allocation_task_package_management',
-                        icon: 'fa fa-circle-o',
-                        path: '/kpi-allocation/task_package_management'
-                      }
-                    ]
                   }
                 ]
               }}
@@ -547,11 +542,11 @@ class SideBar extends Component {
                     icon: 'fa fa-flash',
                     path: '/bidding-project-template'
                   },
-                  {
-                    name: 'menu.manage_tag',
-                    icon: 'fa fa-tags',
-                    path: '/tags-management'
-                  }
+                  // {
+                  //   name: 'menu.manage_tag',
+                  //   icon: 'fa fa-tags',
+                  //   path: '/tags-management'
+                  // }
                 ]
               }}
             />
@@ -563,9 +558,24 @@ class SideBar extends Component {
                 icon: 'fa fa-folder-open',
                 list: [
                   {
+                    name: 'menu.project_statistic',
+                    icon: 'fa fa-flash',
+                    path: '/project/project-statistic'
+                  },
+                  {
                     name: 'menu.projects_list',
                     icon: 'fa fa-dashboard',
                     path: '/project/projects-list'
+                  },
+                  {
+                    name: 'menu.project_proposal',
+                    icon: 'fa fa-flash',
+                    path: '/project/project-proposal'
+                  },
+                  {
+                    name: 'menu.tags_management',
+                    icon: 'fa fa-tags',
+                    path: '/tags-management'
                   },
                   {
                     name: 'menu.project_report',
@@ -577,11 +587,6 @@ class SideBar extends Component {
                     icon: 'fa fa-user-plus',
                     path: '/project/project-evaluation'
                   },
-                  {
-                    name: 'menu.project_proposal',
-                    icon: 'fa fa-flash',
-                    path: '/project/project-proposal'
-                  }
                   // { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/project/projects-template-list" },
                 ]
               }}
@@ -944,7 +949,7 @@ class SideBar extends Component {
                     icon: 'fa fa-dollar',
                     path: '/manage-sales-order'
                   },
-              
+
                   {
                     name: 'menu.forecast_sales_order',
                     icon: 'fa fa-dollar',
@@ -960,7 +965,7 @@ class SideBar extends Component {
                   //   icon: 'fa fa-shopping-cart',
                   //   path: '/manage-purchase-order'
                   // },
-                  
+
                   // {
                   //   name: 'menu.manage_tax',
                   //   icon: 'fa fa-money',
@@ -1025,6 +1030,11 @@ class SideBar extends Component {
                     name: 'menu.dashboard_bill',
                     icon: 'fa fa-dashboard',
                     path: '/dashboard-bill'
+                  },
+                  {
+                    name: 'menu.inventory_forecast',
+                    icon: 'fa fa-dashboard',
+                    path: '/inventory-forecast'
                   },
                   {
                     name: 'menu.stock_management',

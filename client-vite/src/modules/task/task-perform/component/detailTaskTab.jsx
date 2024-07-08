@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-
 import { withTranslate } from 'react-redux-multilingual'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import { performTaskAction } from '../redux/actions'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { RoleActions } from '../../../super-admin/role/redux/actions'
-
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee'
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee'
 import { HoursSpentOfEmployeeChart } from './hourSpentOfEmployeeChart'
 import { CollaboratedWithOrganizationalUnits } from './collaboratedWithOrganizationalUnits'
-
 import { EvaluationModal } from './evaluationModal'
 import { getStorage } from '../../../../config'
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal'
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper'
 import { ShowMoreShowLess, QuillEditor } from '../../../../common-components'
-
 import { TaskAddModal } from '../../task-management/component/taskAddModal'
 import ModalAddTaskTemplate from '../../task-template/component/addTaskTemplateModal'
 import { RequestToCloseTaskModal } from './requestToCloseTaskModal'
@@ -955,6 +951,10 @@ function DetailTaskTab(props) {
   const checkCurrentRoleIsManager =
     role && role.item && role.item.parents.length > 0 && role.item.parents.filter((o) => o.name === ROOT_ROLE.MANAGER)
 
+  const formatNumber = (number) => {
+    return number.toLocaleString('en-US')
+  }
+
   return (
     <>
       {showToolbar && (
@@ -1363,6 +1363,18 @@ function DetailTaskTab(props) {
                     }}
                   />
                 </ShowMoreShowLess>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <strong>Khối lượng công việc:</strong>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span> {task && formatNumber(task.taskTarget)}</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <strong>Đơn vị công việc:</strong>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span> {task && task.taskUnit}</span>
+                </div>
               </div>
             </div>
           )}

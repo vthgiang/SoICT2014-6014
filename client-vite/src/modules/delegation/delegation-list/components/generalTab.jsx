@@ -15,14 +15,13 @@ function GeneralTab(props) {
       setState({
         ...state,
         delegationID: props.delegationID,
-        delegationName: props.delegationName,
+        name: props.name,
         description: props.description,
         delegator: props.delegator,
         delegatee: props.delegatee,
         delegatePrivileges: props.delegatePrivileges,
         delegateType: props.delegateType,
-        delegateRole: props.delegateRole,
-        delegateTask: props.delegateTask,
+        delegateObject: props.delegateObject,
         delegateTaskRoles: props.delegateTaskRoles,
         status: props.status,
         allPrivileges: props.allPrivileges,
@@ -33,7 +32,7 @@ function GeneralTab(props) {
         forReceive: props.forReceive,
         replyStatus: props.replyStatus,
         declineReason: props.declineReason,
-        delegatePolicy: props.delegatePolicy,
+        policy: props.policy,
         logs: state.logs
       })
     }
@@ -43,19 +42,16 @@ function GeneralTab(props) {
     return dayjs(date).format('DD-MM-YYYY hh:mm A')
   }
 
-  console.log(state)
-
   const { translate } = props
   const {
-    delegationName,
+    name,
     description,
     delegator,
     delegateTaskRoles,
     delegatee,
     delegatePrivileges,
     delegateType,
-    delegateRole,
-    delegateTask,
+    delegateObject,
     status,
     allPrivileges,
     startDate,
@@ -65,7 +61,7 @@ function GeneralTab(props) {
     forReceive,
     replyStatus,
     declineReason,
-    delegatePolicy
+    policy
   } = state
 
   return (
@@ -73,8 +69,8 @@ function GeneralTab(props) {
       <div className='row'>
         {/* Mã ủy quyền */}
         <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
-          <label>{translate('manage_delegation.delegationName')}:</label>
-          <span> {delegationName}</span>
+          <label>{translate('manage_delegation.name')}:</label>
+          <span> {name}</span>
         </div>
 
         {/* Mô tả */}
@@ -84,29 +80,24 @@ function GeneralTab(props) {
         </div>
       </div>
 
-      {delegateTask ? (
+      {delegateObject ? (
         <div className='row'>
           <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
             <label>{translate('manage_delegation.delegateObjectTask')}:</label>
-            <span> {delegateTask.name}</span>
+            <span> {delegateObject.name}</span>
           </div>
         </div>
       ) : null}
-      <div className='row'>
-        <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
-          {delegateRole ? (
-            <>
-              <label>{translate('manage_delegation.delegate_role')}:</label>
-              <span> {delegateRole?.name}</span>
-            </>
-          ) : (
-            <>
-              <label>{translate('manage_delegation.delegateObjectTaskRole')}:</label>
-              <span> {delegateTaskRoles ? delegateTaskRoles.map((r) => translate(`task.task_management.${r}`)).join(', ') : ''}</span>
-            </>
-          )}
+      {delegateTaskRoles ? (
+        <div className='row'>
+          <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
+            <label>{translate('manage_delegation.delegateObjectTaskRole')}:</label>
+            <span> {delegateTaskRoles ? delegateTaskRoles.map((r) => translate(`task.task_management.${r}`)).join(', ') : ''}</span>
+          </div>
         </div>
+      ) : null}
 
+      <div className='row'>
         <div className='form-group col-lg-6 col-md-6 col-ms-12 col-xs-12'>
           <label>{forReceive ? translate('manage_delegation.delegator') : translate('manage_delegation.delegate_receiver')}:</label>
           <span> {forReceive ? delegator?.name : delegatee?.name}</span>
@@ -131,7 +122,7 @@ function GeneralTab(props) {
       <div className='row'>
         <div className='form-group col-lg-12 col-md-12 col-ms-12 col-xs-12'>
           <label>{translate('manage_delegation.delegate_policy')}:</label>
-          <span> {delegatePolicy?.policyName}</span>
+          <span> {policy?.name}</span>
         </div>
       </div>
 

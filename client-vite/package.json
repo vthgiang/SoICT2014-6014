@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0 --fix",
-    "preview": "vite preview",
-    "start": "env-cmd vite",
-    "build": "vite --max_old_space_size=4096 build",
+    "preview": "vite preview --host",
+    "start": "env-cmd vite --host",
+    "build": "node --max-old-space-size=8000 node_modules/vite/bin/vite.js build",
     "test": "vite test",
     "eject": "vite eject",
     "format": "prettier 'src/**/*.{js,jsx}' --write --config ./.prettierrc"
@@ -26,6 +26,7 @@
     "@mui/joy": "^5.0.0-beta.32",
     "@mui/material": "^5.15.15",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@ramonak/react-progress-bar": "^5.2.0",
     "@react-google-maps/api": "^2.1.1",
     "@rollup/plugin-inject": "^5.0.5",
     "@testing-library/jest-dom": "^6.4.2",
@@ -53,6 +54,7 @@
     "file-saver": "^2.0.5",
     "firebase": "^8.2.1",
     "fs": "^0.0.1-security",
+    "gantt-task-react": "^0.3.9",
     "glpk.js": "^4.0.1",
     "google-map-react": "^2.1.9",
     "history": "^4.10.1",
@@ -66,6 +68,8 @@
     "jsencrypt": "^3.0.0-rc.1",
     "jszip": "^3.10.0",
     "leaflet": "^1.9.4",
+    "leaflet-geosearch": "^4.0.0",
+    "leaflet-routing-machine": "^3.2.12",
     "lodash": "^4.17.21",
     "mapbox-gl": "^3.2.0",
     "math-expression-evaluator": "^2.0.5",
@@ -112,6 +116,7 @@
     "react-scripts": "^5.0.1",
     "react-sortable-hoc": "^2.0.0",
     "react-sortablejs": "^6.1.4",
+    "react-tabs": "^6.0.2",
     "react-tagsinput": "^3.19.0",
     "react-textarea-autosize": "^8.2.0",
     "react-toastify": "^5.5.0",
@@ -128,10 +133,7 @@
     "url": "^0.11.3",
     "use-deep-compare-effect": "^1.6.1",
     "w2ui": "^2.0.0",
-    "xlsx": "^0.18.5",
-    "leaflet-geosearch": "^4.0.0",
-    "leaflet-routing-machine": "^3.2.12",
-    "@ramonak/react-progress-bar": "^5.2.0"
+    "xlsx": "^0.18.5"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -167,6 +169,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "postcss": "^8.4.38",
+    "sass": "^1.77.6",
     "tailwindcss": "^3.4.3",
     "vite": "^5.2.0"
   },

@@ -8,7 +8,7 @@ import 'moment/locale/vi'
 
 function LogActivityTab(props) {
   const [state, setState] = useState({
-    delegationName: '',
+    name: '',
     description: ''
   })
 
@@ -18,14 +18,13 @@ function LogActivityTab(props) {
       setState({
         ...state,
         delegationID: props.delegationID,
-        delegationName: props.delegationName,
+        name: props.name,
         description: props.description,
         delegator: props.delegator,
         delegatee: props.delegatee,
         delegatePrivileges: props.delegatePrivileges,
         delegateType: props.delegateType,
-        delegateRole: props.delegateRole,
-        delegateTask: props.delegateTask,
+        delegateObject: props.delegateObject,
         status: props.status,
         allPrivileges: props.allPrivileges,
         startDate: props.startDate,
@@ -47,8 +46,8 @@ function LogActivityTab(props) {
           {logs.map((item, index) => (
             <div key={item._id} className={`item-box ${index > 5 ? 'hide-component' : ''}`}>
               <a style={{ fontWeight: 700, cursor: 'pointer' }}>
-                {item.user
-                  ? item.user == delegator._id
+                {item.requester
+                  ? item.requester == delegator._id
                     ? delegator.name
                     : delegatee.name
                   : translate('manage_delegation.log_activity_tab.system')}{' '}
@@ -56,10 +55,10 @@ function LogActivityTab(props) {
               <span> - </span>
               <span
                 style={{ fontStyle: 'italic' }}
-                className={item.user ? (item.user == delegator._id ? 'text-green' : 'text-red') : 'text-orange'}
+                className={item.requester ? (item.requester == delegator._id ? 'text-green' : 'text-red') : 'text-orange'}
               >
-                {item.user
-                  ? item.user == delegator._id
+                {item.requester
+                  ? item.requester == delegator._id
                     ? translate('manage_delegation.delegator')
                     : translate('manage_delegation.delegate_receiver')
                   : translate('manage_delegation.log_activity_tab.automatic')}

@@ -6,6 +6,7 @@ import { SelectMulti, PaginateBar, DataTableSetting } from '../../../../common-c
 import { RequesterActions } from '../redux/actions'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import RequesterEditForm from './requesterEditForm'
+import { PolicyActions } from '../../../super-admin/policy-authorization/redux/actions'
 
 function ManageRequester(props) {
   const tableIdContructor = 'table-manage-requester'
@@ -23,7 +24,7 @@ function ManageRequester(props) {
   })
 
   const { requester, attribute } = props
-  const { translate, getAttribute, getRequesters } = props
+  const { translate, getAttribute, getRequesters, getAllPolicies } = props
   const { currentRow, tableId, type, name, page } = state
 
   const setPage = (page) => {
@@ -85,6 +86,7 @@ function ManageRequester(props) {
   useEffect(() => {
     getRequesters({ page, perPage: limit })
     getAttribute()
+    getAllPolicies()
   }, [])
 
   // Cac ham xu ly du lieu voi modal
@@ -230,7 +232,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   getRequesters: RequesterActions.get,
-  getAttribute: AttributeActions.getAttributes
+  getAttribute: AttributeActions.getAttributes,
+  getAllPolicies: PolicyActions.getAllPolicies
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManageRequester))

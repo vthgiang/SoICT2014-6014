@@ -8,7 +8,8 @@ export const RoleActions = {
   create,
   destroy,
   importRoles,
-  createRoleAttribute
+  createRoleAttribute,
+  editRoleAttribute
 }
 
 /**
@@ -186,6 +187,26 @@ function createRoleAttribute(data) {
       .catch((err) => {
         dispatch({
           type: RoleConstants.CREATE_ROLE_ATTRIBUTE_FAILE
+        })
+      })
+  }
+}
+
+function editRoleAttribute(id, data) {
+  return (dispatch) => {
+    dispatch({
+      type: RoleConstants.EDIT_ROLE_ATTRIBUTE_REQUEST
+    })
+    RoleServices.editRoleAttribute(id, data)
+      .then((res) => {
+        dispatch({
+          type: RoleConstants.EDIT_ROLE_ATTRIBUTE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((err) => {
+        dispatch({
+          type: RoleConstants.EDIT_ROLE_ATTRIBUTE_FAILE
         })
       })
   }

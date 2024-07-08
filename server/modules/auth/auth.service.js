@@ -2,12 +2,14 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
 const Models = require('../../models');
-const { Privilege, Role, User, Company, Employee, UserRole, Delegation } = Models;
+const { Privilege, Role, User, Company, Employee, UserRole, Delegation, Requester, Resource, DynamicAssignment } = Models;
 const fs = require("fs");
 const { connect, initModels } = require(`../../helpers/dbHelper`);
 const { sendEmail } = require("../../helpers/emailHelper");
 const { validateEmailValid } = require("../../helpers/validationHelper");
 const DelegationService = require(`../delegation/delegation.service`);
+const DelegationPolicyService = require(`../delegation/policy/policy.service`);
+const AuthorizationPolicyService = require(`../authorization/policy/policy.service`);
 
 /**
  * Phương thức đăng nhập
@@ -523,6 +525,39 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
         await DelegationService.saveLog(portal, delegateeDelegation, delegateeDelegation.delegatee, role.name, "switch_delegate_role", new Date())
 
     }
+
+    // Gán thêm các link được phân quyền theo authorization policy và delegation
+    const requester = await Requester(connect(DB_CONNECTION, portal)).findOne({ refId: userId });
+    const dynamicAssignments = await DynamicAssignment(connect(DB_CONNECTION, portal))
+        .find({ requesterIds: requester._id })
+        .populate('policyId delegationId');
+
+    const activePolicyAssignments = AuthorizationPolicyService.filterActiveAuthorizationPolicies(dynamicAssignments);
+    const validPolicyAssignments = await AuthorizationPolicyService.filterAssignmentsSatisfiedRoleRequirement(portal, activePolicyAssignments, role);
+    const activeDelegationAssignments = DelegationPolicyService.filterActiveDelegations(dynamicAssignments);
+
+    let allowResourceIds = [];
+    let denyResourceIds = [];
+    validPolicyAssignments.forEach(x => {
+        if (x.policyId.effect == 'Allow') {
+            allowResourceIds = allowResourceIds.concat(x.resourceIds);
+        }
+        else {
+            denyResourceIds = denyResourceIds.concat(x.resourceIds);
+        }
+    });
+    activeDelegationAssignments.forEach(x => {
+        allowResourceIds = allowResourceIds.concat(x.resourceIds);
+    });
+
+    const allowLinks = await Resource(connect(DB_CONNECTION, portal))
+        .find({ _id: {$in: allowResourceIds}, type: 'Link' })
+        .populate('refId');
+    const denyLinks = await Resource(connect(DB_CONNECTION, portal))
+        .find({ _id: {$in: denyResourceIds}, type: 'Link' });
+    const denyLinkIds = denyLinks.map(x => x.refId);
+    links = links.concat(allowLinks.map(x => x.refId));
+    links = links.filter(x => !denyLinkIds.includes(x._id));
 
     return links;
 };

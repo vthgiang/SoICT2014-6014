@@ -199,7 +199,8 @@ exports.getSalesOrderDetail = async (req, res) => {
 exports.countSalesOrder = async (req, res) => {
     try {
         let query = req.query;
-        let salesOrdersCounter = await SalesOrderServices.countSalesOrder(req.user._id, query, req.portal)
+        console.log("Query received in controller:", query); // Log kiểm tra
+        let salesOrdersCounter = await SalesOrderServices.countSalesOrder(req.user._id, query, req.portal);
 
         await Log.info(req.user.email, "COUNT_SALES_ORDER", req.portal);
         res.status(200).json({
@@ -217,6 +218,7 @@ exports.countSalesOrder = async (req, res) => {
         });
     }
 }
+
 
 exports.getTopGoodsSold = async (req, res) => {
     try {

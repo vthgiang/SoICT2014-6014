@@ -18,6 +18,7 @@ import { RiskManagement } from '../modules/risk/risk-list/components'
 import { BayesianNetworkConfig } from '../modules/risk/risk-bayes-config/components'
 import { RiskDashboard } from '../modules/risk/risk-dash-board/components'
 import { RiskResponsePlanManagement } from '../modules/risk/risk-response-plan/components'
+import InventoryForecastTable from '../modules/production/warehouse/inventory-forecast/components'
 
 const Home = lazy(() => import('../modules/home/components'))
 const NotFound = lazy(() => import('../modules/not-found/components'))
@@ -56,6 +57,8 @@ const ManageAttribute = lazy(() => import('../modules/super-admin/attribute/comp
 const ManagePolicy = lazy(() => import('../modules/super-admin/policy/components'))
 const ManageApi = lazy(() => import('../modules/super-admin/api/api-management/components/apiManagement'))
 const ManagePolicyDelegation = lazy(() => import('../modules/super-admin/policy-delegation/components'))
+const ManagePolicyAuthorization = lazy(() => import('../modules/super-admin/policy-authorization/components'))
+const AuthorizationLogging = lazy(() => import('../modules/super-admin/authorization-logging/components'))
 const ApiRegistration = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistration'))
 const ApiRegistrationEmployee = lazy(() => import('../modules/super-admin/api/api-registration/components/apiRegistrationEmployee'))
 const ManageDepartment = lazy(() => import('../modules/super-admin/organizational-unit/components'))
@@ -97,7 +100,7 @@ const EmployeeKpiEvaluationDashboard = lazy(() => import('../modules/kpi/evaluat
 // allocation
 const AffectedFactorManagement = lazy(() => import('../modules/kpi/kpi-allocation/affected-factor-management/component/index'))
 const AllocationManagement = lazy(() => import('../modules/kpi/kpi-allocation/allocation-management/component/index'))
-const ConfigManagement = lazy(() => import('../modules/kpi/kpi-allocation/config-management/component/index'))
+// const ConfigManagement = lazy(() => import('../modules/kpi/kpi-allocation/config-management/component/index'))
 const TaskPackageManagement = lazy(() => import('../modules/kpi/kpi-allocation/task-package-management/component/index'))
 
 const TaskManagement = lazy(() => import('../modules/task/task-management/component/taskManagement'))
@@ -155,6 +158,7 @@ const InventoryManagement = lazy(() => import('../modules/production/warehouse/i
 const StockRequestManagement = lazy(() => import('../modules/production/warehouse/request-management/components'))
 const StogareManagement = lazy(() => import('../modules/production/warehouse/storage-management/components'))
 const RoutePickingManagement = lazy(() => import('../modules/production/warehouse/route-picking-management/components'))
+const InvenToryForecastTable = lazy(() => import('../modules/production/warehouse/inventory-forecast/components'))
 // Customer Management
 const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
 const CrmDashBoardUnit = lazy(() => import("../modules/crm/crmUnitDashboard/components"))
@@ -261,6 +265,7 @@ const UserGuide = lazy(() => import('../modules/user-guide/components'))
 const PersonalTimeSheetLog = lazy(() => import('../modules/task/task-dashboard/statistic/personalTimeSheetLog'))
 const EmployeeTimeSheetLog = lazy(() => import('../modules/task/task-dashboard/statistic/employeeTimeSheetLog'))
 const ProjectProposalPage = lazy(() => import('../modules/project/project-proposal/components/index'))
+const ProjectStatisticPage = lazy(() => import('../modules/project/project-statistic/components/index')) 
 
 const Notifications = lazy(() => import('../modules/notification/components/index'))
 const SystemSetting = lazy(() => import('../modules/system-admin/system-setting/components'))
@@ -272,6 +277,7 @@ const PrivilegeApiManagement = lazy(
   () => import('../modules/system-admin/system-api/system-api-privilege/components/privilegeApiManagement')
 )
 const ManageRequester = lazy(() => import('../modules/system-admin/requester-management/components'))
+const ManageResource = lazy(() => import('../modules/system-admin/resource-management/components'))
 const InternalServiceIdentityManagement = lazy(() => import('../modules/system-admin/internal-service-identity/components'))
 const ExternalServiceConsumerManagement = lazy(() => import('../modules/super-admin/external-service-consumer/components'))
 const InternalPolicyManagement = lazy(() => import('../modules/system-admin/internal-policy/components'))
@@ -282,6 +288,7 @@ const ManageRoleDefault = lazy(() => import('../modules/system-admin/root-role/c
 const ComponentsDefaultManagement = lazy(() => import('../modules/system-admin/system-component/components'))
 const ManageSystem = lazy(() => import('../modules/super-admin/system/components'))
 const DashboardUnitForAdmin = lazy(() => import('../modules/dashboard-unit/components/dashboardUnitForAdmin'))
+const OverviewDashboard = lazy(() => import('../modules/overview-dashboard/components'))
 class Routes extends Component {
   render() {
     const { auth, company, user, role, link, component, department, employeesManager } = this.props
@@ -467,6 +474,18 @@ class Routes extends Component {
             component={Home}
           />
           <PrivateRoute
+            isLoading={false}
+            key='overview-dashboard'
+            arrPage={[{ link: '/overview-dashboard', name: 'overview_dashboard', icon: 'fa fa-home' }]}
+            auth={auth}
+            exact
+            link='/overview-dashboard'
+            path='/overview-dashboard'
+            pageName='overview_dashboard'
+            layout={Layout}
+            component={OverviewDashboard}
+          />
+          <PrivateRoute
             isLoading={this.props.company.isLoading}
             key='companies-management'
             arrPage={[
@@ -611,7 +630,7 @@ class Routes extends Component {
               {
                 requester: '/requesters-management',
                 name: 'manage_requester',
-                icon: 'fa fa-link'
+                icon: 'fa fa-users'
               }
             ]}
             auth={auth}
@@ -621,6 +640,29 @@ class Routes extends Component {
             pageName='manage_requester'
             layout={Layout}
             component={ManageRequester}
+          />
+          <PrivateRoute
+            isLoading={this.props.resource.isLoading}
+            key='resources-management'
+            arrPage={[
+              {
+                requester: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                requester: '/resources-management',
+                name: 'manage_resource',
+                icon: 'fa fa-tasks'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/resources-management'
+            path='/resources-management'
+            pageName='manage_resource'
+            layout={Layout}
+            component={ManageResource}
           />
           <PrivateRoute
             isLoading={this.props.attribute.isLoading}
@@ -690,6 +732,52 @@ class Routes extends Component {
             pageName='manage_policy_delegation'
             layout={Layout}
             component={ManagePolicyDelegation}
+          />
+          <PrivateRoute
+            isLoading={this.props.policyAuthorization.isLoading}
+            key='authorization-policies-management'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/authorization-policies-management',
+                name: 'manage_policy_authorization',
+                icon: 'fa fa-circle-o'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/authorization-policies-management'
+            path='/authorization-policies-management'
+            pageName='manage_policy_authorization'
+            layout={Layout}
+            component={ManagePolicyAuthorization}
+          />
+          <PrivateRoute
+            isLoading={this.props.authorizationLogging.isLoading}
+            key='authorization-logging'
+            arrPage={[
+              {
+                link: '#',
+                name: 'system_administration',
+                icon: 'fa fa-key'
+              },
+              {
+                link: '/authorization-logging',
+                name: 'authorization_logging',
+                icon: 'fa fa-eye'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/authorization-logging'
+            path='/authorization-logging'
+            pageName='authorization_logging'
+            layout={Layout}
+            component={AuthorizationLogging}
           />
           <PrivateRoute
             isLoading={this.props.api?.isLoading}
@@ -1917,7 +2005,7 @@ class Routes extends Component {
             layout={Layout}
             component={AllocationManagement}
           />
-          <PrivateRoute
+          {/* <PrivateRoute
             isLoading={false}
             key='kpi_allocation_config_management'
             arrPage={[
@@ -1935,7 +2023,7 @@ class Routes extends Component {
             pageName='kpi_allocation_config_management'
             layout={Layout}
             component={ConfigManagement}
-          />
+          /> */}
           <PrivateRoute
             isLoading={false}
             key='kpi_allocation_task_package_management'
@@ -2650,6 +2738,45 @@ class Routes extends Component {
             pageName='dashboard_bill'
             layout={Layout}
             component={BillDashBoard}
+          />
+                    <PrivateRoute
+            isLoading={false}
+            key='dashboard-inventory'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/dashboard-inventory',
+                name: 'dashboard_inventory',
+                icon: 'fa fa-dashboard'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/dashboard-inventory'
+            path='/dashboard-inventory'
+            pageName='dashboard_inventory'
+            layout={Layout}
+            component={InventoryDashBoard}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key='inventory-forecast'
+            arrPage={[
+              { link: '/', name: 'inventory_forecast', icon: 'fa fa-home' },
+              {
+                link: '/inventory_forecast',
+                name: 'inventory_forecast',
+                icon: 'fa fa-dashboard'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/inventory-forecast'
+            path='/inventory-forecast'
+            pageName='inventory_forecast'
+            layout={Layout}
+            component={InventoryForecastTable}
           />
 
           <PrivateRoute
@@ -4487,6 +4614,25 @@ class Routes extends Component {
             pageName={'project_proposal'}
             layout={Layout}
             component={ProjectProposalPage}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={"/project/project-statistic"}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/project/project-statistic',
+                name: 'project_statistic',
+                icon: 'fa fa-folder-open'
+              },
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/project/project-statistic'}
+            path={'/project/project-statistic'}
+            pageName={'project_statistic'}
+            layout={Layout}
+            component={ProjectStatisticPage}
           />
           {/* <PrivateRoute
                         isLoading={false}

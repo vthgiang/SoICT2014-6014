@@ -25,7 +25,7 @@ const Transport3OrderSchema = new Schema(
       type: Number
     },
     deliveryTime: {
-      type: Date
+      type: String
     },
     note: {
       type: String

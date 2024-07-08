@@ -330,6 +330,19 @@ const LINKS = [
     components: getComponentsInLink("/home"),
   },
   {
+    url: "/overview-dashboard",
+    description: `Thống kê`,
+    category: LINK_CATEGORY.COMMON.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/overview-dashboard"),
+  },
+  {
     url: "/notifications",
     description: "Thông báo",
     category: LINK_CATEGORY.COMMON.name,
@@ -394,6 +407,27 @@ const LINKS = [
     components: getComponentsInLink("/links-management"),
   },
   {
+      url: '/authorization-policies-management',
+      description: 'Quản lý chính sách của công ty',
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink('/authorization-policies-management'),
+  },
+  {
+    url: '/delegation-policies-management',
+    description: 'Quản lý chính sách ủy quyền',
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink('/delegation-policies-management')
+  },
+  {
+      url: "/authorization-logging",
+      description: "Quản lý log truy cập phân quyền",
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink("/authorization-logging"),
+  },
+  {
     url: "/attributes-management",
     description: "Quản lý thuộc tính phân quyền",
     category: LINK_CATEGORY.RBAC.name,
@@ -409,6 +443,19 @@ const LINKS = [
         ROOT_ROLES.ADMIN.name
     ],
     components: getComponentsInLink("/policies-management")
+  },
+  {
+    url: "/delegation-list",
+    description: "Danh sách ủy quyền",
+    category: LINK_CATEGORY.DELEGATION.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER,
+        ROOT_ROLES.DEPUTY_MANAGER,
+        ROOT_ROLES.EMPLOYEE,
+    ],
+    components: getComponentsInLink('/delegation-list')
   },
   {
     url: "/delegation-receive",
@@ -429,6 +476,13 @@ const LINKS = [
     category: LINK_CATEGORY.RBAC.name,
     roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
     components: getComponentsInLink("/requesters-management"),
+  },
+  {
+      url: '/resources-management',
+      description: 'Quản lý tài nguyên của công ty',
+      category: LINK_CATEGORY.RBAC.name,
+      roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+      components: getComponentsInLink('/resources-management'),
   },
   {
     url: "/apis-management",
@@ -881,19 +935,19 @@ const LINKS = [
     ],
     components: getComponentsInLink("/bidding-project-template"),
   },
-  {
-    url: "/tags-management",
-    description: "Quản lý danh mục tag",
-    category: LINK_CATEGORY.BIDDING.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/tags-management"),
-  },
+  // {
+  //   url: "/tags-management",
+  //   description: "Quản lý danh mục tag",
+  //   category: LINK_CATEGORY.BIDDING.name,
+  //   roles: [
+  //     ROOT_ROLES.SUPER_ADMIN.name,
+  //     ROOT_ROLES.ADMIN.name,
+  //     ROOT_ROLES.MANAGER.name,
+  //     ROOT_ROLES.DEPUTY_MANAGER.name,
+  //     ROOT_ROLES.EMPLOYEE.name,
+  //   ],
+  //   components: getComponentsInLink("/tags-management"),
+  // },
 
   // KPI
   {
@@ -1341,6 +1395,18 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/task-report"),
+  },
+
+  {
+    url: "/inventory-forecast",
+    description: "Dự báo tồn kho",
+    category: LINK_CATEGORY.REPORT.name,
+    roles: [
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/inventory-forecast"),
   },
 
   {
@@ -2436,6 +2502,19 @@ const LINKS = [
     components: getComponentsInLink("/project/projects-list"),
   },
   {
+    url: "/tags-management",
+    description: "Quản lý thẻ công việc (tags)",
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/tags-management"),
+  },
+  {
     url: "/project/project-details",
     description: "Chi tiết dự án",
     category: LINK_CATEGORY.PROJECT.name,
@@ -2862,6 +2941,19 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/project/project-proposal"),
+  },
+  {
+    url: "/project/project-statistic",
+    description: "Thống kê danh sách dự án",
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      // ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/project/project-statistic"),
   },
 
   {

@@ -132,7 +132,7 @@ exports.createComponentAttribute = async (portal, data) => {
         }
     }
 
-    const attrArray = await filterValidAttributeArray(data.attributes);
+    const attrArray = await filterValidAttributeArray(data.attributes ?? []);
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
@@ -214,7 +214,7 @@ exports.editComponent = async (portal, id, data) => {
         }
     }
     if (data.attributes) {
-        const attrArray = await filterValidAttributeArray(data.attributes);
+        const attrArray = await filterValidAttributeArray(data.attributes ?? []);
         const dataAttr = attrArray.map(attr => {
             return {
                 attributeId: attr.attributeId,

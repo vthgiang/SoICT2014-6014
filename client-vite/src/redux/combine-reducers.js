@@ -11,6 +11,7 @@ import { systemLinks } from '../modules/system-admin/system-link/redux/reducers'
 import { systemAdminPage, systemPage } from '../modules/system-admin/system-page/redux/reducers'
 import { systemSetting } from '../modules/system-admin/system-setting/redux/reducers'
 import { requester } from '../modules/system-admin/requester-management/redux/reducers'
+import { resource } from '../modules/system-admin/resource-management/redux/reducers'
 import { internalServiceIdentities } from '../modules/system-admin/internal-service-identity/redux/reducers'
 import { internalPolicies } from '../modules/system-admin/internal-policy/redux/reducers'
 import { externalPolicies } from '../modules/system-admin/external-policy/redux/reducers'
@@ -30,6 +31,8 @@ import { service } from '../modules/super-admin/service/redux/reducers'
 import { attribute } from '../modules/super-admin/attribute/redux/reducers'
 import { policy } from '../modules/super-admin/policy/redux/reducers'
 import { policyDelegation } from '../modules/super-admin/policy-delegation/redux/reducers'
+import { policyAuthorization } from '../modules/super-admin/policy-authorization/redux/reducers'
+import { authorizationLogging } from '../modules/super-admin/authorization-logging/redux/reducers'
 
 import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers'
 import { discipline } from '../modules/human-resource/commendation-discipline/redux/reducers'
@@ -113,6 +116,7 @@ import { binLocations } from '../modules/production/warehouse/bin-location-manag
 import { lots } from '../modules/production/warehouse/inventory-management/redux/reducers'
 import { stocks } from '../modules/production/warehouse/stock-management/redux/reducers'
 import { storage } from '../modules/production/warehouse/storage-management/redux/reducers'
+import {inventoryForecast} from '../modules/production/warehouse/inventory-forecast/redux/reducers'
 // crm
 import { cares } from '../modules/crm/care/redux/reducers'
 import { careTypes } from '../modules/crm/careType/redux/reducers'
@@ -235,9 +239,12 @@ const appReducer = combineReducers({
   role,
   link,
   requester,
+  resource,
   attribute,
   policy,
   policyDelegation,
+  policyAuthorization,
+  authorizationLogging,
   apis,
   apiRegistration,
   component,
@@ -341,6 +348,7 @@ const appReducer = combineReducers({
   bills,
   requestManagements,
   storage,
+  inventoryForecast,
   // customer management
   crm: combineReducers({
     customers,
@@ -356,7 +364,7 @@ const appReducer = combineReducers({
   }),
 
   // order
- 
+
   quotes,
   discounts,
   serviceLevelAgreements,

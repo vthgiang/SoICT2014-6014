@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual'
 
 import { DelegationReceiveTable } from './delegationReceiveTable'
 import { DelegationReceiveTableTask } from './delegationReceiveTableTask'
+import { DelegationReceiveTableResource } from './delegationReceiveTableResource'
 
 function ManageDelegationReceive(props) {
   const { translate } = props
@@ -13,13 +14,18 @@ function ManageDelegationReceive(props) {
     <div className='nav-tabs-custom'>
       <ul className='nav nav-tabs'>
         <li className='active'>
-          <a title={translate('manage_delegation.delegateTypeRole')} data-toggle='tab' href={`#role_delegation`}>
+          <a title={translate('manage_delegation.delegateTypeRole')} data-toggle='tab' href='#role_delegation'>
             {translate('manage_delegation.delegateTypeRole')}
           </a>
         </li>
         <li>
-          <a title={translate('manage_delegation.delegateTypeTask')} data-toggle='tab' href={`#task_delegation`}>
+          <a title={translate('manage_delegation.delegateTypeTask')} data-toggle='tab' href='#task_delegation'>
             {translate('manage_delegation.delegateTypeTask')}
+          </a>
+        </li>
+        <li>
+          <a title={translate('manage_delegation.delegateTypeResource')} data-toggle='tab' href='#resource_delegation'>
+            {translate('manage_delegation.delegateTypeResource')}
           </a>
         </li>
       </ul>
@@ -30,6 +36,10 @@ function ManageDelegationReceive(props) {
 
         <div className='tab-pane' id='task_delegation'>
           <DelegationReceiveTableTask />
+        </div>
+
+        <div className='tab-pane' id='resource_delegation'>
+          <DelegationReceiveTableResource />
         </div>
       </div>
     </div>

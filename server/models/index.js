@@ -6,11 +6,17 @@ module.exports = {
     Policy: require('./auth/policy.model'),
     Service: require('./auth-service/service.model'),
     Requester: require('./auth-service/requester.model'),
+    Resource: require('./auth-service/resource.model'),
+    AuthorizationPolicy: require('./auth-service/authorization.policy.model'),
+    AuthorizationAccessLog: require('./auth-service/authorization.log.model'),
+    DynamicAssignment: require('./auth-service/dynamic.assignment.model'),
 
     Document: require('./document/document.model'),
     DocumentCategory: require('./document/documentCategory.model'),
     DocumentDomain: require('./document/documentDomain.model'),
     DocumentArchive: require('./document/documentArchive.model'),
+
+    HyperParameter: require('./AImodel/hyperparameter.model'),
 
     AnnualLeave: require('./human-resource/annualLeave.model'),
     Commendation: require('./human-resource/commendation.model'),
@@ -41,6 +47,7 @@ module.exports = {
     TaskPackageAllocation: require('./kpi/taskPackageAllocation.model'),
     TaskType: require('./kpi/taskType.model'),
     AllocationUnitResult: require('./kpi/allocationResult.model'),
+    AllocationTaskAssigned: require('./task/allocationTask.model'),
 
     Notification: require('./notification/notification.model'),
     ManualNotification: require('./notification/manualNotification.model'),
@@ -140,6 +147,7 @@ module.exports = {
 
     // Delegation
     Delegation: require('./delegation/delegation.model'),
+    DelegationPolicy: require('./delegation/delegation.policy.model'),
 
     // Identity server
     ExternalPolicy: require('./identity.service/external.policy.model'),
@@ -216,6 +224,7 @@ module.exports = {
     Transport3Schedule: require('./transport3/transport3Schedule.model'),
     Transport3Issue: require('./transport3/transport3Issue.model'),
     DeliverySchedule: require('./transportation/delivery-plan/deliverySchedule.model'),
+    Transport3DraftSchedule: require('./transport3/transport3DraftSchedule.model'),
 
     // New Models
     Capacity: require('./human-resource/capacity.model'),
