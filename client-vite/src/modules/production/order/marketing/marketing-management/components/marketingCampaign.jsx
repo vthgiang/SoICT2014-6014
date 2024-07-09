@@ -29,10 +29,6 @@ import GridLayout from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import Switch from '@mui/material/Switch';
 import './style.css'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered'
 import BatchPredictionIcon from '@mui/icons-material/BatchPrediction';
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
@@ -46,13 +42,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import PercentIcon from '@mui/icons-material/Percent';
-import IconButton from '@mui/material/IconButton';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ClearIcon from '@mui/icons-material/Clear';
 import ServerResponseAlert from '../../../../../alert/components/serverResponseAlert';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
-import { Popover } from '@mui/material';
 import * as XLSX from 'xlsx';
 import {
   Chart as ChartJS,
@@ -66,11 +57,9 @@ import {
   Tooltip,
   Legend
 } from 'chart.js'
-import { Bar, Doughnut } from 'react-chartjs-2'
 import { sendRequest } from '../../../../../../helpers/requestHelper';
 import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
-import MarketingCampaignDetail from './CampaignDetail';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
@@ -94,26 +83,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }))
 
-function createData(name, costs, clicks, impressions, transactions, revenue, action) {
-  return { name, costs, clicks, impressions, transactions, revenue, action }
-}
-const rows_campaign = [
-  createData('Chiến dịch Tết 2024', '125,254.4M', '103,098', '18,300,220', '4000', '120,256M'),
-  createData('Quý 4 2023 ', '96,234.4M', '98,023', '16,200,205', '356', '60,234M'),
-  createData('Chiến dịch giáng sinh 2023', '90,100.3M', '92,478', '12,500,348', '480', '50,356M'),
-  createData('Chiến dịch Sale hè 2023', '88,398.1M', '91200', '11,222,556', '20', '24,891M'),
-  createData('Chiến dịch Valentine 2023', '90,202.8M', '88000', '11,002,089', '11', '30,2M')
-]
-function createDataCampaign(name, timestart, channel, cost, status) {
-  return { name, timestart, channel, cost, status }
-}
-const rows_campaign_manage = [
-  createDataCampaign('Chiến dịch Tết 2024', '4-6-2023', 'Facebook', '120,256M'),
-  createDataCampaign('Quý 4 2023 ', '5-7-2023', 'Facebook', '60,234M'),
-  createDataCampaign('Chiến dịch giáng sinh 2023', '12-12-2023', 'Facebook', '50,356M'),
-  createDataCampaign('Chiến dịch Sale hè 2023', '12-12-2023', 'Facebook', '24,891M'),
-  createDataCampaign('Chiến dịch Valentine 2023', '12-12-2023', 'Facebook', '30,2M')
-]
 const style = {
   position: 'absolute',
   top: '50%',
@@ -1069,14 +1038,14 @@ const MarketingCampaignComponent = (props) => {
               <Table sx={{ minWidth: 700, maxHeight: 500, overflowY: scroll }} aria-label='customized table'>
                 <TableHead>
                   <TableRow sx={{ backgroundColor: '#asad' }}>
-                    <StyledTableCell>Name </StyledTableCell>
+                    <StyledTableCell>Tên </StyledTableCell>
                     <StyledTableCell>
-                      Time start
+                      Thời gian sửa gần nhất
                     </StyledTableCell>
-                    <StyledTableCell>Channel</StyledTableCell>
-                    <StyledTableCell>Cost</StyledTableCell>
-                    <StyledTableCell>Status</StyledTableCell>
-                    <StyledTableCell>Action</StyledTableCell>
+                    <StyledTableCell>Kênh tiếp thị</StyledTableCell>
+                    <StyledTableCell>Chi phí</StyledTableCell>
+                    <StyledTableCell>Trạng thái</StyledTableCell>
+                    <StyledTableCell>Hành động</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

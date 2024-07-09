@@ -21,7 +21,7 @@ function TopCareBarChart(props) {
     let topGoodsCareValue = ['Top sản phẩm được quan tâm theo số lượng'];
 
     if (props.quotes && props.quotes.topGoodsCare) {
-      let topGoodsCareMap = props.quotes.topGoodsCare.map((element) => element.quantity);
+      let topGoodsCareMap = props.quotes.topGoodsCare.slice(0, 5).map((element) => element.quantity);
       topGoodsCareValue = topGoodsCareValue.concat(topGoodsCareMap);
     }
 
@@ -46,10 +46,10 @@ function TopCareBarChart(props) {
 
     let topGoodsCareTitle = [];
     if (props.quotes && props.quotes.topGoodsCare) {
-      topGoodsCareTitle = props.quotes.topGoodsCare.map((element) => element.name);
+      topGoodsCareTitle = props.quotes.topGoodsCare.slice(0, 5).map((element) => {
+        return element.name.length > 20 ? element.name.slice(0, 20) + '...' : element.name;
+      });
     }
-
-    const truncatedTitles = topGoodsCareTitle.map(title => title.length > 20 ? title.slice(0, 20) + '...' : title);
 
     removePreviousChart();
 
@@ -65,7 +65,7 @@ function TopCareBarChart(props) {
         rotated: true, // Chuyển trục để biểu đồ nằm ngang
         x: {
           type: 'category',
-          categories: truncatedTitles.length ? truncatedTitles : [],
+          categories: topGoodsCareTitle.length ? topGoodsCareTitle : [],
         },
         y: {
           label: {
@@ -77,7 +77,7 @@ function TopCareBarChart(props) {
       tooltip: {
         format: {
           title: function (index) {
-            return topGoodsCareTitle[index];
+            return props.quotes.topGoodsCare[index].name;
           },
           value: function (value) {
             return value;
