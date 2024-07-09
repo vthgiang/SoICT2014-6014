@@ -204,18 +204,28 @@ exports.countSalesOrder = async (req, res) => {
     try {
         let query = req.query;
         console.log("Query received in controller:", query); 
-        const param={
-            userId:req.user._id, 
-            query:query, 
+        const param = {
+            userId: req.user._id, 
+            query: query, 
             portal: req.portal
         }
-        const response=await rabitmq.gRPC('orderService.countSalesOrder',JSON.stringify(param),listRpcQueue.PRODUCTION_SERVICE)
+
+        const response = await rabitmq.gRPC('orderService.countSalesOrder', JSON.stringify(param), listRpcQueue.PRODUCTION_SERVICE);
+        const responseData = JSON.parse(response);
+
+        // Chuyển đổi cấu trúc dữ liệu nhận được thành cấu trúc mong muốn
+        const salesOrdersCounter = {
+            count: responseData.salesOrdersCounter.count,
+            totalMoneyWithStatus: responseData.salesOrdersCounter.totalMoneyWithStatus,
+            totalNumberWithStatus: responseData.salesOrdersCounter.totalNumberWithStatus,
+            totalMoney: responseData.salesOrdersCounter.totalMoney
+        };
 
         await Log.info(req.user.email, "COUNT_SALES_ORDER", req.portal);
         res.status(200).json({
             success: true,
             messages: ["count_sales_order_successfully"],
-            content: response
+            content: { salesOrdersCounter }
         });
     } catch (error) {
         await Log.error(req.user.email, "COUNT_SALES_ORDER", req.portal);
@@ -227,7 +237,6 @@ exports.countSalesOrder = async (req, res) => {
         });
     }
 }
-
 
 exports.getTopGoodsSold = async (req, res) => {
     try {

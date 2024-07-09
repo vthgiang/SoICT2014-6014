@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
 import { forecastActions } from '../../../forecast/redux/actions';
+import { Link } from 'react-router-dom';
 
 const Bottom5ProductsChart = ({ bottom5Products, timeFrame, dispatch }) => {
     useEffect(() => {
@@ -92,11 +93,16 @@ const Bottom5ProductsChart = ({ bottom5Products, timeFrame, dispatch }) => {
     };
 
     return (
-        <div className="box">
+        <div className="box" style={{ position: 'relative' }}>
             <div className="box-header with-border">
                 <i className="fa fa-bar-chart-o" />
-                <h3 className="box-title">Sản phẩm không bán chạy</h3>
+                <h3 className="box-title">Sản phẩm dự báo cần tiếp thị</h3>
                 <div id="chart-bottom5"></div>
+                <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                    <Link to="/marketing-campaign" className="btn btn-primary" style={{ backgroundColor: 'gray', borderColor: 'gray' }}>
+                        Tạo lập chiến dịch
+                    </Link>
+                </div>
             </div>
         </div>
     );

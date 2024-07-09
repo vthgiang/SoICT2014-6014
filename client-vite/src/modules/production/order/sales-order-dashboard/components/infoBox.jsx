@@ -4,11 +4,14 @@ import { withTranslate } from 'react-redux-multilingual';
 import { formatCurrency } from '../../../../../helpers/formatCurrency';
 
 function InfoBox(props) {
+  console.log("Props received in InfoBox:", props); // Log thông tin props để kiểm tra dữ liệu
+
   let salesOrdersCounter = {};
   let quoteCounter = {};
 
   if (props.salesOrders) {
     salesOrdersCounter = props.salesOrders?.salesOrdersCounter || {};
+    console.log(salesOrdersCounter)
   }
 
   if (props.quotes) {
@@ -55,7 +58,7 @@ function InfoBox(props) {
             <i className='fa fa-hand-o-right'></i>
           </span>
           <div className='info-box-content' title='Tổng tiền mua hàng'>
-            <span className='info-box-text'>Doanh số</span>
+            <span className='info-box-text'>Doanh thu</span>
             <span className='info-box-number'>{formatCurrency(salesOrdersCounter.totalMoney || 0)} vnđ</span>
             <a href={`/manage-payment`} target='_blank'>
               Xem thêm <i className='fa fa-arrow-circle-right'></i>
@@ -63,26 +66,14 @@ function InfoBox(props) {
           </div>
         </div>
       </div>
-      <div className='col-md-4 col-sm-6 col-xs-6'>
-        <div className='info-box with-border'>
-          <span className='info-box-icon bg-red'>
-            <i className='fa fa-hand-o-right'></i>
-          </span>
-          <div className='info-box-content' title='Tổng tiền mua hàng'>
-            <span className='info-box-text'>Lợi nhuận</span>
-            <span className='info-box-number'>{formatCurrency(salesOrdersCounter.totalProfit || 0)} vnđ</span>
-            <a href={`/manage-profit`} target='_blank'>
-              Xem thêm <i className='fa fa-arrow-circle-right'></i>
-            </a>
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 }
 
 function mapStateToProps(state) {
   const { salesOrders, quotes } = state;
+  console.log("mapStateToProps - state:", state); // Log thông tin state để kiểm tra dữ liệu
   return { salesOrders, quotes };
 }
 
