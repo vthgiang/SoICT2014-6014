@@ -1,27 +1,27 @@
-import React, { Component, useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
-//Actions
-import { SalesOrderActions } from '../redux/actions'
-import { DiscountActions } from '../../discount/redux/actions'
-import { CrmCustomerActions } from '../../../../crm/customer/redux/actions'
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions'
-import { RoleActions } from '../../../../super-admin/role/redux/actions'
-import { QuoteActions } from '../../quote/redux/actions'
-import { PaymentActions } from '../../payment/redux/actions'
-import { BusinessDepartmentActions } from '../../business-department/redux/actions'
+import React, { Component, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+// Actions
+import { SalesOrderActions } from '../redux/actions';
+import { DiscountActions } from '../../discount/redux/actions';
+import { CrmCustomerActions } from '../../../../crm/customer/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
+import { QuoteActions } from '../../quote/redux/actions';
+import { PaymentActions } from '../../payment/redux/actions';
+import { BusinessDepartmentActions } from '../../business-department/redux/actions';
 
-import { BillActions } from '../../../warehouse/bill-management/redux/actions'
-import { StockActions } from '../../../warehouse/stock-management/redux/actions'
-import { UserActions } from '../../../../super-admin/user/redux/actions'
-import { GoodActions } from '../../../common-production/good-management/redux/actions'
-import { LotActions } from '../../../warehouse/inventory-management/redux/actions'
+import { BillActions } from '../../../warehouse/bill-management/redux/actions';
+import { StockActions } from '../../../warehouse/stock-management/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { GoodActions } from '../../../common-production/good-management/redux/actions';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 
-//Helper Function
-import { formatCurrency } from '../../../../../helpers/formatCurrency'
-import { formatDate } from '../../../../../helpers/formatDate'
-import { generateCode } from '../../../../../helpers/generateCode'
-//Components Import
+// Helper Function
+import { formatCurrency } from '../../../../../helpers/formatCurrency';
+import { formatDate } from '../../../../../helpers/formatDate';
+import { generateCode } from '../../../../../helpers/generateCode';
+// Components Import
 import {
   PaginateBar,
   DataTableSetting,
@@ -29,21 +29,22 @@ import {
   SelectBox,
   DeleteNotification,
   ConfirmNotification
-} from '../../../../../common-components'
-import SalesOrderDetailForm from './salesOrderDetailForm'
-import SalesOrderCreateForm from './salesOrderCreateForm'
-import SalesOrderCreateFormFromQuote from './salesOrderCreateFormFromQuote'
-import SalesOrderEditForm from './salesOrderEditForm'
+} from '../../../../../common-components';
+import SalesOrderDetailForm from './salesOrderDetailForm';
+import SalesOrderCreateForm from './salesOrderCreateForm';
+import SalesOrderCreateFormFromQuote from './salesOrderCreateFormFromQuote';
+import SalesOrderEditForm from './salesOrderEditForm';
 // import GoodIssueCreateForm from "../../../warehouse/bill-management/components/good-issues/goodIssueCreateForm";
-import BillDetailForm from '../../../warehouse/bill-management/components/genaral/billDetailForm'
-import SalesOrderApproveForm from './approveSalesOrder'
-import SalesOrderEditAfterApproveForm from './editAfterApprove/salesOrderEditAfterApproveForm'
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import BillDetailForm from '../../../warehouse/bill-management/components/genaral/billDetailForm';
+import SalesOrderApproveForm from './approveSalesOrder';
+import SalesOrderEditAfterApproveForm from './editAfterApprove/salesOrderEditAfterApproveForm';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import ImportOrdersModal from '../components/createSalesOrderFromFile/importSalesModal';
 
 function SalesOrderTable(props) {
-  const TableId = 'sale-order-table'
-  const defaultConfig = { limit: 5 }
-  const Limit = getTableConfiguration(TableId, defaultConfig).limit
+  const TableId = 'sale-order-table';
+  const defaultConfig = { limit: 5 };
+  const Limit = getTableConfiguration(TableId, defaultConfig).limit;
 
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole'),
@@ -54,77 +55,80 @@ function SalesOrderTable(props) {
     salesOrderDetail: {},
     detailModalId: 1,
     tableId: TableId
-  })
+  });
 
   useEffect(() => {
-    const { page, limit, currentRole } = state
-    props.getAllSalesOrders({ page, limit, currentRole })
-    props.getDiscountForOrderValue()
-    props.getCustomers({ getAll: true })
-    props.getAllBusinessDepartments({ page: 1, limit: 1000 })
+    const { page, limit, currentRole } = state;
+    props.getAllSalesOrders({ page, limit, currentRole });
+    props.getDiscountForOrderValue();
+    props.getCustomers({ getAll: true });
+    props.getAllBusinessDepartments({ page: 1, limit: 1000 });
 
-    props.getAllStocks({ managementLocation: currentRole })
-    props.getUser()
-    props.getGoodsByType({ type: 'product' })
-  }, [])
+    props.getAllStocks({ managementLocation: currentRole });
+    props.getUser();
+    props.getGoodsByType({ type: 'product' });
+  }, []);
 
   const handleClickCreateCode = () => {
     setState((state) => {
-      return { ...state, code: generateCode('SO_') }
-    })
-  }
+      return { ...state, code: generateCode('SO_') };
+    });
+  };
+
+  const showImportModal = () => {
+    window.$('#modal-import-sales-orders').modal('show');
+  };
 
   const setPage = async (page) => {
     await setState({
       ...state,
       page: page
-    })
+    });
     const data = {
       limit: state.limit,
       page: page,
       currentRole: state.currentRole
-    }
-    props.getAllSalesOrders(data)
-  }
+    };
+    props.getAllSalesOrders(data);
+  };
 
   const setLimit = async (limit) => {
     await setState({
       ...state,
       limit: limit
-    })
+    });
     const data = {
       limit: limit,
       page: state.page,
       currentRole: state.currentRole
-    }
-    props.getAllSalesOrders(data)
-  }
+    };
+    props.getAllSalesOrders(data);
+  };
 
   const handleStatusChange = (value) => {
     setState({
       ...state,
       status: value
-    })
-  }
+    });
+  };
 
   const handleOrderCodeChange = (e) => {
-    let { value } = e.target
+    let { value } = e.target;
     setState({
       ...state,
       codeQuery: value
-    })
-  }
+    });
+  };
 
   const handleCustomerSearchChange = (value) => {
-    //Tìm kiếm theo khách hàng
     setState({
       ...state,
       customer: value
-    })
-  }
+    });
+  };
 
   const handleSubmitSearch = () => {
-    let { limit, page, codeQuery, status, customer } = state
+    let { limit, page, codeQuery, status, customer } = state;
     const data = {
       limit,
       page,
@@ -132,19 +136,19 @@ function SalesOrderTable(props) {
       status,
       customer,
       currentRole: state.currentRole
-    }
-    props.getAllSalesOrders(data)
-  }
+    };
+    props.getAllSalesOrders(data);
+  };
 
   const handleShowDetailInfo = async (salesOrder) => {
-    const { detailModalId } = state
-    await props.getPaymentForOrder({ orderId: salesOrder._id, orderType: 1 })
-    await props.getSalesOrderDetail(salesOrder._id)
-    await window.$(`#modal-detail-sales-order-${detailModalId}`).modal('show')
-  }
+    const { detailModalId } = state;
+    await props.getPaymentForOrder({ orderId: salesOrder._id, orderType: 1 });
+    await props.getSalesOrderDetail(salesOrder._id);
+    await window.$(`#modal-detail-sales-order-${detailModalId}`).modal('show');
+  };
 
   const reloadSalesOrderTable = () => {
-    let { limit, page, codeQuery, status, customer, currentRole } = state
+    let { limit, page, codeQuery, status, customer, currentRole } = state;
     const data = {
       limit,
       page,
@@ -152,35 +156,34 @@ function SalesOrderTable(props) {
       status,
       customer,
       currentRole
-    }
-    props.getAllSalesOrders(data)
-  }
+    };
+    props.getAllSalesOrders(data);
+  };
 
   const handleEditSalesOrder = async (salesOrderEdit) => {
-    await props.getSalesOrderDetail(salesOrderEdit._id)
-    window.$('#modal-edit-sales-order').modal('show')
-  }
+    await props.getSalesOrderDetail(salesOrderEdit._id);
+    window.$('#modal-edit-sales-order').modal('show');
+  };
 
   const handleEditSalesOrderAfterApprove = async (salesOrderEdit) => {
-    let goodIds = []
+    let goodIds = [];
     if (salesOrderEdit) {
-      goodIds = salesOrderEdit.goods.map((good) => good.good._id)
+      goodIds = salesOrderEdit.goods.map((good) => good.good._id);
     }
-    //Lấy số lượng tồn kho
-    await props.getInventoryByGoodIds({ array: goodIds })
+    await props.getInventoryByGoodIds({ array: goodIds });
     await setState({
       ...state,
       salesOrderEditAfterApprove: salesOrderEdit
-    })
-    window.$('#modal-edit-sales-order-after-aprrove').modal('show')
-  }
+    });
+    window.$('#modal-edit-sales-order-after-aprrove').modal('show');
+  };
 
   const setEditSalesOrderAfterApproveState = async (data) => {
     await setState({
       ...state,
       salesOrderEditAfterApprove: data
-    })
-  }
+    });
+  };
 
   const handleAddBill = async (salesOrderAddBill) => {
     await setState((state) => {
@@ -188,125 +191,82 @@ function SalesOrderTable(props) {
         ...state,
         salesOrderAddBill,
         billCode: generateCode('BIIS')
-      }
-    })
-    window.$('#modal-create-bill-issue').modal('show')
-  }
+      };
+    });
+    window.$('#modal-create-bill-issue').modal('show');
+  };
 
   const handleShowBillDetail = async (billId) => {
-    await props.getDetailBill(billId)
-    window.$('#modal-detail-bill').modal('show')
-  }
+    await props.getDetailBill(billId);
+    window.$('#modal-detail-bill').modal('show');
+  };
 
   const createDirectly = () => {
-    window.$('#modal-add-sales-order').modal('show')
-  }
+    window.$('#modal-add-sales-order').modal('show');
+  };
 
   const createFromQuote = () => {
-    const { currentRole } = state
-    props.getQuotesToMakeOrder({ currentRole })
-    window.$('#modal-add-sales-order-from-quote').modal('show')
-  }
+    const { currentRole } = state;
+    props.getQuotesToMakeOrder({ currentRole });
+    window.$('#modal-add-sales-order-from-quote').modal('show');
+  };
 
   const checkUserForApprove = (salesOrder) => {
-    const { approvers } = salesOrder
-    const userId = localStorage.getItem('userId')
-    let checkApprove = approvers.find((element) => element.approver === userId)
+    const { approvers } = salesOrder;
+    const userId = localStorage.getItem('userId');
+    let checkApprove = approvers.find((element) => element.approver === userId);
     if (checkApprove) {
-      return parseInt(checkApprove.status)
-      //Trả về trạng thái 1. chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+      return parseInt(checkApprove.status);
     }
-    return -1
-  }
+    return -1;
+  };
 
   const handleShowApprove = async (salesOrder) => {
     await setState({
       ...state,
       salesOrderApprove: salesOrder
-    })
-    window.$('#modal-approve-sales-order').modal('show')
-  }
+    });
+    window.$('#modal-approve-sales-order').modal('show');
+  };
 
   const checkHasComponent = (name) => {
-    let { auth } = props
-    let result = false
+    let { auth } = props;
+    let result = false;
     auth.components.forEach((component) => {
-      if (component.name === name) result = true
-    })
+      if (component.name === name) result = true;
+    });
 
-    return result
-  }
+    return result;
+  };
 
-  let { limit, code, salesOrderAddBill, billCode, detailModalId, salesOrderApprove, salesOrderEditAfterApprove, tableId } = state
-  const { translate, salesOrders } = props
-  const { totalPages, page } = salesOrders
+  let { limit, code, salesOrderAddBill, billCode, detailModalId, salesOrderApprove, salesOrderEditAfterApprove, tableId } = state;
+  const { translate, salesOrders } = props;
+  const { totalPages, page } = salesOrders;
 
-  let listSalesOrders = []
+  let listSalesOrders = [];
   if (salesOrders.isLoading === false) {
-    listSalesOrders = salesOrders.listSalesOrders
+    listSalesOrders = salesOrders.listSalesOrders;
   }
 
   const dataStatus = [
-    {
-      className: 'text-primary',
-      text: 'no status'
-    },
-    {
-      className: 'text-primary',
-      text: 'Chờ phê duyệt'
-    },
-    {
-      className: 'text-success',
-      text: 'Đã phê duyệt'
-    },
-    {
-      className: 'text-warning',
-      text: 'Yêu cầu sản xuất'
-    },
-    {
-      className: 'text-warning',
-      text: 'Đã lập kế hoạch sản xuất'
-    },
-    {
-      className: 'text-dark',
-      text: 'Đã yêu cầu xuất kho'
-    },
-    {
-      className: 'text-secondary',
-      text: 'Đang giao hàng'
-    },
-    {
-      className: 'text-success',
-      text: 'Đã giao hàng'
-    },
-    {
-      className: 'text-danger',
-      text: 'Đã hủy'
-    }
-  ]
+    { className: 'text-primary', text: 'no status' },
+    { className: 'text-primary', text: 'Chờ phê duyệt' },
+    { className: 'text-success', text: 'Đã phê duyệt' },
+    { className: 'text-warning', text: 'Yêu cầu sản xuất' },
+    { className: 'text-warning', text: 'Đã lập kế hoạch sản xuất' },
+    { className: 'text-dark', text: 'Đã yêu cầu xuất kho' },
+    { className: 'text-secondary', text: 'Đang giao hàng' },
+    { className: 'text-success', text: 'Đã giao hàng' },
+    { className: 'text-danger', text: 'Đã hủy' }
+  ];
 
   const dataPriority = [
-    {
-      className: 'text-primary',
-      text: 'default'
-    },
-    {
-      className: 'text-muted',
-      text: 'Thấp'
-    },
-    {
-      className: 'text-primary',
-      text: 'Trung bình'
-    },
-    {
-      className: 'text-success',
-      text: 'Cao'
-    },
-    {
-      className: 'text-danger',
-      text: 'Đặc biệt'
-    }
-  ]
+    { className: 'text-primary', text: 'default' },
+    { className: 'text-muted', text: 'Thấp' },
+    { className: 'text-primary', text: 'Trung bình' },
+    { className: 'text-success', text: 'Cao' },
+    { className: 'text-danger', text: 'Đặc biệt' }
+  ];
 
   return (
     <React.Fragment>
@@ -337,6 +297,11 @@ function SalesOrderTable(props) {
                     Thêm trực tiếp
                   </a>
                 </li>
+                <li>
+                  <a style={{ cursor: 'pointer' }} title={`Thêm từ file`} onClick={showImportModal}>
+                    Thêm từ file
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -344,14 +309,6 @@ function SalesOrderTable(props) {
           <SalesOrderCreateForm code={code} />
           <SalesOrderCreateFormFromQuote code={code} />
           <SalesOrderDetailForm modalID={detailModalId} />
-          {/* <GoodIssueCreateForm
-                        salesOrderAddBill={salesOrderAddBill}
-                        createdSource={"salesOrder"}
-                        billCode={billCode}
-                        modalName={`Lập phiếu yêu cầu xuất kho cho đơn hàng: ${salesOrderAddBill ? salesOrderAddBill.code : ""}`}
-                        reloadSalesOrderTable={reloadSalesOrderTable}
-                        group={"2"}
-                    /> */}
           <BillDetailForm />
           <SalesOrderEditForm />
           {salesOrderEditAfterApprove && (
@@ -361,6 +318,7 @@ function SalesOrderTable(props) {
             />
           )}
           <SalesOrderApproveForm salesOrderApprove={salesOrderApprove} />
+          <ImportOrdersModal currentRole={state.currentRole} /> {/* Truyền currentRole vào đây */}
           <div className='form-inline'>
             <div className='form-group'>
               <label className='form-control-static'>Mã đơn</label>
@@ -503,13 +461,11 @@ function SalesOrderTable(props) {
                       <a onClick={() => handleShowDetailInfo(item)}>
                         <i className='material-icons'>view_list</i>
                       </a>
-                      {/* Chỉ được sửa khi đơn hàng chưa phê duyệt */}
                       {item.status === 1 && (
                         <a onClick={() => handleEditSalesOrder(item)} className='edit text-yellow' style={{ width: '5px' }} title='Sửa đơn'>
                           <i className='material-icons'>edit</i>
                         </a>
                       )}
-                      {/* Sửa đơn sau khi đã phê duyệt */}
                       {item.status !== 1 && item.status !== 8 && item.status !== 7 && (
                         <a
                           onClick={() => handleEditSalesOrderAfterApprove(item)}
@@ -566,13 +522,13 @@ function SalesOrderTable(props) {
         </div>
       </div>
     </React.Fragment>
-  )
+  );
 }
 
 function mapStateToProps(state) {
-  const { customers } = state.crm
-  const { salesOrders, department, role, auth } = state
-  return { salesOrders, customers, department, role, auth }
+  const { customers } = state.crm;
+  const { salesOrders, department, role, auth } = state;
+  return { salesOrders, customers, department, role, auth };
 }
 
 const mapDispatchToProps = {
@@ -585,13 +541,12 @@ const mapDispatchToProps = {
   getQuotesToMakeOrder: QuoteActions.getQuotesToMakeOrder,
   getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail,
   getAllBusinessDepartments: BusinessDepartmentActions.getAllBusinessDepartments,
-
   getBillsByType: BillActions.getBillsByType,
   getDetailBill: BillActions.getDetailBill,
   getAllStocks: StockActions.getAllStocks,
   getUser: UserActions.get,
   getGoodsByType: GoodActions.getGoodsByType,
   getInventoryByGoodIds: LotActions.getInventoryByGoodIds
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderTable))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderTable));
