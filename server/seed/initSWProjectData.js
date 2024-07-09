@@ -251,6 +251,10 @@ const initSWProjectData = async () => {
   // console.log(sw_NguyenMinhThanh.fullName, sw_NguyenMinhThanh.emailInCompany)
   // console.log(sw_DangQuocTu.fullName, sw_DangQuocTu.emailInCompany)
 
+  const project1 = {
+
+  }
+
   const allTasksInPast = [
     // Task 1
     {
@@ -268,7 +272,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVanMinh._id,
       estimateNormalTime: 6.75,
       point: 0.9,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
 
     {
@@ -287,7 +292,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVanBien._id,
       estimateNormalTime: 3.5,
       point: 0.96,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
 
     {
@@ -306,7 +312,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVietDang._id,
       estimateNormalTime: 4.25,
       point: 0.85,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
 
     {
@@ -325,7 +332,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenThiOanh._id,
       estimateNormalTime: 5.25,
       point: 0.75,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
 
     {
@@ -344,7 +352,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenPhucNhatNam._id,
       estimateNormalTime: 4,
       point: -1,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
 
     {
@@ -362,7 +371,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.95,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // Task 2: backend, frontend
@@ -384,7 +394,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.9,
-      taskLq: "Task 2 of data phan bo"
+      taskLq: "Task 2 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
 
     {
@@ -404,7 +415,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVanBien._id,
       estimateNormalTime: 6.5,
       point: 0.95,
-      taskLq: "Task 2 of data phan bo"
+      taskLq: "Task 2 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
 
     {
@@ -424,7 +436,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVietDang._id,
       estimateNormalTime: 7.25,
       point: 0.95,
-      taskLq: "Task 2 of data phan bo"
+      taskLq: "Task 2 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
 
     {
@@ -444,7 +457,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenMinhThanh._id,
       estimateNormalTime: 6.5,
       point: 0.9,
-      taskLq: "Task 2 of data phan bo"
+      taskLq: "Task 2 of data phan bo",
+      responsibleEmployees: [sw_NguyenMinhThanh_User._id]
     },
     // {
     //   id: 11,
@@ -485,7 +499,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 3 of data phan bo"
+      taskLq: "Task 3 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 13,
@@ -502,7 +517,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 3 of data phan bo"
+      taskLq: "Task 3 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 14,
@@ -519,7 +535,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: -1, // For 3 and 16
-      taskLq: "Task 3 of data phan bo"
+      taskLq: "Task 3 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     {
       id: 15,
@@ -536,7 +553,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenMinhThanh._id,
       point: 0.8,
-      taskLq: "Task 3 of data phan bo"
+      taskLq: "Task 3 of data phan bo",
+      responsibleEmployees: [sw_NguyenMinhThanh_User._id]
     },
     // {
     //   id: 16,
@@ -589,7 +607,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.9,
-      taskLq: "Task 4 of data phan bo"
+      taskLq: "Task 4 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 19,
@@ -608,7 +627,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 4 of data phan bo"
+      taskLq: "Task 4 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 20,
@@ -627,7 +647,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: 0.85,
-      taskLq: "Task 4 of data phan bo"
+      taskLq: "Task 4 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     {
       id: 21,
@@ -645,7 +666,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.8,
-      taskLq: "Task 4 of data phan bo"
+      taskLq: "Task 4 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
     // 3, 4 tự theo 8
 
@@ -666,7 +688,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: 0.8,
-      taskLq: "Task 5 of data phan bo"
+      taskLq: "Task 5 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     {
       id: 23,
@@ -684,7 +707,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 5 of data phan bo"
+      taskLq: "Task 5 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 24,
@@ -703,7 +727,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 5 of data phan bo"
+      taskLq: "Task 5 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     // 1 theo 7
 
@@ -754,7 +779,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.95,
-      taskLq: "Task 6 of data phan bo"
+      taskLq: "Task 6 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
     {
       id: 28,
@@ -772,7 +798,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.9,
-      taskLq: "Task 6 of data phan bo"
+      taskLq: "Task 6 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // Task 7
@@ -792,7 +819,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     {
       id: 30,
@@ -810,7 +838,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: 0.9,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     {
       id: 31,
@@ -828,7 +857,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.95,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
     {
       id: 32,
@@ -846,7 +876,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.8,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 33,
@@ -864,8 +895,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.8,
-      taskLq: "Task 7 of data phan bo"
-
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
     {
       id: 34,
@@ -883,7 +914,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.75,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
     // 2, 4 tương tự
 
@@ -905,8 +937,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: 0.9,
-      taskLq: "Task 8 of data phan bo"
-
+      taskLq: "Task 8 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
 
     {
@@ -926,8 +958,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 8 of data phan bo"
-
+      taskLq: "Task 8 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
 
     // Task 9
@@ -965,7 +997,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.95,
-      taskLq: "Task 9 of data phan bo"
+      taskLq: "Task 9 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
     {
       id: 38,
@@ -982,8 +1015,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.95,
-      taskLq: "Task 9 of data phan bo"
-
+      taskLq: "Task 9 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
     {
       id: 39,
@@ -1000,7 +1033,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 9 of data phan bo"
+      taskLq: "Task 9 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 40,
@@ -1017,8 +1051,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.8,
-      taskLq: "Task 9 of data phan bo"
-
+      taskLq: "Task 9 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
     // 2, 7, 4, 8, 5, 6 tương tự
 
@@ -1038,8 +1072,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.9,
-      taskLq: "Task 10 of data phan bo"
-
+      taskLq: "Task 10 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 42,
@@ -1056,8 +1090,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.85,
-      taskLq: "Task 10 of data phan bo"
-
+      taskLq: "Task 10 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // {
@@ -1123,8 +1157,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 11 of data phan bo"
-
+      taskLq: "Task 11 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     {
       id: 47,
@@ -1140,8 +1174,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.95,
-      taskLq: "Task 11 of data phan bo"
-
+      taskLq: "Task 11 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // Task 12
@@ -1162,8 +1196,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 12 of data phan bo"
-
+      taskLq: "Task 12 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 49,
@@ -1181,7 +1215,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.95,
-      taskLq: "Task 12 of data phan bo"
+      taskLq: "Task 12 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 50,
@@ -1198,8 +1233,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.85,
-      taskLq: "Task 12 of data phan bo"
-
+      taskLq: "Task 12 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     // 7 tương tự 3
     // {
@@ -1235,8 +1270,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 13 of data phan bo"
-
+      taskLq: "Task 13 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 53,
@@ -1253,8 +1288,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.95,
-      taskLq: "Task 13 of data phan bo"
-
+      taskLq: "Task 13 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 54,
@@ -1271,8 +1306,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.8,
-      taskLq: "Task 13 of data phan bo"
-
+      taskLq: "Task 13 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
 
     {
@@ -1290,8 +1325,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 13 of data phan bo"
-
+      taskLq: "Task 13 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
 
     // Task 14
@@ -1310,8 +1345,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.8,
-      taskLq: "Task 14 of data phan bo"
-
+      taskLq: "Task 14 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
     {
       id: 57,
@@ -1328,8 +1363,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.9,
-      taskLq: "Task 14 of data phan bo"
-
+      taskLq: "Task 14 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // Task 15
@@ -1351,7 +1386,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 15 of data phan bo"
+      taskLq: "Task 15 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 59,
@@ -1371,7 +1407,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.95,
-      taskLq: "Task 15 of data phan bo"
+      taskLq: "Task 15 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 60,
@@ -1391,8 +1428,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 15 of data phan bo"
-
+      taskLq: "Task 15 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     // {
     //   id: 61,
@@ -1431,7 +1468,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 17 of data phan bo"
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 63,
@@ -1448,7 +1486,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.95,
-      taskLq: "Task 17 of data phan bo"
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 64,
@@ -1465,8 +1504,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 17 of data phan bo"
-
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
 
     // {
@@ -1499,8 +1538,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.85,
-      taskLq: "Task 17 of data phan bo"
-
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
     {
       id: 67,
@@ -1517,8 +1556,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenMinhThanh._id,
       point: -1,
-      taskLq: "Task 17 of data phan bo"
-
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_NguyenMinhThanh_User._id]
     },
 
     // Task 18
@@ -1538,8 +1577,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.85,
-      taskLq: "Task 18 of data phan bo"
-
+      taskLq: "Task 18 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 69,
@@ -1557,8 +1596,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: -1,
-      taskLq: "Task 18 of data phan bo"
-
+      taskLq: "Task 18 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 70,
@@ -1576,8 +1615,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: -1,
-      taskLq: "Task 18 of data phan bo"
-
+      taskLq: "Task 18 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     
     {
@@ -1596,7 +1635,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.85,
-      taskLq: "Task 18 of data phan bo"
+      taskLq: "Task 18 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
   ]
 
