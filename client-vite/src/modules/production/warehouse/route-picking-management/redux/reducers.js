@@ -1,71 +1,62 @@
-import { exampleConstants } from './constants'
+import { RoutePickingConstants } from './constants'
 
-var findIndex = (array, id) => {
-  var result = -1
-  array.forEach((value, index) => {
-    if (value._id === id) {
-      result = index
-    }
-  })
-  return result
-}
 
-const initialState = {
-  lists: [],
+const initState = {
   isLoading: false,
-  error: null,
-  totalList: 0
-}
+  listChemins: [],
+  listPaginate: [],
+  totalDocs: 0,
+  limit: 0,
+  totalPages: 0,
+  page: 0,
+  pagingCounter: 0,
+  hasPrevPage: false,
+  hasNextPage: false,
+  prevPage: 0,
+  nextPage: 0,
+  type: ''
+};
 
-export function example1(state = initialState, action) {
-  let index = -1
+export function routes(state = initState, action) {
   switch (action.type) {
-    case exampleConstants.GET_ALL_EXAMPLES_REQUEST:
-    case exampleConstants.DELETE_EXAMPLE_REQUEST:
-    case exampleConstants.CREATE_EXAMPLE_REQUEST:
-    case exampleConstants.EDIT_EXAMPLE_REQUEST:
-      return {
-        ...state,
-        isLoading: true
-      }
-    case exampleConstants.GET_ALL_EXAMPLES_FAILURE:
-    case exampleConstants.DELETE_EXAMPLE_FAILURE:
-    case exampleConstants.CREATE_EXAMPLE_FAILURE:
-    case exampleConstants.EDIT_EXAMPLE_FAILURE:
-      return {
-        ...state,
-        isLoading: false,
-        error: action.error
-      }
-    case exampleConstants.GET_ALL_EXAMPLES_SUCCESS:
-      return {
-        ...state,
-        lists: action.payload.data,
-        totalList: action.payload.totalList,
-        isLoading: false
-      }
-    case exampleConstants.DELETE_EXAMPLE_SUCCESS:
-      return {
-        ...state,
-        lists: state.lists.filter((example) => !action.exampleIds.includes(example?._id)),
-        isLoading: false
-      }
-    case exampleConstants.CREATE_EXAMPLE_SUCCESS:
-      return {
-        ...state,
-        lists: [...state.lists, action.payload],
-        isLoading: false
-      }
-    case exampleConstants.EDIT_EXAMPLE_SUCCESS:
-      index = findIndex(state.lists, action.payload._id)
-      if (index !== -1) {
-        state.lists[index] = action.payload
-      }
+    case RoutePickingConstants.GET_ALL_ROUTES_REQUEST:
+    case RoutePickingConstants.CREATE_ROUTE_REQUEST:
+    case RoutePickingConstants.GET_DETAIL_ROUTE_REQUEST:
       return {
         ...state,
         isLoading: false
-      }
+      };
+
+    case RoutePickingConstants.CREATE_ROUTE_SUCCESS:
+      return {
+        ...state,
+        listChemins: [...state.listChemins, action.payload], // cập nhật danh sách mới
+        isLoading: false
+      };
+
+    case RoutePickingConstants.GET_ALL_ROUTES_SUCCESS:
+      return {
+        ...state,
+        listChemins: action.payload,
+        isLoading: false
+      };
+
+    case RoutePickingConstants.GET_DETAIL_ROUTE_SUCCESS:
+      return {
+        ...state,
+        routeDetail: action.payload,
+        isLoading: false
+      };
+
+    case RoutePickingConstants.GET_ALL_ROUTES_FAILURE:
+    case RoutePickingConstants.GET_DETAIL_ROUTE_FAILURE:
+    case RoutePickingConstants.CREATE_ROUTE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      };
+
     default:
-      return state
+      return state;
   }
 }

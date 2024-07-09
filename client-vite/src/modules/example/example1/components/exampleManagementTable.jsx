@@ -140,7 +140,7 @@ class ExampleManagementTable extends Component {
     const { example, translate } = this.props
     const { page, perPage, currentRow, tableId, currentRowDetail } = this.state
     let lists = []
-
+    console.log(currentRowDetail)
     if (example && example.isLoading === false) {
       lists = example.lists
     }

@@ -6419,6 +6419,21 @@ export default {
         text: 'Hàng hóa chưa xếp hết vào kho',
         add_lot: 'Đánh lô hàng',
         select_lot: 'Chọn lô hàng'
+      },
+      storage_management: {
+        detail_info_route_picking: 'Thông tin tuyến đường lấy hàng',
+        wave_id: 'Wave ID',
+        order_route_picking: 'Thông tin chi tiết',
+        location: 'Vị trí',
+        quantity_taken: 'Số lượng lấy hàng',
+        good_name: 'Tên mặt hàng',
+        status: {
+          done: 'Đã hoàn thành',
+          progessing: 'Đang lấy hàng',
+          waiting: 'Chờ lấy hàng'
+        },
+        number_orders: 'Số order/wave',
+        generate: 'Khởi tạo'
       }
     },
 

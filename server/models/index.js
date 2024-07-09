@@ -103,6 +103,7 @@ module.exports = {
     ProductRequestManagement: require('./production/common-production/productRequestManagement.model'),
     Layout: require('./production/warehouse/layout.model'),
     InventoryWarehouse: require('./production/warehouse/inventoryWarehouse.model'),
+    RoutePicking: require('./production/warehouse/routePicking.model'),
     Inventory: require('./production/warehouse/inventory.model'),
     InventoryForecast: require('./production/warehouse/inventoryForecast.model'),
     // Customer Management
