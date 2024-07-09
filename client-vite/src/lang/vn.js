@@ -336,7 +336,7 @@ export default {
       marketing_campaign_detail: 'Chi tiết chiến dịch tiếp thị',
       marketing_channels_select: 'Chọn kênh chiến dịch tiếp thị',
       marketing_dashboard: 'Thống kê hiệu quả tiếp thị',
-      marketing_forecast: 'Dự báo hiệu quả tiếp thị',
+      // marketing_forecast: 'Dự báo hiệu quả tiếp thị',
 
       // Quản lý kế hoạch sản xuất
       manage_plans: 'Quản lý kế hoạch sản xuất',
