@@ -56,15 +56,15 @@ function MarketingEffeciveChannelTable({ isLoading, marketingEffectiveChannel })
       <Table sx={{ minWidth: 700 }} aria-label='customized table'>
         <TableHead>
           <TableRow sx={{ backgroundColor: '#asad' }}>
-            <StyledTableCell>Channels </StyledTableCell>
+            <StyledTableCell>Kênh tiếp thị </StyledTableCell>
             <StyledTableCell>
-              Costs
+              Chi phí 
               <ArrowDropDownIcon />
             </StyledTableCell>
-            <StyledTableCell>Clicks</StyledTableCell>
-            <StyledTableCell>Impressions</StyledTableCell>
-            <StyledTableCell>Transactions</StyledTableCell>
-            <StyledTableCell>Revenue</StyledTableCell>
+            <StyledTableCell>Lượt nhấp chuột</StyledTableCell>
+            <StyledTableCell>Hiển thị</StyledTableCell>
+            <StyledTableCell>Giao dịch</StyledTableCell>
+            <StyledTableCell>Doanh thu</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>

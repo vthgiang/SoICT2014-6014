@@ -11,6 +11,7 @@ import CpmTasksProject from './cpmTasksProject'
 import moment from 'moment'
 import { getEndDateOfProject, renderProjectTypeText } from './functionHelper'
 import DetailContent from './detailContent'
+import AssignTaskInformation from './assignTaskInformation'
 
 const ProjectDetailForm = (props) => {
   const { translate, projectDetail, projectDetailId, currentProjectTasks } = props
@@ -27,6 +28,11 @@ const ProjectDetailForm = (props) => {
         hasSaveButton={false}
       >
         <DetailContent
+          projectDetailId={projectDetail && projectDetail._id}
+          projectDetail={projectDetail}
+          currentProjectTasks={currentProjectTasks} 
+        />
+        <AssignTaskInformation
           projectDetailId={projectDetail && projectDetail._id}
           projectDetail={projectDetail}
           currentProjectTasks={currentProjectTasks}

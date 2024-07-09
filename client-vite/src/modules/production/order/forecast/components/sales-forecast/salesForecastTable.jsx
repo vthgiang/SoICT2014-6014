@@ -79,7 +79,6 @@ const SalesForecastTable = () => {
                     Dự báo
                 </button>
             </div>
-
             {error ? (
                 <p>Error: {error}</p>
             ) : (
