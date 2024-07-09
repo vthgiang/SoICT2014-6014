@@ -12,7 +12,7 @@ const {
   AssetType
 } = require('../../../models');
 const { connect, } = require(`../../../helpers/dbHelper`);
-const { KPI_MAX, KPI_NOT_WORK, KPI_FAIL, ALGORITHM } = require('./constants');
+const { KPI_MAX, KPI_NOT_WORK, KPI_FAIL, ALGORITHM, DAY_WORK_HOURS } = require('./constants');
 const { findTasksWithMatchingTagsAndRequire, findEmployeesWithCapacities, getVectorLength, getDistanceQualityVector, calculateCPM, checkHasAvailableSolution } = require('./helper');
 const { topologicalSort, scheduleTasksWithAssetAndEmpTasks, initRandomHarmonyVector, DLHS, reScheduleTasks, addOptionalAssetsAvailableForTasks, harmonySearch } = require('./hs_helper');
 const { splitKPIToEmployeesByKMeans, findBestMiniKPIOfTasks, reSplitKPIOfEmployees } = require('./kmean_helper');
@@ -428,6 +428,55 @@ exports.proposalForProject = async (portal, id, data) => {
         break
       }
     }
+    
+    // update estimateNormalCost for tasks after proposal
+    if (result?.assignment && result?.assignment?.length > 0) {
+      for (let i = 0; i < result?.assignment?.length; i++) {
+        const { task, assets, assignee } = result?.assignment[i]
+        const { mainSalary } = assignee
+        const { estimateNormalTime } = task
+        const IS_HAS_ASSET = assets?.length
+
+        task.estimateNormalCost = 0
+        let estimateTaskCost = 0
+        const key = `${assignee?._id}-${task?._id}`
+        let kpiValue = kpiInPast.get(key)
+        if (!kpiValue || kpiValue === undefined || kpiValue == -1) {
+          kpiValue = 0
+        } 
+
+        if(IS_HAS_ASSET) {
+          kpiValue = kpiValue * (1 - assetHasKPIWeight) + 1 * assetHasKPIWeight
+        }
+
+        if (kpiValue) {
+          if(job?.unitTime === 'days') {
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * kpiValue)
+          } else {
+            // hour
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * DAY_WORK_HOURS * kpiValue)
+          }
+      
+          for (let j = 0; j < assets?.length; j++) {
+            estimateTaskCost += estimateNormalTime * DAY_WORK_HOURS * assets[j].costPerHour / kpiValue
+          }
+        } else {
+          if(job?.unitTime === 'days') {
+            estimateTaskCost += estimateNormalTime * mainSalary / 30
+          } else {
+            // hour
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * DAY_WORK_HOURS)
+          }
+      
+          for (let j = 0; j < assets?.length; j++) {
+            estimateTaskCost += estimateNormalTime * DAY_WORK_HOURS * assets[j].costPerHour
+          }
+        }
+
+        task.estimateNormalCost = estimateTaskCost
+      }
+    }
+
 
     // update assets and task after proposal
   
@@ -518,8 +567,9 @@ exports.assignForProjectFromProposal = async (portal, id) => {
           endDate: task?.endDate,
           assignee: assignee?._id,
           assets: assets && assets?.length ? assets?.map((item) => item?._id) : [],
-          responsibleEmployees: [task?.assignee?._id],
-          status: 'inprocess'
+          responsibleEmployees: [assignee?._id],
+          status: 'inprocess',
+          estimateNormalCost: task?.estimateNormalCost,
         };
 
         taskInDB.set(updatedFields);

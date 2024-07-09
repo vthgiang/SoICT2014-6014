@@ -770,6 +770,8 @@ export const formatTaskStatus = (translate, status) => {
       return translate('task.task_management.canceled')
     case 'requested_to_close':
       return translate('task.task_management.requested_to_close')
+    case 'proposal':
+      return translate('task.task_management.proposal')
     default:
       return translate('task.task_management.inprocess')
   }
