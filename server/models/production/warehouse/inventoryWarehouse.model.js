@@ -43,12 +43,10 @@ const InventoryWarehouseSchema = new Schema({
     require: false,
   },
   contained: {
-    type: Number,
-    default: 0,
+    type: String,
   },
   capacity: {
-    type: Number,
-    default: 0,
+    type: String,
   },
 });
 

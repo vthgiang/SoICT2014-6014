@@ -43,7 +43,8 @@ $(document).ready(function () {
 
   const getRoutePicking = async () => {
     return await $.ajax({
-      url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
+      // url: `https://dxclan-sv.datn.live/${path}`,
+      url: `https://dxclan-sv.datn.live/route-picking/route`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
@@ -623,7 +624,9 @@ function fnShowMyWarehouseVisualizerDemo() {
   const getData = async (path) => {
     // get data warehouse from server
     return await $.ajax({
-      url: `${process.env.REACT_APP_SERVER}/${path}`,
+      url: `https://dxclan-sv.datn.live/${path}`,
+
+      // url: `${process.env.REACT_APP_SERVER}/${path}`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
@@ -719,87 +722,16 @@ function fnShowMyWarehouseVisualizerDemo() {
       opacity: 0.2
     }) // 0xffffff Can't control linewidth: https://threejs.org/docs/index.html#api/materials/LineBasicMaterial.linewidth
 
-    // 3D route
-    // -------------------------------------------------------------
-    // const getRoutePicking = async () => {
-    //   return await $.ajax({
-    //     url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
-    //     headers: {
-    //       'Access-Control-Allow-Origin': '*'
-    //     },
-    //     type: 'GET',
-    //     crossDomain: true,
-    //     dataType: 'json'
-    //   })
-    // }
     const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 0, linewidth: 10 })
 
     const points = [];
-    points.push(new THREE.Vector3(2500, 0, 3700))
+    points.push(new THREE.Vector3(2500, 0, 0))
+    points.push(new THREE.Vector3(2500, 0, 3000))
     
     const geometry = new THREE.BufferGeometry().setFromPoints( points );
     
     const line = new THREE.Line( geometry, lineMaterial );
     warehouse.add( line );
-    // function createTextTexture(text) {
-    //   const canvas = document.createElement('canvas')
-    //   const context = canvas.getContext('2d')
-    //   canvas.width = 64 // Điều chỉnh kích thước canvas nếu cần
-    //   canvas.height = 64 // Điều chỉnh kích thước canvas nếu cần
-    //   context.font = '48px Arial' // Điều chỉnh font và kích thước font nếu cần
-    //   context.fillStyle = 'black' // Màu của văn bản
-    //   context.textAlign = 'center'
-    //   context.fillText(text, canvas.width / 2, canvas.height / 2 + 15) // Điều chỉnh vị trí văn bản nếu cần
-    //   return new THREE.CanvasTexture(canvas)
-    // }
-    // const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 10 })
-    // const points = []
-
-    // points.push(warehouse.add(line))
-    // // points.push(new THREE.Vector3(0, 0, 954));
-    // points.push(new THREE.Vector3(2500, 0, 3700))
-    // const geometry = new THREE.BufferGeometry().setFromPoints(points)
-    // const line = new THREE.Line(geometry, lineMaterial)
-    // warehouse.add(line)
-    // getRoutePicking()
-    //   .then((response) => {
-    //     console.log(response)
-    //     response.forEach((item, itemIndex) => {
-    //       const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 10 })
-    //       const points = []
-    //       item.chemins.forEach((coord, index) => {
-    //         const x = coord[0]
-    //         const y = coord[1]
-    //         const z = coord[2]
-
-    //         points.push(new THREE.Vector3(x - 20, z, y))
-
-    //         const circleGeometry = new THREE.CircleGeometry(10, 32)
-    //         const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff })
-    //         const circle = new THREE.Mesh(circleGeometry, circleMaterial)
-    //         circle.position.set(x - 20, z, y)
-    //         circle.rotateX(-Math.PI / 2)
-    //         warehouse.add(circle)
-
-    //         // Tạo và thêm số thứ tự
-    //         const textTexture = createTextTexture(String(index + 1))
-    //         const spriteMaterial = new THREE.SpriteMaterial({ map: textTexture })
-    //         const sprite = new THREE.Sprite(spriteMaterial)
-    //         sprite.position.set(x - 20, z + 20, y) // Điều chỉnh vị trí sprite nếu cần
-    //         sprite.scale.set(50, 50, 1) // Điều chỉnh kích thước sprite nếu cần
-    //         warehouse.add(sprite)
-    //       })
-    //       const geometry = new THREE.BufferGeometry().setFromPoints(points)
-    //       const line = new THREE.Line(geometry, lineMaterial)
-    //       warehouse.add(line)
-    //     })
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //   })
-    // points.push(new THREE.Vector3(2500, 0, 0))
-    // // points.push(new THREE.Vector3(0, 0, 954));
-    // points.push(new THREE.Vector3(2500, 0, 3700))
 
     // -------------------------------------------------------------
 

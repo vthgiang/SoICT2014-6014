@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const listInventory = require("./inventory.json");
+const listInventory = require("./inventoryData.json");
 const {InventoryWarehouse, Good} = require("../models");
 
 require("dotenv").config();
@@ -64,7 +64,7 @@ const initInventoryWarehouseData = async () => {
         // Tăng repeatCount sau mỗi lần lặp, và reset nếu cần
         if ((index + 1) % maxRepeats === 0) {
             productIndex++; // Chỉ tăng productIndex sau mỗi 3 lần lặp
-            if (productIndex >= 20) {
+            if (productIndex >= 300) {
                 productIndex = 0; // Reset productIndex về 0 sau khi đạt 300
                 repeatCount++; // Tăng số lần lặp
             }

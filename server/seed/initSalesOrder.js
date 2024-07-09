@@ -1,35 +1,41 @@
 const mongoose = require("mongoose");
-const { SalesOrder, Good, MarketingCampaign, Customer, User, ServiceLevelAgreement, Tax, Discount, MarketingEffective } = require("../models");
+const {
+    SalesOrder,
+    Good,
+    MarketingCampaign,
+    Customer,
+    User,
+    ServiceLevelAgreement,
+    Tax,
+    Discount,
+    MarketingEffective
+} = require("../models");
 const saleOrders = require('./SaleOrders.json');
 require("dotenv").config();
 const marketingCampaign = require('./MarketingCampaign.json');
 const marketingEffective = require("./MarketingEffective.json");
 
 const initSalesOrder = async () => {
-    let connectOptions =
-        process.env.DB_AUTHENTICATION === "true"
-            ? {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-                user: process.env.DB_USERNAME,
-                pass: process.env.DB_PASSWORD,
-            }
-            : {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-            };
+    const connectOptions = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        ...(process.env.DB_AUTHENTICATION === "true" && {
+            user: process.env.DB_USERNAME,
+            pass: process.env.DB_PASSWORD,
+        }),
+    };
 
     const vnistDB = mongoose.createConnection(
         `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`,
         connectOptions
     );
-    if (!vnistDB) throw "DB vnist cannot connect";
 
-    console.log("DB vnist connected");
+    vnistDB.on('error', console.error.bind(console, 'connection error:'));
+    vnistDB.once('open', () => {
+        console.log("DB vnist connected");
+    });
 
     const initModels = (db) => {
         if (!db.models.SalesOrder) SalesOrder(db);
@@ -37,47 +43,50 @@ const initSalesOrder = async () => {
 
     initModels(vnistDB);
 
-    var listMarketing1 = marketingCampaign.map((subCat) => {
-        return {
-            ...subCat,
-        };
-    });
-    await MarketingCampaign(vnistDB).insertMany(listMarketing1);
+    await MarketingCampaign(vnistDB).insertMany(marketingCampaign);
+    console.log("Marketing Campaigns inserted");
 
-    let products_in_stock = await Good(vnistDB).find({});
-    let listMarketing = await MarketingCampaign(vnistDB).find({});
-    let listCustomers = await Customer(vnistDB).find({});
-    let users = await User(vnistDB).find({});
-    let listServiceLevelAgreements = await ServiceLevelAgreement(vnistDB).find({});
-    let listTaxs = await Tax(vnistDB).find({});
-    let listDistcounts = await Discount(vnistDB).find({});
-    const listMarketingEffective = await Promise.all(marketingEffective.map(async (subCat) => {
-        const marketingCampaign = await MarketingCampaign(vnistDB).findOne({ code: subCat.code });
-        return {
-            ...subCat,
-            marketingId: marketingCampaign._id
-        };
-    }));
+    const [
+        productsInStock,
+        listMarketing,
+        listCustomers,
+        users,
+        listServiceLevelAgreements,
+        listTaxes,
+        listDiscounts
+    ] = await Promise.all([
+        Good(vnistDB).find({}),
+        MarketingCampaign(vnistDB).find({}),
+        Customer(vnistDB).find({}),
+        User(vnistDB).find({}),
+        ServiceLevelAgreement(vnistDB).find({}),
+        Tax(vnistDB).find({}),
+        Discount(vnistDB).find({}),
+    ]);
+
+    const listMarketingEffective = await Promise.all(
+        marketingEffective.map(async (subCat) => {
+            const marketingCampaign = await MarketingCampaign(vnistDB).findOne({ code: subCat.code });
+            return {
+                ...subCat,
+                marketingId: marketingCampaign._id
+            };
+        })
+    );
 
     await MarketingEffective(vnistDB).insertMany(listMarketingEffective);
-    console.log('Khởi tạo dữ liệu đơn bán hàng');
+    console.log("Marketing Effective inserted");
 
-    function getRandomElement(array) {
-        return array[Math.floor(Math.random() * array.length)];
-    }
+    const getRandomElement = (array) => array[Math.floor(Math.random() * array.length)];
 
-    const batchSize = 1000; // Số lượng bản ghi trong mỗi lô
+    const batchSize = 10000;
     for (let i = 0; i < saleOrders.length; i += batchSize) {
-        let bulkOperations = saleOrders.slice(i, i + batchSize).map((salesOrder) => {
-            let product = products_in_stock.find(
-                (product) => product.code === String(salesOrder.product_id)
-            );
-            let marketingCampaign = listMarketing.find(
-                (marketing) => marketing.code == salesOrder.campaign_id
-            );
+        const bulkOperations = saleOrders.slice(i, i + batchSize).map((salesOrder) => {
+            const product = productsInStock.find(product => product.code === String(salesOrder.product_id));
+            const marketingCampaign = listMarketing.find(marketing => marketing.code == salesOrder.campaign_id);
 
-            let customer = getRandomElement(listCustomers);
-            let user = getRandomElement(users);
+            const customer = getRandomElement(listCustomers);
+            const user = getRandomElement(users);
 
             return {
                 insertOne: {
@@ -117,12 +126,12 @@ const initSalesOrder = async () => {
                                         title: "Chất lượng sản phẩm đi đầu",
                                     },
                                 ],
-                                taxs: [
+                                taxes: [
                                     {
-                                        _id: listTaxs[0]._id,
-                                        code: listTaxs[0]._id,
+                                        _id: listTaxes[0]._id,
+                                        code: listTaxes[0]._id,
                                         name: "VAT",
-                                        description: listTaxs[0]._id,
+                                        description: listTaxes[0]._id,
                                         percent: 5,
                                     },
                                 ],
@@ -133,33 +142,33 @@ const initSalesOrder = async () => {
                         ],
                         discounts: [
                             {
-                                _id: listDistcounts[5]._id,
-                                code: listDistcounts[5].code,
-                                type: listDistcounts[5].type,
-                                formality: listDistcounts[5].formality,
-                                name: listDistcounts[5].name,
-                                effectiveDate: listDistcounts[5].effectiveDate,
-                                expirationDate: listDistcounts[5].expirationDate,
+                                _id: listDiscounts[5]._id,
+                                code: listDiscounts[5].code,
+                                type: listDiscounts[5].type,
+                                formality: listDiscounts[5].formality,
+                                name: listDiscounts[5].name,
+                                effectiveDate: listDiscounts[5].effectiveDate,
+                                expirationDate: listDiscounts[5].expirationDate,
                                 maximumFreeShippingCost: 20000,
                             },
                             {
-                                _id: listDistcounts[6]._id,
-                                code: listDistcounts[6].code,
-                                type: listDistcounts[6].type,
-                                formality: listDistcounts[6].formality,
-                                name: listDistcounts[6].name,
-                                effectiveDate: listDistcounts[6].effectiveDate,
-                                expirationDate: listDistcounts[6].expirationDate,
+                                _id: listDiscounts[6]._id,
+                                code: listDiscounts[6].code,
+                                type: listDiscounts[6].type,
+                                formality: listDiscounts[6].formality,
+                                name: listDiscounts[6].name,
+                                effectiveDate: listDiscounts[6].effectiveDate,
+                                expirationDate: listDiscounts[6].expirationDate,
                                 discountedPercentage: 10,
                             },
                             {
-                                _id: listDistcounts[7]._id,
-                                code: listDistcounts[7].code,
-                                type: listDistcounts[7].type,
-                                formality: listDistcounts[7].formality,
-                                name: listDistcounts[7].name,
-                                effectiveDate: listDistcounts[7].effectiveDate,
-                                expirationDate: listDistcounts[7].expirationDate,
+                                _id: listDiscounts[7]._id,
+                                code: listDiscounts[7].code,
+                                type: listDiscounts[7].type,
+                                formality: listDiscounts[7].formality,
+                                name: listDiscounts[7].name,
+                                effectiveDate: listDiscounts[7].effectiveDate,
+                                expirationDate: listDiscounts[7].expirationDate,
                                 loyaltyCoin: 1000,
                             },
                         ],
@@ -175,13 +184,13 @@ const initSalesOrder = async () => {
         });
 
         await SalesOrder(vnistDB).bulkWrite(bulkOperations);
-        console.log(`Đã chèn xong lô từ ${i} đến ${i + batchSize - 1}`);
+        console.log(`Batch processed: ${i} to ${i + batchSize - 1}`);
     }
-}
+};
 
 initSalesOrder().then(() => {
-    console.log("Xong! Khởi tạo dữ liệu doanh số từng tháng!");
+    console.log("Sales orders initialized successfully!");
     process.exit(0);
 }).catch(err => {
-    console.log(err);
+    console.error(err);
 });
