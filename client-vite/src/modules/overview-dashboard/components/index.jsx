@@ -1,93 +1,102 @@
-import React, { Component, useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import moment from 'moment'
-import { withTranslate } from 'react-redux-multilingual'
-import { SalesOrderActions } from '../../production/order/sales-order/redux/actions'
-import { QuoteActions } from '../../production/order/quote/redux/actions'
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import moment from 'moment';
+import { withTranslate } from 'react-redux-multilingual';
+import { SalesOrderActions } from '../../production/order/sales-order/redux/actions';
+import { QuoteActions } from '../../production/order/quote/redux/actions';
 
-import { DatePicker, SelectBox } from '../../../common-components'
-import QuoteSummaryChart from '../../production/order/sales-order-dashboard/components/quoteSummaryChart'
-import TopCareBarChart from '../../production/order/sales-order-dashboard/components/topCareBarChart'
-import SalesOrderStatusChart from '../../production/order/sales-order-dashboard/components/salesOrderStatusChart'
-import TopSoldBarChart from '../../production/order/sales-order-dashboard/components/topSoldBarChart'
-import InfoBox from '../../production/order/sales-order-dashboard/components/infoBox'
-// import OnTimeDeliveryChart from '../../transport3/dashboard/components/charts/ontimeDeliveryChart'
-import { OnTimeDeliveryChart } from '../../transport3/dashboard/components/charts/ontimeDeliveryChart'
-
-import { formatToTimeZoneDate } from '../../../helpers/formatDate'
-import InfoBoxDashboard from './infoBoxDashboard'
-// import QuoteSalesMappingAreaChart from "./quoteSalesMappingAreaChart";
-// import RevenueAndSalesBarChart from "./revenueAndSalesBarChart";
-// import AverageQuoteToSales from "./averageQuoteToSales";
+import { DatePicker } from '../../../common-components';
+import SalesOrderStatusChart from '../../production/order/sales-order-dashboard/components/salesOrderStatusChart';
+import InfoBoxDashboard from './infoBoxDashboard';
+import { OnTimeDeliveryChart } from '../../transport3/dashboard/components/charts/ontimeDeliveryChart';
+import { formatToTimeZoneDate } from '../../../helpers/formatDate';
 
 function OverviewDashboard(props) {
   const [state, setState] = useState({
-    currentRole: localStorage.getItem('currentRole')
-  })
-  const [monthToSearch, setMonthToSearch] = useState(moment().format("MM-YYYY"));
+    currentRole: localStorage.getItem('currentRole'),
+    startDate: moment('01-06-2024', 'DD-MM-YYYY').format('YYYY-MM-DD'),
+    endDate: moment('30-06-2024', 'DD-MM-YYYY').format('YYYY-MM-DD')
+  });
+  const [monthToSearch, setMonthToSearch] = useState(moment().format('MM-YYYY'));
 
   useEffect(() => {
-    const { currentRole } = state
-    props.countSalesOrder({ currentRole })
-    props.getTopGoodsSold({ currentRole })
-    props.getSalesForDepartments()
-    props.countQuote({ currentRole })
-    props.getTopGoodsCare({ currentRole })
-  }, [])
-
-  const handleStartDateChange = (value) => {
-    setState((state) => {
-      return {
-        ...state,
-        startDate: value
-      }
-    })
-  }
-
-  const handleEndDateChange = (value) => {
-    setState((state) => {
-      return {
-        ...state,
-        endDate: value
-      }
-    })
-  }
-
-  const handleSunmitSearch = () => {
-    let { startDate, endDate, currentRole } = state
+    const { currentRole, startDate, endDate } = state;
     let data = {
       currentRole,
-      startDate: startDate ? formatToTimeZoneDate(startDate) : '',
-      endDate: endDate ? formatToTimeZoneDate(endDate) : ''
-    }
-    const updatedMonthToSearch = endDate ? moment(endDate, "DD-MM-YYYY").format("MM-YYYY") : moment().format("MM-YYYY");
-    setMonthToSearch(updatedMonthToSearch);
-    props.countSalesOrder(data)
-    props.getTopGoodsSold(data)
-    props.getSalesForDepartments(data)
-    props.countQuote(data)
-    props.getTopGoodsCare(data)
-  }
+      startDate,
+      endDate
+    };
 
-  // console.log("SALES ORDER DASHBOARD", props.salesOrders);
-  // console.log("QUOTE DASHBOARD", props.quotes);
+    props.countSalesOrder(data);
+    props.getTopGoodsSold(data);
+    props.getSalesForDepartments(data);
+    props.countQuote(data);
+    props.getTopGoodsCare(data);
+  }, []);
+
+  const handleStartDateChange = (value) => {
+    setState((state) => ({
+      ...state,
+      startDate: moment(value, 'DD-MM-YYYY').format('YYYY-MM-DD')
+    }));
+  };
+
+  const handleEndDateChange = (value) => {
+    setState((state) => ({
+      ...state,
+      endDate: moment(value, 'DD-MM-YYYY').format('YYYY-MM-DD')
+    }));
+  };
+
+  const handleSubmitSearch = () => {
+    let { startDate, endDate, currentRole } = state;
+    let data = {
+      currentRole,
+      startDate,
+      endDate
+    };
+    const updatedMonthToSearch = endDate ? moment(endDate, 'YYYY-MM-DD').format('MM-YYYY') : moment().format('MM-YYYY');
+    setMonthToSearch(updatedMonthToSearch);
+    props.countSalesOrder(data);
+    props.getTopGoodsSold(data);
+    props.getSalesForDepartments(data);
+    props.countQuote(data);
+    props.getTopGoodsCare(data);
+  };
+
   return (
     <React.Fragment>
       <div className='qlcv'>
         <div className='form-inline' style={{ marginBottom: '10px' }}>
           <div className='form-group'>
             <label style={{ width: 'auto' }}>Từ</label>
-            <DatePicker id='date_picker_dashboard_start_index' value={state.startDate} onChange={handleStartDateChange} disabled={false} />
+            <DatePicker
+              id='date_picker_dashboard_start_index'
+              value={moment(state.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}
+              onChange={handleStartDateChange}
+              format='DD-MM-YYYY'
+              disabled={false}
+            />
           </div>
 
-          {/**Chọn ngày kết thúc */}
           <div className='form-group'>
             <label style={{ width: 'auto' }}>Đến</label>
-            <DatePicker id='date_picker_dashboard_end_index' value={state.endDate} onChange={handleEndDateChange} disabled={false} />
+            <DatePicker
+              id='date_picker_dashboard_end_index'
+              value={moment(state.endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}
+              onChange={handleEndDateChange}
+              format='DD-MM-YYYY'
+              disabled={false}
+            />
           </div>
 
           <div className='form-group'>
-            <button type='button' className='btn btn-success' title='Tìm kiếm' onClick={() => handleSunmitSearch()}>
+            <button
+              type='button'
+              className='btn btn-success'
+              title='Tìm kiếm'
+              onClick={handleSubmitSearch}
+            >
               Tìm kiếm
             </button>
           </div>
@@ -97,29 +106,26 @@ function OverviewDashboard(props) {
           <InfoBoxDashboard />
 
           <div className='col-xs-12'>
-            
-
             <div className='col-xs-6'>
               <SalesOrderStatusChart />
             </div>
             <div className='col-xs-6'>
               <div className='box'>
                 <div className='box-header with-border' style={{ paddingTop: '30px' }}>
-                  <OnTimeDeliveryChart monthToSearch = {monthToSearch}/>
+                  <OnTimeDeliveryChart monthToSearch={monthToSearch} />
                 </div>
               </div>
             </div>
           </div>
-          
         </div>
       </div>
     </React.Fragment>
-  )
+  );
 }
 
 function mapStateToProps(state) {
-  const { salesOrders, quotes } = state
-  return { salesOrders, quotes }
+  const { salesOrders, quotes } = state;
+  return { salesOrders, quotes };
 }
 
 const mapDispatchToProps = {
@@ -128,6 +134,6 @@ const mapDispatchToProps = {
   getSalesForDepartments: SalesOrderActions.getSalesForDepartments,
   countQuote: QuoteActions.countQuote,
   getTopGoodsCare: QuoteActions.getTopGoodsCare
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(OverviewDashboard));
