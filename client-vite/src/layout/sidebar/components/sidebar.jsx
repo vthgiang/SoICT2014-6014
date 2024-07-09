@@ -1006,11 +1006,11 @@ class SideBar extends Component {
                     icon: 'fa fa-dashboard',
                     path: '/marketing-dashboard'
                   },
-                  {
-                    name: 'menu.marketing_forecast',
-                    icon: 'fa fa-dollar',
-                    path: '/marketing-forecast'
-                  }
+                  // {
+                  //   name: 'menu.marketing_forecast',
+                  //   icon: 'fa fa-dollar',
+                  //   path: '/marketing-forecast'
+                  // }
                 ]
               }}
             />

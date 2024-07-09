@@ -31,8 +31,8 @@ const TabProjectReportCost = (props) => {
       }
     }
     for (let taskItem of currentTasks) {
-      budgets.push(taskItem.estimateNormalCost)
-      actualCost.push(taskItem.actualCost || 0)
+      budgets.push(taskItem?.estimateNormalCost || 0)
+      actualCost.push(taskItem?.actualCost || 0)
       categories.push(taskItem.name)
     }
     columns = [budgets, actualCost]
@@ -96,7 +96,7 @@ const TabProjectReportCost = (props) => {
   const getProjectTotalBudget = () => {
     let result = 0
     for (let taskItem of currentTasks) {
-      result += Number(taskItem.estimateNormalCost)
+      result += Number(taskItem?.estimateNormalCost || 0)
     }
     return result
   }

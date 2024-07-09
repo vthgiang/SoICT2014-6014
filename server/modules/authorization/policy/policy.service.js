@@ -79,9 +79,17 @@ exports.filterPoliciesSatisfiedRoleRequirement = async (portal, activePolicies, 
         .find({type: {$in: ['Authorization', 'Mixed']}})
         .select('_id')).map(x => x.id);
 
-    const satisfiedRolePolicies = activePolicies.filter((x) =>
-        this.ruleCheck(authorizationAttributeIds, [role], x.roleRequirements.attributes, x.roleRequirements.rule)?.length > 0
-    );
+    const satisfiedRolePolicies = activePolicies.filter((x) => {
+        if (!x.roleRequirements.attributes || x.roleRequirements.attributes.length == 0) {
+            return true;
+        }
+        return this.ruleCheck(
+            authorizationAttributeIds,
+            [role],
+            x.roleRequirements.attributes,
+            x.roleRequirements.rule
+        )?.length > 0
+    });
 
     return satisfiedRolePolicies;
 }
@@ -100,9 +108,17 @@ exports.filterAssignmentsSatisfiedRoleRequirement = async (portal, activeAssignm
         .find({type: {$in: ['Authorization', 'Mixed']}})
         .select('_id')).map(x => x.id);
 
-    const satisfiedRoleAssignments = activeAssignments.filter((x) =>
-        this.ruleCheck(authorizationAttributeIds, [role], x.policyId.roleRequirements.attributes, x.policyId.roleRequirements.rule)?.length > 0
-    );
+    const satisfiedRoleAssignments = activeAssignments.filter((x) => {
+        if (!x.policyId.roleRequirements.attributes || x.policyId.roleRequirements.attributes.length == 0) {
+            return true;
+        }
+        return this.ruleCheck(
+            authorizationAttributeIds,
+            [role],
+            x.policyId.roleRequirements.attributes,
+            x.policyId.roleRequirements.rule
+        )?.length > 0;
+    });
 
     return satisfiedRoleAssignments;
 }
