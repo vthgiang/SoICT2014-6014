@@ -118,7 +118,7 @@ const LayoutDefault = [{ i: 'cost', x: 0, y: 0, w: 6, h: 3, minH: 3, minW: 6 },
 { i: 'CPC', x: 0, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
 { i: 'transaction', x: 6, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
 { i: 'revenue', x: 12, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
-{ i: 'ROIM', x: 18, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'ROMI', x: 18, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
 { i: 'h', x: 0, y: 6, w: 15, h: 7, minW: 2, maxW: 24 },
 { i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 },
 { i: 'm', x: 0, y: 13, w: 6, h: 6, minW: 2, maxW: 24 }
@@ -314,7 +314,7 @@ const MarketingDashboardComponent = (props) => {
   const [sessionCard, setSessionCard] = React.useState(null);
   const [CPCCard, setCPCCard] = React.useState(null);
   const [revenuesCard, setRevenuesCard] = React.useState(null);
-  const [ROIMCard, setROIMCard] = React.useState(null);
+  const [ROMICard, setROMICard] = React.useState(null);
   const [transactionCard, setTransactionCard] = React.useState(null);
   const [currentMenuCardTargetId, setCurrentMenuCardTargetId] = React.useState();
   const [showTable, setShowTable] = useState();
@@ -391,7 +391,7 @@ const MarketingDashboardComponent = (props) => {
         { title: 'CPC ', onClick: () => addCard(CPCCard) },
         { title: 'Giao dịch', onClick: () => addCard(transactionCard) },
         { title: 'Doanh thu', onClick: () => addCard(revenuesCard) },
-        { title: 'ROIM', onClick: () => addCard(ROIMCard) },
+        { title: 'ROMI', onClick: () => addCard(ROMICard) },
       ],
     },
     {
@@ -820,9 +820,9 @@ const MarketingDashboardComponent = (props) => {
         unit: "Đơn vị tiền tệ VND"
       }
     }
-    const ROIMCard = {
-      key: "ROIM",
-      title: "ROIM",
+    const ROMICard = {
+      key: "ROMI",
+      title: "ROMI",
       image: <PercentIcon
         sx={{
           height: '56px',
@@ -832,9 +832,9 @@ const MarketingDashboardComponent = (props) => {
       />,
       percentChangeTotal: percentChange?.totalRoim,
       marketingEffectiveTotal: (marketingEffective.totalRevenue && marketingEffective.totalCost) ? marketingEffective.totalRevenue / marketingEffective.totalCost * 100 : 0,
-      layout: layout.find((value) => value.i === "ROIM"),
+      layout: layout.find((value) => value.i === "ROMI"),
       info: {
-        define: "ROIM (Return On Investment in Marketing) - Tỷ lệ giữa lợi nhuận thu được từ các chiến dịch tiếp thị so với chi phí bỏ ra cho các chiến dịch đó.",
+        define: "ROMI (Return on Marketing Investment) - Tỷ lệ giữa doanh thu được từ các chiến dịch tiếp thị so với chi phí bỏ ra cho các chiến dịch đó.",
         description: "Chỉ số này giúp đo lường hiệu quả của các khoản đầu tư vào tiếp thị, cho biết mỗi đơn vị tiền tệ chi cho tiếp thị mang lại bao nhiêu đơn vị tiền tệ lợi nhuận.",
         unit: "Tỷ lệ phần trăm (%)"
       }
@@ -847,7 +847,7 @@ const MarketingDashboardComponent = (props) => {
       CPCCard,
       transactionCard,
       revenueCard,
-      ROIMCard
+      ROMICard
     ]
     setCostCard(costCard);
     setCPCCard(CPCCard);
@@ -856,7 +856,7 @@ const MarketingDashboardComponent = (props) => {
     setSessionCard(sessionCard);
     setTransactionCard(transactionCard);
     setRevenuesCard(revenueCard);
-    setROIMCard(ROIMCard);
+    setROMICard(ROMICard);
     const listCardCurrent = JSON.parse(localStorage.getItem("listCard"))
     if (listCardCurrent) {
       const listCardKeySet = new Set(listCardCurrent);

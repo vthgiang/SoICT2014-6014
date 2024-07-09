@@ -17,14 +17,6 @@ import './style.css'
 import 'react-grid-layout/css/styles.css'
 import './style.css'
 
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-import AdsClickIcon from '@mui/icons-material/AdsClick';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import WebAssetIcon from '@mui/icons-material/WebAsset';
-import LocalAtmIcon from '@mui/icons-material/LocalAtm';
-import PercentIcon from '@mui/icons-material/Percent';
-
 import ServerResponseAlert from '../../../../../alert/components/serverResponseAlert';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 
@@ -39,6 +31,8 @@ import { configurationExampleTemplate } from './fileConfigurationImportExample';
 import { configurationForeCast } from './fileConfigurationForecast';
 import { Loading, ShowImportData } from '../../../../../../common-components';
 import { configurationRevenue } from './fileConfigurationRevenue';
+import { RevenuesForecastChart} from './revenuesForecastChart'
+import { withRouter } from 'react-router-dom';  // Import withRouter từ react-router-dom
 
 const ColorButton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(green[500]),
@@ -203,23 +197,32 @@ const MarketingForecastComponent = (props) => {
     setIsLoading(false)
   }
 
+  const redirectToTaskManagement = () => {
+    props.history.push('/task-management'); 
+  }; 
+
+  const redirectToMarketingCampaign = () => {
+    props.history.push('/marketing-campaign'); 
+  }; 
 
   return (
     <>
       <ToastContainer />
       <ImportForm page={page} perPage={perPage} setStateTableData={setStateTableData} />
-
-      <ColorButton onClick={() => handleButtonClick('button1')} sx={{ marginBottom: 2, marginTop: 2, fontSize: 14, color: '#ffff' }} variant='contained'>
-        Dự báo phản hồi người dùng
-      </ColorButton>
-      <ColorButton onClick={() => handleButtonClick('button2')} sx={{ marginBottom: 2, marginTop: 2, marginLeft: 8, fontSize: 14, color: '#ffff' }} variant='contained'>
-        Dự báo doanh thu từ tiếp thị
-      </ColorButton>
+      <button type="button" class="btn btn-success btn-on-bot" onClick={() => handleButtonClick('button1')}> Dự báo phản hồi người dùng</button>
+      <button type="button" class="btn btn-success btn-on-right"  onClick={() => handleButtonClick('button2')}>  Dự báo doanh thu từ tiếp thị</button>
+     
       {(content === 'Nút 1' && importData) && <div>
-        <ColorButton onClick={() => !isLoading && predictResponse()} sx={{ fontSize: 14, color: '#ffff', marginRight: 2 }} variant='contained'>
-          {isLoading ? <Loading styleInner={{ position: "unset", borderColor: "white", borderRightColor: "transparent" }} /> : "Dự báo"}
-        </ColorButton>
-        {resultForecast && <span>Kết quả {100 * (resultForecast / importData?.length).toFixed(2)}% tập khách hàng mục tiêu sẽ mua hàng thông qua tiếp thị ({resultForecast}/{importData?.length} người)</span>}
+        <button type="button" class="btn btn-success btn-on-bot" onClick={() => !isLoading && predictResponse()}> 
+        {isLoading ? <Loading styleInner={{ position: "unset", borderColor: "white", borderRightColor: "transparent" }} /> : "Dự báo"}
+        </button>
+        {resultForecast &&
+         <div>
+            <span class="forecast-result">Kết quả {100 * (resultForecast / importData?.length).toFixed(2)}% tập khách hàng mục tiêu sẽ mua hàng thông qua tiếp thị ({resultForecast}/{importData?.length} người)</span>
+
+            <button class="forecast-action" onClick={redirectToTaskManagement}> Tạo lập chiến dịch phù hợp hơn với tập khách hàng ? </button>
+         </div>
+           }
       </div>}
 
       {content === 'upload' && (
@@ -267,10 +270,19 @@ const MarketingForecastComponent = (props) => {
       )}
 
       {content === 'Nút 2' && <div>
-        <ColorButton onClick={() => !isLoading && predictRevenue()} sx={{ fontSize: 14, color: '#ffff', marginRight: 2 }} variant='contained'>
-          {isLoading ? <Loading styleInner={{ position: "unset", borderColor: "white", borderRightColor: "transparent" }} /> : "Dự báo"}
-        </ColorButton>
+        <button type="button" class="btn btn-success btn-on-bot" onClick={() => !isLoading && predictRevenue()}> 
+        {isLoading ? <Loading styleInner={{ position: "unset", borderColor: "white", borderRightColor: "transparent" }} /> : "Dự báo"}
+        </button>
+        
       </div>}
+      {
+        (importData && configData && content === 'Nút 2') &&
+        <>
+            <button class="forecast-revenue-action" onClick={redirectToMarketingCampaign}> Điều chỉnh lại các chiến dịch? </button>
+            <RevenuesForecastChart data={importData}/>
+        </>
+       
+      }
       <ShowImportData
         id={`import_asset_show_data${id}`}
         configData={configData ? configData : configurationExampleTemplate}
@@ -290,4 +302,4 @@ const mapState = (state) => {
   return { department, createEmployeeKpiSet, user, createKpiUnit, auth }
 }
 
-export default connect(mapState)(withTranslate(MarketingForecastComponent))
+export default  connect(mapState)(withRouter(withTranslate(MarketingForecastComponent))); // Step 2: Wrap withRouter
