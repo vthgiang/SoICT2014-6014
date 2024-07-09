@@ -1,6 +1,6 @@
 const { DelegationPolicy, Delegation } = require('../../../models');
 
-const { connect } = require(`../../../helpers/dbHelper`);
+const { connect } = require('../../../helpers/dbHelper');
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
 exports.getPolicies = async (portal, data) => {
