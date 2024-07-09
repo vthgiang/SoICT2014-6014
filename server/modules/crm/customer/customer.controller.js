@@ -345,6 +345,26 @@ exports.predictResponseCustomer = async (req, res) => {
     }
 }
 
+exports.predictRevenueCustomer = async (req, res) => {
+    try {
+        const response = await axios.get(`${process.env.PYTHON_URL_SERVER}/api/dxclan/revenue_predict/`);
+        const revenuesForecasts = await CustomerService.getRevenuesForecasts(req.portal)
+        res.status(200).json({
+            success: response.data === "success",
+            messages: ['get predict revenue success'],
+            content: revenuesForecasts
+        })
+
+    } catch (error) {
+        await Logger.error(req.user.email, 'get predict response', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get predict revenue failed'],
+            content: error
+        })
+    }
+}
+
 /**
  * chinh sua khuyen mai khach hang
  * @param {*} req 

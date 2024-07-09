@@ -1,4 +1,4 @@
-const { Customer, User, CustomerGroup, CustomerForecast } = require('../../../models');
+const { Customer, User, CustomerGroup, CustomerForecast, RevenuesForecast } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { createTaskAction } = require('../../task/task-perform/taskPerform.service');
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
@@ -637,4 +637,9 @@ exports.editPromotion = async (portal, companyId, customerId, data, userId) => {
         $set: customer
     }, { new: true });
 
+}
+
+exports.getRevenuesForecasts = async (portal) => {
+    const revenuesForecasts = await RevenuesForecast(connect(DB_CONNECTION, portal)).find().populate("campaign")
+    return revenuesForecasts
 }

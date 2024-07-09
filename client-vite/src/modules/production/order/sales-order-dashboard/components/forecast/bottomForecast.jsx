@@ -92,9 +92,12 @@ const Bottom5ProductsChart = ({ bottom5Products, timeFrame, dispatch }) => {
     };
 
     return (
-        <div>
-            <h2>Bottom 5 Products</h2>
-            <div id="chart-bottom5"></div>
+        <div className="box">
+            <div className="box-header with-border">
+                <i className="fa fa-bar-chart-o" />
+                <h3 className="box-title">Sản phẩm không bán chạy</h3>
+                <div id="chart-bottom5"></div>
+            </div>
         </div>
     );
 };

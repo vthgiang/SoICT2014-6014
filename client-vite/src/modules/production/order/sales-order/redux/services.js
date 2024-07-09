@@ -12,7 +12,8 @@ export const SalesOrderSevices = {
   countSalesOrder,
   getTopGoodsSold,
   getSalesForDepartments,
-  getNumberWorksSalesOrder
+  getNumberWorksSalesOrder,
+  importSales,
 }
 
 function createNewSalesOrder(data) {
@@ -167,6 +168,19 @@ function getNumberWorksSalesOrder(data) {
       params: data
     },
     false,
+    true,
+    'manage_order.sales_order'
+  )
+}
+
+function importSales(data) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/sales-order/imports`,
+      method: 'POST',
+      data
+    },
+    true,
     true,
     'manage_order.sales_order'
   )
