@@ -43,7 +43,7 @@ $(document).ready(function () {
 
   const getRoutePicking = async () => {
     return await $.ajax({
-      url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
+      url: `https://dxclan-sv.datn.live/route-picking/route`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
@@ -623,7 +623,7 @@ function fnShowMyWarehouseVisualizerDemo() {
   const getData = async (path) => {
     // get data warehouse from server
     return await $.ajax({
-      url: `${process.env.REACT_APP_SERVER}/${path}`,
+      url: `https://dxclan-sv.datn.live/${path}`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
@@ -723,7 +723,7 @@ function fnShowMyWarehouseVisualizerDemo() {
     // -------------------------------------------------------------
     // const getRoutePicking = async () => {
     //   return await $.ajax({
-    //     url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
+    //     url: `https://dxclan-sv.datn.live/route-picking/route`,
     //     headers: {
     //       'Access-Control-Allow-Origin': '*'
     //     },
@@ -736,9 +736,9 @@ function fnShowMyWarehouseVisualizerDemo() {
 
     const points = [];
     points.push(new THREE.Vector3(2500, 0, 3700))
-    
+
     const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    
+
     const line = new THREE.Line( geometry, lineMaterial );
     warehouse.add( line );
     // function createTextTexture(text) {
