@@ -532,6 +532,16 @@ exports.assignForProjectFromProposal = async (portal, id) => {
       _id: id
     }).populate({ path: 'kpiTarget.type' }).lean().exec();
 
+    const { usersInProject } = project || []
+    let employeeIdToUserId = {}
+
+    if (usersInProject && usersInProject?.length) {
+      usersInProject.forEach((item) => {
+        const { userId, employeeId } = item
+        employeeIdToUserId[employeeId] = userId
+      })
+    }
+
     if (!project) {
       throw ['project_not_found'];
     }
@@ -567,7 +577,7 @@ exports.assignForProjectFromProposal = async (portal, id) => {
           endDate: task?.endDate,
           assignee: assignee?._id,
           assets: assets && assets?.length ? assets?.map((item) => item?._id) : [],
-          responsibleEmployees: [assignee?._id],
+          responsibleEmployees: employeeIdToUserId[assignee?._id],
           status: 'inprocess',
           estimateNormalCost: task?.estimateNormalCost,
         };
