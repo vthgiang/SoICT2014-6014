@@ -84,7 +84,7 @@ services:
       - vnist-network
   production-service:
     container_name: production-service
-    image: node:16-alpine
+    image: tungnguyensnk/qlcv-server:latest
     # ports:
     #   - "6000:6000"
     env_file:
