@@ -486,14 +486,15 @@ function addOptionalAssetsAvailableForTasks(job, currentAssets) {
   return sortedTasks
 }
 
-function getTotalKpi(assignment, lastKPIs, assetHasKPIWeight) {
+function getTotalKpi(assignment, lastKPIs, assetHasKPIWeight, kpiTarget) {
   // console.log("assignment: ", assignment)
   // console.log("lastKPIs: ", lastKPIs)
   // console.log("assetHasKPIWeight: ", assetHasKPIWeight)
   const kpiAssignment = {}
-  // for (const kpi of kpiTarget) {
-  //   kpiAssignment[key] = 0
-  // }
+  for (const kpi of kpiTarget) {
+    // console.log("kpi: ", kpi)
+    kpiAssignment[kpi?.type] = 0
+  }
 
   assignment.forEach((assignmentItem) => {
     const { task, assignee } = assignmentItem
@@ -752,7 +753,7 @@ function initRandomHarmonyVector(tasks, employees, lastKPIs, kpiTarget, kpiOfEmp
   }
   falseAssigneeScore = employees.length - empAssigned.length
   // get total KPI
-  kpiAssignment = getTotalKpi(randomAssignment, lastKPIs, assetHasKPIWeight)
+  kpiAssignment = getTotalKpi(randomAssignment, lastKPIs, assetHasKPIWeight, kpiTarget)
 
   // get total cost
   totalCost = getTotalCost(randomAssignment, lastKPIs, assetHasKPIWeight, unitTime)
@@ -1183,7 +1184,7 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
       // total False assets: TODO
 
       // get total KPI
-      const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight)
+      const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight, kpiTarget)
 
       // get total Cost
       const totalCost = getTotalCost(improviseAssignment, lastKPIs, assetHasKPIWeight, unitTime)
@@ -1332,7 +1333,7 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
     // total False assets: TODO
 
     // get total KPI
-    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight)
+    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight, kpiTarget)
 
     // get total Cost
     const totalCost = getTotalCost(improviseAssignment, lastKPIs, assetHasKPIWeight, unitTime)
@@ -1463,7 +1464,7 @@ function harmonySearch(HS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiO
     // total False assets: TODO
 
     // get total KPI
-    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight)
+    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight, kpiTarget)
 
     // get total Cost
     const totalCost = getTotalCost(improviseAssignment, lastKPIs, assetHasKPIWeight, unitTime)

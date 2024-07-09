@@ -4,7 +4,7 @@ const forecastController = require('./inventoryForecast.controller');
 const { auth } = require(`../../../../middleware`);
 
 
-// router.post('/forecast', forecastController.getForecast);
+router.get('/', auth, forecastController.getAllForecasts);
 router.post('/', auth, forecastController.createForecast);
 // router.get('/:id',auth, forecastController.getForecastById);
 

@@ -79,7 +79,7 @@ const initSalesOrder = async () => {
 
     const getRandomElement = (array) => array[Math.floor(Math.random() * array.length)];
 
-    const batchSize = 10000;
+    const batchSize = 10000; // Số lượng bản ghi trong mỗi lô
     for (let i = 0; i < saleOrders.length; i += batchSize) {
         const bulkOperations = saleOrders.slice(i, i + batchSize).map((salesOrder) => {
             const product = productsInStock.find(product => product.code === String(salesOrder.product_id));
@@ -174,6 +174,7 @@ const initSalesOrder = async () => {
                         ],
                         shippingFee: 10000,
                         createdAt: salesOrder.date,
+                        deliveryTime: salesOrder.date,
                         coin: 500,
                         paymentAmount: (salesOrder.price * salesOrder.orders * 11) / 10 + 10000,
                         note: "Khách hàng quen thuộc",

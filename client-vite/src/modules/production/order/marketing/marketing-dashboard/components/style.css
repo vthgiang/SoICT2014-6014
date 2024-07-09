@@ -121,7 +121,7 @@
 }
 
 .campaign-manage-minicard-image-green {
-  background-color: #28a745;
+  background-color: #1f77b4;
 }
 
 .campaign-manage-minicard-image-red {
@@ -157,7 +157,7 @@
   display: flex;
   align-items: center;
   font-size: 1em;
-  color: green; /* Màu chữ của phần trăm */
+  color: #1f77b4; /* Màu chữ của phần trăm */
 }
 
 .campaign-manage-minicard-icon {

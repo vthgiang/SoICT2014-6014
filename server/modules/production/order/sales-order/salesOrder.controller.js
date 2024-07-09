@@ -1,5 +1,7 @@
 const SalesOrderServices = require('./salesOrder.service');
 const Log = require(`../../../../logs`);
+const rabitmq= require('../../../../rabbitmq/client')
+const listRpcQueue = require('../../../../rabbitmq/listRpcQueue')
 
 exports.createNewSalesOrder = async (req, res) => {
     try {
@@ -29,6 +31,8 @@ exports.createNewSalesOrder = async (req, res) => {
 exports.getAllSalesOrders = async (req, res) => {
     try {
         let query = req.query;
+        console.log(query)
+        console.log(req.user._id)
         let salesOrders = await SalesOrderServices.getAllSalesOrders(req.user._id, query, req.portal);
 
 
@@ -199,14 +203,19 @@ exports.getSalesOrderDetail = async (req, res) => {
 exports.countSalesOrder = async (req, res) => {
     try {
         let query = req.query;
-        console.log("Query received in controller:", query); // Log kiểm tra
-        let salesOrdersCounter = await SalesOrderServices.countSalesOrder(req.user._id, query, req.portal);
+        console.log("Query received in controller:", query); 
+        const param={
+            userId:req.user._id, 
+            query:query, 
+            portal: req.portal
+        }
+        const response=await rabitmq.gRPC('orderService.countSalesOrder',JSON.stringify(param),listRpcQueue.PRODUCTION_SERVICE)
 
         await Log.info(req.user.email, "COUNT_SALES_ORDER", req.portal);
         res.status(200).json({
             success: true,
             messages: ["count_sales_order_successfully"],
-            content: salesOrdersCounter
+            content: response
         });
     } catch (error) {
         await Log.error(req.user.email, "COUNT_SALES_ORDER", req.portal);
@@ -286,4 +295,26 @@ exports.getNumberWorksSalesOrder = async (req, res) => {
     }
 }
 
-
+exports.importSales = async (req, res) => {
+    try {
+        const data = req.body.data; // Dữ liệu từ frontend
+        console.log("data", data)
+        // const query = req.query; // Lấy query từ request nếu cần thiết
+        // console.log(query)
+        // const userId = req.user._id;
+        // console.log(userID)
+        const result = await SalesOrderServices.importSales(req.portal, data);
+        res.status(200).json({
+            success: true,
+            messages: ['import_sales_success'],
+            content: result
+        });
+    } catch (error) {
+        await Log.error(req.user.email, 'import_sales_failure', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['import_sales_failure'],
+            content: error.message
+        });
+    }
+};

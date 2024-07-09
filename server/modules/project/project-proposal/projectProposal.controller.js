@@ -32,3 +32,27 @@ exports.proposalForProject = async (req, res) => {
     }
   }
 }
+
+exports.assignForProjectFromProposal = async (req, res) => {
+  try {
+    const projectId = req.params.id
+    let tp = await ProjectProposalService.assignForProjectFromProposal(req.portal, projectId)
+    await Logger.info(req.user.email, 'proposal_assign_success', req.portal)
+    // await Logger.info('proposal_assign_success', req.portal)
+    
+    res.status(200).json({
+      success: true,
+      messages: ['proposal_assign_success'],
+      content: tp
+    });
+
+  } catch (error) {
+    await Logger.error(req.user.email, error[0], req.portal)
+    // await Logger.error(error[0], req.portal)
+    res.status(400).json({
+      success: false,
+      messages: error ? error : ['proposal_assign_fail'],
+      content: null
+    })
+  }
+}

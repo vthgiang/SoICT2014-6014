@@ -2162,6 +2162,7 @@ const initSWProjectData = async () => {
     unitCost: "VND",
     projectManager: [gd_NguyenVanAn_User._id, sw_NguyenVanMinh_User._id],
     creator: gd_NguyenVanAn_User._id,
+    status: "proposal",
     usersInProject: [
       {
         userId: sw_NguyenVanMinh_User._id,
@@ -2277,6 +2278,7 @@ const initSWProjectData = async () => {
       estimateNormalTime: 7,
       kpiInTask: kpiA,
       taskKPIWeight: 0.228,
+      status: 'proposal'
     },
     {
       id: 2,
@@ -2301,7 +2303,8 @@ const initSWProjectData = async () => {
         year_of_exp: 1,
       },
       kpiInTask: kpiA,
-      taskKPIWeight: 0.086
+      taskKPIWeight: 0.086,
+      status: 'proposal'
     },
     {
       id: 3,
@@ -2325,6 +2328,7 @@ const initSWProjectData = async () => {
       estimateNormalTime: 6,
       kpiInTask: kpiA,
       taskKPIWeight: 0.086,
+      status: 'proposal'
     },
     {
       id: 4,
@@ -2348,7 +2352,8 @@ const initSWProjectData = async () => {
       },
       estimateNormalTime: 8,
       kpiInTask: kpiA,
-      taskKPIWeight: 0.114
+      taskKPIWeight: 0.114,
+      status: 'proposal'
     },
     {
       id: 5,
@@ -2372,7 +2377,8 @@ const initSWProjectData = async () => {
       },
       estimateNormalTime: 5,
       kpiInTask: kpiA,
-      taskKPIWeight: 0.171
+      taskKPIWeight: 0.171,
+      status: 'proposal'
     },
     {
       id: 6,
@@ -2402,7 +2408,8 @@ const initSWProjectData = async () => {
       //   }
       // ]
       kpiInTask: kpiB,
-      taskKPIWeight: 0.143
+      taskKPIWeight: 0.143,
+      status: 'proposal'
     },
     {
       id: 7,
@@ -2434,7 +2441,8 @@ const initSWProjectData = async () => {
       //   }
       // ],
       kpiInTask: kpiB,
-      taskKPIWeight: 0.143
+      taskKPIWeight: 0.143,
+      status: 'proposal'
     },
     {
       id: 8,
@@ -2459,7 +2467,8 @@ const initSWProjectData = async () => {
       estimateNormalTime: 7,
 
       kpiInTask: kpiB,
-      taskKPIWeight: 0.286
+      taskKPIWeight: 0.286,
+      status: 'proposal'
     },
     {
       id: 9,
@@ -2542,6 +2551,7 @@ const initSWProjectData = async () => {
       estimateNormalTime: 2,
       kpiInTask: kpiC,
       taskKPIWeight: 0.333,
+      status: 'proposal'
       // kpiInTask: [
       //   {
       //     id: 3,
@@ -2579,7 +2589,8 @@ const initSWProjectData = async () => {
       //   }
       // ],
       kpiInTask: kpiC,
-      taskKPIWeight: 0.167
+      taskKPIWeight: 0.167,
+      status: 'proposal'
     },
     {
       id: 13,
@@ -2609,7 +2620,8 @@ const initSWProjectData = async () => {
       //   }
       // ],
       kpiInTask: kpiC,
-      taskKPIWeight: 0.166
+      taskKPIWeight: 0.166,
+      status: 'proposal'
     },
     {
       id: 14,
@@ -2639,7 +2651,8 @@ const initSWProjectData = async () => {
       //   }
       // ],
       kpiInTask: kpiC,
-      taskKPIWeight: 0.167
+      taskKPIWeight: 0.167,
+      status: 'proposal'
     },
     {
       id: 15,
@@ -2665,7 +2678,8 @@ const initSWProjectData = async () => {
       },
       estimateNormalTime: 1,
       kpiInTask: kpiC,
-      taskKPIWeight: 0.167
+      taskKPIWeight: 0.167,
+      status: 'proposal'
       // kpiInTask: [
       //   {
       //     id: 3,
@@ -2696,7 +2710,8 @@ const initSWProjectData = async () => {
       },
       estimateNormalTime: 8,
       kpiInTask: kpiA,
-      taskKPIWeight: 0.143
+      taskKPIWeight: 0.143,
+      status: 'proposal'
       // kpiInTask: [
       //   {
       //     id: 1,
@@ -2726,7 +2741,8 @@ const initSWProjectData = async () => {
       },
       estimateNormalTime: 7,
       kpiInTask: kpiA,
-      taskKPIWeight: 0.086
+      taskKPIWeight: 0.086,
+      status: 'proposal'
       // kpiInTask: [
       //   {
       //     id: 1,
@@ -2757,7 +2773,8 @@ const initSWProjectData = async () => {
       },
       estimateNormalTime: 6,
       kpiInTask: kpiA,
-      taskKPIWeight: 0.086
+      taskKPIWeight: 0.086,
+      status: 'proposal'
       // kpiInTask: [
       //   {
       //     id: 1,

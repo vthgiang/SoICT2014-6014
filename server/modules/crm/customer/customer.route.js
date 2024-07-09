@@ -26,6 +26,7 @@ router.delete('/:id/promotion', auth, CustomerController.deletePromotion);
 
 router.post("/forecast", auth, CustomerController.createCustomerForecast);
 router.get("/forecast-response/:idToPredict", auth, CustomerController.predictResponseCustomer);
+router.get("/forecase-revenue", auth, CustomerController.predictRevenueCustomer)
 
 router.delete('/:id', auth, CustomerController.deleteCustomer);
 

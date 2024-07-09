@@ -7549,6 +7549,7 @@ const initSampleCompanyDB = async () => {
   var listBusinessDepartments = await BusinessDepartment(vnistDB).insertMany([{}]);
   console.log('Khởi tạo xong cấu hình đơn vị kinh doanh');
 
+  
   /*---------------------------------------------------------------------------------------------
          -----------------------------------------------------------------------------------------------
              TẠO DỮ LIỆU THÔNG TIN BÁO GIÁ

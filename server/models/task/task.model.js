@@ -168,7 +168,7 @@ const TaskSchema = new Schema(
       // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
       type: String,
       default: 'inprocess',
-      enum: ['inprocess', 'wait_for_approval', 'finished', 'delayed', 'canceled'],
+      enum: ['inprocess', 'wait_for_approval', 'finished', 'delayed', 'canceled', 'proposal'],
     },
     taskTemplate: {
       type: Schema.Types.ObjectId,
