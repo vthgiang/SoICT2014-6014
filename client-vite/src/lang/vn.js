@@ -4462,6 +4462,7 @@ export default {
         requested_to_close: 'Chờ phê duyệt kết thúc',
         task_status: 'Trạng thái công việc',
         filter: 'Lọc',
+        proposal: 'Đề xuất, chờ phê duyệt',
 
         priority: 'Độ ưu tiên',
         select_priority: 'Chọn mức độ ưu tiên',
