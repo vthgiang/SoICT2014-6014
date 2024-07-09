@@ -2,7 +2,7 @@ const amqp = require('amqplib');
 const EventEmitter = require('events');
 const uuid = require('uuid');
 
-const RABBITMQ = 'amqp://guest:guest@localhost:5672';
+const RABBITMQ = 'amqp://guest:guest@rabbitmq:5672';
 
 // pseudo-queue for direct reply-to
 const REPLY_QUEUE = 'amq.rabbitmq.reply-to';
