@@ -215,7 +215,7 @@ exports.getPolicies = async (portal, data) => {
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
 exports.getAllPolicies = async (portal) => {
-    let policies = await DelegationPolicy(connect(DB_CONNECTION, portal)).find();
+    let policies = await AuthorizationPolicy(connect(DB_CONNECTION, portal)).find();
     return {
         data: policies
     }
