@@ -279,7 +279,7 @@ const MarketingForecastComponent = (props) => {
         (importData && configData && content === 'Nút 2') &&
         <>
             <button class="forecast-revenue-action" onClick={redirectToMarketingCampaign}> Điều chỉnh lại các chiến dịch? </button>
-            <RevenuesForecastChart />
+            <RevenuesForecastChart data={importData}/>
         </>
        
       }

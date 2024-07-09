@@ -178,7 +178,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
                 '--CircularProgress-progressColor': '#1f77b4',
               }}
             >
-              <div className='circular_progress_text_inside'>40%</div>
+              <div className='circular_progress_text_inside'>423%</div>
             </CircularProgress>
           </div>
         </div>
