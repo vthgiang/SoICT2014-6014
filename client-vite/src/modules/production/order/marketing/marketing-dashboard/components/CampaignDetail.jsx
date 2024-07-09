@@ -167,7 +167,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       <GridLayout className='layout' layout={layout} cols={12} rowHeight={30} width={1200} compactType={'vertical'}>
         <div key='g' className='item'>
           <div>
-            <div className='card_title'>ROIM</div>
+            <div className='card_title'>ROMI</div>
             <CircularProgress
               determinate
               value={80}
@@ -178,7 +178,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
                 '--CircularProgress-progressColor': '#1f77b4',
               }}
             >
-              <div className='circular_progress_text_inside'>40%</div>
+              <div className='circular_progress_text_inside'>423%</div>
             </CircularProgress>
           </div>
         </div>

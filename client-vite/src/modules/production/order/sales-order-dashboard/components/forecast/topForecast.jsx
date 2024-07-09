@@ -104,7 +104,7 @@ const Top5ProductsChart = ({ top5Products, timeFrame, dispatch }) => {
         <div className="box">
             <div className="box-header with-border">
                 <i className="fa fa-bar-chart-o" />
-                <h3 className="box-title">Top 5 Products</h3>
+                <h3 className="box-title">Sản phẩm bán chạy theo dự báo</h3>
                 <div id="chart-top5"></div>
             </div>
         </div>

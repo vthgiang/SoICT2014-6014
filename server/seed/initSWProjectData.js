@@ -2498,7 +2498,8 @@ const initSWProjectData = async () => {
       //   }
       // ]
       kpiInTask: kpiB,
-      taskKPIWeight: 0.143
+      taskKPIWeight: 0.143,
+      status: 'proposal'
     },
     {
       id: 10,
@@ -2528,7 +2529,8 @@ const initSWProjectData = async () => {
       //   }
       // ],
       kpiInTask: kpiB,
-      taskKPIWeight: 0.285
+      taskKPIWeight: 0.285,
+      status: 'proposal'
     },
     {
       id: 11,
