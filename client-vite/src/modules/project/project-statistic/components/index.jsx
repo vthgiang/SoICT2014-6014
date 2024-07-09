@@ -186,16 +186,17 @@ function ProjectStatisticPage(props) {
           })
         }
       }
-      const total = employeesData?.length
-      const numberOfIsWorking = listEmployeeIsWorking?.length
-      const numberOfReadyToAssign = total - numberOfIsWorking
-      setEmployeeStatistic({
-        total: total,
-        numberOfIsWorking: numberOfIsWorking,
-        numberOfReadyToAssign: numberOfReadyToAssign
-      })
     }
 
+    const totalEmp = employeesData?.length
+    const numberOfIsWorking = listEmployeeIsWorking?.length
+    const numberOfReadyToAssign = totalEmp - numberOfIsWorking
+   
+    setEmployeeStatistic({
+      total: totalEmp,
+      numberOfIsWorking: numberOfIsWorking,
+      numberOfReadyToAssign: numberOfReadyToAssign
+    })
     // set asset statistic
     const assetData = assetsManager?.listAssets
     let assetReadyToUse, assetLost, assetInUse, assetBroken, assetDisposed = []
@@ -224,7 +225,6 @@ function ProjectStatisticPage(props) {
     })
 
   }, [project?.isLoading, biddingPackagesManager?.isLoading, employeesManager?.isLoading, assetsManager?.isLoading])
-
   
   return (
     <React.Fragment>
