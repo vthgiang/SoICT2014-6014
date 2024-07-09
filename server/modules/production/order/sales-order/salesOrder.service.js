@@ -1,5 +1,6 @@
 const {
-    SalesOrder, Quote, OrganizationalUnit, ManufacturingWorks, BusinessDepartment,Good, User, ServiceLevelAgreement,Tax, Discount,Customer
+    SalesOrder, Quote, OrganizationalUnit, ManufacturingWorks, BusinessDepartment,Good, User, ServiceLevelAgreement,Tax, Discount,Customer,
+    MarketingCampaign
 } = require(`../../../../models`);
 
 const {
@@ -853,7 +854,7 @@ exports.importSales = async (portal, data) => {
     const listServiceLevelAgreements = await ServiceLevelAgreement(vnistDB).find({});
     const listTaxs = await Tax(vnistDB).find({});
     const listDistcounts = await Discount(vnistDB).find({});
-
+    const marketingCampaign = await MarketingCampaign(vnistDB).find({});
     const salesOrdersToInsert = [];
 
     for (let i = 0; i < data.length; i++) {
@@ -868,6 +869,10 @@ exports.importSales = async (portal, data) => {
         const product = await Good(vnistDB).findOne({ code: salesOrder.productID });
         if (!product) {
             throw new Error(`Product ID ${salesOrder.productID} not found at row ${i + 1}`);
+        }
+        const marketing = await MarketingCampaign(vnistDB).findOne({ code: salesOrder.marketingID });
+        if (!marketing) {
+            throw new Error(`Campaign ID ${salesOrder.marketingID} not found at row ${i + 1}`);
         }
 
         // Tìm mã khách hàng trong bảng Customer
@@ -955,6 +960,8 @@ exports.importSales = async (portal, data) => {
                 },
             ],
             createdAt: salesOrder.createdAt,
+            marketingCampaign: marketing._id,
+            
         });
     }
 

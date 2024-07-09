@@ -9,7 +9,8 @@ import ForecastChart from './salesForecastChart';
 
 const formGroupStyle = {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%' // Đảm bảo phần tử form chiếm toàn bộ chiều rộng
 };
 
 const labelStyle = {
@@ -21,9 +22,23 @@ const selectStyle = {
     minWidth: '100px' // Đặt chiều rộng tối thiểu cho phần tử select
 };
 
+const buttonStyle = {
+    backgroundColor: 'green',
+    color: 'white',
+    padding: '10px 20px', // Điều chỉnh padding
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    textDecoration: 'none', // Đảm bảo không có gạch chân dưới văn bản
+    marginLeft: '10px',
+    marginRight: '5px', // Điều chỉnh khoảng cách giữa nút và phần tử khác
+    marginTop: '5px',
+    marginBottom: '5px',
+    whiteSpace: 'nowrap' // Đảm bảo văn bản không bị xuống dòng
+};
+
 function ForecastDashboard(props) {
     const [timeFrame, setTimeFrame] = useState('1 Month');
-    const [productLimit, setProductLimit] = useState(10);
     const currentRole = localStorage.getItem('currentRole'); // Lấy currentRole từ localStorage
 
     useEffect(() => {
@@ -36,7 +51,7 @@ function ForecastDashboard(props) {
     return (
         <React.Fragment>
             <div className='qlcv'>
-                <div className='form-inline' style={{ marginBottom: '10px' }}>
+                <div className='form-inline' style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div className='form-group' style={formGroupStyle}>
                         <label style={labelStyle}>Chọn khung thời gian: </label>
                         <select
@@ -44,31 +59,19 @@ function ForecastDashboard(props) {
                             value={timeFrame}
                             style={selectStyle}
                         >
-                            <option value="1 Month">1 Month</option>
-                            <option value="3 Months">3 Months</option>
-                            <option value="6 Months">6 Months</option>
+                            <option value="1 Month">1 Tháng</option>
+                            <option value="3 Months">3 Tháng</option>
+                            <option value="6 Months">6 Tháng</option>
                         </select>
                     </div>
-                    <div className='form-group' style={{ ...formGroupStyle, marginLeft: '20px' }}>
-                        <label style={labelStyle}>Hiển thị số sản phẩm: </label>
-                        <select
-                            onChange={(e) => setProductLimit(Number(e.target.value))}
-                            value={productLimit}
-                            style={selectStyle}
-                        >
-                            <option value={10}>10</option>
-                            <option value={100}>100</option>
-                            <option value={props.forecasts.forecasts.length}>Tất cả</option>
-                        </select>
-                    </div>
+                    <a href='/forecast-sales-order' style={buttonStyle}>Điều chỉnh dự báo</a>
                 </div>
 
                 <div className='row'>
-                    
                     <InfoBoxForecast saleForecast={props.forecasts.countForecasts} timeFrame={timeFrame} />
                     
                     <div className='col-xs-12'>
-                        <ForecastChart forecasts={props.forecasts.forecasts} timeFrame={timeFrame} productLimit={productLimit} />
+                        <ForecastChart forecasts={props.forecasts.forecasts} timeFrame={timeFrame} />
                     </div>
                     
                     <div className='col-xs-12'>

@@ -66,9 +66,17 @@ const initSalesOrder = async () => {
         return array[Math.floor(Math.random() * array.length)];
     }
 
-    const batchSize = 10000; // Số lượng bản ghi trong mỗi lô
+    const batchSize = 3000; // Số lượng bản ghi trong mỗi lô
     for (let i = 0; i < saleOrders.length; i += batchSize) {
-        let bulkOperations = saleOrders.slice(i, i + batchSize).map((salesOrder) => {
+        let bulkOperations = [];
+        for (let j = i; j < i + batchSize && j < saleOrders.length; j++) {
+            let salesOrder = saleOrders[j];
+
+            // Bỏ qua đơn hàng có status = 0
+            if (salesOrder.status === 0) {
+                continue;
+            }
+
             let product = products_in_stock.find(
                 (product) => product.code === String(salesOrder.product_id)
             );
@@ -79,7 +87,7 @@ const initSalesOrder = async () => {
             let customer = getRandomElement(listCustomers);
             let user = getRandomElement(users);
 
-            return {
+            bulkOperations.push({
                 insertOne: {
                     document: {
                         code: salesOrder.code,
@@ -172,8 +180,8 @@ const initSalesOrder = async () => {
                         marketingCampaign: marketingCampaign._id,
                     }
                 }
-            };
-        });
+            });
+        }
 
         await SalesOrder(vnistDB).bulkWrite(bulkOperations);
         console.log(`Đã chèn xong lô từ ${i} đến ${i + batchSize - 1}`);
