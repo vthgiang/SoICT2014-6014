@@ -10,7 +10,6 @@ import dayjs from 'dayjs'
 
 const AssignTaskInformation = (props) => {
   const { translate, projectDetail, projectDetailId, user } = props
-  console.log("Project Detail: ", projectDetail)
 
   const column = [
     { name: 'Mã công việc', key: 'code' },

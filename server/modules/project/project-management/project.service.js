@@ -232,7 +232,7 @@ exports.get = async (portal, query) => {
             .populate({ path: "creator", select: "_id name email" })
             .populate({ path: "assets", select: "_id assetName assetType group" })
             .populate({ path: "responsibleEmployeesWithUnit", select: "unitId listUsers" })
-            .populate({ path: "kpiTarget.type", select: "_id name" })
+            .populate({ path: "kpiTarget.type", select: "_id name criteria unit" })
             .populate({ path: "tasks"});
         return {
             docs: project,

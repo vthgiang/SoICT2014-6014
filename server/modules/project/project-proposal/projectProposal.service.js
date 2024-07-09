@@ -571,7 +571,7 @@ exports.assignForProjectFromProposal = async (portal, id) => {
       throw ['project_not_found'];
     }
 
-    if (!project?.proposals || !project?.proposals?.isComplete || !project?.proposals?.assignment || !project?.proposals?.assignment?.length) {
+    if (!project?.proposals || !project?.proposals?.assignment || !project?.proposals?.assignment?.length) {
       throw ['project_not_complete_proposal'];
     }
 

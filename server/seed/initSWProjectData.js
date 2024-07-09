@@ -2185,7 +2185,7 @@ const initSWProjectData = async () => {
   })
   // console.log("kpiSWSet: ", kpiSWSet.kpis)
   const listKPITarget = await OrganizationalUnitKpi(vnistDB).find({
-    _id: { $in: kpiSWSet.kpis }
+    _id: { $in: kpiSWSet. }
   })
   console.log("kpiSWSet: ", listKPITarget)
 
