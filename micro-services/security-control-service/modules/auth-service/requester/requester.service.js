@@ -1,4 +1,4 @@
-const { connect } = require(`../../../helpers/dbHelper`);
+const { connect } = require('../../../helpers/dbHelper');
 
 const { Requester } = require('../../../models');
 

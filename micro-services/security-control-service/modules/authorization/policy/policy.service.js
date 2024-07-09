@@ -1,6 +1,6 @@
 const { AuthorizationPolicy, DynamicAssignment } = require('../../../models');
 
-const { connect } = require(`../../../helpers/dbHelper`);
+const { connect } = require('../../../helpers/dbHelper');
 
 const RequesterService = require('../../auth-service/requester/requester.service');
 const ResourceService = require('../../auth-service/resource/resource.service');
