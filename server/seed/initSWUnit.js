@@ -3441,6 +3441,112 @@ const days = [
       capacityValue: 1
     },  
 
+    {
+      company: vnist._id,
+      assetName: "Bàn 4",
+      group: "other",
+      usefulLife: "12",
+      unitsProducedDuringTheYears: [
+        {
+          month: new Date("2020-06-20"),
+          unitsProducedDuringTheYear: 10,
+        },
+      ],
+      estimatedTotalProduction: 1000,
+      code: "SW.015",
+      serial: "00015",
+      assetType: [assetType_Ban._id],
+      purchaseDate: new Date("2020-06-20"),
+      warrantyExpirationDate: new Date("2022-06-20"),
+      managedBy: usersInSWUnit[0]._id,
+      assignedToUser: null,
+      assignedToOrganizationalUnit: null,
+      status: "ready_to_use",
+      typeRegisterForUse: 3,
+      description: "Bàn 4",
+      detailInfo: [],
+      readByRoles: [
+          giamDoc._id,
+          roleAdmin._id,
+          roleSuperAdmin._id,
+          roleManager._id,
+          thanhVienBGĐ._id,
+          truongPhongSW._id,
+          phoPhongSW._id,
+          nvPhongSW._id,
+      ],
+
+      usageLogs: [],
+      // bảo trì thiết bị
+      maintainanceLogs: [
+      ],
+      //sự cố
+      incidentLogs: [
+      ],
+      //khấu hao
+      cost: 1000000,
+      residualValue: 10000000,
+      startDepreciation: new Date("2024-05-20"), // thời gian bắt đầu trích khấu hao
+      usefulLife: 20, // thời gian trích khấu hao
+      depreciationType: "straight_line", // thời gian trích khấu hao
+      files: [],
+      costPerHour: 10000,
+      capacityValue: 2
+    },
+
+    {
+      company: vnist._id,
+      assetName: "Bàn 5",
+      group: "other",
+      usefulLife: "12",
+      unitsProducedDuringTheYears: [
+        {
+          month: new Date("2020-06-20"),
+          unitsProducedDuringTheYear: 10,
+        },
+      ],
+      estimatedTotalProduction: 1000,
+      code: "SW.016",
+      serial: "00016",
+      assetType: [assetType_Ban._id],
+      purchaseDate: new Date("2020-06-20"),
+      warrantyExpirationDate: new Date("2022-06-20"),
+      managedBy: usersInSWUnit[0]._id,
+      assignedToUser: null,
+      assignedToOrganizationalUnit: null,
+      status: "ready_to_use",
+      typeRegisterForUse: 3,
+      description: "Bàn 5",
+      detailInfo: [],
+      readByRoles: [
+          giamDoc._id,
+          roleAdmin._id,
+          roleSuperAdmin._id,
+          roleManager._id,
+          thanhVienBGĐ._id,
+          truongPhongSW._id,
+          phoPhongSW._id,
+          nvPhongSW._id,
+      ],
+
+      usageLogs: [],
+      // bảo trì thiết bị
+      maintainanceLogs: [
+      ],
+      //sự cố
+      incidentLogs: [
+      ],
+      //khấu hao
+      cost: 1000000,
+      residualValue: 10000000,
+      startDepreciation: new Date("2024-05-20"), // thời gian bắt đầu trích khấu hao
+      usefulLife: 20, // thời gian trích khấu hao
+      depreciationType: "straight_line", // thời gian trích khấu hao
+      files: [],
+      costPerHour: 10000,
+      capacityValue: 2
+    },
+
     // Table 3
     {
       company: vnist._id,

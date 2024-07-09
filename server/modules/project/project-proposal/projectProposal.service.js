@@ -413,7 +413,7 @@ exports.proposalForProject = async (portal, id, data) => {
     const assetHasKPIWeight = 0.1
 
     // TODO: update params
-    const result = proposalForProjectWithAlgorithm(job, kpiInPast, allTasksOutOfProject, assetHasKPIWeight, algorithm, algorithmParams ? algorithmParams : initArguments) 
+    let result = proposalForProjectWithAlgorithm(job, kpiInPast, allTasksOutOfProject, assetHasKPIWeight, algorithm, algorithmParams ? algorithmParams : initArguments) 
 
     let kpiAssignment = result?.kpiAssignment
     let isCompleteProposal = true
@@ -472,6 +472,33 @@ exports.proposalForProject = async (portal, id, data) => {
         }
 
         task.estimateNormalCost = estimateTaskCost
+      }
+    }
+
+    // Check duplicate task
+    if (result?.assignment && result?.assignment?.length > 0) {
+      const resultAssignment = result?.assignment 
+      let falseDuplicate = 0
+      let taskInDuplicate = []
+      if (allTasksOutOfProject && allTasksOutOfProject?.length) {
+        resultAssignment.forEach((item) => {
+          const { task, assignee } = item
+          const { startDate, endDate } = task
+          let allTasksOutOfProjectWithEmp = allTasksOutOfProject.filter((item) =>
+            item?.assignee === assignee._id && new Date(item?.endDate) > new Date(startDate) && new Date(endDate) > new Date(item?.startDate)
+          )
+          if (allTasksOutOfProjectWithEmp && allTasksOutOfProjectWithEmp?.length) {
+            if (!taskInDuplicate || !taskInDuplicate.includes(task?._id)) {
+              falseDuplicate++
+              taskInDuplicate.push(task?._id)
+            }
+          }
+        })
+      }
+      result = {
+        ...result,
+        falseDuplicate: falseDuplicate,
+        taskInDuplicate: taskInDuplicate,
       }
     }
 

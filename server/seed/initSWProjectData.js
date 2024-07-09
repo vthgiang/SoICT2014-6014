@@ -1184,7 +1184,7 @@ const initSWProjectData = async () => {
       name: "Điều chỉnh module quản lý thầu",
       status: "finished",
       project: "",
-      startDate: new Date('2024-07-21T01:00:00.000Z'),
+      startDate: new Date('2024-07-22T01:00:00.000Z'),
       endDate: new Date('2024-07-25T05:00:00.000Z'),
       estimateNormalTime: 4.5,
       tags: ['backend', 'frontend'],
