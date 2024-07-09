@@ -10,7 +10,7 @@ import ForecastChart from './salesForecastChart';
 const formGroupStyle = {
     display: 'flex',
     alignItems: 'center',
-    width: '100%' // Đảm bảo phần tử form chiếm toàn bộ chiều rộng
+    width: '100%' 
 };
 
 const labelStyle = {
@@ -19,7 +19,8 @@ const labelStyle = {
 };
 
 const selectStyle = {
-    minWidth: '100px' // Đặt chiều rộng tối thiểu cho phần tử select
+    minWidth: '100px', // Đặt chiều rộng tối thiểu cho phần tử select
+    marginLeft: '5px' // Dịch sang phải 5px
 };
 
 const buttonStyle = {

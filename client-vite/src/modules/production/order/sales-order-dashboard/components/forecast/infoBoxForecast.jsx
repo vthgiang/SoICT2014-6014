@@ -58,7 +58,7 @@ function InfoBoxForecast(props) {
       <div className='col-md-4 col-sm-6 col-xs-6'>
         <div className='info-box with-border'>
           <span className='info-box-icon bg-aqua'>
-            <i className='fa fa-hand-o-right'></i>
+            <i className='fa fa-shopping-cart'></i>
           </span>
           <div className='info-box-content' title='Số đơn dự báo'>
             <span className='info-box-text'>Doanh số dự báo </span>
@@ -72,8 +72,8 @@ function InfoBoxForecast(props) {
 
       <div className='col-md-4 col-sm-6 col-xs-6'>
         <div className='info-box with-border'>
-          <span className='info-box-icon bg-aqua'>
-            <i className='fa fa-hand-o-right'></i>
+          <span className='info-box-icon bg-green'>
+            <i className='fa fa-money'></i>
           </span>
           <div className='info-box-content' title='Doanh thu dự báo'>
             <span className='info-box-text'>Doanh thu dự báo </span>
@@ -87,8 +87,8 @@ function InfoBoxForecast(props) {
 
       <div className='col-md-4 col-sm-6 col-xs-6'>
         <div className='info-box with-border'>
-          <span className='info-box-icon bg-aqua'>
-            <i className='fa fa-hand-o-right'></i>
+          <span className='info-box-icon bg-red'>
+            <i className='fa fa-bullseye'></i>
           </span>
           <div className='info-box-content' title='Số đơn dự báo'>
             <span className='info-box-text'>Tỉ lệ hoàn thành mục tiêu </span>
