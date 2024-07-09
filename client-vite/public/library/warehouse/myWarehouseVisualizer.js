@@ -43,8 +43,8 @@ $(document).ready(function () {
 
   const getRoutePicking = async () => {
     return await $.ajax({
-      // url: `https://dxclan-sv.datn.live/${path}`,
-      url: `https://dxclan-sv.datn.live/route-picking/route`,
+      url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
+      // url: `https://dxclan-sv.datn.live/route-picking/route`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
@@ -624,9 +624,9 @@ function fnShowMyWarehouseVisualizerDemo() {
   const getData = async (path) => {
     // get data warehouse from server
     return await $.ajax({
-      url: `https://dxclan-sv.datn.live/${path}`,
+      // url: `https://dxclan-sv.datn.live/${path}`,
 
-      // url: `${process.env.REACT_APP_SERVER}/${path}`,
+      url: `${process.env.REACT_APP_SERVER}/${path}`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
@@ -726,10 +726,10 @@ function fnShowMyWarehouseVisualizerDemo() {
 
     const points = [];
     points.push(new THREE.Vector3(2500, 0, 0))
-    points.push(new THREE.Vector3(2500, 0, 3000))
+    points.push(new THREE.Vector3(2500, 0, 4100))
     
     const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    
+
     const line = new THREE.Line( geometry, lineMaterial );
     warehouse.add( line );
 

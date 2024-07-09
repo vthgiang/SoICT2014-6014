@@ -55,25 +55,25 @@ const initInventoryWarehouseData = async () => {
             cases_damaged: item.cases_damaged,
             color_cases_damaged: item.color_cases_damaged,
             link_: item.link_,
-            good: listProducts[productIndex]._id, // Sử dụng productIndex để truy cập _id
+            good: index < 1800 ? listProducts[index]._id : undefined,
             contained: item.contained,
             capacity: item.capacity
         };
         newInventories.push(newInventory);
     
-        // Tăng repeatCount sau mỗi lần lặp, và reset nếu cần
-        if ((index + 1) % maxRepeats === 0) {
-            productIndex++; // Chỉ tăng productIndex sau mỗi 3 lần lặp
-            if (productIndex >= 300) {
-                productIndex = 0; // Reset productIndex về 0 sau khi đạt 300
-                repeatCount++; // Tăng số lần lặp
-            }
-        }
+        // // Tăng repeatCount sau mỗi lần lặp, và reset nếu cần
+        // if ((index + 1) % maxRepeats === 0) {
+        //     productIndex++; // Chỉ tăng productIndex sau mỗi 3 lần lặp
+        //     if (productIndex >= 1800) {
+        //         productIndex = 0; // Reset productIndex về 0 sau khi đạt 300
+        //         repeatCount++; // Tăng số lần lặp
+        //     }
+        // }
     
-        if (repeatCount >= 3) {
-            // Nếu đã lặp qua 3 lần, không tăng productIndex nữa
-            productIndex = 0; // Giữ productIndex ở giá trị cuối cùng hoặc reset nếu cần
-        }
+        // if (repeatCount >= 1) {
+        //     // Nếu đã lặp qua 3 lần, không tăng productIndex nữa
+        //     productIndex = 0; // Giữ productIndex ở giá trị cuối cùng hoặc reset nếu cần
+        // }
     });
 
 
