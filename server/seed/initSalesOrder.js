@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { SalesOrder, Good, MarketingCampaign, Customer, User, ServiceLevelAgreement, Tax, Discount, MarketingEffective, Quote } = require("../models");
-const saleOrders1 = require('./SaleOrders.json');
+const saleOrders1 = require('./SaleOrders1.json');
 const saleOrders2 = require('./SalesOrder2.json');
 const marketingCampaign = require('./MarketingCampaign.json');
 const marketingEffective = require("./MarketingEffective.json");
