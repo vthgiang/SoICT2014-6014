@@ -41,7 +41,7 @@ function DeliveryLateDay ({monthToSearch}) {
         })
         return arr.concat(formatData)
     }
-
+    
     const redirectToDetailPage = () => {
         // Thực hiện chuyển hướng đến trang thông tin orders
         props.history.push('/manage-transport3-order');

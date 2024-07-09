@@ -71,10 +71,6 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_TOP_LATE_DELIVERY_DAY_SUCCESS:
-<<<<<<< HEAD
-=======
-            console.log(action.payload)
->>>>>>> 5f5138d7e (dashboard cho nhan vien giam sat va truong phong van chuyen)
             return {
                 ...state,
                 topLateDeliveryDay: action.payload,
@@ -86,10 +82,6 @@ export function dashboard(state = initialState, action) {
                 isLoading: true
             }
         case transportationConstants.GET_TOP_LATE_PRODUCTS_SUCCESS:
-<<<<<<< HEAD
-=======
-            console.log(action.payload)
->>>>>>> 5f5138d7e (dashboard cho nhan vien giam sat va truong phong van chuyen)
             return {
                 ...state,
                 topLateProducts: action.payload,

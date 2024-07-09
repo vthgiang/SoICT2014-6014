@@ -168,70 +168,6 @@ exports.getDeliveryLateDayAverage = async (portal, data) => {
 
 }
 
-// exports.getDeliveryLateDayAveragePerMonth = async (portal, { month, year }) => {
-//     // Fetch all transport schedules from the database
-//     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});
-
-//     // Create a map to store the late day sum and total count for each month
-//     let monthlyLateDays = {};
-
-//     // Iterate over all schedules and their orders
-//     transport3Schedules.forEach((schedule) => {
-//         schedule.orders.forEach((order) => {
-//             if (order.status === 3) {
-//                 const month = moment(order.timeArrive).format('MM-YYYY'); // Get the month and year of the order
-
-//                 if (!monthlyLateDays[month]) {
-//                     monthlyLateDays[month] = { lateDaySum: 0, totalCount: 0 };
-//                 }
-
-//                 monthlyLateDays[month].totalCount += 1;
-//                 if (order.timeArrive > order.estimateTimeArrive) {
-//                     monthlyLateDays[month].lateDaySum += (order.timeArrive - order.estimateTimeArrive) / (60 * 60 * 24 * 1000); // Convert milliseconds to days
-//                 }
-//             }
-//         });
-//     });
-
-//     // Calculate the average late days for each month
-//     let monthlyLateDayAverages = [];
-//     for (let month in monthlyLateDays) {
-//         const { lateDaySum, totalCount } = monthlyLateDays[month];
-//         const lateDayAverage = totalCount > 0 ? lateDaySum / totalCount : 0;
-//         monthlyLateDayAverages.push({ month, lateDayAverage });
-//     }
-
-//     function fillMissingData(data) {
-//         // Helper function to get month difference
-//         function getMonthDifference(startDate, endDate) {
-//           return endDate.getMonth() - startDate.getMonth() + (12 * (endDate.getFullYear() - startDate.getFullYear()));
-//         }
-      
-//         // Define the range of months we want to fill
-//         const startDate = new Date("2024-01-01");
-//         const endDate = new Date("2024-06-01");
-      
-//         // Generate all required months
-//         let allMonths = [];
-//         let currentDate = new Date(startDate);
-//         while (currentDate <= endDate) {
-//           allMonths.push(currentDate);
-//           currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-//         }
-      
-//         // Fill in missing months with lateDayAverage = 0
-//         let filledData = allMonths.map(month => {
-//           const monthStr = (month.getMonth() + 1).toString().padStart(2, '0') + '-' + month.getFullYear();
-//           const existingEntry = data.find(entry => entry.month === monthStr);
-//           return existingEntry ? existingEntry : { month: monthStr, lateDayAverage: 0 };
-//         });
-      
-//         return filledData;
-//       }
-
-//     return fillMissingData(monthlyLateDayAverages);
-// }
-
 exports.getDeliveryLateDayAveragePerMonth = async (portal, { month, year }) => {
     // Fetch all transport schedules from the database
     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});
@@ -254,9 +190,9 @@ exports.getDeliveryLateDayAveragePerMonth = async (portal, { month, year }) => {
                 const orderMonth = moment(order.timeArrive).format('MM-YYYY');
 
                 if (monthlyLateDays[orderMonth]) {
-                    monthlyLateDays[orderMonth].totalCount += 1;
-                    if (order.timeArrive > order.estimateTimeArrive) {
-                        monthlyLateDays[orderMonth].lateDaySum += (order.timeArrive - order.estimateTimeArrive) / (60 * 60 * 24 * 1000); // Convert milliseconds to days
+                    if (moment(order.timeArrive).isAfter(order.estimateTimeArrive)) {
+                        monthlyLateDays[orderMonth].totalCount += 1;
+                        monthlyLateDays[orderMonth].lateDaySum += moment(order.timeArrive).diff(order.estimateTimeArrive, 'days'); // Calculate the difference in days
                     }
                 }
             }
@@ -274,7 +210,6 @@ exports.getDeliveryLateDayAveragePerMonth = async (portal, { month, year }) => {
     return monthlyLateDayAverages;
 };
 
-
 exports.getTopLateDeliveryDay = async (portal, { month, year }) => {
     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({}); 
     console.log(transport3Schedules) 
@@ -284,7 +219,7 @@ exports.getTopLateDeliveryDay = async (portal, { month, year }) => {
     let deliveryLateDay = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
     transport3Schedules.forEach((schedule) => {
         schedule.orders.forEach((order) => {
-            if (order.status && order.status === 3 && order.timeArrive > order.estimateTimeArrive) {
+            if (order.status && order.status === 3 && moment(order.timeArrive).isAfter(order.estimateTimeArrive)) {
                 const orderDate = new Date(order.beginTime);
                 const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
                 const orderYear = orderDate.getFullYear(); // Năm
@@ -309,52 +244,6 @@ exports.getTopLateDeliveryDay = async (portal, { month, year }) => {
     return top5Days;
 }
 
-exports.getTopLateProducts = async (portal, { month, year }) => {
-    const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});  
-    if (!transport3Schedules) {
-        throw new Error('Schedule not found');
-    } 
-    let lateProductsMap = {};
-
-    await Promise.all(transport3Schedules.map(async (schedule) => {
-        for (const order of schedule.orders) {
-            if (order.status === 3 && order.timeArrive > order.estimateTimeArrive) {
-                const orderDate = new Date(order.beginTime);
-                const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
-                const orderYear = orderDate.getFullYear(); // Năm
-
-                // Chỉ xử lý nếu tháng và năm khớp với tham số tìm kiếm
-                if (orderMonth === month && orderYear === year) {
-                    try {
-                        const transport3Order = await Transport3Order(connect(DB_CONNECTION, portal)).findById(order.order);
-                        if (transport3Order) {
-                            transport3Order.goods.forEach((good) => {
-                                const { good: id, goodName: name } = good;
-                                if (!lateProductsMap[id]) {
-                                    lateProductsMap[id] = {
-                                        goodName: name,
-                                        lateDeliveries: 0
-                                    };
-                                }
-                                lateProductsMap[id].lateDeliveries++;
-                            });
-                        }
-                    } catch (error) {
-                        console.error(`Error fetching Transport3Order for order ${order.order}: ${error.message}`);
-                    }             
-                }
-            }
-        }
-    }));
-    const sortedProducts = Object.values(lateProductsMap)
-        .sort((a, b) => b.lateDeliveries - a.lateDeliveries);
-
-    // Lấy tối đa 5 sản phẩm
-    const top5Products = sortedProducts.slice(0, 5);
-
-    return top5Products;
-}
-
 exports.getTopLateStocks = async (portal, { month, year }) => {
     const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});  
     if (!transport3Schedules) {
@@ -368,9 +257,11 @@ exports.getTopLateStocks = async (portal, { month, year }) => {
             if (!stock) {
                 throw new Error('Stock not found');
             }
-
+            const count = 0
+            console.log(count)
             for (const order of schedule.orders) {
-                if (order.status === 3 && order.timeArrive > order.estimateTimeArrive) {
+                if (order.status === 3 && moment(order.timeArrive).isAfter(order.estimateTimeArrive)) {
+                    count++
                     const orderDate = new Date(order.beginTime);
                     const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
                     const orderYear = orderDate.getFullYear(); // Năm
@@ -387,6 +278,7 @@ exports.getTopLateStocks = async (portal, { month, year }) => {
                     }
                 }
             }
+            console.log(count)
         } catch (error) {
             console.error(`Error fetching stock for schedule ${schedule._id}: ${error.message}`);
         }    
@@ -510,52 +402,6 @@ exports.getTopLateProducts = async (portal, { month, year }) => {
     const top5Products = sortedProducts.slice(0, 5);
 
     return top5Products;
-}
-
-exports.getTopLateStocks = async (portal, { month, year }) => {
-    const transport3Schedules = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({});  
-    if (!transport3Schedules) {
-        throw new Error('Schedule not found');
-    } 
-    let lateStocksMap = {};
-
-    await Promise.all(transport3Schedules.map(async (schedule) => {
-        try {
-            const stock = await Stock(connect(DB_CONNECTION, portal)).findById(schedule.depot);
-            if (!stock) {
-                throw new Error('Stock not found');
-            }
-
-            for (const order of schedule.orders) {
-                if (order.status === 3 && order.timeArrive > order.estimateTimeArrive) {
-                    const orderDate = new Date(order.beginTime);
-                    const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
-                    const orderYear = orderDate.getFullYear(); // Năm
-
-                    // Chỉ xử lý nếu tháng và năm khớp với tham số tìm kiếm
-                    if (orderMonth === month && orderYear === year) {
-                        if (!lateStocksMap[schedule.depot]) {
-                            lateStocksMap[schedule.depot] = {
-                                stockName: stock.name,
-                                lateDeliveries: 0
-                            };
-                        }
-                        lateStocksMap[schedule.depot].lateDeliveries++;
-                    }
-                }
-            }
-        } catch (error) {
-            console.error(`Error fetching stock for schedule ${schedule._id}: ${error.message}`);
-        }    
-    }));
-
-    const sortedStocks = Object.values(lateStocksMap)
-        .sort((a, b) => b.lateDeliveries - a.lateDeliveries);
-
-    // Lấy tối đa 5 kho
-    const top5Stocks = sortedStocks.slice(0, 5);
-
-    return top5Stocks;   
 }
 
 exports.UpdateEstimatedOntimeDeliveryInfo = async (portal, scheduleId) => {
