@@ -96,10 +96,10 @@ const Bottom5ProductsChart = ({ bottom5Products, timeFrame, dispatch }) => {
         <div className="box" style={{ position: 'relative' }}>
             <div className="box-header with-border">
                 <i className="fa fa-bar-chart-o" />
-                <h3 className="box-title">Sản phẩm không bán chạy</h3>
+                <h3 className="box-title">Sản phẩm dự báo cần tiếp thị</h3>
                 <div id="chart-bottom5"></div>
                 <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
-                    <Link to="/marketing-campaign" className="btn btn-primary" style={{ backgroundColor: '#28a745', borderColor: '#28a745' }}>
+                    <Link to="/marketing-campaign" className="btn btn-primary" style={{ backgroundColor: 'gray', borderColor: 'gray' }}>
                         Tạo lập chiến dịch
                     </Link>
                 </div>

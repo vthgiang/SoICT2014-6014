@@ -31,8 +31,11 @@ const SalesForecastTable = () => {
 
     // Get current forecasts
     const forecastsPerPage = 10; // Mặc định 10 sản phẩm trên mỗi trang
-    const filteredForecasts = statusFilter === 'priority'
-        ? forecasts.filter(forecast => forecast.totalForecastOrders > 160)
+    const filteredForecasts = statusFilter
+        ? forecasts.filter(forecast => {
+            const status = forecast.totalForecastOrders < 20 ? 'Cần tiếp thị' : (forecast.totalForecastOrders > 160 ? 'Ưu tiên sản xuất' : 'Bình thường');
+            return status === statusFilter;
+        })
         : forecasts;
     const indexOfLastForecast = currentPage * forecastsPerPage;
     const indexOfFirstForecast = indexOfLastForecast - forecastsPerPage;
@@ -43,9 +46,9 @@ const SalesForecastTable = () => {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', paddingRight: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '20px' }}>
-                    <label style={{ marginRight: '10px', verticalAlign: 'middle' }}>Trạng thái:</label>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '20px 20px 10px 20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <label style={{ marginRight: '10px' }}>Trạng thái:</label>
                     <select
                         value={statusFilter}
                         onChange={handleStatusFilterChange}
@@ -53,12 +56,14 @@ const SalesForecastTable = () => {
                             padding: '5px',
                             borderColor: '#ced4da',
                             borderRadius: '4px',
-                            marginRight: '20px',
-                            verticalAlign: 'middle'
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
                         }}
                     >
                         <option value=''>Tất cả</option>
-                        <option value='priority'>Ưu tiên sản xuất</option>
+                        <option value='Bình thường'>Bình thường</option>
+                        <option value='Ưu tiên sản xuất'>Ưu tiên sản xuất</option>
+                        <option value='Cần tiếp thị'>Cần tiếp thị</option>
                     </select>
                 </div>
                 <button
@@ -67,8 +72,6 @@ const SalesForecastTable = () => {
                         backgroundColor: '#28a745',
                         borderColor: '#28a745',
                         padding: '10px 20px',
-                        marginRight: '5px',
-                        marginTop: '5px',
                         whiteSpace: 'nowrap'
                     }}
                     onClick={handleForecastButtonClick}
@@ -76,11 +79,12 @@ const SalesForecastTable = () => {
                     Dự báo
                 </button>
             </div>
+
             {error ? (
                 <p>Error: {error}</p>
             ) : (
                 <div>
-                    <table className='table table-striped table-bordered table-hover' style={{ marginTop: '15px' }}>
+                    <table id='forecast-table' className='table table-striped table-bordered table-hover' style={{ marginTop: '15px' }}>
                         <thead>
                             <tr>
                                 <th>Mã sản phẩm</th>
@@ -98,16 +102,19 @@ const SalesForecastTable = () => {
                                 </tr>
                             ) : (
                                 currentForecasts.length > 0 ? (
-                                    currentForecasts.map(forecast => (
-                                        <tr key={forecast.goodId}>
-                                            <td>{forecast.goodCode || 'N/A'}</td>
-                                            <td>{forecast.goodName || 'N/A'}</td>
-                                            <td>{forecast.totalForecastOrders}</td>
-                                            <td>{forecast.totalForecastThreeMonth}</td>
-                                            <td>{forecast.totalForecastSixMonth}</td>
-                                            <td>{forecast.totalForecastOrders > 160 ? 'Ưu tiên sản xuất' : 'Bình thường'}</td>
-                                        </tr>
-                                    ))
+                                    currentForecasts.map(forecast => {
+                                        const status = forecast.totalForecastOrders < 20 ? 'Cần tiếp thị' : (forecast.totalForecastOrders > 160 ? 'Ưu tiên sản xuất' : 'Bình thường');
+                                        return (
+                                            <tr key={forecast.goodId}>
+                                                <td>{forecast.goodCode || 'N/A'}</td>
+                                                <td>{forecast.goodName || 'N/A'}</td>
+                                                <td>{forecast.totalForecastOrders}</td>
+                                                <td>{forecast.totalForecastThreeMonth}</td>
+                                                <td>{forecast.totalForecastSixMonth}</td>
+                                                <td>{status}</td>
+                                            </tr>
+                                        );
+                                    })
                                 ) : (
                                     <tr>
                                         <td colSpan="6" style={{ textAlign: 'center' }}>Không có dữ liệu.</td>

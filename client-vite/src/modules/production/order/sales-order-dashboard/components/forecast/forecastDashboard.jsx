@@ -10,32 +10,39 @@ import ForecastChart from './salesForecastChart';
 const formGroupStyle = {
     display: 'flex',
     alignItems: 'center',
-    width: '100%' 
+    width: '100%',
+    marginBottom: '10px',
+    justifyContent: 'space-between'
 };
 
 const labelStyle = {
-    marginRight: '30px', // Giảm khoảng cách giữa nhãn và phần tử select
-    whiteSpace: 'nowrap' // Đảm bảo nhãn không bị xuống dòng
+    marginRight: '10px',
+    whiteSpace: 'nowrap'
 };
 
 const selectStyle = {
-    minWidth: '100px', // Đặt chiều rộng tối thiểu cho phần tử select
-    marginLeft: '5px' // Dịch sang phải 5px
+    padding: '5px',
+    borderColor: '#ced4da',
+    borderRadius: '4px',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    minWidth: '100px',
+    marginLeft: '5px'
 };
 
 const buttonStyle = {
     backgroundColor: 'green',
     color: 'white',
-    padding: '10px 20px', // Điều chỉnh padding
+    padding: '10px 20px',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
-    textDecoration: 'none', // Đảm bảo không có gạch chân dưới văn bản
+    textDecoration: 'none',
     marginLeft: '10px',
-    marginRight: '5px', // Điều chỉnh khoảng cách giữa nút và phần tử khác
+    marginRight: '5px',
     marginTop: '5px',
     marginBottom: '5px',
-    whiteSpace: 'nowrap' // Đảm bảo văn bản không bị xuống dòng
+    whiteSpace: 'nowrap'
 };
 
 function ForecastDashboard(props) {
@@ -52,9 +59,9 @@ function ForecastDashboard(props) {
     return (
         <React.Fragment>
             <div className='qlcv'>
-                <div className='form-inline' style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div className='form-group' style={formGroupStyle}>
-                        <label style={labelStyle}>Chọn khung thời gian: </label>
+                <div className='form-inline' style={formGroupStyle}>
+                    <div className='form-group' style={{ display: 'flex', alignItems: 'center' }}>
+                        <label style={labelStyle}>Chọn thời gian: </label>
                         <select
                             onChange={(e) => setTimeFrame(e.target.value)}
                             value={timeFrame}
@@ -95,7 +102,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllForecasts: forecastActions.getAllForecasts, // Thêm hàm getAllForecasts vào mapDispatchToProps
+    getAllForecasts: forecastActions.getAllForecasts,
     getTop5Products: forecastActions.getTop5Products,
     getBottom5Products: forecastActions.getBottom5Products,
     countSalesForecast: forecastActions.countSalesForecast
