@@ -362,10 +362,10 @@ const proposalForProjectWithAlgorithm = (job, kpiInPast, allTasksOutOfProject, a
   // Step 3
   let result = {}
   if (algorithm === ALGORITHM.DLHS) {
-    result = DLHS(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+    result = DLHS(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime, allTasksOutOfProject)
   } else {
     // TODO for HS
-    result = harmonySearch(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+    result = harmonySearch(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime, allTasksOutOfProject)
   }
 
   if (result?.falseDuplidate) {
@@ -393,15 +393,13 @@ exports.proposalForProject = async (portal, id, data) => {
 
     const kpiInPast = getLastKPIAndAvailableEmpsInTasks(job.tasks, allTasksInPast, job.employees)
 
-    // console.log("kpiInPast: ", kpiInPast
-    // job.tasks.forEach((item) => {
-    //   console.log(item.code, "avali: ", item.availableAssignee.map((item) => item.fullName))
-    // })
     const allTasksOutOfProject = await Task(connect(DB_CONNECTION, portal)).find({
       status: 'inprocess',
       taskProject: { $ne: id }
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
+    
+    // console.log("allTasksOutOfProject: ", allTasksOutOfProject?.length)
     
     // const DLHS_Arguments = initDLHS_Arguments()
     let initArguments = {}

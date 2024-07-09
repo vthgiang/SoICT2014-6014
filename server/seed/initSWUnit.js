@@ -2954,16 +2954,16 @@ const days = [
       usageLogs: [
         {
           startDate: new Date('2024-07-01T08:00:00.000Z'),
-          endDate: new Date('2024-07-20T08:00:00.000Z')
+          endDate: new Date('2024-07-06T08:00:00.000Z')
         },
-        {
-          startDate: new Date('2024-07-21T02:00:00.000Z'),
-          endDate: new Date('2024-08-01T02:00:00.000Z')
-        },
-        {
-          startDate: new Date('2024-08-01T02:00:00.000Z'),
-          endDate: new Date('2024-08-10T08:00:00.000Z')
-        },
+        // {
+        //   startDate: new Date('2024-07-21T02:00:00.000Z'),
+        //   endDate: new Date('2024-08-01T02:00:00.000Z')
+        // },
+        // {
+        //   startDate: new Date('2024-08-01T02:00:00.000Z'),
+        //   endDate: new Date('2024-08-10T08:00:00.000Z')
+        // },
       ],
       // bảo trì thiết bị
       maintainanceLogs: [
@@ -3021,16 +3021,16 @@ const days = [
       usageLogs: [
         {
           startDate: new Date('2024-07-01T01:00:00.000Z'),
-          endDate: new Date('2024-07-13T02:00:00.000Z')
+          endDate: new Date('2024-07-03T02:00:00.000Z')
         },
-        {
-          startDate: new Date('2024-07-13T02:00:00.000Z'),
-          endDate: new Date('2024-07-25T08:00:00.000Z')
-        },
-        {
-          startDate: new Date('2024-07-26T02:00:00.000Z'),
-          endDate: new Date('2024-08-08T08:00:00.000Z')
-        },
+        // {
+        //   startDate: new Date('2024-07-13T02:00:00.000Z'),
+        //   endDate: new Date('2024-07-25T08:00:00.000Z')
+        // },
+        // {
+        //   startDate: new Date('2024-07-26T02:00:00.000Z'),
+        //   endDate: new Date('2024-08-08T08:00:00.000Z')
+        // },
       ],
       // bảo trì thiết bị
       maintainanceLogs: [
@@ -3089,16 +3089,16 @@ const days = [
       usageLogs: [
         {
           startDate: new Date('2024-07-01T08:00:00.000Z'),
-          endDate: new Date('2024-07-15T08:00:00.000Z')
+          endDate: new Date('2024-07-08T08:00:00.000Z')
         },
-        {
-          startDate: new Date('2024-07-16T01:00:00.000Z'),
-          endDate: new Date('2024-08-18T08:00:00.000Z')
-        },
-        {
-          startDate: new Date('2024-08-19T01:00:00.000Z'),
-          endDate: new Date('2024-09-24T08:00:00.000Z')
-        },
+        // {
+        //   startDate: new Date('2024-07-16T01:00:00.000Z'),
+        //   endDate: new Date('2024-08-18T08:00:00.000Z')
+        // },
+        // {
+        //   startDate: new Date('2024-08-19T01:00:00.000Z'),
+        //   endDate: new Date('2024-09-24T08:00:00.000Z')
+        // },
       ],
       // bảo trì thiết bị
       maintainanceLogs: [
@@ -3277,7 +3277,61 @@ const days = [
       files: [],
       costPerHour: 25000,
       capacityValue: 3
-    },      
+    },   
+    
+    // PH 2
+    {
+      company: vnist._id,
+      assetName: "PH B1-602",
+      group: "building",
+      usefulLife: "12",
+      unitsProducedDuringTheYears: [
+        {
+          month: new Date("2020-06-20"),
+          unitsProducedDuringTheYear: 10,
+        },
+      ],
+      estimatedTotalProduction: 1000,
+      code: "SW.013",
+      serial: "00013",
+      assetType: [assetType_PH._id],
+      purchaseDate: new Date("2020-06-20"),
+      warrantyExpirationDate: new Date("2022-06-20"),
+      managedBy: usersInSWUnit[0]._id,
+      assignedToUser: null,
+      assignedToOrganizationalUnit: null,
+      status: "ready_to_use",
+      typeRegisterForUse: 3,
+      description: "Phòng họp B1-602",
+      detailInfo: [],
+      readByRoles: [
+          giamDoc._id,
+          roleAdmin._id,
+          roleSuperAdmin._id,
+          roleManager._id,
+          thanhVienBGĐ._id,
+          truongPhongSW._id,
+          phoPhongSW._id,
+          nvPhongSW._id,
+      ],
+
+      usageLogs: [],
+      // bảo trì thiết bị
+      maintainanceLogs: [
+      ],
+      //sự cố
+      incidentLogs: [
+      ],
+      //khấu hao
+      cost: 120000000,
+      residualValue: 10000000,
+      startDepreciation: new Date("2024-05-20"), // thời gian bắt đầu trích khấu hao
+      usefulLife: 20, // thời gian trích khấu hao
+      depreciationType: "straight_line", // thời gian trích khấu hao
+      files: [],
+      costPerHour: 25000,
+      capacityValue: 3
+    }, 
     
     // Table 1
     {
@@ -3426,11 +3480,11 @@ const days = [
       usageLogs: [
         {
           startDate: new Date('2024-07-01T06:00:00.000Z'),
-          endDate: new Date('2024-08-12T05:00:00.000Z')
+          endDate: new Date('2024-07-02T05:00:00.000Z')
         },
         {
-          startDate: new Date('2024-08-12T05:00:00.000Z'),
-          endDate: new Date('2024-09-08T05:00:00.000Z')
+          startDate: new Date('2024-07-03T05:00:00.000Z'),
+          endDate: new Date('2024-07-10T05:00:00.000Z')
         },
       ],
       // bảo trì thiết bị
