@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const listTransport3Orders = require('./transport3orders.json');
 let listTransport3Schedules = require('./transport3schedule.json');
 const listTransport3Issues = require('./transport3issues.json');
@@ -166,43 +167,71 @@ const initTransport3Data = async () => {
     ----------------------------------------------------------------------------------------------- */
   const transport3Vehicle = await Transport3Vehicle(vnistDB).find({});
   const listDepots = await Stock(vnistDB).find({});
-  listTransport3Schedules = listTransport3Schedules.slice(0, 15);
+  // listTransport3Schedules = listTransport3Schedules.slice(0, 15);
 
-  let count = 0;
-  let oldCount = 0;
+  const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const currentTimestamp = Math.floor(Date.now() / 1000);
+
   await Transport3Schedule(vnistDB).create(
-    listTransport3Schedules.map((schedule, index) => {
-      oldCount = count;
-      count += Math.floor(Math.random() * 2) + 2;
+    listTransport3Schedules.slice(0, 40).map((schedule, index) => {
+      const orderCount = getRandomInt(2, 3);
       let status_t = index < 3 ? (index + 1) : 1;
+      const orders = transport3Order.slice(index * orderCount, (index + 1) * orderCount).map(order => {
+        const estimateTimeArrive = moment().month(getRandomInt(2, 6)).date(getRandomInt(1, 28)).hour(getRandomInt(0, 23)).minute(getRandomInt(0, 59)).second(getRandomInt(0, 59));
+        let timeArrive = null;
+        let estimatedOntime = null;
+  
+        // Check if estimateTimeArrive is before June
+        if (estimateTimeArrive.isBefore(moment('2024-06-01'))) {
+          status_t = 3;
+        }
+  
+        if (status_t === 3) {
+          timeArrive = estimateTimeArrive.clone().add(getRandomInt(-10, 10), 'days');
+          estimatedOntime = timeArrive.isBefore(estimateTimeArrive) ? 1 : 0;
+        } else {
+          estimatedOntime = Math.random() < 0.9 ? 1 : 0; // 90% estimatedOntime is 1
+  
+          if (estimatedOntime === 1) {
+            timeArrive = estimateTimeArrive.clone().subtract(getRandomInt(0, 12), 'hours');
+          }
+        }
+  
+        const beginTime = estimateTimeArrive.clone().subtract(getRandomInt(1, 5), 'days');
+        const distance = getRandomInt(10, 50);
+  
+        return {
+          order: order._id,
+          code: order.code,
+          status: status_t,
+          estimateTimeArrive: estimateTimeArrive.toISOString(),
+          timeArrive: timeArrive ? timeArrive.toISOString() : null,
+          estimateTimeService: 600,
+          timeService: 600,
+          beginTime: beginTime.toISOString(),
+          dynamicEstimatedTime: null,
+          distance: distance,
+          estimatedOntime: estimatedOntime
+        };
+      });
+  
+      // Set the beginTime of the schedule to the beginTime of the first order
+      const scheduleBeginTime = orders[0].beginTime;
+  
       return {
-        code: `SC_${today}.1394${index + 10}_1`,
-        employees: index < 4 ? [listShippers[index]._id] : null,
+        code: `SC_${moment().format('YYYYMMDD')}.1394${index + 10}_1`,
+        employees: index < 4 ? [listShippers[index % listShippers.length]._id] : null,
         status: status_t,
         vehicle: transport3Vehicle[index % transport3Vehicle.length]._id,
         depot: listDepots[Math.floor(Math.random() * listDepots.length)]._id,
-        orders: transport3Order.slice(oldCount, count).map((order, index) => ({
-            order: order._id,
-            code: order.code,
-            status: status_t === 2 ? (index === 0 ? 2 : 1) : status_t,
-            estimateTimeArrive: 6000,
-            timeArrive: 6000,
-            estimateTimeService: 600,
-            timeService: 600,
-            beginTime: currentTimestamp + index * 6000,
-            dynamicEstimatedTime: null,
-            distance: 10000 * Math.floor(Math.random() * 10) * 1000,
-            estimatedOntime: Math.floor(Math.random() * 2)
-          })
-        ),
-        beginTime: status_t !== 1 ? currentTimestamp : null,
-        endTime: status_t === 3 ? currentTimestamp + (count - oldCount + 1) * 6000 : null,
+        orders: orders,
+        beginTime: status_t !== 1 ? scheduleBeginTime : null,
+        endTime: status_t === 3 ? moment(scheduleBeginTime).add((orders.length + 1) * 6000, 'seconds').toISOString() : null,
         note: schedule.note,
-        isAutoSchedule: false,
-        draftSchedule: null,
-      }
+      };
     })
-  )
+  );
+  
   console.log('Khởi tạo xong kế hoạch vận chuyển');
   /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
