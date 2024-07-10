@@ -5703,26 +5703,6 @@ const initSampleCompanyDB = async () => {
       contained: 0,
       child: [],
       enableGoods:
-        // [
-        //     {
-        //         good: listGood[0]._id,
-        //         contained: 0,
-        //         capacity: 200,
-        //     },
-        //     {
-        //         good: listGood[1]._id,
-        //         contained: 0,
-        //         capacity: 300,
-        //     },
-        //     {
-        //         good: listProduct[1]._id,
-        //         contained: 0,
-        //         capacity: 100,
-        //     },
-        //     {
-        //         good: list_goods[1]._id
-        //     }
-        // ],
         Array.from({ length: 5 }, (_, index) => ({
           good: listGood[index]._id,
           contained: 500,
