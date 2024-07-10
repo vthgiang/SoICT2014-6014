@@ -141,26 +141,27 @@ exports.setScheduleFromDraft = async (portal, data) => {
   let note = drafts.filter(draft => draft._id == data._id)[0].note;
   drafts = drafts.filter(draft => draft.note === note);
   for (let draft of drafts) {
-    let code = draft.code;
-    let orders = draft.orders;
-    let depot = draft.depot;
-    let schedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).findOne({code: code});
-    let orders_tmp = schedule.orders.map(order => {
-      let order_tmp = orders.filter(order => order._id === order._id);
-      if (order_tmp.length === 0) {
-        return order;
-      } else {
-        return {
-          order,
-          ...order_tmp[0]
-        }
+    let orders = [];
+    for (let i = 0; i < draft.orders.length; i++) {
+      let order = {};
+      order = {
+        order: draft.orders[i].order,
+        code: draft.orders[i].code,
+        status: 1,
+        estimateTimeArrive: draft.orders[i].estimateTimeArrive,
+        estimateTimeService: 600,
+        timeService: 600,
+        distance: draft.orders[i].distance,
+      };
+      orders.push(order);
+    }
+    await Transport3Schedule(connect(DB_CONNECTION, portal)).findOneAndUpdate({code: draft.code}, {
+      $set: {
+        orders: orders,
+        depot: draft.depot,
+        draftSchedule: draft._id
       }
-    });
-    console.log(orders_tmp);
-    await Transport3Schedule(connect(DB_CONNECTION, portal)).updateMany({code: code}, {
-      orders: orders_tmp,
-      depot: depot
-    });
+    })
   }
   return [];
 }
