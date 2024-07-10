@@ -38,6 +38,7 @@ function OrderDetail(props) {
         msg_failure={'Lấy dữ liệu thất bại'}
         size="80"
         style={{backgroundColor: 'green'}}
+        hasSaveButton={false}
       >
         {order && (
           <>

@@ -21,6 +21,7 @@ import {
 import OrderCreateForm from './orderCreateForm'
 import {getTableConfiguration} from '@helpers/tableConfiguration'
 import OrderDetail from '@modules/transport3/order/components/orderDetail';
+import OrderEdit from '@modules/transport3/order/components/orderEdit.jsx';
 
 function OrderTable(props) {
   const TableId = 'order-table'
@@ -94,6 +95,14 @@ function OrderTable(props) {
       currentDetail: request,
     });
     window.$(`#modal-detail-order`).modal('show')
+  }
+
+  const handleShowEditInfo = (request) => {
+    setState({
+      ...state,
+      currentDetail: request,
+    });
+    window.$(`#modal-edit-order`).modal('show')
   }
 
   const createDirectly = () => {
@@ -210,6 +219,7 @@ function OrderTable(props) {
           </div>
           <OrderCreateForm code={code}/>
           <OrderDetail order={state.currentDetail}/>
+          <OrderEdit order={state.currentDetail}/>
           {/* Tim kiem */}
           <div className="form-inline">
             <div className="form-group">
@@ -268,12 +278,6 @@ function OrderTable(props) {
                     <td
                       className={'text-center'}>{item.deliveryTime ? formatDate(new Date(item.deliveryTime * 1000)) : '---'}</td>
                     <td className={'text-center'}>
-                      <a
-                        style={{width: '5px'}}
-                        title="Chi tiết"
-                        onClick={() => handleShowDetailInfo(item)}>
-                        <i className="material-icons">view_list</i>
-                      </a>
                       {/*  Phe duyet*/}
                       <a
                         onClick={() => handleApproveOrder(item)}
@@ -283,6 +287,21 @@ function OrderTable(props) {
                       >
                         <i className="material-icons">check</i>
                       </a>
+                      <a
+                        style={{width: '5px'}}
+                        title="Chi tiết"
+                        onClick={() => handleShowDetailInfo(item)}>
+                        <i className="material-icons">view_list</i>
+                      </a>
+                      {/*  Sua*/}
+                        <a
+                            onClick={() => handleShowEditInfo(item)}
+                            className="edit text-yellow"
+                            style={{width: '5px'}}
+                            title="Sửa vận đơn"
+                        >
+                            <i className="material-icons">edit</i>
+                        </a>
                       {/*  Xoa*/}
                       <DeleteNotification
                         content={'Xác nhận xóa vận đơn?'}
@@ -345,20 +364,27 @@ function OrderTable(props) {
                         textAlign: 'center'
                       }}
                     >
-                      <a onClick={() => handleShowDetailInfo(item)}>
+                      <a
+                        style={{width: '5px'}}
+                        title="Chi tiết"
+                        onClick={() => handleShowDetailInfo(item)}>
                         <i className="material-icons">view_list</i>
                       </a>
-                      {/* Sửa đơn sau khi đã phê duyệt */}
-                      {/*{item.status !== 1 && item.status !== 8 && item.status !== 7 && (*/}
-                      {/*  <a*/}
-                      {/*    onClick={() => handleEditOrderAfterApprove(item)}*/}
-                      {/*    className='edit text-yellow'*/}
-                      {/*    style={{ width: '5px' }}*/}
-                      {/*    title='Sửa đơn'*/}
-                      {/*  >*/}
-                      {/*    <i className='material-icons'>edit</i>*/}
-                      {/*  </a>*/}
-                      {/*)}*/}
+                      {/*  Sua*/}
+                      <a
+                        onClick={() => handleShowEditInfo(item)}
+                        className="edit text-yellow"
+                        style={{width: '5px'}}
+                        title="Sửa vận đơn"
+                      >
+                        <i className="material-icons">edit</i>
+                      </a>
+                      {/*  Xoa*/}
+                      <DeleteNotification
+                        content={'Xác nhận xóa vận đơn?'}
+                        data={{id: item._id}}
+                        func={handleDeleteOrder}
+                      />
                     </td>
                   </tr>
                 ))}
