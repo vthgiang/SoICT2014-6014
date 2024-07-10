@@ -15,16 +15,16 @@ import InfoBox from './infoBox';
 const SalesOrderDashboard = (props) => {
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole'),
-    startDate: '01-06-2024',
-    endDate: '30-06-2024'
+    startDate: moment('01-06-2024', 'DD-MM-YYYY').format('YYYY-MM-DD'),
+    endDate: moment('30-06-2024', 'DD-MM-YYYY').format('YYYY-MM-DD')
   });
 
   useEffect(() => {
     const { currentRole, startDate, endDate } = state;
     let data = {
       currentRole,
-      startDate: moment(startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
-      endDate: moment(endDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
+      startDate,
+      endDate
     };
 
     props.countSalesOrder(data);
@@ -37,14 +37,14 @@ const SalesOrderDashboard = (props) => {
   const handleStartDateChange = (value) => {
     setState((state) => ({
       ...state,
-      startDate: moment(value, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      startDate: moment(value, 'DD-MM-YYYY').format('YYYY-MM-DD')
     }));
   };
 
   const handleEndDateChange = (value) => {
     setState((state) => ({
       ...state,
-      endDate: moment(value, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      endDate: moment(value, 'DD-MM-YYYY').format('YYYY-MM-DD')
     }));
   };
 
@@ -52,8 +52,8 @@ const SalesOrderDashboard = (props) => {
     let { startDate, endDate, currentRole } = state;
     let data = {
       currentRole,
-      startDate: startDate ? moment(startDate, 'DD-MM-YYYY').format('YYYY-MM-DD') : '',
-      endDate: endDate ? moment(endDate, 'DD-MM-YYYY').format('YYYY-MM-DD') : ''
+      startDate,
+      endDate
     };
     props.countSalesOrder(data);
     props.getTopGoodsSold(data);
@@ -70,7 +70,7 @@ const SalesOrderDashboard = (props) => {
             <label style={{ width: 'auto' }}>Từ</label>
             <DatePicker
               id='date_picker_dashboard_start_index'
-              value={state.startDate}
+              value={moment(state.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}
               onChange={handleStartDateChange}
               format="DD-MM-YYYY"
               disabled={false}
@@ -81,7 +81,7 @@ const SalesOrderDashboard = (props) => {
             <label style={{ width: 'auto' }}>Đến</label>
             <DatePicker
               id='date_picker_dashboard_end_index'
-              value={state.endDate}
+              value={moment(state.endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}
               onChange={handleEndDateChange}
               format="DD-MM-YYYY"
               disabled={false}

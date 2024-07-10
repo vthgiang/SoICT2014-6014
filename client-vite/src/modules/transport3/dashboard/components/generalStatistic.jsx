@@ -81,7 +81,7 @@ function GeneralStatistic(props) {
         let orderCount = 0
         listSchedules?.forEach(schedule => {
             schedule.orders?.forEach(order => {
-                if(order.status == 2)
+                if(order.status == 2 || order.status == 1)
                     orderCount +=1
             })
         });

@@ -2,12 +2,20 @@
 // const OrganizationalUnitDashboard = require('../modules/kpi/organizational-unit/dashboard/dashboard.service')
 const  SalesOrder =require('../modules/production/order/sales-order/salesOrder.service')
 
+const Inventory = require('../modules/production/warehouse/inventory/inventory.service')
+
 const call_service = async (link, params) => {
   switch(link[0]){
     case 'orderService': {
       if(link[1]==='countSalesOrder') {
         const {userId,query,portal}=params
         return await SalesOrder.countSalesOrder(userId,query,portal);
+      }
+    }
+    case 'inventoryService': {
+      if(link[1]==='getDetailLot') {
+        const {userId,portal}=params
+        return await Inventory.getDetailLot(userId,portal);
       }
     }
     default:
