@@ -80,4 +80,17 @@ const deleteOrder = (id) => {
     ''
   )
 }
-export { getAddressFromLatLng, createNewOrder, getAllOrder, retrainingModel, approveOrder, deleteOrder }
+
+const updateOrder = (id, data) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/order/${id}`,
+      method: 'PUT',
+      data
+    },
+    true,
+    true,
+    ''
+  )
+}
+export { getAddressFromLatLng, createNewOrder, getAllOrder, retrainingModel, approveOrder, deleteOrder, updateOrder }

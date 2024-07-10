@@ -100,6 +100,21 @@ export function orders(state = initState, action) {
         ...state,
         isLoading: false
       }
+    case OrderConstants.UPDATE_ORDER_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case OrderConstants.UPDATE_ORDER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case OrderConstants.UPDATE_ORDER_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
     default:
       return state
   }

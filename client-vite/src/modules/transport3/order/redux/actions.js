@@ -96,11 +96,28 @@ const deleteOrder = (id) => {
       })
   }
 }
+
+const updateOrder = (id, data) => {
+  return (dispatch) => {
+    dispatch({ type: OrderConstants.UPDATE_ORDER_REQUEST })
+    OrderServices.updateOrder(id, data)
+      .then((res) => {
+        dispatch({
+          type: OrderConstants.UPDATE_ORDER_SUCCESS
+        })
+      })
+      .catch((err) => {
+        dispatch({ type: OrderConstants.UPDATE_ORDER_FAILURE })
+      })
+  }
+}
+
 export const OrderActions = {
   getAdressFromLatLng,
   createNewOrder,
   getAllOrder,
   retrainingModel,
   approveOrder,
-  deleteOrder
+  deleteOrder,
+  updateOrder
 }

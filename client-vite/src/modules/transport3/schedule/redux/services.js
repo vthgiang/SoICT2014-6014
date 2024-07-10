@@ -122,6 +122,18 @@ const setScheduleFromDraft = (data) => {
     'transport3.schedule'
   )
 }
+
+const deleteSchedule = (scheduleId) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/schedule/${scheduleId}`,
+      method: 'DELETE'
+    },
+    true,
+    true,
+    'transport3.schedule'
+  )
+}
 export {
   getAllSchedule,
   getScheduleById,
@@ -131,5 +143,6 @@ export {
   hyperparamaterTuning,
   getHyperparamter,
   getDraftSchedule,
-  setScheduleFromDraft
+  setScheduleFromDraft,
+  deleteSchedule
 }
