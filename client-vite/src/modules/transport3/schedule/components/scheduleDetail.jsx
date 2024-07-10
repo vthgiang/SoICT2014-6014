@@ -15,7 +15,7 @@ function ScheduleDetail(props) {
   let initialState = {}
   const [state, setState] = useState(initialState)
   let ontimePredictResults = useSelector(state => state.T3schedule?.predictOntimeDeliveryResults)
-  // let schedule = useSelector(state => state.T3schedule?.schedule)
+  let scheduleById = useSelector(state => state.T3schedule?.schedule?.schedule)
   let draftSchedule = useSelector(state => state.T3schedule?.draftSchedule) || [];
   draftSchedule = draftSchedule.filter(schedule => schedule.code === props.schedule?.code)
   let draftOptions = [
@@ -62,6 +62,9 @@ function ScheduleDetail(props) {
 
   const handlePredictOntimeDelivery = (schedule) => {
     dispatch(ScheduleActions.predictOntimeDelivery(schedule._id))
+    if (ontimePredictResults) {
+      dispatch(ScheduleActions.getScheduleById(schedule?._id));
+    }
   };
 
   useEffect(() => {
@@ -216,9 +219,9 @@ function ScheduleDetail(props) {
                         <td>{order.order.address}</td>
                         <td>{formatDate(order.order.createdAt)}</td>
                         <td>{formatDate(order.order.updatedAt)}</td>
-                        <td style={order.estimatedOntime === 1 ? {color: 'green'} :
-                          order.estimatedOntime === 0 ? {color: 'red'} : {color: 'black'}}>
-                          {displayOntimeStatus(order.estimatedOntime)}
+                        <td style={ scheduleById?.orders[index]?.estimatedOntime === 1 ? {color: 'green'} :
+                          scheduleById?.orders[index]?.estimatedOntime === 0 ? {color: 'red'} : {color: 'black'}}>
+                          {displayOntimeStatus(scheduleById?.orders[index]?.estimatedOntime)}
                         </td>
                         <td style={order.status === 4 ? {color: 'red'} :
                           order.status === 3 ? {color: 'green'} : {color: 'black'}}

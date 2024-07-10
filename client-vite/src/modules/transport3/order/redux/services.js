@@ -15,7 +15,7 @@ const getAddressFromLatLng = (lat, lng) => {
     },
     false,
     false,
-    'transport3.order'
+    ''
   )
 }
 
@@ -28,7 +28,7 @@ const createNewOrder = (data) => {
     },
     true,
     true,
-    'transport3.order'
+    ''
   )
 }
 
@@ -41,18 +41,43 @@ const getAllOrder = (query) => {
     },
     false,
     true,
-    'transport3.order'
+    ''
   )
 }
 
 const retrainingModel = (query) => {
-  return sendRequest({
-    url: `${process.env.REACT_APP_SERVER}/transport3/retrainingModel`,
-    method: 'GET'
-  },
-  true,
-  true,
-  'transport3.order')
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/retrainingModel`,
+      method: 'GET'
+    },
+    true,
+    true,
+    ''
+  )
 }
 
-export { getAddressFromLatLng, createNewOrder, getAllOrder, retrainingModel }
+const approveOrder = (id) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/order/approve/${id}`,
+      method: 'PUT'
+    },
+    true,
+    true,
+    ''
+  )
+}
+
+const deleteOrder = (id) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/order/${id}`,
+      method: 'DELETE'
+    },
+    true,
+    true,
+    ''
+  )
+}
+export { getAddressFromLatLng, createNewOrder, getAllOrder, retrainingModel, approveOrder, deleteOrder }
