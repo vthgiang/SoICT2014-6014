@@ -103,6 +103,7 @@ function OnTimeDeliveryChart({monthToSearch}) {
                 columns: [
                     listMonth(),
                     generateActualOntimeRate(),
+                    // ['actualOntimeDeliveryRate', 90, 80, 20, 30, 50, 100],
                     generateEstimatedOntimeRate(),
                     plannedOntimeDeliveryRate
                 ],

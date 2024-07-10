@@ -12,7 +12,7 @@ const {
   AssetType
 } = require('../../../models');
 const { connect, } = require(`../../../helpers/dbHelper`);
-const { KPI_MAX, KPI_NOT_WORK, KPI_FAIL, ALGORITHM } = require('./constants');
+const { KPI_MAX, KPI_NOT_WORK, KPI_FAIL, ALGORITHM, DAY_WORK_HOURS } = require('./constants');
 const { findTasksWithMatchingTagsAndRequire, findEmployeesWithCapacities, getVectorLength, getDistanceQualityVector, calculateCPM, checkHasAvailableSolution } = require('./helper');
 const { topologicalSort, scheduleTasksWithAssetAndEmpTasks, initRandomHarmonyVector, DLHS, reScheduleTasks, addOptionalAssetsAvailableForTasks, harmonySearch } = require('./hs_helper');
 const { splitKPIToEmployeesByKMeans, findBestMiniKPIOfTasks, reSplitKPIOfEmployees } = require('./kmean_helper');
@@ -362,10 +362,10 @@ const proposalForProjectWithAlgorithm = (job, kpiInPast, allTasksOutOfProject, a
   // Step 3
   let result = {}
   if (algorithm === ALGORITHM.DLHS) {
-    result = DLHS(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+    result = DLHS(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime, allTasksOutOfProject)
   } else {
     // TODO for HS
-    result = harmonySearch(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+    result = harmonySearch(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime, allTasksOutOfProject)
   }
 
   if (result?.falseDuplidate) {
@@ -393,15 +393,13 @@ exports.proposalForProject = async (portal, id, data) => {
 
     const kpiInPast = getLastKPIAndAvailableEmpsInTasks(job.tasks, allTasksInPast, job.employees)
 
-    // console.log("kpiInPast: ", kpiInPast
-    // job.tasks.forEach((item) => {
-    //   console.log(item.code, "avali: ", item.availableAssignee.map((item) => item.fullName))
-    // })
     const allTasksOutOfProject = await Task(connect(DB_CONNECTION, portal)).find({
       status: 'inprocess',
       taskProject: { $ne: id }
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
+    
+    // console.log("allTasksOutOfProject: ", allTasksOutOfProject?.length)
     
     // const DLHS_Arguments = initDLHS_Arguments()
     let initArguments = {}
@@ -428,6 +426,55 @@ exports.proposalForProject = async (portal, id, data) => {
         break
       }
     }
+    
+    // update estimateNormalCost for tasks after proposal
+    if (result?.assignment && result?.assignment?.length > 0) {
+      for (let i = 0; i < result?.assignment?.length; i++) {
+        const { task, assets, assignee } = result?.assignment[i]
+        const { mainSalary } = assignee
+        const { estimateNormalTime } = task
+        const IS_HAS_ASSET = assets?.length
+
+        task.estimateNormalCost = 0
+        let estimateTaskCost = 0
+        const key = `${assignee?._id}-${task?._id}`
+        let kpiValue = kpiInPast.get(key)
+        if (!kpiValue || kpiValue === undefined || kpiValue == -1) {
+          kpiValue = 0
+        } 
+
+        if(IS_HAS_ASSET) {
+          kpiValue = kpiValue * (1 - assetHasKPIWeight) + 1 * assetHasKPIWeight
+        }
+
+        if (kpiValue) {
+          if(job?.unitTime === 'days') {
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * kpiValue)
+          } else {
+            // hour
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * DAY_WORK_HOURS * kpiValue)
+          }
+      
+          for (let j = 0; j < assets?.length; j++) {
+            estimateTaskCost += estimateNormalTime * DAY_WORK_HOURS * assets[j].costPerHour / kpiValue
+          }
+        } else {
+          if(job?.unitTime === 'days') {
+            estimateTaskCost += estimateNormalTime * mainSalary / 30
+          } else {
+            // hour
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * DAY_WORK_HOURS)
+          }
+      
+          for (let j = 0; j < assets?.length; j++) {
+            estimateTaskCost += estimateNormalTime * DAY_WORK_HOURS * assets[j].costPerHour
+          }
+        }
+
+        task.estimateNormalCost = estimateTaskCost
+      }
+    }
+
 
     // update assets and task after proposal
   
@@ -483,6 +530,16 @@ exports.assignForProjectFromProposal = async (portal, id) => {
       _id: id
     }).populate({ path: 'kpiTarget.type' }).lean().exec();
 
+    const { usersInProject } = project || []
+    let employeeIdToUserId = {}
+
+    if (usersInProject && usersInProject?.length) {
+      usersInProject.forEach((item) => {
+        const { userId, employeeId } = item
+        employeeIdToUserId[employeeId] = userId
+      })
+    }
+
     if (!project) {
       throw ['project_not_found'];
     }
@@ -518,8 +575,9 @@ exports.assignForProjectFromProposal = async (portal, id) => {
           endDate: task?.endDate,
           assignee: assignee?._id,
           assets: assets && assets?.length ? assets?.map((item) => item?._id) : [],
-          responsibleEmployees: [task?.assignee?._id],
-          status: 'inprocess'
+          responsibleEmployees: employeeIdToUserId[assignee?._id],
+          status: 'inprocess',
+          estimateNormalCost: task?.estimateNormalCost,
         };
 
         taskInDB.set(updatedFields);

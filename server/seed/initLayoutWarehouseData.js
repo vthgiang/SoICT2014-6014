@@ -52,7 +52,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-1-R-0-860-65",
@@ -68,7 +69,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-2-R-0-920-0",
@@ -84,7 +86,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-2-R-0-920-65",
@@ -100,7 +103,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-3-R-0-980-0",
@@ -116,7 +120,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-3-R-0-980-65",
@@ -132,7 +137,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-4-R-0-1040-0",
@@ -148,7 +154,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-4-R-0-1040-65",
@@ -164,7 +171,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-5-R-0-1100-0",
@@ -180,7 +188,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-5-R-0-1100-65",
@@ -196,7 +205,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-6-R-0-1160-0",
@@ -212,7 +222,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-6-R-0-1160-65",
@@ -228,7 +239,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-7-R-0-1220-0",
@@ -244,7 +256,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-7-R-0-1220-65",
@@ -260,7 +273,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-8-R-0-1280-0",
@@ -276,7 +290,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-8-R-0-1280-65",
@@ -292,7 +307,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-9-R-0-1340-0",
@@ -308,7 +324,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-9-R-0-1340-65",
@@ -324,7 +341,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-10-R-0-1400-0",
@@ -340,7 +358,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-10-R-0-1400-65",
@@ -356,7 +375,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-11-R-0-1460-0",
@@ -372,7 +392,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-11-R-0-1460-65",
@@ -388,7 +409,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-12-R-0-1520-0",
@@ -404,7 +426,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-12-R-0-1520-65",
@@ -420,7 +443,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-13-R-0-1580-0",
@@ -436,7 +460,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-13-R-0-1580-65",
@@ -452,7 +477,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-14-R-0-1640-0",
@@ -468,7 +494,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-14-R-0-1640-65",
@@ -484,7 +511,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-15-R-0-1700-0",
@@ -500,7 +528,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-15-R-0-1700-65",
@@ -516,7 +545,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-16-R-0-1760-0",
@@ -532,7 +562,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-16-R-0-1760-65",
@@ -548,7 +579,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-17-R-0-1820-0",
@@ -564,7 +596,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-17-R-0-1820-65",
@@ -580,7 +613,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-18-R-0-1880-0",
@@ -596,7 +630,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-18-R-0-1880-65",
@@ -612,7 +647,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-19-R-0-1940-0",
@@ -628,7 +664,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-19-R-0-1940-65",
@@ -644,7 +681,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-20-R-0-2000-0",
@@ -660,7 +698,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-20-R-0-2000-65",
@@ -676,7 +715,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-21-R-0-2060-0",
@@ -692,7 +732,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-21-R-0-2060-65",
@@ -708,7 +749,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-22-R-0-2120-0",
@@ -724,7 +766,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-22-R-0-2120-65",
@@ -740,7 +783,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-23-R-0-2180-0",
@@ -756,7 +800,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-23-R-0-2180-65",
@@ -772,7 +817,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-24-R-0-2240-0",
@@ -788,7 +834,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-24-R-0-2240-65",
@@ -804,7 +851,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-25-R-0-2300-0",
@@ -820,7 +868,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-25-R-0-2300-65",
@@ -836,7 +885,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-26-R-0-2360-0",
@@ -852,7 +902,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-26-R-0-2360-65",
@@ -868,7 +919,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-27-R-0-2420-0",
@@ -884,7 +936,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-27-R-0-2420-65",
@@ -900,7 +953,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-28-R-0-2480-0",
@@ -916,7 +970,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-28-R-0-2480-65",
@@ -932,7 +987,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-29-R-0-2540-0",
@@ -948,7 +1004,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-29-R-0-2540-65",
@@ -964,7 +1021,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-30-R-0-2600-0",
@@ -980,7 +1038,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-30-R-0-2600-65",
@@ -996,7 +1055,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-31-R-0-2660-0",
@@ -1012,7 +1072,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-31-R-0-2660-65",
@@ -1028,7 +1089,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-32-R-0-2720-0",
@@ -1044,7 +1106,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-32-R-0-2720-65",
@@ -1060,7 +1123,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-33-R-0-2780-0",
@@ -1076,7 +1140,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-33-R-0-2780-65",
@@ -1092,7 +1157,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-34-R-0-2840-0",
@@ -1108,7 +1174,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-34-R-0-2840-65",
@@ -1124,7 +1191,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-35-R-0-2900-0",
@@ -1140,7 +1208,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-35-R-0-2900-65",
@@ -1156,7 +1225,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-36-R-0-2960-0",
@@ -1172,7 +1242,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-36-R-0-2960-65",
@@ -1188,7 +1259,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-37-R-0-3020-0",
@@ -1204,7 +1276,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-37-R-0-3020-65",
@@ -1220,7 +1293,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-38-R-0-3080-0",
@@ -1236,7 +1310,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-38-R-0-3080-65",
@@ -1252,7 +1327,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-39-R-0-3140-0",
@@ -1268,7 +1344,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-39-R-0-3140-65",
@@ -1284,7 +1361,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-40-R-0-3200-0",
@@ -1300,7 +1378,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-40-R-0-3200-65",
@@ -1316,7 +1395,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-41-R-0-3260-0",
@@ -1332,7 +1412,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-41-R-0-3260-65",
@@ -1348,7 +1429,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-42-R-0-3320-0",
@@ -1364,7 +1446,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-42-R-0-3320-65",
@@ -1380,7 +1463,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-43-R-0-3380-0",
@@ -1396,7 +1480,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-43-R-0-3380-65",
@@ -1412,7 +1497,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-44-R-0-3440-0",
@@ -1428,7 +1514,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-44-R-0-3440-65",
@@ -1444,7 +1531,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-45-R-0-3500-0",
@@ -1460,7 +1548,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-45-R-0-3500-65",
@@ -1476,7 +1565,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-46-R-0-3560-0",
@@ -1492,7 +1582,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-46-R-0-3560-65",
@@ -1508,7 +1599,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-47-R-0-3620-0",
@@ -1524,7 +1616,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-47-R-0-3620-65",
@@ -1540,7 +1633,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-48-R-0-3680-0",
@@ -1556,7 +1650,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-48-R-0-3680-65",
@@ -1572,7 +1667,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-49-R-0-3740-0",
@@ -1588,7 +1684,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-49-R-0-3740-65",
@@ -1604,7 +1701,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-50-R-0-3800-0",
@@ -1620,7 +1718,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-50-R-0-3800-65",
@@ -1636,7 +1735,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-1-L-180-860-0",
@@ -1652,7 +1752,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-1-L-180-860-65",
@@ -1668,7 +1769,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-2-L-180-920-0",
@@ -1684,7 +1786,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-2-L-180-920-65",
@@ -1700,7 +1803,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-3-L-180-980-0",
@@ -1716,7 +1820,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-3-L-180-980-65",
@@ -1732,7 +1837,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-4-L-180-1040-0",
@@ -1748,7 +1854,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-4-L-180-1040-65",
@@ -1764,7 +1871,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-5-L-180-1100-0",
@@ -1780,7 +1888,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-5-L-180-1100-65",
@@ -1796,7 +1905,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-6-L-180-1160-0",
@@ -1812,7 +1922,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-6-L-180-1160-65",
@@ -1828,7 +1939,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-7-L-180-1220-0",
@@ -1844,7 +1956,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-7-L-180-1220-65",
@@ -1860,7 +1973,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-8-L-180-1280-0",
@@ -1876,7 +1990,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-8-L-180-1280-65",
@@ -1892,7 +2007,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-9-L-180-1340-0",
@@ -1908,7 +2024,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-9-L-180-1340-65",
@@ -1924,7 +2041,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-10-L-180-1400-0",
@@ -1940,7 +2058,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-10-L-180-1400-65",
@@ -1956,7 +2075,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-11-L-180-1460-0",
@@ -1972,7 +2092,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-11-L-180-1460-65",
@@ -1988,7 +2109,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-12-L-180-1520-0",
@@ -2004,7 +2126,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-12-L-180-1520-65",
@@ -2020,7 +2143,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-13-L-180-1580-0",
@@ -2036,7 +2160,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-13-L-180-1580-65",
@@ -2052,7 +2177,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-14-L-180-1640-0",
@@ -2068,7 +2194,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-14-L-180-1640-65",
@@ -2084,7 +2211,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-15-L-180-1700-0",
@@ -2100,7 +2228,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-15-L-180-1700-65",
@@ -2116,7 +2245,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-16-L-180-1760-0",
@@ -2132,7 +2262,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-16-L-180-1760-65",
@@ -2148,7 +2279,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-17-L-180-1820-0",
@@ -2164,7 +2296,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-17-L-180-1820-65",
@@ -2180,7 +2313,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-18-L-180-1880-0",
@@ -2196,7 +2330,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-18-L-180-1880-65",
@@ -2212,7 +2347,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-19-L-180-1940-0",
@@ -2228,7 +2364,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-19-L-180-1940-65",
@@ -2244,7 +2381,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-20-L-180-2000-0",
@@ -2260,7 +2398,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-20-L-180-2000-65",
@@ -2276,7 +2415,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-21-L-180-2060-0",
@@ -2292,7 +2432,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-21-L-180-2060-65",
@@ -2308,7 +2449,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-22-L-180-2120-0",
@@ -2324,7 +2466,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-22-L-180-2120-65",
@@ -2340,7 +2483,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-23-L-180-2180-0",
@@ -2356,7 +2500,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-23-L-180-2180-65",
@@ -2372,7 +2517,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-24-L-180-2240-0",
@@ -2388,7 +2534,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-24-L-180-2240-65",
@@ -2404,7 +2551,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-25-L-180-2300-0",
@@ -2420,7 +2568,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-25-L-180-2300-65",
@@ -2436,7 +2585,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-26-L-180-2360-0",
@@ -2452,7 +2602,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-26-L-180-2360-65",
@@ -2468,7 +2619,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-27-L-180-2420-0",
@@ -2484,7 +2636,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-27-L-180-2420-65",
@@ -2500,7 +2653,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-28-L-180-2480-0",
@@ -2516,7 +2670,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-28-L-180-2480-65",
@@ -2532,7 +2687,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-29-L-180-2540-0",
@@ -2548,7 +2704,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-29-L-180-2540-65",
@@ -2564,7 +2721,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-30-L-180-2600-0",
@@ -2580,7 +2738,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-30-L-180-2600-65",
@@ -2596,7 +2755,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-31-L-180-2660-0",
@@ -2612,7 +2772,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-31-L-180-2660-65",
@@ -2628,7 +2789,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-32-L-180-2720-0",
@@ -2644,7 +2806,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-32-L-180-2720-65",
@@ -2660,7 +2823,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-33-L-180-2780-0",
@@ -2676,7 +2840,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-33-L-180-2780-65",
@@ -2692,7 +2857,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-34-L-180-2840-0",
@@ -2708,7 +2874,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-34-L-180-2840-65",
@@ -2724,7 +2891,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-35-L-180-2900-0",
@@ -2740,7 +2908,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-35-L-180-2900-65",
@@ -2756,7 +2925,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-36-L-180-2960-0",
@@ -2772,7 +2942,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-36-L-180-2960-65",
@@ -2788,7 +2959,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-37-L-180-3020-0",
@@ -2804,7 +2976,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-37-L-180-3020-65",
@@ -2820,7 +2993,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-38-L-180-3080-0",
@@ -2836,7 +3010,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-38-L-180-3080-65",
@@ -2852,7 +3027,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-39-L-180-3140-0",
@@ -2868,7 +3044,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-39-L-180-3140-65",
@@ -2884,7 +3061,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-40-L-180-3200-0",
@@ -2900,7 +3078,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-40-L-180-3200-65",
@@ -2916,7 +3095,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-41-L-180-3260-0",
@@ -2932,7 +3112,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-41-L-180-3260-65",
@@ -2948,7 +3129,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-42-L-180-3320-0",
@@ -2964,7 +3146,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-42-L-180-3320-65",
@@ -2980,7 +3163,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-43-L-180-3380-0",
@@ -2996,7 +3180,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-43-L-180-3380-65",
@@ -3012,7 +3197,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-44-L-180-3440-0",
@@ -3028,7 +3214,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-44-L-180-3440-65",
@@ -3044,7 +3231,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-45-L-180-3500-0",
@@ -3060,7 +3248,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-45-L-180-3500-65",
@@ -3076,7 +3265,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-46-L-180-3560-0",
@@ -3092,7 +3282,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-46-L-180-3560-65",
@@ -3108,7 +3299,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-47-L-180-3620-0",
@@ -3124,7 +3316,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-47-L-180-3620-65",
@@ -3140,7 +3333,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-48-L-180-3680-0",
@@ -3156,7 +3350,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-48-L-180-3680-65",
@@ -3172,7 +3367,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-49-L-180-3740-0",
@@ -3188,7 +3384,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-49-L-180-3740-65",
@@ -3204,7 +3401,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A1-50-L-180-3800-0",
@@ -3220,7 +3418,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 140
       },
       {
         "location": "A1-50-L-180-3800-65",
@@ -3236,7 +3435,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 140
       },
       {
         "location": "A2-1-R-230-860-0",
@@ -3252,7 +3452,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-1-R-230-860-65",
@@ -3268,7 +3469,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-2-R-230-920-0",
@@ -3284,7 +3486,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-2-R-230-920-65",
@@ -3300,7 +3503,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-3-R-230-980-0",
@@ -3316,7 +3520,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-3-R-230-980-65",
@@ -3332,7 +3537,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-4-R-230-1040-0",
@@ -3348,7 +3554,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-4-R-230-1040-65",
@@ -3364,7 +3571,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-5-R-230-1100-0",
@@ -3380,7 +3588,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-5-R-230-1100-65",
@@ -3396,7 +3605,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-6-R-230-1160-0",
@@ -3412,7 +3622,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-6-R-230-1160-65",
@@ -3428,7 +3639,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-7-R-230-1220-0",
@@ -3444,7 +3656,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-7-R-230-1220-65",
@@ -3460,7 +3673,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-8-R-230-1280-0",
@@ -3476,7 +3690,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-8-R-230-1280-65",
@@ -3492,7 +3707,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-9-R-230-1340-0",
@@ -3508,7 +3724,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-9-R-230-1340-65",
@@ -3524,7 +3741,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-10-R-230-1400-0",
@@ -3540,7 +3758,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-10-R-230-1400-65",
@@ -3556,7 +3775,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-11-R-230-1460-0",
@@ -3572,7 +3792,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-11-R-230-1460-65",
@@ -3588,7 +3809,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-12-R-230-1520-0",
@@ -3604,7 +3826,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-12-R-230-1520-65",
@@ -3620,7 +3843,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-13-R-230-1580-0",
@@ -3636,7 +3860,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-13-R-230-1580-65",
@@ -3652,7 +3877,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-14-R-230-1640-0",
@@ -3668,7 +3894,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-14-R-230-1640-65",
@@ -3684,7 +3911,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-15-R-230-1700-0",
@@ -3700,7 +3928,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-15-R-230-1700-65",
@@ -3716,7 +3945,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-16-R-230-1760-0",
@@ -3732,7 +3962,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-16-R-230-1760-65",
@@ -3748,7 +3979,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-17-R-230-1820-0",
@@ -3764,7 +3996,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-17-R-230-1820-65",
@@ -3780,7 +4013,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-18-R-230-1880-0",
@@ -3796,7 +4030,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-18-R-230-1880-65",
@@ -3812,7 +4047,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-19-R-230-1940-0",
@@ -3828,7 +4064,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-19-R-230-1940-65",
@@ -3844,7 +4081,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-20-R-230-2000-0",
@@ -3860,7 +4098,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-20-R-230-2000-65",
@@ -3876,7 +4115,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-21-R-230-2060-0",
@@ -3892,7 +4132,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-21-R-230-2060-65",
@@ -3908,7 +4149,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-22-R-230-2120-0",
@@ -3924,7 +4166,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-22-R-230-2120-65",
@@ -3940,7 +4183,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-23-R-230-2180-0",
@@ -3956,7 +4200,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-23-R-230-2180-65",
@@ -3972,7 +4217,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-24-R-230-2240-0",
@@ -3988,7 +4234,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-24-R-230-2240-65",
@@ -4004,7 +4251,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-25-R-230-2300-0",
@@ -4020,7 +4268,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-25-R-230-2300-65",
@@ -4036,7 +4285,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-26-R-230-2360-0",
@@ -4052,7 +4302,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-26-R-230-2360-65",
@@ -4068,7 +4319,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-27-R-230-2420-0",
@@ -4084,7 +4336,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-27-R-230-2420-65",
@@ -4100,7 +4353,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-28-R-230-2480-0",
@@ -4116,7 +4370,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-28-R-230-2480-65",
@@ -4132,7 +4387,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-29-R-230-2540-0",
@@ -4148,7 +4404,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-29-R-230-2540-65",
@@ -4164,7 +4421,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-30-R-230-2600-0",
@@ -4180,7 +4438,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-30-R-230-2600-65",
@@ -4196,7 +4455,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-31-R-230-2660-0",
@@ -4212,7 +4472,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-31-R-230-2660-65",
@@ -4228,7 +4489,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-32-R-230-2720-0",
@@ -4244,7 +4506,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-32-R-230-2720-65",
@@ -4260,7 +4523,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-33-R-230-2780-0",
@@ -4276,7 +4540,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-33-R-230-2780-65",
@@ -4292,7 +4557,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-34-R-230-2840-0",
@@ -4308,7 +4574,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-34-R-230-2840-65",
@@ -4324,7 +4591,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-35-R-230-2900-0",
@@ -4340,7 +4608,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-35-R-230-2900-65",
@@ -4356,7 +4625,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-36-R-230-2960-0",
@@ -4372,7 +4642,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-36-R-230-2960-65",
@@ -4388,7 +4659,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-37-R-230-3020-0",
@@ -4404,7 +4676,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-37-R-230-3020-65",
@@ -4420,7 +4693,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-38-R-230-3080-0",
@@ -4436,7 +4710,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-38-R-230-3080-65",
@@ -4452,7 +4727,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-39-R-230-3140-0",
@@ -4468,7 +4744,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-39-R-230-3140-65",
@@ -4484,7 +4761,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-40-R-230-3200-0",
@@ -4500,7 +4778,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-40-R-230-3200-65",
@@ -4516,7 +4795,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-41-R-230-3260-0",
@@ -4532,7 +4812,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-41-R-230-3260-65",
@@ -4548,7 +4829,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-42-R-230-3320-0",
@@ -4564,7 +4846,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-42-R-230-3320-65",
@@ -4580,7 +4863,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-43-R-230-3380-0",
@@ -4596,7 +4880,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-43-R-230-3380-65",
@@ -4612,7 +4897,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-44-R-230-3440-0",
@@ -4628,7 +4914,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-44-R-230-3440-65",
@@ -4644,7 +4931,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-45-R-230-3500-0",
@@ -4660,7 +4948,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-45-R-230-3500-65",
@@ -4676,7 +4965,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-46-R-230-3560-0",
@@ -4692,7 +4982,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-46-R-230-3560-65",
@@ -4708,7 +4999,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-47-R-230-3620-0",
@@ -4724,7 +5016,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-47-R-230-3620-65",
@@ -4740,7 +5033,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-48-R-230-3680-0",
@@ -4756,7 +5050,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-48-R-230-3680-65",
@@ -4772,7 +5067,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-49-R-230-3740-0",
@@ -4788,7 +5084,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-49-R-230-3740-65",
@@ -4804,7 +5101,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-50-R-230-3800-0",
@@ -4820,7 +5118,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-50-R-230-3800-65",
@@ -4836,7 +5135,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-1-L-410-860-0",
@@ -4852,7 +5152,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-1-L-410-860-65",
@@ -4868,7 +5169,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-2-L-410-920-0",
@@ -4884,7 +5186,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-2-L-410-920-65",
@@ -4900,7 +5203,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-3-L-410-980-0",
@@ -4916,7 +5220,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-3-L-410-980-65",
@@ -4932,7 +5237,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-4-L-410-1040-0",
@@ -4948,7 +5254,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-4-L-410-1040-65",
@@ -4964,7 +5271,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-5-L-410-1100-0",
@@ -4980,7 +5288,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-5-L-410-1100-65",
@@ -4996,7 +5305,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-6-L-410-1160-0",
@@ -5012,7 +5322,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-6-L-410-1160-65",
@@ -5028,7 +5339,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-7-L-410-1220-0",
@@ -5044,7 +5356,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-7-L-410-1220-65",
@@ -5060,7 +5373,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-8-L-410-1280-0",
@@ -5076,7 +5390,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-8-L-410-1280-65",
@@ -5092,7 +5407,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-9-L-410-1340-0",
@@ -5108,7 +5424,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-9-L-410-1340-65",
@@ -5124,7 +5441,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-10-L-410-1400-0",
@@ -5140,7 +5458,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-10-L-410-1400-65",
@@ -5156,7 +5475,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-11-L-410-1460-0",
@@ -5172,7 +5492,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-11-L-410-1460-65",
@@ -5188,7 +5509,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-12-L-410-1520-0",
@@ -5204,7 +5526,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-12-L-410-1520-65",
@@ -5220,7 +5543,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-13-L-410-1580-0",
@@ -5236,7 +5560,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-13-L-410-1580-65",
@@ -5252,7 +5577,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-14-L-410-1640-0",
@@ -5268,7 +5594,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-14-L-410-1640-65",
@@ -5284,7 +5611,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-15-L-410-1700-0",
@@ -5300,7 +5628,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-15-L-410-1700-65",
@@ -5316,7 +5645,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-16-L-410-1760-0",
@@ -5332,7 +5662,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-16-L-410-1760-65",
@@ -5348,7 +5679,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-17-L-410-1820-0",
@@ -5364,7 +5696,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-17-L-410-1820-65",
@@ -5380,7 +5713,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-18-L-410-1880-0",
@@ -5396,7 +5730,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-18-L-410-1880-65",
@@ -5412,7 +5747,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-19-L-410-1940-0",
@@ -5428,7 +5764,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-19-L-410-1940-65",
@@ -5444,7 +5781,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-20-L-410-2000-0",
@@ -5460,7 +5798,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-20-L-410-2000-65",
@@ -5476,7 +5815,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-21-L-410-2060-0",
@@ -5492,7 +5832,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-21-L-410-2060-65",
@@ -5508,7 +5849,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-22-L-410-2120-0",
@@ -5524,7 +5866,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-22-L-410-2120-65",
@@ -5540,7 +5883,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-23-L-410-2180-0",
@@ -5556,7 +5900,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-23-L-410-2180-65",
@@ -5572,7 +5917,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-24-L-410-2240-0",
@@ -5588,7 +5934,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-24-L-410-2240-65",
@@ -5604,7 +5951,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-25-L-410-2300-0",
@@ -5620,7 +5968,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-25-L-410-2300-65",
@@ -5636,7 +5985,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-26-L-410-2360-0",
@@ -5652,7 +6002,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-26-L-410-2360-65",
@@ -5668,7 +6019,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-27-L-410-2420-0",
@@ -5684,7 +6036,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-27-L-410-2420-65",
@@ -5700,7 +6053,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-28-L-410-2480-0",
@@ -5716,7 +6070,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-28-L-410-2480-65",
@@ -5732,7 +6087,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-29-L-410-2540-0",
@@ -5748,7 +6104,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-29-L-410-2540-65",
@@ -5764,7 +6121,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-30-L-410-2600-0",
@@ -5780,7 +6138,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-30-L-410-2600-65",
@@ -5796,7 +6155,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-31-L-410-2660-0",
@@ -5812,7 +6172,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-31-L-410-2660-65",
@@ -5828,7 +6189,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-32-L-410-2720-0",
@@ -5844,7 +6206,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-32-L-410-2720-65",
@@ -5860,7 +6223,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-33-L-410-2780-0",
@@ -5876,7 +6240,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-33-L-410-2780-65",
@@ -5892,7 +6257,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-34-L-410-2840-0",
@@ -5908,7 +6274,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-34-L-410-2840-65",
@@ -5924,7 +6291,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-35-L-410-2900-0",
@@ -5940,7 +6308,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-35-L-410-2900-65",
@@ -5956,7 +6325,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-36-L-410-2960-0",
@@ -5972,7 +6342,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-36-L-410-2960-65",
@@ -5988,7 +6359,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-37-L-410-3020-0",
@@ -6004,7 +6376,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-37-L-410-3020-65",
@@ -6020,7 +6393,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-38-L-410-3080-0",
@@ -6036,7 +6410,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-38-L-410-3080-65",
@@ -6052,7 +6427,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-39-L-410-3140-0",
@@ -6068,7 +6444,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-39-L-410-3140-65",
@@ -6084,7 +6461,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-40-L-410-3200-0",
@@ -6100,7 +6478,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-40-L-410-3200-65",
@@ -6116,7 +6495,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-41-L-410-3260-0",
@@ -6132,7 +6512,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-41-L-410-3260-65",
@@ -6148,7 +6529,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-42-L-410-3320-0",
@@ -6164,7 +6546,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-42-L-410-3320-65",
@@ -6180,7 +6563,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-43-L-410-3380-0",
@@ -6196,7 +6580,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-43-L-410-3380-65",
@@ -6212,7 +6597,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-44-L-410-3440-0",
@@ -6228,7 +6614,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-44-L-410-3440-65",
@@ -6244,7 +6631,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-45-L-410-3500-0",
@@ -6260,7 +6648,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-45-L-410-3500-65",
@@ -6276,7 +6665,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-46-L-410-3560-0",
@@ -6292,7 +6682,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-46-L-410-3560-65",
@@ -6308,7 +6699,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-47-L-410-3620-0",
@@ -6324,7 +6716,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-47-L-410-3620-65",
@@ -6340,7 +6733,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-48-L-410-3680-0",
@@ -6356,7 +6750,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-48-L-410-3680-65",
@@ -6372,7 +6767,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-49-L-410-3740-0",
@@ -6388,7 +6784,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-49-L-410-3740-65",
@@ -6404,7 +6801,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A2-50-L-410-3800-0",
@@ -6420,7 +6818,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 370
       },
       {
         "location": "A2-50-L-410-3800-65",
@@ -6436,7 +6835,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 370
       },
       {
         "location": "A3-1-R-460-860-0",
@@ -6452,7 +6852,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-1-R-460-860-65",
@@ -6468,7 +6869,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-2-R-460-920-0",
@@ -6484,7 +6886,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-2-R-460-920-65",
@@ -6500,7 +6903,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-3-R-460-980-0",
@@ -6516,7 +6920,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-3-R-460-980-65",
@@ -6532,7 +6937,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-4-R-460-1040-0",
@@ -6548,7 +6954,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-4-R-460-1040-65",
@@ -6564,7 +6971,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-5-R-460-1100-0",
@@ -6580,7 +6988,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-5-R-460-1100-65",
@@ -6596,7 +7005,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-6-R-460-1160-0",
@@ -6612,7 +7022,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-6-R-460-1160-65",
@@ -6628,7 +7039,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-7-R-460-1220-0",
@@ -6644,7 +7056,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-7-R-460-1220-65",
@@ -6660,7 +7073,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-8-R-460-1280-0",
@@ -6676,7 +7090,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-8-R-460-1280-65",
@@ -6692,7 +7107,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-9-R-460-1340-0",
@@ -6708,7 +7124,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-9-R-460-1340-65",
@@ -6724,7 +7141,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-10-R-460-1400-0",
@@ -6740,7 +7158,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-10-R-460-1400-65",
@@ -6756,7 +7175,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-11-R-460-1460-0",
@@ -6772,7 +7192,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-11-R-460-1460-65",
@@ -6788,7 +7209,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-12-R-460-1520-0",
@@ -6804,7 +7226,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-12-R-460-1520-65",
@@ -6820,7 +7243,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-13-R-460-1580-0",
@@ -6836,7 +7260,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-13-R-460-1580-65",
@@ -6852,7 +7277,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-14-R-460-1640-0",
@@ -6868,7 +7294,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-14-R-460-1640-65",
@@ -6884,7 +7311,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-15-R-460-1700-0",
@@ -6900,7 +7328,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-15-R-460-1700-65",
@@ -6916,7 +7345,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-16-R-460-1760-0",
@@ -6932,7 +7362,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-16-R-460-1760-65",
@@ -6948,7 +7379,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-17-R-460-1820-0",
@@ -6964,7 +7396,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-17-R-460-1820-65",
@@ -6980,7 +7413,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-18-R-460-1880-0",
@@ -6996,7 +7430,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-18-R-460-1880-65",
@@ -7012,7 +7447,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-19-R-460-1940-0",
@@ -7028,7 +7464,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-19-R-460-1940-65",
@@ -7044,7 +7481,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-20-R-460-2000-0",
@@ -7060,7 +7498,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-20-R-460-2000-65",
@@ -7076,7 +7515,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-21-R-460-2060-0",
@@ -7092,7 +7532,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-21-R-460-2060-65",
@@ -7108,7 +7549,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-22-R-460-2120-0",
@@ -7124,7 +7566,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-22-R-460-2120-65",
@@ -7140,7 +7583,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-23-R-460-2180-0",
@@ -7156,7 +7600,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-23-R-460-2180-65",
@@ -7172,7 +7617,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-24-R-460-2240-0",
@@ -7188,7 +7634,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-24-R-460-2240-65",
@@ -7204,7 +7651,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-25-R-460-2300-0",
@@ -7220,7 +7668,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-25-R-460-2300-65",
@@ -7236,7 +7685,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-26-R-460-2360-0",
@@ -7252,7 +7702,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-26-R-460-2360-65",
@@ -7268,7 +7719,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-27-R-460-2420-0",
@@ -7284,7 +7736,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-27-R-460-2420-65",
@@ -7300,7 +7753,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-28-R-460-2480-0",
@@ -7316,7 +7770,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-28-R-460-2480-65",
@@ -7332,7 +7787,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-29-R-460-2540-0",
@@ -7348,7 +7804,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-29-R-460-2540-65",
@@ -7364,7 +7821,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-30-R-460-2600-0",
@@ -7380,7 +7838,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-30-R-460-2600-65",
@@ -7396,7 +7855,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-31-R-460-2660-0",
@@ -7412,7 +7872,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-31-R-460-2660-65",
@@ -7428,7 +7889,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-32-R-460-2720-0",
@@ -7444,7 +7906,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-32-R-460-2720-65",
@@ -7460,7 +7923,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-33-R-460-2780-0",
@@ -7476,7 +7940,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-33-R-460-2780-65",
@@ -7492,7 +7957,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-34-R-460-2840-0",
@@ -7508,7 +7974,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-34-R-460-2840-65",
@@ -7524,7 +7991,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-35-R-460-2900-0",
@@ -7540,7 +8008,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-35-R-460-2900-65",
@@ -7556,7 +8025,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-36-R-460-2960-0",
@@ -7572,7 +8042,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-36-R-460-2960-65",
@@ -7588,7 +8059,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-37-R-460-3020-0",
@@ -7604,7 +8076,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-37-R-460-3020-65",
@@ -7620,7 +8093,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-38-R-460-3080-0",
@@ -7636,7 +8110,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-38-R-460-3080-65",
@@ -7652,7 +8127,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-39-R-460-3140-0",
@@ -7668,7 +8144,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-39-R-460-3140-65",
@@ -7684,7 +8161,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-40-R-460-3200-0",
@@ -7700,7 +8178,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-40-R-460-3200-65",
@@ -7716,7 +8195,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-41-R-460-3260-0",
@@ -7732,7 +8212,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-41-R-460-3260-65",
@@ -7748,7 +8229,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-42-R-460-3320-0",
@@ -7764,7 +8246,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-42-R-460-3320-65",
@@ -7780,7 +8263,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-43-R-460-3380-0",
@@ -7796,7 +8280,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-43-R-460-3380-65",
@@ -7812,7 +8297,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-44-R-460-3440-0",
@@ -7828,7 +8314,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-44-R-460-3440-65",
@@ -7844,7 +8331,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-45-R-460-3500-0",
@@ -7860,7 +8348,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-45-R-460-3500-65",
@@ -7876,7 +8365,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-46-R-460-3560-0",
@@ -7892,7 +8382,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-46-R-460-3560-65",
@@ -7908,7 +8399,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-47-R-460-3620-0",
@@ -7924,7 +8416,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-47-R-460-3620-65",
@@ -7940,7 +8433,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-48-R-460-3680-0",
@@ -7956,7 +8450,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-48-R-460-3680-65",
@@ -7972,7 +8467,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-49-R-460-3740-0",
@@ -7988,7 +8484,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-49-R-460-3740-65",
@@ -8004,7 +8501,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-50-R-460-3800-0",
@@ -8020,7 +8518,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-50-R-460-3800-65",
@@ -8036,7 +8535,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-1-L-640-860-0",
@@ -8052,7 +8552,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-1-L-640-860-65",
@@ -8068,7 +8569,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-2-L-640-920-0",
@@ -8084,7 +8586,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-2-L-640-920-65",
@@ -8100,7 +8603,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-3-L-640-980-0",
@@ -8116,7 +8620,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-3-L-640-980-65",
@@ -8132,7 +8637,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-4-L-640-1040-0",
@@ -8148,7 +8654,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-4-L-640-1040-65",
@@ -8164,7 +8671,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-5-L-640-1100-0",
@@ -8180,7 +8688,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-5-L-640-1100-65",
@@ -8196,7 +8705,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-6-L-640-1160-0",
@@ -8212,7 +8722,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-6-L-640-1160-65",
@@ -8228,7 +8739,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-7-L-640-1220-0",
@@ -8244,7 +8756,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-7-L-640-1220-65",
@@ -8260,7 +8773,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-8-L-640-1280-0",
@@ -8276,7 +8790,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-8-L-640-1280-65",
@@ -8292,7 +8807,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-9-L-640-1340-0",
@@ -8308,7 +8824,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-9-L-640-1340-65",
@@ -8324,7 +8841,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-10-L-640-1400-0",
@@ -8340,7 +8858,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-10-L-640-1400-65",
@@ -8356,7 +8875,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-11-L-640-1460-0",
@@ -8372,7 +8892,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-11-L-640-1460-65",
@@ -8388,7 +8909,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-12-L-640-1520-0",
@@ -8404,7 +8926,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-12-L-640-1520-65",
@@ -8420,7 +8943,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-13-L-640-1580-0",
@@ -8436,7 +8960,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-13-L-640-1580-65",
@@ -8452,7 +8977,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-14-L-640-1640-0",
@@ -8468,7 +8994,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-14-L-640-1640-65",
@@ -8484,7 +9011,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-15-L-640-1700-0",
@@ -8500,7 +9028,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-15-L-640-1700-65",
@@ -8516,7 +9045,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-16-L-640-1760-0",
@@ -8532,7 +9062,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-16-L-640-1760-65",
@@ -8548,7 +9079,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-17-L-640-1820-0",
@@ -8564,7 +9096,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-17-L-640-1820-65",
@@ -8580,7 +9113,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-18-L-640-1880-0",
@@ -8596,7 +9130,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-18-L-640-1880-65",
@@ -8612,7 +9147,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-19-L-640-1940-0",
@@ -8628,7 +9164,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-19-L-640-1940-65",
@@ -8644,7 +9181,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-20-L-640-2000-0",
@@ -8660,7 +9198,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-20-L-640-2000-65",
@@ -8676,7 +9215,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-21-L-640-2060-0",
@@ -8692,7 +9232,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-21-L-640-2060-65",
@@ -8708,7 +9249,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-22-L-640-2120-0",
@@ -8724,7 +9266,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-22-L-640-2120-65",
@@ -8740,7 +9283,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-23-L-640-2180-0",
@@ -8756,7 +9300,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-23-L-640-2180-65",
@@ -8772,7 +9317,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-24-L-640-2240-0",
@@ -8788,7 +9334,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-24-L-640-2240-65",
@@ -8804,7 +9351,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-25-L-640-2300-0",
@@ -8820,7 +9368,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-25-L-640-2300-65",
@@ -8836,7 +9385,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-26-L-640-2360-0",
@@ -8852,7 +9402,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-26-L-640-2360-65",
@@ -8868,7 +9419,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-27-L-640-2420-0",
@@ -8884,7 +9436,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-27-L-640-2420-65",
@@ -8900,7 +9453,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-28-L-640-2480-0",
@@ -8916,7 +9470,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-28-L-640-2480-65",
@@ -8932,7 +9487,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-29-L-640-2540-0",
@@ -8948,7 +9504,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-29-L-640-2540-65",
@@ -8964,7 +9521,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-30-L-640-2600-0",
@@ -8980,7 +9538,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-30-L-640-2600-65",
@@ -8996,7 +9555,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-31-L-640-2660-0",
@@ -9012,7 +9572,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-31-L-640-2660-65",
@@ -9028,7 +9589,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-32-L-640-2720-0",
@@ -9044,7 +9606,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-32-L-640-2720-65",
@@ -9060,7 +9623,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-33-L-640-2780-0",
@@ -9076,7 +9640,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-33-L-640-2780-65",
@@ -9092,7 +9657,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-34-L-640-2840-0",
@@ -9108,7 +9674,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-34-L-640-2840-65",
@@ -9124,7 +9691,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-35-L-640-2900-0",
@@ -9140,7 +9708,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-35-L-640-2900-65",
@@ -9156,7 +9725,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-36-L-640-2960-0",
@@ -9172,7 +9742,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-36-L-640-2960-65",
@@ -9188,7 +9759,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-37-L-640-3020-0",
@@ -9204,7 +9776,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-37-L-640-3020-65",
@@ -9220,7 +9793,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-38-L-640-3080-0",
@@ -9236,7 +9810,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-38-L-640-3080-65",
@@ -9252,7 +9827,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-39-L-640-3140-0",
@@ -9268,7 +9844,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-39-L-640-3140-65",
@@ -9284,7 +9861,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-40-L-640-3200-0",
@@ -9300,7 +9878,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-40-L-640-3200-65",
@@ -9316,7 +9895,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-41-L-640-3260-0",
@@ -9332,7 +9912,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-41-L-640-3260-65",
@@ -9348,7 +9929,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-42-L-640-3320-0",
@@ -9364,7 +9946,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-42-L-640-3320-65",
@@ -9380,7 +9963,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-43-L-640-3380-0",
@@ -9396,7 +9980,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-43-L-640-3380-65",
@@ -9412,7 +9997,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-44-L-640-3440-0",
@@ -9428,7 +10014,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-44-L-640-3440-65",
@@ -9444,7 +10031,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-45-L-640-3500-0",
@@ -9460,7 +10048,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-45-L-640-3500-65",
@@ -9476,7 +10065,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-46-L-640-3560-0",
@@ -9492,7 +10082,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-46-L-640-3560-65",
@@ -9508,7 +10099,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-47-L-640-3620-0",
@@ -9524,7 +10116,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-47-L-640-3620-65",
@@ -9540,7 +10133,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-48-L-640-3680-0",
@@ -9556,7 +10150,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-48-L-640-3680-65",
@@ -9572,7 +10167,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-49-L-640-3740-0",
@@ -9588,7 +10184,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-49-L-640-3740-65",
@@ -9604,7 +10201,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A3-50-L-640-3800-0",
@@ -9620,7 +10218,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 600
       },
       {
         "location": "A3-50-L-640-3800-65",
@@ -9636,7 +10235,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 600
       },
       {
         "location": "A4-1-R-690-860-0",
@@ -9652,7 +10252,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-1-R-690-860-65",
@@ -9668,7 +10269,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-2-R-690-920-0",
@@ -9684,7 +10286,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-2-R-690-920-65",
@@ -9700,7 +10303,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-3-R-690-980-0",
@@ -9716,7 +10320,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-3-R-690-980-65",
@@ -9732,7 +10337,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-4-R-690-1040-0",
@@ -9748,7 +10354,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-4-R-690-1040-65",
@@ -9764,7 +10371,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-5-R-690-1100-0",
@@ -9780,7 +10388,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-5-R-690-1100-65",
@@ -9796,7 +10405,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-6-R-690-1160-0",
@@ -9812,7 +10422,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-6-R-690-1160-65",
@@ -9828,7 +10439,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-7-R-690-1220-0",
@@ -9844,7 +10456,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-7-R-690-1220-65",
@@ -9860,7 +10473,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-8-R-690-1280-0",
@@ -9876,7 +10490,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-8-R-690-1280-65",
@@ -9892,7 +10507,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-9-R-690-1340-0",
@@ -9908,7 +10524,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-9-R-690-1340-65",
@@ -9924,7 +10541,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-10-R-690-1400-0",
@@ -9940,7 +10558,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-10-R-690-1400-65",
@@ -9956,7 +10575,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-11-R-690-1460-0",
@@ -9972,7 +10592,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-11-R-690-1460-65",
@@ -9988,7 +10609,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-12-R-690-1520-0",
@@ -10004,7 +10626,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-12-R-690-1520-65",
@@ -10020,7 +10643,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-13-R-690-1580-0",
@@ -10036,7 +10660,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-13-R-690-1580-65",
@@ -10052,7 +10677,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-14-R-690-1640-0",
@@ -10068,7 +10694,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-14-R-690-1640-65",
@@ -10084,7 +10711,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-15-R-690-1700-0",
@@ -10100,7 +10728,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-15-R-690-1700-65",
@@ -10116,7 +10745,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-16-R-690-1760-0",
@@ -10132,7 +10762,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-16-R-690-1760-65",
@@ -10148,7 +10779,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-17-R-690-1820-0",
@@ -10164,7 +10796,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-17-R-690-1820-65",
@@ -10180,7 +10813,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-18-R-690-1880-0",
@@ -10196,7 +10830,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-18-R-690-1880-65",
@@ -10212,7 +10847,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-19-R-690-1940-0",
@@ -10228,7 +10864,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-19-R-690-1940-65",
@@ -10244,7 +10881,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-20-R-690-2000-0",
@@ -10260,7 +10898,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-20-R-690-2000-65",
@@ -10276,7 +10915,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-21-R-690-2060-0",
@@ -10292,7 +10932,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-21-R-690-2060-65",
@@ -10308,7 +10949,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-22-R-690-2120-0",
@@ -10324,7 +10966,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-22-R-690-2120-65",
@@ -10340,7 +10983,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-23-R-690-2180-0",
@@ -10356,7 +11000,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-23-R-690-2180-65",
@@ -10372,7 +11017,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-24-R-690-2240-0",
@@ -10388,7 +11034,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-24-R-690-2240-65",
@@ -10404,7 +11051,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-25-R-690-2300-0",
@@ -10420,7 +11068,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-25-R-690-2300-65",
@@ -10436,7 +11085,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-26-R-690-2360-0",
@@ -10452,7 +11102,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-26-R-690-2360-65",
@@ -10468,7 +11119,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-27-R-690-2420-0",
@@ -10484,7 +11136,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-27-R-690-2420-65",
@@ -10500,7 +11153,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-28-R-690-2480-0",
@@ -10516,7 +11170,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-28-R-690-2480-65",
@@ -10532,7 +11187,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-29-R-690-2540-0",
@@ -10548,7 +11204,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-29-R-690-2540-65",
@@ -10564,7 +11221,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-30-R-690-2600-0",
@@ -10580,7 +11238,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-30-R-690-2600-65",
@@ -10596,7 +11255,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-31-R-690-2660-0",
@@ -10612,7 +11272,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-31-R-690-2660-65",
@@ -10628,7 +11289,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-32-R-690-2720-0",
@@ -10644,7 +11306,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-32-R-690-2720-65",
@@ -10660,7 +11323,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-33-R-690-2780-0",
@@ -10676,7 +11340,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-33-R-690-2780-65",
@@ -10692,7 +11357,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-34-R-690-2840-0",
@@ -10708,7 +11374,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-34-R-690-2840-65",
@@ -10724,7 +11391,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-35-R-690-2900-0",
@@ -10740,7 +11408,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-35-R-690-2900-65",
@@ -10756,7 +11425,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-36-R-690-2960-0",
@@ -10772,7 +11442,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-36-R-690-2960-65",
@@ -10788,7 +11459,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-37-R-690-3020-0",
@@ -10804,7 +11476,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-37-R-690-3020-65",
@@ -10820,7 +11493,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-38-R-690-3080-0",
@@ -10836,7 +11510,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-38-R-690-3080-65",
@@ -10852,7 +11527,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-39-R-690-3140-0",
@@ -10868,7 +11544,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-39-R-690-3140-65",
@@ -10884,7 +11561,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-40-R-690-3200-0",
@@ -10900,7 +11578,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-40-R-690-3200-65",
@@ -10916,7 +11595,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-41-R-690-3260-0",
@@ -10932,7 +11612,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-41-R-690-3260-65",
@@ -10948,7 +11629,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-42-R-690-3320-0",
@@ -10964,7 +11646,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-42-R-690-3320-65",
@@ -10980,7 +11663,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-43-R-690-3380-0",
@@ -10996,7 +11680,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-43-R-690-3380-65",
@@ -11012,7 +11697,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-44-R-690-3440-0",
@@ -11028,7 +11714,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-44-R-690-3440-65",
@@ -11044,7 +11731,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-45-R-690-3500-0",
@@ -11060,7 +11748,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-45-R-690-3500-65",
@@ -11076,7 +11765,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-46-R-690-3560-0",
@@ -11092,7 +11782,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-46-R-690-3560-65",
@@ -11108,7 +11799,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-47-R-690-3620-0",
@@ -11124,7 +11816,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-47-R-690-3620-65",
@@ -11140,7 +11833,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-48-R-690-3680-0",
@@ -11156,7 +11850,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-48-R-690-3680-65",
@@ -11172,7 +11867,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-49-R-690-3740-0",
@@ -11188,7 +11884,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-49-R-690-3740-65",
@@ -11204,7 +11901,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-50-R-690-3800-0",
@@ -11220,7 +11918,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 830
       },
       {
         "location": "A4-50-R-690-3800-65",
@@ -11236,7 +11935,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 830
       },
       {
         "location": "A4-1-L-864-860-0",
@@ -11252,7 +11952,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-1-L-864-860-65",
@@ -11268,7 +11969,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-2-L-864-920-0",
@@ -11284,7 +11986,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-2-L-864-920-65",
@@ -11300,7 +12003,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-3-L-864-980-0",
@@ -11316,7 +12020,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-3-L-864-980-65",
@@ -11332,7 +12037,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-4-L-864-1040-0",
@@ -11348,7 +12054,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-4-L-864-1040-65",
@@ -11364,7 +12071,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-5-L-864-1100-0",
@@ -11380,7 +12088,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-5-L-864-1100-65",
@@ -11396,7 +12105,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-6-L-864-1160-0",
@@ -11412,7 +12122,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-6-L-864-1160-65",
@@ -11428,7 +12139,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-7-L-864-1220-0",
@@ -11444,7 +12156,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-7-L-864-1220-65",
@@ -11460,7 +12173,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-8-L-864-1280-0",
@@ -11476,7 +12190,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-8-L-864-1280-65",
@@ -11492,7 +12207,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-9-L-864-1340-0",
@@ -11508,7 +12224,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-9-L-864-1340-65",
@@ -11524,7 +12241,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-10-L-864-1400-0",
@@ -11540,7 +12258,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-10-L-864-1400-65",
@@ -11556,7 +12275,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-11-L-864-1460-0",
@@ -11572,7 +12292,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-11-L-864-1460-65",
@@ -11588,7 +12309,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-12-L-864-1520-0",
@@ -11604,7 +12326,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-12-L-864-1520-65",
@@ -11620,7 +12343,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-13-L-864-1580-0",
@@ -11636,7 +12360,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-13-L-864-1580-65",
@@ -11652,7 +12377,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-14-L-864-1640-0",
@@ -11668,7 +12394,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-14-L-864-1640-65",
@@ -11684,7 +12411,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-15-L-864-1700-0",
@@ -11700,7 +12428,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-15-L-864-1700-65",
@@ -11716,7 +12445,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-16-L-864-1760-0",
@@ -11732,7 +12462,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-16-L-864-1760-65",
@@ -11748,7 +12479,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-17-L-864-1820-0",
@@ -11764,7 +12496,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-17-L-864-1820-65",
@@ -11780,7 +12513,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-18-L-864-1880-0",
@@ -11796,7 +12530,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-18-L-864-1880-65",
@@ -11812,7 +12547,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-19-L-864-1940-0",
@@ -11828,7 +12564,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-19-L-864-1940-65",
@@ -11844,7 +12581,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-20-L-864-2000-0",
@@ -11860,7 +12598,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-20-L-864-2000-65",
@@ -11876,7 +12615,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-21-L-864-2060-0",
@@ -11892,7 +12632,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-21-L-864-2060-65",
@@ -11908,7 +12649,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-22-L-864-2120-0",
@@ -11924,7 +12666,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-22-L-864-2120-65",
@@ -11940,7 +12683,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-23-L-864-2180-0",
@@ -11956,7 +12700,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-23-L-864-2180-65",
@@ -11972,7 +12717,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-24-L-864-2240-0",
@@ -11988,7 +12734,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-24-L-864-2240-65",
@@ -12004,7 +12751,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-25-L-864-2300-0",
@@ -12020,7 +12768,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-25-L-864-2300-65",
@@ -12036,7 +12785,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-26-L-864-2360-0",
@@ -12052,7 +12802,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-26-L-864-2360-65",
@@ -12068,7 +12819,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-27-L-864-2420-0",
@@ -12084,7 +12836,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-27-L-864-2420-65",
@@ -12100,7 +12853,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-28-L-864-2480-0",
@@ -12116,7 +12870,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-28-L-864-2480-65",
@@ -12132,7 +12887,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-29-L-864-2540-0",
@@ -12148,7 +12904,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-29-L-864-2540-65",
@@ -12164,7 +12921,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-30-L-864-2600-0",
@@ -12180,7 +12938,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-30-L-864-2600-65",
@@ -12196,7 +12955,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-31-L-864-2660-0",
@@ -12212,7 +12972,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-31-L-864-2660-65",
@@ -12228,7 +12989,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-32-L-864-2720-0",
@@ -12244,7 +13006,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-32-L-864-2720-65",
@@ -12260,7 +13023,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-33-L-864-2780-0",
@@ -12276,7 +13040,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-33-L-864-2780-65",
@@ -12292,7 +13057,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-34-L-864-2840-0",
@@ -12308,7 +13074,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-34-L-864-2840-65",
@@ -12324,7 +13091,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-35-L-864-2900-0",
@@ -12340,7 +13108,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-35-L-864-2900-65",
@@ -12356,7 +13125,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-36-L-864-2960-0",
@@ -12372,7 +13142,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-36-L-864-2960-65",
@@ -12388,7 +13159,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-37-L-864-3020-0",
@@ -12404,7 +13176,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-37-L-864-3020-65",
@@ -12420,7 +13193,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-38-L-864-3080-0",
@@ -12436,7 +13210,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-38-L-864-3080-65",
@@ -12452,7 +13227,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-39-L-864-3140-0",
@@ -12468,7 +13244,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-39-L-864-3140-65",
@@ -12484,7 +13261,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-40-L-864-3200-0",
@@ -12500,7 +13278,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-40-L-864-3200-65",
@@ -12516,7 +13295,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-41-L-864-3260-0",
@@ -12532,7 +13312,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-41-L-864-3260-65",
@@ -12548,7 +13329,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-42-L-864-3320-0",
@@ -12564,7 +13346,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-42-L-864-3320-65",
@@ -12580,7 +13363,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-43-L-864-3380-0",
@@ -12596,7 +13380,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-43-L-864-3380-65",
@@ -12612,7 +13397,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-44-L-864-3440-0",
@@ -12628,7 +13414,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-44-L-864-3440-65",
@@ -12644,7 +13431,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-45-L-864-3500-0",
@@ -12660,7 +13448,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-45-L-864-3500-65",
@@ -12676,7 +13465,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-46-L-864-3560-0",
@@ -12692,7 +13482,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-46-L-864-3560-65",
@@ -12708,7 +13499,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-47-L-864-3620-0",
@@ -12724,7 +13516,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-47-L-864-3620-65",
@@ -12740,7 +13533,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-48-L-864-3680-0",
@@ -12756,7 +13550,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-48-L-864-3680-65",
@@ -12772,7 +13567,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-49-L-864-3740-0",
@@ -12788,7 +13584,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-49-L-864-3740-65",
@@ -12804,7 +13601,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A4-50-L-864-3800-0",
@@ -12820,7 +13618,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 824
       },
       {
         "location": "A4-50-L-864-3800-65",
@@ -12836,7 +13635,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 824
       },
       {
         "location": "A5-1-R-914-860-0",
@@ -12852,7 +13652,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-1-R-914-860-65",
@@ -12868,7 +13669,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-2-R-914-920-0",
@@ -12884,7 +13686,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-2-R-914-920-65",
@@ -12900,7 +13703,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-3-R-914-980-0",
@@ -12916,7 +13720,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-3-R-914-980-65",
@@ -12932,7 +13737,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-4-R-914-1040-0",
@@ -12948,7 +13754,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-4-R-914-1040-65",
@@ -12964,7 +13771,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-5-R-914-1100-0",
@@ -12980,7 +13788,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-5-R-914-1100-65",
@@ -12996,7 +13805,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-6-R-914-1160-0",
@@ -13012,7 +13822,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-6-R-914-1160-65",
@@ -13028,7 +13839,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-7-R-914-1220-0",
@@ -13044,7 +13856,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-7-R-914-1220-65",
@@ -13060,7 +13873,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-8-R-914-1280-0",
@@ -13076,7 +13890,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-8-R-914-1280-65",
@@ -13092,7 +13907,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-9-R-914-1340-0",
@@ -13108,7 +13924,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-9-R-914-1340-65",
@@ -13124,7 +13941,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-10-R-914-1400-0",
@@ -13140,7 +13958,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-10-R-914-1400-65",
@@ -13156,7 +13975,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-11-R-914-1460-0",
@@ -13172,7 +13992,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-11-R-914-1460-65",
@@ -13188,7 +14009,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-12-R-914-1520-0",
@@ -13204,7 +14026,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-12-R-914-1520-65",
@@ -13220,7 +14043,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-13-R-914-1580-0",
@@ -13236,7 +14060,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-13-R-914-1580-65",
@@ -13252,7 +14077,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-14-R-914-1640-0",
@@ -13268,7 +14094,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-14-R-914-1640-65",
@@ -13284,7 +14111,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-15-R-914-1700-0",
@@ -13300,7 +14128,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-15-R-914-1700-65",
@@ -13316,7 +14145,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-16-R-914-1760-0",
@@ -13332,7 +14162,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-16-R-914-1760-65",
@@ -13348,7 +14179,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-17-R-914-1820-0",
@@ -13364,7 +14196,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-17-R-914-1820-65",
@@ -13380,7 +14213,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-18-R-914-1880-0",
@@ -13396,7 +14230,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-18-R-914-1880-65",
@@ -13412,7 +14247,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-19-R-914-1940-0",
@@ -13428,7 +14264,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-19-R-914-1940-65",
@@ -13444,7 +14281,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-20-R-914-2000-0",
@@ -13460,7 +14298,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-20-R-914-2000-65",
@@ -13476,7 +14315,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-21-R-914-2060-0",
@@ -13492,7 +14332,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-21-R-914-2060-65",
@@ -13508,7 +14349,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-22-R-914-2120-0",
@@ -13524,7 +14366,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-22-R-914-2120-65",
@@ -13540,7 +14383,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-23-R-914-2180-0",
@@ -13556,7 +14400,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-23-R-914-2180-65",
@@ -13572,7 +14417,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-24-R-914-2240-0",
@@ -13588,7 +14434,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-24-R-914-2240-65",
@@ -13604,7 +14451,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-25-R-914-2300-0",
@@ -13620,7 +14468,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-25-R-914-2300-65",
@@ -13636,7 +14485,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-26-R-914-2360-0",
@@ -13652,7 +14502,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-26-R-914-2360-65",
@@ -13668,7 +14519,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-27-R-914-2420-0",
@@ -13684,7 +14536,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-27-R-914-2420-65",
@@ -13700,7 +14553,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-28-R-914-2480-0",
@@ -13716,7 +14570,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-28-R-914-2480-65",
@@ -13732,7 +14587,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-29-R-914-2540-0",
@@ -13748,7 +14604,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-29-R-914-2540-65",
@@ -13764,7 +14621,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-30-R-914-2600-0",
@@ -13780,7 +14638,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-30-R-914-2600-65",
@@ -13796,7 +14655,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-31-R-914-2660-0",
@@ -13812,7 +14672,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-31-R-914-2660-65",
@@ -13828,7 +14689,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-32-R-914-2720-0",
@@ -13844,7 +14706,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-32-R-914-2720-65",
@@ -13860,7 +14723,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-33-R-914-2780-0",
@@ -13876,7 +14740,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-33-R-914-2780-65",
@@ -13892,7 +14757,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-34-R-914-2840-0",
@@ -13908,7 +14774,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-34-R-914-2840-65",
@@ -13924,7 +14791,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-35-R-914-2900-0",
@@ -13940,7 +14808,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-35-R-914-2900-65",
@@ -13956,7 +14825,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-36-R-914-2960-0",
@@ -13972,7 +14842,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-36-R-914-2960-65",
@@ -13988,7 +14859,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-37-R-914-3020-0",
@@ -14004,7 +14876,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-37-R-914-3020-65",
@@ -14020,7 +14893,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-38-R-914-3080-0",
@@ -14036,7 +14910,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-38-R-914-3080-65",
@@ -14052,7 +14927,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-39-R-914-3140-0",
@@ -14068,7 +14944,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-39-R-914-3140-65",
@@ -14084,7 +14961,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-40-R-914-3200-0",
@@ -14100,7 +14978,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-40-R-914-3200-65",
@@ -14116,7 +14995,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-41-R-914-3260-0",
@@ -14132,7 +15012,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-41-R-914-3260-65",
@@ -14148,7 +15029,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-42-R-914-3320-0",
@@ -14164,7 +15046,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-42-R-914-3320-65",
@@ -14180,7 +15063,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-43-R-914-3380-0",
@@ -14196,7 +15080,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-43-R-914-3380-65",
@@ -14212,7 +15097,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-44-R-914-3440-0",
@@ -14228,7 +15114,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-44-R-914-3440-65",
@@ -14244,7 +15131,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-45-R-914-3500-0",
@@ -14260,7 +15148,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-45-R-914-3500-65",
@@ -14276,7 +15165,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-46-R-914-3560-0",
@@ -14292,7 +15182,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-46-R-914-3560-65",
@@ -14308,7 +15199,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-47-R-914-3620-0",
@@ -14324,7 +15216,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-47-R-914-3620-65",
@@ -14340,7 +15233,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-48-R-914-3680-0",
@@ -14356,7 +15250,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-48-R-914-3680-65",
@@ -14372,7 +15267,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-49-R-914-3740-0",
@@ -14388,7 +15284,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-49-R-914-3740-65",
@@ -14404,7 +15301,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-50-R-914-3800-0",
@@ -14420,7 +15318,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-50-R-914-3800-65",
@@ -14436,7 +15335,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-1-L-1094-860-0",
@@ -14452,7 +15352,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-1-L-1094-860-65",
@@ -14468,7 +15369,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-2-L-1094-920-0",
@@ -14484,7 +15386,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-2-L-1094-920-65",
@@ -14500,7 +15403,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-3-L-1094-980-0",
@@ -14516,7 +15420,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-3-L-1094-980-65",
@@ -14532,7 +15437,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-4-L-1094-1040-0",
@@ -14548,7 +15454,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-4-L-1094-1040-65",
@@ -14564,7 +15471,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-5-L-1094-1100-0",
@@ -14580,7 +15488,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-5-L-1094-1100-65",
@@ -14596,7 +15505,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-6-L-1094-1160-0",
@@ -14612,7 +15522,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-6-L-1094-1160-65",
@@ -14628,7 +15539,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-7-L-1094-1220-0",
@@ -14644,7 +15556,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-7-L-1094-1220-65",
@@ -14660,7 +15573,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-8-L-1094-1280-0",
@@ -14676,7 +15590,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-8-L-1094-1280-65",
@@ -14692,7 +15607,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-9-L-1094-1340-0",
@@ -14708,7 +15624,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-9-L-1094-1340-65",
@@ -14724,7 +15641,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-10-L-1094-1400-0",
@@ -14740,7 +15658,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-10-L-1094-1400-65",
@@ -14756,7 +15675,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-11-L-1094-1460-0",
@@ -14772,7 +15692,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-11-L-1094-1460-65",
@@ -14788,7 +15709,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-12-L-1094-1520-0",
@@ -14804,7 +15726,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-12-L-1094-1520-65",
@@ -14820,7 +15743,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-13-L-1094-1580-0",
@@ -14836,7 +15760,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-13-L-1094-1580-65",
@@ -14852,7 +15777,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-14-L-1094-1640-0",
@@ -14868,7 +15794,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-14-L-1094-1640-65",
@@ -14884,7 +15811,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-15-L-1094-1700-0",
@@ -14900,7 +15828,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-15-L-1094-1700-65",
@@ -14916,7 +15845,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-16-L-1094-1760-0",
@@ -14932,7 +15862,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-16-L-1094-1760-65",
@@ -14948,7 +15879,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-17-L-1094-1820-0",
@@ -14964,7 +15896,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-17-L-1094-1820-65",
@@ -14980,7 +15913,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-18-L-1094-1880-0",
@@ -14996,7 +15930,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-18-L-1094-1880-65",
@@ -15012,7 +15947,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-19-L-1094-1940-0",
@@ -15028,7 +15964,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-19-L-1094-1940-65",
@@ -15044,7 +15981,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-20-L-1094-2000-0",
@@ -15060,7 +15998,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-20-L-1094-2000-65",
@@ -15076,7 +16015,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-21-L-1094-2060-0",
@@ -15092,7 +16032,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-21-L-1094-2060-65",
@@ -15108,7 +16049,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-22-L-1094-2120-0",
@@ -15124,7 +16066,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-22-L-1094-2120-65",
@@ -15140,7 +16083,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-23-L-1094-2180-0",
@@ -15156,7 +16100,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-23-L-1094-2180-65",
@@ -15172,7 +16117,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-24-L-1094-2240-0",
@@ -15188,7 +16134,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-24-L-1094-2240-65",
@@ -15204,7 +16151,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-25-L-1094-2300-0",
@@ -15220,7 +16168,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-25-L-1094-2300-65",
@@ -15236,7 +16185,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-26-L-1094-2360-0",
@@ -15252,7 +16202,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-26-L-1094-2360-65",
@@ -15268,7 +16219,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-27-L-1094-2420-0",
@@ -15284,7 +16236,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-27-L-1094-2420-65",
@@ -15300,7 +16253,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-28-L-1094-2480-0",
@@ -15316,7 +16270,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-28-L-1094-2480-65",
@@ -15332,7 +16287,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-29-L-1094-2540-0",
@@ -15348,7 +16304,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-29-L-1094-2540-65",
@@ -15364,7 +16321,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-30-L-1094-2600-0",
@@ -15380,7 +16338,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-30-L-1094-2600-65",
@@ -15396,7 +16355,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-31-L-1094-2660-0",
@@ -15412,7 +16372,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-31-L-1094-2660-65",
@@ -15428,7 +16389,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-32-L-1094-2720-0",
@@ -15444,7 +16406,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-32-L-1094-2720-65",
@@ -15460,7 +16423,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-33-L-1094-2780-0",
@@ -15476,7 +16440,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-33-L-1094-2780-65",
@@ -15492,7 +16457,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-34-L-1094-2840-0",
@@ -15508,7 +16474,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-34-L-1094-2840-65",
@@ -15524,7 +16491,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-35-L-1094-2900-0",
@@ -15540,7 +16508,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-35-L-1094-2900-65",
@@ -15556,7 +16525,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-36-L-1094-2960-0",
@@ -15572,7 +16542,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-36-L-1094-2960-65",
@@ -15588,7 +16559,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-37-L-1094-3020-0",
@@ -15604,7 +16576,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-37-L-1094-3020-65",
@@ -15620,7 +16593,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-38-L-1094-3080-0",
@@ -15636,7 +16610,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-38-L-1094-3080-65",
@@ -15652,7 +16627,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-39-L-1094-3140-0",
@@ -15668,7 +16644,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-39-L-1094-3140-65",
@@ -15684,7 +16661,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-40-L-1094-3200-0",
@@ -15700,7 +16678,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-40-L-1094-3200-65",
@@ -15716,7 +16695,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-41-L-1094-3260-0",
@@ -15732,7 +16712,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-41-L-1094-3260-65",
@@ -15748,7 +16729,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-42-L-1094-3320-0",
@@ -15764,7 +16746,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-42-L-1094-3320-65",
@@ -15780,7 +16763,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-43-L-1094-3380-0",
@@ -15796,7 +16780,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-43-L-1094-3380-65",
@@ -15812,7 +16797,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-44-L-1094-3440-0",
@@ -15828,7 +16814,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-44-L-1094-3440-65",
@@ -15844,7 +16831,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-45-L-1094-3500-0",
@@ -15860,7 +16848,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-45-L-1094-3500-65",
@@ -15876,7 +16865,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-46-L-1094-3560-0",
@@ -15892,7 +16882,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-46-L-1094-3560-65",
@@ -15908,7 +16899,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-47-L-1094-3620-0",
@@ -15924,7 +16916,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-47-L-1094-3620-65",
@@ -15940,7 +16933,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-48-L-1094-3680-0",
@@ -15956,7 +16950,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-48-L-1094-3680-65",
@@ -15972,7 +16967,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-49-L-1094-3740-0",
@@ -15988,7 +16984,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-49-L-1094-3740-65",
@@ -16004,7 +17001,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A5-50-L-1094-3800-0",
@@ -16020,7 +17018,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1054
       },
       {
         "location": "A5-50-L-1094-3800-65",
@@ -16036,7 +17035,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1054
       },
       {
         "location": "A6-1-R-1144-860-0",
@@ -16052,7 +17052,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-1-R-1144-860-65",
@@ -16068,7 +17069,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-2-R-1144-920-0",
@@ -16084,7 +17086,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-2-R-1144-920-65",
@@ -16100,7 +17103,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-3-R-1144-980-0",
@@ -16116,7 +17120,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-3-R-1144-980-65",
@@ -16132,7 +17137,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-4-R-1144-1040-0",
@@ -16148,7 +17154,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-4-R-1144-1040-65",
@@ -16164,7 +17171,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-5-R-1144-1100-0",
@@ -16180,7 +17188,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-5-R-1144-1100-65",
@@ -16196,7 +17205,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-6-R-1144-1160-0",
@@ -16212,7 +17222,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-6-R-1144-1160-65",
@@ -16228,7 +17239,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-7-R-1144-1220-0",
@@ -16244,7 +17256,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-7-R-1144-1220-65",
@@ -16260,7 +17273,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-8-R-1144-1280-0",
@@ -16276,7 +17290,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-8-R-1144-1280-65",
@@ -16292,7 +17307,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-9-R-1144-1340-0",
@@ -16308,7 +17324,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-9-R-1144-1340-65",
@@ -16324,7 +17341,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-10-R-1144-1400-0",
@@ -16340,7 +17358,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-10-R-1144-1400-65",
@@ -16356,7 +17375,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-11-R-1144-1460-0",
@@ -16372,7 +17392,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-11-R-1144-1460-65",
@@ -16388,7 +17409,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-12-R-1144-1520-0",
@@ -16404,7 +17426,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-12-R-1144-1520-65",
@@ -16420,7 +17443,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-13-R-1144-1580-0",
@@ -16436,7 +17460,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-13-R-1144-1580-65",
@@ -16452,7 +17477,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-14-R-1144-1640-0",
@@ -16468,7 +17494,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-14-R-1144-1640-65",
@@ -16484,7 +17511,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-15-R-1144-1700-0",
@@ -16500,7 +17528,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-15-R-1144-1700-65",
@@ -16516,7 +17545,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-16-R-1144-1760-0",
@@ -16532,7 +17562,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-16-R-1144-1760-65",
@@ -16548,7 +17579,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-17-R-1144-1820-0",
@@ -16564,7 +17596,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-17-R-1144-1820-65",
@@ -16580,7 +17613,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-18-R-1144-1880-0",
@@ -16596,7 +17630,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-18-R-1144-1880-65",
@@ -16612,7 +17647,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-19-R-1144-1940-0",
@@ -16628,7 +17664,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-19-R-1144-1940-65",
@@ -16644,7 +17681,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-20-R-1144-2000-0",
@@ -16660,7 +17698,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-20-R-1144-2000-65",
@@ -16676,7 +17715,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-21-R-1144-2060-0",
@@ -16692,7 +17732,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-21-R-1144-2060-65",
@@ -16708,7 +17749,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-22-R-1144-2120-0",
@@ -16724,7 +17766,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-22-R-1144-2120-65",
@@ -16740,7 +17783,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-23-R-1144-2180-0",
@@ -16756,7 +17800,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-23-R-1144-2180-65",
@@ -16772,7 +17817,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-24-R-1144-2240-0",
@@ -16788,7 +17834,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-24-R-1144-2240-65",
@@ -16804,7 +17851,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-25-R-1144-2300-0",
@@ -16820,7 +17868,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-25-R-1144-2300-65",
@@ -16836,7 +17885,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-26-R-1144-2360-0",
@@ -16852,7 +17902,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-26-R-1144-2360-65",
@@ -16868,7 +17919,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-27-R-1144-2420-0",
@@ -16884,7 +17936,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-27-R-1144-2420-65",
@@ -16900,7 +17953,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-28-R-1144-2480-0",
@@ -16916,7 +17970,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-28-R-1144-2480-65",
@@ -16932,7 +17987,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-29-R-1144-2540-0",
@@ -16948,7 +18004,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-29-R-1144-2540-65",
@@ -16964,7 +18021,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-30-R-1144-2600-0",
@@ -16980,7 +18038,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-30-R-1144-2600-65",
@@ -16996,7 +18055,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-31-R-1144-2660-0",
@@ -17012,7 +18072,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-31-R-1144-2660-65",
@@ -17028,7 +18089,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-32-R-1144-2720-0",
@@ -17044,7 +18106,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-32-R-1144-2720-65",
@@ -17060,7 +18123,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-33-R-1144-2780-0",
@@ -17076,7 +18140,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-33-R-1144-2780-65",
@@ -17092,7 +18157,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-34-R-1144-2840-0",
@@ -17108,7 +18174,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-34-R-1144-2840-65",
@@ -17124,7 +18191,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-35-R-1144-2900-0",
@@ -17140,7 +18208,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-35-R-1144-2900-65",
@@ -17156,7 +18225,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-36-R-1144-2960-0",
@@ -17172,7 +18242,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-36-R-1144-2960-65",
@@ -17188,7 +18259,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-37-R-1144-3020-0",
@@ -17204,7 +18276,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-37-R-1144-3020-65",
@@ -17220,7 +18293,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-38-R-1144-3080-0",
@@ -17236,7 +18310,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-38-R-1144-3080-65",
@@ -17252,7 +18327,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-39-R-1144-3140-0",
@@ -17268,7 +18344,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-39-R-1144-3140-65",
@@ -17284,7 +18361,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-40-R-1144-3200-0",
@@ -17300,7 +18378,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-40-R-1144-3200-65",
@@ -17316,7 +18395,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-41-R-1144-3260-0",
@@ -17332,7 +18412,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-41-R-1144-3260-65",
@@ -17348,7 +18429,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-42-R-1144-3320-0",
@@ -17364,7 +18446,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-42-R-1144-3320-65",
@@ -17380,7 +18463,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-43-R-1144-3380-0",
@@ -17396,7 +18480,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-43-R-1144-3380-65",
@@ -17412,7 +18497,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-44-R-1144-3440-0",
@@ -17428,7 +18514,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-44-R-1144-3440-65",
@@ -17444,7 +18531,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-45-R-1144-3500-0",
@@ -17460,7 +18548,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-45-R-1144-3500-65",
@@ -17476,7 +18565,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-46-R-1144-3560-0",
@@ -17492,7 +18582,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-46-R-1144-3560-65",
@@ -17508,7 +18599,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-47-R-1144-3620-0",
@@ -17524,7 +18616,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-47-R-1144-3620-65",
@@ -17540,7 +18633,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-48-R-1144-3680-0",
@@ -17556,7 +18650,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-48-R-1144-3680-65",
@@ -17572,7 +18667,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-49-R-1144-3740-0",
@@ -17588,7 +18684,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-49-R-1144-3740-65",
@@ -17604,7 +18701,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-50-R-1144-3800-0",
@@ -17620,7 +18718,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-50-R-1144-3800-65",
@@ -17636,7 +18735,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-1-L-1324-860-0",
@@ -17652,7 +18752,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-1-L-1324-860-65",
@@ -17668,7 +18769,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-2-L-1324-920-0",
@@ -17684,7 +18786,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-2-L-1324-920-65",
@@ -17700,7 +18803,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-3-L-1324-980-0",
@@ -17716,7 +18820,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-3-L-1324-980-65",
@@ -17732,7 +18837,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-4-L-1324-1040-0",
@@ -17748,7 +18854,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-4-L-1324-1040-65",
@@ -17764,7 +18871,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-5-L-1324-1100-0",
@@ -17780,7 +18888,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-5-L-1324-1100-65",
@@ -17796,7 +18905,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-6-L-1324-1160-0",
@@ -17812,7 +18922,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-6-L-1324-1160-65",
@@ -17828,7 +18939,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-7-L-1324-1220-0",
@@ -17844,7 +18956,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-7-L-1324-1220-65",
@@ -17860,7 +18973,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-8-L-1324-1280-0",
@@ -17876,7 +18990,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-8-L-1324-1280-65",
@@ -17892,7 +19007,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-9-L-1324-1340-0",
@@ -17908,7 +19024,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-9-L-1324-1340-65",
@@ -17924,7 +19041,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-10-L-1324-1400-0",
@@ -17940,7 +19058,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-10-L-1324-1400-65",
@@ -17956,7 +19075,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-11-L-1324-1460-0",
@@ -17972,7 +19092,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-11-L-1324-1460-65",
@@ -17988,7 +19109,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-12-L-1324-1520-0",
@@ -18004,7 +19126,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-12-L-1324-1520-65",
@@ -18020,7 +19143,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-13-L-1324-1580-0",
@@ -18036,7 +19160,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-13-L-1324-1580-65",
@@ -18052,7 +19177,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-14-L-1324-1640-0",
@@ -18068,7 +19194,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-14-L-1324-1640-65",
@@ -18084,7 +19211,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-15-L-1324-1700-0",
@@ -18100,7 +19228,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-15-L-1324-1700-65",
@@ -18116,7 +19245,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-16-L-1324-1760-0",
@@ -18132,7 +19262,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-16-L-1324-1760-65",
@@ -18148,7 +19279,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-17-L-1324-1820-0",
@@ -18164,7 +19296,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-17-L-1324-1820-65",
@@ -18180,7 +19313,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-18-L-1324-1880-0",
@@ -18196,7 +19330,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-18-L-1324-1880-65",
@@ -18212,7 +19347,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-19-L-1324-1940-0",
@@ -18228,7 +19364,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-19-L-1324-1940-65",
@@ -18244,7 +19381,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-20-L-1324-2000-0",
@@ -18260,7 +19398,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-20-L-1324-2000-65",
@@ -18276,7 +19415,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-21-L-1324-2060-0",
@@ -18292,7 +19432,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-21-L-1324-2060-65",
@@ -18308,7 +19449,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-22-L-1324-2120-0",
@@ -18324,7 +19466,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-22-L-1324-2120-65",
@@ -18340,7 +19483,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-23-L-1324-2180-0",
@@ -18356,7 +19500,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-23-L-1324-2180-65",
@@ -18372,7 +19517,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-24-L-1324-2240-0",
@@ -18388,7 +19534,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-24-L-1324-2240-65",
@@ -18404,7 +19551,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-25-L-1324-2300-0",
@@ -18420,7 +19568,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-25-L-1324-2300-65",
@@ -18436,7 +19585,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-26-L-1324-2360-0",
@@ -18452,7 +19602,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-26-L-1324-2360-65",
@@ -18468,7 +19619,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-27-L-1324-2420-0",
@@ -18484,7 +19636,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-27-L-1324-2420-65",
@@ -18500,7 +19653,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-28-L-1324-2480-0",
@@ -18516,7 +19670,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-28-L-1324-2480-65",
@@ -18532,7 +19687,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-29-L-1324-2540-0",
@@ -18548,7 +19704,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-29-L-1324-2540-65",
@@ -18564,7 +19721,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-30-L-1324-2600-0",
@@ -18580,7 +19738,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-30-L-1324-2600-65",
@@ -18596,7 +19755,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-31-L-1324-2660-0",
@@ -18612,7 +19772,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-31-L-1324-2660-65",
@@ -18628,7 +19789,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-32-L-1324-2720-0",
@@ -18644,7 +19806,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-32-L-1324-2720-65",
@@ -18660,7 +19823,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-33-L-1324-2780-0",
@@ -18676,7 +19840,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-33-L-1324-2780-65",
@@ -18692,7 +19857,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-34-L-1324-2840-0",
@@ -18708,7 +19874,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-34-L-1324-2840-65",
@@ -18724,7 +19891,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-35-L-1324-2900-0",
@@ -18740,7 +19908,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-35-L-1324-2900-65",
@@ -18756,7 +19925,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-36-L-1324-2960-0",
@@ -18772,7 +19942,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-36-L-1324-2960-65",
@@ -18788,7 +19959,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-37-L-1324-3020-0",
@@ -18804,7 +19976,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-37-L-1324-3020-65",
@@ -18820,7 +19993,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-38-L-1324-3080-0",
@@ -18836,7 +20010,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-38-L-1324-3080-65",
@@ -18852,7 +20027,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-39-L-1324-3140-0",
@@ -18868,7 +20044,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-39-L-1324-3140-65",
@@ -18884,7 +20061,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-40-L-1324-3200-0",
@@ -18900,7 +20078,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-40-L-1324-3200-65",
@@ -18916,7 +20095,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-41-L-1324-3260-0",
@@ -18932,7 +20112,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-41-L-1324-3260-65",
@@ -18948,7 +20129,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-42-L-1324-3320-0",
@@ -18964,7 +20146,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-42-L-1324-3320-65",
@@ -18980,7 +20163,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-43-L-1324-3380-0",
@@ -18996,7 +20180,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-43-L-1324-3380-65",
@@ -19012,7 +20197,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-44-L-1324-3440-0",
@@ -19028,7 +20214,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-44-L-1324-3440-65",
@@ -19044,7 +20231,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-45-L-1324-3500-0",
@@ -19060,7 +20248,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-45-L-1324-3500-65",
@@ -19076,7 +20265,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-46-L-1324-3560-0",
@@ -19092,7 +20282,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-46-L-1324-3560-65",
@@ -19108,7 +20299,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-47-L-1324-3620-0",
@@ -19124,7 +20316,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-47-L-1324-3620-65",
@@ -19140,7 +20333,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-48-L-1324-3680-0",
@@ -19156,7 +20350,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-48-L-1324-3680-65",
@@ -19172,7 +20367,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-49-L-1324-3740-0",
@@ -19188,7 +20384,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-49-L-1324-3740-65",
@@ -19204,7 +20401,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A6-50-L-1324-3800-0",
@@ -19220,7 +20418,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1284
       },
       {
         "location": "A6-50-L-1324-3800-65",
@@ -19236,7 +20435,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1284
       },
       {
         "location": "A7-1-R-1374-860-0",
@@ -19252,7 +20452,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-1-R-1374-860-65",
@@ -19268,7 +20469,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-2-R-1374-920-0",
@@ -19284,7 +20486,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-2-R-1374-920-65",
@@ -19300,7 +20503,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-3-R-1374-980-0",
@@ -19316,7 +20520,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-3-R-1374-980-65",
@@ -19332,7 +20537,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-4-R-1374-1040-0",
@@ -19348,7 +20554,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-4-R-1374-1040-65",
@@ -19364,7 +20571,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-5-R-1374-1100-0",
@@ -19380,7 +20588,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-5-R-1374-1100-65",
@@ -19396,7 +20605,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-6-R-1374-1160-0",
@@ -19412,7 +20622,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-6-R-1374-1160-65",
@@ -19428,7 +20639,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-7-R-1374-1220-0",
@@ -19444,7 +20656,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-7-R-1374-1220-65",
@@ -19460,7 +20673,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-8-R-1374-1280-0",
@@ -19476,7 +20690,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-8-R-1374-1280-65",
@@ -19492,7 +20707,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-9-R-1374-1340-0",
@@ -19508,7 +20724,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-9-R-1374-1340-65",
@@ -19524,7 +20741,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-10-R-1374-1400-0",
@@ -19540,7 +20758,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-10-R-1374-1400-65",
@@ -19556,7 +20775,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-11-R-1374-1460-0",
@@ -19572,7 +20792,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-11-R-1374-1460-65",
@@ -19588,7 +20809,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-12-R-1374-1520-0",
@@ -19604,7 +20826,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-12-R-1374-1520-65",
@@ -19620,7 +20843,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-13-R-1374-1580-0",
@@ -19636,7 +20860,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-13-R-1374-1580-65",
@@ -19652,7 +20877,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-14-R-1374-1640-0",
@@ -19668,7 +20894,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-14-R-1374-1640-65",
@@ -19684,7 +20911,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-15-R-1374-1700-0",
@@ -19700,7 +20928,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-15-R-1374-1700-65",
@@ -19716,7 +20945,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-16-R-1374-1760-0",
@@ -19732,7 +20962,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-16-R-1374-1760-65",
@@ -19748,7 +20979,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-17-R-1374-1820-0",
@@ -19764,7 +20996,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-17-R-1374-1820-65",
@@ -19780,7 +21013,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-18-R-1374-1880-0",
@@ -19796,7 +21030,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-18-R-1374-1880-65",
@@ -19812,7 +21047,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-19-R-1374-1940-0",
@@ -19828,7 +21064,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-19-R-1374-1940-65",
@@ -19844,7 +21081,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-20-R-1374-2000-0",
@@ -19860,7 +21098,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-20-R-1374-2000-65",
@@ -19876,7 +21115,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-21-R-1374-2060-0",
@@ -19892,7 +21132,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-21-R-1374-2060-65",
@@ -19908,7 +21149,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-22-R-1374-2120-0",
@@ -19924,7 +21166,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-22-R-1374-2120-65",
@@ -19940,7 +21183,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-23-R-1374-2180-0",
@@ -19956,7 +21200,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-23-R-1374-2180-65",
@@ -19972,7 +21217,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-24-R-1374-2240-0",
@@ -19988,7 +21234,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-24-R-1374-2240-65",
@@ -20004,7 +21251,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-25-R-1374-2300-0",
@@ -20020,7 +21268,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-25-R-1374-2300-65",
@@ -20036,7 +21285,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-26-R-1374-2360-0",
@@ -20052,7 +21302,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-26-R-1374-2360-65",
@@ -20068,7 +21319,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-27-R-1374-2420-0",
@@ -20084,7 +21336,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-27-R-1374-2420-65",
@@ -20100,7 +21353,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-28-R-1374-2480-0",
@@ -20116,7 +21370,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-28-R-1374-2480-65",
@@ -20132,7 +21387,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-29-R-1374-2540-0",
@@ -20148,7 +21404,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-29-R-1374-2540-65",
@@ -20164,7 +21421,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-30-R-1374-2600-0",
@@ -20180,7 +21438,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-30-R-1374-2600-65",
@@ -20196,7 +21455,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-31-R-1374-2660-0",
@@ -20212,7 +21472,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-31-R-1374-2660-65",
@@ -20228,7 +21489,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-32-R-1374-2720-0",
@@ -20244,7 +21506,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-32-R-1374-2720-65",
@@ -20260,7 +21523,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-33-R-1374-2780-0",
@@ -20276,7 +21540,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-33-R-1374-2780-65",
@@ -20292,7 +21557,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-34-R-1374-2840-0",
@@ -20308,7 +21574,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-34-R-1374-2840-65",
@@ -20324,7 +21591,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-35-R-1374-2900-0",
@@ -20340,7 +21608,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-35-R-1374-2900-65",
@@ -20356,7 +21625,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-36-R-1374-2960-0",
@@ -20372,7 +21642,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-36-R-1374-2960-65",
@@ -20388,7 +21659,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-37-R-1374-3020-0",
@@ -20404,7 +21676,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-37-R-1374-3020-65",
@@ -20420,7 +21693,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-38-R-1374-3080-0",
@@ -20436,7 +21710,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-38-R-1374-3080-65",
@@ -20452,7 +21727,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-39-R-1374-3140-0",
@@ -20468,7 +21744,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-39-R-1374-3140-65",
@@ -20484,7 +21761,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-40-R-1374-3200-0",
@@ -20500,7 +21778,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-40-R-1374-3200-65",
@@ -20516,7 +21795,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-41-R-1374-3260-0",
@@ -20532,7 +21812,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-41-R-1374-3260-65",
@@ -20548,7 +21829,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-42-R-1374-3320-0",
@@ -20564,7 +21846,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-42-R-1374-3320-65",
@@ -20580,7 +21863,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-43-R-1374-3380-0",
@@ -20596,7 +21880,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-43-R-1374-3380-65",
@@ -20612,7 +21897,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-44-R-1374-3440-0",
@@ -20628,7 +21914,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-44-R-1374-3440-65",
@@ -20644,7 +21931,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-45-R-1374-3500-0",
@@ -20660,7 +21948,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-45-R-1374-3500-65",
@@ -20676,7 +21965,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-46-R-1374-3560-0",
@@ -20692,7 +21982,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-46-R-1374-3560-65",
@@ -20708,7 +21999,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-47-R-1374-3620-0",
@@ -20724,7 +22016,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-47-R-1374-3620-65",
@@ -20740,7 +22033,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-48-R-1374-3680-0",
@@ -20756,7 +22050,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-48-R-1374-3680-65",
@@ -20772,7 +22067,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-49-R-1374-3740-0",
@@ -20788,7 +22084,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-49-R-1374-3740-65",
@@ -20804,7 +22101,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-50-R-1374-3800-0",
@@ -20820,7 +22118,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-50-R-1374-3800-65",
@@ -20836,7 +22135,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-1-L-1554-860-0",
@@ -20852,7 +22152,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-1-L-1554-860-65",
@@ -20868,7 +22169,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-2-L-1554-920-0",
@@ -20884,7 +22186,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-2-L-1554-920-65",
@@ -20900,7 +22203,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-3-L-1554-980-0",
@@ -20916,7 +22220,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-3-L-1554-980-65",
@@ -20932,7 +22237,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-4-L-1554-1040-0",
@@ -20948,7 +22254,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-4-L-1554-1040-65",
@@ -20964,7 +22271,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-5-L-1554-1100-0",
@@ -20980,7 +22288,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-5-L-1554-1100-65",
@@ -20996,7 +22305,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-6-L-1554-1160-0",
@@ -21012,7 +22322,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-6-L-1554-1160-65",
@@ -21028,7 +22339,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-7-L-1554-1220-0",
@@ -21044,7 +22356,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-7-L-1554-1220-65",
@@ -21060,7 +22373,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-8-L-1554-1280-0",
@@ -21076,7 +22390,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-8-L-1554-1280-65",
@@ -21092,7 +22407,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-9-L-1554-1340-0",
@@ -21108,7 +22424,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-9-L-1554-1340-65",
@@ -21124,7 +22441,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-10-L-1554-1400-0",
@@ -21140,7 +22458,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-10-L-1554-1400-65",
@@ -21156,7 +22475,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-11-L-1554-1460-0",
@@ -21172,7 +22492,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-11-L-1554-1460-65",
@@ -21188,7 +22509,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-12-L-1554-1520-0",
@@ -21204,7 +22526,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-12-L-1554-1520-65",
@@ -21220,7 +22543,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-13-L-1554-1580-0",
@@ -21236,7 +22560,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-13-L-1554-1580-65",
@@ -21252,7 +22577,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-14-L-1554-1640-0",
@@ -21268,7 +22594,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-14-L-1554-1640-65",
@@ -21284,7 +22611,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-15-L-1554-1700-0",
@@ -21300,7 +22628,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-15-L-1554-1700-65",
@@ -21316,7 +22645,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-16-L-1554-1760-0",
@@ -21332,7 +22662,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-16-L-1554-1760-65",
@@ -21348,7 +22679,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-17-L-1554-1820-0",
@@ -21364,7 +22696,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-17-L-1554-1820-65",
@@ -21380,7 +22713,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-18-L-1554-1880-0",
@@ -21396,7 +22730,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-18-L-1554-1880-65",
@@ -21412,7 +22747,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-19-L-1554-1940-0",
@@ -21428,7 +22764,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-19-L-1554-1940-65",
@@ -21444,7 +22781,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-20-L-1554-2000-0",
@@ -21460,7 +22798,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-20-L-1554-2000-65",
@@ -21476,7 +22815,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-21-L-1554-2060-0",
@@ -21492,7 +22832,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-21-L-1554-2060-65",
@@ -21508,7 +22849,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-22-L-1554-2120-0",
@@ -21524,7 +22866,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-22-L-1554-2120-65",
@@ -21540,7 +22883,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-23-L-1554-2180-0",
@@ -21556,7 +22900,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-23-L-1554-2180-65",
@@ -21572,7 +22917,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-24-L-1554-2240-0",
@@ -21588,7 +22934,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-24-L-1554-2240-65",
@@ -21604,7 +22951,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-25-L-1554-2300-0",
@@ -21620,7 +22968,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-25-L-1554-2300-65",
@@ -21636,7 +22985,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-26-L-1554-2360-0",
@@ -21652,7 +23002,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-26-L-1554-2360-65",
@@ -21668,7 +23019,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-27-L-1554-2420-0",
@@ -21684,7 +23036,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-27-L-1554-2420-65",
@@ -21700,7 +23053,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-28-L-1554-2480-0",
@@ -21716,7 +23070,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-28-L-1554-2480-65",
@@ -21732,7 +23087,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-29-L-1554-2540-0",
@@ -21748,7 +23104,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-29-L-1554-2540-65",
@@ -21764,7 +23121,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-30-L-1554-2600-0",
@@ -21780,7 +23138,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-30-L-1554-2600-65",
@@ -21796,7 +23155,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-31-L-1554-2660-0",
@@ -21812,7 +23172,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-31-L-1554-2660-65",
@@ -21828,7 +23189,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-32-L-1554-2720-0",
@@ -21844,7 +23206,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-32-L-1554-2720-65",
@@ -21860,7 +23223,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-33-L-1554-2780-0",
@@ -21876,7 +23240,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-33-L-1554-2780-65",
@@ -21892,7 +23257,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-34-L-1554-2840-0",
@@ -21908,7 +23274,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-34-L-1554-2840-65",
@@ -21924,7 +23291,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-35-L-1554-2900-0",
@@ -21940,7 +23308,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-35-L-1554-2900-65",
@@ -21956,7 +23325,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-36-L-1554-2960-0",
@@ -21972,7 +23342,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-36-L-1554-2960-65",
@@ -21988,7 +23359,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-37-L-1554-3020-0",
@@ -22004,7 +23376,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-37-L-1554-3020-65",
@@ -22020,7 +23393,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-38-L-1554-3080-0",
@@ -22036,7 +23410,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-38-L-1554-3080-65",
@@ -22052,7 +23427,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-39-L-1554-3140-0",
@@ -22068,7 +23444,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-39-L-1554-3140-65",
@@ -22084,7 +23461,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-40-L-1554-3200-0",
@@ -22100,7 +23478,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-40-L-1554-3200-65",
@@ -22116,7 +23495,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-41-L-1554-3260-0",
@@ -22132,7 +23512,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-41-L-1554-3260-65",
@@ -22148,7 +23529,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-42-L-1554-3320-0",
@@ -22164,7 +23546,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-42-L-1554-3320-65",
@@ -22180,7 +23563,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-43-L-1554-3380-0",
@@ -22196,7 +23580,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-43-L-1554-3380-65",
@@ -22212,7 +23597,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-44-L-1554-3440-0",
@@ -22228,7 +23614,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-44-L-1554-3440-65",
@@ -22244,7 +23631,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-45-L-1554-3500-0",
@@ -22260,7 +23648,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-45-L-1554-3500-65",
@@ -22276,7 +23665,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-46-L-1554-3560-0",
@@ -22292,7 +23682,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-46-L-1554-3560-65",
@@ -22308,7 +23699,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-47-L-1554-3620-0",
@@ -22324,7 +23716,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-47-L-1554-3620-65",
@@ -22340,7 +23733,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-48-L-1554-3680-0",
@@ -22356,7 +23750,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-48-L-1554-3680-65",
@@ -22372,7 +23767,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-49-L-1554-3740-0",
@@ -22388,7 +23784,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-49-L-1554-3740-65",
@@ -22404,7 +23801,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A7-50-L-1554-3800-0",
@@ -22420,7 +23818,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1514
       },
       {
         "location": "A7-50-L-1554-3800-65",
@@ -22436,7 +23835,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1514
       },
       {
         "location": "A8-1-R-1604-860-0",
@@ -22452,7 +23852,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-1-R-1604-860-65",
@@ -22468,7 +23869,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-2-R-1604-920-0",
@@ -22484,7 +23886,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-2-R-1604-920-65",
@@ -22500,7 +23903,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-3-R-1604-980-0",
@@ -22516,7 +23920,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-3-R-1604-980-65",
@@ -22532,7 +23937,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-4-R-1604-1040-0",
@@ -22548,7 +23954,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-4-R-1604-1040-65",
@@ -22564,7 +23971,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-5-R-1604-1100-0",
@@ -22580,7 +23988,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-5-R-1604-1100-65",
@@ -22596,7 +24005,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-6-R-1604-1160-0",
@@ -22612,7 +24022,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-6-R-1604-1160-65",
@@ -22628,7 +24039,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-7-R-1604-1220-0",
@@ -22644,7 +24056,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-7-R-1604-1220-65",
@@ -22660,7 +24073,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-8-R-1604-1280-0",
@@ -22676,7 +24090,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-8-R-1604-1280-65",
@@ -22692,7 +24107,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-9-R-1604-1340-0",
@@ -22708,7 +24124,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-9-R-1604-1340-65",
@@ -22724,7 +24141,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-10-R-1604-1400-0",
@@ -22740,7 +24158,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-10-R-1604-1400-65",
@@ -22756,7 +24175,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-11-R-1604-1460-0",
@@ -22772,7 +24192,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-11-R-1604-1460-65",
@@ -22788,7 +24209,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-12-R-1604-1520-0",
@@ -22804,7 +24226,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-12-R-1604-1520-65",
@@ -22820,7 +24243,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-13-R-1604-1580-0",
@@ -22836,7 +24260,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-13-R-1604-1580-65",
@@ -22852,7 +24277,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-14-R-1604-1640-0",
@@ -22868,7 +24294,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-14-R-1604-1640-65",
@@ -22884,7 +24311,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-15-R-1604-1700-0",
@@ -22900,7 +24328,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-15-R-1604-1700-65",
@@ -22916,7 +24345,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-16-R-1604-1760-0",
@@ -22932,7 +24362,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-16-R-1604-1760-65",
@@ -22948,7 +24379,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-17-R-1604-1820-0",
@@ -22964,7 +24396,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-17-R-1604-1820-65",
@@ -22980,7 +24413,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-18-R-1604-1880-0",
@@ -22996,7 +24430,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-18-R-1604-1880-65",
@@ -23012,7 +24447,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-19-R-1604-1940-0",
@@ -23028,7 +24464,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-19-R-1604-1940-65",
@@ -23044,7 +24481,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-20-R-1604-2000-0",
@@ -23060,7 +24498,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-20-R-1604-2000-65",
@@ -23076,7 +24515,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-21-R-1604-2060-0",
@@ -23092,7 +24532,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-21-R-1604-2060-65",
@@ -23108,7 +24549,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-22-R-1604-2120-0",
@@ -23124,7 +24566,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-22-R-1604-2120-65",
@@ -23140,7 +24583,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-23-R-1604-2180-0",
@@ -23156,7 +24600,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-23-R-1604-2180-65",
@@ -23172,7 +24617,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-24-R-1604-2240-0",
@@ -23188,7 +24634,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-24-R-1604-2240-65",
@@ -23204,7 +24651,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-25-R-1604-2300-0",
@@ -23220,7 +24668,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-25-R-1604-2300-65",
@@ -23236,7 +24685,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-26-R-1604-2360-0",
@@ -23252,7 +24702,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-26-R-1604-2360-65",
@@ -23268,7 +24719,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-27-R-1604-2420-0",
@@ -23284,7 +24736,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-27-R-1604-2420-65",
@@ -23300,7 +24753,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-28-R-1604-2480-0",
@@ -23316,7 +24770,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-28-R-1604-2480-65",
@@ -23332,7 +24787,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-29-R-1604-2540-0",
@@ -23348,7 +24804,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-29-R-1604-2540-65",
@@ -23364,7 +24821,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-30-R-1604-2600-0",
@@ -23380,7 +24838,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-30-R-1604-2600-65",
@@ -23396,7 +24855,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-31-R-1604-2660-0",
@@ -23412,7 +24872,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-31-R-1604-2660-65",
@@ -23428,7 +24889,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-32-R-1604-2720-0",
@@ -23444,7 +24906,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-32-R-1604-2720-65",
@@ -23460,7 +24923,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-33-R-1604-2780-0",
@@ -23476,7 +24940,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-33-R-1604-2780-65",
@@ -23492,7 +24957,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-34-R-1604-2840-0",
@@ -23508,7 +24974,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-34-R-1604-2840-65",
@@ -23524,7 +24991,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-35-R-1604-2900-0",
@@ -23540,7 +25008,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-35-R-1604-2900-65",
@@ -23556,7 +25025,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-36-R-1604-2960-0",
@@ -23572,7 +25042,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-36-R-1604-2960-65",
@@ -23588,7 +25059,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-37-R-1604-3020-0",
@@ -23604,7 +25076,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-37-R-1604-3020-65",
@@ -23620,7 +25093,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-38-R-1604-3080-0",
@@ -23636,7 +25110,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-38-R-1604-3080-65",
@@ -23652,7 +25127,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-39-R-1604-3140-0",
@@ -23668,7 +25144,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-39-R-1604-3140-65",
@@ -23684,7 +25161,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-40-R-1604-3200-0",
@@ -23700,7 +25178,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-40-R-1604-3200-65",
@@ -23716,7 +25195,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-41-R-1604-3260-0",
@@ -23732,7 +25212,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-41-R-1604-3260-65",
@@ -23748,7 +25229,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-42-R-1604-3320-0",
@@ -23764,7 +25246,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-42-R-1604-3320-65",
@@ -23780,7 +25263,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-43-R-1604-3380-0",
@@ -23796,7 +25280,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-43-R-1604-3380-65",
@@ -23812,7 +25297,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-44-R-1604-3440-0",
@@ -23828,7 +25314,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-44-R-1604-3440-65",
@@ -23844,7 +25331,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-45-R-1604-3500-0",
@@ -23860,7 +25348,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-45-R-1604-3500-65",
@@ -23876,7 +25365,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-46-R-1604-3560-0",
@@ -23892,7 +25382,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-46-R-1604-3560-65",
@@ -23908,7 +25399,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-47-R-1604-3620-0",
@@ -23924,7 +25416,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-47-R-1604-3620-65",
@@ -23940,7 +25433,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-48-R-1604-3680-0",
@@ -23956,7 +25450,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-48-R-1604-3680-65",
@@ -23972,7 +25467,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-49-R-1604-3740-0",
@@ -23988,7 +25484,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-49-R-1604-3740-65",
@@ -24004,7 +25501,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-50-R-1604-3800-0",
@@ -24020,7 +25518,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-50-R-1604-3800-65",
@@ -24036,7 +25535,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-1-L-1784-860-0",
@@ -24052,7 +25552,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-1-L-1784-860-65",
@@ -24068,7 +25569,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-2-L-1784-920-0",
@@ -24084,7 +25586,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-2-L-1784-920-65",
@@ -24100,7 +25603,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-3-L-1784-980-0",
@@ -24116,7 +25620,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-3-L-1784-980-65",
@@ -24132,7 +25637,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-4-L-1784-1040-0",
@@ -24148,7 +25654,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-4-L-1784-1040-65",
@@ -24164,7 +25671,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-5-L-1784-1100-0",
@@ -24180,7 +25688,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-5-L-1784-1100-65",
@@ -24196,7 +25705,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-6-L-1784-1160-0",
@@ -24212,7 +25722,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-6-L-1784-1160-65",
@@ -24228,7 +25739,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-7-L-1784-1220-0",
@@ -24244,7 +25756,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-7-L-1784-1220-65",
@@ -24260,7 +25773,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-8-L-1784-1280-0",
@@ -24276,7 +25790,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-8-L-1784-1280-65",
@@ -24292,7 +25807,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-9-L-1784-1340-0",
@@ -24308,7 +25824,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-9-L-1784-1340-65",
@@ -24324,7 +25841,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-10-L-1784-1400-0",
@@ -24340,7 +25858,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-10-L-1784-1400-65",
@@ -24356,7 +25875,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-11-L-1784-1460-0",
@@ -24372,7 +25892,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-11-L-1784-1460-65",
@@ -24388,7 +25909,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-12-L-1784-1520-0",
@@ -24404,7 +25926,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-12-L-1784-1520-65",
@@ -24420,7 +25943,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-13-L-1784-1580-0",
@@ -24436,7 +25960,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-13-L-1784-1580-65",
@@ -24452,7 +25977,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-14-L-1784-1640-0",
@@ -24468,7 +25994,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-14-L-1784-1640-65",
@@ -24484,7 +26011,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-15-L-1784-1700-0",
@@ -24500,7 +26028,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-15-L-1784-1700-65",
@@ -24516,7 +26045,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-16-L-1784-1760-0",
@@ -24532,7 +26062,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-16-L-1784-1760-65",
@@ -24548,7 +26079,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-17-L-1784-1820-0",
@@ -24564,7 +26096,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-17-L-1784-1820-65",
@@ -24580,7 +26113,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-18-L-1784-1880-0",
@@ -24596,7 +26130,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-18-L-1784-1880-65",
@@ -24612,7 +26147,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-19-L-1784-1940-0",
@@ -24628,7 +26164,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-19-L-1784-1940-65",
@@ -24644,7 +26181,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-20-L-1784-2000-0",
@@ -24660,7 +26198,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-20-L-1784-2000-65",
@@ -24676,7 +26215,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-21-L-1784-2060-0",
@@ -24692,7 +26232,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-21-L-1784-2060-65",
@@ -24708,7 +26249,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-22-L-1784-2120-0",
@@ -24724,7 +26266,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-22-L-1784-2120-65",
@@ -24740,7 +26283,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-23-L-1784-2180-0",
@@ -24756,7 +26300,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-23-L-1784-2180-65",
@@ -24772,7 +26317,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-24-L-1784-2240-0",
@@ -24788,7 +26334,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-24-L-1784-2240-65",
@@ -24804,7 +26351,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-25-L-1784-2300-0",
@@ -24820,7 +26368,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-25-L-1784-2300-65",
@@ -24836,7 +26385,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-26-L-1784-2360-0",
@@ -24852,7 +26402,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-26-L-1784-2360-65",
@@ -24868,7 +26419,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-27-L-1784-2420-0",
@@ -24884,7 +26436,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-27-L-1784-2420-65",
@@ -24900,7 +26453,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-28-L-1784-2480-0",
@@ -24916,7 +26470,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-28-L-1784-2480-65",
@@ -24932,7 +26487,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-29-L-1784-2540-0",
@@ -24948,7 +26504,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-29-L-1784-2540-65",
@@ -24964,7 +26521,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-30-L-1784-2600-0",
@@ -24980,7 +26538,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-30-L-1784-2600-65",
@@ -24996,7 +26555,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-31-L-1784-2660-0",
@@ -25012,7 +26572,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-31-L-1784-2660-65",
@@ -25028,7 +26589,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-32-L-1784-2720-0",
@@ -25044,7 +26606,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-32-L-1784-2720-65",
@@ -25060,7 +26623,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-33-L-1784-2780-0",
@@ -25076,7 +26640,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-33-L-1784-2780-65",
@@ -25092,7 +26657,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-34-L-1784-2840-0",
@@ -25108,7 +26674,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-34-L-1784-2840-65",
@@ -25124,7 +26691,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-35-L-1784-2900-0",
@@ -25140,7 +26708,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-35-L-1784-2900-65",
@@ -25156,7 +26725,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-36-L-1784-2960-0",
@@ -25172,7 +26742,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-36-L-1784-2960-65",
@@ -25188,7 +26759,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-37-L-1784-3020-0",
@@ -25204,7 +26776,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-37-L-1784-3020-65",
@@ -25220,7 +26793,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-38-L-1784-3080-0",
@@ -25236,7 +26810,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-38-L-1784-3080-65",
@@ -25252,7 +26827,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-39-L-1784-3140-0",
@@ -25268,7 +26844,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-39-L-1784-3140-65",
@@ -25284,7 +26861,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-40-L-1784-3200-0",
@@ -25300,7 +26878,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-40-L-1784-3200-65",
@@ -25316,7 +26895,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-41-L-1784-3260-0",
@@ -25332,7 +26912,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-41-L-1784-3260-65",
@@ -25348,7 +26929,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-42-L-1784-3320-0",
@@ -25364,7 +26946,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-42-L-1784-3320-65",
@@ -25380,7 +26963,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-43-L-1784-3380-0",
@@ -25396,7 +26980,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-43-L-1784-3380-65",
@@ -25412,7 +26997,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-44-L-1784-3440-0",
@@ -25428,7 +27014,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-44-L-1784-3440-65",
@@ -25444,7 +27031,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-45-L-1784-3500-0",
@@ -25460,7 +27048,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-45-L-1784-3500-65",
@@ -25476,7 +27065,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-46-L-1784-3560-0",
@@ -25492,7 +27082,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-46-L-1784-3560-65",
@@ -25508,7 +27099,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-47-L-1784-3620-0",
@@ -25524,7 +27116,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-47-L-1784-3620-65",
@@ -25540,7 +27133,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-48-L-1784-3680-0",
@@ -25556,7 +27150,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-48-L-1784-3680-65",
@@ -25572,7 +27167,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-49-L-1784-3740-0",
@@ -25588,7 +27184,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-49-L-1784-3740-65",
@@ -25604,7 +27201,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A8-50-L-1784-3800-0",
@@ -25620,7 +27218,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1744
       },
       {
         "location": "A8-50-L-1784-3800-65",
@@ -25636,7 +27235,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1744
       },
       {
         "location": "A9-1-R-1834-860-0",
@@ -25652,7 +27252,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-1-R-1834-860-65",
@@ -25668,7 +27269,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-2-R-1834-920-0",
@@ -25684,7 +27286,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-2-R-1834-920-65",
@@ -25700,7 +27303,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-3-R-1834-980-0",
@@ -25716,7 +27320,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-3-R-1834-980-65",
@@ -25732,7 +27337,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-4-R-1834-1040-0",
@@ -25748,7 +27354,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-4-R-1834-1040-65",
@@ -25764,7 +27371,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-5-R-1834-1100-0",
@@ -25780,7 +27388,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-5-R-1834-1100-65",
@@ -25796,7 +27405,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-6-R-1834-1160-0",
@@ -25812,7 +27422,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-6-R-1834-1160-65",
@@ -25828,7 +27439,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-7-R-1834-1220-0",
@@ -25844,7 +27456,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-7-R-1834-1220-65",
@@ -25860,7 +27473,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-8-R-1834-1280-0",
@@ -25876,7 +27490,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-8-R-1834-1280-65",
@@ -25892,7 +27507,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-9-R-1834-1340-0",
@@ -25908,7 +27524,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-9-R-1834-1340-65",
@@ -25924,7 +27541,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-10-R-1834-1400-0",
@@ -25940,7 +27558,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-10-R-1834-1400-65",
@@ -25956,7 +27575,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-11-R-1834-1460-0",
@@ -25972,7 +27592,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-11-R-1834-1460-65",
@@ -25988,7 +27609,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-12-R-1834-1520-0",
@@ -26004,7 +27626,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-12-R-1834-1520-65",
@@ -26020,7 +27643,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-13-R-1834-1580-0",
@@ -26036,7 +27660,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-13-R-1834-1580-65",
@@ -26052,7 +27677,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-14-R-1834-1640-0",
@@ -26068,7 +27694,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-14-R-1834-1640-65",
@@ -26084,7 +27711,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-15-R-1834-1700-0",
@@ -26100,7 +27728,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-15-R-1834-1700-65",
@@ -26116,7 +27745,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-16-R-1834-1760-0",
@@ -26132,7 +27762,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-16-R-1834-1760-65",
@@ -26148,7 +27779,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-17-R-1834-1820-0",
@@ -26164,7 +27796,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-17-R-1834-1820-65",
@@ -26180,7 +27813,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-18-R-1834-1880-0",
@@ -26196,7 +27830,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-18-R-1834-1880-65",
@@ -26212,7 +27847,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-19-R-1834-1940-0",
@@ -26228,7 +27864,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-19-R-1834-1940-65",
@@ -26244,7 +27881,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-20-R-1834-2000-0",
@@ -26260,7 +27898,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-20-R-1834-2000-65",
@@ -26276,7 +27915,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-21-R-1834-2060-0",
@@ -26292,7 +27932,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-21-R-1834-2060-65",
@@ -26308,7 +27949,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-22-R-1834-2120-0",
@@ -26324,7 +27966,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-22-R-1834-2120-65",
@@ -26340,7 +27983,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-23-R-1834-2180-0",
@@ -26356,7 +28000,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-23-R-1834-2180-65",
@@ -26372,7 +28017,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-24-R-1834-2240-0",
@@ -26388,7 +28034,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-24-R-1834-2240-65",
@@ -26404,7 +28051,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-25-R-1834-2300-0",
@@ -26420,7 +28068,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-25-R-1834-2300-65",
@@ -26436,7 +28085,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-26-R-1834-2360-0",
@@ -26452,7 +28102,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-26-R-1834-2360-65",
@@ -26468,7 +28119,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-27-R-1834-2420-0",
@@ -26484,7 +28136,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-27-R-1834-2420-65",
@@ -26500,7 +28153,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-28-R-1834-2480-0",
@@ -26516,7 +28170,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-28-R-1834-2480-65",
@@ -26532,7 +28187,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-29-R-1834-2540-0",
@@ -26548,7 +28204,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-29-R-1834-2540-65",
@@ -26564,7 +28221,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-30-R-1834-2600-0",
@@ -26580,7 +28238,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-30-R-1834-2600-65",
@@ -26596,7 +28255,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-31-R-1834-2660-0",
@@ -26612,7 +28272,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-31-R-1834-2660-65",
@@ -26628,7 +28289,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-32-R-1834-2720-0",
@@ -26644,7 +28306,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-32-R-1834-2720-65",
@@ -26660,7 +28323,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-33-R-1834-2780-0",
@@ -26676,7 +28340,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-33-R-1834-2780-65",
@@ -26692,7 +28357,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-34-R-1834-2840-0",
@@ -26708,7 +28374,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-34-R-1834-2840-65",
@@ -26724,7 +28391,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-35-R-1834-2900-0",
@@ -26740,7 +28408,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-35-R-1834-2900-65",
@@ -26756,7 +28425,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-36-R-1834-2960-0",
@@ -26772,7 +28442,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-36-R-1834-2960-65",
@@ -26788,7 +28459,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-37-R-1834-3020-0",
@@ -26804,7 +28476,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-37-R-1834-3020-65",
@@ -26820,7 +28493,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-38-R-1834-3080-0",
@@ -26836,7 +28510,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-38-R-1834-3080-65",
@@ -26852,7 +28527,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-39-R-1834-3140-0",
@@ -26868,7 +28544,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-39-R-1834-3140-65",
@@ -26884,7 +28561,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-40-R-1834-3200-0",
@@ -26900,7 +28578,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-40-R-1834-3200-65",
@@ -26916,7 +28595,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-41-R-1834-3260-0",
@@ -26932,7 +28612,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-41-R-1834-3260-65",
@@ -26948,7 +28629,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-42-R-1834-3320-0",
@@ -26964,7 +28646,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-42-R-1834-3320-65",
@@ -26980,7 +28663,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-43-R-1834-3380-0",
@@ -26996,7 +28680,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-43-R-1834-3380-65",
@@ -27012,7 +28697,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-44-R-1834-3440-0",
@@ -27028,7 +28714,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-44-R-1834-3440-65",
@@ -27044,7 +28731,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-45-R-1834-3500-0",
@@ -27060,7 +28748,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-45-R-1834-3500-65",
@@ -27076,7 +28765,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-46-R-1834-3560-0",
@@ -27092,7 +28782,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-46-R-1834-3560-65",
@@ -27108,7 +28799,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-47-R-1834-3620-0",
@@ -27124,7 +28816,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-47-R-1834-3620-65",
@@ -27140,7 +28833,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-48-R-1834-3680-0",
@@ -27156,7 +28850,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-48-R-1834-3680-65",
@@ -27172,7 +28867,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-49-R-1834-3740-0",
@@ -27188,7 +28884,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-49-R-1834-3740-65",
@@ -27204,7 +28901,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-50-R-1834-3800-0",
@@ -27220,7 +28918,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-50-R-1834-3800-65",
@@ -27236,7 +28935,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-1-L-2014-860-0",
@@ -27252,7 +28952,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-1-L-2014-860-65",
@@ -27268,7 +28969,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-2-L-2014-920-0",
@@ -27284,7 +28986,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-2-L-2014-920-65",
@@ -27300,7 +29003,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-3-L-2014-980-0",
@@ -27316,7 +29020,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-3-L-2014-980-65",
@@ -27332,7 +29037,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-4-L-2014-1040-0",
@@ -27348,7 +29054,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-4-L-2014-1040-65",
@@ -27364,7 +29071,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-5-L-2014-1100-0",
@@ -27380,7 +29088,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-5-L-2014-1100-65",
@@ -27396,7 +29105,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-6-L-2014-1160-0",
@@ -27412,7 +29122,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-6-L-2014-1160-65",
@@ -27428,7 +29139,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-7-L-2014-1220-0",
@@ -27444,7 +29156,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-7-L-2014-1220-65",
@@ -27460,7 +29173,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-8-L-2014-1280-0",
@@ -27476,7 +29190,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-8-L-2014-1280-65",
@@ -27492,7 +29207,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-9-L-2014-1340-0",
@@ -27508,7 +29224,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-9-L-2014-1340-65",
@@ -27524,7 +29241,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-10-L-2014-1400-0",
@@ -27540,7 +29258,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-10-L-2014-1400-65",
@@ -27556,7 +29275,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-11-L-2014-1460-0",
@@ -27572,7 +29292,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-11-L-2014-1460-65",
@@ -27588,7 +29309,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-12-L-2014-1520-0",
@@ -27604,7 +29326,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-12-L-2014-1520-65",
@@ -27620,7 +29343,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-13-L-2014-1580-0",
@@ -27636,7 +29360,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-13-L-2014-1580-65",
@@ -27652,7 +29377,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-14-L-2014-1640-0",
@@ -27668,7 +29394,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-14-L-2014-1640-65",
@@ -27684,7 +29411,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-15-L-2014-1700-0",
@@ -27700,7 +29428,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-15-L-2014-1700-65",
@@ -27716,7 +29445,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-16-L-2014-1760-0",
@@ -27732,7 +29462,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-16-L-2014-1760-65",
@@ -27748,7 +29479,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-17-L-2014-1820-0",
@@ -27764,7 +29496,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-17-L-2014-1820-65",
@@ -27780,7 +29513,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-18-L-2014-1880-0",
@@ -27796,7 +29530,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-18-L-2014-1880-65",
@@ -27812,7 +29547,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-19-L-2014-1940-0",
@@ -27828,7 +29564,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-19-L-2014-1940-65",
@@ -27844,7 +29581,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-20-L-2014-2000-0",
@@ -27860,7 +29598,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-20-L-2014-2000-65",
@@ -27876,7 +29615,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-21-L-2014-2060-0",
@@ -27892,7 +29632,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-21-L-2014-2060-65",
@@ -27908,7 +29649,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-22-L-2014-2120-0",
@@ -27924,7 +29666,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-22-L-2014-2120-65",
@@ -27940,7 +29683,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-23-L-2014-2180-0",
@@ -27956,7 +29700,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-23-L-2014-2180-65",
@@ -27972,7 +29717,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-24-L-2014-2240-0",
@@ -27988,7 +29734,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-24-L-2014-2240-65",
@@ -28004,7 +29751,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-25-L-2014-2300-0",
@@ -28020,7 +29768,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-25-L-2014-2300-65",
@@ -28036,7 +29785,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-26-L-2014-2360-0",
@@ -28052,7 +29802,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-26-L-2014-2360-65",
@@ -28068,7 +29819,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-27-L-2014-2420-0",
@@ -28084,7 +29836,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-27-L-2014-2420-65",
@@ -28100,7 +29853,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-28-L-2014-2480-0",
@@ -28116,7 +29870,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-28-L-2014-2480-65",
@@ -28132,7 +29887,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-29-L-2014-2540-0",
@@ -28148,7 +29904,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-29-L-2014-2540-65",
@@ -28164,7 +29921,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-30-L-2014-2600-0",
@@ -28180,7 +29938,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-30-L-2014-2600-65",
@@ -28196,7 +29955,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-31-L-2014-2660-0",
@@ -28212,7 +29972,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-31-L-2014-2660-65",
@@ -28228,7 +29989,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-32-L-2014-2720-0",
@@ -28244,7 +30006,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-32-L-2014-2720-65",
@@ -28260,7 +30023,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-33-L-2014-2780-0",
@@ -28276,7 +30040,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-33-L-2014-2780-65",
@@ -28292,7 +30057,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-34-L-2014-2840-0",
@@ -28308,7 +30074,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-34-L-2014-2840-65",
@@ -28324,7 +30091,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-35-L-2014-2900-0",
@@ -28340,7 +30108,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-35-L-2014-2900-65",
@@ -28356,7 +30125,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-36-L-2014-2960-0",
@@ -28372,7 +30142,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-36-L-2014-2960-65",
@@ -28388,7 +30159,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-37-L-2014-3020-0",
@@ -28404,7 +30176,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-37-L-2014-3020-65",
@@ -28420,7 +30193,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-38-L-2014-3080-0",
@@ -28436,7 +30210,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-38-L-2014-3080-65",
@@ -28452,7 +30227,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-39-L-2014-3140-0",
@@ -28468,7 +30244,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-39-L-2014-3140-65",
@@ -28484,7 +30261,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-40-L-2014-3200-0",
@@ -28500,7 +30278,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-40-L-2014-3200-65",
@@ -28516,7 +30295,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-41-L-2014-3260-0",
@@ -28532,7 +30312,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-41-L-2014-3260-65",
@@ -28548,7 +30329,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-42-L-2014-3320-0",
@@ -28564,7 +30346,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-42-L-2014-3320-65",
@@ -28580,7 +30363,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-43-L-2014-3380-0",
@@ -28596,7 +30380,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-43-L-2014-3380-65",
@@ -28612,7 +30397,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-44-L-2014-3440-0",
@@ -28628,7 +30414,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-44-L-2014-3440-65",
@@ -28644,7 +30431,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-45-L-2014-3500-0",
@@ -28660,7 +30448,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-45-L-2014-3500-65",
@@ -28676,7 +30465,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-46-L-2014-3560-0",
@@ -28692,7 +30482,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-46-L-2014-3560-65",
@@ -28708,7 +30499,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-47-L-2014-3620-0",
@@ -28724,7 +30516,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-47-L-2014-3620-65",
@@ -28740,7 +30533,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-48-L-2014-3680-0",
@@ -28756,7 +30550,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-48-L-2014-3680-65",
@@ -28772,7 +30567,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-49-L-2014-3740-0",
@@ -28788,7 +30584,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-49-L-2014-3740-65",
@@ -28804,7 +30601,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A9-50-L-2014-3800-0",
@@ -28820,7 +30618,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 1974
       },
       {
         "location": "A9-50-L-2014-3800-65",
@@ -28836,7 +30635,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 1974
       },
       {
         "location": "A10-1-R-2064-860-0",
@@ -28852,7 +30652,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-1-R-2064-860-65",
@@ -28868,7 +30669,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-2-R-2064-920-0",
@@ -28884,7 +30686,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-2-R-2064-920-65",
@@ -28900,7 +30703,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-3-R-2064-980-0",
@@ -28916,7 +30720,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-3-R-2064-980-65",
@@ -28932,7 +30737,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-4-R-2064-1040-0",
@@ -28948,7 +30754,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-4-R-2064-1040-65",
@@ -28964,7 +30771,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-5-R-2064-1100-0",
@@ -28980,7 +30788,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-5-R-2064-1100-65",
@@ -28996,7 +30805,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-6-R-2064-1160-0",
@@ -29012,7 +30822,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-6-R-2064-1160-65",
@@ -29028,7 +30839,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-7-R-2064-1220-0",
@@ -29044,7 +30856,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-7-R-2064-1220-65",
@@ -29060,7 +30873,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-8-R-2064-1280-0",
@@ -29076,7 +30890,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-8-R-2064-1280-65",
@@ -29092,7 +30907,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-9-R-2064-1340-0",
@@ -29108,7 +30924,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-9-R-2064-1340-65",
@@ -29124,7 +30941,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-10-R-2064-1400-0",
@@ -29140,7 +30958,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-10-R-2064-1400-65",
@@ -29156,7 +30975,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-11-R-2064-1460-0",
@@ -29172,7 +30992,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-11-R-2064-1460-65",
@@ -29188,7 +31009,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-12-R-2064-1520-0",
@@ -29204,7 +31026,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-12-R-2064-1520-65",
@@ -29220,7 +31043,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-13-R-2064-1580-0",
@@ -29236,7 +31060,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-13-R-2064-1580-65",
@@ -29252,7 +31077,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-14-R-2064-1640-0",
@@ -29268,7 +31094,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-14-R-2064-1640-65",
@@ -29284,7 +31111,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-15-R-2064-1700-0",
@@ -29300,7 +31128,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-15-R-2064-1700-65",
@@ -29316,7 +31145,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-16-R-2064-1760-0",
@@ -29332,7 +31162,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-16-R-2064-1760-65",
@@ -29348,7 +31179,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-17-R-2064-1820-0",
@@ -29364,7 +31196,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-17-R-2064-1820-65",
@@ -29380,7 +31213,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-18-R-2064-1880-0",
@@ -29396,7 +31230,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-18-R-2064-1880-65",
@@ -29412,7 +31247,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-19-R-2064-1940-0",
@@ -29428,7 +31264,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-19-R-2064-1940-65",
@@ -29444,7 +31281,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-20-R-2064-2000-0",
@@ -29460,7 +31298,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-20-R-2064-2000-65",
@@ -29476,7 +31315,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-21-R-2064-2060-0",
@@ -29492,7 +31332,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-21-R-2064-2060-65",
@@ -29508,7 +31349,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-22-R-2064-2120-0",
@@ -29524,7 +31366,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-22-R-2064-2120-65",
@@ -29540,7 +31383,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-23-R-2064-2180-0",
@@ -29556,7 +31400,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-23-R-2064-2180-65",
@@ -29572,7 +31417,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-24-R-2064-2240-0",
@@ -29588,7 +31434,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-24-R-2064-2240-65",
@@ -29604,7 +31451,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-25-R-2064-2300-0",
@@ -29620,7 +31468,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-25-R-2064-2300-65",
@@ -29636,7 +31485,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-26-R-2064-2360-0",
@@ -29652,7 +31502,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-26-R-2064-2360-65",
@@ -29668,7 +31519,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-27-R-2064-2420-0",
@@ -29684,7 +31536,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-27-R-2064-2420-65",
@@ -29700,7 +31553,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-28-R-2064-2480-0",
@@ -29716,7 +31570,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-28-R-2064-2480-65",
@@ -29732,7 +31587,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-29-R-2064-2540-0",
@@ -29748,7 +31604,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-29-R-2064-2540-65",
@@ -29764,7 +31621,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-30-R-2064-2600-0",
@@ -29780,7 +31638,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-30-R-2064-2600-65",
@@ -29796,7 +31655,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-31-R-2064-2660-0",
@@ -29812,7 +31672,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-31-R-2064-2660-65",
@@ -29828,7 +31689,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-32-R-2064-2720-0",
@@ -29844,7 +31706,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-32-R-2064-2720-65",
@@ -29860,7 +31723,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-33-R-2064-2780-0",
@@ -29876,7 +31740,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-33-R-2064-2780-65",
@@ -29892,7 +31757,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-34-R-2064-2840-0",
@@ -29908,7 +31774,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-34-R-2064-2840-65",
@@ -29924,7 +31791,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-35-R-2064-2900-0",
@@ -29940,7 +31808,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-35-R-2064-2900-65",
@@ -29956,7 +31825,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-36-R-2064-2960-0",
@@ -29972,7 +31842,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-36-R-2064-2960-65",
@@ -29988,7 +31859,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-37-R-2064-3020-0",
@@ -30004,7 +31876,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-37-R-2064-3020-65",
@@ -30020,7 +31893,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-38-R-2064-3080-0",
@@ -30036,7 +31910,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-38-R-2064-3080-65",
@@ -30052,7 +31927,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-39-R-2064-3140-0",
@@ -30068,7 +31944,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-39-R-2064-3140-65",
@@ -30084,7 +31961,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-40-R-2064-3200-0",
@@ -30100,7 +31978,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-40-R-2064-3200-65",
@@ -30116,7 +31995,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-41-R-2064-3260-0",
@@ -30132,7 +32012,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-41-R-2064-3260-65",
@@ -30148,7 +32029,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-42-R-2064-3320-0",
@@ -30164,7 +32046,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-42-R-2064-3320-65",
@@ -30180,7 +32063,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-43-R-2064-3380-0",
@@ -30196,7 +32080,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-43-R-2064-3380-65",
@@ -30212,7 +32097,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-44-R-2064-3440-0",
@@ -30228,7 +32114,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-44-R-2064-3440-65",
@@ -30244,7 +32131,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-45-R-2064-3500-0",
@@ -30260,7 +32148,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-45-R-2064-3500-65",
@@ -30276,7 +32165,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-46-R-2064-3560-0",
@@ -30292,7 +32182,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-46-R-2064-3560-65",
@@ -30308,7 +32199,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-47-R-2064-3620-0",
@@ -30324,7 +32216,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-47-R-2064-3620-65",
@@ -30340,7 +32233,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-48-R-2064-3680-0",
@@ -30356,7 +32250,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-48-R-2064-3680-65",
@@ -30372,7 +32267,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-49-R-2064-3740-0",
@@ -30388,7 +32284,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-49-R-2064-3740-65",
@@ -30404,7 +32301,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-50-R-2064-3800-0",
@@ -30420,7 +32318,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-50-R-2064-3800-65",
@@ -30436,7 +32335,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-1-L-2244-860-0",
@@ -30452,7 +32352,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-1-L-2244-860-65",
@@ -30468,7 +32369,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-2-L-2244-920-0",
@@ -30484,7 +32386,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-2-L-2244-920-65",
@@ -30500,7 +32403,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-3-L-2244-980-0",
@@ -30516,7 +32420,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-3-L-2244-980-65",
@@ -30532,7 +32437,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-4-L-2244-1040-0",
@@ -30548,7 +32454,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-4-L-2244-1040-65",
@@ -30564,7 +32471,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-5-L-2244-1100-0",
@@ -30580,7 +32488,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-5-L-2244-1100-65",
@@ -30596,7 +32505,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-6-L-2244-1160-0",
@@ -30612,7 +32522,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-6-L-2244-1160-65",
@@ -30628,7 +32539,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-7-L-2244-1220-0",
@@ -30644,7 +32556,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-7-L-2244-1220-65",
@@ -30660,7 +32573,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-8-L-2244-1280-0",
@@ -30676,7 +32590,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-8-L-2244-1280-65",
@@ -30692,7 +32607,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-9-L-2244-1340-0",
@@ -30708,7 +32624,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-9-L-2244-1340-65",
@@ -30724,7 +32641,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-10-L-2244-1400-0",
@@ -30740,7 +32658,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-10-L-2244-1400-65",
@@ -30756,7 +32675,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-11-L-2244-1460-0",
@@ -30772,7 +32692,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-11-L-2244-1460-65",
@@ -30788,7 +32709,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-12-L-2244-1520-0",
@@ -30804,7 +32726,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-12-L-2244-1520-65",
@@ -30820,7 +32743,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-13-L-2244-1580-0",
@@ -30836,7 +32760,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-13-L-2244-1580-65",
@@ -30852,7 +32777,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-14-L-2244-1640-0",
@@ -30868,7 +32794,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-14-L-2244-1640-65",
@@ -30884,7 +32811,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-15-L-2244-1700-0",
@@ -30900,7 +32828,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-15-L-2244-1700-65",
@@ -30916,7 +32845,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-16-L-2244-1760-0",
@@ -30932,7 +32862,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-16-L-2244-1760-65",
@@ -30948,7 +32879,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-17-L-2244-1820-0",
@@ -30964,7 +32896,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-17-L-2244-1820-65",
@@ -30980,7 +32913,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-18-L-2244-1880-0",
@@ -30996,7 +32930,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-18-L-2244-1880-65",
@@ -31012,7 +32947,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-19-L-2244-1940-0",
@@ -31028,7 +32964,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-19-L-2244-1940-65",
@@ -31044,7 +32981,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-20-L-2244-2000-0",
@@ -31060,7 +32998,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-20-L-2244-2000-65",
@@ -31076,7 +33015,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-21-L-2244-2060-0",
@@ -31092,7 +33032,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-21-L-2244-2060-65",
@@ -31108,7 +33049,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-22-L-2244-2120-0",
@@ -31124,7 +33066,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-22-L-2244-2120-65",
@@ -31140,7 +33083,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-23-L-2244-2180-0",
@@ -31156,7 +33100,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-23-L-2244-2180-65",
@@ -31172,7 +33117,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-24-L-2244-2240-0",
@@ -31188,7 +33134,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-24-L-2244-2240-65",
@@ -31204,7 +33151,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-25-L-2244-2300-0",
@@ -31220,7 +33168,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-25-L-2244-2300-65",
@@ -31236,7 +33185,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-26-L-2244-2360-0",
@@ -31252,7 +33202,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-26-L-2244-2360-65",
@@ -31268,7 +33219,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-27-L-2244-2420-0",
@@ -31284,7 +33236,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-27-L-2244-2420-65",
@@ -31300,7 +33253,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-28-L-2244-2480-0",
@@ -31316,7 +33270,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-28-L-2244-2480-65",
@@ -31332,7 +33287,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-29-L-2244-2540-0",
@@ -31348,7 +33304,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-29-L-2244-2540-65",
@@ -31364,7 +33321,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-30-L-2244-2600-0",
@@ -31380,7 +33338,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-30-L-2244-2600-65",
@@ -31396,7 +33355,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-31-L-2244-2660-0",
@@ -31412,7 +33372,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-31-L-2244-2660-65",
@@ -31428,7 +33389,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-32-L-2244-2720-0",
@@ -31444,7 +33406,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-32-L-2244-2720-65",
@@ -31460,7 +33423,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-33-L-2244-2780-0",
@@ -31476,7 +33440,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-33-L-2244-2780-65",
@@ -31492,7 +33457,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-34-L-2244-2840-0",
@@ -31508,7 +33474,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-34-L-2244-2840-65",
@@ -31524,7 +33491,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-35-L-2244-2900-0",
@@ -31540,7 +33508,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-35-L-2244-2900-65",
@@ -31556,7 +33525,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-36-L-2244-2960-0",
@@ -31572,7 +33542,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-36-L-2244-2960-65",
@@ -31588,7 +33559,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-37-L-2244-3020-0",
@@ -31604,7 +33576,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-37-L-2244-3020-65",
@@ -31620,7 +33593,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-38-L-2244-3080-0",
@@ -31636,7 +33610,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-38-L-2244-3080-65",
@@ -31652,7 +33627,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-39-L-2244-3140-0",
@@ -31668,7 +33644,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-39-L-2244-3140-65",
@@ -31684,7 +33661,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-40-L-2244-3200-0",
@@ -31700,7 +33678,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-40-L-2244-3200-65",
@@ -31716,7 +33695,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-41-L-2244-3260-0",
@@ -31732,7 +33712,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-41-L-2244-3260-65",
@@ -31748,7 +33729,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-42-L-2244-3320-0",
@@ -31764,7 +33746,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-42-L-2244-3320-65",
@@ -31780,7 +33763,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-43-L-2244-3380-0",
@@ -31796,7 +33780,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-43-L-2244-3380-65",
@@ -31812,7 +33797,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-44-L-2244-3440-0",
@@ -31828,7 +33814,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-44-L-2244-3440-65",
@@ -31844,7 +33831,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-45-L-2244-3500-0",
@@ -31860,7 +33848,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-45-L-2244-3500-65",
@@ -31876,7 +33865,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-46-L-2244-3560-0",
@@ -31892,7 +33882,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-46-L-2244-3560-65",
@@ -31908,7 +33899,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-47-L-2244-3620-0",
@@ -31924,7 +33916,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-47-L-2244-3620-65",
@@ -31940,7 +33933,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-48-L-2244-3680-0",
@@ -31956,7 +33950,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-48-L-2244-3680-65",
@@ -31972,7 +33967,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-49-L-2244-3740-0",
@@ -31988,7 +33984,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-49-L-2244-3740-65",
@@ -32004,7 +34001,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A10-50-L-2244-3800-0",
@@ -32020,7 +34018,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2204
       },
       {
         "location": "A10-50-L-2244-3800-65",
@@ -32036,7 +34035,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2204
       },
       {
         "location": "A11-1-R-2294-860-0",
@@ -32052,7 +34052,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-1-R-2294-860-65",
@@ -32068,7 +34069,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-2-R-2294-920-0",
@@ -32084,7 +34086,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-2-R-2294-920-65",
@@ -32100,7 +34103,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-3-R-2294-980-0",
@@ -32116,7 +34120,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-3-R-2294-980-65",
@@ -32132,7 +34137,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-4-R-2294-1040-0",
@@ -32148,7 +34154,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-4-R-2294-1040-65",
@@ -32164,7 +34171,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-5-R-2294-1100-0",
@@ -32180,7 +34188,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-5-R-2294-1100-65",
@@ -32196,7 +34205,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-6-R-2294-1160-0",
@@ -32212,7 +34222,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-6-R-2294-1160-65",
@@ -32228,7 +34239,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-7-R-2294-1220-0",
@@ -32244,7 +34256,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-7-R-2294-1220-65",
@@ -32260,7 +34273,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-8-R-2294-1280-0",
@@ -32276,7 +34290,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-8-R-2294-1280-65",
@@ -32292,7 +34307,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-9-R-2294-1340-0",
@@ -32308,7 +34324,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-9-R-2294-1340-65",
@@ -32324,7 +34341,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-10-R-2294-1400-0",
@@ -32340,7 +34358,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-10-R-2294-1400-65",
@@ -32356,7 +34375,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-11-R-2294-1460-0",
@@ -32372,7 +34392,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-11-R-2294-1460-65",
@@ -32388,7 +34409,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-12-R-2294-1520-0",
@@ -32404,7 +34426,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-12-R-2294-1520-65",
@@ -32420,7 +34443,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-13-R-2294-1580-0",
@@ -32436,7 +34460,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-13-R-2294-1580-65",
@@ -32452,7 +34477,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-14-R-2294-1640-0",
@@ -32468,7 +34494,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-14-R-2294-1640-65",
@@ -32484,7 +34511,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-15-R-2294-1700-0",
@@ -32500,7 +34528,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-15-R-2294-1700-65",
@@ -32516,7 +34545,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-16-R-2294-1760-0",
@@ -32532,7 +34562,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-16-R-2294-1760-65",
@@ -32548,7 +34579,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-17-R-2294-1820-0",
@@ -32564,7 +34596,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-17-R-2294-1820-65",
@@ -32580,7 +34613,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-18-R-2294-1880-0",
@@ -32596,7 +34630,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-18-R-2294-1880-65",
@@ -32612,7 +34647,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-19-R-2294-1940-0",
@@ -32628,7 +34664,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-19-R-2294-1940-65",
@@ -32644,7 +34681,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-20-R-2294-2000-0",
@@ -32660,7 +34698,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-20-R-2294-2000-65",
@@ -32676,7 +34715,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-21-R-2294-2060-0",
@@ -32692,7 +34732,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-21-R-2294-2060-65",
@@ -32708,7 +34749,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-22-R-2294-2120-0",
@@ -32724,7 +34766,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-22-R-2294-2120-65",
@@ -32740,7 +34783,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-23-R-2294-2180-0",
@@ -32756,7 +34800,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-23-R-2294-2180-65",
@@ -32772,7 +34817,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-24-R-2294-2240-0",
@@ -32788,7 +34834,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-24-R-2294-2240-65",
@@ -32804,7 +34851,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-25-R-2294-2300-0",
@@ -32820,7 +34868,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-25-R-2294-2300-65",
@@ -32836,7 +34885,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-26-R-2294-2360-0",
@@ -32852,7 +34902,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-26-R-2294-2360-65",
@@ -32868,7 +34919,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-27-R-2294-2420-0",
@@ -32884,7 +34936,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-27-R-2294-2420-65",
@@ -32900,7 +34953,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-28-R-2294-2480-0",
@@ -32916,7 +34970,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-28-R-2294-2480-65",
@@ -32932,7 +34987,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-29-R-2294-2540-0",
@@ -32948,7 +35004,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-29-R-2294-2540-65",
@@ -32964,7 +35021,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-30-R-2294-2600-0",
@@ -32980,7 +35038,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-30-R-2294-2600-65",
@@ -32996,7 +35055,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-31-R-2294-2660-0",
@@ -33012,7 +35072,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-31-R-2294-2660-65",
@@ -33028,7 +35089,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-32-R-2294-2720-0",
@@ -33044,7 +35106,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-32-R-2294-2720-65",
@@ -33060,7 +35123,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-33-R-2294-2780-0",
@@ -33076,7 +35140,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-33-R-2294-2780-65",
@@ -33092,7 +35157,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-34-R-2294-2840-0",
@@ -33108,7 +35174,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-34-R-2294-2840-65",
@@ -33124,7 +35191,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-35-R-2294-2900-0",
@@ -33140,7 +35208,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-35-R-2294-2900-65",
@@ -33156,7 +35225,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-36-R-2294-2960-0",
@@ -33172,7 +35242,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-36-R-2294-2960-65",
@@ -33188,7 +35259,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-37-R-2294-3020-0",
@@ -33204,7 +35276,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-37-R-2294-3020-65",
@@ -33220,7 +35293,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-38-R-2294-3080-0",
@@ -33236,7 +35310,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-38-R-2294-3080-65",
@@ -33252,7 +35327,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-39-R-2294-3140-0",
@@ -33268,7 +35344,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-39-R-2294-3140-65",
@@ -33284,7 +35361,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-40-R-2294-3200-0",
@@ -33300,7 +35378,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-40-R-2294-3200-65",
@@ -33316,7 +35395,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-41-R-2294-3260-0",
@@ -33332,7 +35412,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-41-R-2294-3260-65",
@@ -33348,7 +35429,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-42-R-2294-3320-0",
@@ -33364,7 +35446,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-42-R-2294-3320-65",
@@ -33380,7 +35463,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-43-R-2294-3380-0",
@@ -33396,7 +35480,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-43-R-2294-3380-65",
@@ -33412,7 +35497,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-44-R-2294-3440-0",
@@ -33428,7 +35514,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-44-R-2294-3440-65",
@@ -33444,7 +35531,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-45-R-2294-3500-0",
@@ -33460,7 +35548,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-45-R-2294-3500-65",
@@ -33476,7 +35565,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-46-R-2294-3560-0",
@@ -33492,7 +35582,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-46-R-2294-3560-65",
@@ -33508,7 +35599,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-47-R-2294-3620-0",
@@ -33524,7 +35616,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-47-R-2294-3620-65",
@@ -33540,7 +35633,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-48-R-2294-3680-0",
@@ -33556,7 +35650,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-48-R-2294-3680-65",
@@ -33572,7 +35667,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-49-R-2294-3740-0",
@@ -33588,7 +35684,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-49-R-2294-3740-65",
@@ -33604,7 +35701,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-50-R-2294-3800-0",
@@ -33620,7 +35718,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-50-R-2294-3800-65",
@@ -33636,7 +35735,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-1-L-2474-860-0",
@@ -33652,7 +35752,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-1-L-2474-860-65",
@@ -33668,7 +35769,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-2-L-2474-920-0",
@@ -33684,7 +35786,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-2-L-2474-920-65",
@@ -33700,7 +35803,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-3-L-2474-980-0",
@@ -33716,7 +35820,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-3-L-2474-980-65",
@@ -33732,7 +35837,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-4-L-2474-1040-0",
@@ -33748,7 +35854,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-4-L-2474-1040-65",
@@ -33764,7 +35871,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-5-L-2474-1100-0",
@@ -33780,7 +35888,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-5-L-2474-1100-65",
@@ -33796,7 +35905,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-6-L-2474-1160-0",
@@ -33812,7 +35922,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-6-L-2474-1160-65",
@@ -33828,7 +35939,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-7-L-2474-1220-0",
@@ -33844,7 +35956,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-7-L-2474-1220-65",
@@ -33860,7 +35973,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-8-L-2474-1280-0",
@@ -33876,7 +35990,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-8-L-2474-1280-65",
@@ -33892,7 +36007,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-9-L-2474-1340-0",
@@ -33908,7 +36024,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-9-L-2474-1340-65",
@@ -33924,7 +36041,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-10-L-2474-1400-0",
@@ -33940,7 +36058,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-10-L-2474-1400-65",
@@ -33956,7 +36075,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-11-L-2474-1460-0",
@@ -33972,7 +36092,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-11-L-2474-1460-65",
@@ -33988,7 +36109,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-12-L-2474-1520-0",
@@ -34004,7 +36126,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-12-L-2474-1520-65",
@@ -34020,7 +36143,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-13-L-2474-1580-0",
@@ -34036,7 +36160,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-13-L-2474-1580-65",
@@ -34052,7 +36177,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-14-L-2474-1640-0",
@@ -34068,7 +36194,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-14-L-2474-1640-65",
@@ -34084,7 +36211,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-15-L-2474-1700-0",
@@ -34100,7 +36228,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-15-L-2474-1700-65",
@@ -34116,7 +36245,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-16-L-2474-1760-0",
@@ -34132,7 +36262,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-16-L-2474-1760-65",
@@ -34148,7 +36279,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-17-L-2474-1820-0",
@@ -34164,7 +36296,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-17-L-2474-1820-65",
@@ -34180,7 +36313,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-18-L-2474-1880-0",
@@ -34196,7 +36330,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-18-L-2474-1880-65",
@@ -34212,7 +36347,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-19-L-2474-1940-0",
@@ -34228,7 +36364,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-19-L-2474-1940-65",
@@ -34244,7 +36381,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-20-L-2474-2000-0",
@@ -34260,7 +36398,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-20-L-2474-2000-65",
@@ -34276,7 +36415,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-21-L-2474-2060-0",
@@ -34292,7 +36432,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-21-L-2474-2060-65",
@@ -34308,7 +36449,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-22-L-2474-2120-0",
@@ -34324,7 +36466,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-22-L-2474-2120-65",
@@ -34340,7 +36483,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-23-L-2474-2180-0",
@@ -34356,7 +36500,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-23-L-2474-2180-65",
@@ -34372,7 +36517,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-24-L-2474-2240-0",
@@ -34388,7 +36534,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-24-L-2474-2240-65",
@@ -34404,7 +36551,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-25-L-2474-2300-0",
@@ -34420,7 +36568,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-25-L-2474-2300-65",
@@ -34436,7 +36585,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-26-L-2474-2360-0",
@@ -34452,7 +36602,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-26-L-2474-2360-65",
@@ -34468,7 +36619,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-27-L-2474-2420-0",
@@ -34484,7 +36636,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-27-L-2474-2420-65",
@@ -34500,7 +36653,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-28-L-2474-2480-0",
@@ -34516,7 +36670,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-28-L-2474-2480-65",
@@ -34532,7 +36687,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-29-L-2474-2540-0",
@@ -34548,7 +36704,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-29-L-2474-2540-65",
@@ -34564,7 +36721,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-30-L-2474-2600-0",
@@ -34580,7 +36738,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-30-L-2474-2600-65",
@@ -34596,7 +36755,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-31-L-2474-2660-0",
@@ -34612,7 +36772,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-31-L-2474-2660-65",
@@ -34628,7 +36789,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-32-L-2474-2720-0",
@@ -34644,7 +36806,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-32-L-2474-2720-65",
@@ -34660,7 +36823,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-33-L-2474-2780-0",
@@ -34676,7 +36840,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-33-L-2474-2780-65",
@@ -34692,7 +36857,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-34-L-2474-2840-0",
@@ -34708,7 +36874,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-34-L-2474-2840-65",
@@ -34724,7 +36891,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-35-L-2474-2900-0",
@@ -34740,7 +36908,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-35-L-2474-2900-65",
@@ -34756,7 +36925,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-36-L-2474-2960-0",
@@ -34772,7 +36942,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-36-L-2474-2960-65",
@@ -34788,7 +36959,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-37-L-2474-3020-0",
@@ -34804,7 +36976,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-37-L-2474-3020-65",
@@ -34820,7 +36993,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-38-L-2474-3080-0",
@@ -34836,7 +37010,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-38-L-2474-3080-65",
@@ -34852,7 +37027,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-39-L-2474-3140-0",
@@ -34868,7 +37044,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-39-L-2474-3140-65",
@@ -34884,7 +37061,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-40-L-2474-3200-0",
@@ -34900,7 +37078,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-40-L-2474-3200-65",
@@ -34916,7 +37095,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-41-L-2474-3260-0",
@@ -34932,7 +37112,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-41-L-2474-3260-65",
@@ -34948,7 +37129,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-42-L-2474-3320-0",
@@ -34964,7 +37146,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-42-L-2474-3320-65",
@@ -34980,7 +37163,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-43-L-2474-3380-0",
@@ -34996,7 +37180,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-43-L-2474-3380-65",
@@ -35012,7 +37197,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-44-L-2474-3440-0",
@@ -35028,7 +37214,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-44-L-2474-3440-65",
@@ -35044,7 +37231,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-45-L-2474-3500-0",
@@ -35060,7 +37248,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-45-L-2474-3500-65",
@@ -35076,7 +37265,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-46-L-2474-3560-0",
@@ -35092,7 +37282,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-46-L-2474-3560-65",
@@ -35108,7 +37299,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-47-L-2474-3620-0",
@@ -35124,7 +37316,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-47-L-2474-3620-65",
@@ -35140,7 +37333,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-48-L-2474-3680-0",
@@ -35156,7 +37350,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-48-L-2474-3680-65",
@@ -35172,7 +37367,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-49-L-2474-3740-0",
@@ -35188,7 +37384,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-49-L-2474-3740-65",
@@ -35204,7 +37401,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A11-50-L-2474-3800-0",
@@ -35220,7 +37418,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2434
       },
       {
         "location": "A11-50-L-2474-3800-65",
@@ -35236,7 +37435,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2434
       },
       {
         "location": "A12-1-R-2524-860-0",
@@ -35252,7 +37452,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-1-R-2524-860-65",
@@ -35268,7 +37469,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-2-R-2524-920-0",
@@ -35284,7 +37486,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-2-R-2524-920-65",
@@ -35300,7 +37503,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-3-R-2524-980-0",
@@ -35316,7 +37520,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-3-R-2524-980-65",
@@ -35332,7 +37537,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-4-R-2524-1040-0",
@@ -35348,7 +37554,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-4-R-2524-1040-65",
@@ -35364,7 +37571,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-5-R-2524-1100-0",
@@ -35380,7 +37588,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-5-R-2524-1100-65",
@@ -35396,7 +37605,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-6-R-2524-1160-0",
@@ -35412,7 +37622,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-6-R-2524-1160-65",
@@ -35428,7 +37639,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-7-R-2524-1220-0",
@@ -35444,7 +37656,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-7-R-2524-1220-65",
@@ -35460,7 +37673,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-8-R-2524-1280-0",
@@ -35476,7 +37690,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-8-R-2524-1280-65",
@@ -35492,7 +37707,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-9-R-2524-1340-0",
@@ -35508,7 +37724,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-9-R-2524-1340-65",
@@ -35524,7 +37741,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-10-R-2524-1400-0",
@@ -35540,7 +37758,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-10-R-2524-1400-65",
@@ -35556,7 +37775,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-11-R-2524-1460-0",
@@ -35572,7 +37792,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-11-R-2524-1460-65",
@@ -35588,7 +37809,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-12-R-2524-1520-0",
@@ -35604,7 +37826,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-12-R-2524-1520-65",
@@ -35620,7 +37843,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-13-R-2524-1580-0",
@@ -35636,7 +37860,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-13-R-2524-1580-65",
@@ -35652,7 +37877,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-14-R-2524-1640-0",
@@ -35668,7 +37894,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-14-R-2524-1640-65",
@@ -35684,7 +37911,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-15-R-2524-1700-0",
@@ -35700,7 +37928,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-15-R-2524-1700-65",
@@ -35716,7 +37945,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-16-R-2524-1760-0",
@@ -35732,7 +37962,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-16-R-2524-1760-65",
@@ -35748,7 +37979,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-17-R-2524-1820-0",
@@ -35764,7 +37996,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-17-R-2524-1820-65",
@@ -35780,7 +38013,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-18-R-2524-1880-0",
@@ -35796,7 +38030,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-18-R-2524-1880-65",
@@ -35812,7 +38047,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-19-R-2524-1940-0",
@@ -35828,7 +38064,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-19-R-2524-1940-65",
@@ -35844,7 +38081,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-20-R-2524-2000-0",
@@ -35860,7 +38098,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-20-R-2524-2000-65",
@@ -35876,7 +38115,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-21-R-2524-2060-0",
@@ -35892,7 +38132,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-21-R-2524-2060-65",
@@ -35908,7 +38149,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-22-R-2524-2120-0",
@@ -35924,7 +38166,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-22-R-2524-2120-65",
@@ -35940,7 +38183,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-23-R-2524-2180-0",
@@ -35956,7 +38200,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-23-R-2524-2180-65",
@@ -35972,7 +38217,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-24-R-2524-2240-0",
@@ -35988,7 +38234,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-24-R-2524-2240-65",
@@ -36004,7 +38251,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-25-R-2524-2300-0",
@@ -36020,7 +38268,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-25-R-2524-2300-65",
@@ -36036,7 +38285,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-26-R-2524-2360-0",
@@ -36052,7 +38302,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-26-R-2524-2360-65",
@@ -36068,7 +38319,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-27-R-2524-2420-0",
@@ -36084,7 +38336,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-27-R-2524-2420-65",
@@ -36100,7 +38353,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-28-R-2524-2480-0",
@@ -36116,7 +38370,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-28-R-2524-2480-65",
@@ -36132,7 +38387,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-29-R-2524-2540-0",
@@ -36148,7 +38404,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-29-R-2524-2540-65",
@@ -36164,7 +38421,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-30-R-2524-2600-0",
@@ -36180,7 +38438,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-30-R-2524-2600-65",
@@ -36196,7 +38455,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-31-R-2524-2660-0",
@@ -36212,7 +38472,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-31-R-2524-2660-65",
@@ -36228,7 +38489,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-32-R-2524-2720-0",
@@ -36244,7 +38506,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-32-R-2524-2720-65",
@@ -36260,7 +38523,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-33-R-2524-2780-0",
@@ -36276,7 +38540,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-33-R-2524-2780-65",
@@ -36292,7 +38557,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-34-R-2524-2840-0",
@@ -36308,7 +38574,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-34-R-2524-2840-65",
@@ -36324,7 +38591,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-35-R-2524-2900-0",
@@ -36340,7 +38608,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-35-R-2524-2900-65",
@@ -36356,7 +38625,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-36-R-2524-2960-0",
@@ -36372,7 +38642,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-36-R-2524-2960-65",
@@ -36388,7 +38659,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-37-R-2524-3020-0",
@@ -36404,7 +38676,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-37-R-2524-3020-65",
@@ -36420,7 +38693,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-38-R-2524-3080-0",
@@ -36436,7 +38710,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-38-R-2524-3080-65",
@@ -36452,7 +38727,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-39-R-2524-3140-0",
@@ -36468,7 +38744,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-39-R-2524-3140-65",
@@ -36484,7 +38761,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-40-R-2524-3200-0",
@@ -36500,7 +38778,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-40-R-2524-3200-65",
@@ -36516,7 +38795,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-41-R-2524-3260-0",
@@ -36532,7 +38812,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-41-R-2524-3260-65",
@@ -36548,7 +38829,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-42-R-2524-3320-0",
@@ -36564,7 +38846,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-42-R-2524-3320-65",
@@ -36580,7 +38863,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-43-R-2524-3380-0",
@@ -36596,7 +38880,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-43-R-2524-3380-65",
@@ -36612,7 +38897,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-44-R-2524-3440-0",
@@ -36628,7 +38914,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-44-R-2524-3440-65",
@@ -36644,7 +38931,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-45-R-2524-3500-0",
@@ -36660,7 +38948,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-45-R-2524-3500-65",
@@ -36676,7 +38965,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-46-R-2524-3560-0",
@@ -36692,7 +38982,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-46-R-2524-3560-65",
@@ -36708,7 +38999,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-47-R-2524-3620-0",
@@ -36724,7 +39016,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-47-R-2524-3620-65",
@@ -36740,7 +39033,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-48-R-2524-3680-0",
@@ -36756,7 +39050,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-48-R-2524-3680-65",
@@ -36772,7 +39067,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-49-R-2524-3740-0",
@@ -36788,7 +39084,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-49-R-2524-3740-65",
@@ -36804,7 +39101,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-50-R-2524-3800-0",
@@ -36820,7 +39118,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-50-R-2524-3800-65",
@@ -36836,7 +39135,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-1-L-2704-860-0",
@@ -36852,7 +39152,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-1-L-2704-860-65",
@@ -36868,7 +39169,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-2-L-2704-920-0",
@@ -36884,7 +39186,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-2-L-2704-920-65",
@@ -36900,7 +39203,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-3-L-2704-980-0",
@@ -36916,7 +39220,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-3-L-2704-980-65",
@@ -36932,7 +39237,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-4-L-2704-1040-0",
@@ -36948,7 +39254,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-4-L-2704-1040-65",
@@ -36964,7 +39271,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-5-L-2704-1100-0",
@@ -36980,7 +39288,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-5-L-2704-1100-65",
@@ -36996,7 +39305,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-6-L-2704-1160-0",
@@ -37012,7 +39322,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-6-L-2704-1160-65",
@@ -37028,7 +39339,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-7-L-2704-1220-0",
@@ -37044,7 +39356,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-7-L-2704-1220-65",
@@ -37060,7 +39373,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-8-L-2704-1280-0",
@@ -37076,7 +39390,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-8-L-2704-1280-65",
@@ -37092,7 +39407,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-9-L-2704-1340-0",
@@ -37108,7 +39424,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-9-L-2704-1340-65",
@@ -37124,7 +39441,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-10-L-2704-1400-0",
@@ -37140,7 +39458,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-10-L-2704-1400-65",
@@ -37156,7 +39475,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-11-L-2704-1460-0",
@@ -37172,7 +39492,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-11-L-2704-1460-65",
@@ -37188,7 +39509,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-12-L-2704-1520-0",
@@ -37204,7 +39526,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-12-L-2704-1520-65",
@@ -37220,7 +39543,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-13-L-2704-1580-0",
@@ -37236,7 +39560,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-13-L-2704-1580-65",
@@ -37252,7 +39577,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-14-L-2704-1640-0",
@@ -37268,7 +39594,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-14-L-2704-1640-65",
@@ -37284,7 +39611,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-15-L-2704-1700-0",
@@ -37300,7 +39628,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-15-L-2704-1700-65",
@@ -37316,7 +39645,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-16-L-2704-1760-0",
@@ -37332,7 +39662,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-16-L-2704-1760-65",
@@ -37348,7 +39679,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-17-L-2704-1820-0",
@@ -37364,7 +39696,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-17-L-2704-1820-65",
@@ -37380,7 +39713,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-18-L-2704-1880-0",
@@ -37396,7 +39730,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-18-L-2704-1880-65",
@@ -37412,7 +39747,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-19-L-2704-1940-0",
@@ -37428,7 +39764,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-19-L-2704-1940-65",
@@ -37444,7 +39781,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-20-L-2704-2000-0",
@@ -37460,7 +39798,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-20-L-2704-2000-65",
@@ -37476,7 +39815,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-21-L-2704-2060-0",
@@ -37492,7 +39832,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-21-L-2704-2060-65",
@@ -37508,7 +39849,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-22-L-2704-2120-0",
@@ -37524,7 +39866,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-22-L-2704-2120-65",
@@ -37540,7 +39883,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-23-L-2704-2180-0",
@@ -37556,7 +39900,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-23-L-2704-2180-65",
@@ -37572,7 +39917,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-24-L-2704-2240-0",
@@ -37588,7 +39934,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-24-L-2704-2240-65",
@@ -37604,7 +39951,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-25-L-2704-2300-0",
@@ -37620,7 +39968,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-25-L-2704-2300-65",
@@ -37636,7 +39985,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-26-L-2704-2360-0",
@@ -37652,7 +40002,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-26-L-2704-2360-65",
@@ -37668,7 +40019,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-27-L-2704-2420-0",
@@ -37684,7 +40036,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-27-L-2704-2420-65",
@@ -37700,7 +40053,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-28-L-2704-2480-0",
@@ -37716,7 +40070,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-28-L-2704-2480-65",
@@ -37732,7 +40087,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-29-L-2704-2540-0",
@@ -37748,7 +40104,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-29-L-2704-2540-65",
@@ -37764,7 +40121,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-30-L-2704-2600-0",
@@ -37780,7 +40138,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-30-L-2704-2600-65",
@@ -37796,7 +40155,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-31-L-2704-2660-0",
@@ -37812,7 +40172,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-31-L-2704-2660-65",
@@ -37828,7 +40189,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-32-L-2704-2720-0",
@@ -37844,7 +40206,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-32-L-2704-2720-65",
@@ -37860,7 +40223,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-33-L-2704-2780-0",
@@ -37876,7 +40240,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-33-L-2704-2780-65",
@@ -37892,7 +40257,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-34-L-2704-2840-0",
@@ -37908,7 +40274,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-34-L-2704-2840-65",
@@ -37924,7 +40291,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-35-L-2704-2900-0",
@@ -37940,7 +40308,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-35-L-2704-2900-65",
@@ -37956,7 +40325,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-36-L-2704-2960-0",
@@ -37972,7 +40342,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-36-L-2704-2960-65",
@@ -37988,7 +40359,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-37-L-2704-3020-0",
@@ -38004,7 +40376,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-37-L-2704-3020-65",
@@ -38020,7 +40393,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-38-L-2704-3080-0",
@@ -38036,7 +40410,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-38-L-2704-3080-65",
@@ -38052,7 +40427,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-39-L-2704-3140-0",
@@ -38068,7 +40444,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-39-L-2704-3140-65",
@@ -38084,7 +40461,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-40-L-2704-3200-0",
@@ -38100,7 +40478,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-40-L-2704-3200-65",
@@ -38116,7 +40495,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-41-L-2704-3260-0",
@@ -38132,7 +40512,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-41-L-2704-3260-65",
@@ -38148,7 +40529,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-42-L-2704-3320-0",
@@ -38164,7 +40546,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-42-L-2704-3320-65",
@@ -38180,7 +40563,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-43-L-2704-3380-0",
@@ -38196,7 +40580,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-43-L-2704-3380-65",
@@ -38212,7 +40597,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-44-L-2704-3440-0",
@@ -38228,7 +40614,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-44-L-2704-3440-65",
@@ -38244,7 +40631,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-45-L-2704-3500-0",
@@ -38260,7 +40648,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-45-L-2704-3500-65",
@@ -38276,7 +40665,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-46-L-2704-3560-0",
@@ -38292,7 +40682,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-46-L-2704-3560-65",
@@ -38308,7 +40699,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-47-L-2704-3620-0",
@@ -38324,7 +40716,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-47-L-2704-3620-65",
@@ -38340,7 +40733,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-48-L-2704-3680-0",
@@ -38356,7 +40750,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-48-L-2704-3680-65",
@@ -38372,7 +40767,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-49-L-2704-3740-0",
@@ -38388,7 +40784,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-49-L-2704-3740-65",
@@ -38404,7 +40801,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A12-50-L-2704-3800-0",
@@ -38420,7 +40818,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2664
       },
       {
         "location": "A12-50-L-2704-3800-65",
@@ -38436,7 +40835,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2664
       },
       {
         "location": "A13-1-R-2754-860-0",
@@ -38452,7 +40852,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-1-R-2754-860-65",
@@ -38468,7 +40869,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-2-R-2754-920-0",
@@ -38484,7 +40886,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-2-R-2754-920-65",
@@ -38500,7 +40903,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-3-R-2754-980-0",
@@ -38516,7 +40920,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-3-R-2754-980-65",
@@ -38532,7 +40937,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-4-R-2754-1040-0",
@@ -38548,7 +40954,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-4-R-2754-1040-65",
@@ -38564,7 +40971,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-5-R-2754-1100-0",
@@ -38580,7 +40988,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-5-R-2754-1100-65",
@@ -38596,7 +41005,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-6-R-2754-1160-0",
@@ -38612,7 +41022,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-6-R-2754-1160-65",
@@ -38628,7 +41039,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-7-R-2754-1220-0",
@@ -38644,7 +41056,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-7-R-2754-1220-65",
@@ -38660,7 +41073,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-8-R-2754-1280-0",
@@ -38676,7 +41090,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-8-R-2754-1280-65",
@@ -38692,7 +41107,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-9-R-2754-1340-0",
@@ -38708,7 +41124,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-9-R-2754-1340-65",
@@ -38724,7 +41141,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-10-R-2754-1400-0",
@@ -38740,7 +41158,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-10-R-2754-1400-65",
@@ -38756,7 +41175,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-11-R-2754-1460-0",
@@ -38772,7 +41192,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-11-R-2754-1460-65",
@@ -38788,7 +41209,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-12-R-2754-1520-0",
@@ -38804,7 +41226,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-12-R-2754-1520-65",
@@ -38820,7 +41243,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-13-R-2754-1580-0",
@@ -38836,7 +41260,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-13-R-2754-1580-65",
@@ -38852,7 +41277,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-14-R-2754-1640-0",
@@ -38868,7 +41294,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-14-R-2754-1640-65",
@@ -38884,7 +41311,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-15-R-2754-1700-0",
@@ -38900,7 +41328,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-15-R-2754-1700-65",
@@ -38916,7 +41345,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-16-R-2754-1760-0",
@@ -38932,7 +41362,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-16-R-2754-1760-65",
@@ -38948,7 +41379,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-17-R-2754-1820-0",
@@ -38964,7 +41396,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-17-R-2754-1820-65",
@@ -38980,7 +41413,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-18-R-2754-1880-0",
@@ -38996,7 +41430,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-18-R-2754-1880-65",
@@ -39012,7 +41447,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-19-R-2754-1940-0",
@@ -39028,7 +41464,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-19-R-2754-1940-65",
@@ -39044,7 +41481,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-20-R-2754-2000-0",
@@ -39060,7 +41498,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-20-R-2754-2000-65",
@@ -39076,7 +41515,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-21-R-2754-2060-0",
@@ -39092,7 +41532,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-21-R-2754-2060-65",
@@ -39108,7 +41549,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-22-R-2754-2120-0",
@@ -39124,7 +41566,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-22-R-2754-2120-65",
@@ -39140,7 +41583,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-23-R-2754-2180-0",
@@ -39156,7 +41600,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-23-R-2754-2180-65",
@@ -39172,7 +41617,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-24-R-2754-2240-0",
@@ -39188,7 +41634,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-24-R-2754-2240-65",
@@ -39204,7 +41651,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-25-R-2754-2300-0",
@@ -39220,7 +41668,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-25-R-2754-2300-65",
@@ -39236,7 +41685,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-26-R-2754-2360-0",
@@ -39252,7 +41702,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-26-R-2754-2360-65",
@@ -39268,7 +41719,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-27-R-2754-2420-0",
@@ -39284,7 +41736,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-27-R-2754-2420-65",
@@ -39300,7 +41753,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-28-R-2754-2480-0",
@@ -39316,7 +41770,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-28-R-2754-2480-65",
@@ -39332,7 +41787,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-29-R-2754-2540-0",
@@ -39348,7 +41804,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-29-R-2754-2540-65",
@@ -39364,7 +41821,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-30-R-2754-2600-0",
@@ -39380,7 +41838,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-30-R-2754-2600-65",
@@ -39396,7 +41855,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-31-R-2754-2660-0",
@@ -39412,7 +41872,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-31-R-2754-2660-65",
@@ -39428,7 +41889,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-32-R-2754-2720-0",
@@ -39444,7 +41906,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-32-R-2754-2720-65",
@@ -39460,7 +41923,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-33-R-2754-2780-0",
@@ -39476,7 +41940,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-33-R-2754-2780-65",
@@ -39492,7 +41957,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-34-R-2754-2840-0",
@@ -39508,7 +41974,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-34-R-2754-2840-65",
@@ -39524,7 +41991,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-35-R-2754-2900-0",
@@ -39540,7 +42008,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-35-R-2754-2900-65",
@@ -39556,7 +42025,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-36-R-2754-2960-0",
@@ -39572,7 +42042,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-36-R-2754-2960-65",
@@ -39588,7 +42059,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-37-R-2754-3020-0",
@@ -39604,7 +42076,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-37-R-2754-3020-65",
@@ -39620,7 +42093,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-38-R-2754-3080-0",
@@ -39636,7 +42110,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-38-R-2754-3080-65",
@@ -39652,7 +42127,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-39-R-2754-3140-0",
@@ -39668,7 +42144,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-39-R-2754-3140-65",
@@ -39684,7 +42161,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-40-R-2754-3200-0",
@@ -39700,7 +42178,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-40-R-2754-3200-65",
@@ -39716,7 +42195,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-41-R-2754-3260-0",
@@ -39732,7 +42212,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-41-R-2754-3260-65",
@@ -39748,7 +42229,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-42-R-2754-3320-0",
@@ -39764,7 +42246,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-42-R-2754-3320-65",
@@ -39780,7 +42263,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-43-R-2754-3380-0",
@@ -39796,7 +42280,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-43-R-2754-3380-65",
@@ -39812,7 +42297,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-44-R-2754-3440-0",
@@ -39828,7 +42314,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-44-R-2754-3440-65",
@@ -39844,7 +42331,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-45-R-2754-3500-0",
@@ -39860,7 +42348,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-45-R-2754-3500-65",
@@ -39876,7 +42365,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-46-R-2754-3560-0",
@@ -39892,7 +42382,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-46-R-2754-3560-65",
@@ -39908,7 +42399,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-47-R-2754-3620-0",
@@ -39924,7 +42416,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-47-R-2754-3620-65",
@@ -39940,7 +42433,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-48-R-2754-3680-0",
@@ -39956,7 +42450,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-48-R-2754-3680-65",
@@ -39972,7 +42467,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-49-R-2754-3740-0",
@@ -39988,7 +42484,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-49-R-2754-3740-65",
@@ -40004,7 +42501,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-50-R-2754-3800-0",
@@ -40020,7 +42518,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-50-R-2754-3800-65",
@@ -40036,7 +42535,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-1-L-2934-860-0",
@@ -40052,7 +42552,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-1-L-2934-860-65",
@@ -40068,7 +42569,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-2-L-2934-920-0",
@@ -40084,7 +42586,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-2-L-2934-920-65",
@@ -40100,7 +42603,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-3-L-2934-980-0",
@@ -40116,7 +42620,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-3-L-2934-980-65",
@@ -40132,7 +42637,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-4-L-2934-1040-0",
@@ -40148,7 +42654,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-4-L-2934-1040-65",
@@ -40164,7 +42671,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-5-L-2934-1100-0",
@@ -40180,7 +42688,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-5-L-2934-1100-65",
@@ -40196,7 +42705,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-6-L-2934-1160-0",
@@ -40212,7 +42722,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-6-L-2934-1160-65",
@@ -40228,7 +42739,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-7-L-2934-1220-0",
@@ -40244,7 +42756,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-7-L-2934-1220-65",
@@ -40260,7 +42773,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-8-L-2934-1280-0",
@@ -40276,7 +42790,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-8-L-2934-1280-65",
@@ -40292,7 +42807,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-9-L-2934-1340-0",
@@ -40308,7 +42824,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-9-L-2934-1340-65",
@@ -40324,7 +42841,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-10-L-2934-1400-0",
@@ -40340,7 +42858,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-10-L-2934-1400-65",
@@ -40356,7 +42875,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-11-L-2934-1460-0",
@@ -40372,7 +42892,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-11-L-2934-1460-65",
@@ -40388,7 +42909,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-12-L-2934-1520-0",
@@ -40404,7 +42926,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-12-L-2934-1520-65",
@@ -40420,7 +42943,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-13-L-2934-1580-0",
@@ -40436,7 +42960,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-13-L-2934-1580-65",
@@ -40452,7 +42977,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-14-L-2934-1640-0",
@@ -40468,7 +42994,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-14-L-2934-1640-65",
@@ -40484,7 +43011,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-15-L-2934-1700-0",
@@ -40500,7 +43028,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-15-L-2934-1700-65",
@@ -40516,7 +43045,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-16-L-2934-1760-0",
@@ -40532,7 +43062,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-16-L-2934-1760-65",
@@ -40548,7 +43079,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-17-L-2934-1820-0",
@@ -40564,7 +43096,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-17-L-2934-1820-65",
@@ -40580,7 +43113,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-18-L-2934-1880-0",
@@ -40596,7 +43130,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-18-L-2934-1880-65",
@@ -40612,7 +43147,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-19-L-2934-1940-0",
@@ -40628,7 +43164,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-19-L-2934-1940-65",
@@ -40644,7 +43181,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-20-L-2934-2000-0",
@@ -40660,7 +43198,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-20-L-2934-2000-65",
@@ -40676,7 +43215,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-21-L-2934-2060-0",
@@ -40692,7 +43232,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-21-L-2934-2060-65",
@@ -40708,7 +43249,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-22-L-2934-2120-0",
@@ -40724,7 +43266,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-22-L-2934-2120-65",
@@ -40740,7 +43283,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-23-L-2934-2180-0",
@@ -40756,7 +43300,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-23-L-2934-2180-65",
@@ -40772,7 +43317,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-24-L-2934-2240-0",
@@ -40788,7 +43334,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-24-L-2934-2240-65",
@@ -40804,7 +43351,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-25-L-2934-2300-0",
@@ -40820,7 +43368,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-25-L-2934-2300-65",
@@ -40836,7 +43385,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-26-L-2934-2360-0",
@@ -40852,7 +43402,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-26-L-2934-2360-65",
@@ -40868,7 +43419,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-27-L-2934-2420-0",
@@ -40884,7 +43436,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-27-L-2934-2420-65",
@@ -40900,7 +43453,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-28-L-2934-2480-0",
@@ -40916,7 +43470,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-28-L-2934-2480-65",
@@ -40932,7 +43487,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-29-L-2934-2540-0",
@@ -40948,7 +43504,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-29-L-2934-2540-65",
@@ -40964,7 +43521,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-30-L-2934-2600-0",
@@ -40980,7 +43538,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-30-L-2934-2600-65",
@@ -40996,7 +43555,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-31-L-2934-2660-0",
@@ -41012,7 +43572,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-31-L-2934-2660-65",
@@ -41028,7 +43589,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-32-L-2934-2720-0",
@@ -41044,7 +43606,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-32-L-2934-2720-65",
@@ -41060,7 +43623,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-33-L-2934-2780-0",
@@ -41076,7 +43640,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-33-L-2934-2780-65",
@@ -41092,7 +43657,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-34-L-2934-2840-0",
@@ -41108,7 +43674,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-34-L-2934-2840-65",
@@ -41124,7 +43691,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-35-L-2934-2900-0",
@@ -41140,7 +43708,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-35-L-2934-2900-65",
@@ -41156,7 +43725,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-36-L-2934-2960-0",
@@ -41172,7 +43742,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-36-L-2934-2960-65",
@@ -41188,7 +43759,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-37-L-2934-3020-0",
@@ -41204,7 +43776,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-37-L-2934-3020-65",
@@ -41220,7 +43793,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-38-L-2934-3080-0",
@@ -41236,7 +43810,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-38-L-2934-3080-65",
@@ -41252,7 +43827,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-39-L-2934-3140-0",
@@ -41268,7 +43844,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-39-L-2934-3140-65",
@@ -41284,7 +43861,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-40-L-2934-3200-0",
@@ -41300,7 +43878,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-40-L-2934-3200-65",
@@ -41316,7 +43895,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-41-L-2934-3260-0",
@@ -41332,7 +43912,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-41-L-2934-3260-65",
@@ -41348,7 +43929,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-42-L-2934-3320-0",
@@ -41364,7 +43946,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-42-L-2934-3320-65",
@@ -41380,7 +43963,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-43-L-2934-3380-0",
@@ -41396,7 +43980,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-43-L-2934-3380-65",
@@ -41412,7 +43997,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-44-L-2934-3440-0",
@@ -41428,7 +44014,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-44-L-2934-3440-65",
@@ -41444,7 +44031,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-45-L-2934-3500-0",
@@ -41460,7 +44048,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-45-L-2934-3500-65",
@@ -41476,7 +44065,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-46-L-2934-3560-0",
@@ -41492,7 +44082,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-46-L-2934-3560-65",
@@ -41508,7 +44099,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-47-L-2934-3620-0",
@@ -41524,7 +44116,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-47-L-2934-3620-65",
@@ -41540,7 +44133,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-48-L-2934-3680-0",
@@ -41556,7 +44150,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-48-L-2934-3680-65",
@@ -41572,7 +44167,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-49-L-2934-3740-0",
@@ -41588,7 +44184,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-49-L-2934-3740-65",
@@ -41604,7 +44201,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A13-50-L-2934-3800-0",
@@ -41620,7 +44218,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 2894
       },
       {
         "location": "A13-50-L-2934-3800-65",
@@ -41636,7 +44235,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 2894
       },
       {
         "location": "A14-1-R-2984-860-0",
@@ -41652,7 +44252,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-1-R-2984-860-65",
@@ -41668,7 +44269,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-2-R-2984-920-0",
@@ -41684,7 +44286,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-2-R-2984-920-65",
@@ -41700,7 +44303,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-3-R-2984-980-0",
@@ -41716,7 +44320,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-3-R-2984-980-65",
@@ -41732,7 +44337,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-4-R-2984-1040-0",
@@ -41748,7 +44354,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-4-R-2984-1040-65",
@@ -41764,7 +44371,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-5-R-2984-1100-0",
@@ -41780,7 +44388,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-5-R-2984-1100-65",
@@ -41796,7 +44405,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-6-R-2984-1160-0",
@@ -41812,7 +44422,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-6-R-2984-1160-65",
@@ -41828,7 +44439,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-7-R-2984-1220-0",
@@ -41844,7 +44456,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-7-R-2984-1220-65",
@@ -41860,7 +44473,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-8-R-2984-1280-0",
@@ -41876,7 +44490,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-8-R-2984-1280-65",
@@ -41892,7 +44507,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-9-R-2984-1340-0",
@@ -41908,7 +44524,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-9-R-2984-1340-65",
@@ -41924,7 +44541,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-10-R-2984-1400-0",
@@ -41940,7 +44558,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-10-R-2984-1400-65",
@@ -41956,7 +44575,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-11-R-2984-1460-0",
@@ -41972,7 +44592,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-11-R-2984-1460-65",
@@ -41988,7 +44609,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-12-R-2984-1520-0",
@@ -42004,7 +44626,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-12-R-2984-1520-65",
@@ -42020,7 +44643,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-13-R-2984-1580-0",
@@ -42036,7 +44660,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-13-R-2984-1580-65",
@@ -42052,7 +44677,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-14-R-2984-1640-0",
@@ -42068,7 +44694,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-14-R-2984-1640-65",
@@ -42084,7 +44711,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-15-R-2984-1700-0",
@@ -42100,7 +44728,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-15-R-2984-1700-65",
@@ -42116,7 +44745,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-16-R-2984-1760-0",
@@ -42132,7 +44762,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-16-R-2984-1760-65",
@@ -42148,7 +44779,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-17-R-2984-1820-0",
@@ -42164,7 +44796,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-17-R-2984-1820-65",
@@ -42180,7 +44813,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-18-R-2984-1880-0",
@@ -42196,7 +44830,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-18-R-2984-1880-65",
@@ -42212,7 +44847,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-19-R-2984-1940-0",
@@ -42228,7 +44864,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-19-R-2984-1940-65",
@@ -42244,7 +44881,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-20-R-2984-2000-0",
@@ -42260,7 +44898,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-20-R-2984-2000-65",
@@ -42276,7 +44915,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-21-R-2984-2060-0",
@@ -42292,7 +44932,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-21-R-2984-2060-65",
@@ -42308,7 +44949,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-22-R-2984-2120-0",
@@ -42324,7 +44966,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-22-R-2984-2120-65",
@@ -42340,7 +44983,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-23-R-2984-2180-0",
@@ -42356,7 +45000,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-23-R-2984-2180-65",
@@ -42372,7 +45017,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-24-R-2984-2240-0",
@@ -42388,7 +45034,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-24-R-2984-2240-65",
@@ -42404,7 +45051,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-25-R-2984-2300-0",
@@ -42420,7 +45068,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-25-R-2984-2300-65",
@@ -42436,7 +45085,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-26-R-2984-2360-0",
@@ -42452,7 +45102,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-26-R-2984-2360-65",
@@ -42468,7 +45119,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-27-R-2984-2420-0",
@@ -42484,7 +45136,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-27-R-2984-2420-65",
@@ -42500,7 +45153,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-28-R-2984-2480-0",
@@ -42516,7 +45170,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-28-R-2984-2480-65",
@@ -42532,7 +45187,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-29-R-2984-2540-0",
@@ -42548,7 +45204,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-29-R-2984-2540-65",
@@ -42564,7 +45221,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-30-R-2984-2600-0",
@@ -42580,7 +45238,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-30-R-2984-2600-65",
@@ -42596,7 +45255,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-31-R-2984-2660-0",
@@ -42612,7 +45272,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-31-R-2984-2660-65",
@@ -42628,7 +45289,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-32-R-2984-2720-0",
@@ -42644,7 +45306,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-32-R-2984-2720-65",
@@ -42660,7 +45323,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-33-R-2984-2780-0",
@@ -42676,7 +45340,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-33-R-2984-2780-65",
@@ -42692,7 +45357,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-34-R-2984-2840-0",
@@ -42708,7 +45374,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-34-R-2984-2840-65",
@@ -42724,7 +45391,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-35-R-2984-2900-0",
@@ -42740,7 +45408,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-35-R-2984-2900-65",
@@ -42756,7 +45425,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-36-R-2984-2960-0",
@@ -42772,7 +45442,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-36-R-2984-2960-65",
@@ -42788,7 +45459,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-37-R-2984-3020-0",
@@ -42804,7 +45476,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-37-R-2984-3020-65",
@@ -42820,7 +45493,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-38-R-2984-3080-0",
@@ -42836,7 +45510,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-38-R-2984-3080-65",
@@ -42852,7 +45527,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-39-R-2984-3140-0",
@@ -42868,7 +45544,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-39-R-2984-3140-65",
@@ -42884,7 +45561,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-40-R-2984-3200-0",
@@ -42900,7 +45578,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-40-R-2984-3200-65",
@@ -42916,7 +45595,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-41-R-2984-3260-0",
@@ -42932,7 +45612,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-41-R-2984-3260-65",
@@ -42948,7 +45629,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-42-R-2984-3320-0",
@@ -42964,7 +45646,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-42-R-2984-3320-65",
@@ -42980,7 +45663,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-43-R-2984-3380-0",
@@ -42996,7 +45680,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-43-R-2984-3380-65",
@@ -43012,7 +45697,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-44-R-2984-3440-0",
@@ -43028,7 +45714,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-44-R-2984-3440-65",
@@ -43044,7 +45731,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-45-R-2984-3500-0",
@@ -43060,7 +45748,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-45-R-2984-3500-65",
@@ -43076,7 +45765,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-46-R-2984-3560-0",
@@ -43092,7 +45782,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-46-R-2984-3560-65",
@@ -43108,7 +45799,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-47-R-2984-3620-0",
@@ -43124,7 +45816,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-47-R-2984-3620-65",
@@ -43140,7 +45833,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-48-R-2984-3680-0",
@@ -43156,7 +45850,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-48-R-2984-3680-65",
@@ -43172,7 +45867,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-49-R-2984-3740-0",
@@ -43188,7 +45884,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-49-R-2984-3740-65",
@@ -43204,7 +45901,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-50-R-2984-3800-0",
@@ -43220,7 +45918,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-50-R-2984-3800-65",
@@ -43236,7 +45935,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-1-L-3164-860-0",
@@ -43252,7 +45952,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-1-L-3164-860-65",
@@ -43268,7 +45969,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-2-L-3164-920-0",
@@ -43284,7 +45986,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-2-L-3164-920-65",
@@ -43300,7 +46003,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-3-L-3164-980-0",
@@ -43316,7 +46020,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-3-L-3164-980-65",
@@ -43332,7 +46037,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-4-L-3164-1040-0",
@@ -43348,7 +46054,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-4-L-3164-1040-65",
@@ -43364,7 +46071,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-5-L-3164-1100-0",
@@ -43380,7 +46088,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-5-L-3164-1100-65",
@@ -43396,7 +46105,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-6-L-3164-1160-0",
@@ -43412,7 +46122,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-6-L-3164-1160-65",
@@ -43428,7 +46139,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-7-L-3164-1220-0",
@@ -43444,7 +46156,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-7-L-3164-1220-65",
@@ -43460,7 +46173,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-8-L-3164-1280-0",
@@ -43476,7 +46190,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-8-L-3164-1280-65",
@@ -43492,7 +46207,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-9-L-3164-1340-0",
@@ -43508,7 +46224,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-9-L-3164-1340-65",
@@ -43524,7 +46241,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-10-L-3164-1400-0",
@@ -43540,7 +46258,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-10-L-3164-1400-65",
@@ -43556,7 +46275,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-11-L-3164-1460-0",
@@ -43572,7 +46292,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-11-L-3164-1460-65",
@@ -43588,7 +46309,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-12-L-3164-1520-0",
@@ -43604,7 +46326,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-12-L-3164-1520-65",
@@ -43620,7 +46343,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-13-L-3164-1580-0",
@@ -43636,7 +46360,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-13-L-3164-1580-65",
@@ -43652,7 +46377,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-14-L-3164-1640-0",
@@ -43668,7 +46394,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-14-L-3164-1640-65",
@@ -43684,7 +46411,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-15-L-3164-1700-0",
@@ -43700,7 +46428,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-15-L-3164-1700-65",
@@ -43716,7 +46445,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-16-L-3164-1760-0",
@@ -43732,7 +46462,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-16-L-3164-1760-65",
@@ -43748,7 +46479,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-17-L-3164-1820-0",
@@ -43764,7 +46496,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-17-L-3164-1820-65",
@@ -43780,7 +46513,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-18-L-3164-1880-0",
@@ -43796,7 +46530,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-18-L-3164-1880-65",
@@ -43812,7 +46547,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-19-L-3164-1940-0",
@@ -43828,7 +46564,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-19-L-3164-1940-65",
@@ -43844,7 +46581,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-20-L-3164-2000-0",
@@ -43860,7 +46598,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-20-L-3164-2000-65",
@@ -43876,7 +46615,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-21-L-3164-2060-0",
@@ -43892,7 +46632,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-21-L-3164-2060-65",
@@ -43908,7 +46649,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-22-L-3164-2120-0",
@@ -43924,7 +46666,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-22-L-3164-2120-65",
@@ -43940,7 +46683,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-23-L-3164-2180-0",
@@ -43956,7 +46700,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-23-L-3164-2180-65",
@@ -43972,7 +46717,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-24-L-3164-2240-0",
@@ -43988,7 +46734,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-24-L-3164-2240-65",
@@ -44004,7 +46751,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-25-L-3164-2300-0",
@@ -44020,7 +46768,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-25-L-3164-2300-65",
@@ -44036,7 +46785,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-26-L-3164-2360-0",
@@ -44052,7 +46802,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-26-L-3164-2360-65",
@@ -44068,7 +46819,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-27-L-3164-2420-0",
@@ -44084,7 +46836,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-27-L-3164-2420-65",
@@ -44100,7 +46853,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-28-L-3164-2480-0",
@@ -44116,7 +46870,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-28-L-3164-2480-65",
@@ -44132,7 +46887,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-29-L-3164-2540-0",
@@ -44148,7 +46904,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-29-L-3164-2540-65",
@@ -44164,7 +46921,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-30-L-3164-2600-0",
@@ -44180,7 +46938,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-30-L-3164-2600-65",
@@ -44196,7 +46955,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-31-L-3164-2660-0",
@@ -44212,7 +46972,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-31-L-3164-2660-65",
@@ -44228,7 +46989,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-32-L-3164-2720-0",
@@ -44244,7 +47006,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-32-L-3164-2720-65",
@@ -44260,7 +47023,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-33-L-3164-2780-0",
@@ -44276,7 +47040,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-33-L-3164-2780-65",
@@ -44292,7 +47057,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-34-L-3164-2840-0",
@@ -44308,7 +47074,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-34-L-3164-2840-65",
@@ -44324,7 +47091,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-35-L-3164-2900-0",
@@ -44340,7 +47108,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-35-L-3164-2900-65",
@@ -44356,7 +47125,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-36-L-3164-2960-0",
@@ -44372,7 +47142,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-36-L-3164-2960-65",
@@ -44388,7 +47159,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-37-L-3164-3020-0",
@@ -44404,7 +47176,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-37-L-3164-3020-65",
@@ -44420,7 +47193,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-38-L-3164-3080-0",
@@ -44436,7 +47210,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-38-L-3164-3080-65",
@@ -44452,7 +47227,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-39-L-3164-3140-0",
@@ -44468,7 +47244,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-39-L-3164-3140-65",
@@ -44484,7 +47261,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-40-L-3164-3200-0",
@@ -44500,7 +47278,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-40-L-3164-3200-65",
@@ -44516,7 +47295,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-41-L-3164-3260-0",
@@ -44532,7 +47312,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-41-L-3164-3260-65",
@@ -44548,7 +47329,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-42-L-3164-3320-0",
@@ -44564,7 +47346,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-42-L-3164-3320-65",
@@ -44580,7 +47363,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-43-L-3164-3380-0",
@@ -44596,7 +47380,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-43-L-3164-3380-65",
@@ -44612,7 +47397,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-44-L-3164-3440-0",
@@ -44628,7 +47414,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-44-L-3164-3440-65",
@@ -44644,7 +47431,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-45-L-3164-3500-0",
@@ -44660,7 +47448,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-45-L-3164-3500-65",
@@ -44676,7 +47465,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-46-L-3164-3560-0",
@@ -44692,7 +47482,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-46-L-3164-3560-65",
@@ -44708,7 +47499,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-47-L-3164-3620-0",
@@ -44724,7 +47516,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-47-L-3164-3620-65",
@@ -44740,7 +47533,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-48-L-3164-3680-0",
@@ -44756,7 +47550,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-48-L-3164-3680-65",
@@ -44772,7 +47567,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-49-L-3164-3740-0",
@@ -44788,7 +47584,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-49-L-3164-3740-65",
@@ -44804,7 +47601,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A14-50-L-3164-3800-0",
@@ -44820,7 +47618,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3124
       },
       {
         "location": "A14-50-L-3164-3800-65",
@@ -44836,7 +47635,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3124
       },
       {
         "location": "A15-1-R-3214-860-0",
@@ -44852,7 +47652,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-1-R-3214-860-65",
@@ -44868,7 +47669,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-2-R-3214-920-0",
@@ -44884,7 +47686,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-2-R-3214-920-65",
@@ -44900,7 +47703,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-3-R-3214-980-0",
@@ -44916,7 +47720,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-3-R-3214-980-65",
@@ -44932,7 +47737,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-4-R-3214-1040-0",
@@ -44948,7 +47754,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-4-R-3214-1040-65",
@@ -44964,7 +47771,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-5-R-3214-1100-0",
@@ -44980,7 +47788,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-5-R-3214-1100-65",
@@ -44996,7 +47805,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-6-R-3214-1160-0",
@@ -45012,7 +47822,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-6-R-3214-1160-65",
@@ -45028,7 +47839,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-7-R-3214-1220-0",
@@ -45044,7 +47856,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-7-R-3214-1220-65",
@@ -45060,7 +47873,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-8-R-3214-1280-0",
@@ -45076,7 +47890,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-8-R-3214-1280-65",
@@ -45092,7 +47907,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-9-R-3214-1340-0",
@@ -45108,7 +47924,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-9-R-3214-1340-65",
@@ -45124,7 +47941,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-10-R-3214-1400-0",
@@ -45140,7 +47958,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-10-R-3214-1400-65",
@@ -45156,7 +47975,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-11-R-3214-1460-0",
@@ -45172,7 +47992,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-11-R-3214-1460-65",
@@ -45188,7 +48009,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-12-R-3214-1520-0",
@@ -45204,7 +48026,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-12-R-3214-1520-65",
@@ -45220,7 +48043,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-13-R-3214-1580-0",
@@ -45236,7 +48060,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-13-R-3214-1580-65",
@@ -45252,7 +48077,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-14-R-3214-1640-0",
@@ -45268,7 +48094,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-14-R-3214-1640-65",
@@ -45284,7 +48111,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-15-R-3214-1700-0",
@@ -45300,7 +48128,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-15-R-3214-1700-65",
@@ -45316,7 +48145,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-16-R-3214-1760-0",
@@ -45332,7 +48162,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-16-R-3214-1760-65",
@@ -45348,7 +48179,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-17-R-3214-1820-0",
@@ -45364,7 +48196,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-17-R-3214-1820-65",
@@ -45380,7 +48213,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-18-R-3214-1880-0",
@@ -45396,7 +48230,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-18-R-3214-1880-65",
@@ -45412,7 +48247,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-19-R-3214-1940-0",
@@ -45428,7 +48264,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-19-R-3214-1940-65",
@@ -45444,7 +48281,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-20-R-3214-2000-0",
@@ -45460,7 +48298,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-20-R-3214-2000-65",
@@ -45476,7 +48315,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-21-R-3214-2060-0",
@@ -45492,7 +48332,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-21-R-3214-2060-65",
@@ -45508,7 +48349,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-22-R-3214-2120-0",
@@ -45524,7 +48366,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-22-R-3214-2120-65",
@@ -45540,7 +48383,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-23-R-3214-2180-0",
@@ -45556,7 +48400,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-23-R-3214-2180-65",
@@ -45572,7 +48417,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-24-R-3214-2240-0",
@@ -45588,7 +48434,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-24-R-3214-2240-65",
@@ -45604,7 +48451,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-25-R-3214-2300-0",
@@ -45620,7 +48468,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-25-R-3214-2300-65",
@@ -45636,7 +48485,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-26-R-3214-2360-0",
@@ -45652,7 +48502,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-26-R-3214-2360-65",
@@ -45668,7 +48519,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-27-R-3214-2420-0",
@@ -45684,7 +48536,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-27-R-3214-2420-65",
@@ -45700,7 +48553,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-28-R-3214-2480-0",
@@ -45716,7 +48570,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-28-R-3214-2480-65",
@@ -45732,7 +48587,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-29-R-3214-2540-0",
@@ -45748,7 +48604,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-29-R-3214-2540-65",
@@ -45764,7 +48621,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-30-R-3214-2600-0",
@@ -45780,7 +48638,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-30-R-3214-2600-65",
@@ -45796,7 +48655,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-31-R-3214-2660-0",
@@ -45812,7 +48672,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-31-R-3214-2660-65",
@@ -45828,7 +48689,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-32-R-3214-2720-0",
@@ -45844,7 +48706,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-32-R-3214-2720-65",
@@ -45860,7 +48723,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-33-R-3214-2780-0",
@@ -45876,7 +48740,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-33-R-3214-2780-65",
@@ -45892,7 +48757,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-34-R-3214-2840-0",
@@ -45908,7 +48774,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-34-R-3214-2840-65",
@@ -45924,7 +48791,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-35-R-3214-2900-0",
@@ -45940,7 +48808,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-35-R-3214-2900-65",
@@ -45956,7 +48825,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-36-R-3214-2960-0",
@@ -45972,7 +48842,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-36-R-3214-2960-65",
@@ -45988,7 +48859,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-37-R-3214-3020-0",
@@ -46004,7 +48876,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-37-R-3214-3020-65",
@@ -46020,7 +48893,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-38-R-3214-3080-0",
@@ -46036,7 +48910,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-38-R-3214-3080-65",
@@ -46052,7 +48927,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-39-R-3214-3140-0",
@@ -46068,7 +48944,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-39-R-3214-3140-65",
@@ -46084,7 +48961,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-40-R-3214-3200-0",
@@ -46100,7 +48978,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-40-R-3214-3200-65",
@@ -46116,7 +48995,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-41-R-3214-3260-0",
@@ -46132,7 +49012,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-41-R-3214-3260-65",
@@ -46148,7 +49029,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-42-R-3214-3320-0",
@@ -46164,7 +49046,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-42-R-3214-3320-65",
@@ -46180,7 +49063,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-43-R-3214-3380-0",
@@ -46196,7 +49080,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-43-R-3214-3380-65",
@@ -46212,7 +49097,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-44-R-3214-3440-0",
@@ -46228,7 +49114,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-44-R-3214-3440-65",
@@ -46244,7 +49131,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-45-R-3214-3500-0",
@@ -46260,7 +49148,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-45-R-3214-3500-65",
@@ -46276,7 +49165,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-46-R-3214-3560-0",
@@ -46292,7 +49182,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-46-R-3214-3560-65",
@@ -46308,7 +49199,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-47-R-3214-3620-0",
@@ -46324,7 +49216,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-47-R-3214-3620-65",
@@ -46340,7 +49233,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-48-R-3214-3680-0",
@@ -46356,7 +49250,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-48-R-3214-3680-65",
@@ -46372,7 +49267,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-49-R-3214-3740-0",
@@ -46388,7 +49284,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-49-R-3214-3740-65",
@@ -46404,7 +49301,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-50-R-3214-3800-0",
@@ -46420,7 +49318,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-50-R-3214-3800-65",
@@ -46436,7 +49335,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-1-L-3394-860-0",
@@ -46452,7 +49352,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-1-L-3394-860-65",
@@ -46468,7 +49369,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 1,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-2-L-3394-920-0",
@@ -46484,7 +49386,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-2-L-3394-920-65",
@@ -46500,7 +49403,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 2,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-3-L-3394-980-0",
@@ -46516,7 +49420,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-3-L-3394-980-65",
@@ -46532,7 +49437,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 3,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-4-L-3394-1040-0",
@@ -46548,7 +49454,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-4-L-3394-1040-65",
@@ -46564,7 +49471,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 4,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-5-L-3394-1100-0",
@@ -46580,7 +49488,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-5-L-3394-1100-65",
@@ -46596,7 +49505,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 5,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-6-L-3394-1160-0",
@@ -46612,7 +49522,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-6-L-3394-1160-65",
@@ -46628,7 +49539,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 6,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-7-L-3394-1220-0",
@@ -46644,7 +49556,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-7-L-3394-1220-65",
@@ -46660,7 +49573,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 7,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-8-L-3394-1280-0",
@@ -46676,7 +49590,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-8-L-3394-1280-65",
@@ -46692,7 +49607,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 8,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-9-L-3394-1340-0",
@@ -46708,7 +49624,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-9-L-3394-1340-65",
@@ -46724,7 +49641,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 9,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-10-L-3394-1400-0",
@@ -46740,7 +49658,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-10-L-3394-1400-65",
@@ -46756,7 +49675,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 10,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-11-L-3394-1460-0",
@@ -46772,7 +49692,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-11-L-3394-1460-65",
@@ -46788,7 +49709,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 11,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-12-L-3394-1520-0",
@@ -46804,7 +49726,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-12-L-3394-1520-65",
@@ -46820,7 +49743,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 12,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-13-L-3394-1580-0",
@@ -46836,7 +49760,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-13-L-3394-1580-65",
@@ -46852,7 +49777,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 13,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-14-L-3394-1640-0",
@@ -46868,7 +49794,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-14-L-3394-1640-65",
@@ -46884,7 +49811,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 14,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-15-L-3394-1700-0",
@@ -46900,7 +49828,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-15-L-3394-1700-65",
@@ -46916,7 +49845,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 15,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-16-L-3394-1760-0",
@@ -46932,7 +49862,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-16-L-3394-1760-65",
@@ -46948,7 +49879,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 16,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-17-L-3394-1820-0",
@@ -46964,7 +49896,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-17-L-3394-1820-65",
@@ -46980,7 +49913,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 17,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-18-L-3394-1880-0",
@@ -46996,7 +49930,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-18-L-3394-1880-65",
@@ -47012,7 +49947,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 18,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-19-L-3394-1940-0",
@@ -47028,7 +49964,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-19-L-3394-1940-65",
@@ -47044,7 +49981,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 19,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-20-L-3394-2000-0",
@@ -47060,7 +49998,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-20-L-3394-2000-65",
@@ -47076,7 +50015,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 20,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-21-L-3394-2060-0",
@@ -47092,7 +50032,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-21-L-3394-2060-65",
@@ -47108,7 +50049,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 21,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-22-L-3394-2120-0",
@@ -47124,7 +50066,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-22-L-3394-2120-65",
@@ -47140,7 +50083,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 22,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-23-L-3394-2180-0",
@@ -47156,7 +50100,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-23-L-3394-2180-65",
@@ -47172,7 +50117,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 23,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-24-L-3394-2240-0",
@@ -47188,7 +50134,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-24-L-3394-2240-65",
@@ -47204,7 +50151,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 24,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-25-L-3394-2300-0",
@@ -47220,7 +50168,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-25-L-3394-2300-65",
@@ -47236,7 +50185,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 25,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-26-L-3394-2360-0",
@@ -47252,7 +50202,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-26-L-3394-2360-65",
@@ -47268,7 +50219,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 26,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-27-L-3394-2420-0",
@@ -47284,7 +50236,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-27-L-3394-2420-65",
@@ -47300,7 +50253,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 27,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-28-L-3394-2480-0",
@@ -47316,7 +50270,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-28-L-3394-2480-65",
@@ -47332,7 +50287,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 28,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-29-L-3394-2540-0",
@@ -47348,7 +50304,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-29-L-3394-2540-65",
@@ -47364,7 +50321,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 29,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-30-L-3394-2600-0",
@@ -47380,7 +50338,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-30-L-3394-2600-65",
@@ -47396,7 +50355,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 30,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-31-L-3394-2660-0",
@@ -47412,7 +50372,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-31-L-3394-2660-65",
@@ -47428,7 +50389,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 31,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-32-L-3394-2720-0",
@@ -47444,7 +50406,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-32-L-3394-2720-65",
@@ -47460,7 +50423,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 32,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-33-L-3394-2780-0",
@@ -47476,7 +50440,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-33-L-3394-2780-65",
@@ -47492,7 +50457,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 33,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-34-L-3394-2840-0",
@@ -47508,7 +50474,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-34-L-3394-2840-65",
@@ -47524,7 +50491,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 34,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-35-L-3394-2900-0",
@@ -47540,7 +50508,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-35-L-3394-2900-65",
@@ -47556,7 +50525,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 35,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-36-L-3394-2960-0",
@@ -47572,7 +50542,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-36-L-3394-2960-65",
@@ -47588,7 +50559,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 36,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-37-L-3394-3020-0",
@@ -47604,7 +50576,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-37-L-3394-3020-65",
@@ -47620,7 +50593,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 37,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-38-L-3394-3080-0",
@@ -47636,7 +50610,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-38-L-3394-3080-65",
@@ -47652,7 +50627,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 38,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-39-L-3394-3140-0",
@@ -47668,7 +50644,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-39-L-3394-3140-65",
@@ -47684,7 +50661,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 39,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-40-L-3394-3200-0",
@@ -47700,7 +50678,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-40-L-3394-3200-65",
@@ -47716,7 +50695,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 40,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-41-L-3394-3260-0",
@@ -47732,7 +50712,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-41-L-3394-3260-65",
@@ -47748,7 +50729,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 41,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-42-L-3394-3320-0",
@@ -47764,7 +50746,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-42-L-3394-3320-65",
@@ -47780,7 +50763,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 42,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-43-L-3394-3380-0",
@@ -47796,7 +50780,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-43-L-3394-3380-65",
@@ -47812,7 +50797,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 43,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-44-L-3394-3440-0",
@@ -47828,7 +50814,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-44-L-3394-3440-65",
@@ -47844,7 +50831,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 44,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-45-L-3394-3500-0",
@@ -47860,7 +50848,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-45-L-3394-3500-65",
@@ -47876,7 +50865,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 45,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-46-L-3394-3560-0",
@@ -47892,7 +50882,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-46-L-3394-3560-65",
@@ -47908,7 +50899,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 46,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-47-L-3394-3620-0",
@@ -47924,7 +50916,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-47-L-3394-3620-65",
@@ -47940,7 +50933,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 47,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-48-L-3394-3680-0",
@@ -47956,7 +50950,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-48-L-3394-3680-65",
@@ -47972,7 +50967,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 48,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-49-L-3394-3740-0",
@@ -47988,7 +50984,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-49-L-3394-3740-65",
@@ -48004,7 +51001,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 49,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       },
       {
         "location": "A15-50-L-3394-3800-0",
@@ -48020,7 +51018,8 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 1
+        "level": 1,
+        "x_convert": 3354
       },
       {
         "location": "A15-50-L-3394-3800-65",
@@ -48036,10 +51035,11 @@ const initLayoutwarehouseData = async () => {
         "bay": 50,
         "warehouse": "WARREN",
         "area": "A",
-        "level": 2
+        "level": 2,
+        "x_convert": 3354
       }
     ]
-);
+  );
   await vnistDB.close();
 
   console.log('End init layout warehouse database!');

@@ -5,7 +5,7 @@ const Log = require(`../../../../logs`);
 exports.createForecast = async (req, res) => {
     try {
         // Gọi đến server Python để dự báo
-        const pythonResponse = await axios.post('http://localhost:8080/api/dxclan/forecast/inventory', req.body);
+        const pythonResponse = await axios.post(`${process.env.PYTHON_URL_SERVER}/api/dxclan/forecast/inventory`, req.body);
 
         // Kiểm tra phản hồi từ server Python
         if (pythonResponse.data.success) {

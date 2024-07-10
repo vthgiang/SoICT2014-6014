@@ -4388,6 +4388,7 @@ export default {
         requested_to_close: 'Requested to close',
         task_status: 'Task status',
         filter: 'Filter',
+        proposal: 'Proposal, wait for approval and assign',
 
         priority: 'Priority',
         select_priority: 'Select priority',

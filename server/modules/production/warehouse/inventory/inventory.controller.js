@@ -1,5 +1,7 @@
 const LotService = require('./inventory.service');
 const Logger = require(`../../../../logs`);
+const rabitmq= require('../../../../rabbitmq/client')
+const listRpcQueue = require('../../../../rabbitmq/listRpcQueue')
 
 exports.getAllLots = async (req, res) => {
     try {
@@ -23,13 +25,18 @@ exports.getAllLots = async (req, res) => {
 
 exports.getDetailLot = async (req, res) => {
     try {
-        const lot = await LotService.getDetailLot(req.params.id, req.portal);
+        // const lot = await LotService.getDetailLot(req.params.id, req.portal);
+        const param = {
+            userId:req.params.id, 
+            portal:req.portal
+        }
+        const response=await rabitmq.gRPC('inventoryService.getDetailLot',JSON.stringify(param),listRpcQueue.PRODUCTION_SERVICE)
 
         await Logger.info(req.user.email, 'GET_DETAIL_LOT_SUCCESS', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_lot_success'],
-            content: lot
+            content: response
         })
     }
     catch (error) {
