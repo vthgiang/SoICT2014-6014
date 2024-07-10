@@ -26,7 +26,7 @@ function Forecast(props) {
         </li>
         <li>
           <a href='#marketing-forecast' data-toggle='tab' onClick={() => handleChangeType(2)}>
-            {'Dự báo chiến dịch tiếp thị'}
+            {'Dự báo hiệu quả tiếp thị'}
           </a>
         </li>
         

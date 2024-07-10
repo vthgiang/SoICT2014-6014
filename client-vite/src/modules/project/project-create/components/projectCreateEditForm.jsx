@@ -307,9 +307,9 @@ function ProjectCreateEditForm(props) {
     }
 
 
-    // setTimeout(() => {
-    //   props.handleAfterCreateProject()
-    // }, 30 * responsibleEmployees?.length)
+    setTimeout(() => {
+      props.handleAfterCreateProject()
+    }, 300)
 
   }
 
@@ -504,7 +504,7 @@ function ProjectCreateEditForm(props) {
 
   useEffect(() => {
     props.getAllUserInAllUnitsOfCompany()
-    // props.getAllOrganizationalUnitKpiSet(null, 1)
+    props.getAllOrganizationalUnitKpiSet(null, 1)
     props.getAllAsset({
       status: ['in_use', 'ready_to_use']
     })
