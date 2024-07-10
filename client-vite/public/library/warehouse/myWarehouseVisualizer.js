@@ -43,8 +43,8 @@ $(document).ready(function () {
 
   const getRoutePicking = async () => {
     return await $.ajax({
-      url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
-      // url: `https://dxclan-sv.datn.live/route-picking/route`,
+      // url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
+      url: `https://dxclan-sv.datn.live/route-picking/route`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
@@ -624,9 +624,8 @@ function fnShowMyWarehouseVisualizerDemo() {
   const getData = async (path) => {
     // get data warehouse from server
     return await $.ajax({
-      // url: `https://dxclan-sv.datn.live/${path}`,
-
-      url: `${process.env.REACT_APP_SERVER}/${path}`,
+      url: `https://dxclan-sv.datn.live/${path}`,
+      // url: `${process.env.REACT_APP_SERVER}/${path}`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
