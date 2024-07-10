@@ -43,6 +43,7 @@ function ListProjectNew(props) {
 
   const { project, translate, user, assetsManager } = props
   const userId = getStorage('userId')
+  const currentRole = getStorage('currentRole')
   const { projectName, startDate, endDate, page, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state
 
   const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItemsWithEmployeeData(user.usersInUnitsOfCompany) : []
@@ -67,7 +68,7 @@ function ListProjectNew(props) {
     })
     props.getListTag()
     props.getListCapacity()
-    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId, currentRole })
     // props.getProjectsDispatch({ calledId: 'user_all', userId })
   }, [])
 
@@ -129,7 +130,7 @@ function ListProjectNew(props) {
       projectManager: projectManager,
       userId: userId
     }
-    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId, currentRole })
   }
 
   // Thay đổi tên dự án
@@ -201,7 +202,8 @@ function ListProjectNew(props) {
       perPage: perPage,
       responsibleEmployees: responsibleEmployees,
       projectManager: projectManager,
-      userId: userId
+      userId: userId,
+      currentRole: currentRole
     }
 
     setState({
@@ -222,7 +224,8 @@ function ListProjectNew(props) {
       perPage: number,
       responsibleEmployees: responsibleEmployees,
       projectManager: projectManager,
-      userId: userId
+      userId: userId,
+      currentRole: currentRole
     }
 
     setState({
@@ -269,7 +272,8 @@ function ListProjectNew(props) {
       perPage: perPage,
       responsibleEmployees: responsibleEmployees,
       projectManager: projectManager,
-      userId: userId
+      userId: userId,
+      currentRole: currentRole
     }
 
     let currentProject = project.data.paginate.find((p) => p?._id === id)
@@ -318,7 +322,8 @@ function ListProjectNew(props) {
         perPage: perPage,
         responsibleEmployees: responsibleEmployees,
         projectManager: projectManager,
-        userId: userId
+        userId: userId,
+        currentRole: currentRole
       }
 
       props.getProjectsDispatch(data)

@@ -62,6 +62,7 @@ import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
 import MarketingEffeciveChannelTable from './MarketingEffeciveChannelTable';
 import MarketingCampaignDetail from './CampaignDetail';
+import { ImportForm } from './ImportForm';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
@@ -329,6 +330,14 @@ const MarketingDashboardComponent = (props) => {
     perPage: getLimit,
     tableId: getTableId
   })
+  const [stateTableData, setStateTableData] = useState({
+    id: 'import_file_example',
+    importData: undefined,
+    rowError: [],
+    configData: undefined,
+    checkFileImport: undefined
+  });
+  const { importData, rowError, configData, checkFileImport, id } = stateTableData
   const { exampleName, page, perPage, currentRow, curentRowDetail, tableId } = state
   const openPopover = Boolean(anchorElPopover);
   const openMenuCard = Boolean(anchorElMenuCard);
@@ -978,6 +987,10 @@ const MarketingDashboardComponent = (props) => {
     setAnchorElMenuChild(event.currentTarget)
   }
 
+  const handleClickAddDataButton = () => {
+    window.$('#modal-import-file-hooks').modal('show')
+  }
+
   const addCard = (card) => {
     const checkExistCard = listCard.find(element => element.key === card.key)
     if (checkExistCard) {
@@ -1119,8 +1132,11 @@ const MarketingDashboardComponent = (props) => {
             className='date-picker'
           />
         </div>
-
-        <button type="button" class="btn btn-success" onClick={handleClickOpenMenuAddCard}>Thêm thống kê</button>
+        <div>
+          <button type="button" class="btn btn-success" onClick={handleClickOpenMenuAddCard}>Thêm thống kê</button>
+          <button style={{ marginLeft: "10px" }} type="button" class="btn btn-success" onClick={handleClickAddDataButton}>Thêm dữ liệu</button>
+          <ImportForm page={page} perPage={perPage} setStateTableData={setStateTableData} />
+        </div>
         <Menu
           id="long-menu"
           MenuListProps={{
@@ -1282,11 +1298,13 @@ const MarketingDashboardComponent = (props) => {
             <div className='item-icon'>
               {/*Info icon */}
               <div className='item-icon-info'>
-                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} 
-                onClick={(event) => handleClickOpenPopover(event, 
-                {define: "Bảng",
-                 description: "Bảng",
-                  unit: "Bảng"})} />
+                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }}
+                  onClick={(event) => handleClickOpenPopover(event,
+                    {
+                      define: "Bảng",
+                      description: "Bảng",
+                      unit: "Bảng"
+                    })} />
               </div>
             </div>
             {/*Liệt kê các button trong thẻ item-action */}
@@ -1316,9 +1334,11 @@ const MarketingDashboardComponent = (props) => {
               {/*Info icon */}
               <div className='item-icon-info'>
                 <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={(event) => handleClickOpenPopover(event,
-                   {define: "cột",
+                  {
+                    define: "cột",
                     description: "cột",
-                     unit: "cột"})} />
+                    unit: "cột"
+                  })} />
               </div>
             </div>
             {/*Liệt kê các button trong thẻ item-action */}
@@ -1374,10 +1394,12 @@ const MarketingDashboardComponent = (props) => {
             <div className='item-icon'>
               {/*Info icon */}
               <div className='item-icon-info'>
-                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={(event) => handleClickOpenPopover(event, 
-                  {define: "tròn",
-                   description: "tròn",
-                    unit: "tròn"})} />
+                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={(event) => handleClickOpenPopover(event,
+                  {
+                    define: "tròn",
+                    description: "tròn",
+                    unit: "tròn"
+                  })} />
               </div>
             </div>
             {/*Liệt kê các button trong thẻ item-action */}
@@ -1452,7 +1474,7 @@ const MarketingDashboardComponent = (props) => {
             <TableRow sx={{ backgroundColor: '#asad' }}>
               <StyledTableCell>Tên </StyledTableCell>
               <StyledTableCell>
-              Chi phí
+                Chi phí
                 <ArrowDropDownIcon />
               </StyledTableCell>
               <StyledTableCell>Lượt nhấp chuột</StyledTableCell>
