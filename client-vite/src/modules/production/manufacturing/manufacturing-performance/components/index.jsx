@@ -1,174 +1,153 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import { Responsive, WidthProvider } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
-import LineChart from './dashboard-widget/lineChart';
-import SingleValue from './dashboard-widget/singleValue';
-import BarChart from './dashboard-widget/barChart';
-import DashboardHeader from './dashboard-component/header';
-import DashboardSidebar from './dashboard-component/sidebar';
-
+import { manufacturingMetricActions } from '../redux/actions'
+import DashboardHeader from './common/header'
+import DashboardSidebar from './common/sidebar'
+import KpiCreateForm from './create-new-kpi/kpiCreateForm'
+import { widgetList } from './widget'
 import './index.css'
 
 const ResponsiveGridLayout = WidthProvider(Responsive)
 
-const initItems = [
-	{
-		id: 1,
-		title: "Năng lực sản xuất",
-		value: "98%",
-		trend: {
-			value: 1.2,
-			direction: "up"
-		},
-		customize: {
-			icon: "groups",
-			color: "#28a745"
-		},
-		chart: SingleValue
-	},
-	{
-		id: 2,
-		title: "Tỉ lệ chất lượng",
-		value: "90%",
-		trend: {
-			value: 1.2,
-			direction: "down"
-		},
-		customize: {
-			icon: "workspace_premium",
-			color: "#ff851b"
-		},
-		chart: SingleValue
-	},
-	{
-		id: 3,
-		title: "Tỉ lệ giao hàng đúng hạn",
-		value: "80%",
-		trend: {
-			value: 2.2,
-			direction: "up"
-		},
-		customize: {
-			icon: "local_shipping",
-			color: "#17a2b8"
-		},
-		chart: SingleValue
-	},
-	{
-		id: 4,
-		title: "Chu kỳ sản xuất",
-		value: "75s",
-		trend: {
-			value: 1.2,
-			direction: "up"
-		},
-		customize: {
-			icon: "update",
-			color: "#605ca8"
-		},
-		chart: SingleValue
-	},
-	{
-		id: 5,
-		title: "Thời gian ngừng hoạt động",
-		value: [12, 19, 3, 5, 2, 3],
-		labels: ["Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7"],
-		target: 9,
-		customize: {
-			color: ["#17a2b8", "#ff851b"]
-		},
-		trend: {
-			value: 1.2,
-			direction: "up"
-		},
-		chart: LineChart
-	},
-	{
-		id: 6,
-		title: "Chi phí sản xuất",
-		groupValue: [[12, 19, 3, 5, 2, 3], [3, 9, 13, 6, 2, 4], [1, 8, 4, 9, 7, 3]],
-		labels: ["Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7"],
-		datalabels: ["Nhân công", "Máy móc", "Nguyên vật liệu"],
-		target: 9,
-		customize: {
-			color: ["#17a2b8", "#3d9970", "#ff851b"]
-		},
-		trend: {
-			value: 1.2,
-			direction: "up"
-		},
-		chart: BarChart
-	}
-]
+const ManufacturingPerformance = (props) => {
+  const { manufacturingMetric } = props
 
-const ManufacturingPerformance = () => {
-	const [items, setItems] = useState(initItems)
-	const [editMode, setEditMode] = useState(false)
-	let history = useHistory()
+  const [editMode, setEditMode] = useState(false)
+  const [period, setPeriod] = useState('day')
+  const [monitoredKpis, setMonitoredKpis] = useState([])
+  let history = useHistory()
 
-	const layouts = [
-		{ i: "1", x: 0, y: 0, w: 3, h: 4 },
-		{ i: "2", x: 3, y: 0, w: 3, h: 4 },
-		{ i: "3", x: 6, y: 0, w: 3, h: 4 },
-		{ i: "4", x: 9, y: 0, w: 3, h: 4 },
-		{ i: "5", x: 0, y: 4, w: 6, h: 14 },
-		{ i: "6", x: 6, y: 4, w: 6, h: 14 },
+  const gridCols = editMode ? { lg: 12, md: 12, sm: 12, xs: 8, xxs: 4 } : { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }
 
-	];
-	const handleDelete = (id) => {
-		setItems(items => items.filter(item => item.id != id))
-	}
+  const handleChangePeriod = (value) => {
+    setPeriod(value)
+  }
 
-	const handleRedirectToDetail = () => {
-		history.push("/detail-analysis-manufacturing-performance")
-	}
+  const handleDeleteMonitoredKpi = (id) => {
+    setMonitoredKpis(monitoredKpis.filter((kpi) => kpi._id !== id))
+  }
 
-	const handleToggleSidebar = () => {
-		setEditMode(!editMode)
-	}
+  const handleAddMonitoredKpi = (kpi) => {
+    setMonitoredKpis([...monitoredKpis, kpi])
+  }
 
-	return (
-		<div className='performance-dashboard' style={{ minHeight: '450px' }}>
-			<DashboardHeader onToggleSidebar={handleToggleSidebar} editMode={editMode} />
-			<div className='chart-container' style={{ display: "flex" }}>
-				<div className='chart-grid' style={{ width: editMode ? "80%" : "100%" }}>
-					<ResponsiveGridLayout
-						className="layout"
-						compactType="horizontal"
-						layouts={{ lg: layouts, md: layouts, sm: layouts, xs: layouts, xxs: layouts }}
-						breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-						cols={{ lg: 12, md: 12, sm: 6, xs: 4, xxs: 2 }}
-						resizeHandles={['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne']}
-						rowHeight={editMode ? 12 : 15}
-						draggableCancel=".cancelSelectorName"
-					>
-						{items.map((item) => (
-							<div key={item.id} className="item">
-								<item.chart
-									title={item.title}
-									value={item.value}
-									groupValue={item.groupValue ? item.groupValue : []}
-									trend={item.trend}
-									customize={item.customize}
-									target={item.target ? item.target : 0}
-									labels={item.labels ? item.labels : []}
-									datalabels={item.datalabels ? item.datalabels : []}
-									onDelete={() => handleDelete(item.id)}
-									onRedirectToDetail={handleRedirectToDetail}
-								/>
-							</div>
-						))}
-					</ResponsiveGridLayout>
-				</div>
-				{editMode && (
-					<DashboardSidebar />
-				)}
-			</div>
-		</div>
-	)
+  const handleRedirectToDetail = (metricId) => {
+    history.push({
+      pathname: '/detail-analysis-manufacturing-performance',
+      state: { metricId }
+    })
+  }
+
+  const handleToggleSidebar = () => {
+    setEditMode(!editMode)
+  }
+
+  const handleLayoutChange = (layout, _) => {
+    const newMonitoredKpis = [...monitoredKpis]
+    newMonitoredKpis.forEach((kpi, index) => {
+      kpi.dataGrid = layout[index]
+    })
+
+    setMonitoredKpis([...newMonitoredKpis])
+  }
+
+  const handleSave = () => {
+    // lấy các element đang được monitoring và không được monitoring
+    const newListKpis = monitoredKpis.concat(
+      manufacturingMetric.listKpis.filter((item1) => !monitoredKpis.some((item2) => item2._id === item1._id))
+    )
+
+    setEditMode(false)
+
+    props.editManufacturingKpis({ listKpis: newListKpis })
+  }
+
+  useEffect(() => {
+    const currentRole = localStorage.getItem('currentRole')
+    props.getAllManufacturingKpis({ currentRole, period })
+
+    const initMonitoredKpis = manufacturingMetric.listKpis.filter((kpi) => kpi.dataGrid !== null)
+
+    setMonitoredKpis(initMonitoredKpis)
+  }, [period])
+
+  useEffect(() => {
+    const currentRole = localStorage.getItem('currentRole')
+
+    props.getAllReportElements({ currentRole })
+  }, [])
+
+  if (manufacturingMetric.listKpis === 0) {
+    return <div className='text-center'>Đang xử lý...</div>
+  }
+
+  return (
+    <div className='performance-dashboard' style={{ minHeight: '450px' }}>
+      <DashboardHeader onToggleSidebar={handleToggleSidebar} onChangePeriod={handleChangePeriod} onSave={handleSave} editMode={editMode} />
+      <KpiCreateForm />
+      {monitoredKpis.length === 0 ? (
+        <div className='no-data-pannel'>Không có dữ liệu</div>
+      ) : (
+        <div className='chart-container'>
+          <div className={`chart-grid ${editMode ? 'editMode' : ''}`}>
+            <ResponsiveGridLayout
+              className='layout'
+              compactType='vertical'
+              breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+              cols={gridCols}
+              margin={[10, 10]}
+              resizeHandles={['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne']}
+              rowHeight={editMode ? 11.5 : 15}
+              useCSSTransforms={true}
+              isDraggable={editMode}
+              isResizable={editMode}
+              draggableCancel='.cancelSelectorName'
+              onLayoutChange={handleLayoutChange}
+            >
+              {monitoredKpis
+                .filter((kpi) => kpi.dataGrid !== null)
+                .map((metric) => {
+                  const Widget = widgetList[metric.widget]
+                  return (
+                    <div key={metric.dataGrid['i']} className={`item ${editMode ? 'resizable' : ''}`} data-grid={metric.dataGrid}>
+                      <Widget
+                        key={metric.dataGrid['i']}
+                        title={metric.displayName ? metric.displayName : metric.name}
+                        values={metric.values}
+                        unit={metric.unit}
+                        target={metric.target}
+                        trend={metric.trend}
+                        customize={metric.customize}
+                        labels={metric.labels ? metric.labels : []}
+                        editMode={editMode}
+                        onDelete={() => handleDeleteMonitoredKpi(metric._id)}
+                        onRedirectToDetail={() => handleRedirectToDetail(metric._id)}
+                      />
+                    </div>
+                  )
+                })}
+            </ResponsiveGridLayout>
+          </div>
+          {editMode && <DashboardSidebar onAddMonitoredKpi={handleAddMonitoredKpi} listKpis={manufacturingMetric.listKpis} />}
+        </div>
+      )}
+    </div>
+  )
 }
-export default connect(null, null)(withTranslate(ManufacturingPerformance))
 
+function mapStateToProps(state) {
+  const manufacturingMetric = state.manufacturingMetric
+  return { manufacturingMetric }
+}
+
+const mapDispatchToProps = {
+  getAllManufacturingKpis: manufacturingMetricActions.getAllManufacturingKpis,
+  editManufacturingKpis: manufacturingMetricActions.editManufacturingKpis,
+  getAllReportElements: manufacturingMetricActions.getAllReportElements
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingPerformance))

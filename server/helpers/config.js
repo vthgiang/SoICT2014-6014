@@ -2675,7 +2675,12 @@ const LINKS = [
     url: "/manage-manufacturing-plan",
     description: "Quản lý kế hoạch sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,
-    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name, 
+      ROOT_ROLES.ADMIN.name, 
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.MANAGER.name
+    ],
     components: getComponentsInLink("/manage-manufacturing-plan"),
   },
   {
@@ -2715,8 +2720,25 @@ const LINKS = [
     url: "/analysis-manufacturing-performance",
     description: "Phân tích hiệu suất sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,
-    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name, 
+      ROOT_ROLES.ADMIN.name, 
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.MANAGER.name
+    ],
     components: getComponentsInLink("/analysis-manufacturing-performance"),
+  },
+  {
+    url: "/detail-analysis-manufacturing-performance",
+    description: "Phân tích chi tiết",
+    category: LINK_CATEGORY.MANUFACTURING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name, 
+      ROOT_ROLES.ADMIN.name, 
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.MANAGER.name
+    ],
+    components: getComponentsInLink("/detail-analysis-manufacturing-performance"),
   },
   {
     url: "/manage-manufacturing-works",

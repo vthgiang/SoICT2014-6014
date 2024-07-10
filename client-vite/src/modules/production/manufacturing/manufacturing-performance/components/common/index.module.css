@@ -92,12 +92,32 @@
 }
 
 .edit_button {
-    background-color: #28a745;
+    background-color: #ffc107;
+    color: #333;
 }
 
 .edit_button:hover {
+    border-color: #ffc107;
+}
+
+.add_button {
+    background-color: #28a745;
+    color: white;
+}
+
+.add_button:hover {
     border-color: #28a745;
 }
+
+.add_plan_button {
+    background-color: #309795;
+    color: white;
+}
+
+.add_plan_button:hover {
+    border-color: #309795;
+}
+
 .cancel_button {
     border: 1px solid #ddd;
     color: #444;
@@ -110,11 +130,10 @@
 
 /* Sidebar CSS */
 .sidebar {
-    width: 20%;
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid red;
+    width: 25%;
+    padding: 1.6rem;
     background-color: white;
+    border-radius: 0.4rem;
 }
 
 .chart_icon-list {

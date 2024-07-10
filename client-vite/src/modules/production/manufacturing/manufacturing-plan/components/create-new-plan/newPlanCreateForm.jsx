@@ -427,7 +427,7 @@ function NewPlanCreateForm(props) {
                 onListRemainingGoodsChange={handleRemainingGoodsChange}
               />
             )}
-            {step === 2 && (
+            {step === 2 && (   
               <ScheduleBooking
                 listGoods={goods}
                 manufacturingCommands={manufacturingCommands}

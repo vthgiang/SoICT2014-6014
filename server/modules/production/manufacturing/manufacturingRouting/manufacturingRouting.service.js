@@ -37,7 +37,6 @@ exports.getAllManufacturingRoutings = async (query, portal) => {
         }
     }
 
-
     if (!page || !limit) {
         let docs = await ManufacturingRouting(connect(DB_CONNECTION, portal))
             .find(option)
@@ -48,10 +47,10 @@ exports.getAllManufacturingRoutings = async (query, portal) => {
                 path: "manufacturingMill",
                 select: "name"
             }, {
-                path: "workers.workerRole",
+                path: "operations.resources.workerRole",
                 select: "name"
             }, {
-                path: "machines.machine",
+                path: "operations.resources.machine",
                 select: "name"
             }, {
                 path: "creator",
@@ -65,6 +64,7 @@ exports.getAllManufacturingRoutings = async (query, portal) => {
         return { manufacturingRoutings }
     } else {
         let manufacturingRoutings = await ManufacturingRouting(connect(DB_CONNECTION, portal))
+            .find(option)
             .populate([{
                 path: "manufacturingWorks",
                 select: "name"
@@ -83,11 +83,11 @@ exports.getManufacturingRoutingById = async (id, portal) => {
             path: "operations.manufacturingMill",
             select: "name"
         }, {
-            path: "operations.workers.workerRole",
-            select: "name"
+            path: "operations.resources.workerRole",
+            select: "name",
         }, {
-            path: "operations.machines.machine",
-            select: "assetName"
+            path: "operations.resources.machine",
+            select: "code assetName cost estimatedTotalProduction"
         }, {
             path: "goods",
             select: "name"
@@ -96,8 +96,36 @@ exports.getManufacturingRoutingById = async (id, portal) => {
     if (!manufacturingRouting) {
         throw Error("Manufacturing Routing is not existing");
     }
+    
+    const operationDocs = manufacturingRouting._doc.operations
+    
 
-    return { manufacturingRouting }
+    const operations = await Promise.all(operationDocs.map(async operation => {
+        const resources = await Promise.all(operation.resources.map(async res => {
+            const workerRole = res.workerRole;
+            const workers = await UserRole(connect(DB_CONNECTION, portal))
+                .find({ roleId: workerRole })
+                .populate({
+                    path: "userId",
+                    select: "name email"
+                });
+            return {
+                ...res._doc,
+                workers
+            }
+        }))
+        return {
+            ...operation._doc,
+            resources
+        }
+    }))
+
+    const doc = {
+        ...manufacturingRouting._doc,
+        operations
+    }
+
+    return { manufacturingRouting: doc }
 }
 
 exports.createManufacturingRouting = async (data, portal) => {
@@ -122,6 +150,12 @@ exports.getManufacturingRoutingsByGood = async (goodId, portal) => {
         .populate([{
             path: "operations.manufacturingMill",
             select: "name"
+        }, {
+            path: "operations.resources.workerRole",
+            select: "name"
+        }, {
+            path: "operations.resources.machine",
+            select: "assetName"
         }]);
 
     if (!manufacturingRoutings) {
@@ -131,13 +165,13 @@ exports.getManufacturingRoutingsByGood = async (goodId, portal) => {
     return { manufacturingRoutings }
 }
 
-// Lấy tất cả công nhân và máy có thể sử dụng của 1 routing
+// Lấy tất cả công nhân và máy khả dụng của một routing
 exports.getAvailableResources = async (id, portal) => {
     let routing = await ManufacturingRouting(connect(DB_CONNECTION, portal))
-        .findById({ _id: id })
+        .findById(id)
     
     const resources = await Promise.all(routing.operations.map(async operation => {
-        const workerRoles = operation.workers.map(worker => worker.workerRole);
+        const workerRoles = operation.resources.map(res => res.workerRole);
         let workers = await UserRole(connect(DB_CONNECTION, portal))
             .find({ roleId: { $in: workerRoles } })
             .populate({
