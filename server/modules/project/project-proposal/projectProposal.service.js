@@ -146,7 +146,7 @@ const getLastKPIAndAvailableEmpsInTasks = (tasks, allTasksInPast, employees) => 
           let kpiValue = 1
   
           // Nếu không có yêu cầu năng lực => Lấy năng lực thực hiện công việc tốt nhất trong quá khứ
-          let taskOfEmpInPast = allTasksInPast.filter((taskInPast) => taskInPast.assignee._id === employeeId && taskInPast.point !== KPI_FAIL)
+          let taskOfEmpInPast = allTasksInPast.filter((taskInPast) => taskInPast?.assignee === employeeId && taskInPast.point !== KPI_FAIL)
           if (taskOfEmpInPast && taskOfEmpInPast?.length) {
             kpiValue = taskOfEmpInPast.sort((a, b) => b.point - a.point)[0].point
           }
@@ -169,7 +169,7 @@ const getLastKPIAndAvailableEmpsInTasks = (tasks, allTasksInPast, employees) => 
 
           // console.log("listTaskMatching: ", listTaskMatching)
           // console.log("employeeId: ", employeeId)
-          let listTasksMatchingWithEmp = listTaskMatching.filter((item) => String(item.assignee) === String(employeeId))
+          let listTasksMatchingWithEmp = listTaskMatching.filter((item) => String(item?.assignee) === String(employeeId))
           // console.log("listTaskMatching: ", listTasksMatchingWithEmp)
           if (listTasksMatchingWithEmp && listTasksMatchingWithEmp?.length > 0) {
             listTasksMatchingWithEmp = listTasksMatchingWithEmp.sort((a, b) => {
