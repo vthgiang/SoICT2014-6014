@@ -1022,6 +1022,42 @@ const initSampleCompanyDB = async () => {
     },
   ]);
 
+  const usersAdmin = await User(vnistDB).insertMany([
+    {
+        name: "Admin VNIST",
+        email: "admin.mdtt.vnist@gmail.com",
+        password: hash,
+        company: vnist._id,
+    },
+    {
+        name: "Admin VNIST",
+        email: "admin.pttn.vnist@gmail.com",
+        password: hash,
+        company: vnist._id,
+    },
+    {
+        name: "Admin VNIST",
+        email: "admin.tta.vnist@gmail.com",
+        password: hash,
+        company: vnist._id,
+    },
+  ])
+
+  await UserRole(vnistDB).insertMany([
+    {
+        userId: usersAdmin[0]._id, // Gán tài khoản admin.vnist có role là admin
+        roleId: roleAdmin._id,
+    },
+    {
+        userId: usersAdmin[1]._id, // Gán tài khoản admin.vnist có role là admin
+        roleId: roleAdmin._id,
+    },
+    {
+        userId: usersAdmin[2]._id, // Gán tài khoản admin.vnist có role là admin
+        roleId: roleAdmin._id,
+    },
+  ]);
+
   /**
    * 7. Tạo dữ liệu các phòng ban cho công ty VNIST
    */
