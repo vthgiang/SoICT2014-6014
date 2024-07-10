@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {withTranslate} from 'react-redux-multilingual'
-import {formatToTimeZoneDate} from '@helpers/formatDate'
+import {formatDate, formatToTimeZoneDate} from '@helpers/formatDate'
 import {DialogModal} from '@common-components'
 import '@modules/crm/customer/components/customer.css'
 import {MapContainer} from 'react-leaflet';
@@ -73,13 +73,13 @@ function OrderDetail(props) {
               <div className="col-md-6">
                 <div className="form-group">
                   <strong>Độ ưu tiên: </strong>
-                  <span>{order.priority}</span>
+                  <span>{priority[order.priority]}</span>
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="form-group">
                   <strong>Trạng thái: </strong>
-                  <span>{order.status}</span>
+                  <span>{status[order.status]}</span>
                 </div>
               </div>
             </div>
@@ -87,14 +87,14 @@ function OrderDetail(props) {
               <div className="col-md-6">
                 <div className="form-group">
                   <strong>Thời gian giao hàng dự kiến: </strong>
-                  <span>{order.deliveryTime ? formatToTimeZoneDate(order.deliveryTime) : ''}</span>
+                  <span>{order.deliveryTime ? formatDate(new Date(order.deliveryTime * 1000)) : '---'}</span>
                 </div>
               </div>
             </div>
             <div className="row">
               <div className="col-md-12">
                 <div className="form-group">
-                  <strong>Ghi chú: </strong>
+                  <strong>Ghi chú vận đơn: </strong>
                   <span>{order.note}</span>
                 </div>
               </div>
@@ -102,7 +102,7 @@ function OrderDetail(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="form-group">
-                  <strong>Địa chỉ giao hàng</strong>
+                  <strong>Ghi chú địa chỉ: </strong>
                   <span>{order.noteAddress}</span>
                 </div>
               </div>
