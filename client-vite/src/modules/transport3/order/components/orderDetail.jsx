@@ -1,28 +1,31 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import {withTranslate} from 'react-redux-multilingual'
-import {CrmCustomerActions} from '@modules/crm/customer/redux/actions'
-import {OrderActions} from '../redux/actions'
 import {formatToTimeZoneDate} from '@helpers/formatDate'
-import {DialogModal, ErrorLabel} from '@common-components'
-import ValidationHelper from '@helpers/validationHelper'
-import OrderCreateGood from './createOrder/orderCreateGood'
-import OrderCreateInfo from './createOrder/orderCreateInfo'
-import OrderCreateLocation from './createOrder/orderCreateLocation.jsx'
+import {DialogModal} from '@common-components'
 import '@modules/crm/customer/components/customer.css'
 import {MapContainer} from 'react-leaflet';
-import {StockActions} from '@modules/production/warehouse/stock-management/redux/actions.js';
 
 function OrderDetail(props) {
-  let initialState = {}
-  const [state, setState] = useState(initialState)
-
   const {order} = props
 
   const transportType = {
     1: 'Giao hàng',
     2: 'Nhận hàng',
     3: 'Vận chuyển giữa kho'
+  }
+
+  const priority = {
+    1: 'Thấp',
+    2: 'Trung bình',
+    3: 'Cao',
+    4: 'Đặc biệt'
+  }
+
+  const status = {
+    1: 'Chờ xác nhận',
+    2: 'Đã xác nhận',
+    3: 'Đã giao hàng',
   }
 
   return (
