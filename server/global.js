@@ -122,9 +122,9 @@ module.exports = async (server) => {
     "/scheduler/scheduler.service").sendEmailTaskAutomatic;
   AUTO_SENDEMAIL_TASK.start();
 
-  global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require("./modules" +
-    "/scheduler/scheduler.service").createNotificationForEmployeesHaveBrithdayCurrent;
-  AUTO_CREATE_NOTIFICATION_BIRTHDAY.start();
+  // global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require("./modules" +
+  //   "/scheduler/scheduler.service").createNotificationForEmployeesHaveBrithdayCurrent;
+  // AUTO_CREATE_NOTIFICATION_BIRTHDAY.start();
 
   // global.AUTO_CREATE_NOTIFICATION_END_CONTRACT = require("./modules" +
   //   "/scheduler/scheduler.service").createNotificationEndOfContract;

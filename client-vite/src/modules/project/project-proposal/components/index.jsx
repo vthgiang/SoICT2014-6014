@@ -132,6 +132,14 @@ function ProjectProposalPage(props) {
     setScheduleType(scheduleOptions[0]?.value)
   }
 
+  const handleAfterCreateProject = () => {
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
+    setState({
+      ...state,
+      currentProject: projectData && projectData?.length ? projectData?.find((item) => item?._id === id) : {}
+    })
+  }
+
   useEffect(() => {
     props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId });
   }, [page, perPage]);
@@ -160,7 +168,44 @@ function ProjectProposalPage(props) {
     }
   }, [isLoading, projectProposalData]);
 
-  const convertAssignmentToTableData = (assignments) => {
+  const convertAssignmentToTableData = (proposals) => {
+    let proposalAssignments = proposals?.assignment
+    let taskInDuplicate = proposals?.taskInDuplicate
+    let assignments = proposalAssignments
+    if (taskInDuplicate && taskInDuplicate?.length) {
+      assignments = proposalAssignments.filter((assignmentItem) => !taskInDuplicate.includes(assignmentItem?.task?._id))
+    }
+    let data = []
+    if (assignments && assignments?.length > 0) {
+      for(let i = 0; i < assignments?.length; i++) {
+        let dataItem = assignments[i]
+        data[i] = {
+          rawData: dataItem,
+          code: dataItem?.task?.code,
+          name: dataItem?.task?.name,
+          preceedingTasks: dataItem?.task?.preceedingTasks && 
+            dataItem?.task?.preceedingTasks?.length > 0 ? (
+              <ToolTip dataTooltip={dataItem?.task?.preceedingTasks?.map((item) => item?.link)}/> 
+            ) : null,
+          startDate: dayjs(dataItem?.task?.startDate).format('HH:mm A DD/MM/YYYY') || [],
+          endDate: dayjs(dataItem?.task?.endDate).format('HH:mm A DD/MM/YYYY') || [],
+          assignee: dataItem?.assignee?.fullName,
+          assets: dataItem?.assets?.length > 0 ? (
+            <ToolTip dataTooltip={dataItem?.assets.map((item) => item?.assetName)}/> 
+          ) : null
+        }
+      }
+    }
+    return data
+  }
+
+  const convertAssignmentToTableDataWithDuplicateAssign = (proposals) => {
+    let proposalAssignments = proposals?.assignment
+    let taskInDuplicate = proposals?.taskInDuplicate
+    let assignments = []
+    if (taskInDuplicate && taskInDuplicate?.length) {
+      assignments = proposalAssignments.filter((assignmentItem) => taskInDuplicate.includes(assignmentItem?.task?._id))
+    }
     let data = []
     if (assignments && assignments?.length > 0) {
       for(let i = 0; i < assignments?.length; i++) {
@@ -500,6 +545,7 @@ function ProjectProposalPage(props) {
                             projectEdit={currentProject}
                             projectEditId={currentProject?._id}
                             submitFunction={props.editProjectDispatch}
+                            handleAfterCreateProject={handleAfterCreateProject}
                           />
                         </div>
                       }
@@ -576,9 +622,23 @@ function ProjectProposalPage(props) {
                             tableId={`table-proposal-project-${currentProject?._id}`}
                             column={column}
                             actions={false}
-                            data={convertAssignmentToTableData(proposals?.assignment)}
+                            data={convertAssignmentToTableData(proposals)}
                           />
                         </div>
+                        {proposals && proposals?.assignment && proposals?.assignment?.length > 0 && proposals?.taskInDuplicate && proposals?.taskInDuplicate?.length > 0 && (
+                          <div className='pt-10'>
+                            <div className='font-bold text-2xl'>Thông tin các công việc cần ủy nhiệm</div>
+                            <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
+                              <TreeTable
+                                behaviour='show-children'
+                                tableId={`table-proposal-duplicate-project-${currentProject?._id}`}
+                                column={column}
+                                actions={false}
+                                data={convertAssignmentToTableDataWithDuplicateAssign(proposals)}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
       
@@ -712,12 +772,26 @@ function ProjectProposalPage(props) {
                         <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
                           <TreeTable
                             behaviour='show-children'
-                            tableId={`table-proposal-project-${currentProject?._id}`}
+                            tableId={`table-proposal-assign-project-${currentProject?._id}`}
                             column={column}
                             actions={false}
-                            data={convertAssignmentToTableData(proposals?.assignment)}
+                            data={convertAssignmentToTableData(proposals)}
                           />
                         </div>
+                        {proposals && proposals?.assignment && proposals?.assignment?.length > 0 && proposals?.taskInDuplicate && proposals?.taskInDuplicate?.length > 0 && (
+                          <div className='pt-10'>
+                            <div className='font-bold text-2xl'>Thông tin các công việc cần ủy nhiệm</div>
+                            <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
+                              <TreeTable
+                                behaviour='show-children'
+                                tableId={`table-proposal-assign-duplicate-project-${currentProject?._id}`}
+                                column={column}
+                                actions={false}
+                                data={convertAssignmentToTableDataWithDuplicateAssign(proposals)}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
