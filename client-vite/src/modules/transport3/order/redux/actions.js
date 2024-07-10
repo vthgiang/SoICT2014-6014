@@ -49,28 +49,58 @@ const getAllOrder = (query) => {
   }
 }
 
-
 const retrainingModel = () => {
   return (dispatch) => {
     dispatch({ type: OrderConstants.RETRAINING_MODEL_REQUEST })
-  OrderServices.retrainingModel()
-    .then((response) => {
-      dispatch({
-        type: OrderConstants.RETRAINING_MODEL_SUCCESS,
-        payload: response.data.content
+    OrderServices.retrainingModel()
+      .then((response) => {
+        dispatch({
+          type: OrderConstants.RETRAINING_MODEL_SUCCESS,
+          payload: response.data.content
+        })
       })
-    })
-    .catch(() => {
-      dispatch({
-        type: OrderConstants.RETRAINING_MODEL_FAILURE
+      .catch(() => {
+        dispatch({
+          type: OrderConstants.RETRAINING_MODEL_FAILURE
+        })
       })
-    })
   }
 }
 
+const approveOrder = (id) => {
+  return (dispatch) => {
+    dispatch({ type: OrderConstants.APPROVE_ORDER_REQUEST })
+    OrderServices.approveOrder(id)
+      .then((res) => {
+        dispatch({
+          type: OrderConstants.APPROVE_ORDER_SUCCESS
+        })
+      })
+      .catch((err) => {
+        dispatch({ type: OrderConstants.APPROVE_ORDER_FAILURE })
+      })
+  }
+}
+
+const deleteOrder = (id) => {
+  return (dispatch) => {
+    dispatch({ type: OrderConstants.DELETE_ORDER_REQUEST })
+    OrderServices.deleteOrder(id)
+      .then((res) => {
+        dispatch({
+          type: OrderConstants.DELETE_ORDER_SUCCESS
+        })
+      })
+      .catch((err) => {
+        dispatch({ type: OrderConstants.DELETE_ORDER_FAILURE })
+      })
+  }
+}
 export const OrderActions = {
   getAdressFromLatLng,
   createNewOrder,
   getAllOrder,
-  retrainingModel
+  retrainingModel,
+  approveOrder,
+  deleteOrder
 }

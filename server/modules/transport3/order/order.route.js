@@ -5,7 +5,8 @@ const { auth } = require(`../../../middleware`);
 
 router.post('/create-order', auth, OrderController.createOrder);
 router.get('/orders', auth, OrderController.getAllOrder);
-router.delete('/order/:id', auth, OrderController.deleteOrder);
 router.put('/order/:id', auth, OrderController.updateOrder);
+router.put('/order/approve/:id', auth, OrderController.approveOrder);
+router.delete('/order/:id', auth, OrderController.deleteUnapprovedOrder);
 
 module.exports = router;

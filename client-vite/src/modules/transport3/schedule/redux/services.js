@@ -22,7 +22,7 @@ const getAllSchedule = (query) => {
   )
 }
 
-const getScheduleById = (scheduleId) => {
+const getScheduleById = (scheduleId, query) => {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/transport3/schedule/${scheduleId}`,
