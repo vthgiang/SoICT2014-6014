@@ -56,99 +56,99 @@ $(document).ready(function () {
 
   function visualize3DRoute(chemins) {
     if (typeof THREE === 'undefined') {
-        console.error('Three.js is not loaded.');
-        return;
+      console.error('Three.js is not loaded.')
+      return
     }
 
     if (!globalWarehouseScene) {
-        console.error('Warehouse scene is not available.');
-        return;
+      console.error('Warehouse scene is not available.')
+      return
     }
 
     // Remove the previous route group if it exists
     if (currentRouteGroup) {
-        globalWarehouseScene.remove(currentRouteGroup);
-        // Dispose of the geometry and materials to free up memory
-        currentRouteGroup.traverse(function (object) {
-            if (object.geometry) object.geometry.dispose();
-            if (object.material) {
-                if (object.material.map) object.material.map.dispose();
-                object.material.dispose();
-            }
-        });
-        currentRouteGroup = null;
+      globalWarehouseScene.remove(currentRouteGroup)
+      // Dispose of the geometry and materials to free up memory
+      currentRouteGroup.traverse(function (object) {
+        if (object.geometry) object.geometry.dispose()
+        if (object.material) {
+          if (object.material.map) object.material.map.dispose()
+          object.material.dispose()
+        }
+      })
+      currentRouteGroup = null
     }
 
     // Create a new group to hold the route visualization
-    const routeGroup = new THREE.Group();
+    const routeGroup = new THREE.Group()
 
     // Define materials for the route and waypoints
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 20 });
-    const waypointMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 20 })
+    const waypointMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff })
 
     // Function to create a text texture for waypoint labels
     function createTextTexture(text) {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = 64;
-        canvas.height = 64;
-        context.font = '48px Arial';
-        context.fillStyle = 'black';
-        context.textAlign = 'center';
-        context.fillText(text, canvas.width / 2, canvas.height / 2 + 15);
-        return new THREE.CanvasTexture(canvas);
+      const canvas = document.createElement('canvas')
+      const context = canvas.getContext('2d')
+      canvas.width = 64
+      canvas.height = 64
+      context.font = '48px Arial'
+      context.fillStyle = 'black'
+      context.textAlign = 'center'
+      context.fillText(text, canvas.width / 2, canvas.height / 2 + 15)
+      return new THREE.CanvasTexture(canvas)
     }
 
     // Detect and handle duplicate points
-    const offset = 20; // Adjust this value as needed
-    const pointMap = new Map();
-    const adjustedChemins = chemins.map(coord => {
-        const key = coord.join(',');
-        if (pointMap.has(key)) {
-            const count = pointMap.get(key) + 1;
-            pointMap.set(key, count);
-            return [coord[0] + count * offset, coord[1] + count * offset, coord[2] + count * offset];
-        } else {
-            pointMap.set(key, 0);
-            return coord;
-        }
-    });
+    const offset = 20 // Adjust this value as needed
+    const pointMap = new Map()
+    const adjustedChemins = chemins.map((coord) => {
+      const key = coord.join(',')
+      if (pointMap.has(key)) {
+        const count = pointMap.get(key) + 1
+        pointMap.set(key, count)
+        return [coord[0] + count * offset, coord[1] + count * offset, coord[2] + count * offset]
+      } else {
+        pointMap.set(key, 0)
+        return coord
+      }
+    })
 
     // Generate the route and waypoints
-    const points = [];
+    const points = []
     adjustedChemins.forEach((coord, index) => {
-        const [x, y, z] = coord;
+      const [x, y, z] = coord
 
-        // Create a waypoint
-        const waypointGeometry = new THREE.CircleGeometry(10, 32);
-        const waypoint = new THREE.Mesh(waypointGeometry, waypointMaterial);
-        waypoint.position.set(x - 20, z, y);
-        waypoint.rotateX(-Math.PI / 2);
-        routeGroup.add(waypoint);
+      // Create a waypoint
+      const waypointGeometry = new THREE.CircleGeometry(10, 32)
+      const waypoint = new THREE.Mesh(waypointGeometry, waypointMaterial)
+      waypoint.position.set(x - 20, z, y)
+      waypoint.rotateX(-Math.PI / 2)
+      routeGroup.add(waypoint)
 
-        // Create and add waypoint label
-        const textTexture = createTextTexture(String(index + 1));
-        const spriteMaterial = new THREE.SpriteMaterial({ map: textTexture });
-        const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.position.set(x - 20, z + 20, y);
-        sprite.scale.set(50, 50, 1);
-        routeGroup.add(sprite);
+      // Create and add waypoint label
+      const textTexture = createTextTexture(String(index + 1))
+      const spriteMaterial = new THREE.SpriteMaterial({ map: textTexture })
+      const sprite = new THREE.Sprite(spriteMaterial)
+      sprite.position.set(x - 20, z + 20, y)
+      sprite.scale.set(50, 50, 1)
+      routeGroup.add(sprite)
 
-        // Add points to the route
-        points.push(new THREE.Vector3(x - 20, z, y));
-    });
+      // Add points to the route
+      points.push(new THREE.Vector3(x - 20, z, y))
+    })
 
     // Create and add the route line
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const line = new THREE.Line(geometry, lineMaterial);
-    routeGroup.add(line);
+    const geometry = new THREE.BufferGeometry().setFromPoints(points)
+    const line = new THREE.Line(geometry, lineMaterial)
+    routeGroup.add(line)
 
     // Add the route group to the warehouse scene
-    globalWarehouseScene.add(routeGroup);
+    globalWarehouseScene.add(routeGroup)
 
     // Store the current route group
-    currentRouteGroup = routeGroup;
-}
+    currentRouteGroup = routeGroup
+  }
 
   parentLayout = $().w2layout({
     name: 'parentLayout',
@@ -166,12 +166,12 @@ $(document).ready(function () {
               id: 'warehouse',
               tooltip: 'Select Warehouse',
               items: appWarehouses.map(function (appVisual, index) {
-                return { id: index, text: appVisual.warehouseName }
+                return { id: index, text: 'Kho: Trần Đại Nghĩa' }
               }), //Find index programmatically with: w2ui.parentLayout.get("main").toolbar.items.find(function(item){return item.id == "warehouse"}).selected
               selected: -1,
               lastSelected: -1,
               text: function (item) {
-                return 'Warehouse: ' + (item.selected <= 0 ? '' : item.items[item.selected].text)
+                return 'Kho:';
               }
             },
             { type: 'break' },
@@ -194,7 +194,7 @@ $(document).ready(function () {
               id: 'toggleOrderPickingGrid',
               tooltip: 'Show/hide Order Picking Grid',
               text: 'Xem tuyến đường lấy hàng'
-            },
+            }
             // { type: 'break' },
             // {
             //   type: 'menu-radio',
@@ -253,7 +253,7 @@ $(document).ready(function () {
                   if (vDropDown.selected >= 0) {
                     w2utils.lock(document.body, { spinner: true, opacity: 0 })
                     vDropDown.lastSelected = selected
-                    vDropDown.text = 'Warehouse: ' + vDropDown.items[selected].text
+                    vDropDown.text = 'Kho: Trần Đại Nghĩa';
                     fnShowMyWarehouseVisualizerDemo()
                   }
                   break
@@ -696,7 +696,7 @@ function fnShowMyWarehouseVisualizerDemo() {
     var vDropDown = parentLayout.get('main').toolbar.items.find(function (item) {
       return item.id == 'warehouse'
     })
-    vDropDown.text = 'Warehouse: ' + warehouseVisual.warehouseName
+    vDropDown.text = 'Kho: Trần Đại Nghĩa'
     parentLayout.get('main').toolbar.refresh()
   } //fnShowWarehouse
 
@@ -723,20 +723,19 @@ function fnShowMyWarehouseVisualizerDemo() {
 
     const lineMaterial = new THREE.LineBasicMaterial({ color: 'black', transparent: true, opacity: 0, linewidth: 10 })
 
-    const points = [];
+    const points = []
     points.push(new THREE.Vector3(1000, 0, 0))
     points.push(new THREE.Vector3(1000, 0, 4100))
-    
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
-    const line = new THREE.Line( geometry, lineMaterial );
-    warehouse.add( line );
+    const geometry = new THREE.BufferGeometry().setFromPoints(points)
+
+    const line = new THREE.Line(geometry, lineMaterial)
+    warehouse.add(line)
     // -------------------------------------------------------------
 
     //Re-use unique geometries.
     //Related discussion: https://stackoverflow.com/questions/16820806/three-js-performance
     for (var i = 0; i < layoutData.length; i++) {
-
       var geometryKey = layoutData[i]['width'] + ':' + layoutData[i]['height'] + ':' + layoutData[i]['depth']
 
       if (geometriesMap.has(geometryKey)) {
@@ -2154,19 +2153,17 @@ function myDataVisualizer() {
 
         //var key = (gridType == "data" ? "" : " ")  + dataVisual[gridType + "Key"] ;  // " " prefix for warehouse data columns	assinged in dataVisual fnSetVisualProps
         var key = dataVisual.dataKey // same for both data and warehouse grids; not when building the THREE scene
-
         columns.push({
           field: 'recid',
-          caption: gridType == 'visual' ? 'Layout Row' : 'Inventory_Row',
+          caption: gridType == 'visual' ? 'Layout Row' : 'Thứ tự',
           sortable: true,
           searchable: true,
           hidden: false,
           render: fnGridColumnRender
         }) //Always located in column 1 associted with key used for join in Column 2
-
         columns.push({
           field: key,
-          caption: key.trim() + ' (Key)', //Always in column 2
+          caption: "Tọa độ vị trí", //Always in column 2
           render: fnGridColumnRender,
           sortable: true,
           searchable: true,
@@ -2189,55 +2186,84 @@ function myDataVisualizer() {
         }
         //***********************************
         //Start Columns 4 through dataFields.length
-        //***********************************
+        //**********************************
+        // dataFields
+        //   .filter(function (columnName) {
+        //     return columnName != 'recid'
+        //   })
+        //   .filter(function (columnName) {
+        //     return columnName != key
+        //   })
+        //   .filter(function (columnName) {
+        //     return !fnIsPresetColor(columnName)
+        //   })
+          // .forEach(function (field, i) {
+          //   var fieldCaption = dataTypes[field].caption
 
-        dataFields
-          .filter(function (columnName) {
-            return columnName != 'recid'
-          })
-          .filter(function (columnName) {
-            return columnName != key
-          })
-          .filter(function (columnName) {
-            return !fnIsPresetColor(columnName)
-          })
-          .forEach(function (field, i) {
-            var fieldCaption = dataTypes[field].caption
+          //   var column = {
+          //     field: field,
+          //     caption: fieldCaption.trim(),
+          //     sortable: true,
+          //     searchable: true,
+          //     hidden: false,
+          //     render: fnGridColumnRender
+          //   }
+          //   columns.push(column)
 
-            var column = {
-              field: field,
-              caption: fieldCaption.trim(),
-              sortable: true,
-              searchable: true,
-              hidden: false,
-              render: fnGridColumnRender
-            }
-            columns.push(column)
+          //   if (dataTypes[dataVisual.colorPrefix + field]) {
+          //     //If the current field in loop also has predefined color; position here for column grouping
 
-            if (dataTypes[dataVisual.colorPrefix + field]) {
-              //If the current field in loop also has predefined color; position here for column grouping
+          //     columns[columns.length - 1].caption = 'Value (Scaled)'
 
-              columns[columns.length - 1].caption = 'Value (Scaled)'
+          //     var colorColumn = {
+          //       field: dataVisual.colorPrefix + field,
+          //       hidden: false,
+          //       caption: 'Color (Preset)',
+          //       sortable: true,
+          //       searchable: false,
+          //       render: fnGridColumnRender
+          //     }
 
-              var colorColumn = {
-                field: dataVisual.colorPrefix + field,
-                hidden: false,
-                caption: 'Color (Preset)',
-                sortable: true,
-                searchable: false,
-                render: fnGridColumnRender
-              }
+          //     columns.push(colorColumn)
 
-              columns.push(colorColumn)
-
-              bColorField = true //data has at least 1 pre-set color field
-            } //if
-          }) //dataField.forEach
+          //     bColorField = true //data has at least 1 pre-set color field
+          //   } //if
+          // }) //dataField.forEach
 
         var hasSelection = false
 
         dataVisual.join.forEach((join) => (hasSelection = hasSelection ? true : !$.isEmptyObject(join.selectionLink)))
 
+        if (dataFields[0] == 'good') {
+          columns.push({
+            field: dataFields[0],
+            caption: 'Tên sản phẩm',
+            render: fnGridColumnRender,
+            sortable: true,
+            searchable: true,
+            hidden: false
+          })
+        }
+        if (dataFields[1] == 'contained') {
+          columns.push({
+            field: dataFields[1],
+            caption: 'Số lượng hiện có',
+            render: fnGridColumnRender,
+            sortable: true,
+            searchable: true,
+            hidden: false
+          })
+        }
+        if (dataFields[2] == 'capacity') {
+          columns.push({
+            field: dataFields[2],
+            caption: 'Số lượng tối đa',
+            render: fnGridColumnRender,
+            sortable: true,
+            searchable: true,
+            hidden: false
+          })
+        }
         if (gridType == 'data' && (dataVisual.selectionLinks.length > 0 || hasSelection)) {
           columns.push(
             {
