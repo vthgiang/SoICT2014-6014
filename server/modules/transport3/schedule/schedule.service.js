@@ -18,7 +18,7 @@ exports.getAllSchedule = async (portal, query, currentRole) => {
     return [];
   }
 
-  return Transport3Schedule(connect(DB_CONNECTION, portal)).find(query)
+  let result = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({})
     .populate('depot')
     .populate({
       path: 'orders.order',
@@ -34,6 +34,19 @@ exports.getAllSchedule = async (portal, query, currentRole) => {
     })
     .populate('draftSchedule')
     .populate('employees');
+
+  if (query.query) {
+    // ma lich trinh, kho xuat phat, xe, nhan vien
+    console.log(result[0].employees);
+    return result.filter(schedule => {
+      return schedule.code.toLowerCase().includes(query.query.toLowerCase()) ||
+        schedule.depot?.name.toLowerCase().includes(query.query.toLowerCase()) ||
+        schedule.vehicle?.asset?.assetName.toLowerCase().includes(query.query.toLowerCase()) ||
+        schedule.employees?.map(employee => employee.name).join(', ').toLowerCase().includes(query.query.toLowerCase())
+    })
+  } else {
+    return result;
+  }
 }
 
 exports.getScheduleById = async (portal, scheduleId) => {

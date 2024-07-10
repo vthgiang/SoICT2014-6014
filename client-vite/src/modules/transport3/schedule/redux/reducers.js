@@ -173,6 +173,21 @@ export function schedule(state = initState, action) {
         ...state,
         isLoading: false
       }
+    case ScheduleConstants.DELETE_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.DELETE_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.DELETE_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
     default:
       return state
   }
