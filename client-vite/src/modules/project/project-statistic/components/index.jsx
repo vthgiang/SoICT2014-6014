@@ -12,6 +12,7 @@ import { BiddingPackageManagerActions } from "../../../bidding/bidding-package/b
 import { ProjectActions } from "../../projects/redux/actions";
 import { AssetManagerActions } from "../../../asset/admin/asset-information/redux/actions";
 import Swal from "sweetalert2";
+import { getStorage } from "../../../../config";
 
 function ProjectStatisticPage(props) {
   const { translate, employeesManager, user, assetsManager, biddingPackagesManager, project } = props
@@ -19,6 +20,9 @@ function ProjectStatisticPage(props) {
     startDate: '',
     endDate: ''
   })
+
+  const userId = getStorage('userId')
+  const currentRole = getStorage('currentRole')
 
   const handleChangeEndDate = (value) => {
     let month
@@ -106,6 +110,8 @@ function ProjectStatisticPage(props) {
         calledId: 'paginate',
         endDate: endDate,
         startDate: startDate,
+        currentRole: currentRole,
+        userId: userId
       }
 
       props.getProjectsDispatch(data)
@@ -125,7 +131,9 @@ function ProjectStatisticPage(props) {
     props.getProjectsDispatch({
       calledId: 'paginate',
       startDate: state?.startDate,
-      endDate: state?.endDate
+      endDate: state?.endDate,
+      currentRole: currentRole,
+      userId: userId
     })
     props.getAllEmployee()
   }, [])
