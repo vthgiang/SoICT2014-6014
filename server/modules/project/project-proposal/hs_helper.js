@@ -1426,7 +1426,7 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
   return newHM[0]
 }
 
-function harmonySearch(HS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime) {
+function harmonySearch(HS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime, allTasksOutOfProject) {
   const { HMS, bw, HMCR, PAR, maxIter } = HS_Arguments
   let HM = []
   // Step 1: init HM

@@ -44,11 +44,9 @@ const InventoryWarehouseSchema = new Schema({
   },
   contained: {
     type: Number,
-    default: 0,
   },
   capacity: {
     type: Number,
-    default: 0,
   },
 });
 

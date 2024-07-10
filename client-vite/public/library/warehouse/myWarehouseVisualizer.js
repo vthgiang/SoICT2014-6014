@@ -43,6 +43,7 @@ $(document).ready(function () {
 
   const getRoutePicking = async () => {
     return await $.ajax({
+      // url: `${process.env.REACT_APP_SERVER}/route-picking/route`,
       url: `https://dxclan-sv.datn.live/route-picking/route`,
       headers: {
         'Access-Control-Allow-Origin': '*'
@@ -178,61 +179,61 @@ $(document).ready(function () {
               type: 'button',
               id: 'toggleAnalyzer',
               tooltip: 'Show/hide Inventory Grid',
-              text: 'Toggle Inventory Grid'
+              text: 'Thông tin vị trí lưu trữ'
             },
             { type: 'break' },
             {
               type: 'button',
               id: 'toggleVisualGrid',
               tooltip: 'Show/hide Warehouse Layout Grid',
-              text: 'Toggle Warehouse Layout Grid'
+              text: 'Xem thông tin layout kho'
             },
             { type: 'break' },
             {
               type: 'button',
               id: 'toggleOrderPickingGrid',
               tooltip: 'Show/hide Order Picking Grid',
-              text: 'Toggle Order Picking Grid'
+              text: 'Xem tuyến đường lấy hàng'
             },
-            { type: 'break' },
-            {
-              type: 'menu-radio',
-              id: 'language',
-              tooltip: 'Select Language',
-              items: languages.map(function (language, index) {
-                return { id: index, text: language.text, tooltip: language.tooltip }
-              }), //Find index programmatically with: w2ui.parentLayout.get("main").toolbar.items.find(function(item){return item.id == "warehouse"}).selected
-              selected: languageIndex,
-              text: function (item) {
-                return 'Language: ' + item.items[item.selected].text
-              }
-            },
-            { type: 'break' },
-            {
-              type: 'menu',
-              id: 'Help',
-              text: fnGetTranslatedText,
-              tooltip: 'Help',
-              items: [
-                { id: 'documentation', text: 'Documentation' },
-                {
-                  id: 'quickKeys',
-                  text: 'Quick Keys'
-                },
-                { id: 'webgl', text: 'WebGL' },
-                { id: 'gltf', text: 'glTF' },
-                {
-                  id: 'threejs',
-                  text: 'three.js'
-                },
-                { id: 'd3js', text: 'd3.js' },
-                { id: 'w2ui', text: 'w2ui' },
-                {
-                  id: 'about',
-                  text: translate('About')
-                }
-              ]
-            }
+            // { type: 'break' },
+            // {
+            //   type: 'menu-radio',
+            //   id: 'language',
+            //   tooltip: 'Select Language',
+            //   items: languages.map(function (language, index) {
+            //     return { id: index, text: language.text, tooltip: language.tooltip }
+            //   }), //Find index programmatically with: w2ui.parentLayout.get("main").toolbar.items.find(function(item){return item.id == "warehouse"}).selected
+            //   selected: languageIndex,
+            //   text: function (item) {
+            //     return 'Language: ' + item.items[item.selected].text
+            //   }
+            // },
+            // { type: 'break' },
+            // {
+            //   type: 'menu',
+            //   id: 'Help',
+            //   text: fnGetTranslatedText,
+            //   tooltip: 'Help',
+            //   items: [
+            //     { id: 'documentation', text: 'Documentation' },
+            //     {
+            //       id: 'quickKeys',
+            //       text: 'Quick Keys'
+            //     },
+            //     { id: 'webgl', text: 'WebGL' },
+            //     { id: 'gltf', text: 'glTF' },
+            //     {
+            //       id: 'threejs',
+            //       text: 'three.js'
+            //     },
+            //     { id: 'd3js', text: 'd3.js' },
+            //     { id: 'w2ui', text: 'w2ui' },
+            //     {
+            //       id: 'about',
+            //       text: translate('About')
+            //     }
+            //   ]
+            // }
           ],
           onClick: function (event) {
             event.done(function () {
@@ -363,7 +364,7 @@ $(document).ready(function () {
                           { field: 'waveId', caption: 'WaveID', size: '60px', sortable: true, attr: 'align=center' },
                           { field: 'orderId', caption: 'Các đơn hàng', sortable: true, resizable: true },
                           { field: 'good', caption: 'Sản phẩm', size: '150px', sortable: true, resizable: true },
-                          { field: 'distanceRoute', caption: 'Distance Route', sortable: true, resizable: true }
+                          { field: 'distanceRoute', caption: 'Tổng quãng đường', sortable: true, resizable: true }
                         ],
                         records: records,
                         onClick: function (event) {
@@ -400,9 +401,9 @@ $(document).ready(function () {
                         },
                         reorderColumns: true,
                         columns: [
-                          { field: 'location', caption: 'Location', sortable: true, resizable: true },
-                          { field: 'good', caption: 'Good', size: '300px', sortable: true, resizable: true },
-                          { field: 'quantity_taken', caption: 'Quantity Taken', sortable: true, resizable: true }
+                          { field: 'location', caption: 'Tọa độ vị trí', sortable: true, resizable: true },
+                          { field: 'good', caption: 'Tên sản phẩm', size: '300px', sortable: true, resizable: true },
+                          { field: 'quantity_taken', caption: 'Số lượng sản phẩm lấy', sortable: true, resizable: true }
                         ],
                         records: []
                       })
@@ -624,6 +625,7 @@ function fnShowMyWarehouseVisualizerDemo() {
     // get data warehouse from server
     return await $.ajax({
       url: `https://dxclan-sv.datn.live/${path}`,
+      // url: `${process.env.REACT_APP_SERVER}/${path}`,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
@@ -716,108 +718,24 @@ function fnShowMyWarehouseVisualizerDemo() {
     edgeMaterial = new THREE.LineBasicMaterial({
       color: fnGetBackGroundColorInvert(initalBackgroundColor),
       transparent: true,
-      opacity: 0.2
+      opacity: 1
     }) // 0xffffff Can't control linewidth: https://threejs.org/docs/index.html#api/materials/LineBasicMaterial.linewidth
 
-    // 3D route
-    // -------------------------------------------------------------
-    // const getRoutePicking = async () => {
-    //   return await $.ajax({
-    //     url: `https://dxclan-sv.datn.live/route-picking/route`,
-    //     headers: {
-    //       'Access-Control-Allow-Origin': '*'
-    //     },
-    //     type: 'GET',
-    //     crossDomain: true,
-    //     dataType: 'json'
-    //   })
-    // }
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 0, linewidth: 10 })
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 'black', transparent: true, opacity: 0, linewidth: 10 })
 
     const points = [];
-    points.push(new THREE.Vector3(2500, 0, 3700))
-
+    points.push(new THREE.Vector3(1000, 0, 0))
+    points.push(new THREE.Vector3(1000, 0, 4100))
+    
     const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
     const line = new THREE.Line( geometry, lineMaterial );
     warehouse.add( line );
-    // function createTextTexture(text) {
-    //   const canvas = document.createElement('canvas')
-    //   const context = canvas.getContext('2d')
-    //   canvas.width = 64 // Điều chỉnh kích thước canvas nếu cần
-    //   canvas.height = 64 // Điều chỉnh kích thước canvas nếu cần
-    //   context.font = '48px Arial' // Điều chỉnh font và kích thước font nếu cần
-    //   context.fillStyle = 'black' // Màu của văn bản
-    //   context.textAlign = 'center'
-    //   context.fillText(text, canvas.width / 2, canvas.height / 2 + 15) // Điều chỉnh vị trí văn bản nếu cần
-    //   return new THREE.CanvasTexture(canvas)
-    // }
-    // const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 10 })
-    // const points = []
-
-    // points.push(warehouse.add(line))
-    // // points.push(new THREE.Vector3(0, 0, 954));
-    // points.push(new THREE.Vector3(2500, 0, 3700))
-    // const geometry = new THREE.BufferGeometry().setFromPoints(points)
-    // const line = new THREE.Line(geometry, lineMaterial)
-    // warehouse.add(line)
-    // getRoutePicking()
-    //   .then((response) => {
-    //     console.log(response)
-    //     response.forEach((item, itemIndex) => {
-    //       const lineMaterial = new THREE.LineBasicMaterial({ color: 'red', transparent: true, opacity: 1, linewidth: 10 })
-    //       const points = []
-    //       item.chemins.forEach((coord, index) => {
-    //         const x = coord[0]
-    //         const y = coord[1]
-    //         const z = coord[2]
-
-    //         points.push(new THREE.Vector3(x - 20, z, y))
-
-    //         const circleGeometry = new THREE.CircleGeometry(10, 32)
-    //         const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff })
-    //         const circle = new THREE.Mesh(circleGeometry, circleMaterial)
-    //         circle.position.set(x - 20, z, y)
-    //         circle.rotateX(-Math.PI / 2)
-    //         warehouse.add(circle)
-
-    //         // Tạo và thêm số thứ tự
-    //         const textTexture = createTextTexture(String(index + 1))
-    //         const spriteMaterial = new THREE.SpriteMaterial({ map: textTexture })
-    //         const sprite = new THREE.Sprite(spriteMaterial)
-    //         sprite.position.set(x - 20, z + 20, y) // Điều chỉnh vị trí sprite nếu cần
-    //         sprite.scale.set(50, 50, 1) // Điều chỉnh kích thước sprite nếu cần
-    //         warehouse.add(sprite)
-    //       })
-    //       const geometry = new THREE.BufferGeometry().setFromPoints(points)
-    //       const line = new THREE.Line(geometry, lineMaterial)
-    //       warehouse.add(line)
-    //     })
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //   })
-    // points.push(new THREE.Vector3(2500, 0, 0))
-    // // points.push(new THREE.Vector3(0, 0, 954));
-    // points.push(new THREE.Vector3(2500, 0, 3700))
-
     // -------------------------------------------------------------
 
     //Re-use unique geometries.
     //Related discussion: https://stackoverflow.com/questions/16820806/three-js-performance
     for (var i = 0; i < layoutData.length; i++) {
-      /* https://threejs.org/docs/index.html#api/en/geometries/BoxBufferGeometry
-               https://stackoverflow.com/questions/49956422/what-is-difference-between-boxbuffergeometry-vs-boxgeometry-in-three-js
-            BoxBufferGeometry(width : Float, height : Float, depth : Float, widthSegments : Integer, heightSegments : Integer, depthSegments : Integer)
-
-                width � Width of the sides on the X axis. Default is 1.
-                height � Height of the sides on the Y axis. Default is 1.
-                depth � Depth of the sides on the Z axis. Default is 1.
-                widthSegments � Optional. Number of segmented faces along the width of the sides. Default is 1.
-                heightSegments � Optional. Number of segmented faces along the height of the sides. Default is 1.
-                depthSegments � Optional. Number of segmented faces along the depth of the sides. Default is 1.
-
-            */
 
       var geometryKey = layoutData[i]['width'] + ':' + layoutData[i]['height'] + ':' + layoutData[i]['depth']
 
@@ -1166,7 +1084,7 @@ function myDataVisualizer() {
         { type: 'main', overflow: 'auto', size: '70%', resizable: true, style: pstyle },
         {
           type: 'preview',
-          size: '30%',
+          size: '1%',
           style: pstyle,
           overflow: 'auto',
           resizable: true
@@ -3753,43 +3671,3 @@ function fnGetBackGroundColorInvert(backGroundColor) {
   backgroundColorInvert.setRGB(1.0 - backgroundColorInvert.r, 1.0 - backgroundColorInvert.g, 1.0 - backgroundColorInvert.b) //https://stackoverflow.com/questions/6961725/algorithm-for-calculating-inverse-color
   return backgroundColorInvert
 } //fnGetBackGroundColorInvert
-/* List of global variables
-
-{
-	let props = []
-	let iframe = document.createElement('iframe')
-	document.body.append(iframe)
-	for (let prop of Object.keys(window)) {
-		if (!(prop in iframe.contentWindow)) props.push(prop)
-	}
-	console.table(props.sort())
-	iframe.remove()
-}
-*/
-
-// function b64toBlob(b64Data, contentType, sliceSize) {
-//   contentType = contentType || '';
-//   sliceSize = sliceSize || 512;
-//
-//   var byteCharacters = atob(b64Data); //https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
-//   var byteArrays = [];
-//
-//   for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-// 	var slice = byteCharacters.slice(offset, offset + sliceSize);
-//
-// 	var byteNumbers = new Array(slice.length);
-// 	for (var i = 0; i < slice.length; i++) {
-// 	  byteNumbers[i] = slice.charCodeAt(i);
-// 	} //for
-//
-// 	var byteArray = new Uint8Array(byteNumbers);
-//
-// 	byteArrays.push(byteArray);
-//   } //for
-//
-//   var blob = new Blob(byteArrays, {type: contentType});
-//   return blob;
-// } //b64toBlob
-
-//https://stackoverflow.com/questions/9092125/how-to-debug-dynamically-loaded-javascript-with-jquery-in-the-browsers-debugg
-//# sourceURL=myDataVisualizer.js
