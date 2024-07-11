@@ -977,6 +977,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/hr-list-capacity',
+        apis: ['@all'],
+    },
+    {
         url: '/hr-list-career-position',
         apis: ['@all'],
     },
@@ -1398,6 +1402,10 @@ exports.links = [
     },
     {
         url: '/analysis-manufacturing-performance',
+        apis: ['@all'],
+    },
+    {
+        url: '/detail-analysis-manufacturing-performance',
         apis: ['@all'],
     },
     {

@@ -84,7 +84,7 @@ const Transport3ScheduleSchema = new Schema(
     },
     draftSchedule: {
       type: Schema.Types.ObjectId,
-      ref: 'Transport3Schedule'
+      ref: 'Transport3DraftSchedule'
     }
   },
   {

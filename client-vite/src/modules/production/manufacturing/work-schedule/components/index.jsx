@@ -1,5 +1,3 @@
-import React, { Component } from 'react'
-import { forceCheckOrVisible, LazyLoadComponent } from '../../../../../common-components'
 import ManufacturingMillScheduleList from './manufacturing-mill-schedule'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
@@ -23,14 +21,10 @@ function WorkSchedule(props) {
       </ul>
       <div className='tab-content'>
         <div className='tab-pane active' id='list-manufacturing-mill-schedule'>
-          <LazyLoadComponent>
-            <ManufacturingMillScheduleList />
-          </LazyLoadComponent>
+          <ManufacturingMillScheduleList />
         </div>
         <div className='tab-pane' id='list-workder-schedule'>
-          <LazyLoadComponent>
-            <WorkerScheduleList />
-          </LazyLoadComponent>
+          <WorkerScheduleList />
         </div>
       </div>
     </div>

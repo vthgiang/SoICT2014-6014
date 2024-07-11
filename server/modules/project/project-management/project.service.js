@@ -37,222 +37,313 @@ const getAmountOfWeekDaysInMonth = (date) => {
 
 /**
  * Lấy danh sách các dự án thoả mãn điều kiện
- * @param {*} query 
+ * @param {*} query
  */
 exports.get = async (portal, query) => {
-    let { page, perPage, userId, projectName, endDate, startDate, projectType, creatorEmployee, projectManager, responsibleEmployees } = query;
-    let options = {};
-    let keySearchDateTime = {};
-    // Tìm kiếm theo id người sử dụng
-    options = userId ? {
-        ...options,
-        $or: [
-            { 'projectManager': userId },
-            { 'responsibleEmployees': userId },
-            { 'creator': userId }
-        ]
-    } : {};
-    // console.log("userId: ", userId)
+  let {
+    page,
+    perPage,
+    userId,
+    currentRole,
+    projectName,
+    endDate,
+    startDate,
+    projectType,
+    creatorEmployee,
+    projectManager,
+    responsibleEmployees,
+  } = query;
+  let options = {};
 
-    // Tìm kiếm theo tên dự án
-    if (projectName && projectName.toString().trim()) {
-        options = {
+  // currentRole = managers
+  let listEmpResponsile = [];
+  let banGDOrganizationalUnit = await OrganizationalUnit(
+    connect(DB_CONNECTION, portal)
+  ).findOne({
+    $or: [{ parent: null }, { name: "Ban giám đốc" }],
+  });
+  let listBGDRoles = [
+    ...banGDOrganizationalUnit?.managers,
+    ...banGDOrganizationalUnit?.deputyManagers,
+    ...banGDOrganizationalUnit?.employees,
+  ];
+
+  let checkIsBGD = false;
+  if (listBGDRoles && listBGDRoles?.length) {
+    listBGDRoles.forEach((item) => {
+      if (item == currentRole) {
+        checkIsBGD = true;
+      }
+    });
+  }
+
+  if (listBGDRoles && listBGDRoles?.length && checkIsBGD) {
+    options = {};
+  } else {
+    let organizationalUnit = await OrganizationalUnit(
+      connect(DB_CONNECTION, portal)
+    ).findOne({
+      managers: {
+        $in: [currentRole],
+      },
+    });
+    if (organizationalUnit) {
+      let listRoles = [
+        ...organizationalUnit?.deputyManagers,
+        ...organizationalUnit?.employees,
+        // ...organizationalUnit?.managers
+      ];
+      if (listRoles) {
+        let listUsersWithRoles = await UserRole(
+          connect(DB_CONNECTION, portal)
+        ).find({
+          roleId: {
+            $in: listRoles,
+          },
+        });
+        listEmpResponsile =
+          listUsersWithRoles && listUsersWithRoles?.length
+            ? listUsersWithRoles.map((item) => item?.userId)
+            : [];
+      }
+      options = userId
+        ? {
             ...options,
-            name: {
-                $regex: projectName,
-                $options: "i"
-            }
-        }
-    }
-
-    // Tìm kiếm theo thành viên dự án
-    if (responsibleEmployees) {
-        const responsible = await User(connect(DB_CONNECTION, portal)).find({
             $or: [
-                {
-                    name: {
-                        $regex: responsibleEmployees,
-                        $options: "i",
-                    }
-                }, {
-                    email: {
-                        $regex: responsibleEmployees,
-                        $options: "i",
-                    }
-                }
-            ]
-        })
-        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
-
-        options = {
-            ...options,
-            responsibleEmployees: {
-                $in: getIdResponsible
-            }
-        }
-    }
-
-    // Tìm kiếm theo người quản trị dự án
-    if (projectManager) {
-        const manager = await User(connect(DB_CONNECTION, portal)).find({
-            $or: [
-                {
-                    name: {
-                        $regex: projectManager,
-                        $options: "i",
-                    }
-                }, {
-                    email: {
-                        $regex: projectManager,
-                        $options: "i",
-                    }
-                }
-            ]
-        })
-        const getIdManager = manager && manager.length > 0 ? manager.map(o => o._id) : [];
-        options = {
-            ...options,
-            projectManager: {
-                $in: getIdManager
-            }
-        }
-    }
-
-    // Tìm kiếm theo người tạo dự án
-    if (creatorEmployee) {
-        let creator = await User(connect(DB_CONNECTION, portal)).find({
-            $or: [
-                {
-                    name: {
-                        $regex: creatorEmployee,
-                        $options: "i",
-                    }
-                }, {
-                    email: {
-                        $regex: creatorEmployee,
-                        $options: "i",
-                    }
-                }
-            ]
-        })
-
-        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
-
-        options = {
-            ...options,
-            creator: {
-                $in: getIdCreator
-            }
-        }
-    }
-
-    // Tìm kiếm theo hình thức quản lý dự án
-    if (projectType) {
-        options = {
-            ...options,
-            projectType: {
-                $in: projectType,
-            }
-        };
-    }
-    let project;
-
-     // Tìm kiếm theo ngày bắt đầu, kết thúc
-     if (startDate && endDate) {
-        endDate = new Date(endDate);
-        endDate.setMonth(endDate.getMonth() + 1);
-
-        keySearchDateTime = {
-            ...keySearchDateTime,
-            $or: [
-                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-            ]
-        }
-    }
-
-    else if (startDate) {
-        startDate = new Date(startDate);
-
-        options = {
-            ...options,
-            "$and": [
-                {
-                    "$expr": {
-                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
-                    }
+              { projectManager: userId },
+              {
+                responsibleEmployees: {
+                  $in: [userId, ...listEmpResponsile],
                 },
-                {
-                    "$expr": {
-                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
-                    }
-                }
-            ]
-        }
+              },
+              { creator: userId },
+            ],
+          }
+        : options;
     }
+  }
+  // const
+  let keySearchDateTime = {};
+  // Tìm kiếm theo id người sử dụng
 
-    else if (endDate) {
-        endDate = new Date(endDate);
+  // console.log("userId: ", userId)
 
-        options = {
-            ...options,
-            "$and": [
-                {
-                    "$expr": {
-                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
-                    }
-                },
-                {
-                    "$expr": {
-                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
-                    }
-                }
-            ]
-        }
-    }
+  // Tìm kiếm theo tên dự án
+  if (projectName && projectName.toString().trim()) {
+    options = {
+      ...options,
+      name: {
+        $regex: projectName,
+        $options: "i",
+      },
+    };
+  }
+
+  // Tìm kiếm theo thành viên dự án
+  if (responsibleEmployees) {
+    const responsible = await User(connect(DB_CONNECTION, portal)).find({
+      $or: [
+        {
+          name: {
+            $regex: responsibleEmployees,
+            $options: "i",
+          },
+        },
+        {
+          email: {
+            $regex: responsibleEmployees,
+            $options: "i",
+          },
+        },
+      ],
+    });
+    const getIdResponsible =
+      responsible && responsible.length > 0
+        ? responsible.map((o) => o._id)
+        : [];
 
     options = {
-        $and: [
-            options,
-            keySearchDateTime,
-        ]
-    }
+      ...options,
+      responsibleEmployees: {
+        $in: getIdResponsible,
+      },
+    };
+  }
 
-    let totalList = await Project(connect(DB_CONNECTION, portal)).countDocuments(options);
-    // Nếu calledId là 'paginate' thì thực hiện phân trang
-    if (query.calledId === "paginate") {
-        let currentPage, currentPerPage;
-        currentPage = page ? Number(page) : 1;
-        currentPerPage = perPage ? Number(perPage) : 5;
+  // Tìm kiếm theo người quản trị dự án
+  if (projectManager) {
+    const manager = await User(connect(DB_CONNECTION, portal)).find({
+      $or: [
+        {
+          name: {
+            $regex: projectManager,
+            $options: "i",
+          },
+        },
+        {
+          email: {
+            $regex: projectManager,
+            $options: "i",
+          },
+        },
+      ],
+    });
+    const getIdManager =
+      manager && manager.length > 0 ? manager.map((o) => o._id) : [];
+    options = {
+      ...options,
+      projectManager: {
+        $in: getIdManager,
+      },
+    };
+  }
 
-        project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({ createdAt: -1 }).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
-            .populate({ path: "responsibleEmployees", select: "_id name" })
-            .populate({ path: "projectManager", select: "_id name email" })
-            .populate({ path: "creator", select: "_id name email" })
-            .populate({ path: "assets", select: "_id assetName assetType group" })
-            .populate({ path: "responsibleEmployeesWithUnit", select: "unitId listUsers" })
-            .populate({ path: "kpiTarget.type", select: "_id name" })
-            .populate({ path: "tasks"});
-        return {
-            docs: project,
-            totalDocs: totalList,
-        }
-    }
+  // Tìm kiếm theo người tạo dự án
+  if (creatorEmployee) {
+    let creator = await User(connect(DB_CONNECTION, portal)).find({
+      $or: [
+        {
+          name: {
+            $regex: creatorEmployee,
+            $options: "i",
+          },
+        },
+        {
+          email: {
+            $regex: creatorEmployee,
+            $options: "i",
+          },
+        },
+      ],
+    });
 
-    else {
-        project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({ createdAt: -1 })
-            .populate({ path: "responsibleEmployees", select: "_id name" })
-            .populate({ path: "projectManager", select: "_id name email" })
-            .populate({ path: "creator", select: "_id name email" })
-            .populate({ path: "assets", select: "_id assetName assetType group" })
-            .populate({ path: "responsibleEmployeesWithUnit", select: "unitId listUsers" })
-            .populate({ path: "kpiTarget.type", select: "_id name" })
-            .populate({ path: "tasks"});
+    const getIdCreator =
+      creator && creator.length > 0 ? creator.map((o) => o._id) : [];
 
-    }
-    return project;
-}
+    options = {
+      ...options,
+      creator: {
+        $in: getIdCreator,
+      },
+    };
+  }
+
+  // Tìm kiếm theo hình thức quản lý dự án
+  if (projectType) {
+    options = {
+      ...options,
+      projectType: {
+        $in: projectType,
+      },
+    };
+  }
+  let project;
+
+  // Tìm kiếm theo ngày bắt đầu, kết thúc
+  if (startDate && endDate) {
+    endDate = new Date(endDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+
+    keySearchDateTime = {
+      ...keySearchDateTime,
+      $or: [
+        { endDate: { $lt: new Date(endDate), $gte: new Date(startDate) } },
+        { startDate: { $lt: new Date(endDate), $gte: new Date(startDate) } },
+        {
+          $and: [
+            { endDate: { $gte: new Date(endDate) } },
+            { startDate: { $lt: new Date(startDate) } },
+          ],
+        },
+      ],
+    };
+  } else if (startDate) {
+    startDate = new Date(startDate);
+
+    options = {
+      ...options,
+      $and: [
+        {
+          $expr: {
+            $eq: [{ $month: "$startDate" }, startDate.getMonth() + 1],
+          },
+        },
+        {
+          $expr: {
+            $eq: [{ $year: "$startDate" }, startDate.getFullYear()],
+          },
+        },
+      ],
+    };
+  } else if (endDate) {
+    endDate = new Date(endDate);
+
+    options = {
+      ...options,
+      $and: [
+        {
+          $expr: {
+            $eq: [{ $month: "$endDate" }, endDate.getMonth() + 1],
+          },
+        },
+        {
+          $expr: {
+            $eq: [{ $year: "$endDate" }, endDate.getFullYear()],
+          },
+        },
+      ],
+    };
+  }
+
+  options = {
+    $and: [options, keySearchDateTime],
+  };
+
+  let totalList = await Project(connect(DB_CONNECTION, portal)).countDocuments(
+    options
+  );
+  // Nếu calledId là 'paginate' thì thực hiện phân trang
+  if (query.calledId === "paginate") {
+    let currentPage, currentPerPage;
+    currentPage = page ? Number(page) : 1;
+    currentPerPage = perPage ? Number(perPage) : 5;
+
+    project = await Project(connect(DB_CONNECTION, portal))
+      .find(options)
+      .sort({ createdAt: -1 })
+      .skip((currentPage - 1) * currentPerPage)
+      .limit(currentPerPage)
+      .populate({ path: "responsibleEmployees", select: "_id name" })
+      .populate({ path: "projectManager", select: "_id name email" })
+      .populate({ path: "creator", select: "_id name email" })
+      .populate({ path: "assets", select: "_id assetName assetType group" })
+      .populate({
+        path: "responsibleEmployeesWithUnit",
+        select: "unitId listUsers",
+      })
+      .populate({ path: "kpiTarget.type", select: "_id name criteria unit" })
+      .populate({ path: "tasks" });
+    return {
+      docs: project,
+      totalDocs: totalList,
+    };
+  } else {
+    project = await Project(connect(DB_CONNECTION, portal))
+      .find(options)
+      .sort({ createdAt: -1 })
+      .populate({ path: "responsibleEmployees", select: "_id name" })
+      .populate({ path: "projectManager", select: "_id name email" })
+      .populate({ path: "creator", select: "_id name email" })
+      .populate({ path: "assets", select: "_id assetName assetType group" })
+      .populate({
+        path: "responsibleEmployeesWithUnit",
+        select: "unitId listUsers",
+      })
+      .populate({ path: "kpiTarget.type", select: "_id name" })
+      .populate({ path: "tasks" });
+  }
+  return project;
+};
 
 exports.show = async (portal, id) => {
     let tp = await Project(connect(DB_CONNECTION, portal)).findById(id).populate({ path: "projectManager", select: "_id name" });

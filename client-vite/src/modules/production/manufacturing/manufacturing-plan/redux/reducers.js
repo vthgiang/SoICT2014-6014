@@ -13,6 +13,8 @@ var findIndex = (array, id) => {
 const initState = {
   isLoading: false,
   listPlans: [],
+  changedCommands: [],
+  createdCommands: [],
   totalDocs: 0,
   limit: 0,
   totalPages: 0,
@@ -35,6 +37,7 @@ export function manufacturingPlan(state = initState, action) {
     case manufacturingPlanConstants.EDIT_MANUFACTURING_PLAN_REQUEST:
     case manufacturingPlanConstants.GET_NUMBER_PLAN_REQUEST:
     case manufacturingPlanConstants.GET_NUMBER_PLAN_BY_STATUS_REQUEST:
+    case manufacturingPlanConstants.AUTOMATIC_SCHEDULE_REQUEST:
       return {
         ...state,
         isLoading: true
@@ -46,6 +49,7 @@ export function manufacturingPlan(state = initState, action) {
     case manufacturingPlanConstants.EDIT_MANUFACTURING_PLAN_FAILURE:
     case manufacturingPlanConstants.GET_NUMBER_PLAN_FAILURE:
     case manufacturingPlanConstants.GET_NUMBER_PLAN_BY_STATUS_FAILURE:
+    case manufacturingPlanConstants.AUTOMATIC_SCHEDULE_FAILURE:
       return {
         ...state,
         isLoading: false
@@ -103,6 +107,12 @@ export function manufacturingPlan(state = initState, action) {
         ...state,
         isLoading: false,
         planNumberStatus: action.payload
+      }
+    case manufacturingPlanConstants.AUTOMATIC_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        planSchedule: action.payload.schedule
       }
     default:
       return state

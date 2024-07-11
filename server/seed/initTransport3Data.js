@@ -170,7 +170,6 @@ const initTransport3Data = async () => {
   // listTransport3Schedules = listTransport3Schedules.slice(0, 15);
 
   const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-  const currentTimestamp = Math.floor(Date.now() / 1000);
 
   await Transport3Schedule(vnistDB).create(
     listTransport3Schedules.slice(0, 40).map((schedule, index) => {

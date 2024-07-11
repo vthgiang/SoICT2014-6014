@@ -8,7 +8,8 @@ export const manufacturingPlanActions = {
   getDetailManufacturingPlan,
   handleEditManufacturingPlan,
   getNumberPlans,
-  getNumberPlansByStatus
+  getNumberPlansByStatus,
+  createAutomaticSchedule
 }
 
 function getAllManufacturingPlans(query) {
@@ -159,6 +160,28 @@ function getNumberPlansByStatus(data) {
       .catch((error) => {
         dispatch({
           type: manufacturingPlanConstants.GET_NUMBER_PLAN_BY_STATUS_FAILURE,
+          error
+        })
+      })
+  }
+}
+
+function createAutomaticSchedule(data) {
+  return (dispatch) => {
+    dispatch({
+      type: manufacturingPlanConstants.AUTOMATIC_SCHEDULE_REQUEST
+    })
+    manufacturingPlanServices
+      .createAutomaticSchedule(data)
+      .then((res) => {
+        dispatch({
+          type: manufacturingPlanConstants.AUTOMATIC_SCHEDULE_SUCCESS,
+          payload: res.data.content
+        })
+      })
+      .catch((error) => {
+        dispatch({
+          type: manufacturingPlanConstants.AUTOMATIC_SCHEDULE_FAILURE,
           error
         })
       })

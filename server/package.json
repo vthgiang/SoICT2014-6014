@@ -34,6 +34,7 @@
     "sync-db-auth": "node seed/syncDBAuth.js",
     "init-customer": "node seed/initCustomer.js",
     "init-customer-marketing": "node seed/initCustomerMarketing.js",
+    "init-manufacturing": "node seed/initManufacturing.js",
     "y-init": "yarn db && yarn sc",
     "y-init-full": "yarn db && yarn sc && yarn sp && yarn shr",
     "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js",

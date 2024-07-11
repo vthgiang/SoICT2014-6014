@@ -201,10 +201,6 @@ function ManufacturingCommandManagementTable(props) {
   }
 
   const handleEndCommand = async (command) => {
-    // const data = {
-    //     status: 4
-    // }
-    // props.handleEditCommand(command._id, data);
     await setState({
       ...state,
       command: command,

@@ -51,6 +51,9 @@ const LayoutSchema = new Schema({
     ref: "InventoryWarehouse",
     require: false,
   },
+  x_convert: {
+    type: Number,
+  }
 });
 
 LayoutSchema.plugin(mongoosePaginate);

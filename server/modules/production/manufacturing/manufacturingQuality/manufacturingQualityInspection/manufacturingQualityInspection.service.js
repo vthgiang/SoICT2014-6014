@@ -51,11 +51,22 @@ exports.createManufacturingQualityInspection = async (data, portal) => {
     let newQualityInspection = await ManufacturingQualityInspection(connect(DB_CONNECTION, portal)).create(data);
     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(data.manufacturingCommand);
 
-    manufacturingCommand.inspections.push(newQualityInspection._id);
+    let index = manufacturingCommand.workOrders.findIndex(item => item.operationId == data.workOrder);
+    manufacturingCommand.workOrders.map(item => console.log(typeof item.operationId))
+
+    if (index >= 0) {
+        manufacturingCommand.workOrders[index].qc_inspection = newQualityInspection._id;
+    }
+
     await manufacturingCommand.save();
     
     let manufacturingQualityInspections = await ManufacturingQualityInspection(connect(DB_CONNECTION, portal))
         .findById(newQualityInspection._id)
     
     return { manufacturingQualityInspections }
+}
+
+exports.getNumberCreatedInspection = async (portal) => {
+    numInspections = await ManufacturingQualityInspection(connect(DB_CONNECTION, portal)).countDocuments();
+    return numInspections
 }

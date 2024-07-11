@@ -251,6 +251,10 @@ const initSWProjectData = async () => {
   // console.log(sw_NguyenMinhThanh.fullName, sw_NguyenMinhThanh.emailInCompany)
   // console.log(sw_DangQuocTu.fullName, sw_DangQuocTu.emailInCompany)
 
+  const project1 = {
+
+  }
+
   const allTasksInPast = [
     // Task 1
     {
@@ -268,7 +272,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVanMinh._id,
       estimateNormalTime: 6.75,
       point: 0.9,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
 
     {
@@ -287,7 +292,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVanBien._id,
       estimateNormalTime: 3.5,
       point: 0.96,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
 
     {
@@ -306,7 +312,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVietDang._id,
       estimateNormalTime: 4.25,
       point: 0.85,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
 
     {
@@ -325,7 +332,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenThiOanh._id,
       estimateNormalTime: 5.25,
       point: 0.75,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
 
     {
@@ -344,7 +352,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenPhucNhatNam._id,
       estimateNormalTime: 4,
       point: -1,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
 
     {
@@ -362,7 +371,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.95,
-      taskLq: "Task 1 of data phan bo"
+      taskLq: "Task 1 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // Task 2: backend, frontend
@@ -384,7 +394,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.9,
-      taskLq: "Task 2 of data phan bo"
+      taskLq: "Task 2 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
 
     {
@@ -404,7 +415,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVanBien._id,
       estimateNormalTime: 6.5,
       point: 0.95,
-      taskLq: "Task 2 of data phan bo"
+      taskLq: "Task 2 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
 
     {
@@ -424,7 +436,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenVietDang._id,
       estimateNormalTime: 7.25,
       point: 0.95,
-      taskLq: "Task 2 of data phan bo"
+      taskLq: "Task 2 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
 
     {
@@ -444,7 +457,8 @@ const initSWProjectData = async () => {
       assignee: sw_NguyenMinhThanh._id,
       estimateNormalTime: 6.5,
       point: 0.9,
-      taskLq: "Task 2 of data phan bo"
+      taskLq: "Task 2 of data phan bo",
+      responsibleEmployees: [sw_NguyenMinhThanh_User._id]
     },
     // {
     //   id: 11,
@@ -485,7 +499,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 3 of data phan bo"
+      taskLq: "Task 3 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 13,
@@ -502,7 +517,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 3 of data phan bo"
+      taskLq: "Task 3 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 14,
@@ -519,7 +535,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: -1, // For 3 and 16
-      taskLq: "Task 3 of data phan bo"
+      taskLq: "Task 3 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     {
       id: 15,
@@ -536,7 +553,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenMinhThanh._id,
       point: 0.8,
-      taskLq: "Task 3 of data phan bo"
+      taskLq: "Task 3 of data phan bo",
+      responsibleEmployees: [sw_NguyenMinhThanh_User._id]
     },
     // {
     //   id: 16,
@@ -589,7 +607,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.9,
-      taskLq: "Task 4 of data phan bo"
+      taskLq: "Task 4 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 19,
@@ -608,7 +627,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 4 of data phan bo"
+      taskLq: "Task 4 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 20,
@@ -627,7 +647,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: 0.85,
-      taskLq: "Task 4 of data phan bo"
+      taskLq: "Task 4 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     {
       id: 21,
@@ -645,7 +666,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.8,
-      taskLq: "Task 4 of data phan bo"
+      taskLq: "Task 4 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
     // 3, 4 tự theo 8
 
@@ -666,7 +688,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: 0.8,
-      taskLq: "Task 5 of data phan bo"
+      taskLq: "Task 5 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     {
       id: 23,
@@ -684,7 +707,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 5 of data phan bo"
+      taskLq: "Task 5 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 24,
@@ -703,7 +727,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 5 of data phan bo"
+      taskLq: "Task 5 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     // 1 theo 7
 
@@ -754,7 +779,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.95,
-      taskLq: "Task 6 of data phan bo"
+      taskLq: "Task 6 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
     {
       id: 28,
@@ -772,7 +798,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.9,
-      taskLq: "Task 6 of data phan bo"
+      taskLq: "Task 6 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // Task 7
@@ -792,7 +819,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     {
       id: 30,
@@ -810,7 +838,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: 0.9,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     {
       id: 31,
@@ -828,7 +857,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.95,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
     {
       id: 32,
@@ -846,7 +876,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.8,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 33,
@@ -864,8 +895,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.8,
-      taskLq: "Task 7 of data phan bo"
-
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
     {
       id: 34,
@@ -883,7 +914,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.75,
-      taskLq: "Task 7 of data phan bo"
+      taskLq: "Task 7 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
     // 2, 4 tương tự
 
@@ -905,8 +937,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: 0.9,
-      taskLq: "Task 8 of data phan bo"
-
+      taskLq: "Task 8 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
 
     {
@@ -926,8 +958,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 8 of data phan bo"
-
+      taskLq: "Task 8 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
 
     // Task 9
@@ -965,7 +997,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.95,
-      taskLq: "Task 9 of data phan bo"
+      taskLq: "Task 9 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
     {
       id: 38,
@@ -982,8 +1015,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.95,
-      taskLq: "Task 9 of data phan bo"
-
+      taskLq: "Task 9 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
     {
       id: 39,
@@ -1000,7 +1033,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.9,
-      taskLq: "Task 9 of data phan bo"
+      taskLq: "Task 9 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 40,
@@ -1017,8 +1051,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.8,
-      taskLq: "Task 9 of data phan bo"
-
+      taskLq: "Task 9 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
     // 2, 7, 4, 8, 5, 6 tương tự
 
@@ -1038,8 +1072,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.9,
-      taskLq: "Task 10 of data phan bo"
-
+      taskLq: "Task 10 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 42,
@@ -1056,8 +1090,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.85,
-      taskLq: "Task 10 of data phan bo"
-
+      taskLq: "Task 10 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // {
@@ -1123,8 +1157,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 11 of data phan bo"
-
+      taskLq: "Task 11 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     {
       id: 47,
@@ -1140,8 +1174,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.95,
-      taskLq: "Task 11 of data phan bo"
-
+      taskLq: "Task 11 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // Task 12
@@ -1150,7 +1184,7 @@ const initSWProjectData = async () => {
       name: "Điều chỉnh module quản lý thầu",
       status: "finished",
       project: "",
-      startDate: new Date('2024-07-21T01:00:00.000Z'),
+      startDate: new Date('2024-07-22T01:00:00.000Z'),
       endDate: new Date('2024-07-25T05:00:00.000Z'),
       estimateNormalTime: 4.5,
       tags: ['backend', 'frontend'],
@@ -1162,8 +1196,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 12 of data phan bo"
-
+      taskLq: "Task 12 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 49,
@@ -1181,7 +1215,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.95,
-      taskLq: "Task 12 of data phan bo"
+      taskLq: "Task 12 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 50,
@@ -1198,8 +1233,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.85,
-      taskLq: "Task 12 of data phan bo"
-
+      taskLq: "Task 12 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     // 7 tương tự 3
     // {
@@ -1235,8 +1270,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 13 of data phan bo"
-
+      taskLq: "Task 13 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 53,
@@ -1253,8 +1288,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.95,
-      taskLq: "Task 13 of data phan bo"
-
+      taskLq: "Task 13 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 54,
@@ -1271,8 +1306,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.8,
-      taskLq: "Task 13 of data phan bo"
-
+      taskLq: "Task 13 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
 
     {
@@ -1290,8 +1325,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 13 of data phan bo"
-
+      taskLq: "Task 13 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
 
     // Task 14
@@ -1310,8 +1345,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenThiOanh._id,
       point: 0.8,
-      taskLq: "Task 14 of data phan bo"
-
+      taskLq: "Task 14 of data phan bo",
+      responsibleEmployees: [sw_NguyenThiOanh_User._id]
     },
     {
       id: 57,
@@ -1328,8 +1363,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_VuThiQuynh._id,
       point: 0.9,
-      taskLq: "Task 14 of data phan bo"
-
+      taskLq: "Task 14 of data phan bo",
+      responsibleEmployees: [sw_VuThiQuynh_User._id]
     },
 
     // Task 15
@@ -1351,7 +1386,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 15 of data phan bo"
+      taskLq: "Task 15 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 59,
@@ -1371,7 +1407,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.95,
-      taskLq: "Task 15 of data phan bo"
+      taskLq: "Task 15 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 60,
@@ -1391,8 +1428,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 15 of data phan bo"
-
+      taskLq: "Task 15 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
     // {
     //   id: 61,
@@ -1431,7 +1468,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.95,
-      taskLq: "Task 17 of data phan bo"
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 63,
@@ -1448,7 +1486,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: 0.95,
-      taskLq: "Task 17 of data phan bo"
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 64,
@@ -1465,8 +1504,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVietDang._id,
       point: 0.9,
-      taskLq: "Task 17 of data phan bo"
-
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_NguyenVietDang_User._id]
     },
 
     // {
@@ -1499,8 +1538,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.85,
-      taskLq: "Task 17 of data phan bo"
-
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
     {
       id: 67,
@@ -1517,8 +1556,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenMinhThanh._id,
       point: -1,
-      taskLq: "Task 17 of data phan bo"
-
+      taskLq: "Task 17 of data phan bo",
+      responsibleEmployees: [sw_NguyenMinhThanh_User._id]
     },
 
     // Task 18
@@ -1538,8 +1577,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanMinh._id,
       point: 0.85,
-      taskLq: "Task 18 of data phan bo"
-
+      taskLq: "Task 18 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanMinh_User._id]
     },
     {
       id: 69,
@@ -1557,8 +1596,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenVanBien._id,
       point: -1,
-      taskLq: "Task 18 of data phan bo"
-
+      taskLq: "Task 18 of data phan bo",
+      responsibleEmployees: [sw_NguyenVanBien_User._id]
     },
     {
       id: 70,
@@ -1576,8 +1615,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_NguyenPhucNhatNam._id,
       point: -1,
-      taskLq: "Task 18 of data phan bo"
-
+      taskLq: "Task 18 of data phan bo",
+      responsibleEmployees: [sw_NguyenPhucNhatNam_User._id]
     },
     
     {
@@ -1596,7 +1635,8 @@ const initSWProjectData = async () => {
       },
       assignee: sw_DangQuocTu._id,
       point: 0.85,
-      taskLq: "Task 18 of data phan bo"
+      taskLq: "Task 18 of data phan bo",
+      responsibleEmployees: [sw_DangQuocTu_User._id]
     },
   ]
 
@@ -1620,429 +1660,429 @@ const initSWProjectData = async () => {
   // console.log(`Inserted ${allTaskInPastInDB.length} new tasks In Past.`);
 
   // Seed Task Outof Project
-  const allTasksOutOfProject = [
-    // 1
-    {
-      id: 1,
-      project: "",
-      name: "Phân tích nhu cầu học ngoại ngữ của sinh viên",
-      startDate: new Date('2024-07-27T08:00:00.000Z'),
-      endDate: new Date('2024-08-01T04:00:00.000Z'),
-      requireAssignee: {
-        english: 3,
-        year_of_exp: 2,
-      },
-      requireAsset: [],
-      estimateNormalTime: 4.5,
-      assignee: sw_NguyenVanMinh._id
-    },
+  // const allTasksOutOfProject = [
+  //   // 1
+  //   {
+  //     id: 1,
+  //     project: "",
+  //     name: "Phân tích nhu cầu học ngoại ngữ của sinh viên",
+  //     startDate: new Date('2024-07-27T08:00:00.000Z'),
+  //     endDate: new Date('2024-08-01T04:00:00.000Z'),
+  //     requireAssignee: {
+  //       english: 3,
+  //       year_of_exp: 2,
+  //     },
+  //     requireAsset: [],
+  //     estimateNormalTime: 4.5,
+  //     assignee: sw_NguyenVanMinh._id
+  //   },
 
-    // {
-    //   id: 2,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-09-24T06:00:00.000Z'),
-    //   endDate: new Date('2024-09-24T10:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_NguyenVanMinh._id
-    // },
-    {
-      id: 3,
-      project: "",
-      name: "Phân tích yêu cầu sắp xếp lịch giảng dạy",
-      startDate: new Date('2024-09-30T08:00:00.000Z'),
-      endDate: new Date('2024-10-03T10:00:00.000Z'),
-      estimateNormalTime: 3.25,
-      requireAssignee: {english:3,year_of_exp:2},
-      requireAsset: [],
-      assignee: sw_NguyenVanMinh._id
-    },
-    {
-      id: 4,
-      project: "",
-      name: "Lập kế hoạch cho dự án SSLG",
-      startDate: new Date('2024-10-04T01:00:00.000Z'),
-      endDate: new Date('2024-10-06T10:00:00.000Z'),
-      estimateNormalTime: 3,
-      requireAssignee: {year_of_exp:2, degree:2},
-      requireAsset: [],
-      assignee: sw_NguyenVanMinh._id
-    },
+  //   // {
+  //   //   id: 2,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-09-24T06:00:00.000Z'),
+  //   //   endDate: new Date('2024-09-24T10:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_NguyenVanMinh._id
+  //   // },
+  //   {
+  //     id: 3,
+  //     project: "",
+  //     name: "Phân tích yêu cầu sắp xếp lịch giảng dạy",
+  //     startDate: new Date('2024-09-30T08:00:00.000Z'),
+  //     endDate: new Date('2024-10-03T10:00:00.000Z'),
+  //     estimateNormalTime: 3.25,
+  //     requireAssignee: {english:3,year_of_exp:2},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenVanMinh._id
+  //   },
+  //   {
+  //     id: 4,
+  //     project: "",
+  //     name: "Lập kế hoạch cho dự án SSLG",
+  //     startDate: new Date('2024-10-04T01:00:00.000Z'),
+  //     endDate: new Date('2024-10-06T10:00:00.000Z'),
+  //     estimateNormalTime: 3,
+  //     requireAssignee: {year_of_exp:2, degree:2},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenVanMinh._id
+  //   },
 
-    //2
-    {
-      id: 5,
-      project: "",
-      name: "Dựng code base Java core",
-      startDate: new Date('2024-07-27T02:00:00.000Z'),
-      endDate: new Date('2024-08-01T10:00:00.000Z'),
-      requireAssignee: {year_of_exp:2,backend:2,frontend:2,docker:1},
-      requireAsset: [],
-      estimateNormalTime: 5.875,
-      assignee: sw_NguyenVanBien._id
-    },
-    {
-      id: 6,
-      project: "",
-      name: "Sửa lỗi chức năng Thêm vào giỏ",
-      startDate: new Date('2024-08-02T01:00:00.000Z'),
-      endDate: new Date('2024-08-03T08:00:00.000Z'),
-      requireAssignee: {year_of_exp:2,backend:2,frontend:1},
-      requireAsset: [],
-      estimateNormalTime: 1.75,
-      assignee: sw_NguyenVanBien._id
-    },
-    {
-      id: 7,
-      project: "",
-      name: "Triển khai module quản lý thầu lên server",
-      startDate: new Date('2024-08-03T08:00:00.000Z'),
-      endDate: new Date('2024-08-08T10:00:00.000Z'),
-      requireAssignee: {year_of_exp:1,docker:2,ci_cd:2},
-      estimateNormalTime: 5.25,
-      requireAsset: [],
-      assignee: sw_NguyenVanBien._id
-    },
-    {
-      id: 8,
-      project: "",
-      name: "Dựng trang giới thiệu sản phẩm",
-      startDate: new Date('2024-09-24T06:00:00.000Z'),
-      endDate: new Date('2024-09-24T10:00:00.000Z'),
-      estimateNormalTime: 0.5,
-      requireAssignee: {degree:2,frontend:2},
-      requireAsset: [],
-      assignee: sw_NguyenVanBien._id
-    },
+  //   //2
+  //   {
+  //     id: 5,
+  //     project: "",
+  //     name: "Dựng code base Java core",
+  //     startDate: new Date('2024-07-27T02:00:00.000Z'),
+  //     endDate: new Date('2024-08-01T10:00:00.000Z'),
+  //     requireAssignee: {year_of_exp:2,backend:2,frontend:2,docker:1},
+  //     requireAsset: [],
+  //     estimateNormalTime: 5.875,
+  //     assignee: sw_NguyenVanBien._id
+  //   },
+  //   {
+  //     id: 6,
+  //     project: "",
+  //     name: "Sửa lỗi chức năng Thêm vào giỏ",
+  //     startDate: new Date('2024-08-02T01:00:00.000Z'),
+  //     endDate: new Date('2024-08-03T08:00:00.000Z'),
+  //     requireAssignee: {year_of_exp:2,backend:2,frontend:1},
+  //     requireAsset: [],
+  //     estimateNormalTime: 1.75,
+  //     assignee: sw_NguyenVanBien._id
+  //   },
+  //   {
+  //     id: 7,
+  //     project: "",
+  //     name: "Triển khai module quản lý thầu lên server",
+  //     startDate: new Date('2024-08-03T08:00:00.000Z'),
+  //     endDate: new Date('2024-08-08T10:00:00.000Z'),
+  //     requireAssignee: {year_of_exp:1,docker:2,ci_cd:2},
+  //     estimateNormalTime: 5.25,
+  //     requireAsset: [],
+  //     assignee: sw_NguyenVanBien._id
+  //   },
+  //   {
+  //     id: 8,
+  //     project: "",
+  //     name: "Dựng trang giới thiệu sản phẩm",
+  //     startDate: new Date('2024-09-24T06:00:00.000Z'),
+  //     endDate: new Date('2024-09-24T10:00:00.000Z'),
+  //     estimateNormalTime: 0.5,
+  //     requireAssignee: {degree:2,frontend:2},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenVanBien._id
+  //   },
 
-    //3: NguyenVietDang
-    {
-      id: 9,
-      project: "",
-      name: "Dựng giao diện module mua hàng",
-      startDate: new Date('2024-07-27T01:00:00.000Z'),
-      endDate: new Date('2024-08-01T08:00:00.000Z'),
-      estimateNormalTime: 5.75,
-      requireAssignee: {year_of_exp:1,backend:1,frontend:2},
-      requireAsset: [],
-      assignee: sw_NguyenVietDang._id
-    },
-    {
-      id: 10,
-      project: "",
-      name: "Lập trình infra",
-      startDate: new Date('2024-09-04T06:00:00.000Z'),
-      endDate: new Date('2024-09-08T06:00:00.000Z'),
-      estimateNormalTime: 4,
-      requireAssignee: {year_of_exp:1,docker:2,ci_cd:2,backend:1},
-      requireAsset: [],
-      assignee: sw_NguyenVietDang._id
-    },
-    {
-      id: 11,
-      project: "",
-      name: "Kiểm thử luồng mua hàng",
-      estimateNormalTime: 2.5, 
-      startDate: new Date('2024-09-08T06:00:00.000Z'),
-      endDate: new Date('2024-09-10T10:00:00.000Z'),
-      requireAssignee: {manual_test:1,unit_test:2,automation_test:1},
-      requireAsset: [],
-      assignee: sw_NguyenVietDang._id
-    },
-    {
-      id: 12,
-      project: "",
-      name: "Đề xuất ý tưởng cho giao diện mới",
-      startDate: new Date('2024-09-23T06:00:00.000Z'),
-      endDate: new Date('2024-09-24T10:00:00.000Z'),
-      requireAssignee: {year_of_exp:2,english:3},
-      requireAsset: [],
-      assignee: sw_NguyenVietDang._id
-    },
+  //   //3: NguyenVietDang
+  //   {
+  //     id: 9,
+  //     project: "",
+  //     name: "Dựng giao diện module mua hàng",
+  //     startDate: new Date('2024-07-27T01:00:00.000Z'),
+  //     endDate: new Date('2024-08-01T08:00:00.000Z'),
+  //     estimateNormalTime: 5.75,
+  //     requireAssignee: {year_of_exp:1,backend:1,frontend:2},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenVietDang._id
+  //   },
+  //   {
+  //     id: 10,
+  //     project: "",
+  //     name: "Lập trình infra",
+  //     startDate: new Date('2024-09-04T06:00:00.000Z'),
+  //     endDate: new Date('2024-09-08T06:00:00.000Z'),
+  //     estimateNormalTime: 4,
+  //     requireAssignee: {year_of_exp:1,docker:2,ci_cd:2,backend:1},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenVietDang._id
+  //   },
+  //   {
+  //     id: 11,
+  //     project: "",
+  //     name: "Kiểm thử luồng mua hàng",
+  //     estimateNormalTime: 2.5, 
+  //     startDate: new Date('2024-09-08T06:00:00.000Z'),
+  //     endDate: new Date('2024-09-10T10:00:00.000Z'),
+  //     requireAssignee: {manual_test:1,unit_test:2,automation_test:1},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenVietDang._id
+  //   },
+  //   {
+  //     id: 12,
+  //     project: "",
+  //     name: "Đề xuất ý tưởng cho giao diện mới",
+  //     startDate: new Date('2024-09-23T06:00:00.000Z'),
+  //     endDate: new Date('2024-09-24T10:00:00.000Z'),
+  //     requireAssignee: {year_of_exp:2,english:3},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenVietDang._id
+  //   },
     
-    // 4
-    {
-      id: 13,
-      project: "",
-      name: "Dựng các màn cho module đặt lịch",
-      startDate: new Date('2024-07-28T06:00:00.000Z'),
-      endDate: new Date('2024-08-03T10:00:00.000Z'),
-      estimateNormalTime: 6.5,
-      requireAssignee: {degree:1,frontend:2},
-      requireAsset: [],
-      assignee: sw_NguyenMinhThanh._id,
-    },
-    {
-      id: 14,
-      project: "",
-      name: "Lập trình trang quản lý phân quyền",
-      startDate: new Date('2024-08-04T01:00:00.000Z'),
-      endDate: new Date('2024-08-08T10:00:00.000Z'),
-      estimateNormalTime: 5,
-      requireAssignee: {degree:2,frontend:1},
-      requireAsset: [],
-      assignee: sw_NguyenMinhThanh._id,
-    },
-    {
-      id: 16,
-      project: "",
-      name: "Đọc hiểu code base",
-      startDate: new Date('2024-08-09T01:00:00.000Z'),
-      endDate: new Date('2024-08-11T10:00:00.000Z'),
-      estimateNormalTime: 3,
-      requireAssignee: {backend:2,frontend:1,docker:1},
-      requireAsset: [],
-      assignee: sw_NguyenMinhThanh._id,
-    },
-    // {
-    //   id: 16,
-    //   project: "Ghép API mô đun bán hàng",
-    //   name: "",
-    //   startDate: new Date('2024-08-09T01:00:00.000Z'),
-    //   endDate: new Date('2024-08-11T10:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_NguyenMinhThanh._id,
-    // },
-    {
-      id: 17,
-      project: "",
-      name: "Ghép API mô đun bán hàng",
-      estimateNormalTime: 8,
-      startDate: new Date('2024-09-24T01:00:00.000Z'),
-      endDate: new Date('2024-10-02T10:00:00.000Z'),
-      requireAssignee: {frontend:1,backend:1,manual_test:1},
-      requireAsset: [],
-      assignee: sw_NguyenMinhThanh._id,
-    },
-    {
-      id: 18,
-      project: "",
-      name: "Lập trình trang quảng bá, giới thiệu sản phẩm",
-      startDate: new Date('2024-10-04T01:00:00.000Z'),
-      endDate: new Date('2024-10-09T10:00:00.000Z'),
-      estimateNormalTime: 6, 
-      requireAssignee: {degree:2,frontend:2},
-      requireAsset: [],
-      assignee: sw_NguyenMinhThanh._id,
-    },
+  //   // 4
+  //   {
+  //     id: 13,
+  //     project: "",
+  //     name: "Dựng các màn cho module đặt lịch",
+  //     startDate: new Date('2024-07-28T06:00:00.000Z'),
+  //     endDate: new Date('2024-08-03T10:00:00.000Z'),
+  //     estimateNormalTime: 6.5,
+  //     requireAssignee: {degree:1,frontend:2},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenMinhThanh._id,
+  //   },
+  //   {
+  //     id: 14,
+  //     project: "",
+  //     name: "Lập trình trang quản lý phân quyền",
+  //     startDate: new Date('2024-08-04T01:00:00.000Z'),
+  //     endDate: new Date('2024-08-08T10:00:00.000Z'),
+  //     estimateNormalTime: 5,
+  //     requireAssignee: {degree:2,frontend:1},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenMinhThanh._id,
+  //   },
+  //   {
+  //     id: 16,
+  //     project: "",
+  //     name: "Đọc hiểu code base",
+  //     startDate: new Date('2024-08-09T01:00:00.000Z'),
+  //     endDate: new Date('2024-08-11T10:00:00.000Z'),
+  //     estimateNormalTime: 3,
+  //     requireAssignee: {backend:2,frontend:1,docker:1},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenMinhThanh._id,
+  //   },
+  //   // {
+  //   //   id: 16,
+  //   //   project: "Ghép API mô đun bán hàng",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-08-09T01:00:00.000Z'),
+  //   //   endDate: new Date('2024-08-11T10:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_NguyenMinhThanh._id,
+  //   // },
+  //   {
+  //     id: 17,
+  //     project: "",
+  //     name: "Ghép API mô đun bán hàng",
+  //     estimateNormalTime: 8,
+  //     startDate: new Date('2024-09-24T01:00:00.000Z'),
+  //     endDate: new Date('2024-10-02T10:00:00.000Z'),
+  //     requireAssignee: {frontend:1,backend:1,manual_test:1},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenMinhThanh._id,
+  //   },
+  //   {
+  //     id: 18,
+  //     project: "",
+  //     name: "Lập trình trang quảng bá, giới thiệu sản phẩm",
+  //     startDate: new Date('2024-10-04T01:00:00.000Z'),
+  //     endDate: new Date('2024-10-09T10:00:00.000Z'),
+  //     estimateNormalTime: 6, 
+  //     requireAssignee: {degree:2,frontend:2},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenMinhThanh._id,
+  //   },
 
-    // 5
-    {
-      id: 19,
-      project:"",
-      name: "Viết kịch bản kiểm thử tích hợp",
-      startDate: new Date('2024-08-17T01:00:00.000Z'),
-      endDate: new Date('2024-08-21T10:00:00.000Z'),
-      estimateNormalTime: 5,
-      requireAssignee: {manual_test:1,unit_test:1,automation_test:1},
-      requireAsset: [],
-      assignee: sw_NguyenThiOanh._id
-    },
-    // {
-    //   id: 20,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-08-22T01:00:00.000Z'),
-    //   endDate: new Date('2024-08-28T02:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_NguyenThiOanh._id
-    // },
-    // {
-    //   id: 21,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-08-29T01:00:00.000Z'),
-    //   endDate: new Date('2024-09-04T03:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_NguyenThiOanh._id
-    // },
-    // {
-    //   id: 22,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-09-18T01:00:00.000Z'),
-    //   endDate: new Date('2024-09-21T10:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_NguyenThiOanh._id
-    // },
-    // {
-    //   id: 23,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-09-30T01:00:00.000Z'),
-    //   endDate: new Date('2024-10-02T08:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_NguyenThiOanh._id,
-    // },
+  //   // 5
+  //   {
+  //     id: 19,
+  //     project:"",
+  //     name: "Viết kịch bản kiểm thử tích hợp",
+  //     startDate: new Date('2024-08-17T01:00:00.000Z'),
+  //     endDate: new Date('2024-08-21T10:00:00.000Z'),
+  //     estimateNormalTime: 5,
+  //     requireAssignee: {manual_test:1,unit_test:1,automation_test:1},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenThiOanh._id
+  //   },
+  //   // {
+  //   //   id: 20,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-08-22T01:00:00.000Z'),
+  //   //   endDate: new Date('2024-08-28T02:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_NguyenThiOanh._id
+  //   // },
+  //   // {
+  //   //   id: 21,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-08-29T01:00:00.000Z'),
+  //   //   endDate: new Date('2024-09-04T03:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_NguyenThiOanh._id
+  //   // },
+  //   // {
+  //   //   id: 22,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-09-18T01:00:00.000Z'),
+  //   //   endDate: new Date('2024-09-21T10:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_NguyenThiOanh._id
+  //   // },
+  //   // {
+  //   //   id: 23,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-09-30T01:00:00.000Z'),
+  //   //   endDate: new Date('2024-10-02T08:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_NguyenThiOanh._id,
+  //   // },
 
-    // 6
-    {
-      id: 24,
-      project: "",
-      name: "Xây dựng kịch bản thử nghiệm cho luồng quản lý hóa đơn",
-      startDate: new Date('2024-08-20T01:00:00.000Z'),
-      endDate: new Date('2024-08-24T10:00:00.000Z'),
-      estimateNormalTime: 5,
-      requireAssignee: {degree:2,unit_test:2},
-      requireAsset: [],
-      assignee: sw_VuThiQuynh._id
-    },
-    // {
-    //   id: 25,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-09-03T01:00:00.000Z'),
-    //   endDate: new Date('2024-09-06T10:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_VuThiQuynh._id
-    // },
-    // {
-    //   id: 26,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-09-17T03:00:00.000Z'),
-    //   endDate: new Date('2024-09-19T08:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_VuThiQuynh._id
-    // },
-    // {
-    //   id: 27,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-09-27T02:00:00.000Z'),
-    //   endDate: new Date('2024-09-28T10:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_VuThiQuynh._id
-    // },
-    // {
-    //   id: 28,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-09-29T01:00:00.000Z'),
-    //   endDate: new Date('2024-10-02T05:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_VuThiQuynh._id
-    // },
+  //   // 6
+  //   {
+  //     id: 24,
+  //     project: "",
+  //     name: "Xây dựng kịch bản thử nghiệm cho luồng quản lý hóa đơn",
+  //     startDate: new Date('2024-08-20T01:00:00.000Z'),
+  //     endDate: new Date('2024-08-24T10:00:00.000Z'),
+  //     estimateNormalTime: 5,
+  //     requireAssignee: {degree:2,unit_test:2},
+  //     requireAsset: [],
+  //     assignee: sw_VuThiQuynh._id
+  //   },
+  //   // {
+  //   //   id: 25,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-09-03T01:00:00.000Z'),
+  //   //   endDate: new Date('2024-09-06T10:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_VuThiQuynh._id
+  //   // },
+  //   // {
+  //   //   id: 26,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-09-17T03:00:00.000Z'),
+  //   //   endDate: new Date('2024-09-19T08:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_VuThiQuynh._id
+  //   // },
+  //   // {
+  //   //   id: 27,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-09-27T02:00:00.000Z'),
+  //   //   endDate: new Date('2024-09-28T10:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_VuThiQuynh._id
+  //   // },
+  //   // {
+  //   //   id: 28,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-09-29T01:00:00.000Z'),
+  //   //   endDate: new Date('2024-10-02T05:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_VuThiQuynh._id
+  //   // },
 
-    // 7
-    {
-      id: 28,
-      project: "",
-      name: "Sửa lỗi module quản lý thuế TNCN",
-      startDate: new Date('2024-08-09T05:00:00.000Z'),
-      endDate: new Date('2024-08-11T05:00:00.000Z'),
-      estimateNormalTime: 3,
-      requireAssignee: {year_of_exp:1,backend:2,frontend:1},
-      requireAsset: [],
-      assignee: sw_NguyenPhucNhatNam._id
-    },
+  //   // 7
+  //   {
+  //     id: 28,
+  //     project: "",
+  //     name: "Sửa lỗi module quản lý thuế TNCN",
+  //     startDate: new Date('2024-08-09T05:00:00.000Z'),
+  //     endDate: new Date('2024-08-11T05:00:00.000Z'),
+  //     estimateNormalTime: 3,
+  //     requireAssignee: {year_of_exp:1,backend:2,frontend:1},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenPhucNhatNam._id
+  //   },
 
-    // {
-    //   id: 29,
-    //   project: "",
-    //   name: "",
-    //   startDate: new Date('2024-08-29T01:00:00.000Z'),
-    //   endDate: new Date('2024-09-02T05:00:00.000Z'),
-    //   requireAssignee: {},
-    //   requireAsset: [],
-    //   assignee: sw_NguyenPhucNhatNam._id
-    // },
+  //   // {
+  //   //   id: 29,
+  //   //   project: "",
+  //   //   name: "",
+  //   //   startDate: new Date('2024-08-29T01:00:00.000Z'),
+  //   //   endDate: new Date('2024-09-02T05:00:00.000Z'),
+  //   //   requireAssignee: {},
+  //   //   requireAsset: [],
+  //   //   assignee: sw_NguyenPhucNhatNam._id
+  //   // },
 
 
-    {
-      id: 30,
-      project: "",
-      name: "Triển khai ứng dụng trên github",
-      startDate: new Date('2024-09-23T06:00:00.000Z'),
-      endDate: new Date('2024-09-24T10:00:00.000Z'),
-      estimateNormalTime: 1.5,
-      requireAssignee: {year_of_exp:1,docker:2,ci_cd:2},
-      requireAsset: [],
-      assignee: sw_NguyenPhucNhatNam._id
-    },
+  //   {
+  //     id: 30,
+  //     project: "",
+  //     name: "Triển khai ứng dụng trên github",
+  //     startDate: new Date('2024-09-23T06:00:00.000Z'),
+  //     endDate: new Date('2024-09-24T10:00:00.000Z'),
+  //     estimateNormalTime: 1.5,
+  //     requireAssignee: {year_of_exp:1,docker:2,ci_cd:2},
+  //     requireAsset: [],
+  //     assignee: sw_NguyenPhucNhatNam._id
+  //   },
 
-    // 8
-    {
-      id: 31,
-      project: "",
-      name: "Dựng các màn hình của chatbot",
-      startDate: new Date('2024-07-29T04:00:00.000Z'),
-      endDate: new Date('2024-08-02T10:00:00.000Z'),
-      estimateNormalTime: 4.5,
-      requireAssignee: {degree:2,frontend:2},
-      requireAsset: [],
-      assignee: sw_DangQuocTu._id
-    },
-    {
-      id: 32,
-      project: "",
-      name: "Lập trình service chat với socket",
-      startDate: new Date('2024-08-09T01:00:00.000Z'),
-      endDate: new Date('2024-08-11T10:00:00.000Z'),
-      estimateNormalTime: 4,
-      requireAssignee: {backend:2,frontend:2},
-      requireAsset: [],
-      assignee: sw_DangQuocTu._id
-    },
-    {
-      id: 33,
-      project: "",
-      name: "Dựng các màn hình trò chuyện",
-      startDate: new Date('2024-08-24T01:00:00.000Z'),
-      endDate: new Date('2024-08-29T10:00:00.000Z'),
-      estimateNormalTime: 6,
-      requireAssignee: {degree:2,frontend:3},
-      requireAsset: [],
-      assignee: sw_DangQuocTu._id
-    },
-    {
-      id: 34,
-      project: "",
-      name: "Kiểm thử tính năng tạo cuộc họp",
-      startDate: new Date('2024-08-30T01:00:00.000Z'),
-      endDate: new Date('2024-09-01T10:00:00.000Z'),
-      estimateNormalTime: 2,
-      requireAssignee: {manual_test:1,unit_test:1,automation_test:1},
-      requireAsset: [],
-      assignee: sw_DangQuocTu._id
-    },
-    {
-      id: 35,
-      project: "",
-      name: "Dựng các màn hình của mô đun quản lý lớp học",
-      startDate: new Date('2024-09-17T02:00:00.000Z'),
-      endDate: new Date('2024-09-22T08:00:00.000Z'),
-      estimateNormalTime: 5.625,
-      requireAssignee: {degree:2,frontend:2},
-      requireAsset: [],
-      assignee: sw_DangQuocTu._id
-    },
-  ]
-  console.log("allTasksOutOfProject: ", allTasksOutOfProject?.length)
+  //   // 8
+  //   {
+  //     id: 31,
+  //     project: "",
+  //     name: "Dựng các màn hình của chatbot",
+  //     startDate: new Date('2024-07-29T04:00:00.000Z'),
+  //     endDate: new Date('2024-08-02T10:00:00.000Z'),
+  //     estimateNormalTime: 4.5,
+  //     requireAssignee: {degree:2,frontend:2},
+  //     requireAsset: [],
+  //     assignee: sw_DangQuocTu._id
+  //   },
+  //   {
+  //     id: 32,
+  //     project: "",
+  //     name: "Lập trình service chat với socket",
+  //     startDate: new Date('2024-08-09T01:00:00.000Z'),
+  //     endDate: new Date('2024-08-11T10:00:00.000Z'),
+  //     estimateNormalTime: 4,
+  //     requireAssignee: {backend:2,frontend:2},
+  //     requireAsset: [],
+  //     assignee: sw_DangQuocTu._id
+  //   },
+  //   {
+  //     id: 33,
+  //     project: "",
+  //     name: "Dựng các màn hình trò chuyện",
+  //     startDate: new Date('2024-08-24T01:00:00.000Z'),
+  //     endDate: new Date('2024-08-29T10:00:00.000Z'),
+  //     estimateNormalTime: 6,
+  //     requireAssignee: {degree:2,frontend:3},
+  //     requireAsset: [],
+  //     assignee: sw_DangQuocTu._id
+  //   },
+  //   {
+  //     id: 34,
+  //     project: "",
+  //     name: "Kiểm thử tính năng tạo cuộc họp",
+  //     startDate: new Date('2024-08-30T01:00:00.000Z'),
+  //     endDate: new Date('2024-09-01T10:00:00.000Z'),
+  //     estimateNormalTime: 2,
+  //     requireAssignee: {manual_test:1,unit_test:1,automation_test:1},
+  //     requireAsset: [],
+  //     assignee: sw_DangQuocTu._id
+  //   },
+  //   {
+  //     id: 35,
+  //     project: "",
+  //     name: "Dựng các màn hình của mô đun quản lý lớp học",
+  //     startDate: new Date('2024-09-17T02:00:00.000Z'),
+  //     endDate: new Date('2024-09-22T08:00:00.000Z'),
+  //     estimateNormalTime: 5.625,
+  //     requireAssignee: {degree:2,frontend:2},
+  //     requireAsset: [],
+  //     assignee: sw_DangQuocTu._id
+  //   },
+  // ]
+  // console.log("allTasksOutOfProject: ", allTasksOutOfProject?.length)
 
-  const existingTasksOutOf = await Task(vnistDB).find({ status: "inprocess" }, { name: 1, _id: 0 });
-  const existingTaskNamesOutOf = new Set(existingTasksOutOf.map(task => task.name));
+  // const existingTasksOutOf = await Task(vnistDB).find({ status: "inprocess" }, { name: 1, _id: 0 });
+  // const existingTaskNamesOutOf = new Set(existingTasksOutOf.map(task => task.name));
 
-  // Step 2: Filter new tasks to exclude those with existing names
-  const filteredTasksOutOf = allTasksOutOfProject.filter(task => !existingTaskNamesOutOf.has(task.name));
+  // // Step 2: Filter new tasks to exclude those with existing names
+  // const filteredTasksOutOf = allTasksOutOfProject.filter(task => !existingTaskNamesOutOf.has(task.name));
 
-  // Step 3: Insert the filtered tasks into the database
-  if (filteredTasksOutOf?.length > 0) {
-    const allTaskOutOfInDB = await Task(vnistDB).insertMany(filteredTasksOutOf);
-    console.log(`Inserted ${filteredTasksOutOf.length} new tasks Out Of.`);
-  } else {
-    console.log('No new tasks Out Of to insert.');  
-  }
+  // // Step 3: Insert the filtered tasks into the database
+  // if (filteredTasksOutOf?.length > 0) {
+  //   const allTaskOutOfInDB = await Task(vnistDB).insertMany(filteredTasksOutOf);
+  //   console.log(`Inserted ${filteredTasksOutOf.length} new tasks Out Of.`);
+  // } else {
+  //   console.log('No new tasks Out Of to insert.');  
+  // }
 
   const gd_NguyenVanAn_User = await User(vnistDB).findOne({
     name: "Nguyễn Văn An"
