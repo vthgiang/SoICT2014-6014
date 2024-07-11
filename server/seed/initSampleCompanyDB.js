@@ -2,10 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Terms = require('../helpers/config');
 const linksPermission = require('../middleware/servicesPermission').links;
-const saleOrders = require('./SaleOrders.json');
-const listCustomer = require('./Customer.json');
-const listTransport3Orders = require('./transport3orders.json');
-const listTransport3Schedules = require('./transport3schedule.json');
+
 const {
   Component,
   RoleType,
