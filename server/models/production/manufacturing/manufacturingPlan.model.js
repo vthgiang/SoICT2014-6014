@@ -55,22 +55,6 @@ const ManufacturingPlanSchema = new Schema({
     endDate: { // Ngày dự kiến kết thúc
         type: Date
     },
-    // logs: [{ // Ghi lại nhật ký chỉnh sửa kế hoạch
-    //     creator: { // Người sửa
-    //         type: Schema.Types.ObjectId,
-    //         ref: "User"
-    //     },
-    //     title: { // Tiêu đề
-    //         type: String
-    //     },
-    //     description: { // Mô tả nội dung chỉnh sửa
-    //         type: String
-    //     },
-    //     createdAt: { // Thời gian sửa
-    //         type: Date,
-    //         default: Date.now
-    //     }
-    // }]
 }, {
     timestamps: true,
 });

@@ -1,128 +1,97 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import ReactFlow, {
-    ReactFlowProvider,
-    addEdge,
-    useNodesState,
-    useEdgesState,
-    MarkerType,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-import OperationStack from "./operationStack"
+import { useState, useRef, useCallback, useEffect } from 'react'
+import ReactFlow, { ReactFlowProvider, addEdge, useNodesState, useEdgesState, MarkerType } from 'reactflow'
+import 'reactflow/dist/style.css'
+import OperationStack from './operationStack'
 
 const RoutingFlowCreate = (props) => {
-    const reactFlowWrapper = useRef(null);
-    const [nodes, setNodes, onNodesChange] = useNodesState([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-    const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const [operationStackNodes, setOperationStackNodes] = useState([]);
+  const reactFlowWrapper = useRef(null)
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const [reactFlowInstance, setReactFlowInstance] = useState(null)
+  const [operationStackNodes, setOperationStackNodes] = useState([])
 
-    const { operations, connectOperation, edgeTypes, nodeTypes } = props
+  const { operations, connectOperation, edgeTypes, nodeTypes } = props
 
-    // covert operations theo đúng format của routing trong API detail routing
-    const modifiedOperations = operations.map(operation => {
-        const workers = operation.workers.map(worker => ({
-            workerRole: {
-                name: worker.name
-            },
-            expYear: worker.expYear,
-            number: worker.quantity
+  const onConnect = useCallback(
+    (params) => {
+      const newEdge = {
+        id: `${params.source}-${params.target}`,
+        source: params.source,
+        target: params.target,
+        animated: true,
+        type: 'operationConnection',
+        markerEnd: {
+          type: MarkerType.ArrowClosed
+        }
+      }
+      setEdges((eds) => addEdge(newEdge, eds))
 
-        }))
-        const machines = operation.machines.map(machine => ({
-            machine: {
-                assetName: machine.name
-            },
-            operatingCost: machine.cost,
-            number: machine.quantity
-        }))
-        return ({
-            ...operation,
-            workers: workers,
-            machines: machines
-        })
-    })
+      connectOperation(params.source, params.target)
+    },
+    [setEdges]
+  )
 
-    const onConnect = useCallback(
-        (params) => {
-            const newEdge = {
-                id: `${params.source}-${params.target}`,
-                source: params.source,
-                target: params.target,
-                animated: true,
-                type: 'operationConnection',
-                markerEnd: {
-                    type: MarkerType.ArrowClosed
-                }
-            }
-            setEdges((eds) => addEdge(newEdge, eds))
+  const onDragOver = useCallback((event) => {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'move'
+  }, [])
 
-            connectOperation(params.source, params.target)
-            
-        }, [setEdges]
-    );
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault()
 
-    const onDragOver = useCallback((event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-    }, []);
+      const operationId = event.dataTransfer.getData('operationId')
+      const operation = operations.find((item) => item.id == operationId)
 
-    const onDrop = useCallback(
-        (event) => {
-            event.preventDefault();
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY
+      })
 
-            const operationId = event.dataTransfer.getData("operationId")
-            const operation = modifiedOperations.find(item => item.id == operationId)
+      const newOperationNode = {
+        id: `${operation.id}`,
+        position,
+        type: 'operationNode',
+        data: { operation: operation }
+      }
 
-            const position = reactFlowInstance.screenToFlowPosition({
-                x: event.clientX,
-                y: event.clientY,
-            });
-            const newOperationNode = {
-                id: `${operation.id}`,
-                position,
-                type: "operationNode",
-                data: { operation: operation },
-            };
+      setNodes((nds) => [...nds, newOperationNode])
+      setOperationStackNodes((nds) => nds.filter((nd) => nd.id != operation.id))
+    },
+    [reactFlowInstance, setNodes]
+  )
 
-            setNodes((nds) => nds.concat(newOperationNode));
-            setOperationStackNodes((nds) => nds.filter(nd => nd.id != operation.id))
-        },
-        [reactFlowInstance, setNodes],
-    );
+  useEffect(() => {
+    const initStackNode = operations.map((operation) => ({
+      id: `${operation.id}`,
+      data: { operation: operation }
+    }))
 
-    useEffect(() => {
-        const initStackNode = modifiedOperations.map(operation => {
-            return ({
-                id: `${operation.id}`,
-                type: 'operationNode',
-                data: { operation: operation }
-            })
-        }, [])
-        setOperationStackNodes(initStackNode)
-    }, [])
+    setOperationStackNodes(initStackNode)
+  }, [])
 
-    return (
-        <div className="dndflow">
-            <ReactFlowProvider>
-                <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-                    <ReactFlow
-                        nodes={nodes}
-                        edges={edges}
-                        edgeTypes={edgeTypes}
-                        nodeTypes={nodeTypes}
-                        onNodesChange={onNodesChange}
-                        onEdgesChange={onEdgesChange}
-                        onConnect={onConnect}
-                        onInit={setReactFlowInstance}
-                        onDrop={onDrop}
-                        onDragOver={onDragOver}
-                        fitView
-                    />
-                </div>
-                <OperationStack nodes={operationStackNodes} />
-            </ReactFlowProvider>
+  return (
+    <div className='dndflow'>
+      <ReactFlowProvider>
+        <div className='reactflow-wrapper' ref={reactFlowWrapper}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            edgeTypes={edgeTypes}
+            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            fitView
+          />
         </div>
-    );
-};
+        <OperationStack nodes={operationStackNodes} />
+      </ReactFlowProvider>
+    </div>
+  )
+}
 
-export default RoutingFlowCreate;
+export default RoutingFlowCreate

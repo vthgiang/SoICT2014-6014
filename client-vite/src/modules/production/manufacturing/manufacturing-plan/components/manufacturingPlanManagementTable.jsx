@@ -10,7 +10,7 @@ import { millActions } from '../../manufacturing-mill/redux/actions'
 import ManufacturingPlanDetailInfo from './manufacturingPlanDetailInfo'
 
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
-import AutoScheduleBooking from './create-new-plan/schedule-booking/autoScheduleBooking'
+
 function ManufacturingPlanManagementTable(props) {
   const tableIdDefault = 'manufacturing-plan-manager-table'
   const defaultConfig = { limit: 5 }

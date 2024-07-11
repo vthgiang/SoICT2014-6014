@@ -73,6 +73,8 @@ export function manufacturingWorks(state = initState, action) {
       return {
         ...state,
         currentWorks: action.payload.manufacturingWorks,
+        currentEmployees: action.payload.employees,
+        currentAssets: action.payload.assets,
         isLoading: false
       }
     case worksConstants.UPDATE_WORKS_SUCCESS:

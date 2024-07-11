@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { withTranslate } from 'react-redux-multilingual'
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css'
@@ -7,23 +8,53 @@ import TrendingChart from './trendingChart';
 import ReasonChart from "./reasonChart";
 import Notification from './notification';
 import ImproveActionTable from './improveActionTable';
+import ActionCreateForm from './actionCreateForm';
 
 import '../index.css'
+import { manufacturingMetricActions } from '../../redux/actions';
+import FailureCreateForm from './failureCreateForm';
 
 const ResponsiveGridLayout = WidthProvider(Responsive)
 
-const PerformanceDetail = () => {
+const PerformanceDetail = (props) => {
+	const { manufacturingMetric } = props
+	const location = useLocation()
+
 	const layouts = [
 		{ i: "1", x: 0, y: 0, w: 5, h: 12, static: true },
 		{ i: "2", x: 5, y: 0, w: 4, h: 12, static: true },
 		{ i: "3", x: 9, y: 0, w: 3, h: 24, static: true },
-		{ i: "4", x: 0, y: 12, w: 9, h: 12, static: true },
-		{ i: "5", x: 0, y: 24, w: 12, h: 12, static: true }
+		{ i: "4", x: 0, y: 12, w: 9, h: 12, static: true }
 	];
 
+	const metricId = location.state?.metricId
+
+	const handleKpiChange = (data) => {
+		props.editManufacturingKpi(metricId, data)
+	}
+
+	useEffect(() => {
+		const currentRole = localStorage.getItem('currentRole')
+
+		props.getManufacturingKpiById({metricId, currentRole})
+
+	}, [metricId])
+
+	if (manufacturingMetric.isLoading || !manufacturingMetric.currentKpi) {
+		return <div>loading...</div>
+	}
+
 	return (
-		<div className='performance-dashboard' style={{ minHeight: '450px' }}>
-			<div className='chart-container'>
+		<>
+            <ActionCreateForm 
+				onKpiChange={handleKpiChange} 
+				actions={manufacturingMetric.currentKpi.actions}
+			/>
+			<FailureCreateForm
+				failureCauses={manufacturingMetric.currentKpi.failureCauses}
+				onKpiChange={handleKpiChange}
+			/>
+			<div className='performance-dashboard' style={{ minHeight: '450px' }}>
 				<ResponsiveGridLayout
 					className="layout"
 					compactType="horizontal"
@@ -34,21 +65,46 @@ const PerformanceDetail = () => {
 					rowHeight={20}
 				>
 					<div className="item" key="1">
-						<TrendingChart />
+						<TrendingChart
+							values={manufacturingMetric.currentKpi.values}
+							labels={manufacturingMetric.currentKpi.labels}
+							target={manufacturingMetric.currentKpi.target}
+							customize={manufacturingMetric.currentKpi.customize}
+						/>
 					</div>
 					<div className="item" key="2">
-						<ReasonChart />
+						<ReasonChart
+							failureCauses={manufacturingMetric.currentKpi.failureCauses}
+							onKpiChange={handleKpiChange} 
+						/>
 					</div>
 					<div className="item" key="3">
-						<Notification />
+						<Notification 
+							alerts={manufacturingMetric.currentKpi.alerts}
+							thresholds={manufacturingMetric.currentKpi.thresholds}
+							kpiUnit={manufacturingMetric.currentKpi.unit}
+						/>
 					</div>
-					<div className="item" key="5">
-						<ImproveActionTable />
+					<div className="item" key="4">
+						<ImproveActionTable
+							actions={manufacturingMetric.currentKpi.actions}
+						/>
 					</div>
 				</ResponsiveGridLayout>
 			</div>
-		</div>
+		</>
 	)
 }
-export default connect(null, null)(withTranslate(PerformanceDetail))
+
+function mapStateToProps(state) {
+    const { manufacturingMetric } = state
+    return { manufacturingMetric }
+}
+
+const mapDispatchToProps = {
+    getManufacturingKpiById: manufacturingMetricActions.getManufacturingKpiById,
+	editManufacturingKpi: manufacturingMetricActions.editManufacturingKpi
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PerformanceDetail))
 

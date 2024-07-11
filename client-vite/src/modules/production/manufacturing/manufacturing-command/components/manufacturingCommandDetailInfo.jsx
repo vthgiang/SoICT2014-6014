@@ -38,25 +38,6 @@ function ManufacturingCommandDetailInfo(props) {
     }
   }, [props])
 
-  // shouldComponentUpdate = (nextProps) => {
-  //     if (props.commandDetail !== nextProps.commandDetail) {
-  //         props.getDetailManufacturingCommand(nextProps.commandDetail._id);
-  //         props.getBillsByCommand({ manufacturingCommandId: nextProps.commandDetail._id });
-
-  //         // Xử lý lấy ra tồn kho của danh sách nguyên vật liệu
-  //         const materials = nextProps.commandDetail.good.materials;
-  //         let materialIds = [];
-  //         materials.map(x => {
-  //             materialIds.push(x.good._id)
-  //         });
-  //         props.getInventoryByGoodIds({
-  //             array: materialIds,
-  //         });
-  //         return false
-  //     }
-  //     return true;
-  // }
-
   const showDetailManufacturingLot = async (lot) => {
     await setState({
       ...state,
@@ -414,6 +395,13 @@ function ManufacturingCommandDetailInfo(props) {
                       </div>
                     )
                   })}
+                {currentCommand.approvers &&
+                  currentCommand.approvers.length == 0 && (
+                    <div className='form-group'>
+                      {translate('manufacturing.command.no_data')}
+                    </div>
+                  
+                  )}
               </fieldset>
             </div>
           </div>
@@ -439,12 +427,9 @@ function ManufacturingCommandDetailInfo(props) {
                             <td>{x.manufacturingMill.name}</td>
                             <td style={{ textAlign: "left" }}>
                               <ul>
-                                {x.responsibles
-                                  && x.responsibles.length > 0
-                                  && x.responsibles.map((y, index1) => (
-                                    <li key={index1}>{y.name}</li>
-                                  ))
-                                }
+                                {x.tasks?.map((t, index1) => (
+                                  <li key={index1}>{t.responsible.name}</li>
+                                ))}
                               </ul>
                             </td>
 
@@ -480,34 +465,17 @@ function ManufacturingCommandDetailInfo(props) {
             <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
               <fieldset className='scheduler-border'>
                 <legend className='scheduler-border'>{translate('manufacturing.command.qualityControlStaffs')}</legend>
-                <table className='table'>
-                  <thead>
-                    <tr>
-                      <th>{translate('manufacturing.command.index')}</th>
-                      <th>{translate('manufacturing.command.qc_name')}</th>
-                      <th>{translate('manufacturing.command.qc_email')}</th>
-                      <th>{translate('manufacturing.command.qc_status_command')}</th>
-                      <th>{translate('manufacturing.command.quality_control_content')}</th>
-                      <th>{translate('manufacturing.command.time')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentCommand.qualityControlStaffs &&
+                 {currentCommand.qualityControlStaffs &&
                       currentCommand.qualityControlStaffs.length &&
                       currentCommand.qualityControlStaffs.map((qualityControlStaff, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{qualityControlStaff.staff.name}</td>
-                          <td>{qualityControlStaff.staff.email}</td>
-                          <td style={{ color: translate(`manufacturing.command.qc_status.${qualityControlStaff.status}.color`) }}>
-                            {translate(`manufacturing.command.qc_status.${qualityControlStaff.status}.content`)}
-                          </td>
-                          <td>{qualityControlStaff.content}</td>
-                          <td>{qualityControlStaff.time && formatFullDate(qualityControlStaff.time)}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
+                        <div className='form-group' key={index}>
+                          <p>
+                            {qualityControlStaff.staff.name}
+                            {' - '}
+                            {qualityControlStaff.staff.email}
+                          </p>
+                        </div>
+                  ))}
               </fieldset>
             </div>
           </div>
@@ -556,16 +524,16 @@ function ManufacturingCommandDetailInfo(props) {
               </fieldset>
             </div>
           </div>
-          {/* <div className="row">
+          <div className="row">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                   <fieldset className="scheduler-border">
                       <legend className="scheduler-border">{translate('manufacturing.command.comment')}</legend>
                       <div className={`form-group`}>
-                          Bình luận
+                        {translate('manufacturing.command.no_data')}
                       </div>
                   </fieldset>
               </div>
-          </div> */}
+          </div>
         </form>
       </DialogModal>
     </React.Fragment>

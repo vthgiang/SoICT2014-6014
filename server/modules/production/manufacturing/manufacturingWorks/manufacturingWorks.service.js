@@ -2,7 +2,9 @@ const {
     ManufacturingWorks,
     ManufacturingMill,
     OrganizationalUnit,
-    Role
+    Role,
+    UserRole,
+    Asset
 } = require(`../../../../models`);
 
 
@@ -179,10 +181,14 @@ exports.getManufacturingWorksById = async (id, portal) => {
         }, {
             path: 'manageRoles'
         }]);
+
+    const employees = await getAllEmployeesOfWorks(id, portal);
+    const assets = await getAllAssetsOfManufacturingWorks(id, portal);
+
     if (!manufacturingWorks) {
         throw Error("ManufacturingWorks is not existing")
     }
-    return { manufacturingWorks }
+    return { manufacturingWorks, employees, assets }
 }
 
 // Xóa nhà máy sản xuất
@@ -313,4 +319,49 @@ exports.getAllManufacturingEmployeeRoles = async (id, portal) => {
         .find({_id: { $in: employees }});
 
     return { roles }
+}
+
+// Lấy ra tất cả các employee của nhà máy sản xuất
+const getAllEmployeesOfWorks = async (id, portal) => {
+    const manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate({
+            path: "organizationalUnit",
+            populate: [
+                { path: 'employees' }
+            ]
+        })
+    
+    if (!manufacturingWorks) {
+        throw Error("ManufacturingWorks is not existing")
+    }
+
+    const employeeRoles = manufacturingWorks.organizationalUnit.employees;
+    
+    const userRoles = await UserRole(connect(DB_CONNECTION, portal))
+        .find({ roleId: { $in: employeeRoles } })
+        .populate([{
+            path: 'userId',
+            select: 'name email'
+        }])
+    
+    const employees = userRoles.map(userRole => ({
+        _id: userRole.userId._id,
+        name: userRole.userId.name
+    }))
+    
+    return employees
+}
+
+// Lấy ra tất cả các máy móc được giao cho nhà máy sản xuất
+const getAllAssetsOfManufacturingWorks = async (id, portal) => {
+    const manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+        .findById(id)
+
+    const organizationalUnitId = manufacturingWorks.organizationalUnit;
+
+    const assets = await Asset(connect(DB_CONNECTION, portal))
+        .find({ assignedToOrganizationalUnit: organizationalUnitId })
+
+    return assets
 }

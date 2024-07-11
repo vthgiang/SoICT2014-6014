@@ -4,6 +4,8 @@ import { withTranslate } from 'react-redux-multilingual'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
+import styles from "./index.module.css";
+
 ChartJS.register(
 	CategoryScale,
 	LinearScale,
@@ -14,25 +16,6 @@ ChartJS.register(
 	Legend
 );
 ChartJS.defaults.font.family = "'Source Sans Pro', sans-serif";
-
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-const data = {
-	labels,
-	datasets: [
-		{
-			label: "Dataset 1",
-			data: [12, 19, 3, 5, 2, 3],
-			backgroundColor: '#3c8dbc',
-			borderColor: '#3c8dbc',
-		},
-		{
-			label: "Dataset 2",
-			data: [3, 12, 4, 9, 2, 1],
-			backgroundColor: '#d2d6de',
-			borderColor: '#d2d6de',
-		},
-	],
-}
 
 const options = {
 	animation: {
@@ -48,7 +31,8 @@ const options = {
 				color: "#333",
 			}
 		}
-	}, scales: {
+	}, 
+	scales: {
 		x: {
 			ticks: {
 				color: "#333",
@@ -56,8 +40,9 @@ const options = {
 		},
 		y: {
 			ticks: {
-				color: "#333", // Màu sắc của các nhãn trục y
+				color: "#333",
 			},
+			beginAtZero: true
 		},
 	},
 	devicePixelRatio: 2,
@@ -65,10 +50,34 @@ const options = {
 	maintainAspectRatio: false
 };
 
-const TrendingChart = () => {
+const TrendingChart = (props) => {
+	const { values = [], target, labels, customize } = props;
+
+	const data = {
+		labels,
+		datasets: [
+			{
+			  label: 'Thực hiện',
+			  data: values,
+			  backgroundColor: customize?.theme[0],
+			  borderColor: customize?.theme[0],
+			  borderWidth: 2,
+			  pointRadius: 2
+			},
+			{
+			  label: 'Mục tiêu',
+			  data: Array(values.length).fill(target),
+			  backgroundColor: customize?.theme[1],
+			  borderColor: customize?.theme[1],
+			  borderWidth: 2,
+			  pointRadius: 2
+			}
+		  ]
+	}
+
 	return (
 		<div className="chart-wrapper">
-			<span className="chart-title">Xu hướng KPI</span>
+			<span className={styles["widget-header"]}>Xu hướng KPI</span>
 			<Line data={data} options={options} />
 		</div>
 	)
