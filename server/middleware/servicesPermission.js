@@ -977,6 +977,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/hr-list-capacity',
+        apis: ['@all'],
+    },
+    {
         url: '/hr-list-career-position',
         apis: ['@all'],
     },

@@ -1,13 +1,13 @@
-ul.certificate-tree {
+ul.capacity-tree {
   list-style-type: none;
 }
 
-li.certificate-tree {
+li.capacity-tree {
   border-left: 0.8px dotted rgb(194, 194, 194);
   padding: 10px;
 }
 
-a.certificate-tree-content {
+a.capacity-tree-content {
   border-bottom: 0.8px dotted rgb(194, 194, 194);
   margin: 5px;
   border: none;
@@ -16,11 +16,11 @@ a.certificate-tree-content {
   /* padding-left: -100px; */
 }
 
-a.certificate-tree-content:hover {
+a.capacity-tree-content:hover {
   color: red;
 }
 
-.certificate-tree {
+.capacity-tree {
   padding-top: 10px;
   overflow: auto;
 }
