@@ -55,13 +55,12 @@ const handleStartAllocation = async (portal, kpiData, numberGeneration, solution
   }
 };
 
-const handleStartAssignAllocation = async (portal, responseServerOutput, responseInput, userDetail, listUnitKpiWeight) => {
+const handleStartAssignAllocation = async (portal, responseServerOutput, responseInput, userDetail, listUnitKpiWeight, stringDate) => {
   try {
     const { listEnterpriseUnit, listResource, listEnterpriseGoal } = responseInput;
     const { list_unit_kpi, list_resource_kpi, list_task } = responseServerOutput.content;
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth();
+    const [year, month] = stringDate.split('-').map(Number);
+    const createdDate = new Date(year, month, 1); // Note: Months are zero-indexed
 
     const parseDateString = (dateString) => {
       const [day, month, year, time] = dateString.split(/[- :]/);
@@ -104,7 +103,7 @@ const handleStartAssignAllocation = async (portal, responseServerOutput, respons
         const unitKpiSetObject = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).create({
           organizationalUnit: new ObjectId(unit._id),
           creator: new ObjectId(userDetail._id),
-          date: new Date(currentYear, currentMonth + 1, 1),
+          date: createdDate,
           kpis,
           automaticPoint: 0,
           employeePoint: 0,
@@ -213,8 +212,8 @@ const handleStartAssignAllocation = async (portal, responseServerOutput, respons
       .populate('parent');
     const parentUnitId = organizationalUnitFirst[0].parent._id;
 
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+    const startOfMonth = new Date(year, month - 1, 1);
+    const endOfMonth = new Date(year, month, 0, 23, 59, 59); // Note: month is zero-indexed, so month is `month - 1`
     const startOfMonthIso = startOfMonth.toISOString();
     const endOfMonthIso = endOfMonth.toISOString();
 
