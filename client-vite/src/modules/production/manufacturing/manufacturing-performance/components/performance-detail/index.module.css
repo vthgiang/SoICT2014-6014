@@ -1,0 +1,82 @@
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.8rem;
+    padding: 0 8px;
+    color: #333;
+}
+
+/* Notification */
+.noti_list-header {
+    font-size: 1.8rem;
+}
+
+.noti_item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 0.4rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.noti_item.good {
+    background-color: #28a745;
+}
+
+.noti_item.medium {
+    background-color: #ffc107;
+}
+
+.noti_item.bad {
+    background-color: #dc3545;
+}
+
+.noti_icon {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.noti_item.good .noti_icon {
+    background-color: #73c686;
+}
+
+.noti_item.medium .noti_icon {
+    background-color: #ffd75e;
+}
+
+.noti_item.bad .noti_icon {
+    background-color: #e87c86;
+}
+
+.noti_icon i {
+    font-size: 2rem;
+}
+
+.noti-wrapper {
+    flex-grow: 1;
+}
+
+.noti_header {
+    color: white;
+    font-size: 1.6rem;
+}
+
+.noti_content, .noti_date {
+    font-size: 1.4rem;
+}
+
+/* Action table */
+.action_table {
+    padding: 1rem;
+}
+
+.action_table-table {
+    margin-top: 1rem;
+}

@@ -13,9 +13,9 @@ const ManufacturingQualityInspectionSchema = new Schema({
         ref: "ManufacturingCommand"
     },
     workOrder: {
-        type: Schema.Types.ObjectId,
+        type: Number,
     },
-    type: { // Loại kiểm tra, 1: Công đoạn, 2: Thành phẩm
+    type: { // Loại kiểm tra, 1: Công đoạn || 2: Thành phẩm
         type: Number,
         required: true
     },
@@ -44,7 +44,7 @@ const ManufacturingQualityInspectionSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "ManufacturingQualityError"
         }],
-        final: { // Kết quả kiểm tra, 1: Đạt, 2: Không đạt
+        final: { // Kết quả kiểm tra, 1: Đạt || 2: Không đạt
             type: Number,
             required: true
         }

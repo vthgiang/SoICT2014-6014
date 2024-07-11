@@ -167,6 +167,8 @@ module.exports = {
     ManufacturingQualityError: require('./production/manufacturing/manufacturingQualityError.model'),
     ManufacturingQualityCriteria: require('./production/manufacturing/manufacturingQualityCriteria.model'),
     ManufacturingQualityInspection: require('./production/manufacturing/manufacturingQualityInspection.model'),
+    ManufacturingMetric: require('./production/manufacturing/manufacturingMetric.model'),
+    
     ManufacturingRouting: require('./production/manufacturing/manufacturingRouting.model'),
     // transport
     TransportRequirement: require('./production/transport/transportRequirement.model'),

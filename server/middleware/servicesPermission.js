@@ -1405,6 +1405,10 @@ exports.links = [
         apis: ['@all'],
     },
     {
+        url: '/detail-analysis-manufacturing-performance',
+        apis: ['@all'],
+    },
+    {
         url: '/manage-manufacturing-works',
         apis: ['@all'],
     },
