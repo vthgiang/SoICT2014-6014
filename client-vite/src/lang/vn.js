@@ -1,5 +1,3 @@
-import { Dashboard } from "@mui/icons-material";
-
 export default {
   locale: 'vn',
   messages: {
