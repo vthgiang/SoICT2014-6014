@@ -182,7 +182,7 @@ function ProjectStatisticPage(props) {
     const employeesData = employeesManager?.listAllEmployees
     
     let listEmployeeIsWorking = []
-    if (projectData && projectInProcess && projectInProcess?.length) {
+    if (projectData && projectData?.length && projectInProcess && projectInProcess?.length) {
       for (let i = 0; i < projectInProcess?.length; i++) {
         let projectInProcessItem = projectInProcess[i]
         const usersInProject = projectInProcessItem?.usersInProject.map((item) => item?.employeeId) ?? []
@@ -194,17 +194,17 @@ function ProjectStatisticPage(props) {
           })
         }
       }
+      const totalEmp = employeesData?.length
+      const numberOfIsWorking = listEmployeeIsWorking?.length
+      const numberOfReadyToAssign = totalEmp - numberOfIsWorking
+     
+      setEmployeeStatistic({
+        total: totalEmp,
+        numberOfIsWorking: numberOfIsWorking,
+        numberOfReadyToAssign: numberOfReadyToAssign
+      })
     }
 
-    const totalEmp = employeesData?.length
-    const numberOfIsWorking = listEmployeeIsWorking?.length
-    const numberOfReadyToAssign = totalEmp - numberOfIsWorking
-   
-    setEmployeeStatistic({
-      total: totalEmp,
-      numberOfIsWorking: numberOfIsWorking,
-      numberOfReadyToAssign: numberOfReadyToAssign
-    })
     // set asset statistic
     const assetData = assetsManager?.listAssets
     let assetReadyToUse, assetLost, assetInUse, assetBroken, assetDisposed = []
