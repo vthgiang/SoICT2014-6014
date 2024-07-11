@@ -60,7 +60,6 @@ const ManufacturingPerformance = (props) => {
     const newListKpis = monitoredKpis.concat(
       manufacturingMetric.listKpis.filter((item1) => !monitoredKpis.some((item2) => item2._id === item1._id))
     )
-
     setEditMode(false)
 
     props.editManufacturingKpis({ listKpis: newListKpis })
@@ -89,10 +88,10 @@ const ManufacturingPerformance = (props) => {
     <div className='performance-dashboard' style={{ minHeight: '450px' }}>
       <DashboardHeader onToggleSidebar={handleToggleSidebar} onChangePeriod={handleChangePeriod} onSave={handleSave} editMode={editMode} />
       <KpiCreateForm />
-      {monitoredKpis.length === 0 ? (
-        <div className='no-data-pannel'>Không có dữ liệu</div>
-      ) : (
-        <div className='chart-container'>
+      <div className='chart-container'>
+        {monitoredKpis.length == 0 ? (
+          <div className='no-data-pannel'>Không có dữ liệu</div>
+        ) : (
           <div className={`chart-grid ${editMode ? 'editMode' : ''}`}>
             <ResponsiveGridLayout
               className='layout'
@@ -108,33 +107,31 @@ const ManufacturingPerformance = (props) => {
               draggableCancel='.cancelSelectorName'
               onLayoutChange={handleLayoutChange}
             >
-              {monitoredKpis
-                .filter((kpi) => kpi.dataGrid !== null)
-                .map((metric) => {
-                  const Widget = widgetList[metric.widget]
-                  return (
-                    <div key={metric.dataGrid['i']} className={`item ${editMode ? 'resizable' : ''}`} data-grid={metric.dataGrid}>
-                      <Widget
-                        key={metric.dataGrid['i']}
-                        title={metric.displayName ? metric.displayName : metric.name}
-                        values={metric.values}
-                        unit={metric.unit}
-                        target={metric.target}
-                        trend={metric.trend}
-                        customize={metric.customize}
-                        labels={metric.labels ? metric.labels : []}
-                        editMode={editMode}
-                        onDelete={() => handleDeleteMonitoredKpi(metric._id)}
-                        onRedirectToDetail={() => handleRedirectToDetail(metric._id)}
-                      />
-                    </div>
-                  )
-                })}
+              {monitoredKpis.map((metric) => {
+                const Widget = widgetList[metric.widget]
+                return (
+                  <div key={metric.dataGrid['i']} className={`item ${editMode ? 'resizable' : ''}`} data-grid={metric.dataGrid}>
+                    <Widget
+                      key={metric.dataGrid['i']}
+                      title={metric.displayName ? metric.displayName : metric.name}
+                      values={metric.values}
+                      unit={metric.unit}
+                      target={metric.target}
+                      trend={metric.trend}
+                      customize={metric.customize}
+                      labels={metric.labels ? metric.labels : []}
+                      editMode={editMode}
+                      onDelete={() => handleDeleteMonitoredKpi(metric._id)}
+                      onRedirectToDetail={() => handleRedirectToDetail(metric._id)}
+                    />
+                  </div>
+                )
+              })}
             </ResponsiveGridLayout>
           </div>
-          {editMode && <DashboardSidebar onAddMonitoredKpi={handleAddMonitoredKpi} listKpis={manufacturingMetric.listKpis} />}
-        </div>
-      )}
+        )}
+        {editMode && <DashboardSidebar onAddMonitoredKpi={handleAddMonitoredKpi} listKpis={manufacturingMetric.listKpis} />}
+      </div>
     </div>
   )
 }

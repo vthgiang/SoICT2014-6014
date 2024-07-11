@@ -199,8 +199,6 @@ const createTaskFromPlan = async (id, portal) => {
                     wo.qualityControlTasks.push(newTasks.task._id)
                 }
             }))
-
-            await wo.save()
         }))
 
         await manufacturingCommand.save()
@@ -394,7 +392,7 @@ exports.createAutomaticSchedule = async (data, portal) => {
         workers
     };
     
-    const res = await axios.post('http://localhost:8080/api/dxclan/production_schedule', {
+    const res = await axios.post(`${process.env.PYTHON_URL_SERVER}/api/dxclan/production_schedule`, {
         commands: allCommands,
         workers
     })
@@ -740,20 +738,19 @@ exports.editManufacturingPlan = async (id, data, portal) => {
     if (data.approvers) {
         let index = findIndexOfApprover(oldPlan.approvers, data.approvers.approver);
         if (index !== -1) {
-            // oldPlan.approvers[index].approvedTime = new Date(Date.now());
+            oldPlan.approvers[index].approvedTime = new Date(Date.now());
         }
-        // if (checkApproved(oldPlan)) {
-
+        if (checkApproved(oldPlan)) {
             let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal)).find({
                 manufacturingPlan: oldPlan._id
             });
             await createTaskFromPlan(oldPlan._id, portal); // Tạo công việc từ kế hoạch cho từng công đoạn SX
-            // oldPlan.status = 2; // Đã duyệt
+            oldPlan.status = 2; // Đã duyệt
             manufacturingCommands.map(x => {
                 x.status = 1;
                 x.save();
             })
-        // }
+        }
     } else {
         oldPlan.approvers = oldPlan.approvers;
     }

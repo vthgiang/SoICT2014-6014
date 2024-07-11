@@ -79,7 +79,7 @@ const ReasonChart = (props) => {
 
 			</div>
 			{values.length === 0 ? (
-				<div className='text-center'>{translate('general.no_data')}</div>
+				<div className='text-center' style={{ fontSize: "16px" }}>{translate('general.no_data')}</div>
 			) : (
 				<Pie data={data} options={options} />
 			)}

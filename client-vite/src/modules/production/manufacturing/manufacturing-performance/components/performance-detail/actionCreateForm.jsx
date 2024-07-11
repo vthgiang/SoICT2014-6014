@@ -94,7 +94,7 @@ const ActionCreateForm = (props) => {
             milestones // milestones
         }
 
-        onKpiChange({ actions: [...actions, newAction] })
+        onKpiChange({ action: newAction })
     }
 
     useEffect(() => {
@@ -149,24 +149,6 @@ const ActionCreateForm = (props) => {
                     <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
                         <div className='form-group'>
                             <label>
-                                {translate('manufacturing.performance.responsibles')}
-                                <span className='text-red'>*</span>
-                            </label>
-                            <SelectBox
-                                id='select-responsibles'
-                                className='form-control select'
-                                style={{ width: '100%' }}
-                                items={getEmployeeArray()}
-                                disabled={false}
-                                onChange={(value) => handleActionSelectChange('responsibles', value)}
-                                value={action.responsibles}
-                                multiple={true}
-                            />
-                        </div>
-                    </div>
-                    <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
-                        <div className='form-group'>
-                            <label>
                                 {translate('manufacturing.performance.target')}
                                 <span className='text-red'>*</span>
                             </label>
@@ -202,12 +184,30 @@ const ActionCreateForm = (props) => {
                             </label>
                             <DatePicker
                                 id={`action_end_date`}
-                                value={action.startDate}
-                                onChange={(value) => handleActionSelectChange('startDate', value)}
+                                value={action.endDate}
+                                onChange={(value) => handleActionSelectChange('endDate', value)}
                                 disabled={false}
                             />
                         </div>
 
+                    </div>
+                    <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
+                        <div className='form-group'>
+                            <label>
+                                {translate('manufacturing.performance.responsibles')}
+                                <span className='text-red'>*</span>
+                            </label>
+                            <SelectBox
+                                id='select-responsibles'
+                                className='form-control select'
+                                style={{ width: '100%' }}
+                                items={getEmployeeArray()}
+                                disabled={false}
+                                onChange={(value) => handleActionSelectChange('responsibles', value)}
+                                value={action.responsibles}
+                                multiple={true}
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className='form-group'>
@@ -221,7 +221,6 @@ const ActionCreateForm = (props) => {
                                 <th>{translate('manufacturing.performance.time')}</th>
                                 <th style={{ width: '40px' }} className='text-center'>
                                     <a
-                                        href='#add-threshold'
                                         className='text-green'
                                         onClick={handleAddMileStone}
                                     >

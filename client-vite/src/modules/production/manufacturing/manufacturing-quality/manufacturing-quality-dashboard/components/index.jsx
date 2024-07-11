@@ -51,7 +51,7 @@ const ManufacturingQualityDashboard = (props) => {
           </span>
           <div className='info-box-content' title={translate('manufacturing.quality.dashboard.passed_num')}>
             <span className='info-box-text'>{translate('manufacturing.quality.dashboard.passed_num')}</span>
-            <span className='info-box-number'>45</span>
+            <span className='info-box-number'>450</span>
             <a href='#' target='_blank'>
               {translate('manufacturing.dashboard.see_more')} <i className='fa fa-arrow-circle-right'></i>
             </a>
@@ -65,7 +65,7 @@ const ManufacturingQualityDashboard = (props) => {
           </span>
           <div className='info-box-content' title={translate('manufacturing.quality.dashboard.error_num')}>
             <span className='info-box-text'>{translate('manufacturing.quality.dashboard.error_num')}</span>
-            <span className='info-box-number'>5</span>
+            <span className='info-box-number'>27</span>
             <a href='#' target='_blank'>
               {translate('manufacturing.dashboard.see_more')} <i className='fa fa-arrow-circle-right'></i>
             </a>

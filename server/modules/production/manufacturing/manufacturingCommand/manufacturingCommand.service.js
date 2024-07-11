@@ -351,6 +351,9 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                 }, {
                     path: "workOrders.tasks.machine",
                     select: "code assetName"
+                }, {
+                    path: "workOrders.tasks.task",
+                    select: "progress"
                 }],
                 sort: {
                     "updatedAt": "desc"
