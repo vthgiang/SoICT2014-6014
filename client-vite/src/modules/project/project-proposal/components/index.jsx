@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { Loading, SelectBox, ToolTip, TreeTable } from "../../../../common-components";
+import { DialogModal, Loading, SelectBox, ToolTip, TreeTable } from "../../../../common-components";
 import { ProjectActions } from "../../projects/redux/actions";
 import { proposalAlgorithmItems, scheduleOptions } from "../consts"; 
 import { getStorage } from "../../../../config";
@@ -17,6 +17,8 @@ import { PROJECT_ACTION_FORM } from "../../projects/constants";
 import { KPIEmployees } from "./kpiEmployees";
 import AlgorithmModal from "./algorithmModal";
 import { useLocation } from 'react-router-dom';
+import './timelineStyle.css'
+import Swal from "sweetalert2";
 
 
 function ProjectProposalPage(props) {
@@ -55,6 +57,7 @@ function ProjectProposalPage(props) {
   const [isShowPreviewProject, setIsShowPreviewProject] = useState(false)
   const [scheduleType, setScheduleType] = useState(scheduleOptions[0]?.value)
   const [isShowShedule, setIsShowSchedule] = useState(false)
+  const [isSuccessAssign, setIsSuccessAssign] = useState(false)
 
   const {
     page, 
@@ -64,6 +67,7 @@ function ProjectProposalPage(props) {
 
   const {
     isLoading, 
+    isAssignProposalLoading,
     projectProposalData
   } = projectProposal
 
@@ -98,11 +102,7 @@ function ProjectProposalPage(props) {
     { name: 'Tài sản', key: 'assets' },
   ]
 
-  const location = useLocation()
-
-
-  console.log("algorithmParams: ", algorithmParams)
-  
+  const location = useLocation()  
 
   const handleChangeCurrentProject = (e) => {
     setState(prevState => ({
@@ -130,6 +130,14 @@ function ProjectProposalPage(props) {
     setIsShowSchedule(false)
     setIsShowPrevProposal(false)
     setScheduleType(scheduleOptions[0]?.value)
+  }
+
+  const handleAfterCreateProject = () => {
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
+    setState({
+      ...state,
+      currentProject: projectData && projectData?.length ? projectData?.find((item) => item?._id === id) : {}
+    })
   }
 
   useEffect(() => {
@@ -160,7 +168,44 @@ function ProjectProposalPage(props) {
     }
   }, [isLoading, projectProposalData]);
 
-  const convertAssignmentToTableData = (assignments) => {
+  const convertAssignmentToTableData = (proposals) => {
+    let proposalAssignments = proposals?.assignment
+    let taskInDuplicate = proposals?.taskInDuplicate
+    let assignments = proposalAssignments
+    if (taskInDuplicate && taskInDuplicate?.length) {
+      assignments = proposalAssignments.filter((assignmentItem) => !taskInDuplicate.includes(assignmentItem?.task?._id))
+    }
+    let data = []
+    if (assignments && assignments?.length > 0) {
+      for(let i = 0; i < assignments?.length; i++) {
+        let dataItem = assignments[i]
+        data[i] = {
+          rawData: dataItem,
+          code: dataItem?.task?.code,
+          name: dataItem?.task?.name,
+          preceedingTasks: dataItem?.task?.preceedingTasks && 
+            dataItem?.task?.preceedingTasks?.length > 0 ? (
+              <ToolTip dataTooltip={dataItem?.task?.preceedingTasks?.map((item) => item?.link)}/> 
+            ) : null,
+          startDate: dayjs(dataItem?.task?.startDate).format('HH:mm A DD/MM/YYYY') || [],
+          endDate: dayjs(dataItem?.task?.endDate).format('HH:mm A DD/MM/YYYY') || [],
+          assignee: dataItem?.assignee?.fullName,
+          assets: dataItem?.assets?.length > 0 ? (
+            <ToolTip dataTooltip={dataItem?.assets.map((item) => item?.assetName)}/> 
+          ) : null
+        }
+      }
+    }
+    return data
+  }
+
+  const convertAssignmentToTableDataWithDuplicateAssign = (proposals) => {
+    let proposalAssignments = proposals?.assignment
+    let taskInDuplicate = proposals?.taskInDuplicate
+    let assignments = []
+    if (taskInDuplicate && taskInDuplicate?.length) {
+      assignments = proposalAssignments.filter((assignmentItem) => taskInDuplicate.includes(assignmentItem?.task?._id))
+    }
     let data = []
     if (assignments && assignments?.length > 0) {
       for(let i = 0; i < assignments?.length; i++) {
@@ -303,290 +348,457 @@ function ProjectProposalPage(props) {
   };
 
   const openModal = (algorithm) => {
-    console.log("vao day")
     window.$(`#modal-params-${algorithm}`).modal('show')
+  }
+
+  const [stepState, setStepState] = useState({
+    steps: [
+      {
+        label: 'Phân bổ nguồn lực',
+        active: true
+      },
+      {
+        label: 'Tạo lập công việc và phân công',
+        active: false
+      },
+    ],
+    currentStep: 0
+  })
+  
+  const { steps, currentStep } = stepState
+
+  const handleGoToStep = (index, e = undefined) => {
+    if (e) e.preventDefault()
+    if (index === 0) {
+      setStepState({
+        ...stepState,
+        currentStep: index,
+        steps: steps.map((oldStepItem, oldStepIndex) => {
+          return {
+            ...oldStepItem,
+            active: oldStepIndex === index ? true : false
+          }
+        })
+      })
+    } else {
+      if (!currentProject?._id || !proposals || !proposals?.assignment) {
+        return
+      }
+      setStepState({
+        ...stepState,
+        currentStep: index,
+        steps: steps.map((oldStepItem, oldStepIndex) => {
+          return {
+            ...oldStepItem,
+            active: oldStepIndex === index ? true : oldStepItem.active
+          }
+        })
+      })
+    }
+  }
+
+  
+  const handleCreateTasksAndAssign = () => {
+    Swal.fire({
+      title: `Bạn có chắc chắn tạo công việc và phân công cho dự án "${currentProject.name}"?`,
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: props.translate('general.no'),
+      confirmButtonText: props.translate('general.yes')
+    }).then((result) => {
+      if (result.value) {
+        props.assignForProjectFromProposal(currentProject?._id)
+        setIsSuccessAssign(true)
+      }
+    })
   }
 
   return (
     <React.Fragment>
+      <div className='timeline'>
+          <div className='timeline-progress' style={{ width: `${Number((currentStep * 100) / (steps.length - 1))}%` }}></div>
+          <div className='timeline-items'>
+            {steps.map((item, index) => (
+              <div
+                className={`timeline-item ${item.active ? 'active' : ''}`}
+                key={index} onClick={(e) => handleGoToStep(index, e)}
+                disabled={index === 1 && !currentProject?._id || !proposals || !proposals?.assignment}
+              >
+                <div className='timeline-contain'>{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       <div className="box">
         <div className="box-body qlcv h-full">
-          <form className="flex flex-wrap py-2 gap-x-10 gap-y-8">
-            {/* <div> */}
-              <div className="min-w-[300px]">
-                <label>
-                  {'Chọn dự án'}
-                  <span className='text-red'>*</span>
-                </label>
-                <SelectBox
-                  id={`proposal-project-id`}
-                  className='form-control select'
-                  style={{ width: '100%' }}
-                  items={projectOptions}
-                  options={{
-                    placeholder: "--- Chọn dự án ---"
-                  }}
-                  value={currentProject?._id}
-                  onChange={handleChangeCurrentProject}
-                />
-              </div>
-              <div className="min-w-[300px]">
-                <label>
-                  {'Chiến lược phân bổ'}
-                  <span className='text-red'>*</span>
-                  <span>
-                    <a 
-                      className="inline-block cursor-pointer ml-2" 
-                      onClick={() => openModal(algorithm)}
-                      aria-haspopup="true"
-                      aria-expanded="true"
-                    > Xem thông tin và cấu hình tham số
-                    </a>
-                  </span>
-                </label>
-                <SelectBox
-                  id={`proposal-project-algorithm-id`}
-                  className='form-control select'
-                  style={{ width: '100%' }}
-                  items={proposalAlgorithmItems}
-                  options={{
-                    placeholder: "--- Chọn chiến lược ---"
-                  }}
-                  value={algorithm}
-                  onChange={handleChangeAlgorithm}
-                />
-              </div>
-            <div className="flex items-end">
-              <button
-                type='button'
-                className='btn btn-success dropdown-toggle pull-right'
-                onClick={handleProposalForProject}
-                data-toggle='dropdown'
-                aria-expanded='true'
-                title={"Phân bổ"}
-                disabled={!isValidateSubmit()}
-              >
-                {"Phân bổ"}
-              </button>
-            </div>
-            {/* </div> */}
-          </form>
-          <div>
-            {currentProject && currentProject?._id && (
+          {
+            currentStep === 0 ? (
               <div>
-                <a 
-                  className="inline-block mt-8 cursor-pointer ml-2" 
-                  onClick={() => setIsShowPreviewProject((prev) => !prev)}
-                  aria-haspopup="true"
-                  aria-expanded="true"
-                >
-                  <div className="flex items-center">
-                    <span>{isShowPreviewProject ? 'Ẩn thông tin dự án' : 'Xem thông tin dự án'}</span>
-                    {isShowPreviewProject ? (
-                      <svg
-                        className="-mr-1 ml-2 h-5 w-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5.293 12.707a1 1 0 001.414 0L10 9.414l3.293 3.293a1 1 0 001.414-1.414l-4-4a1 1 0 00-1.414 0l-4 4a1 1 0 000 1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="-mr-1 ml-2 h-5 w-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                </a> 
-                {isShowPreviewProject && 
-                  <div>
-                    <ProjectCreateEditForm 
-                      actionType={PROJECT_ACTION_FORM.EDIT}
-                      projectEdit={currentProject}
-                      projectEditId={currentProject?._id}
-                      submitFunction={props.editProjectDispatch}
+                <form className="flex flex-wrap py-2 gap-x-10 gap-y-8">
+                  {/* <div> */}
+                    <div className="min-w-[300px]">
+                      <label>
+                        {'Chọn dự án'}
+                        <span className='text-red'>*</span>
+                      </label>
+                      <SelectBox
+                        id={`proposal-project-id`}
+                        className='form-control select'
+                        style={{ width: '100%' }}
+                        items={projectOptions}
+                        options={{
+                          placeholder: "--- Chọn dự án ---"
+                        }}
+                        value={currentProject?._id}
+                        onChange={handleChangeCurrentProject}
                       />
+                    </div>
+                    <div className="min-w-[300px]">
+                      <label>
+                        {'Chiến lược phân bổ'}
+                        <span className='text-red'>*</span>
+                        <span>
+                          <a 
+                            className="inline-block cursor-pointer ml-2" 
+                            onClick={() => openModal(algorithm)}
+                            aria-haspopup="true"
+                            aria-expanded="true"
+                          > Xem thông tin và cấu hình tham số
+                          </a>
+                        </span>
+                      </label>
+                      <SelectBox
+                        id={`proposal-project-algorithm-id`}
+                        className='form-control select'
+                        style={{ width: '100%' }}
+                        items={proposalAlgorithmItems}
+                        options={{
+                          placeholder: "--- Chọn chiến lược ---"
+                        }}
+                        value={algorithm}
+                        onChange={handleChangeAlgorithm}
+                      />
+                    </div>
+                  <div className="flex items-end">
+                    <button
+                      type='button'
+                      className='btn btn-success dropdown-toggle pull-right'
+                      onClick={handleProposalForProject}
+                      data-toggle='dropdown'
+                      aria-expanded='true'
+                      title={(currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval') ? "Đã phân công, không thể thực hiện phân bổ nữa" : "Phân bổ"}
+                      disabled={!isValidateSubmit() || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval')}
+                    >
+                      {"Phân bổ"}
+                    </button>
                   </div>
+                  {/* </div> */}
+                </form>
+                <div>
+                  {currentProject && currentProject?._id && (
+                    <div>
+                      <a 
+                        className="inline-block mt-8 cursor-pointer ml-2" 
+                        onClick={() => setIsShowPreviewProject((prev) => !prev)}
+                        aria-haspopup="true"
+                        aria-expanded="true"
+                      >
+                        <div className="flex items-center">
+                          <span>{isShowPreviewProject ? 'Ẩn thông tin dự án' : 'Xem thông tin dự án'}</span>
+                          {isShowPreviewProject ? (
+                            <svg
+                              className="-mr-1 ml-2 h-5 w-5"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M5.293 12.707a1 1 0 001.414 0L10 9.414l3.293 3.293a1 1 0 001.414-1.414l-4-4a1 1 0 00-1.414 0l-4 4a1 1 0 000 1.414z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              className="-mr-1 ml-2 h-5 w-5"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                      </a> 
+                      {isShowPreviewProject && 
+                        <div>
+                          <ProjectCreateEditForm 
+                            actionType={PROJECT_ACTION_FORM.EDIT}
+                            projectEdit={currentProject}
+                            projectEditId={currentProject?._id}
+                            submitFunction={props.editProjectDispatch}
+                            handleAfterCreateProject={handleAfterCreateProject}
+                          />
+                        </div>
+                      }
+                      <AlgorithmModal algorithm={algorithm} algorithmParams={algorithmParams} setAlgorithmParams={setAlgorithmParams} />
+                    </div>
+                  )}
+                
+                </div>
+                {proposals && proposals?.assignment?.length && 
+                  <a 
+                    className="inline-block mt-8 cursor-pointer ml-2" 
+                    onClick={() => setIsShowPrevProposal((prev) => !prev)}
+                    aria-haspopup="true"
+                    aria-expanded="true"
+                  >
+                    <div className="flex items-center">
+                      <span>{isShowPrevProposal ? 'Ẩn thông tin phân bổ' : 'Xem thông tin phân bổ'}</span>
+                      {isShowPrevProposal ? (
+                        <svg
+                          className="-mr-1 ml-2 h-5 w-5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.293 12.707a1 1 0 001.414 0L10 9.414l3.293 3.293a1 1 0 001.414-1.414l-4-4a1 1 0 00-1.414 0l-4 4a1 1 0 000 1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="-mr-1 ml-2 h-5 w-5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </a> 
                 }
-                <AlgorithmModal algorithm={algorithm} algorithmParams={algorithmParams} setAlgorithmParams={setAlgorithmParams} />
-              </div>
-            )}
-          
-          </div>
-          {!isLoading && proposals && proposals?.assignment?.length && 
-            <a 
-              className="inline-block mt-8 cursor-pointer ml-2" 
-              onClick={() => setIsShowPrevProposal((prev) => !prev)}
-              aria-haspopup="true"
-              aria-expanded="true"
-            >
-              <div className="flex items-center">
-                <span>{isShowPrevProposal ? 'Ẩn thông tin phân bổ' : 'Xem thông tin phân bổ'}</span>
-                {isShowPrevProposal ? (
-                  <svg
-                    className="-mr-1 ml-2 h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.293 12.707a1 1 0 001.414 0L10 9.414l3.293 3.293a1 1 0 001.414-1.414l-4-4a1 1 0 00-1.414 0l-4 4a1 1 0 000 1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="-mr-1 ml-2 h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                {isLoading && (
+                  <div className="min-height-96 flex justify-center mt-8">
+                    <span className="pr-2">Đang thực hiện phân bổ ...</span>
+                    <div className="mt-[1.5px]">
+                      <Loading />
+                    </div>
+                  </div>
+                )}
+                {!isLoading && isShowPrevProposal && proposals && proposals?.assignment && proposals?.assignment?.length && (
+                  <div className="mt-8">
+                    {/* <div>
+                      {currentProject?.proposals?.distanceWithKPIEmployeesTarget}
+                    </div> */}
+                    <div className="box">
+                      <div className="box-body">
+                        <label className="text-3xl">
+                          Thông tin phân bổ nguồn lực dự án
+                        </label>
+      
+                      {/* {currentProject && !currentProject?.proposals && <>Chưa có thông tin phân bổ</>}
+                      {currentProject && currentProject?.proposals && currentProject?.proposals?.assignment && <>Đã có thông tin phân bổ</>} */}
+                        <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
+                          <TreeTable
+                            behaviour='show-children'
+                            tableId={`table-proposal-project-${currentProject?._id}`}
+                            column={column}
+                            actions={false}
+                            data={convertAssignmentToTableData(proposals)}
+                          />
+                        </div>
+                        {proposals && proposals?.assignment && proposals?.assignment?.length > 0 && proposals?.taskInDuplicate && proposals?.taskInDuplicate?.length > 0 && (
+                          <div className='pt-10'>
+                            <div className='font-bold text-2xl'>Thông tin các công việc cần ủy nhiệm</div>
+                            <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
+                              <TreeTable
+                                behaviour='show-children'
+                                tableId={`table-proposal-duplicate-project-${currentProject?._id}`}
+                                column={column}
+                                actions={false}
+                                data={convertAssignmentToTableDataWithDuplicateAssign(proposals)}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+      
+                    <div className="box">
+                      <div className="box-body mt-10">
+                        <label className="text-3xl">Kết quả phân bổ</label>
+                        <div className="w-full flex flex-wrap">
+                          <div className="w-full lg:w-[35%]">
+                            {/* Nội dung bổ sung tại đây */}
+                            <div className="p-8">
+                              <div>
+                                <label className="text-blue-600">Tên dự án: </label>
+                                <span> {currentProject?.name}</span>
+                              </div>
+      
+                              <div>
+                                <label className="text-blue-600">Thời gian bắt đầu: </label>
+                                <span>{` ${dayjs(currentProject?.startDate).format('HH:mm A DD/MM/YYYY')}`}</span>
+                              </div>
+      
+                              <div>
+                                <label className="text-blue-600">Thời gian kết thúc (Theo phân bổ): </label>
+                                <span>{` ${dayjs(getLastestEndTime(proposals?.assignment)).format('HH:mm A DD/MM/YYYY')}`}</span>
+                              </div>
+      
+                              <div>
+                                <label className="text-blue-600">Chi phí dự tính: </label>
+                                <span>{` ${currentProject?.unitCost === 'VND' ? formatCurrencyVND(proposals?.totalCost) : formatCurrencyUSD(proposals?.totalCost)}`}</span>
+                              </div>
+      
+                              <div>
+                                <label className="text-blue-600">Số chỉ tiêu KPI đạt: </label>
+                                <span className="text-green-600">{` ${getNumberOfKpiWillReachTarget(currentProject?.kpiTarget, proposals?.kpiAssignment)}`}</span>
+                                <span>/</span>
+                                <span className="text-red-500">{`${currentProject?.kpiTarget?.length}`}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="w-full lg:w-[65%] bg-gray-100 content-box">
+                            <KpiBarChart kpiTarget={currentProject?.kpiTarget} kpiAssignment={proposals?.kpiAssignment} />
+                          </div>
+                        </div>
+                        <div className="text-center py-4 font-semibold">KPI cho nhân viên</div>
+                        <div className="flex justify-center">
+                          <KPIEmployees data={converDataKPIOfEmployees(currentProject, proposals?.kpiOfEmployees)} />
+                        </div>
+                      </div>
+                    </div>
+      
+                    <div className="box">
+                      <div className="box-body mt-10">
+                        <label className="text-3xl">Lịch thực hiện</label>
+                        <button
+                          type='button'
+                          className='btn btn-success dropdown-toggle mx-6'
+                          onClick={() => setIsShowSchedule(true)}
+                          data-toggle='dropdown'
+                          aria-expanded='true'
+                          title={"Lập lịch thực hiện công việc"}
+                          disabled={isLoading || !proposals || !isShowPrevProposal}
+                          // disabled={!isValidateSubmit()}
+                        >
+                          {"Lập lịch thực hiện công việc"}
+                        </button>
+      
+                        
+                        {isShowShedule && proposals?.assignment && (
+                          <>
+                            <div className="flex w-full justify-between mt-8">
+                              <SelectBox 
+                                id={`schedule-project-${scheduleType}-${currentProject?._id}`}
+                                items={scheduleOptions}
+                                style={{ padding: 20 }}
+                                value={scheduleType}
+                                onChange={(e) => setScheduleType(e[0])}
+                              />
+                            </div>
+                            {
+                              renderSchedule(scheduleType, proposals)
+                            }
+                          </>
+                        )
+                        }
+                      </div>
+                    </div>
+      
+                  </div>
                 )}
               </div>
-            </a> 
-          }
-          {isLoading && (
-            <div className="min-height-96 flex justify-center mt-8">
-              <span className="pr-2">Đang thực hiện phân bổ ...</span>
-              <div className="mt-[1.5px]">
-                <Loading />
-              </div>
-            </div>
-          )}
-          { !isLoading && isShowPrevProposal && proposals && proposals?.assignment && proposals?.assignment?.length && (
-            <div className="mt-8">
-              {/* <div>
-                {currentProject?.proposals?.distanceWithKPIEmployeesTarget}
-              </div> */}
-              <div className="box">
-                <div className="box-body">
-                  <label className="text-3xl">
-                    Thông tin phân bổ nguồn lực dự án
-                  </label>
-
-                {/* {currentProject && !currentProject?.proposals && <>Chưa có thông tin phân bổ</>}
-                {currentProject && currentProject?.proposals && currentProject?.proposals?.assignment && <>Đã có thông tin phân bổ</>} */}
-                  <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
-                    <TreeTable
-                      behaviour='show-children'
-                      tableId={`table-proposal-project-${currentProject?._id}`}
-                      column={column}
-                      actions={false}
-                      data={convertAssignmentToTableData(proposals?.assignment)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="box">
-                <div className="box-body mt-10">
-                  <label className="text-3xl">Kết quả phân bổ</label>
-                  <div className="w-full flex flex-wrap">
-                    <div className="w-full lg:w-[35%]">
-                      {/* Nội dung bổ sung tại đây */}
-                      <div className="p-8">
-                        <div>
-                          <label className="text-blue-600">Tên dự án: </label>
-                          <span> {currentProject?.name}</span>
+            ) : (
+              <div>
+                {proposals && proposals?.assignment && proposals?.assignment?.length && (
+                  <div className="mt-8">
+                    <div className="py-3">
+                      <button
+                        type='button'
+                        className='btn btn-success'
+                        onClick={handleCreateTasksAndAssign}
+                        data-toggle='dropdown'
+                        aria-expanded='true'
+                        title={"Tạo lập công việc và phân công"}
+                        disabled={isSuccessAssign || isLoading || !proposals || !proposals?.assignment || !proposals?.assignment?.length || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval')}
+                      >
+                        {"Tạo lập công việc và phân công"}
+                      </button>
+                      
+                      {(isSuccessAssign || (currentProject?.status !== 'proposal' && currentProject?.status !== 'wait_for_approval')) &&
+                        <div class="italic p-2">
+                          Đã thực hiện phân công 
+                          <span class="text-green-500">✔</span>
                         </div>
-
-                        <div>
-                          <label className="text-blue-600">Thời gian bắt đầu: </label>
-                          <span>{` ${dayjs(currentProject?.startDate).format('HH:mm A DD/MM/YYYY')}`}</span>
-                        </div>
-
-                        <div>
-                          <label className="text-blue-600">Thời gian kết thúc (Theo phân bổ): </label>
-                          <span>{` ${dayjs(getLastestEndTime(proposals?.assignment)).format('HH:mm A DD/MM/YYYY')}`}</span>
-                        </div>
-
-                        <div>
-                          <label className="text-blue-600">Chi phí dự tính: </label>
-                          <span>{` ${currentProject?.unitCost === 'VND' ? formatCurrencyVND(proposals?.totalCost) : formatCurrencyUSD(proposals?.totalCost)}`}</span>
-                        </div>
-
-                        <div>
-                          <label className="text-blue-600">Số chỉ tiêu KPI đạt: </label>
-                          <span className="text-green-600">{` ${getNumberOfKpiWillReachTarget(currentProject?.kpiTarget, proposals?.kpiAssignment)}`}</span>
-                          <span>/</span>
-                          <span className="text-red-500">{`${currentProject?.kpiTarget?.length}`}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-[65%] bg-gray-100 content-box">
-                      <KpiBarChart kpiTarget={currentProject?.kpiTarget} kpiAssignment={proposals?.kpiAssignment} />
-                    </div>
-                  </div>
-                  <div className="text-center py-4 font-semibold">KPI cho nhân viên</div>
-                  <div className="flex justify-center">
-                    <KPIEmployees data={converDataKPIOfEmployees(currentProject, proposals?.kpiOfEmployees)} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="box">
-                <div className="box-body mt-10">
-                  <label className="text-3xl">Lịch thực hiện</label>
-                  <button
-                    type='button'
-                    className='btn btn-success dropdown-toggle mx-6'
-                    onClick={() => setIsShowSchedule(true)}
-                    data-toggle='dropdown'
-                    aria-expanded='true'
-                    title={"Lập lịch thực hiện công việc"}
-                    disabled={isLoading || !proposals || !isShowPrevProposal}
-                    // disabled={!isValidateSubmit()}
-                  >
-                    {"Lập lịch thực hiện công việc"}
-                  </button>
-
-                  
-                  {isShowShedule && proposals?.assignment && (
-                    <>
-                      <div className="flex w-full justify-between mt-8">
-                        <SelectBox 
-                          id={`schedule-project-${scheduleType}-${currentProject?._id}`}
-                          items={scheduleOptions}
-                          style={{ padding: 20 }}
-                          value={scheduleType}
-                          onChange={(e) => setScheduleType(e[0])}
-                        />
-                      </div>
-                      {
-                        renderSchedule(scheduleType, proposals)
                       }
-                    </>
-                  )
-                  }
-                </div>
+                      {isAssignProposalLoading &&
+                        <div className="min-height-96 flex justify-center mt-8">
+                          <span className="pr-2">Đang thực hiện phân công ...</span>
+                          <div className="mt-[1.5px]">
+                            <Loading />
+                          </div>
+                        </div> 
+                      }
+                    </div>
+                    
+                    <div className="box">
+                      <div className="box-body">
+                        <label className="text-3xl">
+                          Thông tin phân bổ nguồn lực dự án
+                        </label>
+      
+                      {/* {currentProject && !currentProject?.proposals && <>Chưa có thông tin phân bổ</>}
+                      {currentProject && currentProject?.proposals && currentProject?.proposals?.assignment && <>Đã có thông tin phân bổ</>} */}
+                        <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
+                          <TreeTable
+                            behaviour='show-children'
+                            tableId={`table-proposal-assign-project-${currentProject?._id}`}
+                            column={column}
+                            actions={false}
+                            data={convertAssignmentToTableData(proposals)}
+                          />
+                        </div>
+                        {proposals && proposals?.assignment && proposals?.assignment?.length > 0 && proposals?.taskInDuplicate && proposals?.taskInDuplicate?.length > 0 && (
+                          <div className='pt-10'>
+                            <div className='font-bold text-2xl'>Thông tin các công việc cần ủy nhiệm</div>
+                            <div className='qlcv StyleScrollDiv StyleScrollDiv-y mt-4' style={{ maxHeight: '500px' }}>
+                              <TreeTable
+                                behaviour='show-children'
+                                tableId={`table-proposal-assign-duplicate-project-${currentProject?._id}`}
+                                column={column}
+                                actions={false}
+                                data={convertAssignmentToTableDataWithDuplicateAssign(proposals)}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-
-            </div>
-          )}
+            )
+          }
         </div>
       </div>
     </React.Fragment>
@@ -602,6 +814,7 @@ const actions = {
   getProjectsDispatch: ProjectActions.getProjectsDispatch,
   proposalForProjectDispatch: ProjectProposalActions.proposalForProjectDispatch,
   editProjectDispatch: ProjectActions.editProjectDispatch,
+  assignForProjectFromProposal: ProjectProposalActions.assignProjectFromProposalDataDispatch
 }
 
 export default connect(mapState, actions)(withTranslate(ProjectProposalPage))

@@ -62,6 +62,7 @@ import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
 import MarketingEffeciveChannelTable from './MarketingEffeciveChannelTable';
 import MarketingCampaignDetail from './CampaignDetail';
+import { ImportForm } from './ImportForm';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
@@ -118,7 +119,7 @@ const LayoutDefault = [{ i: 'cost', x: 0, y: 0, w: 6, h: 3, minH: 3, minW: 6 },
 { i: 'CPC', x: 0, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
 { i: 'transaction', x: 6, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
 { i: 'revenue', x: 12, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
-{ i: 'ROIM', x: 18, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
+{ i: 'ROMI', x: 18, y: 3, w: 6, h: 3, minH: 3, minW: 6 },
 { i: 'h', x: 0, y: 6, w: 15, h: 7, minW: 2, maxW: 24 },
 { i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 },
 { i: 'm', x: 0, y: 13, w: 6, h: 6, minW: 2, maxW: 24 }
@@ -134,7 +135,11 @@ const MarketingDashboardComponent = (props) => {
   const handleCloseDetail = () => setOpenDetail(false)
   const [doughnutCurrentListKeyTarget, setDoughnutCurrentListKeyTarget] = useState()
   const [editMarketing, setEditMarketing] = React.useState({});
-  const [content, setContent] = React.useState('');
+  const [contentInfoPopover, setContentInfoPopover] = React.useState({
+    define: "",
+    description: "",
+    unit: ""
+  });
 
 
   const optionsBar = {
@@ -145,7 +150,7 @@ const MarketingDashboardComponent = (props) => {
       },
       title: {
         display: true,
-        text: 'COSTS & REVENUE',
+        text: 'Chi phí & Doanh thu',
         font: {
           size: 18,
           weight: 'bold'
@@ -157,23 +162,62 @@ const MarketingDashboardComponent = (props) => {
 
   const convertDataBar = (data) => {
     const channels = data.length > 0 && data.map(item => item._id);
+    const trans = data.length > 0 && data.map(item => item.totalTransaction);
+    const color = (index) => {
+      return index % 2 === 0 ? "#d62728" : "#1f77b4"
+    }
+
+    const transData =
+    {
+      label: 'Giao dịch',
+      data: trans,
+      backgroundColor: color(barChart.findIndex((el) => el === 'transactions'))
+    }
+
     const costs = data.length > 0 && data.map(item => item.totalCost);
+    const costsData =
+    {
+      label: 'Chi phí',
+      data: costs,
+      backgroundColor: color(barChart.findIndex((el) => el === 'costs'))
+    }
+
+    const clicks = data.length > 0 && data.map(item => item.totalClick);
+    const clicksData =
+    {
+      label: 'Lượt nhấp chuột',
+      data: clicks,
+      backgroundColor: color(barChart.findIndex((el) => el === "clicks"))
+    }
+
     const revenue = data.length > 0 && data.map(item => item.totalRevenue);
+    const revenueData =
+    {
+      label: 'Doanh thu',
+      data: revenue,
+      backgroundColor: color(barChart.findIndex((el) => el === 'revenue'))
+    }
+
+    const impressions = data.length > 0 && data.map(item => item.totalImpression);
+    const impressionsData =
+    {
+      label: 'Hiển thị',
+      data: impressions,
+      backgroundColor: color(barChart.findIndex((el) => el === 'impressions'))
+    }
+
+    const datasets = [];
+    const listBarSet = new Set(barChart);
+
+    listBarSet.has("costs") && datasets.push(costsData);
+    listBarSet.has("transactions") && datasets.push(transData);
+    listBarSet.has("clicks") && datasets.push(clicksData);
+    listBarSet.has("revenue") && datasets.push(revenueData);
+    listBarSet.has("impressions") && datasets.push(impressionsData);
 
     return {
       labels: channels,
-      datasets: [
-        {
-          label: 'Costs',
-          data: costs,
-          backgroundColor: '#d62728'
-        },
-        {
-          label: 'Revenue',
-          data: revenue,
-          backgroundColor: '#1f77b4'
-        }
-      ]
+      datasets: datasets
     }
   }
   const convertDataChannelTrans = (data) => {
@@ -183,7 +227,7 @@ const MarketingDashboardComponent = (props) => {
     const trans = data.length > 0 && data.map(item => item.totalTransaction);
     const transData =
     {
-      label: '% of Transactions',
+      label: '% tổng Giao dịch',
       data: trans,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -193,7 +237,7 @@ const MarketingDashboardComponent = (props) => {
     const costs = data.length > 0 && data.map(item => item.totalCost);
     const costsData =
     {
-      label: '% of Costs',
+      label: '% tổng Chi phí',
       data: costs,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -203,7 +247,7 @@ const MarketingDashboardComponent = (props) => {
     const clicks = data.length > 0 && data.map(item => item.totalClick);
     const clicksData =
     {
-      label: '% of Clicks',
+      label: '% tổng Lượt nhấp chuột',
       data: clicks,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -213,7 +257,7 @@ const MarketingDashboardComponent = (props) => {
     const revenue = data.length > 0 && data.map(item => item.totalRevenue);
     const revenueData =
     {
-      label: '% of Revenue',
+      label: '% tổng Doanh thu',
       data: revenue,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -223,7 +267,7 @@ const MarketingDashboardComponent = (props) => {
     const impressions = data.length > 0 && data.map(item => item.totalImpression);
     const impressionsData =
     {
-      label: '% of Impressions',
+      label: '% tổng số Hiển thị',
       data: impressions,
       backgroundColor: ['#1f77b4', '#d62728', '#28a745'],
       borderColor: ['#0d47a1', '#d50000', '#558b2f'],
@@ -261,6 +305,7 @@ const MarketingDashboardComponent = (props) => {
   const [anchorElMenuChild, setAnchorElMenuChild] = React.useState(null);
   const [anchorElMenuAddChart, setAnchorElMenuAddChart] = React.useState(null);
   const [anchorElMenuDoughnut, setAnchorElMenuDoughnut] = React.useState(null);
+  const [anchorElMenuBar, setAnchorElMenuBar] = useState(null)
 
   const [optionsMenuChild, setOptionsMenuChild] = React.useState([]);
   const [listCard, setListCard] = React.useState([]);
@@ -270,10 +315,12 @@ const MarketingDashboardComponent = (props) => {
   const [sessionCard, setSessionCard] = React.useState(null);
   const [CPCCard, setCPCCard] = React.useState(null);
   const [revenuesCard, setRevenuesCard] = React.useState(null);
-  const [ROIMCard, setROIMCard] = React.useState(null);
+  const [ROMICard, setROMICard] = React.useState(null);
   const [transactionCard, setTransactionCard] = React.useState(null);
   const [currentMenuCardTargetId, setCurrentMenuCardTargetId] = React.useState();
   const [showTable, setShowTable] = useState();
+  const [barChart, setBarChart] = useState([]);
+
   const getTableId = 'table-manage-example1-hooks';
   const defaultConfig = { limit: 5 }
   const getLimit = getTableConfiguration(getTableId, defaultConfig).limit
@@ -283,12 +330,21 @@ const MarketingDashboardComponent = (props) => {
     perPage: getLimit,
     tableId: getTableId
   })
+  const [stateTableData, setStateTableData] = useState({
+    id: 'import_file_example',
+    importData: undefined,
+    rowError: [],
+    configData: undefined,
+    checkFileImport: undefined
+  });
+  const { importData, rowError, configData, checkFileImport, id } = stateTableData
   const { exampleName, page, perPage, currentRow, curentRowDetail, tableId } = state
   const openPopover = Boolean(anchorElPopover);
   const openMenuCard = Boolean(anchorElMenuCard);
   const openMenuChild = Boolean(anchorElMenuChild);
   const openMenuAddChart = Boolean(anchorElMenuAddChart);
   const openMenuDoughnut = Boolean(anchorElMenuDoughnut);
+  const openMenuBar = Boolean(anchorElMenuBar)
   const idPopoverTarget = openPopover ? 'simple-popover' : undefined;
 
   const deleteCard = (key) => {
@@ -310,6 +366,13 @@ const MarketingDashboardComponent = (props) => {
     setShowTable(false);
     localStorage.setItem("showTable", false);
   }
+
+  const deleteBar = () => {
+    setBarChart([]);
+    localStorage.setItem("barChart", JSON.stringify([]));
+    setAnchorElMenuBar(null)
+  }
+
   const optionsMenuCard = [
     {
       title: 'Action',
@@ -330,14 +393,14 @@ const MarketingDashboardComponent = (props) => {
     {
       title: "Dữ liệu đơn",
       child: [
-        { title: 'Cost', onClick: () => addCard(costCard) },
-        { title: 'Click', onClick: () => addCard(clickCard) },
-        { title: 'Impression', onClick: () => addCard(impressionCard) },
-        { title: 'Session', onClick: () => addCard(sessionCard) },
-        { title: 'CPC', onClick: () => addCard(CPCCard) },
-        { title: 'Transaction', onClick: () => addCard(transactionCard) },
-        { title: 'Revenues', onClick: () => addCard(revenuesCard) },
-        { title: 'ROIM', onClick: () => addCard(ROIMCard) },
+        { title: 'Chi phí ', onClick: () => addCard(costCard) },
+        { title: ' Lượt nhấp chuột', onClick: () => addCard(clickCard) },
+        { title: 'Hiển thị ', onClick: () => addCard(impressionCard) },
+        { title: 'Phiên ', onClick: () => addCard(sessionCard) },
+        { title: 'CPC ', onClick: () => addCard(CPCCard) },
+        { title: 'Giao dịch', onClick: () => addCard(transactionCard) },
+        { title: 'Doanh thu', onClick: () => addCard(revenuesCard) },
+        { title: 'ROMI', onClick: () => addCard(ROMICard) },
       ],
     },
     {
@@ -347,6 +410,10 @@ const MarketingDashboardComponent = (props) => {
     {
       title: "Dữ liệu dạng biểu đồ tròn",
       onClick: () => addDoughnut()
+    },
+    {
+      title: "Dữ liệu dạng biểu đồ cột",
+      onClick: () => addBarChart()
     }
   ]
 
@@ -356,23 +423,23 @@ const MarketingDashboardComponent = (props) => {
       title: "Chuyển giá trị",
       child: [
         {
-          title: 'Costs',
+          title: 'Chi phí',
           onClick: () => changeDoughnutCurrent(["costs"])
         },
         {
-          title: 'Clicks',
+          title: 'Lượt nhấp chuột ',
           onClick: () => changeDoughnutCurrent(["clicks"])
         },
         {
-          title: 'Impressions',
+          title: ' Hiển thị',
           onClick: () => changeDoughnutCurrent(["impressions"])
         },
         {
-          title: 'Transactions',
+          title: 'Giao dịch',
           onClick: () => changeDoughnutCurrent(["transactions"])
         },
         {
-          title: 'Revenue',
+          title: 'Doanh thu',
           onClick: () => changeDoughnutCurrent(["revenue"])
         },
       ]
@@ -381,6 +448,65 @@ const MarketingDashboardComponent = (props) => {
       title: 'Xoá',
       child: [],
       onClick: () => deleteDoughnut()
+    }
+  ]
+
+  const optionsMenuBarChart = [
+
+    {
+      title: "Chuyển giá trị 1",
+      child: [
+        {
+          title: 'Chi phí ',
+          onClick: () => changeBarChartValue("costs", 0)
+        },
+        {
+          title: 'Lượt nhấp chuột',
+          onClick: () => changeBarChartValue("clicks", 0)
+        },
+        {
+          title: 'Hiển thị',
+          onClick: () => changeBarChartValue("impressions", 0)
+        },
+        {
+          title: 'Giao dịch',
+          onClick: () => changeBarChartValue("transactions", 0)
+        },
+        {
+          title: 'Doanh thu',
+          onClick: () => changeBarChartValue("revenue", 0)
+        },
+      ]
+    },
+    {
+      title: "Chuyển giá trị 2",
+      child: [
+        {
+          title: 'Chi phí',
+          onClick: () => changeBarChartValue("costs", 1)
+        },
+        {
+          title: 'Lượt nhấp chuột',
+          onClick: () => changeBarChartValue("clicks", 1)
+        },
+        {
+          title: 'Hiển thị',
+          onClick: () => changeBarChartValue("impressions", 1)
+        },
+        {
+          title: 'Giao dịch',
+          onClick: () => changeBarChartValue("transactions", 1)
+        },
+        {
+          title: 'Doanh thu ',
+          onClick: () => changeBarChartValue("revenue", 1)
+        },
+      ]
+    },
+    {
+      title: 'Xoá',
+      child: [],
+      onClick: () => deleteBar()
     }
   ]
 
@@ -571,7 +697,7 @@ const MarketingDashboardComponent = (props) => {
   React.useEffect(() => {
     const costCard = {
       key: "cost",
-      title: "Cost",
+      title: "Chi phí",
       image: <AttachMoneyIcon
         sx={{
           height: '56px',
@@ -581,11 +707,16 @@ const MarketingDashboardComponent = (props) => {
       />,
       percentChangeTotal: percentChange?.totalCost,
       marketingEffectiveTotal: marketingEffective?.totalCost,
-      layout: layout.find((value) => value.i === "cost")
+      layout: layout.find((value) => value.i === "cost"),
+      info: {
+        define: "Costs - Tổng số tiền mà doanh nghiệp chi trả cho các hoạt động quảng cáo và tiếp thị.",
+        description: "Bao gồm tất cả các chi phí liên quan đến việc chạy các chiến dịch quảng cáo, bao gồm cả chi phí cho các nền tảng quảng cáo, thiết kế quảng cáo, phí quản lý, v.v.",
+        unit: "Đơn vị tiền tệ VND - Việt Nam đồng"
+      }
     }
     const clickCard = {
       key: "click",
-      title: "Clicks",
+      title: "Lượt nhấp chuột",
       image: <AdsClickIcon
         sx={{
           height: '56px',
@@ -595,11 +726,16 @@ const MarketingDashboardComponent = (props) => {
       />,
       percentChangeTotal: percentChange?.totalClick,
       marketingEffectiveTotal: marketingEffective?.totalClick,
-      layout: layout.find((value) => value.i === "click")
+      layout: layout.find((value) => value.i === "click"),
+      info: {
+        define: "Clicks - Số lần người dùng nhấp chuột vào quảng cáo.",
+        description: " Đo lường sự quan tâm và tương tác của người dùng với quảng cáo. Lượt nhấp chuột thường dẫn người dùng đến trang đích hoặc trang web cụ thể.",
+        unit: "Lượt (clicks)"
+      }
     }
     const impressionCard = {
       key: "impression",
-      title: "Impressions",
+      title: "Hiển thị",
       image: <VisibilityIcon
         sx={{
           height: '56px',
@@ -609,11 +745,16 @@ const MarketingDashboardComponent = (props) => {
       />,
       percentChangeTotal: percentChange?.totalImpression,
       marketingEffectiveTotal: marketingEffective?.totalImpression,
-      layout: layout.find((value) => value.i === "impression")
+      layout: layout.find((value) => value.i === "impression"),
+      info: {
+        define: "Impressions - Số lần quảng cáo được hiển thị cho người dùng.",
+        description: "Mỗi lần một quảng cáo xuất hiện trên màn hình của người dùng, đó được tính là một lần hiển thị. Chỉ số này đo lường mức độ phủ sóng của quảng cáo.",
+        unit: "Lượt (impressions)"
+      }
     }
     const sessionCard = {
       key: "session",
-      title: "Sessions",
+      title: "Phiên ",
       image: <WebAssetIcon
         sx={{
           height: '56px',
@@ -623,7 +764,12 @@ const MarketingDashboardComponent = (props) => {
       />,
       percentChangeTotal: percentChange?.totalSession,
       marketingEffectiveTotal: marketingEffective?.totalSession,
-      layout: layout.find((value) => value.i === "session")
+      layout: layout.find((value) => value.i === "session"),
+      info: {
+        define: "Sessions - Một phiên là một chuỗi các tương tác của người dùng với trang web hoặc ứng dụng trong một khoảng thời gian nhất định.",
+        description: "Một phiên bắt đầu khi người dùng truy cập vào trang web và kết thúc khi người dùng rời khỏi trang web hoặc sau một khoảng thời gian không hoạt động nhất định (thường là 30 phút). Mỗi phiên có thể bao gồm nhiều lượt xem trang, sự kiện, tương tác xã hội, và giao dịch.",
+        unit: "Phiên (sessions)"
+      }
     }
     const CPCCard = {
       key: "CPC",
@@ -638,11 +784,16 @@ const MarketingDashboardComponent = (props) => {
       percentChangeTotal: percentChange?.totalCPC,
       marketingEffectiveTotal: (marketingEffective?.totalCost && marketingEffective?.totalClick) ?
         marketingEffective?.totalCost / marketingEffective?.totalClick : 0,
-      layout: layout.find((value) => value.i === "CPC")
+      layout: layout.find((value) => value.i === "CPC"),
+      info: {
+        define: "CPC (Cost Per Click) - Chi phí trung bình mà doanh nghiệp phải trả cho mỗi lần người dùng nhấp chuột vào quảng cáo.",
+        description: "Chỉ số này giúp doanh nghiệp hiểu rõ hơn về hiệu quả chi phí của các chiến dịch quảng cáo.",
+        unit: "Đơn vị tiền tệ trên mỗi nhấp chuột VND/click"
+      }
     }
     const transactionCard = {
       key: "transaction",
-      title: "Transactions",
+      title: "Giao dịch",
       image: <AttachMoneyIcon
         sx={{
           height: '56px',
@@ -652,11 +803,16 @@ const MarketingDashboardComponent = (props) => {
       />,
       percentChangeTotal: percentChange?.totalTransaction,
       marketingEffectiveTotal: marketingEffective?.totalTransaction,
-      layout: layout.find((value) => value.i === "transaction")
+      layout: layout.find((value) => value.i === "transaction"),
+      info: {
+        define: "Transactions - Số lượng giao dịch hoàn tất mà khách hàng thực hiện sau khi nhấp vào quảng cáo.",
+        description: "Bao gồm các hành động mua hàng, đăng ký dịch vụ, hoặc bất kỳ hành động nào khác mà doanh nghiệp xác định là một giao dịch.",
+        unit: "Lượt (transactions)"
+      }
     }
     const revenueCard = {
       key: "revenue",
-      title: "Revenues",
+      title: "Doanh thu",
       image: <LocalAtmIcon
         sx={{
           height: '56px',
@@ -666,11 +822,16 @@ const MarketingDashboardComponent = (props) => {
       />,
       percentChangeTotal: percentChange?.totalRevenue,
       marketingEffectiveTotal: marketingEffective?.totalRevenue,
-      layout: layout.find((value) => value.i === "revenue")
+      layout: layout.find((value) => value.i === "revenue"),
+      info: {
+        define: "Revenues - Tổng số tiền mà doanh nghiệp kiếm được từ các giao dịch.",
+        description: "Doanh thu từ các sản phẩm hoặc dịch vụ bán ra, bao gồm cả các khoản thu nhập khác liên quan đến hoạt động quảng cáo.",
+        unit: "Đơn vị tiền tệ VND"
+      }
     }
-    const ROIMCard = {
-      key: "ROIM",
-      title: "ROIM",
+    const ROMICard = {
+      key: "ROMI",
+      title: "ROMI",
       image: <PercentIcon
         sx={{
           height: '56px',
@@ -680,7 +841,12 @@ const MarketingDashboardComponent = (props) => {
       />,
       percentChangeTotal: percentChange?.totalRoim,
       marketingEffectiveTotal: (marketingEffective.totalRevenue && marketingEffective.totalCost) ? marketingEffective.totalRevenue / marketingEffective.totalCost * 100 : 0,
-      layout: layout.find((value) => value.i === "ROIM")
+      layout: layout.find((value) => value.i === "ROMI"),
+      info: {
+        define: "ROMI (Return on Marketing Investment) - Tỷ lệ giữa doanh thu được từ các chiến dịch tiếp thị so với chi phí bỏ ra cho các chiến dịch đó.",
+        description: "Chỉ số này giúp đo lường hiệu quả của các khoản đầu tư vào tiếp thị, cho biết mỗi đơn vị tiền tệ chi cho tiếp thị mang lại bao nhiêu đơn vị tiền tệ lợi nhuận.",
+        unit: "Tỷ lệ phần trăm (%)"
+      }
     }
     const listCard = [
       costCard,
@@ -690,7 +856,7 @@ const MarketingDashboardComponent = (props) => {
       CPCCard,
       transactionCard,
       revenueCard,
-      ROIMCard
+      ROMICard
     ]
     setCostCard(costCard);
     setCPCCard(CPCCard);
@@ -699,7 +865,7 @@ const MarketingDashboardComponent = (props) => {
     setSessionCard(sessionCard);
     setTransactionCard(transactionCard);
     setRevenuesCard(revenueCard);
-    setROIMCard(ROIMCard);
+    setROMICard(ROMICard);
     const listCardCurrent = JSON.parse(localStorage.getItem("listCard"))
     if (listCardCurrent) {
       const listCardKeySet = new Set(listCardCurrent);
@@ -722,10 +888,19 @@ const MarketingDashboardComponent = (props) => {
     }
     const showTableLocalStr = localStorage.getItem("showTable");
     const showTableLocalJson = showTableLocalStr ? JSON.parse(showTableLocalStr) : null;
-    if (typeof showTableLocalJson) setShowTable(showTableLocalJson);
+    if (typeof showTableLocalJson === "boolean") setShowTable(showTableLocalJson);
     else {
       setShowTable(true);
       localStorage.setItem("showTable", true)
+    }
+
+    const barChartLocal = localStorage.getItem("barChart") ? JSON.parse(localStorage.getItem("barChart")) : null;
+    if (barChartLocal) {
+      setBarChart(barChartLocal)
+    } else {
+      const defaultBarChart = ["costs", "revenue"];
+      localStorage.setItem("barChart", JSON.stringify(defaultBarChart))
+      setBarChart(defaultBarChart)
     }
 
   }, [isLoading])
@@ -758,7 +933,8 @@ const MarketingDashboardComponent = (props) => {
     setLayout(e)
   }
 
-  const handleClickOpenPopover = (event) => {
+  const handleClickOpenPopover = (event, info) => {
+    setContentInfoPopover(info);
     setAnchorElPopover(event.currentTarget);
   };
 
@@ -778,6 +954,10 @@ const MarketingDashboardComponent = (props) => {
     setAnchorElMenuDoughnut(null)
   }
 
+  const handleCloseMenuBar = () => {
+    setAnchorElMenuBar(null)
+  }
+
   const handleCloseMenuChild = () => {
     setAnchorElMenuChild(null)
   }
@@ -792,6 +972,11 @@ const MarketingDashboardComponent = (props) => {
     setAnchorElMenuCard(elementCurrentTarget);
   }
 
+  const handleClickOpenMenuBar = (event) => {
+    const elementCurrentTarget = event.currentTarget;
+    setAnchorElMenuBar(elementCurrentTarget);
+  }
+
   const handleClickOpenMenuDoughnut = (event) => {
     const elementCurrentTarget = event.currentTarget;
     setAnchorElMenuDoughnut(elementCurrentTarget)
@@ -800,6 +985,10 @@ const MarketingDashboardComponent = (props) => {
   const handleOpenMenuChild = (event, options) => {
     setOptionsMenuChild(options)
     setAnchorElMenuChild(event.currentTarget)
+  }
+
+  const handleClickAddDataButton = () => {
+    window.$('#modal-import-file-hooks').modal('show')
   }
 
   const addCard = (card) => {
@@ -871,11 +1060,52 @@ const MarketingDashboardComponent = (props) => {
     })
   }
 
+  const addBarChart = () => {
+    if (barChart.length !== 0) {
+      toast.error(
+        <ServerResponseAlert
+          type='error'
+          title={'general.error'}
+          content={['Dữ liệu dạng biểu đồ cột đã tồn tại ở dashboard, hãy kiểm tra lại.']}
+        />,
+        { containerId: 'toast-notification' }
+      )
+      return;
+    }
+    const defaultBarChart = ["costs", "revenue"]
+    setBarChart(defaultBarChart);
+    localStorage.setItem("barChart", JSON.stringify(defaultBarChart));
+    toast.success(<ServerResponseAlert type='success' title='general.success' content={['Thêm thành công']} />, {
+      containerId: 'toast-notification'
+    })
+  }
+
   const changeDoughnutCurrent = (listKey) => {
     setDoughnutCurrentListKeyTarget(listKey)
     setAnchorElMenuDoughnut(null)
     setAnchorElMenuChild(null)
     localStorage.setItem("doughnut", JSON.stringify(listKey))
+  }
+
+  const changeBarChartValue = (key, index) => {
+    const barChartSet = new Set(barChart)
+    if (barChartSet.has(key)) {
+      toast.error(
+        <ServerResponseAlert
+          type='error'
+          title={'general.error'}
+          content={['Giá trị này bạn đã chọn rồi, hãy chọn giá trị khác.']}
+        />,
+        { containerId: 'toast-notification' }
+      )
+      return
+    }
+
+    const newBarChart = index % 2 === 0 ? [key, barChart.pop()] : [barChart.shift(), key];
+    setBarChart(newBarChart);
+    setAnchorElMenuBar(null);
+    setAnchorElMenuChild(null);
+    localStorage.setItem("barChart", JSON.stringify(newBarChart))
   }
 
   return (
@@ -902,8 +1132,11 @@ const MarketingDashboardComponent = (props) => {
             className='date-picker'
           />
         </div>
-
-        <button type="button" class="btn btn-success" onClick={handleClickOpenMenuAddCard}>Thêm thống kê</button>
+        <div>
+          <button type="button" class="btn btn-success" onClick={handleClickOpenMenuAddCard}>Thêm thống kê</button>
+          <button style={{ marginLeft: "10px" }} type="button" class="btn btn-success" onClick={handleClickAddDataButton}>Thêm dữ liệu</button>
+          <ImportForm page={page} perPage={perPage} setStateTableData={setStateTableData} />
+        </div>
         <Menu
           id="long-menu"
           MenuListProps={{
@@ -938,9 +1171,27 @@ const MarketingDashboardComponent = (props) => {
           vertical: 'bottom',
           horizontal: 'left',
         }}
+        slotProps={
+          {
+            paper: {
+              sx: { width: "20vw" }
+            }
+          }
+
+        }
       >
-        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
-      </Popover>
+        <Typography sx={{ p: 1 }}>
+          <div>
+            <b>Định nghĩa: </b>{contentInfoPopover.define}
+          </div>
+          <div>
+            <b>Mô tả: </b>{contentInfoPopover.description}
+          </div>
+          <div>
+            <b>Đơn vị: </b>{contentInfoPopover.unit}
+          </div>
+        </Typography>
+      </Popover >
       <Menu
         id="long-menu"
         MenuListProps={{
@@ -999,7 +1250,7 @@ const MarketingDashboardComponent = (props) => {
                 <div className='item-icon'>
                   {/*Info icon */}
                   <div className='item-icon-info'>
-                    <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={handleClickOpenPopover} />
+                    <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={(event) => handleClickOpenPopover(event, card.info)} />
                   </div>
                 </div>
                 {/*Liệt kê các button trong thẻ item-action */}
@@ -1047,7 +1298,13 @@ const MarketingDashboardComponent = (props) => {
             <div className='item-icon'>
               {/*Info icon */}
               <div className='item-icon-info'>
-                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={handleClickOpenPopover} />
+                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }}
+                  onClick={(event) => handleClickOpenPopover(event,
+                    {
+                      define: "Bảng",
+                      description: "Bảng",
+                      unit: "Bảng"
+                    })} />
               </div>
             </div>
             {/*Liệt kê các button trong thẻ item-action */}
@@ -1071,34 +1328,65 @@ const MarketingDashboardComponent = (props) => {
           </div>
         }
 
-        <div key={'k'} className='item' data-grid={{ i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 }} >
-          <div className='item-icon'>
-            {/*Info icon */}
-            <div className='item-icon-info'>
-              <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={handleClickOpenPopover} />
+        {
+          barChart?.length !== 0 && <div key={'k'} className='item' data-grid={{ i: 'k', x: 15, y: 6, w: 9, h: 7, minW: 2, maxW: 24 }} >
+            <div className='item-icon'>
+              {/*Info icon */}
+              <div className='item-icon-info'>
+                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={(event) => handleClickOpenPopover(event,
+                  {
+                    define: "cột",
+                    description: "cột",
+                    unit: "cột"
+                  })} />
+              </div>
+            </div>
+            {/*Liệt kê các button trong thẻ item-action */}
+            <div className='item-action-menu'>
+              <Menu
+                id="long-menu"
+                MenuListProps={{
+                  'aria-labelledby': 'long-button',
+                }}
+                anchorEl={anchorElMenuBar}
+                open={openMenuBar}
+                onClose={handleCloseMenuBar}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                {optionsMenuBarChart.map((option) => (
+                  <MenuItem key={option.title}
+                    onClick={
+                      (event) =>
+                        option.child?.length > 0 ? handleOpenMenuChild(event, option.child) : option.onClick()
+                    }
+                  >
+                    {option.title}
+                  </MenuItem>
+                ))}
+              </Menu>
+              <IconButton
+                aria-label="more"
+                id={`k`}
+                aria-controls={openMenuBar ? 'long-menu' : undefined}
+                aria-expanded={openMenuBar ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleClickOpenMenuBar}
+                key={'k'}
+              >
+                {/* <MoreVertIcon /> */}
+                <MoreHorizIcon />
+              </IconButton>
+            </div>
+            <div className='item-content react-grid-dragHandleExample'>
+              {!isLoadingMarketingChanel ?
+                <Bar options={optionsBar} data={convertDataBar(marketingEffectiveChannel)} /> : <Loading />
+              }
             </div>
           </div>
-          {/*Liệt kê các button trong thẻ item-action */}
-          <div className='item-action-menu'>
-            <IconButton
-              aria-label="more"
-              id={`k`}
-              aria-controls={openMenuCard ? 'long-menu' : undefined}
-              aria-expanded={openMenuCard ? 'true' : undefined}
-              aria-haspopup="true"
-              onClick={handleClickOpenMenuCard}
-              key={'k'}
-            >
-              {/* <MoreVertIcon /> */}
-              <MoreHorizIcon />
-            </IconButton>
-          </div>
-          <div className='item-content react-grid-dragHandleExample'>
-            {!isLoadingMarketingChanel ?
-              <Bar options={optionsBar} data={convertDataBar(marketingEffectiveChannel)} /> : <Loading />
-            }
-          </div>
-        </div>
+        }
 
         {
           doughnutCurrentListKeyTarget?.length > 0 &&
@@ -1106,7 +1394,12 @@ const MarketingDashboardComponent = (props) => {
             <div className='item-icon'>
               {/*Info icon */}
               <div className='item-icon-info'>
-                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={handleClickOpenPopover} />
+                <InfoIcon style={{ fontSize: "20px", color: "#4a3e3e" }} onClick={(event) => handleClickOpenPopover(event,
+                  {
+                    define: "tròn",
+                    description: "tròn",
+                    unit: "tròn"
+                  })} />
               </div>
             </div>
             {/*Liệt kê các button trong thẻ item-action */}
@@ -1173,22 +1466,22 @@ const MarketingDashboardComponent = (props) => {
             marginRight: '10px'
           }}
         />
-        <div className='campaign-manage-top-campaign-label'> Top Campaigns</div>
+        <div className='campaign-manage-top-campaign-label'> Top chiến dịch</div>
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
             <TableRow sx={{ backgroundColor: '#asad' }}>
-              <StyledTableCell>Name </StyledTableCell>
+              <StyledTableCell>Tên </StyledTableCell>
               <StyledTableCell>
-                Costs
+                Chi phí
                 <ArrowDropDownIcon />
               </StyledTableCell>
-              <StyledTableCell>Clicks</StyledTableCell>
-              <StyledTableCell>Impressions</StyledTableCell>
-              <StyledTableCell>Transactions</StyledTableCell>
-              <StyledTableCell>Revenue</StyledTableCell>
-              <StyledTableCell>Action</StyledTableCell>
+              <StyledTableCell>Lượt nhấp chuột</StyledTableCell>
+              <StyledTableCell>Hiển thị</StyledTableCell>
+              <StyledTableCell>Giao dịch</StyledTableCell>
+              <StyledTableCell>Doanh thu</StyledTableCell>
+              <StyledTableCell>Hành động</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

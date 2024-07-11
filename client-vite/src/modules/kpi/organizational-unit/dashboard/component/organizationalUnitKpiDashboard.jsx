@@ -290,17 +290,19 @@ function OrganizationalUnitKpiDashboard(props) {
               <button type='button' className='btn btn-success' onClick={() => handleSearchData()}>
                 {translate('kpi.evaluation.dashboard.analyze')}
               </button>
-              <button
-                type='button'
-                className='btn btn-success'
-                // onClick={() => handleAllocationKpiUnitToEmployee()}
-                data-toggle='modal'
-                data-target='#allocation-each-unit-result'
-                data-backdrop='static'
-                data-keyboard='false'
-              >
-                Phân bổ KPI đơn vị cho từng cá nhân
-              </button>
+              {createKpiUnit?.currentKPI?.organizationalUnit?.parent !== null && (
+                <button
+                  type='button'
+                  className='btn btn-success'
+                  // onClick={() => handleAllocationKpiUnitToEmployee()}
+                  data-toggle='modal'
+                  data-target='#allocation-each-unit-result'
+                  data-backdrop='static'
+                  data-keyboard='false'
+                >
+                  Phân bổ KPI đơn vị cho từng cá nhân
+                </button>
+              )}
               {createKpiUnit.currentKPI?.status && state.employeeKpiSet?.length === 0 ? (
                 <span style={{ display: 'inline-flex' }}>
                   <span style={{ marginLeft: 5, cursor: 'pointer' }}>

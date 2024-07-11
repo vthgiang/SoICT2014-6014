@@ -10,7 +10,8 @@ const ManufacturingQualityErrorSchema = new Schema({
     },
     group: { //  Nhóm lôi
         type: String,
-        required: true
+        required: true,
+        enum: ["man", "machine", "material", "measurement", "method", "enviroment"]
     },
     name: { // Tên lỗi
         type: String,

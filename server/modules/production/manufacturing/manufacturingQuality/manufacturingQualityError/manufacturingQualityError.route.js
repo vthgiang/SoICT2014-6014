@@ -4,7 +4,8 @@ const ManufacturingQualityErrorController = require('./manufacturingQualityError
 const { auth } = require('../../../../../middleware');
 
 router.get('/', auth, ManufacturingQualityErrorController.getAllManufacturingQualityErrors);
+router.get('/errorNumByReporter', auth, ManufacturingQualityErrorController.getErrorNumByReporter);
+router.get('/errorNumByGroup', auth, ManufacturingQualityErrorController.getErrorNumByGroup);
 router.get('/:id', auth, ManufacturingQualityErrorController.getManufacturingQualityErrorById);
 
 module.exports = router;
-

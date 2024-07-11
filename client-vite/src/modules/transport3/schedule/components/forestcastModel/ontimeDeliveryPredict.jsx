@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { withTranslate } from 'react-redux-multilingual'
-import {formatDate} from '@helpers/formatDate'
-import {
-  DataTableSetting,
-  DeleteNotification,
-} from '@common-components'
+import { formatDate } from '@helpers/formatDate'
+import { DataTableSetting, DeleteNotification } from '@common-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { ScheduleActions } from '../../redux/actions'
 
@@ -16,7 +13,8 @@ function OntimeDeliveryPredict(props) {
     dispatch(ScheduleActions.getHyperparamter())
   }, [dispatch])
   const [state, setState] = useState({
-    tableId: TableId
+    tableId: TableId,
+    loading: false
   })
   const columns = [
     'STT',
@@ -25,15 +23,18 @@ function OntimeDeliveryPredict(props) {
     'max_depth',
     'min_child_weight',
     'reg_alpha',
-    'reg_lamda',
+    'reg_lambda',
     'Độ chính xác',
     'Thời gian cập nhật'
   ]
 
   const handleParameterTuning = async () => {
+    setState(prevState => ({ ...prevState, loading: true }));
     await dispatch(ScheduleActions.postHyperparameter());
-    dispatch(ScheduleActions.getHyperparamter());
+    await dispatch(ScheduleActions.getHyperparamter());
+    setState(prevState => ({ ...prevState, loading: false }));
   }
+
   return (
     <>
       <div className="box-body qlcv">
@@ -44,11 +45,13 @@ function OntimeDeliveryPredict(props) {
               className="btn btn-success"
               data-toggle="modal"
               onClick={handleParameterTuning}
+              disabled={state.loading}
             >
-              Cập nhật tham số mô hình
+              {state.loading ? 'Đang cập nhật...' : 'Cập nhật tham số mô hình'}
             </button>
           </div>
         </div>
+        {state.loading && <div>Loading...</div>}
         <table id={state.tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
           <thead>
             <tr>
@@ -70,72 +73,6 @@ function OntimeDeliveryPredict(props) {
             </tr>
           </thead>
           <tbody>
-            {/* <tr>
-              <td>1</td>
-              <td>0.01</td>
-              <td>200</td>
-              <td>6</td>
-              <td>50</td>
-              <td>1.0</td>
-              <td>1.0</td>
-              <td>0.91</td>
-              <td>29/06/2024</td>
-              <td>
-                <td style={{ textAlign: 'center' }}>
-                  <a onClick={() => handleShowDetailInfo()}><i
-                    className="material-icons">visibility</i></a>
-                  <a><i className="material-icons">edit</i></a>
-                  <DeleteNotification
-                    content={'Xác nhận xóa lịch trình?'}
-                  // func={handleDeleteVehicle}
-                  />
-                </td>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>0.1</td>
-              <td>100</td>
-              <td>5</td>
-              <td>100</td>
-              <td>1.0</td>
-              <td>1.0</td>
-              <td>0.90</td>
-              <td>29/06/2024</td>
-              <td>
-                <td style={{ textAlign: 'center' }}>
-                  <a onClick={() => handleShowDetailInfo()}><i
-                    className="material-icons">visibility</i></a>
-                  <a><i className="material-icons">edit</i></a>
-                  <DeleteNotification
-                    content={'Xác nhận xóa lịch trình?'}
-                  // func={handleDeleteVehicle}
-                  />
-                </td>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>0.1</td>
-              <td>100</td>
-              <td>4</td>
-              <td>200</td>
-              <td>1.0</td>
-              <td>0.8</td>
-              <td>0.91</td>
-              <td>29/06/2024</td>
-              <td>
-                <td style={{ textAlign: 'center' }}>
-                  <a onClick={() => handleShowDetailInfo()}><i
-                    className="material-icons">visibility</i></a>
-                  <a><i className="material-icons">edit</i></a>
-                  <DeleteNotification
-                    content={'Xác nhận xóa lịch trình?'}
-                  // func={handleDeleteVehicle}
-                  />
-                </td>
-              </td>
-            </tr> */}
             {T3schedules.hyperparameters && T3schedules.hyperparameters.length !== 0 ? T3schedules.hyperparameters.map((hyperparameter, index) => {
               return (
                 <tr key={index}>
@@ -150,8 +87,7 @@ function OntimeDeliveryPredict(props) {
                   <td>{formatDate(hyperparameter.createdAt)}</td>
                   <td>
                     <td style={{ textAlign: 'center' }}>
-                      <a onClick={() => handleShowDetailInfo()}><i
-                        className="material-icons">visibility</i></a>
+                      <a onClick={() => handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
                       <a><i className="material-icons">edit</i></a>
                       <DeleteNotification
                         content={'Xác nhận xóa lịch trình?'}

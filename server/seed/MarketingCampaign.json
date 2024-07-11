@@ -8,8 +8,8 @@
     {
         "code": "2",
         "cost": "939134",
-        "channel": "Google",
-        "name": "Google Ad Deals"
+        "channel": "Facebook",
+        "name": "Ad Deals"
     },
     {
         "code": "3",
@@ -32,7 +32,7 @@
     {
         "code": "6",
         "cost": "567284",
-        "channel": "TikTok",
+        "channel": "Facebook",
         "name": "TikTok Summer Deals"
     },
     {
@@ -50,8 +50,8 @@
     {
         "code": "9",
         "cost": "857481",
-        "channel": "TikTok",
-        "name": "Exclusive TikTok Offers"
+        "channel": "Google",
+        "name": "Exclusive Google Offers"
     },
     {
         "code": "10",
@@ -68,8 +68,8 @@
     {
         "code": "12",
         "cost": "764832",
-        "channel": "TikTok",
-        "name": "TikTok Mega Discounts"
+        "channel": "Google",
+        "name": "Google Mega Discounts"
     },
     {
         "code": "13",
@@ -86,8 +86,8 @@
     {
         "code": "15",
         "cost": "834502",
-        "channel": "TikTok",
-        "name": "TikTok Seasonal Bargains"
+        "channel": "Facebook",
+        "name": "Facebook Seasonal Bargains"
     },
     {
         "code": "16",
@@ -140,8 +140,8 @@
     {
         "code": "24",
         "cost": "936492",
-        "channel": "TikTok",
-        "name": "TikTok Special Discounts"
+        "channel": "Facebook",
+        "name": "Facebook Special Discounts"
     },
     {
         "code": "25",

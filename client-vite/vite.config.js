@@ -12,7 +12,8 @@ export default defineConfig(({ mode }) => {
       'process.env.REACT_APP_EXTERNAL_SYSTEM_PASSWORD': JSON.stringify(env.REACT_APP_EXTERNAL_SYSTEM_PASSWORD),
       'process.env.REACT_APP_EXTERNAL_SYSTEM_USERNAME': JSON.stringify(env.REACT_APP_EXTERNAL_SYSTEM_USERNAME),
       'process.env.REACT_APP_GOOGLE_MAP_API_KEY': JSON.stringify(env.REACT_APP_GOOGLE_MAP_API_KEY),
-      'process.env.REACT_APP_EXTERNAL_SYSTEM_URL': JSON.stringify(env.REACT_APP_EXTERNAL_SYSTEM_URL)
+      'process.env.REACT_APP_EXTERNAL_SYSTEM_URL': JSON.stringify(env.REACT_APP_EXTERNAL_SYSTEM_URL),
+      'process.env': env,
     },
     resolve: {
       alias: {

@@ -24,7 +24,7 @@ function a11yProps(index) {
   }
 }
 
-function AllocationResult({ listUnitKpi }) {
+function AllocationResult({ listUnitKpi, month }) {
   const [listUnitKpiTree, setListUnitKpiTree] = useState([])
   const [listTask, setListTask] = useState([])
   const [listResourceKpi, setListResource] = useState([])
@@ -171,7 +171,8 @@ function AllocationResult({ listUnitKpi }) {
     const param = {
       responseServerOutput: responseOutput,
       responseInput: payload,
-      listUnitKpi
+      listUnitKpi,
+      month
     }
     dispatch(ConfigParametersAction.handleAssignAllocation(param))
   }

@@ -78,13 +78,14 @@ exports.getAllForecasts = async (query, portal) => {
     salesOrders.forEach(order => {
         order.goods.forEach(item => {
             if (!item.good || !item.good._id) {
-                console.error(`Order item with missing 'good' reference.`);
+                console.error(`Order item with missing 'good' reference.`); 
                 return;
             }
             const goodId = item.good._id.toString();
             if (!totalForecasts[goodId]) {
                 totalForecasts[goodId] = {
                     goodId: goodId,
+                    goodCode: item.good.code,
                     goodName: item.good.name || 'Unknown',
                     totalCurrentMonth: 0,
                     totalForecastOrders: 0,
@@ -160,16 +161,57 @@ exports.getBottom5Products = async (query, portal) => {
 };
 
 exports.countSalesForecast = async (query, portal) => {
-    let result = await exports.getAllForecasts(query, portal);
-    let totalForecastsArray = result.totalForecasts;
+    const dbConnection = connect(DB_CONNECTION, portal);
 
-    let totalOneMonth = totalForecastsArray.reduce((sum, forecast) => sum + (forecast.totalForecastOrders || 0), 0);
-    let totalThreeMonth = totalForecastsArray.reduce((sum, forecast) => sum + (forecast.totalForecastThreeMonth || 0), 0);
-    let totalSixMonth = totalForecastsArray.reduce((sum, forecast) => sum + (forecast.totalForecastSixMonth || 0), 0);
+    let allForecasts = await SalesForecast(dbConnection)
+        .find(query)
+        .populate([
+            {
+                path: "good",
+                select: "code name pricePerBaseUnit" // Thêm pricePerBaseUnit vào truy vấn
+            }
+        ]);
+
+    let totalForecastsArray = allForecasts;
+    let result = await exports.getAllForecasts(query, portal);
+    let totalForecastsArray1 = result.totalForecasts;
+
+    let totalOneMonth = totalForecastsArray1.reduce((sum, forecast) => sum + (forecast.totalForecastOrders || 0), 0);
+    let totalThreeMonth = totalForecastsArray1.reduce((sum, forecast) => sum + (forecast.totalForecastThreeMonth || 0), 0);
+    let totalSixMonth = totalForecastsArray1.reduce((sum, forecast) => sum + (forecast.totalForecastSixMonth || 0), 0);
+
+    let totalAmountOneMonth = totalForecastsArray.reduce((sum, forecast) => {
+        let quantity = forecast.forecastOrders || 0;
+        let pricePerBaseUnit = forecast.good?.pricePerBaseUnit || 0;
+        return sum + (quantity * pricePerBaseUnit);
+    }, 0);
+
+    let totalAmountThreeMonth = totalForecastsArray.reduce((sum, forecast) => {
+        let quantity = forecast.forecastThreeMonth || 0;
+        let pricePerBaseUnit = forecast.good?.pricePerBaseUnit || 0;
+        return sum + (quantity * pricePerBaseUnit);
+    }, 0);
+
+    let totalAmountSixMonth = totalForecastsArray.reduce((sum, forecast) => {
+        let quantity = forecast.forecastSixMonth || 0;
+        let pricePerBaseUnit = forecast.good?.pricePerBaseUnit || 0;
+        return sum + (quantity * pricePerBaseUnit);
+    }, 0);
+
+    // Tính tỷ lệ phần trăm hoàn thành
+    let completionRateOneMonth = totalOneMonth > 0 ? (totalForecastsArray1.reduce((sum, forecast) => sum + (forecast.totalCurrentMonth || 0), 0) / totalOneMonth) * 100 : 0;
+    let completionRateThreeMonth = totalThreeMonth > 0 ? (totalForecastsArray1.reduce((sum, forecast) => sum + (forecast.totalCurrentMonth || 0), 0) / totalThreeMonth) * 100 : 0;
+    let completionRateSixMonth = totalSixMonth > 0 ? (totalForecastsArray1.reduce((sum, forecast) => sum + (forecast.totalCurrentMonth || 0), 0) / totalSixMonth) * 100 : 0;
 
     return {
         totalOneMonth,
         totalThreeMonth,
-        totalSixMonth
+        totalSixMonth,
+        totalAmountOneMonth,
+        totalAmountThreeMonth,
+        totalAmountSixMonth,
+        completionRateOneMonth,
+        completionRateThreeMonth,
+        completionRateSixMonth
     };
 };

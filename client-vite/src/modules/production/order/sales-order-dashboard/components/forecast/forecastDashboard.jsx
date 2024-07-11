@@ -9,21 +9,44 @@ import ForecastChart from './salesForecastChart';
 
 const formGroupStyle = {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: '10px',
+    justifyContent: 'space-between'
 };
 
 const labelStyle = {
-    marginRight: '30px', // Giảm khoảng cách giữa nhãn và phần tử select
-    whiteSpace: 'nowrap' // Đảm bảo nhãn không bị xuống dòng
+    marginRight: '10px',
+    whiteSpace: 'nowrap'
 };
 
 const selectStyle = {
-    minWidth: '100px' // Đặt chiều rộng tối thiểu cho phần tử select
+    padding: '5px',
+    borderColor: '#ced4da',
+    borderRadius: '4px',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    minWidth: '100px',
+    marginLeft: '5px'
+};
+
+const buttonStyle = {
+    backgroundColor: 'green',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    marginLeft: '10px',
+    marginRight: '5px',
+    marginTop: '5px',
+    marginBottom: '5px',
+    whiteSpace: 'nowrap'
 };
 
 function ForecastDashboard(props) {
     const [timeFrame, setTimeFrame] = useState('1 Month');
-    const [productLimit, setProductLimit] = useState(10);
     const currentRole = localStorage.getItem('currentRole'); // Lấy currentRole từ localStorage
 
     useEffect(() => {
@@ -36,39 +59,27 @@ function ForecastDashboard(props) {
     return (
         <React.Fragment>
             <div className='qlcv'>
-                <div className='form-inline' style={{ marginBottom: '10px' }}>
-                    <div className='form-group' style={formGroupStyle}>
-                        <label style={labelStyle}>Chọn khung thời gian: </label>
+                <div className='form-inline' style={formGroupStyle}>
+                    <div className='form-group' style={{ display: 'flex', alignItems: 'center' }}>
+                        <label style={labelStyle}>Chọn thời gian: </label>
                         <select
                             onChange={(e) => setTimeFrame(e.target.value)}
                             value={timeFrame}
                             style={selectStyle}
                         >
-                            <option value="1 Month">1 Month</option>
-                            <option value="3 Months">3 Months</option>
-                            <option value="6 Months">6 Months</option>
+                            <option value="1 Month">1 Tháng</option>
+                            <option value="3 Months">3 Tháng</option>
+                            <option value="6 Months">6 Tháng</option>
                         </select>
                     </div>
-                    <div className='form-group' style={{ ...formGroupStyle, marginLeft: '20px' }}>
-                        <label style={labelStyle}>Hiển thị số sản phẩm: </label>
-                        <select
-                            onChange={(e) => setProductLimit(Number(e.target.value))}
-                            value={productLimit}
-                            style={selectStyle}
-                        >
-                            <option value={10}>10</option>
-                            <option value={100}>100</option>
-                            <option value={props.forecasts.forecasts.length}>Tất cả</option>
-                        </select>
-                    </div>
+                    <a href='/forecast-sales-order' style={buttonStyle}>Điều chỉnh dự báo</a>
                 </div>
 
                 <div className='row'>
+                    <InfoBoxForecast saleForecast={props.forecasts.countForecasts} timeFrame={timeFrame} />
+                    
                     <div className='col-xs-12'>
-                        <InfoBoxForecast saleForecast={props.forecasts.countForecasts} timeFrame={timeFrame} />
-                    </div>
-                    <div className='col-xs-12'>
-                        <ForecastChart forecasts={props.forecasts.forecasts} timeFrame={timeFrame} productLimit={productLimit} />
+                        <ForecastChart forecasts={props.forecasts.forecasts} timeFrame={timeFrame} />
                     </div>
                     
                     <div className='col-xs-12'>
@@ -91,7 +102,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllForecasts: forecastActions.getAllForecasts, // Thêm hàm getAllForecasts vào mapDispatchToProps
+    getAllForecasts: forecastActions.getAllForecasts,
     getTop5Products: forecastActions.getTop5Products,
     getBottom5Products: forecastActions.getBottom5Products,
     countSalesForecast: forecastActions.countSalesForecast

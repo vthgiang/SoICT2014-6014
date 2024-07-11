@@ -6,7 +6,7 @@ const Logger = require('../../../logs');
  */
 exports.get = async (req, res) => {
     try {
-        let tp = await ProjectService.get(req.portal, req.query);
+        let tp = await ProjectService.get(req.portal, req.query, req.user);
 
         await Logger.info(req.user.email, 'get_task_project_success', req.portal)
         res.status(200).json({

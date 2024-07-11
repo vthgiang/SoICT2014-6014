@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import AutoScheduleBooking from './autoScheduleBooking';
+import AutoScheduleBooking from './automatic-booking';
 import ManualScheduleBooking from './manualScheduleBooking';
 
 const ScheduleBooking = (props) => {
@@ -24,7 +24,8 @@ const ScheduleBooking = (props) => {
                         <AutoScheduleBooking 
                             manufacturingCommands={props.manufacturingCommands}
                             onManufacturingCommandsChange={props.onManufacturingCommandsChange}
-                            planStartDate={props.startDate}
+                            startDate={props.startDate}
+                            endDate={props.endDate}
                         />
                     )}
                 </div>

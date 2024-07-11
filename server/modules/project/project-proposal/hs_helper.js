@@ -486,14 +486,15 @@ function addOptionalAssetsAvailableForTasks(job, currentAssets) {
   return sortedTasks
 }
 
-function getTotalKpi(assignment, lastKPIs, assetHasKPIWeight) {
+function getTotalKpi(assignment, lastKPIs, assetHasKPIWeight, kpiTarget) {
   // console.log("assignment: ", assignment)
   // console.log("lastKPIs: ", lastKPIs)
   // console.log("assetHasKPIWeight: ", assetHasKPIWeight)
   const kpiAssignment = {}
-  // for (const kpi of kpiTarget) {
-  //   kpiAssignment[key] = 0
-  // }
+  for (const kpi of kpiTarget) {
+    // console.log("kpi: ", kpi)
+    kpiAssignment[kpi?.type] = 0
+  }
 
   assignment.forEach((assignmentItem) => {
     const { task, assignee } = assignmentItem
@@ -688,7 +689,7 @@ function checkDuplicate(currentAssignment, employee, startDateCheck, endDateChec
 }
 
 // Function for DLHS
-function initRandomHarmonyVector(tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime = 'days') {
+function initRandomHarmonyVector(tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime = 'days', allTasksOutOfProject) {
   const randomAssignment = []
   const empAssigned = []
   let falseAssigneeScore = 0, kpiAssignment = {}, totalCost = 0, falseDuplicate = 0
@@ -750,9 +751,28 @@ function initRandomHarmonyVector(tasks, employees, lastKPIs, kpiTarget, kpiOfEmp
       assets: assignAssets
     })
   }
+
+  // RE CALCULATE FALSE DUPLICATE
+  if (allTasksOutOfProject && allTasksOutOfProject?.length) {
+    randomAssignment.forEach((item) => {
+      const { task, assignee } = item
+      const { startDate, endDate } = task
+      let allTasksOutOfProjectWithEmp = allTasksOutOfProject.filter((item) =>
+        item?.assignee === assignee._id && new Date(item?.endDate) > new Date(startDate) && new Date(endDate) > new Date(item?.startDate)
+      )
+      if (allTasksOutOfProjectWithEmp && allTasksOutOfProjectWithEmp?.length) {
+        if (!taskInDuplicate || !taskInDuplicate.includes(task?._id)) {
+          falseDuplicate++
+          taskInDuplicate.push(task?._id)
+        }
+      }
+    })
+  }
+
+
   falseAssigneeScore = employees.length - empAssigned.length
   // get total KPI
-  kpiAssignment = getTotalKpi(randomAssignment, lastKPIs, assetHasKPIWeight)
+  kpiAssignment = getTotalKpi(randomAssignment, lastKPIs, assetHasKPIWeight, kpiTarget)
 
   // get total cost
   totalCost = getTotalCost(randomAssignment, lastKPIs, assetHasKPIWeight, unitTime)
@@ -941,9 +961,9 @@ function updateHarmonyMemory(HM, improviseSolution) {
   HM.push(improviseSolution)
 }
 
-function initHM(HM, hmSize, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime) {
+function initHM(HM, hmSize, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime, allTasksOutOfProject) {
   for (let i = 0; i < hmSize; i++) {
-    let randomSolution = initRandomHarmonyVector(tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime)
+    let randomSolution = initRandomHarmonyVector(tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime, allTasksOutOfProject)
     HM.push(randomSolution)
   }
 }
@@ -1068,7 +1088,7 @@ function newHMFromSubs(subHMs, kpiTarget, kpiOfEmployeesTarget) {
 }
 
 
-function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime) {
+function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime, allTasksOutOfProject) {
   const { HMS, BW_max, BW_min, PSLSize, numOfSub, R, Max_FEs } = DLHS_Arguments
   let FEs = 0
 
@@ -1076,7 +1096,7 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
   let PSL = []
   let HM = []
   let WPSL = []
-  initHM(HM, HMS, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime)
+  initHM(HM, HMS, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime, allTasksOutOfProject)
   initPSL(PSL, PSLSize)
 
   let lastPSL = PSL
@@ -1178,12 +1198,29 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
         })
       })
 
+      // RECALCULATE FALSE DUPLICATE
+      if (allTasksOutOfProject && allTasksOutOfProject?.length) {
+        improviseAssignment.forEach((item) => {
+          const { task, assignee } = item
+          const { startDate, endDate } = task
+          let allTasksOutOfProjectWithEmp = allTasksOutOfProject.filter((item) =>
+            item?.assignee === assignee._id && new Date(item?.endDate) > new Date(startDate) && new Date(endDate) > new Date(item?.startDate)
+          )
+          if (allTasksOutOfProjectWithEmp && allTasksOutOfProjectWithEmp?.length) {
+            if (!taskInDuplicate || !taskInDuplicate.includes(task?._id)) {
+              falseDuplicate++
+              taskInDuplicate.push(task?._id)
+            }
+          }
+        })
+      }
+
       // total False
       falseAssigneeScore = employees.length - empAssigned.length
       // total False assets: TODO
 
       // get total KPI
-      const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight)
+      const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight, kpiTarget)
 
       // get total Cost
       const totalCost = getTotalCost(improviseAssignment, lastKPIs, assetHasKPIWeight, unitTime)
@@ -1327,12 +1364,29 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
       })
     })
 
+    // RECALCULATE FALSE DUPLICATE
+    if (allTasksOutOfProject && allTasksOutOfProject?.length) {
+      improviseAssignment.forEach((item) => {
+        const { task, assignee } = item
+        const { startDate, endDate } = task
+        let allTasksOutOfProjectWithEmp = allTasksOutOfProject.filter((item) =>
+          item?.assignee === assignee._id && new Date(item?.endDate) > new Date(startDate) && new Date(endDate) > new Date(item?.startDate)
+        )
+        if (allTasksOutOfProjectWithEmp && allTasksOutOfProjectWithEmp?.length) {
+          if (!taskInDuplicate || !taskInDuplicate.includes(task?._id)) {
+            falseDuplicate++
+            taskInDuplicate.push(task?._id)
+          }
+        }
+      })
+    }
+    
     // total False
     falseAssigneeScore = employees.length - empAssigned.length
     // total False assets: TODO
 
     // get total KPI
-    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight)
+    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight, kpiTarget)
 
     // get total Cost
     const totalCost = getTotalCost(improviseAssignment, lastKPIs, assetHasKPIWeight, unitTime)
@@ -1372,7 +1426,7 @@ function DLHS(DLHS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmploy
   return newHM[0]
 }
 
-function harmonySearch(HS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime) {
+function harmonySearch(HS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, unitTime, allTasksOutOfProject) {
   const { HMS, bw, HMCR, PAR, maxIter } = HS_Arguments
   let HM = []
   // Step 1: init HM
@@ -1458,12 +1512,28 @@ function harmonySearch(HS_Arguments, tasks, employees, lastKPIs, kpiTarget, kpiO
       })
     })
 
+    // RECALCULATE FALSE DUPLICATE
+    if (allTasksOutOfProject && allTasksOutOfProject?.length) {
+      improviseAssignment.forEach((item) => {
+        const { task, assignee } = item
+        const { startDate, endDate } = task
+        let allTasksOutOfProjectWithEmp = allTasksOutOfProject.filter((item) =>
+          item?.assignee === assignee._id && new Date(item?.endDate) > new Date(startDate) && new Date(endDate) > new Date(item?.startDate)
+        )
+        if (allTasksOutOfProjectWithEmp && allTasksOutOfProjectWithEmp?.length) {
+          if (!taskInDuplicate || !taskInDuplicate.includes(task?._id)) {
+            falseDuplicate++
+            taskInDuplicate.push(task?._id)
+          }
+        }
+      })
+    }
     // total False
     falseAssigneeScore = employees.length - empAssigned.length
     // total False assets: TODO
 
     // get total KPI
-    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight)
+    const kpiAssignment = getTotalKpi(improviseAssignment, lastKPIs, assetHasKPIWeight, kpiTarget)
 
     // get total Cost
     const totalCost = getTotalCost(improviseAssignment, lastKPIs, assetHasKPIWeight, unitTime)

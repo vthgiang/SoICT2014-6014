@@ -103,6 +103,7 @@ module.exports = {
     ProductRequestManagement: require('./production/common-production/productRequestManagement.model'),
     Layout: require('./production/warehouse/layout.model'),
     InventoryWarehouse: require('./production/warehouse/inventoryWarehouse.model'),
+    RoutePicking: require('./production/warehouse/routePicking.model'),
     Inventory: require('./production/warehouse/inventory.model'),
     InventoryForecast: require('./production/warehouse/inventoryForecast.model'),
     // Customer Management
@@ -137,6 +138,7 @@ module.exports = {
     Location: require('./common/location.model'),
     TotalOrder: require('./production/order/totalOrder.model'),
     SalesForecast: require('./production/order/salesForecast.model'),
+    RevenuesForecast: require('./production/order/revenuesForecast.model'),
 
     // plan
     Plan: require('./plan/plan.model'),
@@ -165,6 +167,8 @@ module.exports = {
     ManufacturingQualityError: require('./production/manufacturing/manufacturingQualityError.model'),
     ManufacturingQualityCriteria: require('./production/manufacturing/manufacturingQualityCriteria.model'),
     ManufacturingQualityInspection: require('./production/manufacturing/manufacturingQualityInspection.model'),
+    ManufacturingMetric: require('./production/manufacturing/manufacturingMetric.model'),
+    
     ManufacturingRouting: require('./production/manufacturing/manufacturingRouting.model'),
     // transport
     TransportRequirement: require('./production/transport/transportRequirement.model'),

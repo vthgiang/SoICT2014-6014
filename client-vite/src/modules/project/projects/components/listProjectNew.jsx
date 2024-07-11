@@ -41,8 +41,37 @@ function ListProjectNew(props) {
     data: []
   })
 
+  const genStatusProject = (project) => {
+    let status = project?.status
+    let isAssignmentOk = project?.proposals?.assignment
+
+    switch (status) {
+      case 'inprocess': 
+        return <span className="text-blue-500">{'Đang thực hiện'}</span>
+      case 'proposal':
+        if (isAssignmentOk) {
+          return <span className="text-green-500">{'Đã có kết quả phân bổ, chờ phân công'}</span>
+        }
+        else {
+          return <span className="text-red-500">{'Chưa có kết quả phân bổ, chờ phân bổ'}</span>
+        }
+      case 'wait_for_approval':
+        if (isAssignmentOk) {
+          return <span className="text-green-500">{'Đã có kết quả phân bổ, chờ phân công'}</span>
+        }
+        else {
+          return <span className="text-red-500">{'Chưa có kết quả phân bổ, chờ phân bổ'}</span>
+        }
+      case 'finished': 
+        return <span className="text-green-500">{'Hoàn thành'}</span>
+      case 'canceled': 
+        return <span className="text-red-500">{'Bị hủy'}</span>
+    }
+  }
+
   const { project, translate, user, assetsManager } = props
   const userId = getStorage('userId')
+  const currentRole = getStorage('currentRole')
   const { projectName, startDate, endDate, page, responsibleEmployees, projectManager, perPage, currentRow, projectDetail, data } = state
 
   const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItemsWithEmployeeData(user.usersInUnitsOfCompany) : []
@@ -67,7 +96,7 @@ function ListProjectNew(props) {
     })
     props.getListTag()
     props.getListCapacity()
-    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId, currentRole })
     // props.getProjectsDispatch({ calledId: 'user_all', userId })
   }, [])
 
@@ -99,8 +128,7 @@ function ListProjectNew(props) {
                           href={`/project/project-proposal?id=${currentProjects[n]?._id}`}
                         > Link
                         </a>),
-          status: currentProjects[n]?.proposals?.assignment ? <span className="text-green-500">{'Đã có dự liệu phân bổ'}</span> : <span className="text-red-500">{'Chưa có dữ liệu phân bổ'}</span>,
-        
+          status: genStatusProject(currentProjects[n])
         }
 
         if (checkIfAbleToCRUDProject({ project, user, currentProjectId: currentProjects[n]._id })) {
@@ -129,7 +157,7 @@ function ListProjectNew(props) {
       projectManager: projectManager,
       userId: userId
     }
-    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId })
+    props.getProjectsDispatch({ calledId: 'paginate', page, perPage, userId, currentRole })
   }
 
   // Thay đổi tên dự án
@@ -201,7 +229,8 @@ function ListProjectNew(props) {
       perPage: perPage,
       responsibleEmployees: responsibleEmployees,
       projectManager: projectManager,
-      userId: userId
+      userId: userId,
+      currentRole: currentRole
     }
 
     setState({
@@ -222,7 +251,8 @@ function ListProjectNew(props) {
       perPage: number,
       responsibleEmployees: responsibleEmployees,
       projectManager: projectManager,
-      userId: userId
+      userId: userId,
+      currentRole: currentRole
     }
 
     setState({
@@ -269,7 +299,8 @@ function ListProjectNew(props) {
       perPage: perPage,
       responsibleEmployees: responsibleEmployees,
       projectManager: projectManager,
-      userId: userId
+      userId: userId,
+      currentRole: currentRole
     }
 
     let currentProject = project.data.paginate.find((p) => p?._id === id)
@@ -318,7 +349,8 @@ function ListProjectNew(props) {
         perPage: perPage,
         responsibleEmployees: responsibleEmployees,
         projectManager: projectManager,
-        userId: userId
+        userId: userId,
+        currentRole: currentRole
       }
 
       props.getProjectsDispatch(data)

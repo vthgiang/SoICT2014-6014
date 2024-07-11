@@ -1,14 +1,11 @@
 const {
     ManufacturingCommand, ManufacturingPlan, ManufacturingWorks, OrganizationalUnit,
-    ManufacturingOrder, SalesOrder, Lot, ManufacturingMill, PurchasingRequest
+    SalesOrder, Lot, ManufacturingMill, PurchasingRequest
 } = require(`../../../../models`);
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 const { deleteCommandFromSchedule } = require('../workSchedule/workSchedule.service');
-const TaskManagementService = require('../../../task/task-management/task.service');
-
-const dayjs = require('dayjs');
 
 function getArrayTimeFromString(stringDate) {
     arrayDate = stringDate.split('-');
@@ -47,21 +44,16 @@ exports.createManufacturingCommand = async (data, portal) => {
         code: data.code,
         manufacturingPlan: data.manufacturingPlan,
         manufacturingMill: data.manufacturingMill,
-        startDate: formatToTimeZoneDate(data.startDate),
-        endDate: formatToTimeZoneDate(data.endDate),
+        startDate: data.startDate,
+        endDate: data.endDate,
         startTurn: data.startTurn,
         endTurn: data.endTurn,
         good: data.good._id,
         quantity: data.quantity,
+        manufacturingRouting: data.routing._id,
         creator: data.creator,
-        workOrders: data.workOrders.map(x => {
-            return {
-                ...x,
-                startDate: formatToTimeZoneDate(x.startDate),
-                endDate: formatToTimeZoneDate(x.endDate),
-            }
-        }),
-        taskTemplate: data.taskTemplate,
+        workOrders: data.workOrders,
+        taskTemplate: data.taskTemplate? data.taskTemplate : null,
         approvers: data.approvers.map(x => {
             return {
                 approver: x,
@@ -164,8 +156,12 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
 
         let listMillIds = listManufacturingMills.map(x => x._id);
 
-        options.manufacturingMill = {
-            $in: listMillIds
+        options.workOrders = {
+            $elemMatch: {
+                manufacturingMill: {
+                    $in: listMillIds
+                }
+            }
         }
     } else if (manufacturingCommandIds.length != 0 && listWorksId.length != 0) {// Trường hợp cả kiểm soát nhà máy cả kiểm soát lệnh
         let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
@@ -182,8 +178,12 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     $in: manufacturingCommandIds
                 },
             }, {
-                manufacturingMill: {
-                    $in: listMillIds
+                workOrders: {
+                    $elemMatch: {
+                        manufacturingMill: {
+                            $in: listMillIds
+                        }
+                    }
                 }
             }
         ]
@@ -327,8 +327,6 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     path: "manufacturingMill",
                     select: "code name"
                 }, {
-                    path: "responsibles"
-                }, {
                     path: "accountables"
                 }, {
                     path: "creator"
@@ -348,8 +346,11 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     path: "workOrders.manufacturingMill",
                     select: "name"
                 }, {
-                    path: "workOrders.responsibles",
+                    path: "workOrders.tasks.responsible",
                     select: "name email"
+                }, {
+                    path: "workOrders.tasks.machine",
+                    select: "code assetName"
                 }],
                 sort: {
                     "updatedAt": "desc"
@@ -393,11 +394,11 @@ exports.getManufacturingCommandById = async (id, portal) => {
             path: "workOrders.manufacturingMill",
             select: "name"
         }, {
-            path: "workOrders.responsibles",
+            path: "workOrders.tasks.responsible",
             select: "name email"
         }, {
-            path: "inspections",
-            select: "workOrder",
+            path: "workOrder.qc_inspection",
+            select: "code",
         }]);
     if (!manufacturingCommand) {
         throw Error("ManufacturingCommand is not existing");
@@ -458,6 +459,8 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             return x
         }) : oldManufacturingCommand.accountables;
     oldManufacturingCommand.description = data.description ? data.description : oldManufacturingCommand.description
+    oldManufacturingCommand.workOrders = data.workOrders ? data.workOrders : oldManufacturingCommand.workOrders;
+    oldManufacturingCommand.taskTemplate = data.taskTemplate ? data.taskTemplate : oldManufacturingCommand.taskTemplate;
 
     // Xử lý trường hợp kiểm định chất lượng lệnh sản xuất
     if (data.qualityControlStaff) {

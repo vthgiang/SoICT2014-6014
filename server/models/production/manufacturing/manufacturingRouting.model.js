@@ -36,58 +36,49 @@ const ManufacturingRoutingSchema = new Schema({
             type: Number,
             required: true
         },
-        name: {
+        name: { // Tên công đoạn
             type: String,
             required: true
         },
-        manufacturingMill: {
+        manufacturingMill: { // Xưởng sản xuất
             type: Schema.Types.ObjectId,
             ref: "ManufacturingMill"
         },
-        setupTime: {
+        setupTime: { // Thời gian thiết lập
             type: Number,
             required: true
         },
-        hourProduction: {
-            type: Number,
-            required: true
+        description: { // Mô tả
+            type: String
         },
-        workers: [{
-            workerRole: {
-                type: Schema.Types.ObjectId,
-                ref: "Role"
-            },  
-            expYear: {
-                type: Number,
-            },
-            number: {
-                type: Number,
-                required: true,
-                default: 1
-            }
-        }],
-        machines: [{
-            machine: {
+        resources: [{
+            machine: { // Máy móc
                 type: Schema.Types.ObjectId,
                 ref: "Asset"
             },
-            operatingCost: {
+            workerRole: { // Role người thực hiện
+                type: Schema.Types.ObjectId,
+                ref: "Role"
+            },
+            minExpYear: { // Số năm kinh nghiệm tối thiểu
+                type: Number,
+                default: 0
+            },
+            hourProduction: { // Sản lượng theo giờ, nếu có machine thì bằng estimatedProduction của machine đó
                 type: Number,
                 required: true
             },
-            number: {
+            costPerHour: { // Chi phí vận hành máy trên giờ
                 type: Number,
-                required: true,
-                default: 1
+                default: 0
             }
         }],
-        preOperation: [{
+        preOperation: [{ // Công đoạn trước
             type: Number,
         }],
-        nextOperation: [{
+        nextOperation: [{ // Công đoạn sau
             type: Number,
         }]
-
     }]
 
 }, {

@@ -674,6 +674,11 @@ class SideBar extends Component {
                     name: 'menu.list_career_position',
                     icon: 'fa fa-handshake-o',
                     path: '/hr-list-career-position'
+                  },
+                  {
+                    name: 'menu.list_capacity',
+                    icon: 'fa fa-briefcase',
+                    path: '/hr-list-capacity'
                   }
                 ]
               }}
@@ -1006,11 +1011,11 @@ class SideBar extends Component {
                     icon: 'fa fa-dashboard',
                     path: '/marketing-dashboard'
                   },
-                  {
-                    name: 'menu.marketing_forecast',
-                    icon: 'fa fa-dollar',
-                    path: '/marketing-forecast'
-                  }
+                  // {
+                  //   name: 'menu.marketing_forecast',
+                  //   icon: 'fa fa-dollar',
+                  //   path: '/marketing-forecast'
+                  // }
                 ]
               }}
             />

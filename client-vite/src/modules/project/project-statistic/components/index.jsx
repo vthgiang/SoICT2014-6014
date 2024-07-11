@@ -12,6 +12,7 @@ import { BiddingPackageManagerActions } from "../../../bidding/bidding-package/b
 import { ProjectActions } from "../../projects/redux/actions";
 import { AssetManagerActions } from "../../../asset/admin/asset-information/redux/actions";
 import Swal from "sweetalert2";
+import { getStorage } from "../../../../config";
 
 function ProjectStatisticPage(props) {
   const { translate, employeesManager, user, assetsManager, biddingPackagesManager, project } = props
@@ -19,6 +20,9 @@ function ProjectStatisticPage(props) {
     startDate: '',
     endDate: ''
   })
+
+  const userId = getStorage('userId')
+  const currentRole = getStorage('currentRole')
 
   const handleChangeEndDate = (value) => {
     let month
@@ -106,6 +110,8 @@ function ProjectStatisticPage(props) {
         calledId: 'paginate',
         endDate: endDate,
         startDate: startDate,
+        currentRole: currentRole,
+        userId: userId
       }
 
       props.getProjectsDispatch(data)
@@ -125,7 +131,9 @@ function ProjectStatisticPage(props) {
     props.getProjectsDispatch({
       calledId: 'paginate',
       startDate: state?.startDate,
-      endDate: state?.endDate
+      endDate: state?.endDate,
+      currentRole: currentRole,
+      userId: userId
     })
     props.getAllEmployee()
   }, [])
@@ -174,7 +182,9 @@ function ProjectStatisticPage(props) {
     const employeesData = employeesManager?.listAllEmployees
     
     let listEmployeeIsWorking = []
-    if (projectData && projectInProcess && projectInProcess?.length) {
+    console.log("projectInProcess: ", projectInProcess)
+    if (projectData && projectData?.length && projectInProcess && projectInProcess?.length && employeesData) {
+      console.log("vào đây 1: ")
       for (let i = 0; i < projectInProcess?.length; i++) {
         let projectInProcessItem = projectInProcess[i]
         const usersInProject = projectInProcessItem?.usersInProject.map((item) => item?.employeeId) ?? []
@@ -186,11 +196,21 @@ function ProjectStatisticPage(props) {
           })
         }
       }
-      const total = employeesData?.length
+      const totalEmp = employeesData?.length
       const numberOfIsWorking = listEmployeeIsWorking?.length
-      const numberOfReadyToAssign = total - numberOfIsWorking
+      const numberOfReadyToAssign = totalEmp - numberOfIsWorking
+     
       setEmployeeStatistic({
-        total: total,
+        total: totalEmp,
+        numberOfIsWorking: numberOfIsWorking,
+        numberOfReadyToAssign: numberOfReadyToAssign
+      })
+    } else if (employeesData && employeesData?.length && projectData && projectData?.length) {
+      const totalEmp = employeesData?.length
+      const numberOfIsWorking = listEmployeeIsWorking?.length
+      const numberOfReadyToAssign = totalEmp - numberOfIsWorking
+      setEmployeeStatistic({
+        total: totalEmp,
         numberOfIsWorking: numberOfIsWorking,
         numberOfReadyToAssign: numberOfReadyToAssign
       })
@@ -224,7 +244,6 @@ function ProjectStatisticPage(props) {
     })
 
   }, [project?.isLoading, biddingPackagesManager?.isLoading, employeesManager?.isLoading, assetsManager?.isLoading])
-
   
   return (
     <React.Fragment>

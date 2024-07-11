@@ -1,150 +1,113 @@
-import React, { Component, useCallback, useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
-import { QuoteActions } from '../../quote/redux/actions'
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { QuoteActions } from '../../quote/redux/actions';
 
-import c3 from 'c3'
-import 'c3/c3.css'
-
-import { formatToTimeZoneDate } from '../../../../../helpers/formatDate'
+import c3 from 'c3';
+import 'c3/c3.css';
 
 function TopCareBarChart(props) {
-  const amountPieChart = React.createRef()
-  const topCareBarChart = React.createRef()
+  const topCareBarChart = React.createRef();
 
   const [state, setState] = useState({
     currentRole: localStorage.getItem('currentRole')
-  })
+  });
+
   useEffect(() => {
-    barChart()
-  })
-  // console.log(props);
+    barChart();
+  }, [props.quotes]);
+
   const setDataBarChart = () => {
-    let topGoodsCareValue = ['Top sản phẩm được quan tâm theo số lượng']
+    let topGoodsCareValue = ['Top sản phẩm được quan tâm theo số lượng'];
 
     if (props.quotes && props.quotes.topGoodsCare) {
-      let topGoodsCareMap = props.quotes.topGoodsCare.map((element) => element.quantity)
-      topGoodsCareValue = topGoodsCareValue.concat(topGoodsCareMap)
+      let topGoodsCareMap = props.quotes.topGoodsCare.slice(0, 5).map((element) => element.quantity);
+      topGoodsCareValue = topGoodsCareValue.concat(topGoodsCareMap);
     }
 
     let dataBarChart = {
       columns: [topGoodsCareValue && topGoodsCareValue.length ? topGoodsCareValue : []],
       type: 'bar'
-    }
-    return dataBarChart
-  }
+    };
+    return dataBarChart;
+  };
 
-  function removePreviousChart() {
-    const chart = topCareBarChart.current
+  const removePreviousChart = () => {
+    const chart = topCareBarChart.current;
     if (chart) {
       while (chart.hasChildNodes()) {
-        chart.removeChild(chart.lastChild)
+        chart.removeChild(chart.lastChild);
       }
     }
-  }
+  };
 
-  function handleChangeViewChart() {
-    setState({
-      ...state,
-      typeGood: !state.typeGood
-    })
-  }
-
-  // Khởi tạo PieChart bằng C3
   const barChart = () => {
-    let dataBarChart = setDataBarChart()
-    let topGoodsCareTitle = []
+    let dataBarChart = setDataBarChart();
+
+    let topGoodsCareTitle = [];
     if (props.quotes && props.quotes.topGoodsCare) {
-      topGoodsCareTitle = props.quotes.topGoodsCare.map((element) => element.name)
+      topGoodsCareTitle = props.quotes.topGoodsCare.slice(0, 5).map((element) => {
+        return element.name.length > 20 ? element.name.slice(0, 20) + '...' : element.name;
+      });
     }
 
-    removePreviousChart()
+    removePreviousChart();
+
     let chart = c3.generate({
       bindto: topCareBarChart.current,
-
       data: dataBarChart,
-
       bar: {
         width: {
-          ratio: 0.5 // this makes bar width 50% of length between ticks
+          ratio: 0.5
         }
-        // or
-        //width: 100 // this makes bar width 100px
       },
       axis: {
-        y: {
-          label: {
-            text: `${'Đơn vị tính'}`,
-            position: 'outer-middle'
-          }
-        },
+        rotated: true, // Chuyển trục để biểu đồ nằm ngang
         x: {
           type: 'category',
-          categories: topGoodsCareTitle && topGoodsCareTitle.length ? topGoodsCareTitle : []
-        }
-      },
-
-      tooltip: {
-        format: {
-          title: function (d) {
-            return d
-          },
-          value: function (value) {
-            return value
+          categories: topGoodsCareTitle.length ? topGoodsCareTitle : [],
+        },
+        y: {
+          label: {
+            text: 'Đơn vị tính',
+            position: 'outer-middle'
           }
         }
       },
-
+      tooltip: {
+        format: {
+          title: function (index) {
+            return props.quotes.topGoodsCare[index].name;
+          },
+          value: function (value) {
+            return value;
+          }
+        }
+      },
       legend: {
         show: true
       }
-    })
-  }
-  const handleStartDateChange = (value) => {
-    setState((state) => {
-      return {
-        ...state,
-        startDate: value
-      }
-    })
-  }
-  const handleEndDateChange = (value) => {
-    setState((state) => {
-      return {
-        ...state,
-        endDate: value
-      }
-    })
-  }
+    });
+  };
 
-  const handleSunmitSearch = async () => {
-    let { startDate, endDate, currentRole } = state
-    let data = {
-      currentRole,
-      startDate: startDate ? formatToTimeZoneDate(startDate) : '',
-      endDate: endDate ? formatToTimeZoneDate(endDate) : ''
-    }
-    await props.getTopGoodsCare(data)
-  }
   return (
     <div className='box'>
       <div className='box-header with-border'>
         <i className='fa fa-bar-chart-o' />
         <h3 className='box-title'>Top sản phẩm được quan tâm (theo số lượng)</h3>
-
         <div ref={topCareBarChart} id='topCareBarChart'></div>
       </div>
     </div>
-  )
+  );
 }
 
 function mapStateToProps(state) {
-  const { quotes } = state
-  return { quotes }
+  const { quotes } = state;
+  return { quotes };
 }
 
 const mapDispatchToProps = {
   getTopGoodsCare: QuoteActions.getTopGoodsCare
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TopCareBarChart))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TopCareBarChart));

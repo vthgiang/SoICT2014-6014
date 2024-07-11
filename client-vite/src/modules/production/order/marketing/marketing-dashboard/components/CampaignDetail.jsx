@@ -43,7 +43,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
   ]
 
   const data = {
-    labels: ['Positive response', 'Negative response'],
+    labels: ['Phản hồi tích cực', 'Phản hồi tiêu cực'],
     datasets: [
       {
         label: '# of Votes',
@@ -63,7 +63,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       },
       title: {
         display: true,
-        text: 'NEW & RETURNING CUSTOMERS',
+        text: 'Khách hàng mới và Khách hàng quay lại',
         font: {
           size: 20,
           weight: 'bold'
@@ -82,7 +82,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       },
       title: {
         display: true,
-        text: 'Age Group & Transaction',
+        text: 'Doanh thu theo nhóm tuổi',
         font: {
           size: 20,
           weight: 'bold'
@@ -100,7 +100,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       },
       title: {
         display: true,
-        text: 'SESSIONS & CONVERSION PERFORMANCE',
+        text: 'Hiệu quả tỉ lệ chuyển đổi và phiên truy cập',
         font: {
           size: 20,
           weight: 'bold'
@@ -112,7 +112,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
     }
   }
 
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+  const labels = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7']
   // const labels= ['January', 'February', 'March', 'April', 'May', 'June', 'July']
 
   const labels_age = ['>65', '55-64', '45-54', '35-44', '25-34', '18-24', '<18']
@@ -121,12 +121,12 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
     labels,
     datasets: [
       {
-        label: 'New Customers',
+        label: 'Khách hàng mới',
         data: [2000, 1200, 3000, 4500, 6000, 2400, 3500],
         backgroundColor: '#d62728'
       },
       {
-        label: 'Returning Customers',
+        label: 'Khách hàng quay lại',
         data: [1200, 3000, 2600, 4320, 5689, 3456, 6730],
         backgroundColor: '#1f77b4'
       }
@@ -137,13 +137,13 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
     labels,
     datasets: [
       {
-        label: 'Sessions',
+        label: 'Phiên truy cập',
         data: [32000, 30500, 39000, 40000, 43000, 42000, 41500],
         borderColor: '#d62728',
         backgroundColor: '#d62728'
       },
       {
-        label: 'Conversion',
+        label: 'Lượt chuyển đổi mục tiêu',
         data: [30500, 28000, 31000, 31200, 38000, 41000, 38500],
         borderColor: '#1f77b4',
         backgroundColor: '#1f77b4'
@@ -155,7 +155,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
     labels: labels_age,
     datasets: [
       {
-        label: 'New Customers',
+        label: 'Khách hàng mới',
         data: [2000, 1200, 3000, 4500, 6000, 2400, 3500],
         backgroundColor: '#1f77b4'
       }
@@ -167,7 +167,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
       <GridLayout className='layout' layout={layout} cols={12} rowHeight={30} width={1200} compactType={'vertical'}>
         <div key='g' className='item'>
           <div>
-            <div className='card_title'>ROIM</div>
+            <div className='card_title'>ROMI</div>
             <CircularProgress
               determinate
               value={80}
@@ -178,7 +178,7 @@ const MarketingCampaignDetail = ({marketingCampaignDetail}) => {
                 '--CircularProgress-progressColor': '#1f77b4',
               }}
             >
-              <div className='circular_progress_text_inside'>40%</div>
+              <div className='circular_progress_text_inside'>423%</div>
             </CircularProgress>
           </div>
         </div>

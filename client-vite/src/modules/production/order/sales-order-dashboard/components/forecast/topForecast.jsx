@@ -49,10 +49,16 @@ const Top5ProductsChart = ({ top5Products, timeFrame, dispatch }) => {
                 bindto: '#chart-top5',
                 data: chartData,
                 axis: {
-                    rotated: true,
+                    rotated: true, // Chuyển trục để biểu đồ nằm ngang
                     x: {
                         type: 'category',
                         categories: categories,
+                    },
+                    y: {
+                        label: {
+                            text: 'Đơn vị tính',
+                            position: 'outer-middle'
+                        }
                     }
                 },
                 bar: {
@@ -66,6 +72,9 @@ const Top5ProductsChart = ({ top5Products, timeFrame, dispatch }) => {
                             return getFullName(d, timeFrame, top5Products);
                         }
                     }
+                },
+                legend: {
+                    show: true
                 }
             });
         }
@@ -92,9 +101,12 @@ const Top5ProductsChart = ({ top5Products, timeFrame, dispatch }) => {
     };
 
     return (
-        <div>
-            <h2>Top 5 Products</h2>
-            <div id="chart-top5"></div>
+        <div className="box">
+            <div className="box-header with-border">
+                <i className="fa fa-bar-chart-o" />
+                <h3 className="box-title">Sản phẩm bán chạy theo dự báo</h3>
+                <div id="chart-top5"></div>
+            </div>
         </div>
     );
 };

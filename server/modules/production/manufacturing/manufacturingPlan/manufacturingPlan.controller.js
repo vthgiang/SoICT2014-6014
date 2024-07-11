@@ -16,7 +16,7 @@ exports.createManufacturingPlan = async (req, res) => {
 
     } catch (error) {
         await Logger.error(req.user.email, "CREATE_MANUFACTURING_PLAN", req.portal);
-        console.log(error.message);
+        console.log(error);
         res.status(400).json({
             success: false,
             messages: ["create_failed"],
@@ -92,6 +92,30 @@ exports.getManufacturingPlanById = async (req, res) => {
             content: error.message
         })
     }
+}
+
+exports.createAutomaticSchedule = async (req, res) => {
+    try {
+        let data = req.body;
+        let schedule = await ManufacturingPlanService.createAutomaticSchedule(data, req.portal);
+
+        await Logger.info(req.user.email, "AUTOMATIC_SCHEDULING", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['automatic_scheduling_successfully'],
+            content: schedule
+        })
+    } catch (error) {
+        console.log(error);
+        await Logger.error(req.user.email, "AUTOMATIC_SCHEDULING", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['automatic_scheduling_failed'],
+            content: error.message
+        })
+    }
+
 }
 
 exports.editManufacturingPlan = async (req, res) => {

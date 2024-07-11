@@ -16,16 +16,19 @@ const CommandCreateForm = (props) => {
     approvers: [],
     routingId: '1',
     routing: '',
-    workOrders: [],
     accountables: [],
+    taskTemplates: {
+      responsible: '',
+      qualityControl: ''
+    },
     qualityControlStaffs: [],
-    taskTemplate: '1',
+    taskTemplate: '',
     description: ''
   }
-  const { translate, listGoods, manufacturingCommands, manufacturingRouting } = props
+  const { translate, listGoods, manufacturingCommands = [], manufacturingRouting } = props
 
   const [command, setCommand] = useState({ ...EMPTY_COMMAND })
-  const [listCommands, setListCommands] = useState(props.manufacturingCommands ? props.manufacturingCommands : [])
+  const [listCommands, setListCommands] = useState(manufacturingCommands)
   const [listRemainingGoods, setListRemainingGoods] = useState([])
   const [errorGood, setErrorGood] = useState('')
   const [errorQualityControlStaffs, setErrorQualityControlStaffs] = useState()
@@ -37,9 +40,7 @@ const CommandCreateForm = (props) => {
   const [indexEditting, setIndexEditting] = useState('')
 
   useEffect(() => {
-
     setListRemainingGoods(getRemainingQuantityOfGood(props.manufacturingCommands))
-
   }, [])
 
   // Hàm lấy ra số lượng còn lại chưa lên lệnh từ listRemaninggoods
@@ -74,7 +75,7 @@ const CommandCreateForm = (props) => {
     const { tasktemplates, translate } = props
     let taskTemplateArr = [
       {
-        value: '1',
+        value: '',
         text: translate('manufacturing.plan.choose_task_template')
       }
     ]
@@ -87,9 +88,13 @@ const CommandCreateForm = (props) => {
     return taskTemplateArr
   }
 
-  const handleTaskTemplateChange = (value) => {
+  const handleTaskTemplateChange = (value, type) => {
     const taskTemplateId = value[0]
-    setCommand({ ...command, taskTemplate: taskTemplateId })
+    const taskTemplates = {
+      ...command.taskTemplate,
+      [type]: taskTemplateId
+    }
+    setCommand({ ...command, taskTemplates })
   }
 
   const handleGoodChange = async (value) => {
@@ -109,7 +114,7 @@ const CommandCreateForm = (props) => {
       const newCommand = command
       newCommand.goodId = value
       const { listGoods } = props
-      let goodArrFilter = listGoods.filter((x) => x.good._id === command.goodId)
+      let goodArrFilter = listGoods.filter((x) => x.good._id === value)
       if (goodArrFilter.length) {
         newCommand.baseUnit = goodArrFilter[0].good.baseUnit
         newCommand.good = goodArrFilter[0].good
@@ -145,19 +150,19 @@ const CommandCreateForm = (props) => {
     const routingId = value[0]
     validateRoutingChange(routingId, true)
   }
-  const validateRoutingChange = (value, willUpdateState = true) => {  
+
+  const validateRoutingChange = (value, willUpdateState = true) => {
     let msg = undefined
-    if (value === "1") {
+    if (value === '1') {
       msg = translate('manufacturing.plan.error_routing')
     }
     if (willUpdateState) {
-      const selectedRouting = manufacturingRouting
-        .listRoutings.filter((x) => x._id === value)
+      const selectedRouting = manufacturingRouting.listRoutings.filter((x) => x._id === value)
       setErrorRouting(msg)
-      setCommand({ 
-        ...command, 
+      setCommand({
+        ...command,
         routingId: value,
-        routing: selectedRouting[0], 
+        routing: selectedRouting[0]
       })
     }
 
@@ -307,13 +312,13 @@ const CommandCreateForm = (props) => {
 
   const handleAddCommand = async (e) => {
     e.preventDefault()
-    
+
     const newCommand = command
     newCommand.code = generateCode('LSX')
-    
+
     setListCommands([...listCommands, newCommand])
     props.onChangeListCommands([...listCommands, newCommand])
-    setCommand({...EMPTY_COMMAND})
+    setCommand({ ...EMPTY_COMMAND })
     calculateRemainingQuantityGood([...listCommands, newCommand])
   }
 
@@ -380,7 +385,7 @@ const CommandCreateForm = (props) => {
         let command = prevListManufacturingCommands[indexEditting]
         listCopyGoods[findIndex(listCopyGoods, command.goodId)].quantity += Number(command.quantity)
       }
-      
+
       listCopyGoods.map((x) => {
         newListRemainingGoods.push({
           good: x.good,
@@ -417,7 +422,7 @@ const CommandCreateForm = (props) => {
       return true
     }
   }
-  
+
   return (
     <React.Fragment>
       <div className='row'>
@@ -455,11 +460,6 @@ const CommandCreateForm = (props) => {
           </fieldset>
         </div>
       </div>
-      {/* <div className='row'>
-        <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-          <MillProductivity listGoods={listGoods} />
-        </div>
-      </div> */}
       <div className='row'>
         <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
           <fieldset className='scheduler-border'>
@@ -544,41 +544,6 @@ const CommandCreateForm = (props) => {
                   />
                   <ErrorLabel content={errorApprovers} />
                 </div>
-                <div className={`form-group ${!errorQualityControlStaffs ? '' : 'has-error'}`}>
-                  <label>
-                    {translate('manufacturing.plan.qualityControlStaffs')}
-                    <span className='attention'> * </span>
-                  </label>
-                  <SelectBox
-                    id={`select-quality-control-staffs-command-create`}
-                    className='form-control select2'
-                    style={{ width: '100%' }}
-                    value={command.qualityControlStaffs}
-                    items={getUserArray()}
-                    onChange={handleQuanlityControlStaffsChange}
-                    multiple={true}
-                  />
-                  <ErrorLabel content={errorQualityControlStaffs} />
-                </div>
-                <div className="form-group">
-                  <label>
-                    {translate('manufacturing.plan.task_template')}
-                  </label>
-                  <a style={{ cursor: 'pointer' }} title={translate('manufacturing.plan.task_template_description')}>
-                    <i className='fa fa-question-circle' style={{ marginLeft: 5 }} />
-                  </a>
-                  <SelectBox
-                    id={`select-task-template-command-create`}
-                    className='form-control select2'
-                    style={{ width: '100%' }}
-                    value={command.taskTemplate}
-                    items={getAllTaskTemplateArr()}
-                    onChange={handleTaskTemplateChange}
-                    disabled={false}
-                    multiple={false}
-                  />
-                  <ErrorLabel content={errorRouting} />
-                </div>
               </div>
               <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
                 <div className={`form-group ${!errorAccountables ? '' : 'has-error'}`}>
@@ -601,6 +566,28 @@ const CommandCreateForm = (props) => {
                   />
                   <ErrorLabel content={errorAccountables} />
                 </div>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                <div className={`form-group ${!errorQualityControlStaffs ? '' : 'has-error'}`}>
+                  <label>
+                    {translate('manufacturing.plan.qualityControlStaffs')}
+                    <span className='attention'> * </span>
+                  </label>
+                  <SelectBox
+                    id={`select-quality-control-staffs-command-create`}
+                    className='form-control select2'
+                    style={{ width: '100%' }}
+                    value={command.qualityControlStaffs}
+                    items={getUserArray()}
+                    onChange={handleQuanlityControlStaffsChange}
+                    multiple={true}
+                  />
+                  <ErrorLabel content={errorQualityControlStaffs} />
+                </div>
+              </div>
+              <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
                 <div className={`form-group ${!errorRouting ? '' : 'has-error'}`}>
                   <label>
                     {translate('manufacturing.plan.routing')}
@@ -620,6 +607,44 @@ const CommandCreateForm = (props) => {
                     multiple={false}
                   />
                   <ErrorLabel content={errorRouting} />
+                </div>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                <div className='form-group'>
+                  <label>{translate('manufacturing.plan.task_template.responsible')}</label>
+                  <a style={{ cursor: 'pointer' }} title={translate('manufacturing.plan.task_template_description')}>
+                    <i className='fa fa-question-circle' style={{ marginLeft: 5 }} />
+                  </a>
+                  <SelectBox
+                    id={`select-task-template-responsible`}
+                    className='form-control select2'
+                    style={{ width: '100%' }}
+                    value={command.taskTemplate.responsible}
+                    items={getAllTaskTemplateArr()}
+                    onChange={(value) => handleTaskTemplateChange(value, 'responsible')}
+                    disabled={false}
+                    multiple={false}
+                  />
+                </div>
+              </div>
+              <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                <div className='form-group'>
+                  <label>{translate('manufacturing.plan.task_template.quality_control')}</label>
+                  <a style={{ cursor: 'pointer' }} title={translate('manufacturing.plan.task_template_description')}>
+                    <i className='fa fa-question-circle' style={{ marginLeft: 5 }} />
+                  </a>
+                  <SelectBox
+                    id={`select-task-template-quality-control`}
+                    className='form-control select2'
+                    style={{ width: '100%' }}
+                    value={command.taskTemplate.qualityControl}
+                    items={getAllTaskTemplateArr()}
+                    onChange={(value) => handleTaskTemplateChange(value, 'qualityControl')}
+                    disabled={false}
+                    multiple={false}
+                  />
                 </div>
               </div>
             </div>
@@ -722,8 +747,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  getAllManufacturingRoutingsByGood: manufacturingRoutingActions.getAllManufacturingRoutingsByGood,
+  getAllManufacturingRoutingsByGood: manufacturingRoutingActions.getAllManufacturingRoutingsByGood
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CommandCreateForm))

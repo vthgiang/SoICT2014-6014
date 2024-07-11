@@ -190,6 +190,7 @@ export default {
       list_major: 'Manage majors',
       list_career_position: 'Manage career position',
       list_certificate: 'Manage bidding certificates',
+      list_capacity: 'Manage employee capacity',
 
       // đấu thầu
       manage_bidding: 'Manage bidding',
@@ -4388,6 +4389,7 @@ export default {
         requested_to_close: 'Requested to close',
         task_status: 'Task status',
         filter: 'Filter',
+        proposal: 'Proposal, wait for approval and assign',
 
         priority: 'Priority',
         select_priority: 'Select priority',

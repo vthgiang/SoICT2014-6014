@@ -12,7 +12,7 @@ const {
   AssetType
 } = require('../../../models');
 const { connect, } = require(`../../../helpers/dbHelper`);
-const { KPI_MAX, KPI_NOT_WORK, KPI_FAIL, ALGORITHM } = require('./constants');
+const { KPI_MAX, KPI_NOT_WORK, KPI_FAIL, ALGORITHM, DAY_WORK_HOURS } = require('./constants');
 const { findTasksWithMatchingTagsAndRequire, findEmployeesWithCapacities, getVectorLength, getDistanceQualityVector, calculateCPM, checkHasAvailableSolution } = require('./helper');
 const { topologicalSort, scheduleTasksWithAssetAndEmpTasks, initRandomHarmonyVector, DLHS, reScheduleTasks, addOptionalAssetsAvailableForTasks, harmonySearch } = require('./hs_helper');
 const { splitKPIToEmployeesByKMeans, findBestMiniKPIOfTasks, reSplitKPIOfEmployees } = require('./kmean_helper');
@@ -146,7 +146,7 @@ const getLastKPIAndAvailableEmpsInTasks = (tasks, allTasksInPast, employees) => 
           let kpiValue = 1
   
           // Nếu không có yêu cầu năng lực => Lấy năng lực thực hiện công việc tốt nhất trong quá khứ
-          let taskOfEmpInPast = allTasksInPast.filter((taskInPast) => taskInPast.assignee._id === employeeId && taskInPast.point !== KPI_FAIL)
+          let taskOfEmpInPast = allTasksInPast.filter((taskInPast) => taskInPast?.assignee === employeeId && taskInPast.point !== KPI_FAIL)
           if (taskOfEmpInPast && taskOfEmpInPast?.length) {
             kpiValue = taskOfEmpInPast.sort((a, b) => b.point - a.point)[0].point
           }
@@ -169,7 +169,7 @@ const getLastKPIAndAvailableEmpsInTasks = (tasks, allTasksInPast, employees) => 
 
           // console.log("listTaskMatching: ", listTaskMatching)
           // console.log("employeeId: ", employeeId)
-          let listTasksMatchingWithEmp = listTaskMatching.filter((item) => String(item.assignee) === String(employeeId))
+          let listTasksMatchingWithEmp = listTaskMatching.filter((item) => String(item?.assignee) === String(employeeId))
           // console.log("listTaskMatching: ", listTasksMatchingWithEmp)
           if (listTasksMatchingWithEmp && listTasksMatchingWithEmp?.length > 0) {
             listTasksMatchingWithEmp = listTasksMatchingWithEmp.sort((a, b) => {
@@ -362,10 +362,10 @@ const proposalForProjectWithAlgorithm = (job, kpiInPast, allTasksOutOfProject, a
   // Step 3
   let result = {}
   if (algorithm === ALGORITHM.DLHS) {
-    result = DLHS(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+    result = DLHS(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime, allTasksOutOfProject)
   } else {
     // TODO for HS
-    result = harmonySearch(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime)
+    result = harmonySearch(algorithmParams, job.tasks, employees, kpiInPast, kpiTarget, kpiOfEmployeesTarget, assetHasKPIWeight, job.unitTime, allTasksOutOfProject)
   }
 
   if (result?.falseDuplidate) {
@@ -391,18 +391,26 @@ exports.proposalForProject = async (portal, id, data) => {
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
 
-    const kpiInPast = getLastKPIAndAvailableEmpsInTasks(job.tasks, allTasksInPast, job.employees)
+    const kpiInPast = getLastKPIAndAvailableEmpsInTasks(job.tasks, allTasksInPast, job.employees)    
 
-    // console.log("kpiInPast: ", kpiInPast
-    // job.tasks.forEach((item) => {
-    //   console.log(item.code, "avali: ", item.availableAssignee.map((item) => item.fullName))
-    // })
-    const allTasksOutOfProject = await Task(connect(DB_CONNECTION, portal)).find({
+    let allTasksOutOfProjectAll = await Task(connect(DB_CONNECTION, portal)).find({
       status: 'inprocess',
-      taskProject: { $ne: id }
+      taskProject: { $ne: id },
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
     
+    let allTasksOutOfProject = allTasksOutOfProjectAll && allTasksOutOfProjectAll?.length ? allTasksOutOfProjectAll.filter((item) => {
+      let flag = false
+      for (let i = 0; i < job.employees?.length; i++) {
+        let employeeId = job.employees[i]?._id
+        if (String(item?.assignee) === String(employeeId)) {
+          flag = true
+          break
+        }
+      }
+      return flag
+    }) : []
+        
     // const DLHS_Arguments = initDLHS_Arguments()
     let initArguments = {}
     if (!algorithmParams) {
@@ -415,7 +423,7 @@ exports.proposalForProject = async (portal, id, data) => {
     const assetHasKPIWeight = 0.1
 
     // TODO: update params
-    const result = proposalForProjectWithAlgorithm(job, kpiInPast, allTasksOutOfProject, assetHasKPIWeight, algorithm, algorithmParams ? algorithmParams : initArguments) 
+    let result = proposalForProjectWithAlgorithm(job, kpiInPast, allTasksOutOfProject, assetHasKPIWeight, algorithm, algorithmParams ? algorithmParams : initArguments) 
 
     let kpiAssignment = result?.kpiAssignment
     let isCompleteProposal = true
@@ -428,6 +436,82 @@ exports.proposalForProject = async (portal, id, data) => {
         break
       }
     }
+    
+    // update estimateNormalCost for tasks after proposal
+    if (result?.assignment && result?.assignment?.length > 0) {
+      for (let i = 0; i < result?.assignment?.length; i++) {
+        const { task, assets, assignee } = result?.assignment[i]
+        const { mainSalary } = assignee
+        const { estimateNormalTime } = task
+        const IS_HAS_ASSET = assets?.length
+
+        task.estimateNormalCost = 0
+        let estimateTaskCost = 0
+        const key = `${assignee?._id}-${task?._id}`
+        let kpiValue = kpiInPast.get(key)
+        if (!kpiValue || kpiValue === undefined || kpiValue == -1) {
+          kpiValue = 0
+        } 
+
+        if(IS_HAS_ASSET) {
+          kpiValue = kpiValue * (1 - assetHasKPIWeight) + 1 * assetHasKPIWeight
+        }
+
+        if (kpiValue) {
+          if(job?.unitTime === 'days') {
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * kpiValue)
+          } else {
+            // hour
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * DAY_WORK_HOURS * kpiValue)
+          }
+      
+          for (let j = 0; j < assets?.length; j++) {
+            estimateTaskCost += estimateNormalTime * DAY_WORK_HOURS * assets[j].costPerHour / kpiValue
+          }
+        } else {
+          if(job?.unitTime === 'days') {
+            estimateTaskCost += estimateNormalTime * mainSalary / 30
+          } else {
+            // hour
+            estimateTaskCost += estimateNormalTime * mainSalary / (30 * DAY_WORK_HOURS)
+          }
+      
+          for (let j = 0; j < assets?.length; j++) {
+            estimateTaskCost += estimateNormalTime * DAY_WORK_HOURS * assets[j].costPerHour
+          }
+        }
+
+        task.estimateNormalCost = estimateTaskCost
+      }
+    }
+
+    // Check duplicate task
+    if (result?.assignment && result?.assignment?.length > 0) {
+      const resultAssignment = result?.assignment 
+      let falseDuplicate = 0
+      let taskInDuplicate = []
+      if (allTasksOutOfProject && allTasksOutOfProject?.length) {
+        resultAssignment.forEach((item) => {
+          const { task, assignee } = item
+          const { startDate, endDate } = task
+          let allTasksOutOfProjectWithEmp = allTasksOutOfProject.filter((item) =>
+            item?.assignee === assignee._id && new Date(item?.endDate) > new Date(startDate) && new Date(endDate) > new Date(item?.startDate)
+          )
+          if (allTasksOutOfProjectWithEmp && allTasksOutOfProjectWithEmp?.length) {
+            if (!taskInDuplicate || !taskInDuplicate.includes(task?._id)) {
+              falseDuplicate++
+              taskInDuplicate.push(task?._id)
+            }
+          }
+        })
+      }
+      result = {
+        ...result,
+        falseDuplicate: falseDuplicate,
+        taskInDuplicate: taskInDuplicate,
+      }
+    }
+
 
     // update assets and task after proposal
   
@@ -476,3 +560,110 @@ exports.proposalForProject = async (portal, id, data) => {
     throw error
   }
 }
+
+exports.assignForProjectFromProposal = async (portal, id) => {
+  try {
+    const project = await Project(connect(DB_CONNECTION, portal)).findOne({
+      _id: id
+    }).populate({ path: 'kpiTarget.type' }).lean().exec();
+
+    const { usersInProject } = project || []
+    let employeeIdToUserId = {}
+
+    if (usersInProject && usersInProject?.length) {
+      usersInProject.forEach((item) => {
+        const { userId, employeeId } = item
+        employeeIdToUserId[employeeId] = userId
+      })
+    }
+
+    if (!project) {
+      throw ['project_not_found'];
+    }
+
+    if (!project?.proposals || !project?.proposals?.assignment || !project?.proposals?.assignment?.length) {
+      throw ['project_not_complete_proposal'];
+    }
+
+    if (project?.status !== 'proposal' && project?.status !== 'wait_for_approval') {
+      throw ['project_cannot_proposal_assign'];
+    }
+
+    // Update project status
+    await Project(connect(DB_CONNECTION, portal)).updateOne({ _id: id }, { status: 'inprocess' });
+
+    const { assignment } = project?.proposals;
+
+    const updateTasksPromises = assignment.map(async assignmentItem => {
+      const { task, assets, assignee } = assignmentItem;
+      // console.log("task: ", task);
+
+      // Find Task in DB with task info
+      const taskInDB = await Task(connect(DB_CONNECTION, portal)).findOne({
+        taskProject: id,
+        code: task?.code
+      });
+      // console.log("taskInDB: ", taskInDB);
+
+      // Update taskInDB with new task information
+      if (taskInDB) {
+        const updatedFields = {
+          startDate: task?.startDate,
+          endDate: task?.endDate,
+          assignee: assignee?._id,
+          assets: assets && assets?.length ? assets?.map((item) => item?._id) : [],
+          responsibleEmployees: employeeIdToUserId[assignee?._id],
+          status: 'inprocess',
+          estimateNormalCost: task?.estimateNormalCost,
+        };
+
+        taskInDB.set(updatedFields);
+        await taskInDB.save();
+
+        // Update status of all assets assigned to the task
+        const updateAssetsPromises = assets.map(async (asset) => {
+          const assetInDB = await Asset(connect(DB_CONNECTION, portal)).findById(asset?._id);
+          if (assetInDB) {
+            assetInDB.status = 'in_use'; // Update the status
+            if (!assetInDB?.usageLogs || !assetInDB?.usageLogs?.length) {
+              assetInDB.usageLogs = [];
+            }
+            assetInDB.usageLogs.push({
+              startDate: new Date(task?.startDate),
+              endDate: new Date(task?.endDate)
+            });
+            await assetInDB.save();
+            // console.log("Updated asset: ", assetInDB?.assetName);
+          } else {
+            // console.log("Asset not found in DB: ", asset?._id);
+            throw ['not_found_asset_in_task']
+          }
+        });
+
+        await Promise.all(updateAssetsPromises);
+
+      } else {
+        // console.log("Task not found in DB, consider creating a new task.");
+        throw ['not_found_task_in_project']
+      }
+    });
+
+    await Promise.all(updateTasksPromises);
+
+    // Find and return the updated project
+    const updatedProject = await Project(connect(DB_CONNECTION, portal)).findOne({
+      _id: id
+    }).populate({ path: 'kpiTarget.type' }).lean().exec();
+
+    return {
+      projectId: id,
+      proposalData: updatedProject?.proposals
+    }
+    
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+

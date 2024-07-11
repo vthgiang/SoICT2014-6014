@@ -1,6 +1,14 @@
 const moment = require('moment');
+const axios = require('axios');
+
 const {
-    ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, SalesOrder, ManufacturingMill
+    ManufacturingPlan, 
+    OrganizationalUnit, 
+    ManufacturingWorks, 
+    ManufacturingCommand, 
+    SalesOrder, 
+    ManufacturingMill,
+    ManufacturingRouting,
 } = require(`../../../../models`);
 
 const {
@@ -9,10 +17,22 @@ const {
 
 const TaskService = require('../../../task/task-management/task.service');
 const UserService = require('../../../super-admin/user/user.service');
-const { createManufacturingCommand } = require('../manufacturingCommand/manufacturingCommand.service');
-const { bookingManyManufacturingMills, bookingManyWorkerToCommand, deleteCommandFromSchedule } = require('../workSchedule/workSchedule.service');
-const { addManufacturingPlanForGood, removeManufacturingPlanForGood } = require('../../order/sales-order/salesOrder.service');
 
+const { 
+    createManufacturingCommand, 
+} = require('../manufacturingCommand/manufacturingCommand.service');
+const { 
+    bookingManyManufacturingMills, 
+    bookingManyWorkerToCommand, 
+    deleteCommandFromSchedule 
+} = require('../workSchedule/workSchedule.service');
+const { 
+    addManufacturingPlanForGood, 
+    removeManufacturingPlanForGood 
+} = require('../../order/sales-order/salesOrder.service');
+const {
+    getUserByWorksManageRole
+} = require('../manufacturingWorks/manufacturingWorks.service')
 const dayjs = require('dayjs');
 
 function getArrayTimeFromString(stringDate) {
@@ -30,6 +50,35 @@ function getArrayTimeFromString(stringDate) {
 
     return [start, end];
 }
+
+function formatDate (date, monthYear = false) {
+    if (date) {
+      let d = new Date(date)
+      if (monthYear) {
+        return dayjs(d).format('MM-YYYY')
+      } else {
+        return dayjs(d).format('DD-MM-YYYY')
+      }
+    }
+    return date
+}
+
+// Hàm format to YYYY-MM để có thể dụng new Date
+function formatToTimeZoneDate(stringDate) {
+    let dateArray = stringDate.split("-");
+    if (dateArray.length == 3) {
+        let day = dateArray[0];
+        let month = dateArray[1];
+        let year = dateArray[2];
+        return `${year}-${month}-${day}`
+    }
+    else if (dateArray.length == 2) {
+        let month = dateArray[0];
+        let year = dateArray[1];
+        return `${year}-${month}`
+    }
+}
+
 // Hàm check lệnh sản xuất có chậm tiến độ hay không, nhận vào 1 array các lệnh sản xuất
 function checkProgressManufacturingCommand(arrayCommands) {
     let date = new Date(moment().subtract(1, "days"));
@@ -75,45 +124,86 @@ function filterPlansWithProgress(arrayPlans, progress) {
     return arrayPlans;
 }
 
-function convertDateTime(date, time) {
-    return dayjs(date).add(time, 'hour').format('YYYY/MM/DD HH:mm:ss')
+function convertDateTime(dateString, hoursToAdd) {
+    let newDate = new Date(dateString);
+    newDate.setHours(newDate.getHours() + hoursToAdd);
+    return newDate;
 }
 
 const createTaskFromPlan = async (id, portal) => {
     let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById(id);
+
     await Promise.all(manufacturingPlan.manufacturingCommands.map(async (command) => {
         const manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(command);
         
-        if (manufacturingCommand.taskTemplate) {
-            const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById(manufacturingCommand.workOrders[0].manufacturingMill);
-            const manufacturingWork = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(manufacturingMill.manufacturingWorks);
-            const organizationalUnitId = manufacturingWork.organizationalUnit;
-            
-            await Promise.all(manufacturingCommand.workOrders.map(async (wo) => {
-                let newTask = {
-                    name: `Công đoạn ${wo.operation} - ${manufacturingCommand.code}`,
-                    description: 'Công việc tạo tự động từ lệnh sản xuất',
-                    quillDescriptionDefault: '',
-                    startDate: convertDateTime(wo.startDate, wo.startHour),
-                    endDate: convertDateTime(wo.endDate, wo.endHour),
-                    priority: 3,
-                    responsibleEmployees: wo.responsibles,
-                    accountableEmployees: manufacturingCommand.accountables,
-                    consultedEmployees: manufacturingCommand.accountables,
-                    informedEmployees: manufacturingCommand.accountables,
-                    creator: manufacturingPlan.creator,
-                    organizationalUnit: organizationalUnitId,
-                    collaboratedWithOrganizationalUnits: [],
-                    taskTemplate: manufacturingCommand.taskTemplate,
-                    parent: '',
-                    taskProject: '',
-                    tags: [],
-                    taskOutputs: [],
-                    imgs: null
-                } 
-                await TaskService.createTask(portal, newTask);
+        const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById(manufacturingCommand.workOrders[0].manufacturingMill);
+        const manufacturingWork = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(manufacturingMill.manufacturingWorks);
+        const organizationalUnitId = manufacturingWork.organizationalUnit;
+
+        const responsibleTaskTemplate = manufacturingCommand.taskTemplates.responsible;
+        const qualityControlTaskTemplate = manufacturingCommand.taskTemplates.qualityControl;
+
+        await Promise.all(manufacturingCommand.workOrders.map(async (wo) => {
+            await Promise.all(wo.tasks.map(async (task, index) => {
+                if (responsibleTaskTemplate) {
+                    const taskData = {
+                        name: `Công đoạn ${wo.operation} - ${manufacturingCommand.code}`,
+                        description: 'Công việc thực hiện sản xuất',
+                        quillDescriptionDefault: '',
+                        startDate: convertDateTime(task.startDate, task.startHour),
+                        endDate: convertDateTime(task.endDate, task.endHour),
+                        priority: 3,
+                        responsibleEmployees: [task.responsible],
+                        accountableEmployees: manufacturingCommand.accountables,
+                        consultedEmployees: manufacturingCommand.accountables,
+                        informedEmployees: manufacturingCommand.accountables,
+                        creator: manufacturingPlan.creator,
+                        organizationalUnit: organizationalUnitId,
+                        collaboratedWithOrganizationalUnits: [],
+                        taskTemplate: manufacturingCommand.taskTemplates.responsible,
+                        parent: '',
+                        taskProject: '',
+                        tags: [],
+                        taskOutputs: [],
+                        imgs: null
+                    }
+        
+                    const newTask = await TaskService.createTask(portal, taskData)
+                    wo.tasks[index].task = newTask.task._id
+                }
+
+                if (qualityControlTaskTemplate && manufacturingCommand.qualityControlStaffs.length > 0) {
+                    const qualityControlStaffs = manufacturingCommand.qualityControlStaffs.map(x => x.staff);
+                    const taskData = {
+                        name: `Kiểm định chất lượng ${manufacturingCommand.code}`,
+                        description: `Kiểm định chất lưong công đoạn  ${wo.operation} - ${manufacturingCommand.code}`,
+                        quillDescriptionDefault: '',
+                        startDate: manufacturingCommand.startDate,
+                        endDate: manufacturingCommand.endDate,
+                        priority: 3,
+                        responsibleEmployees: qualityControlStaffs,
+                        accountableEmployees: qualityControlStaffs,
+                        consultedEmployees: qualityControlStaffs,
+                        informedEmployees: qualityControlStaffs,
+                        creator: manufacturingPlan.creator,
+                        organizationalUnit: organizationalUnitId,
+                        collaboratedWithOrganizationalUnits: [],
+                        taskTemplate: manufacturingCommand.taskTemplates.qualityControl,
+                        parent: '',
+                        taskProject: '',
+                        tags: [],
+                        taskOutputs: [],
+                        imgs: null
+                    }
+                    const newTasks = await TaskService.createTask(portal, taskData)
+                    wo.qualityControlTasks.push(newTasks.task._id)
+                }
             }))
-        }
+
+            await wo.save()
+        }))
+
+        await manufacturingCommand.save()
     }))
 }
 
@@ -160,11 +250,19 @@ exports.createManufacturingPlan = async (data, portal) => {
     for (let i = 0; i < manufacturingCommands.length; i++) {
         manufacturingCommands[i].manufacturingPlan = newManufacturingPlan._id;
         manufacturingCommands[i].creator = data.creator;
-        manufacturingCommands[i].creator = data.approvers;
+        manufacturingCommands[i].approver = data.approvers;
         await createManufacturingCommand(manufacturingCommands[i], portal);
     }
-    await bookingManyManufacturingMills(listMillSchedules, portal);
-    await bookingManyWorkerToCommand(arrayWorkerSchedules, portal);
+
+    // manual manufacturing schedule
+    if (listMillSchedules) {
+        await bookingManyManufacturingMills(listMillSchedules, portal);
+    }
+
+    if (arrayWorkerSchedules) {
+        await bookingManyWorkerToCommand(arrayWorkerSchedules, portal);
+    }
+    
     if (data.salesOrders.length) {
         for (let i = 0; i < data.salesOrders.length; i++) {
             await addManufacturingPlanForGood(data.salesOrders[i], manufacturingWorksId, newManufacturingPlan._id, portal);
@@ -173,6 +271,172 @@ exports.createManufacturingPlan = async (data, portal) => {
 
     return { manufacturingPlan }
 }
+
+exports.createAutomaticSchedule = async (data, portal) => {
+    planStartDate = formatToTimeZoneDate(data.startDate);
+    let approvedCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find({
+            status: {
+                $in: [2, 3]
+            },
+            endDate: {
+                $gt: new Date(planStartDate)
+            }
+        })
+    
+    let unapprovedCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find({
+            status: {
+                $in: [1, 6]
+            },
+            endDate: {
+                $gt: new Date(planStartDate)
+            }
+        })
+        .populate([{
+            path: "manufacturingRouting",
+            select: "operations"
+        }, {
+            path: "manufacturingPlan",
+            select: "startDate endDate"
+        }])
+    
+
+    approvedCommands = approvedCommands?.map(command => {     
+        return ({
+            id: 1,
+            command_id: command._id,
+            quantity: command.quantity,
+            status: "inprogress",
+            start_date: formatDate(command.startDate),
+            end_date: formatDate(command.endDate),
+            workOrders: command.workOrders.map((wo, index) => ({
+                "_id": `${index}`,
+                "tasks": wo.tasks.map(task => ({
+                    machine_id: task.machine,
+                    worker_id: task.responsible,
+                    start_date: formatDate(task.startDate),
+                    start_hours: task.startHour,
+                    end_date: formatDate(task.endDate),
+                    end_hours: task.endHour
+                }))
+            }))
+        })
+    })
+
+    unapprovedCommands = unapprovedCommands?.map(command => {
+        const operations = command.manufacturingRouting.operations.map(o => ({
+            id: o.id,
+            _id: o._id,
+            resources: o.resources.map(r => ({
+                machine_id: r.machine,
+                hprs: r.hourProduction,
+                costPerHour: r.costPerHour,
+                minExp: r.minExpYear,
+                role: r.workerRole
+            })),
+            prevOperation: o.prevOperation
+        }))
+
+        return ({
+            command_id: command._id,
+            quantity: command.quantity,
+            status: "new",
+            start_date: formatDate(command.manufacturingPlan.startDate),
+            end_date: formatDate(command.manufacturingPlan.endDate),
+            operations
+        })
+    })
+    
+    const newCommands = await Promise.all(data.manufacturingCommands.map(async (command, index) => {
+        const routing = await ManufacturingRouting(connect(DB_CONNECTION, portal))
+            .findById(command.routingId);
+        
+        const operations = routing.operations.map(o => ({
+            id: o.id,
+            _id: o._id,
+            resources: o.resources.map(r => ({
+                machine_id: r.machine,
+                hprs: r.hourProduction,
+                costPerHour: r.costPerHour,
+                minExp: r.minExpYear,
+                role: r.workerRole
+            })),
+            prevOperation: o.preOperation
+        }));
+        return ({
+            command_id: `${index}`,
+            quantity: command.quantity,
+            status: "new",
+            start_date: data.startDate,
+            end_date: data.endDate,
+            operations
+        });
+    }));
+
+
+    const userRes = await getUserByWorksManageRole(data.currentRole, portal)
+
+    let workerCount = 1
+    const workers = userRes.employees.map(employee => ({
+        id: workerCount++,
+        worker_id: employee.userId._id,
+        name: employee.userId.name,
+        exp: 5,
+        baseSalary: 14000,
+        role: employee.roleId._id
+    }))
+
+    const allCommands = [...approvedCommands, ...unapprovedCommands, ...newCommands]
+
+    const dataToSave = {
+        commands: [allCommands],
+        workers
+    };
+    
+    const res = await axios.post('http://localhost:8080/api/dxclan/production_schedule', {
+        commands: allCommands,
+        workers
+    })
+
+    const schedule = res.data.content.schedule
+
+    const affectedCommands = await Promise.all(
+        schedule
+            .filter(command => command.id.length > 10)
+            .map(async (command) => {
+                const manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+                    .findById(command.id)
+                const workOrders = command.workOrders.map(wo => {
+                    const foundWorkOrder = manufacturingCommand.workOrders
+                        .find(x => x.operationId == wo.id)
+
+                    return {
+                       ...wo,
+                       operation: foundWorkOrder?.operation,
+                       operationId: foundWorkOrder?.operationId,
+                       manufacturingMill: foundWorkOrder?.manufacturingMill._id
+                    }
+                })
+
+                return {
+                    ...command,
+                    _id: manufacturingCommand._id, 
+                    code: manufacturingCommand.code,
+                    workOrders
+                }
+            })
+    );
+
+    const createdCommands = schedule
+        .filter(command => command.id.length < 10)
+        .map(command => ({
+            ...command,
+            id: parseInt(command.id)
+        }))
+    return { schedule: { affectedCommands, createdCommands }}
+}
+
 
 exports.getAllManufacturingPlans = async (query, portal) => {
     let { code, manufacturingOrderCode, salesOrderCode, commandCode, manufacturingWorks
@@ -476,19 +740,20 @@ exports.editManufacturingPlan = async (id, data, portal) => {
     if (data.approvers) {
         let index = findIndexOfApprover(oldPlan.approvers, data.approvers.approver);
         if (index !== -1) {
-            oldPlan.approvers[index].approvedTime = new Date(Date.now());
+            // oldPlan.approvers[index].approvedTime = new Date(Date.now());
         }
-        if (checkApproved(oldPlan)) {
-            oldPlan.status = 2;
+        // if (checkApproved(oldPlan)) {
+
             let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal)).find({
                 manufacturingPlan: oldPlan._id
             });
             await createTaskFromPlan(oldPlan._id, portal); // Tạo công việc từ kế hoạch cho từng công đoạn SX
+            // oldPlan.status = 2; // Đã duyệt
             manufacturingCommands.map(x => {
                 x.status = 1;
                 x.save();
             })
-        }
+        // }
     } else {
         oldPlan.approvers = oldPlan.approvers;
     }

@@ -1,5 +1,6 @@
 :root {
     --primary: #3c8dbc;
+    --secondary: #ffc107;
 }
 
 /* React flow */
@@ -69,14 +70,13 @@
 .node-item .node-item-wrapper {
     padding: 5px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 4px;
 }
 
 .node-item .node-item_image {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     object-fit: contain;
 
 }
@@ -88,21 +88,39 @@
 .operation-node {
     height: 100%;
     padding: 2px 4px;
-    border: 0.1rem dashed var(--primary);    
+    border-radius: 0.4rem;
+    border: 0.2rem solid var(--primary);    
 }
 
 .operation-node .node-header {
-    font-size: 10px;
+    font-size: 14px;
     text-align: center;
     font-weight: 600;
     color: var(--primary);
 }
 .operation-node .node-item_list {
     display: flex;
-    max-width: 150px;
+    flex-direction: column;
+    min-width: 80px;
 }
 .operation-node .node-item_content {
+    font-size: 12px;
     text-align: center;
+    font-weight: 600;
+}
+
+.quality-control-node {
+    height: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 0.2rem solid var(--secondary);    
+    background-color: var(--secondary);
+}
+
+
+.quality-control-node span {
+    transform: rotate(-45deg);
+    z-index: 1;
 }
 
 /* Edge button */

@@ -10,12 +10,15 @@ import { convertToDate, getListDepartments } from "../../projects/components/fun
 import { UserActions } from "../../../super-admin/user/redux/actions"
 import getEmployeeSelectBoxItems from "../../../task/organizationalUnitHelper"
 import { createUnitKpiActions } from "../../../kpi/organizational-unit/creation/redux/actions"
+import KPIDetailModal from "./kpiDetailModal"
+import { PROJECT_ACTION_FORM } from "../../projects/constants"
 
 
 const ProjectGeneralInfoTab = (props) => {
   const {
     translate,
     projectId,
+    projectEdit,
     actionType,
     user,
     organizationalUnitKpiSets,
@@ -185,6 +188,10 @@ const ProjectGeneralInfoTab = (props) => {
     })
   }
 
+  const openKPIModal = (id) => {
+    window.$(`#${id}`).modal('show')
+  }
+
 
 
   return (
@@ -328,6 +335,7 @@ const ProjectGeneralInfoTab = (props) => {
                     id={`${actionType}-select-kpi-unit-${projectId}`}
                     className="form-control select2"
                     style={{ width: '100%' }}
+                    disabled={actionType === PROJECT_ACTION_FORM.EDIT && projectEdit && projectEdit?.status === 'inprocess'}
                     items={organizationalUnitKpiSets}
                     onChange={(e) => handleChangeKPIUnit(e, organizationalUnitKpiSets)}
                     multiple={false}
@@ -350,6 +358,15 @@ const ProjectGeneralInfoTab = (props) => {
                   {'Giá trị KPI Mục tiêu'}
                   <span className='text-red'>*</span>
                 </label>
+                <span className="pl-5">
+                  <a 
+                    className="inline-block cursor-pointer ml-2" 
+                    onClick={() => openKPIModal(`project-kpi-modal-${actionType}-${projectId}`)}
+                    aria-haspopup="true"
+                    aria-expanded="true"
+                  > Xem thông tin chi tiết
+                  </a>
+                </span>
                 {/* <ErrorLabel content={'TODO'} /> */}
                 <table id='project-table-kpi-target' className='table table-striped table-bordered table-hover'>
                   <thead>
@@ -392,11 +409,12 @@ const ProjectGeneralInfoTab = (props) => {
                           <ErrorLabel content={kpisTargetErrors[index]} />
                         </tr>
                       </React.Fragment>
-
                     ))}
                   </tbody>
                 </table>                
-
+                {kpisTarget && kpisTarget?.length > 0 && 
+                  <KPIDetailModal kpisTarget={kpisTarget} modalId={`project-kpi-modal-${actionType}-${projectId}`} />
+                }
               </div>
             </div>
 

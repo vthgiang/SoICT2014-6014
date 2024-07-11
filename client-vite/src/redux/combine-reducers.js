@@ -116,6 +116,8 @@ import { binLocations } from '../modules/production/warehouse/bin-location-manag
 import { lots } from '../modules/production/warehouse/inventory-management/redux/reducers'
 import { stocks } from '../modules/production/warehouse/stock-management/redux/reducers'
 import { storage } from '../modules/production/warehouse/storage-management/redux/reducers'
+import { routes } from '../modules/production/warehouse/route-picking-management/redux/reducers'
+
 import {inventoryForecast} from '../modules/production/warehouse/inventory-forecast/redux/reducers'
 // crm
 import { cares } from '../modules/crm/care/redux/reducers'
@@ -174,6 +176,8 @@ import { manufacturingQualityError } from '../modules/production/manufacturing/m
 import { manufacturingQualityCriteria } from '../modules/production/manufacturing/manufacturing-quality/manufacturing-quality-criteria/redux/reducers'
 import { manufacturingQualityInspection } from '../modules/production/manufacturing/manufacturing-quality/manufacturing-quality-inspection/redux/reducers'
 import { manufacturingRouting } from '../modules/production/manufacturing/manufacturing-routing/redux/reducers'
+import { manufacturingMetric } from '../modules/production/manufacturing/manufacturing-performance/redux/reducers'
+import { qualityDasboard } from '../modules/production/manufacturing/manufacturing-quality/manufacturing-quality-dashboard/redux/reducers'
 // Transport
 import { transportDepartment } from '../modules/production/transport/transport-department/redux/reducers'
 import { transportPlan } from '../modules/production/transport/transport-plan/redux/reducers'
@@ -348,6 +352,7 @@ const appReducer = combineReducers({
   bills,
   requestManagements,
   storage,
+  routes,
   inventoryForecast,
   // customer management
   crm: combineReducers({
@@ -402,6 +407,8 @@ const appReducer = combineReducers({
   manufacturingQualityCriteria,
   manufacturingQualityInspection,
   manufacturingRouting,
+  manufacturingMetric,
+  qualityDasboard,
 
   // production - transport
 
