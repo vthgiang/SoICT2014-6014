@@ -60,7 +60,7 @@ const handleStartAssignAllocation = async (portal, responseServerOutput, respons
     const { listEnterpriseUnit, listResource, listEnterpriseGoal } = responseInput;
     const { list_unit_kpi, list_resource_kpi, list_task } = responseServerOutput.content;
     const [year, month] = stringDate.split('-').map(Number);
-    const createdDate = new Date(year, month, 1); // Note: Months are zero-indexed
+    const createdDate = new Date(year, month - 1, 1); // Note: Months are zero-indexed
 
     const parseDateString = (dateString) => {
       const [day, month, year, time] = dateString.split(/[- :]/);
