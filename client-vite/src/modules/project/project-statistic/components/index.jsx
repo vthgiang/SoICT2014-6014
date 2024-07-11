@@ -182,7 +182,7 @@ function ProjectStatisticPage(props) {
     const employeesData = employeesManager?.listAllEmployees
     
     let listEmployeeIsWorking = []
-    if (projectData && projectData?.length && projectInProcess && projectInProcess?.length) {
+    if (projectData && projectData?.length && projectInProcess && projectInProcess?.length && employeesData) {
       for (let i = 0; i < projectInProcess?.length; i++) {
         let projectInProcessItem = projectInProcess[i]
         const usersInProject = projectInProcessItem?.usersInProject.map((item) => item?.employeeId) ?? []
@@ -198,6 +198,15 @@ function ProjectStatisticPage(props) {
       const numberOfIsWorking = listEmployeeIsWorking?.length
       const numberOfReadyToAssign = totalEmp - numberOfIsWorking
      
+      setEmployeeStatistic({
+        total: totalEmp,
+        numberOfIsWorking: numberOfIsWorking,
+        numberOfReadyToAssign: numberOfReadyToAssign
+      })
+    } else if (employeesData && employeesData?.length) {
+      const totalEmp = employeesData?.length
+      const numberOfIsWorking = listEmployeeIsWorking?.length
+      const numberOfReadyToAssign = totalEmp - numberOfIsWorking
       setEmployeeStatistic({
         total: totalEmp,
         numberOfIsWorking: numberOfIsWorking,

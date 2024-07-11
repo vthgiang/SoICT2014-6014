@@ -391,16 +391,26 @@ exports.proposalForProject = async (portal, id, data) => {
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
 
-    const kpiInPast = getLastKPIAndAvailableEmpsInTasks(job.tasks, allTasksInPast, job.employees)
+    const kpiInPast = getLastKPIAndAvailableEmpsInTasks(job.tasks, allTasksInPast, job.employees)    
 
-    const allTasksOutOfProject = await Task(connect(DB_CONNECTION, portal)).find({
+    let allTasksOutOfProjectAll = await Task(connect(DB_CONNECTION, portal)).find({
       status: 'inprocess',
-      taskProject: { $ne: id }
+      taskProject: { $ne: id },
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
     
-    // console.log("allTasksOutOfProject: ", allTasksOutOfProject?.length)
-    
+    let allTasksOutOfProject = allTasksOutOfProjectAll && allTasksOutOfProjectAll?.length ? allTasksOutOfProjectAll.filter((item) => {
+      let flag = false
+      for (let i = 0; i < job.employees?.length; i++) {
+        let employeeId = job.employees[i]?._id
+        if (String(item?.assignee) === String(employeeId)) {
+          flag = true
+          break
+        }
+      }
+      return flag
+    }) : []
+        
     // const DLHS_Arguments = initDLHS_Arguments()
     let initArguments = {}
     if (!algorithmParams) {
