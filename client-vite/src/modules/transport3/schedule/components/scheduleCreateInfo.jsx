@@ -8,7 +8,7 @@ import {vehicleActions} from '@modules/transport3/vehicle/redux/actions';
 const ScheduleCreateInfo = (props) => {
   const dispatch = useDispatch();
   const listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules) || [];
-  const listOrdered = listSchedules.map(schedule => schedule.orders).flat().map(order => order.order._id);
+  const listOrdered = listSchedules.map(schedule => schedule.orders).flat().map(order => order.order?._id);
   const listOrders = useSelector(state => state.orders.listOrders)
     .filter(order => order.status === 2 && order.transportType !== 3).filter(order => !listOrdered.includes(order._id));
   const listVehicle = useSelector(state => state.T3vehicle.listVehicle)

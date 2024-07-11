@@ -1,39 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import { connect, useDispatch, useSelector } from 'react-redux'
-import { withTranslate } from 'react-redux-multilingual'
+import React, {useEffect, useState} from 'react'
+import {connect, useDispatch, useSelector} from 'react-redux'
+import {withTranslate} from 'react-redux-multilingual'
 //Actions
-import { OrderActions } from '../redux/actions'
-import { RoleActions } from '@modules/super-admin/role/redux/actions'
-import { StockActions } from '@modules/production/warehouse/stock-management/redux/actions'
-import { UserActions } from '@modules/super-admin/user/redux/actions'
-import { GoodActions } from '@modules/production/common-production/good-management/redux/actions'
-import { LotActions } from '@modules/production/warehouse/inventory-management/redux/actions'
-import { ScheduleActions } from '@modules/transport3/schedule/redux/actions';
-import { CrmCustomerActions } from '@modules/crm/customer/redux/actions'
+import {OrderActions} from '../redux/actions'
+import {RoleActions} from '@modules/super-admin/role/redux/actions'
+import {StockActions} from '@modules/production/warehouse/stock-management/redux/actions'
+import {UserActions} from '@modules/super-admin/user/redux/actions'
+import {GoodActions} from '@modules/production/common-production/good-management/redux/actions'
+import {LotActions} from '@modules/production/warehouse/inventory-management/redux/actions'
+import {CrmCustomerActions} from '@modules/crm/customer/redux/actions'
 
 //Helper Function
-import { formatDate } from '@helpers/formatDate'
-import { generateCode } from '@helpers/generateCode'
+import {formatDate} from '@helpers/formatDate'
+import {generateCode} from '@helpers/generateCode'
 //Components Import
 import {
   PaginateBar,
-  DataTableSetting,
-  SelectMulti,
+  DataTableSetting, DeleteNotification,
 } from '@common-components'
 import OrderCreateForm from './orderCreateForm'
-import { getTableConfiguration } from '@helpers/tableConfiguration'
-import OrderDetail from '@modules/transport3/order/components/orderDetail.jsx';
-import { getAllSchedule } from '../../schedule/redux/services'
-import { schemeYlGn } from 'd3'
+import {getTableConfiguration} from '@helpers/tableConfiguration'
+import OrderDetail from '@modules/transport3/order/components/orderDetail';
+import OrderEdit from '@modules/transport3/order/components/orderEdit.jsx';
 
 function OrderTable(props) {
   const TableId = 'order-table'
-  const defaultConfig = { limit: 5 }
+  const defaultConfig = {limit: 10}
   const Limit = getTableConfiguration(TableId, defaultConfig).limit
 
-  let listSchedules = useSelector(state => state.T3schedule.listSchedules.schedules)
-  let T3orders = useSelector(state => state.T3order)
-  // console.log(listSchedules)
   let dispatch = useDispatch()
   const currentRole = localStorage.getItem('currentRole')
   const userdepartments = useSelector((state) => state.user.userdepartments)
@@ -48,12 +42,12 @@ function OrderTable(props) {
   })
 
   useEffect(() => {
-    const { page, limit, currentRole } = state
-    props.getCustomers({ getAll: true })
+    const {page, limit, currentRole} = state
+    props.getCustomers({getAll: true})
 
-    props.getAllStocks({ managementLocation: currentRole })
+    props.getAllStocks({managementLocation: currentRole})
     props.getUser()
-    props.getGoodsByType({ type: 'product' })
+    props.getGoodsByType({type: 'product'})
     props.getAllOrder()
   }, [])
 
@@ -62,7 +56,7 @@ function OrderTable(props) {
   }, [dispatch])
   const handleClickCreateCode = () => {
     setState((state) => {
-      return { ...state, code: generateCode('TP_') }
+      return {...state, code: generateCode('TP_')}
     })
   }
 
@@ -71,11 +65,6 @@ function OrderTable(props) {
       ...state,
       page: page
     })
-    const data = {
-      limit: state.limit,
-      page: page,
-      currentRole: state.currentRole
-    }
   }
 
   const setLimit = async (limit) => {
@@ -83,16 +72,11 @@ function OrderTable(props) {
       ...state,
       limit: limit
     })
-    const data = {
-      limit: limit,
-      page: state.page,
-      currentRole: state.currentRole
-    }
   }
 
 
   const handleOrderCodeChange = (e) => {
-    let { value } = e.target
+    let {value} = e.target
     setState({
       ...state,
       codeQuery: value
@@ -101,15 +85,8 @@ function OrderTable(props) {
 
 
   const handleSubmitSearch = () => {
-    let { limit, page, codeQuery, status, customer } = state
-    const data = {
-      limit,
-      page,
-      code: codeQuery,
-      status,
-      customer,
-      currentRole: state.currentRole
-    }
+    dispatch(OrderActions.getAllOrder({query: state.codeQuery}))
+    setPage(1);
   }
 
   const handleShowDetailInfo = (request) => {
@@ -120,6 +97,14 @@ function OrderTable(props) {
     window.$(`#modal-detail-order`).modal('show')
   }
 
+  const handleShowEditInfo = (request) => {
+    setState({
+      ...state,
+      currentDetail: request,
+    });
+    window.$(`#modal-edit-order`).modal('show')
+  }
+
   const createDirectly = () => {
     window.$('#modal-add-order').modal('show')
   }
@@ -128,11 +113,10 @@ function OrderTable(props) {
     dispatch(OrderActions.retrainingModel())
   }
 
-  let { limit, code, tableId } = state
-  const { translate, orders } = props
-  const { totalPages, page } = orders
+  let {limit, code, tableId, page} = state
+  const {translate, orders} = props
 
-  let { listOrders } = orders
+  let {listOrders} = orders
 
   const columns = [
     'STT',
@@ -165,19 +149,34 @@ function OrderTable(props) {
   }
 
   const isManager = () => {
-    if (userdepartments?.managers[currentRole]) {
-      return true
-    }
-    return false
+    return !!userdepartments?.managers[currentRole];
+
   }
 
+  let pageTotal = Math.ceil(listOrders.filter((item) => item.status !== 1).length / limit);
+  const listData = listOrders
+    .filter((item) => item.status !== 1)
+    .sort((a, b) => a.status - b.status)
+    .sort((a, b) => b.priority - a.priority)
+    .slice((page - 1) * limit, (page - 1) * limit + limit);
+
+  let listNotApproved = listOrders.filter((item) => item.status === 1);
+
+  const handleApproveOrder = (order) => {
+    dispatch(OrderActions.approveOrder(order._id));
+    dispatch(OrderActions.getAllOrder({query: state.codeQuery}));
+  }
+
+  const handleDeleteOrder = (order) => {
+    dispatch(OrderActions.deleteOrder(order._id));
+    dispatch(OrderActions.getAllOrder({query: state.codeQuery}));
+  }
   return (
     <>
       <div className="nav-tabs-custom">
-        {console.log(userdepartments)}
         <div className="box-body qlcv">
           <div className="form-inline">
-            <div className="dropdown pull-right" style={{ marginTop: 5 }}>
+            <div className="dropdown pull-right" style={{marginTop: 5}}>
               <button
                 type="button"
                 className="btn btn-success dropdown-toggle pull-right"
@@ -188,25 +187,25 @@ function OrderTable(props) {
               >
                 Thêm vận đơn mới
               </button>
-              <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+              <ul className="dropdown-menu pull-right" style={{marginTop: 0}}>
                 <li>
-                  <a style={{ cursor: 'pointer' }} title={`Thêm từ đơn hàng`}>
+                  <a style={{cursor: 'pointer'}} title={`Thêm từ đơn hàng`}>
                     Thêm từ đơn hàng
                   </a>
                 </li>
                 <li>
-                  <a style={{ cursor: 'pointer' }} title={`Thêm trực tiếp`} onClick={createDirectly}>
+                  <a style={{cursor: 'pointer'}} title={`Thêm trực tiếp`} onClick={createDirectly}>
                     Thêm trực tiếp
                   </a>
                 </li>
                 <li>
-                  <a style={{ cursor: 'pointer' }} title={`Thêm từ file`}>
+                  <a style={{cursor: 'pointer'}} title={`Thêm từ file`}>
                     Thêm từ file
                   </a>
                 </li>
               </ul>
             </div>
-            {isManager() && <div className="dropdown pull-right" style={{ marginTop: 5 }}>
+            {isManager() && <div className="dropdown pull-right" style={{marginTop: 5, marginRight: 10}}>
               <button
                 type="button"
                 className="btn btn-success dropdown-toggle pull-right"
@@ -218,18 +217,19 @@ function OrderTable(props) {
             </div>}
 
           </div>
-          <OrderCreateForm code={code} />
-          <OrderDetail order={state.currentDetail} />
+          <OrderCreateForm code={code}/>
+          <OrderDetail order={state.currentDetail}/>
+          <OrderEdit order={state.currentDetail}/>
           {/* Tim kiem */}
           <div className="form-inline">
             <div className="form-group">
-              <label className="form-control-static">Mã đơn</label>
+              <label className="form-control-static">Tìm kiếm</label>
               <input
                 type="text"
                 className="form-control"
                 name="codeQuery"
                 onChange={handleOrderCodeChange}
-                placeholder="Nhập vào mã đơn"
+                placeholder="Nhập vào mã đơn hoặc tên khách hàng"
                 autoComplete="off"
               />
             </div>
@@ -239,12 +239,14 @@ function OrderTable(props) {
               </button>
             </div>
           </div>
-          {/* Bang */}
-          <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
-            <thead>
+          {/* Bang Chua Duyet*/}
+          <fieldset className="scheduler-border">
+            <legend className="scheduler-border">Vận đơn chưa duyệt</legend>
+            <table id={tableId} className="table table-striped table-bordered table-hover" style={{marginTop: 20}}>
+              <thead>
               <tr>
                 {columns.map((column, index) => (
-                  <th key={index}>{column}</th>
+                  <th className={'text-center'} key={index}>{column}</th>
                 ))}
                 <th
                   style={{
@@ -260,52 +262,143 @@ function OrderTable(props) {
                   />
                 </th>
               </tr>
-            </thead>
-            <tbody>
-            {typeof listOrders !== 'undefined' &&
-              listOrders.length !== 0 &&
-              listOrders.map((item, index) => (
-                <tr key={index}>
-                  <td>{index + 1 + (page || 1 - 1) * limit || 0}</td>
-                  <td>{item.code ? item.code : ''}</td>
-                  <td>{item.transportType ? transportType[item.transportType] : ''}</td>
-                  <td>{item.customer ? item.customer.name : ''}</td>
-                  <td>{item.address ? item.address : ''}</td>
-                  <td>{item.priority ? priority[item.priority] : ''}</td>
-                  <td>{item.status ? status[item.status] : ''}</td>
-                  <td>{item.deliveryTime ? formatDate(item.deliveryTime) : '---'}</td>
-                  <td
-                    style={{
-                      textAlign: 'center'
-                    }}
-                  >
-                    <a onClick={() => handleShowDetailInfo(item)}>
-                      <i className="material-icons">view_list</i>
-                    </a>
-                    {/* Sửa đơn sau khi đã phê duyệt */}
-                    {/*{item.status !== 1 && item.status !== 8 && item.status !== 7 && (*/}
-                    {/*  <a*/}
-                    {/*    onClick={() => handleEditOrderAfterApprove(item)}*/}
-                    {/*    className='edit text-yellow'*/}
-                    {/*    style={{ width: '5px' }}*/}
-                    {/*    title='Sửa đơn'*/}
-                    {/*  >*/}
-                    {/*    <i className='material-icons'>edit</i>*/}
-                    {/*  </a>*/}
-                    {/*)}*/}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {orders.isLoading ? (
-            <div className="table-info-panel">{translate('confirm.loading')}</div>
-          ) : (
-            (typeof listOrders === 'undefined' || listOrders.length === 0) && (
-              <div className="table-info-panel">{translate('confirm.no_data')}</div>
-            )
-          )}
-          <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={setPage} />
+              </thead>
+              <tbody>
+              {typeof listOrders !== 'undefined' &&
+                listNotApproved.length !== 0 &&
+                listNotApproved.map((item, index) => (
+                  <tr key={index}>
+                    <td className={'text-center'}>{index + 1 + (page - 1) * limit}</td>
+                    <td className={'text-center'}>{item.code ? item.code : ''}</td>
+                    <td className={'text-center'}>{item.transportType ? transportType[item.transportType] : ''}</td>
+                    <td>{item.customer ? item.customer.name : ''}</td>
+                    <td>{item.address ? item.address : ''}</td>
+                    <td className={'text-center'}>{item.priority ? priority[item.priority] : ''}</td>
+                    <td className={'text-center'}>{item.status ? status[item.status] : ''}</td>
+                    <td
+                      className={'text-center'}>{item.deliveryTime ? formatDate(new Date(item.deliveryTime * 1000)) : '---'}</td>
+                    <td className={'text-center'}>
+                      {/*  Phe duyet*/}
+                      <a
+                        onClick={() => handleApproveOrder(item)}
+                        className="edit text-green"
+                        style={{width: '5px'}}
+                        title="Phê duyệt"
+                      >
+                        <i className="material-icons">check</i>
+                      </a>
+                      <a
+                        style={{width: '5px'}}
+                        title="Chi tiết"
+                        onClick={() => handleShowDetailInfo(item)}>
+                        <i className="material-icons">view_list</i>
+                      </a>
+                      {/*  Sua*/}
+                        <a
+                            onClick={() => handleShowEditInfo(item)}
+                            className="edit text-yellow"
+                            style={{width: '5px'}}
+                            title="Sửa vận đơn"
+                        >
+                            <i className="material-icons">edit</i>
+                        </a>
+                      {/*  Xoa*/}
+                      <DeleteNotification
+                        content={'Xác nhận xóa vận đơn?'}
+                        data={{id: item._id}}
+                        func={handleDeleteOrder}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {orders.isLoading ? (
+              <div className="table-info-panel">{translate('confirm.loading')}</div>
+            ) : (
+              (typeof listNotApproved === 'undefined' || listNotApproved.length === 0) && (
+                <div className="table-info-panel">{translate('confirm.no_data')}</div>
+              )
+            )}
+          </fieldset>
+          {/* Bang Da Duyet*/}
+          <fieldset className="scheduler-border">
+            <legend className="scheduler-border">Danh sách vận đơn</legend>
+            <table id={tableId} className="table table-striped table-bordered table-hover" style={{marginTop: 20}}>
+              <thead>
+              <tr>
+                {columns.map((column, index) => (
+                  <th className={'text-center'} key={index}>{column}</th>
+                ))}
+                <th
+                  style={{
+                    width: '120px',
+                    textAlign: 'center'
+                  }}
+                >
+                  {translate('table.action')}
+                  <DataTableSetting
+                    tableId={tableId}
+                    columnArr={columns}
+                    setLimit={setLimit}
+                  />
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              {typeof listOrders !== 'undefined' &&
+                listOrders.length !== 0 &&
+                listData.map((item, index) => (
+                  <tr key={index}>
+                    <td className={'text-center'}>{index + 1 + (page - 1) * limit}</td>
+                    <td className={'text-center'}>{item.code ? item.code : ''}</td>
+                    <td className={'text-center'}>{item.transportType ? transportType[item.transportType] : ''}</td>
+                    <td>{item.customer ? item.customer.name : ''}</td>
+                    <td>{item.address ? item.address : ''}</td>
+                    <td className={'text-center'}>{item.priority ? priority[item.priority] : ''}</td>
+                    <td className={'text-center'}>{item.status ? status[item.status] : ''}</td>
+                    <td
+                      className={'text-center'}>{item.deliveryTime ? formatDate(new Date(item.deliveryTime * 1000)) : '---'}</td>
+                    <td
+                      style={{
+                        textAlign: 'center'
+                      }}
+                    >
+                      <a
+                        style={{width: '5px'}}
+                        title="Chi tiết"
+                        onClick={() => handleShowDetailInfo(item)}>
+                        <i className="material-icons">view_list</i>
+                      </a>
+                      {/*  Sua*/}
+                      <a
+                        onClick={() => handleShowEditInfo(item)}
+                        className="edit text-yellow"
+                        style={{width: '5px'}}
+                        title="Sửa vận đơn"
+                      >
+                        <i className="material-icons">edit</i>
+                      </a>
+                      {/*  Xoa*/}
+                      <DeleteNotification
+                        content={'Xác nhận xóa vận đơn?'}
+                        data={{id: item._id}}
+                        func={handleDeleteOrder}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {orders.isLoading ? (
+              <div className="table-info-panel">{translate('confirm.loading')}</div>
+            ) : (
+              (typeof listOrders === 'undefined' || listOrders.length === 0) && (
+                <div className="table-info-panel">{translate('confirm.no_data')}</div>
+              )
+            )}
+            <PaginateBar pageTotal={pageTotal} currentPage={page} func={setPage}/>
+          </fieldset>
         </div>
       </div>
     </>
@@ -313,9 +406,9 @@ function OrderTable(props) {
 }
 
 function mapStateToProps(state) {
-  const { customers } = state.crm
-  const { orders, schedules, department, role, auth } = state
-  return { orders, schedules, customers, department, role, auth }
+  const {customers} = state.crm
+  const {orders, schedules, department, role, auth} = state
+  return {orders, schedules, customers, department, role, auth}
 }
 
 const mapDispatchToProps = {

@@ -798,3 +798,7 @@ input[type="text"] {
         width: 100%;
     }
 }
+
+.swal2-html-container::-webkit-scrollbar {
+    display: none;
+}
