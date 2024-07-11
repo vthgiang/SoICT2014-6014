@@ -209,20 +209,11 @@ app.use('/purchasing-request', require('./modules/production/manufacturing/purch
 app.use('/work-schedule', require('./modules/production/manufacturing/workSchedule/workSchedule.route'));
 app.use('/manufacturing-plan', require('./modules/production/manufacturing/manufacturingPlan/manufacturingPlan.route'));
 app.use('/manufacturing-command', require('./modules/production/manufacturing/manufacturingCommand/manufacturingCommand.route'));
-app.use(
-    '/manufacturing-quality/error',
-    require('./modules/production/manufacturing/manufacturingQuality/manufacturingQualityError/manufacturingQualityError.route')
-);
-app.use(
-    '/manufacturing-quality/criteria',
-    require('./modules/production/manufacturing/manufacturingQuality/manufacturingQualityCriteria/manufacturingQualityCriteria.route')
-);
-app.use(
-    '/manufacturing-quality/inspection',
-    require('./modules/production/manufacturing/manufacturingQuality/manufacturingQualityInspection/manufacturingQualityInspection.route')
-);
+app.use('/manufacturing-quality/error', require('./modules/production/manufacturing/manufacturingQuality/manufacturingQualityError/manufacturingQualityError.route'));
+app.use('/manufacturing-quality/criteria', require('./modules/production/manufacturing/manufacturingQuality/manufacturingQualityCriteria/manufacturingQualityCriteria.route'));
+app.use('/manufacturing-quality/inspection', require('./modules/production/manufacturing/manufacturingQuality/manufacturingQualityInspection/manufacturingQualityInspection.route'));
 app.use('/manufacturing-routing', require('./modules/production/manufacturing/manufacturingRouting/manufacturingRouting.route'));
-
+app.use('/manufacturing-metric', require('./modules/production/manufacturing/manufacturingMetric/manufacturingMetric.router'))
 //order
 app.use('/quote', require('./modules/production/order/quote/quote.route'));
 app.use('/coin-rule', require('./modules/production/order/coin-rule/coinRule.route'));

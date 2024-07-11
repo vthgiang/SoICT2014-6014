@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Popover, Box, Grid } from "@mui/material";
+import { Popover, Grid } from "@mui/material";
 import styles from "./index.module.css";
 
 const ThemeItem = ({ theme, onSelectTheme }) => {

@@ -176,6 +176,8 @@ import { manufacturingQualityError } from '../modules/production/manufacturing/m
 import { manufacturingQualityCriteria } from '../modules/production/manufacturing/manufacturing-quality/manufacturing-quality-criteria/redux/reducers'
 import { manufacturingQualityInspection } from '../modules/production/manufacturing/manufacturing-quality/manufacturing-quality-inspection/redux/reducers'
 import { manufacturingRouting } from '../modules/production/manufacturing/manufacturing-routing/redux/reducers'
+import { manufacturingMetric } from '../modules/production/manufacturing/manufacturing-performance/redux/reducers'
+import { qualityDasboard } from '../modules/production/manufacturing/manufacturing-quality/manufacturing-quality-dashboard/redux/reducers'
 // Transport
 import { transportDepartment } from '../modules/production/transport/transport-department/redux/reducers'
 import { transportPlan } from '../modules/production/transport/transport-plan/redux/reducers'
@@ -405,6 +407,8 @@ const appReducer = combineReducers({
   manufacturingQualityCriteria,
   manufacturingQualityInspection,
   manufacturingRouting,
+  manufacturingMetric,
+  qualityDasboard,
 
   // production - transport
 

@@ -7,7 +7,8 @@ export const manufacturingPlanServices = {
   getDetailManufacturingPlan,
   handleEditManufacturingPlan,
   getNumberPlans,
-  getNumberPlansByStatus
+  getNumberPlansByStatus,
+  createAutomaticSchedule
 }
 
 function getAllManufacturingPlans(query) {
@@ -94,6 +95,19 @@ function getNumberPlansByStatus(data) {
       params: data
     },
     false,
+    true,
+    'manufacturing.plan'
+  )
+}
+
+function createAutomaticSchedule(data) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/manufacturing-plan/automatic-schedule`,
+      method: 'POST',
+      data
+    },
+    true,
     true,
     'manufacturing.plan'
   )
