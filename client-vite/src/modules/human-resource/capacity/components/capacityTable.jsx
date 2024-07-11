@@ -11,10 +11,9 @@ import { withTranslate } from 'react-redux-multilingual'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { CapacityActions } from '../redux/actions'
 import { ConfirmNotification, DataTableSetting, PaginateBar, ToolTip } from '../../../../common-components'
+import CreateForm from './createForm'
 
 function CapacityTable(props) {
-  console.log('prob ------', props)
-
   const tableId_constructor = 'table-manage-capacity'
   const defaultConfig = { name: '', page: 1, limit: 100 }
   const { limit } = getTableConfiguration(tableId_constructor, defaultConfig)
@@ -107,7 +106,7 @@ function CapacityTable(props) {
         </a>
       </div>
 
-      {/* <CreateForm list={major?.listMajor} /> */}
+      <CreateForm list={capacity?.listCapacity} />
 
       {/* Thanh tìm kiếm */}
       <div className='form-inline' style={{ marginBottom: '20px', marginTop: '20px' }}>
