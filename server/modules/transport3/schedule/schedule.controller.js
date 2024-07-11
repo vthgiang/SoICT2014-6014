@@ -21,10 +21,9 @@ exports.getAllSchedule = async (req, res) => {
 
 exports.getScheduleById = async (req, res) => {
   try {
-    let {scheduleId} = req.params;
-    let schedule = await ScheduleService.getScheduleById(req.portal, scheduleId);
+    let schedule = await ScheduleService.getScheduleById(req.portal, req.params.id);
     res.status(200).json({
-      schedules,
+      schedule,
       messages: ['Lấy thông tin lịch trình thành công']
     });
   } catch (error) {

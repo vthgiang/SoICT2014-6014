@@ -4,7 +4,6 @@ import { connect, useDispatch, useSelector } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { formatCurrency } from '../../../helpers/formatCurrency';
 import { ScheduleActions } from '../../transport3/schedule/redux/actions';
-import { OrderActions } from '../../transport3/order/redux/actions';
 import { withRouter } from 'react-router-dom';
 
 function InfoBox(props) {
@@ -25,24 +24,26 @@ function InfoBox(props) {
   }
 
   const listSchedules = useSelector(state => state.T3schedule.listSchedules?.schedules)
-  const listOrders = useSelector(state => state.orders?.listOrders)
 
   useEffect(() => {
     dispatch(ScheduleActions.getAllSchedule())
-    dispatch(OrderActions.getAllOrder)
   }, [dispatch])
 
-  const lateOrderCount = () => {
+  const sumOfOrderCount = () => {
     let orderCount = 0
+    let lateOrderCount = 0
     listSchedules?.forEach(schedule => {
       schedule.orders?.forEach(order => {
+        orderCount += 1
         if(order.timeArrive > order.estimateTimeArrive){
-          orderCount += 1
+          lateOrderCount += 1
         }
       })
     });
-    return orderCount
+    return [orderCount, lateOrderCount]
   }
+
+  const [orderCount, lateOrderCount] = sumOfOrderCount();
 
   const handleShowDetailDashboard = () => {
     props.history.push('/manage-transport3-dashboard')
@@ -81,7 +82,7 @@ function InfoBox(props) {
           </span>
           <div className='info-box-content' title='Tổng tiền mua hàng'>
             <span className='info-box-text'>Đơn hàng</span>
-            <span className='info-box-number'>{lateOrderCount() || 0} / {listOrders.length || 0}</span>
+            <span className='info-box-number'>{lateOrderCount || 0} / {orderCount || 0}</span>
             <span>trễ hạn</span>
             <button 
               style={{position: 'absolute', top: '10px', right: '30px'}}
