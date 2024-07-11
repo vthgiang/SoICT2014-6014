@@ -3,10 +3,10 @@ const router = express.Router();
 const CapacityController = require('./capacity.controller')
 const { auth } = require('../../middleware')
 
-router.get('/', CapacityController.getListCapacities)
-router.get('/:id', CapacityController.getOneCapacity)
-router.post('/', CapacityController.createNewCapacity)
-router.patch('/:id', CapacityController.updateCapacity)
-router.delete('/:id', CapacityController.deleteCapacity)
+router.get('/', auth, CapacityController.getListCapacities)
+router.get('/:id', auth, CapacityController.getOneCapacity)
+router.post('/', auth, CapacityController.createNewCapacity)
+router.patch('/:id', auth, CapacityController.updateCapacity)
+router.delete('/:id', auth, CapacityController.deleteCapacity)
 
 module.exports = router

@@ -829,6 +829,17 @@ const LINKS = [
     components: getComponentsInLink("/hr-list-certificate"),
   },
   {
+    url: "/hr-list-capacity",
+    description: "Danh sách bộ năng lực nhân viên",
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+    ],
+    components: getComponentsInLink("/hr-list-capacity")
+  },
+  {
     url: "/hr-search-for-package",
     description: "Tìm kiếm nhân sự gói thầu",
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,

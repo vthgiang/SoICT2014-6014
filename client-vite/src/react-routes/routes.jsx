@@ -69,6 +69,7 @@ const CareerPosition = lazy(() => import('../modules/human-resource/career/compo
 const SearchKeyEmployee = lazy(() => import('../modules/human-resource/profile/employee-management/components/searchKeyEmployees'))
 const Certificate = lazy(() => import('../modules/human-resource/certificate/component'))
 const Major = lazy(() => import('../modules/human-resource/major/component'))
+const Capacity = lazy(() => import('../modules/human-resource/capacity/components'))
 const Contract = lazy(() => import('../modules/bidding/bidding-contract/component'))
 const BiddingPackagesManagement = lazy(() => import('../modules/bidding/bidding-package/biddingPackageManagement/components'))
 const BiddingPackageDetailPage = lazy(
@@ -1520,6 +1521,26 @@ class Routes extends Component {
             pageName='list_major'
             layout={Layout}
             component={Major}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key='list_capacity'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/hr-list-capacity',
+                name: 'list_capacity',
+                icon: 'fa fa-list-alt'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/hr-list-capacity'
+            path='/hr-list-capacity'
+            pageName='list_capacity'
+            layout={Layout}
+            component={Capacity}
           />
 
           <PrivateRoute

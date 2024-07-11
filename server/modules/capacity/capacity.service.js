@@ -7,55 +7,58 @@ const { connect } = require('../../helpers/dbHelper')
  * @param params
  */
 exports.getAllCapacities = async (portal, params) => {
-  const { name, key, limit, page } = params
+  const { name, key, limit, page } = params;
   let searchConditions = {};
+
   if (name && name.length !== 0) {
     searchConditions = {
       ...searchConditions,
       name: {
         $regex: name,
-        $option: "i"
+        $options: "i"
       }
-    }
+    };
   }
   if (key && key.length !== 0) {
     searchConditions = {
       ...searchConditions,
-      name: {
+      key: {
         $regex: key,
-        $option: "i"
+        $options: "i"
       }
-    }
+    };
   }
 
   if (limit === undefined || page === undefined) {
     const data = await Capacity(connect(DB_CONNECTION, portal)).find(searchConditions)
-      .sort({ createdAt: -1 })
-    
+      .sort({ createdAt: -1 });
+
     return {
       listCapacity: data,
-      totalList: data?.length
-    }
+      totalList: data.length
+    };
   } else {
-    const skip = parseInt(page) * parseInt(limit);
+    const skip = parseInt(page - 1) * parseInt(limit);
     const limitNumber = parseInt(limit);
-    // console.log("page: ", page)
-    // console.log("limit: ", limit)
-    const data = await Capacity(connect(DB_CONNECTION, portal)).find(searchConditions)
+
     const listCapacity = await Capacity(connect(DB_CONNECTION, portal))
       .find(searchConditions)
       .sort({
-        createdAt: 'desc'
+        createdAt: -1
       })
-      .limit(limitNumber)
       .skip(skip)
-    
+      .limit(limitNumber)
+
+    // You need to calculate the total number of documents that match the search conditions for pagination
+    const totalList = await Capacity(connect(DB_CONNECTION, portal)).countDocuments(searchConditions);
+
     return {
       listCapacity,
-      totalList: data?.length
-    }
+      totalList
+    };
   }
-}
+};
+
 
 exports.createNewCapacity = async (portal, data) => {
   try {

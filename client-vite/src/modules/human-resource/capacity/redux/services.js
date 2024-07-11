@@ -20,22 +20,46 @@ function getListCapacity(data) {
     },
     false,
     true,
-    'capacity.get_list'
+    'human_resource.capacity'
   )
 }
 // =============CREATE=================
 
 /**
- * Thêm mới chuyên ngành
+ * Thêm mới năng lực
  * @data : Dữ liệu
  */
+function addNewCapacity(data) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/capacities`,
+      method: 'POST',
+      data
+    },
+    true,
+    true,
+    'human_resource.capacity'
+  )
+}
 
 //= ============EDIT===============
 
 /**
- * Chỉnh sửa vị trí cv
+ * Chỉnh sửa bộ năng lực
  * @data : Dữ liệu
  */
+function editCapacity(id, data) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/capacities/${id}`,
+      method: 'PATCH',
+      data
+    },
+    true,
+    true,
+    'human_resource.capacity'
+  )
+}
 
 
 // =============DELETE===============
@@ -44,8 +68,22 @@ function getListCapacity(data) {
  * Xóa lĩnh vực cv
  * @data : Dữ liệu xóa
  */
+function deleteCapacity(id) {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/capacities/${id}`,
+      method: 'DELETE'
+    },
+    true,
+    true,
+    'human_resource.capacity'
+  )
+}
 
 
 export const CapacityService = {
   getListCapacity,
+  addNewCapacity,
+  deleteCapacity,
+  editCapacity
 }
