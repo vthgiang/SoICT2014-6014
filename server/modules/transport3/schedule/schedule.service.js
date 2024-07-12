@@ -1,6 +1,6 @@
 const {
   Transport3Schedule,
-  Stock, Role, Employee, Transport3Order, Transport3DraftSchedule
+  Stock, Role, Employee, Transport3Order, Transport3DraftSchedule, Transport3rd
 } = require('../../../models');
 
 const {
@@ -177,4 +177,24 @@ exports.setScheduleFromDraft = async (portal, data) => {
     })
   }
   return [];
+}
+
+exports.create3rdSchedule = async (portal, data) => {
+  let {order_id} = data;
+  return Transport3rd(connect(DB_CONNECTION, portal)).create({
+    order: order_id,
+    status: 1
+  })
+}
+
+exports.getAll3rdSchedule = async (portal, currentRole) => {
+  let role = await Role(connect(DB_CONNECTION, portal)).find({
+    _id: currentRole
+  });
+
+  if (role[0].name !== 'Trưởng phòng vận chuyển' && role[0].name !== 'Nhân viên giám sát') {
+    return [];
+  }
+  return Transport3rd(connect(DB_CONNECTION, portal)).find({})
+    .populate('order')
 }

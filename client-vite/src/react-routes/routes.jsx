@@ -256,6 +256,7 @@ const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/compo
 const RouteTransport3 = lazy(() => import('../modules/transport3/route/components'))
 const IssueTransport3 = lazy(() => import('../modules/transport3/issue/components'))
 const ForecastOTD = lazy(() => import('../modules/transport3/schedule/components/forestcastModel/ontimeDeliveryPredict.jsx'))
+const thirdPartyTransport3 = lazy(() => import('../modules/transport3/schedule/components/thirdPartyLogisticsTable'))
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 const Project = lazy(() => import("../modules/project/projects/components/index"))
@@ -4134,7 +4135,7 @@ class Routes extends Component {
             path='/manage-transport3-partner'
             pageName='manage_transport3_partner'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={thirdPartyTransport3}
           />
 
           <PrivateRoute
