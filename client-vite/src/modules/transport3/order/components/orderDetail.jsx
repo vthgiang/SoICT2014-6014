@@ -117,7 +117,7 @@ function OrderDetail(props) {
               </div>
               <div className="col-md-6">
                 <div className="form-group">
-                  <MapContainer center={[order.lat, order.lng]} zoom={13} style={{height: '300px', width: '600px'}}>
+                  <MapContainer center={[order.lat, order.lng]} zoom={13} style={{height: 300, width: 600}}>
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
