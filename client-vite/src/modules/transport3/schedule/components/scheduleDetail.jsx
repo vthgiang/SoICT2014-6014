@@ -73,6 +73,7 @@ function ScheduleDetail(props) {
     }
     await dispatch(ScheduleActions.setScheduleFromDraft(data));
     await dispatch(ScheduleActions.getAllSchedule())
+    await dispatch(ScheduleActions.getScheduleById(schedule?._id));
   }
   return (
     <>
