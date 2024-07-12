@@ -5,9 +5,6 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 // Define 3rd transport schema
 const Transport3rdSchema = new Schema(
   {
-    code: {
-      type: String
-    },
     order: {
       type: Schema.Types.ObjectId,
       ref: 'Transport3Order'

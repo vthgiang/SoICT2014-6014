@@ -196,5 +196,10 @@ exports.getAll3rdSchedule = async (portal, currentRole) => {
     return [];
   }
   return Transport3rd(connect(DB_CONNECTION, portal)).find({})
-    .populate('order')
+    .populate({
+      path: 'order',
+      populate: {
+        path: 'customer'
+      }
+    })
 }

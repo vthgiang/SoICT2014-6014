@@ -74,6 +74,12 @@ function ThirdPartyLogisticsTable() {
     'Trạng thái',
   ]
 
+  const transportType = {
+    1: 'Giao hàng',
+    2: 'Nhận hàng',
+    3: 'Vận chuyển giữa kho'
+  }
+
   // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
   const status = {
     1: 'Chưa giao hàng',
@@ -150,13 +156,14 @@ function ThirdPartyLogisticsTable() {
                     </tr>
                     </thead>
                     <tbody>
-                    {listSchedulesTab1Paginate && listSchedulesTab1Paginate.length !== 0 ? listSchedulesTab1Paginate.map((order) => {
+                    {listSchedulesTab1Paginate && listSchedulesTab1Paginate.length !== 0 ? listSchedulesTab1Paginate.map((order, index) => {
                       return (
                         <tr>
+                          <td className={'text-center'}>{index + 1 + (page_tab1 - 1) * limit}</td>
                           <td className={'text-center'}>{order.order.code}</td>
                           <td className={'text-center'}>{order.order3rd ? order.order3rd : 'Chưa có'}</td>
-                          <td className={'text-center'}>{order.order.transportType}</td>
-                          <td className={'text-center'}>{order.order.customer}</td>
+                          <td className={'text-center'}>{transportType[order.order.transportType]}</td>
+                          <td className={'text-center'}>{order.order.customer.name}</td>
                           <td className={'text-center'}>{order.order.address}</td>
                           <td className={'text-center'}>{status[order.status]}</td>
                           <td style={{textAlign: 'center'}}>
@@ -205,13 +212,14 @@ function ThirdPartyLogisticsTable() {
                     </tr>
                     </thead>
                     <tbody>
-                    {listSchedulesTab1Paginate && listSchedulesTab1Paginate.length !== 0 ? listSchedulesTab1Paginate.map((order) => {
+                    {listSchedulesTab2Paginate && listSchedulesTab2Paginate.length !== 0 ? listSchedulesTab2Paginate.map((order, index) => {
                       return (
                         <tr>
+                          <td className={'text-center'}>{index + 1 + (page_tab2 - 1) * limit}</td>
                           <td className={'text-center'}>{order.order.code}</td>
                           <td className={'text-center'}>{order.order3rd ? order.order3rd : 'Chưa có'}</td>
-                          <td className={'text-center'}>{order.order.transportType}</td>
-                          <td className={'text-center'}>{order.order.customer}</td>
+                          <td className={'text-center'}>{transportType[order.order.transportType]}</td>
+                          <td className={'text-center'}>{order.order.customer.name}</td>
                           <td className={'text-center'}>{order.order.address}</td>
                           <td className={'text-center'}>{status[order.status]}</td>
                           <td style={{textAlign: 'center'}}>
