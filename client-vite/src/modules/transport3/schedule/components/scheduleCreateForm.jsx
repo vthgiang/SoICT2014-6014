@@ -39,6 +39,7 @@ function ScheduleCreateForm(props) {
       isAutoSchedule: false
     }
     await dispatch(ScheduleActions.createSchedule(data))
+    await dispatch(ScheduleActions.getAllSchedule())
   }
 
   let listStocsWithLatLng = useSelector(state => state.T3schedule.listStocsWithLatLng);
@@ -55,6 +56,7 @@ function ScheduleCreateForm(props) {
       isAutoSchedule: true
     }
     await dispatch(ScheduleActions.createSchedule(data))
+    await dispatch(ScheduleActions.getAllSchedule())
   }
 
   let {

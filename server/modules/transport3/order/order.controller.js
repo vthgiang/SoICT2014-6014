@@ -92,3 +92,48 @@ exports.updateOrder = async (req, res) => {
     });
   }
 }
+
+// Duyệt vận đơn
+exports.approveOrder = async (req, res) => {
+  try {
+    const approvedOrder = await OrderService.approveOrder(req.portal, req.params.id);
+
+    await Log.info(req.user.email, 'APPROVE_ORDER', req.portal);
+
+    res.status(200).json({
+      success: true,
+      messages: ['Duyệt vận đơn thành công'],
+      content: approvedOrder
+    });
+  } catch (error) {
+    await Log.error(req.user.email, 'APPROVE_ORDER', req.portal);
+
+    res.status(400).json({
+      success: false,
+      messages: ['Duyệt vận đơn thất bại'],
+      content: error.message
+    });
+  }
+}
+
+// Xoá vận đơn chưa duyệt
+exports.deleteUnapprovedOrder = async (req, res) => {
+  try {
+    await OrderService.deleteUnapprovedOrder(req.portal, req.params.id);
+
+    await Log.info(req.user.email, 'DELETE_ORDER_NOT_APPROVED', req.portal);
+
+    res.status(200).json({
+      success: true,
+      messages: ['Xoá vận đơn chưa duyệt thành công']
+    });
+  } catch (error) {
+    await Log.error(req.user.email, 'DELETE_ORDER_NOT_APPROVED', req.portal);
+
+    res.status(400).json({
+      success: false,
+      messages: ['Xoá vận đơn chưa duyệt thất bại'],
+      content: error.message
+    });
+  }
+}

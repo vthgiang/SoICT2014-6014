@@ -2,10 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Terms = require('../helpers/config');
 const linksPermission = require('../middleware/servicesPermission').links;
-const saleOrders = require('./SaleOrders.json');
-const listCustomer = require('./Customer.json');
-const listTransport3Orders = require('./transport3orders.json');
-const listTransport3Schedules = require('./transport3schedule.json');
+
 const {
   Component,
   RoleType,
@@ -1019,6 +1016,42 @@ const initSampleCompanyDB = async () => {
       // tvb nhân viên vận chuyển phía bắc
       userId: users[14]._id,
       roleId: vcNvVanChuyen._id,
+    },
+  ]);
+
+  const usersAdmin = await User(vnistDB).insertMany([
+    {
+        name: "Admin VNIST",
+        email: "admin.mdtt.vnist@gmail.com",
+        password: hash,
+        company: vnist._id,
+    },
+    {
+        name: "Admin VNIST",
+        email: "admin.pttn.vnist@gmail.com",
+        password: hash,
+        company: vnist._id,
+    },
+    {
+        name: "Admin VNIST",
+        email: "admin.tta.vnist@gmail.com",
+        password: hash,
+        company: vnist._id,
+    },
+  ])
+
+  await UserRole(vnistDB).insertMany([
+    {
+        userId: usersAdmin[0]._id, // Gán tài khoản admin.vnist có role là admin
+        roleId: roleAdmin._id,
+    },
+    {
+        userId: usersAdmin[1]._id, // Gán tài khoản admin.vnist có role là admin
+        roleId: roleAdmin._id,
+    },
+    {
+        userId: usersAdmin[2]._id, // Gán tài khoản admin.vnist có role là admin
+        roleId: roleAdmin._id,
     },
   ]);
 
@@ -5703,26 +5736,6 @@ const initSampleCompanyDB = async () => {
       contained: 0,
       child: [],
       enableGoods:
-        // [
-        //     {
-        //         good: listGood[0]._id,
-        //         contained: 0,
-        //         capacity: 200,
-        //     },
-        //     {
-        //         good: listGood[1]._id,
-        //         contained: 0,
-        //         capacity: 300,
-        //     },
-        //     {
-        //         good: listProduct[1]._id,
-        //         contained: 0,
-        //         capacity: 100,
-        //     },
-        //     {
-        //         good: list_goods[1]._id
-        //     }
-        // ],
         Array.from({ length: 5 }, (_, index) => ({
           good: listGood[index]._id,
           contained: 500,

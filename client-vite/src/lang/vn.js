@@ -1,5 +1,3 @@
-import { Dashboard } from "@mui/icons-material";
-
 export default {
   locale: 'vn',
   messages: {
@@ -198,6 +196,7 @@ export default {
       list_major: 'Danh sách chuyên ngành',
       list_career_position: 'Danh sách vị trí công việc',
       list_certificate: 'Bằng cấp - chứng chỉ',
+      list_capacity: 'Bộ năng lực nhân viên',
 
       // đấu thầu
       manage_bidding: 'Quản lý đấu thầu',

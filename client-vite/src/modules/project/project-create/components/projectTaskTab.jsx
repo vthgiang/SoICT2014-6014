@@ -614,10 +614,7 @@ const ProjectTasksTab = (props) => {
               requireAssetToAdd.push({
                 ...requireAssetItemToAdd
               })              
-            } else {
-              setErrorUpload("Lỗi! Tồn tại công việc trong file import có yêu loại cầu tài sản không hợp lệ")
-              return
-            }
+            } 
           })
         }
 
@@ -1151,20 +1148,25 @@ const ProjectTasksTab = (props) => {
                     <ToolTip dataTooltip={convertAssetRequireToText(item?.requireAsset, listAssetsTypes, assetCapacities, translate)} />
                   </td>
                   <td>
-                    <a
-                      className='edit'
-                      title={translate('general.delete')}
-                      onClick={() => handleEditTask(index)}
-                    >
-                      <i className='material-icons'>edit</i>
-                    </a>
-                    <a
-                      className='delete'
-                      title={translate('general.delete')}
-                      onClick={() => handleDeleteTask(index)}
-                    >
-                      <i className='material-icons'>delete</i>
-                    </a>
+                    {item?.status !== 'inprocess' ? 
+                      <>
+                        <a
+                          className='edit'
+                          title={translate('general.edit')}
+                          onClick={() => handleEditTask(index)}
+                        >
+                          <i className='material-icons'>edit</i>
+                        </a>
+                        <a
+                          className='delete'
+                          title={translate('general.delete')}
+                          onClick={() => handleDeleteTask(index)}
+
+                        >
+                          <i className='material-icons'>delete</i>
+                        </a>
+                      </> : <></>
+                    }
                   </td>
                 </tr>
               ))}
