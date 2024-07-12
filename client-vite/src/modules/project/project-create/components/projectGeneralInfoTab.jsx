@@ -11,12 +11,14 @@ import { UserActions } from "../../../super-admin/user/redux/actions"
 import getEmployeeSelectBoxItems from "../../../task/organizationalUnitHelper"
 import { createUnitKpiActions } from "../../../kpi/organizational-unit/creation/redux/actions"
 import KPIDetailModal from "./kpiDetailModal"
+import { PROJECT_ACTION_FORM } from "../../projects/constants"
 
 
 const ProjectGeneralInfoTab = (props) => {
   const {
     translate,
     projectId,
+    projectEdit,
     actionType,
     user,
     organizationalUnitKpiSets,
@@ -333,6 +335,7 @@ const ProjectGeneralInfoTab = (props) => {
                     id={`${actionType}-select-kpi-unit-${projectId}`}
                     className="form-control select2"
                     style={{ width: '100%' }}
+                    disabled={actionType === PROJECT_ACTION_FORM.EDIT && projectEdit && projectEdit?.status === 'inprocess'}
                     items={organizationalUnitKpiSets}
                     onChange={(e) => handleChangeKPIUnit(e, organizationalUnitKpiSets)}
                     multiple={false}

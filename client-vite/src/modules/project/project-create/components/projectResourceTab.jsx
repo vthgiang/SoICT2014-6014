@@ -7,6 +7,7 @@ import { DialogModal, ErrorLabel, SelectBox } from "../../../../common-component
 import ValidationHelper from "../../../../helpers/validationHelper"
 import ModalSalaryMembers from "../../projects/components/modalSalaryMembers"
 import { convertAssetIdToAssetName, convertGroupAsset, getAssetSelectBoxItems, getListAssetGroups, getListAssetTypes } from "../../../../helpers/assetHelper"
+import { PROJECT_ACTION_FORM } from "../../projects/constants"
 
 
 const ProjectResourcesTab = (props) => {
@@ -14,7 +15,8 @@ const ProjectResourcesTab = (props) => {
     translate,
     user, assetsManager,
     projectMembers, setProjectMembers, projectAssets, setProjectAssets, 
-    actionType, projectId
+    actionType, projectId,
+    projectEdit
   } = props
   const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItemsWithEmployeeData(user.usersInUnitsOfCompany) : []
   // const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
@@ -302,9 +304,12 @@ const ProjectResourcesTab = (props) => {
                         <td>{convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, item?.unitId)}</td>
                         <td>{item?.listUsers.map((userItem) => convertUserIdToUserName(listUsers, userItem)).join(', ')}</td>
                         <td>
-                          <a className='delete' title={translate('general.delete')} onClick={() => handleDeleteRow(index)}>
-                            <i className='material-icons'>delete</i>
-                          </a>
+                          {actionType === PROJECT_ACTION_FORM.CREATE || (actionType === PROJECT_ACTION_FORM.EDIT && projectEdit && projectEdit?.status !== 'inprocess') ? 
+                            <a className='delete' title={translate('general.delete')} onClick={() => handleDeleteRow(index)}>
+                              <i className='material-icons'>delete</i>
+                            </a>
+                            : <></>
+                          }
                         </td>
                       </tr>
                     ))}
@@ -404,9 +409,14 @@ const ProjectResourcesTab = (props) => {
                         <td>{convertGroupAsset(item.group, translate)}</td>
                         <td>{item.listAssets.map((assetId) => convertAssetIdToAssetName(listAssets, assetId)).join(", ")}</td>
                         <td>
-                          <a className='delete' title={translate('general.delete')} onClick={() => handleDeleteAssetRow(index)}>
-                            <i className='material-icons'>delete</i>
-                          </a>
+                          <td>
+                            {actionType === PROJECT_ACTION_FORM.CREATE || (actionType === PROJECT_ACTION_FORM.EDIT && projectEdit && projectEdit?.status !== 'inprocess') ? 
+                              <a className='delete' title={translate('general.delete')} onClick={() => handleDeleteRow(index)}>
+                                <i className='material-icons'>delete</i>
+                              </a>
+                              : <></>
+                            }
+                          </td>
                         </td>
                       </tr>
                     ))

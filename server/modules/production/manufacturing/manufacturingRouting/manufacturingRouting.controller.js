@@ -39,6 +39,7 @@ exports.getManufacturingRoutingById = async (req, res) => {
             content: manufacturingRouting
         })
     } catch (error) {
+        console.log(error);
         await Logger.error(req.user.email, "GET_MANUFACTURING_ROUTING_BY_ID", req.portal);
 
         res.status(400).json({

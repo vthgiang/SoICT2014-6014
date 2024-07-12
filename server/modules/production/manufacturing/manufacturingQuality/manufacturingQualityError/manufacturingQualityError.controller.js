@@ -46,5 +46,47 @@ exports.getManufacturingQualityErrorById = async (req, res) => {
     }
 }
 
+exports.getErrorNumByReporter = async (req, res) => {
+    try {
+        let errorNumByReporter = await ManufacturingQualityErrorService.getErrorNumByReporter(req.portal);
+        await Logger.info(req.user.email, "GET_ERROR_NUM_BY_REPORTER", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_error_num_successfully"],
+            content: errorNumByReporter
+        })
+    } catch (error) {
+        console.log(error)
+        await Logger.error(req.user.email, "GET_ERROR_NUM_BY_REPORTER", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_error_num_failed"],
+            content: error.message
+        })
+    }
+}
 
 
+exports.getErrorNumByGroup = async (req, res) => {
+    try {
+        let errorNumByGroup = await ManufacturingQualityErrorService.getErrorNumByGroup(req.portal);
+
+        await Logger.info(req.user.email, "GET_ERROR_NUM_BY_GROUP", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_error_num_successfully"],
+            content: errorNumByGroup
+        });
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_ERROR_NUM_BY_GROUP", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_error_num_failed"],
+            content: error.message
+        });
+    }
+}

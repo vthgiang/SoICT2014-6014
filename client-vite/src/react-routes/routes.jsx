@@ -69,6 +69,7 @@ const CareerPosition = lazy(() => import('../modules/human-resource/career/compo
 const SearchKeyEmployee = lazy(() => import('../modules/human-resource/profile/employee-management/components/searchKeyEmployees'))
 const Certificate = lazy(() => import('../modules/human-resource/certificate/component'))
 const Major = lazy(() => import('../modules/human-resource/major/component'))
+const Capacity = lazy(() => import('../modules/human-resource/capacity/components'))
 const Contract = lazy(() => import('../modules/bidding/bidding-contract/component'))
 const BiddingPackagesManagement = lazy(() => import('../modules/bidding/bidding-package/biddingPackageManagement/components'))
 const BiddingPackageDetailPage = lazy(
@@ -87,6 +88,7 @@ const OrganizationalUnitKpiDashboard = lazy(
 )
 const KPIUnitManager = lazy(() => import('../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview'))
 const KPIUnitEvaluate = lazy(() => import('../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation'))
+
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import('../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi'))
 const OrganizationalUnitKpiTemplate = lazy(() => import('../modules/kpi/organizational-unit/template/component/kpiSetTemplate'))
 const CreateEmployeeKpiSet = lazy(() => import('../modules/kpi/employee/creation/component/employeeKpiCreate'))
@@ -213,6 +215,7 @@ const ManufacturingPlan = lazy(() => import('../modules/production/manufacturing
 const ManufacturingCommand = lazy(() => import('../modules/production/manufacturing/manufacturing-command/components'))
 const ManufacturingMill = lazy(() => import('../modules/production/manufacturing/manufacturing-mill/components'))
 const ManufacturingPerformance = lazy(() => import('../modules/production/manufacturing/manufacturing-performance/components'))
+const PerformanceDetail = lazy(() => import('../modules/production/manufacturing/manufacturing-performance/components/performance-detail'))
 const WorkSchedule = lazy(() => import('../modules/production/manufacturing/work-schedule/components'))
 const ManufacturingWorks = lazy(() => import('../modules/production/manufacturing/manufacturing-works/components'))
 const PurchasingRequest = lazy(() => import('../modules/production/manufacturing/purchasing-request/components'))
@@ -1520,6 +1523,26 @@ class Routes extends Component {
             pageName='list_major'
             layout={Layout}
             component={Major}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key='list_capacity'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/hr-list-capacity',
+                name: 'list_capacity',
+                icon: 'fa fa-list-alt'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/hr-list-capacity'
+            path='/hr-list-capacity'
+            pageName='list_capacity'
+            layout={Layout}
+            component={Capacity}
           />
 
           <PrivateRoute
@@ -3810,6 +3833,31 @@ class Routes extends Component {
           />
 
           <PrivateRoute
+            isLoading={false}
+            key={'detail-analysis-manufacturing-performance'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/analysis-manufacturing-performance',
+                name: 'analysis_manufacturing_performance',
+                icon: 'fa fa-bar-chart'
+              },
+              {
+                link: '/detail-analysis-manufacturing-performance',
+                name: 'detail_analysis_manufacturing_performance',
+                icon: 'fa fa-bar-chart'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/detail-analysis-manufacturing-performance'}
+            path={'/detail-analysis-manufacturing-performance'}
+            pageName={'detail_analysis_manufacturing_performance'}
+            layout={Layout}
+            component={PerformanceDetail}
+          />
+
+          <PrivateRoute
             isLoading={this.props.manufacturingWorks.isLoading}
             key='manage-manufacturing-works'
             arrPage={[
@@ -3847,6 +3895,45 @@ class Routes extends Component {
             pageName='manage_manufacturing_mill'
             layout={Layout}
             component={ManufacturingMill}
+          />
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-manufacturing-routing'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-manufacturing-routing',
+                name: 'manage_manufacturing_routing',
+                icon: 'fa fa-home'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-manufacturing-routing'}
+            path={'/manage-manufacturing-routing'}
+            pageName={'manage_manufacturing_routing'}
+            layout={Layout}
+            component={ManufacturingRouting}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key={'manage-manufacturing-quality'}
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/manage-manufacturing-quality',
+                name: 'manage_manufacturing_quality',
+                icon: 'fa fa-home'
+              }
+            ]}
+            auth={auth}
+            exact={true}
+            link={'/manage-manufacturing-quality'}
+            path={'/manage-manufacturing-quality'}
+            pageName={'manage_manufacturing_quality'}
+            layout={Layout}
+            component={ManufacturingQuality}
           />
 
           <PrivateRoute

@@ -1,0 +1,93 @@
+.input_box {
+    width: 100%;
+    height: 34px;
+    padding: 5px;
+    font-size: 14px;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    display: flex;
+}
+
+.attribute {
+    display: inline-block;
+    background-color: #3c8dbc;
+    border-color: #367fa9;
+    border-radius: 4px;
+    padding: 1px 10px;
+    color: #fff;
+}
+
+.operator { 
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.padding_input {
+    width: 10px;
+    /* border: 1px solid #ccc; */
+    padding: 2px;
+}
+
+/* Atrribute & operator list */
+.elements {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    gap: 30px;
+    height: 150px;
+}
+
+.attribute_list, .operator_list {
+    flex: 1;
+}
+
+.attribute_list {
+    display: flex;
+    flex-direction: column;
+}
+
+.attribute_list ul {
+    border: 1px solid #ccc;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.attribute_list ul::-webkit-scrollbar {
+    display: none;
+}
+
+.attribute_list li {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.attribute_list li:hover {
+    background-color: #5897fb;
+    color: #fff;
+}
+
+.operator_btn {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    background: none;
+}
+
+.operator_btn:hover {
+    color: #fff;
+    background-color: #5897fb;
+}
+
+.operator_list  > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.operator_list button {
+    flex: 1 1 30%;
+}

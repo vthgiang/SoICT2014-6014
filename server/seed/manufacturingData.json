@@ -1,0 +1,1213 @@
+{
+    "users": [
+        {
+            "name": "Nguyễn Văn Anh",
+            "email": "nva.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Trần Thị Bình",
+            "email": "ttb.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Lê Đức Cường",
+            "email": "ldc.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Phạm Minh Đức",
+            "email": "pmd.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Hoàng Thị Hà",
+            "email": "hth.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Nguyễn Văn Khánh",
+            "email": "nvk.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Vũ Thị Lan",
+            "email": "vtl.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Đinh Văn Minh",
+            "email": "dvm.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Trần Thị Ngọc",
+            "email": "ttn.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Nguyễn Văn Phúc",
+            "email": "nvp.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Lê Thị Quỳnh",
+            "email": "ltq.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Nguyễn Thành Sơn",
+            "email": "nts.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Trần Văn Tâm",
+            "email": "tvt.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Phạm Thị Uyên",
+            "email": "ptu.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Lê Văn Việt",
+            "email": "lvv.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Nguyễn Thị Xuân",
+            "email": "ntx.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Đỗ Văn Yên",
+            "email": "dvy.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Bùi Thị Anh",
+            "email": "bta.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Trần Văn Bảo",
+            "email": "tvb.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Nguyễn Thị Chi",
+            "email": "ntc.vnist.organic@gmail.com"
+        },
+        {
+            "name": "Phạm Thị Dung",
+            "email": "ptd.vnist@gmail.com"
+        },
+        {
+            "name": "Hoàng Văn Em",
+            "email": "hve.vnist@gmail.com"
+        },
+        {
+            "name": "Ngô Thị Phương",
+            "email": "ntp.vnist@gmail.com"
+        },
+        {
+            "name": "Đặng Văn Hùng",
+            "email": "dvh.vnist@gmail.com"
+        },
+        {
+            "name": "Bùi Thị Hoa",
+            "email": "bth.vnist@gmail.com"
+        },
+        {
+            "name": "Nguyễn Văn Khánh",
+            "email": "khanh.vnist@gmail.com"
+        },
+        {
+            "name": "Nguyễn Thị Lan",
+            "email": "lan.vnist@gmail.com"
+        }
+    ],
+    "criterias": [
+        {
+            "code": "TCCD202406001",
+            "name": "Tiêu chí kiểm định xay nguyên liệu",
+            "operation": "Xay nguyên liệu",
+            "checklist": [
+                {
+                    "name": "Kích thước hạt sau xay",
+                    "method": "Máy sàng",
+                    "acceptedValue": "Phù hợp với tiêu chuẩn quy định"
+                },
+                {
+                    "name": "Độ đồng nhất của bột",
+                    "method": "Kiểm tra bằng mắt",
+                    "acceptedValue": "Phân bố đều, không vón cục"
+                },
+                {
+                    "name": "Độ ẩm trong bột",
+                    "method": "Máy đo độ ẩm",
+                    "acceptedValue": "<= 5%"
+                },
+                {
+                    "name": "Độ mịn của bột",
+                    "method": "Máy đo độ mịn",
+                    "acceptedValue": "Nhỏ hơn 100 micromet"
+                }
+            ],
+            "status": 1
+        },
+        {
+            "code": "TCCD202406002",
+            "name": "Tiêu chí kiểm định trộn nguyên liệu",
+            "operation": "Trộn nguyên liệu",
+            "checklist": [
+                {
+                    "name": "Đồng nhất sau khi trộn",
+                    "method": "Kiểm tra bằng mắt",
+                    "acceptedValue": "Phân bố đều, không vón cục"
+                },
+                {
+                    "name": "Độ ẩm của hỗn hợp",
+                    "method": "Máy đo độ ẩm",
+                    "acceptedValue": "<= 5%"
+                },
+                {
+                    "name": "Tỷ lệ phần trăm các thành phần",
+                    "method": "Phân tích hóa học",
+                    "acceptedValue": "Phù hợp với tỷ lệ quy định"
+                },
+                {
+                    "name": "Độ hòa tan của hỗn hợp",
+                    "method": "Máy kiểm tra độ hòa tan",
+                    "acceptedValue": "100S - 150S"
+                }
+            ],
+            "status": 1
+        },
+        {
+            "code": "TCCD202406003",
+            "name": "Tiêu chí kiểm định sấy nguyên liệu",
+            "operation": "Sấy nguyên liệu",
+            "checklist": [
+                {
+                    "name": "Độ ẩm sau khi sấy",
+                    "method": "Máy đo độ ẩm",
+                    "acceptedValue": "<= 5%"
+                },
+                {
+                    "name": "Nhiệt độ sấy",
+                    "method": "Máy đo nhiệt độ",
+                    "acceptedValue": "50°C - 60°C"
+                },
+                {
+                    "name": "Thời gian sấy",
+                    "method": "Lập trình thời gian sấy",
+                    "acceptedValue": "60 phút - 90 phút"
+                },
+                {
+                    "name": "Độ đồng nhất của bột sau sấy",
+                    "method": "Kiểm tra bằng mắt",
+                    "acceptedValue": "Phân bố đều, không vón cục"
+                }
+            ],
+            "status": 1
+        },
+        {
+            "code": "TCCD202406004",
+            "name": "Tiêu chí kiểm định nén thuốc viên",
+            "operation": "Nén viên",
+            "checklist": [
+                {
+                    "name": "Lực nén",
+                    "method": "Máy đo lực nén",
+                    "acceptedValue": "100N"
+                },
+                {
+                    "name": "Độ dày",
+                    "method": "Thước đo độ dày",
+                    "acceptedValue": "3mm"
+                },
+                {
+                    "name": "Trọng lượng",
+                    "method": "Cân",
+                    "acceptedValue": "350mg"
+                },
+                {
+                    "name": "Độ tan rã",
+                    "method": "Máy kiểm tra độ tan rã",
+                    "acceptedValue": "15p"
+                }
+            ],
+            "status": 1
+        },
+        {
+            "code": "TCCD202406005",
+            "name": "Tiêu chí kiểm định đóng gói sản phẩm",
+            "operation": "Đóng gói",
+            "checklist": [
+                {
+                    "name": "Chất lượng bao bì",
+                    "method": "Kiểm tra bằng mắt",
+                    "acceptedValue": "100% không nứt, vỡ"
+                },
+                {
+                    "name": "In ấn",
+                    "method": "Kiểm tra bằng mắt",
+                    "acceptedValue": "Rõ ràng, sắc nét"
+                }
+            ],
+            "status": 1
+        },
+        {
+            "code": "TCTP202406006",
+            "name": "Tiêu chí kiểm định thành phẩm",
+            "operation": "Kiểm tra thành phẩm",
+            "products": [
+                "product_id_1"
+            ],
+            "checklist": [
+                {
+                    "name": "Hàm lượng hoạt chất",
+                    "method": "HPLC, UV-Vis",
+                    "acceptedValue": "Phù hợp với tiêu chuẩn"
+                },
+                {
+                    "name": "Độ pH",
+                    "method": "Máy đo pH",
+                    "acceptedValue": "Phù hợp với tiêu chuẩn"
+                }
+            ],
+            "status": 1,
+            "creator": "user_id_20"
+        }
+    ],
+    "errors": [
+        {
+            "code": "LSP202406001",
+            "group": "measurement",
+            "name": "Sai lệch hàm lượng hoạt chất",
+            "description": "Hàm lượng hoạt chất trong sản phẩm không nằm trong phạm vi cho phép",
+            "recognize": [
+                "Kết quả kiểm nghiệm không đạt yêu cầu",
+                "Khả năng ảnh hưởng đến hiệu quả và độ an toàn của thuốc"
+            ],
+            "resolution": [
+                "Đào tạo lại nhân viên về quy trình cân nguyên liệu và trộn nguyên liệu",
+                "Nâng cao kỹ năng thao tác và tập trung của nhân viên"
+            ],
+            "cause": "Nhân viên thao tác sai quy trình",
+            "reporter": "user_id_20",
+            "aql": 0.15
+        },
+        {
+            "code": "LSP202406002",
+            "group": "man",
+            "name": "Nhầm lẫn nguyên liệu",
+            "description": "Các nguyên liệu bị nhầm trong cùng một nhóm",
+            "recognize": [
+                "Sản phẩm có màu sắc, mùi vị khác thường"
+            ],
+            "resolution": [
+                "Đào tạo lại nhân viên về cách nhận biết nguyên liệu",
+                "Làm rõ nhãn mác nguyên liệu"
+            ],
+            "cause": "Nhãn mác nguyên liệu không rõ ràng",
+            "reporter": "user_id_20",
+            "aql": 0.05,
+            "created_at": "16/03/2024"
+        },
+        {
+            "code": "LSP202406003",
+            "group": "machine",
+            "name": "Vi sinh vật vượt quá giới hạn cho phép",
+            "description": "Số lượng vi sinh vật trong sản phẩm cao hơn mức cho phép",
+            "recognize": [
+                "Kết quả kiểm nghiệm vi sinh vật không đạt yêu cầu"
+            ],
+            "resolution": [
+                "Bảo trì, bảo dưỡng thiết bị sản xuất định kỳ.",
+                "Khử trùng thiết bị sản xuất bằng phương pháp hiệu quả"
+            ],
+            "cause": "Thiết bị sản xuất không được khử trùng hoặc bảo trì đúng cách",
+            "reporter": "user_id_20",
+            "aql": 0.05,
+            "created_at": "16/03/2024"
+        },
+        {
+            "code": "LSP202406004",
+            "group": "material",
+            "name": "Bao bì bị rách, nứt",
+            "description": "Bao bì sản phẩm không đảm bảo chất lượng",
+            "recognize": [
+                "Bao bì sản phẩm bị rách, nứt"
+            ],
+            "resolution": [
+                "Kiểm tra chất lượng bao bì đầu vào"
+            ],
+            "cause": "Nguyên liệu bao bì không đạt chất lượng",
+            "reporter": "user_id_20",
+            "aql": 0.05,
+            "created_at": "16/03/2024"
+        },
+        {
+            "code": "LSP202406005",
+            "group": "material",
+            "name": "Sản phẩm bị biến màu",
+            "description": "Màu sắc của thuốc khác so với tiêu chuẩn",
+            "recognize": [
+                "Không đạt kiểm tra thành phẩn sản phẩm"
+            ],
+            "resolution": [
+                "Kiểm tra chất lượng nguyên liệu đầu vào",
+                "Bảo quản nguyên liệu và thành phẩm ở điều kiện phù hợp"
+            ],
+            "cause": "Bảo quản nguyên liệu hoặc thành phẩm không đúng cách",
+            "reporter": "user_id_20",
+            "aql": 0.05,
+            "created_at": "16/03/2024"
+        },
+        {
+            "code": "LSP202406006",
+            "group": "method",
+            "name": "Viên thuốc bị nứt, vỡ",
+            "description": "Viên thuốc không nguyên vẹn",
+            "recognize": [
+                "Sản phẩm bị nứt, vỡ"
+            ],
+            "resolution": [
+                "Bảo trì, bảo dưỡng máy móc sản xuất định kỳ",
+                "Kiểm tra và điều chỉnh lực nén viên thuốc"
+            ],
+            "cause": "Lực nén viên thuốc quá cao",
+            "reporter": "user_id_20",
+            "aql": 0.05,
+            "created_at": "16/03/2024"
+        }
+    ],
+    "inspections": [
+        {
+            "code": "PQC202406001",
+            "workOder": 1,
+            "type": 1,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 75,
+                "errorNum": 5,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406002",
+            "type": 1,
+            "workOder": 2,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 75,
+                "errorNum": 5,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406003",
+            "type": 1,
+            "workOder": 3,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 75,
+                "errorNum": 5,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406004",
+            "type": 1,
+            "workOder": 4,
+            "result": {
+                "inspectionNum": 60,
+                "passedNum": 58,
+                "errorNum": 2,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406005",
+            "type": 1,
+            "workOder": 5,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 72,
+                "errorNum": 8,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406006",
+            "type": 1,
+            "workOder": 6,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 75,
+                "errorNum": 5,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406007",
+            "type": 2,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 75,
+                "errorNum": 5,
+                "final": 1
+            }
+        }
+    ],
+
+    "manufacturingMills": [ 
+        {
+            "code": "XSX202410001",
+            "name": "Xưởng nguyên liệu",
+            "description": "Xưởng nhập kho nguyên liệu",
+            "status": 1
+        },
+        {
+            "code": "XSX202410003",
+            "name": "Xưởng xay nghiền",
+            "description": "Xưởng xay nghiền của nhà máy thuốc viên",
+            "status": 1
+        },
+        {
+            "code": "XSX202410002",
+            "name": "Xưởng trộn",
+            "description": "Xưởng trộn và tạo hạt của nhà máy thuốc viên",
+            "status": 1
+        },
+        {
+            "code": "XSX202410004",
+            "name": "Xưởng sấy",
+            "description": "Xưởng sấy khô của nhà máy thuốc viên",
+            "status": 1
+        },
+        {
+            "code": "XSX202410005",
+            "name": "Xưởng nén viên",
+            "description": "Xưởng dập viên nén của nhà máy thuốc viên",
+            "status": 1
+        },
+        {
+            "code": "XSX202410005",
+            "name": "Xưởng đóng gói",
+            "description": "Xưởng đóng gói",
+            "status": 1
+        }
+    ],
+    "routings": [
+        {
+            "code": "DT19032024",
+            "name": "Quy trình sản xuất thuốc viên",
+            "status": 1,
+            "description": "Quy trình sản xuất đường ACK của nhà máy thuốc bột",
+            "minLotSize": 1000,
+            "operations": [
+                {
+                    "id": 1,
+                    "name": "Nhập kho nguyên liệu",
+                    "setupTime": 1,
+                    "nextOperation": 2
+                },
+                {
+                    "id": 2,
+                    "name": "Xay nguyên liệu",
+                    "setupTime": 2,
+                    "preOperation": 1,
+                    "nextOperation": 3
+                },
+                {
+                    "id": 3,
+                    "name": "Trộn nguyên liệu",
+                    "setupTime": 1,
+                    "preOperation": 2,
+                    "nextOperation": 4
+                },
+                {
+                    "id": 4,
+                    "name": "Sấy nguyên liệu",
+                    "setupTime": 1,
+                    "preOperation": 3,
+                    "nextOperation": 5
+                },
+                {
+                    "id": 5,
+                    "name": "Dập viên nén",
+                    "setupTime": 1,
+                    "nextOperation": 6,
+                    "preOperation": 4
+                },
+                {
+                    "id": 6,
+                    "name": "Đóng gói",
+                    "setupTime": 1,
+                    "preOperation": 5
+                }
+            ]
+        },
+        {
+            "code": "DT19032024",
+            "name": "Quy trình sản xuất đường ACK",
+            "status": 1,
+            "description": "Quy trình sản xuất đường ACK của nhà máy thuốc bột",
+            "minLotSize": 1000,
+            "operations": [
+                {
+                    "id": 1,
+                    "name": "Nhập kho nguyên liệu",
+                    "setupTime": 1,
+                    "nextOperation": 2
+                },
+                {
+                    "id": 2,
+                    "name": "Xay nguyên liệu",
+                    "setupTime": 2,
+                    "preOperation": 1,
+                    "nextOperation": 3
+                },
+                {
+                    "id": 3,
+                    "name": "Sấy nguyên liệu",
+                    "setupTime": 1,
+                    "preOperation": 2,
+                    "nextOperation": 4
+                },
+                {
+                    "id": 4,
+                    "name": "Đóng gói",
+                    "setupTime": 1,
+                    "preOperation": 3
+                }
+            ]
+        }
+    ],
+    "manufacturingCommands": [
+        {
+            "code": "LSX202407001",
+            "startDate": "2024-07-01",
+            "endDate": "2024-07-11",
+            "startTurn": 1,
+            "endTurn": 2,
+            "quantity": 20000,
+            "manufacturingRouting": 1,
+            "workOrders": [
+                {
+                    "operationId": 1,
+                    "operation": "Nhập kho nguyên liệu",
+                    "mill": 1,
+                    "tasks": [{
+                        "responsible": 1 ,
+                        "machine": 1,
+                        "startDate": "2024-07-01",
+                        "startHour": 6,
+                        "endDate": "2024-07-02",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-01",
+                    "startHour": 6,
+                    "endDate": "2024-07-02",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 2,
+                    "operation": "Xay nguyên liệu",
+                    "mill": 2,
+                    "tasks": [{
+                        "responsible": 2,
+                        "machine": 2,
+                        "startDate": "2024-07-02",
+                        "startHour": 6,
+                        "endDate": "2024-07-03",
+                        "endHour": 6
+                    }],
+                    
+                    "startDate": "2024-07-02",
+                    "startHour": 6,
+                    "endDate": "2024-07-03",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 3,
+                    "operation": "Trộn nguyên liệu",
+                    "mill": 3,
+                    "tasks": [{
+                        "responsible": 3,
+                        "machine": 3,
+                        "startDate": "2024-07-03",
+                        "startHour": 6,
+                        "endDate": "2024-07-04",
+                        "endHour": 6
+                    }],
+                    
+                    "startDate": "2024-07-03",
+                    "startHour": 6,
+                    "endDate": "2024-07-04",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 4,
+                    "operation": "Sấy nguyên liệu",
+                    "mill": 4,
+                    "tasks": [{
+                        "machine": 4,
+                        "responsible": 4,
+                        "startDate": "2024-07-06",
+                        "startHour": 6,
+                        "endDate": "2024-07-08",
+                        "endHour": 6
+                    }],
+                    
+                    "startDate": "2024-07-06",
+                    "startHour": 6,
+                    "endDate": "2024-07-08",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 5,
+                    "operation": "Dập viên nén",
+                    "mill": 5,
+                    "tasks": [{
+                        "responsible": 5,
+                        "machine": 5,
+                        "startDate": "2024-07-08",
+                        "startHour": 6,
+                        "endDate": "2024-07-10",
+                        "endHour": 6
+                    }],
+                    
+                    "startDate": "2024-07-08",
+                    "startHour": 6,
+                    "endDate": "2024-07-10",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 6,
+                    "operation": "Đóng gói",
+                    "mill": 6,
+                    "tasks": [{
+                        "responsible": 6,
+                        "machine": 6,
+                        "startDate": "2024-07-10",
+                        "startHour": 6,
+                        "endDate": "2024-07-11",
+                        "endHour": 6    
+                    }],
+                    "startDate": "2024-07-10",
+                    "startHour": 6,
+                    "endDate": "2024-07-11",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                }
+            ],
+            "status": 4,
+            "description": "Lệnh sản xuất Panacetamol thuộc KHSX tháng 6/2024"
+        },
+        {
+            "code": "LSX202406002",
+            "startDate": "2024-07-02",
+            "endDate": "2024-07-11",
+            "startTurn": 1,
+            "endTurn": 2,
+            "quantity": 20000,
+            "manufacturingRouting": 1,
+            "workOrders": [
+                {
+                    "operationId": 1,
+                    "operation": "Nhập kho nguyên liệu",
+                    "mill": 1,
+                    "tasks": [{
+                        "responsible": 7,
+                        "machine": 7,
+                        "startDate": "2024-07-02",
+                        "startHour": 6,
+                        "endDate": "2024-07-03",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-02",
+                    "startHour": 6,
+                    "endDate": "2024-07-03",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 2,
+                    "operation": "Xay nguyên liệu",
+                    "mill": 2,
+                    "tasks": [{
+                        "responsible": 8,
+                        "machine": 2,
+                        "startDate": "2024-07-03",
+                        "startHour": 6,
+                        "endDate": "2024-07-04",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-03",
+                    "startHour": 6,
+                    "endDate": "2024-07-04",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 3,
+                    "operation": "Trộn nguyên liệu",
+                    "mill": 3,
+                    "tasks": [{
+                        "responsible": 9,
+                        "machine": 3,
+                        "startDate": "2024-07-04",
+                        "startHour": 6,
+                        "endDate": "2024-07-05",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-04",
+                    "startHour": 6,
+                    "endDate": "2024-07-05",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 4,
+                    "operation": "Sấy nguyên liệu",
+                    "mill": 4,
+                    "tasks": [{
+                        "responsible": 10,
+                        "machine": 4,
+                        "startDate": "2024-07-05",
+                        "startHour": 6,
+                        "endDate": "2024-07-06",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-05",
+                    "startHour": 6,
+                    "endDate": "2024-06-06",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 5,
+                    "operation": "Dập viên nén",
+                    "mill": 5,
+                    "tasks": [{
+                        "responsible": 11,
+                        "machine": 5,
+                        "startDate": "2024-07-06",
+                        "startHour": 6,
+                        "endDate": "2024-07-07",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-07",
+                    "startHour": 6,
+                    "endDate": "2024-07-09",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 6,
+                    "operation": "Đóng gói",
+                    "mill": 6,
+                    "tasks": [{
+                        "responsible": 12,
+                        "machine": 6,
+                        "startDate": "2024-07-09",
+                        "startHour": 6,
+                        "endDate": "2024-07-10",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-09",
+                    "startHour": 6,
+                    "endDate": "2024-07-10",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                }
+            ],
+            "status": 4,
+            "description": "Lệnh sản xuất Panacetamol thuộc KHSX tháng 6/2024"
+        },
+        {
+            "code": "LSX202406003",
+            "startDate": "2024-07-02",
+            "endDate": "2024-07-11",
+            "startTurn": 1,
+            "endTurn": 2,
+            "quantity": 20000,
+            "manufacturingRouting": 1,
+            "workOrders": [
+                {
+                    "operationId": 1,
+                    "operation": "Nhập kho nguyên liệu",
+                    "mill": 1,
+                    "tasks": [{
+                        "responsible": 7,
+                        "machine": 7,
+                        "startDate": "2024-07-03",
+                        "startHour": 6,
+                        "endDate": "2024-07-04",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-03",
+                    "startHour": 6,
+                    "endDate": "2024-07-04",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 2,
+                    "operation": "Xay nguyên liệu",
+                    "mill": 2,
+                    "tasks": [{
+                        "responsible": 8,
+                        "machine": 2,
+                        "startDate": "2024-07-04",
+                        "startHour": 6,
+                        "endDate": "2024-07-05",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-04",
+                    "startHour": 6,
+                    "endDate": "2024-07-05",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 3,
+                    "operation": "Trộn nguyên liệu",
+                    "mill": 3,
+                    "tasks": [{
+                        "responsible": 9,
+                        "machine": 3,
+                        "startDate": "2024-07-05",
+                        "startHour": 6,
+                        "endDate": "2024-07-07",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-05",
+                    "startHour": 6,
+                    "endDate": "2024-07-07",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 4,
+                    "operation": "Sấy nguyên liệu",
+                    "mill": 4,
+                    "tasks": [{
+                        "responsible": 10,
+                        "machine": 4,
+                        "startDate": "2024-07-07",
+                        "startHour": 6,
+                        "endDate": "2024-07-08",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-07",
+                    "startHour": 6,
+                    "endDate": "2024-06-08",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 5,
+                    "operation": "Dập viên nén",
+                    "mill": 5,
+                    "tasks": [{
+                        "responsible": 11,
+                        "machine": 5,
+                        "startDate": "2024-07-09",
+                        "startHour": 6,
+                        "endDate": "2024-07-10",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-09",
+                    "startHour": 6,
+                    "endDate": "2024-07-10",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 6,
+                    "operation": "Đóng gói",
+                    "mill": 6,
+                    "tasks": [{
+                        "responsible": 12,
+                        "machine": 6,
+                        "startDate": "2024-07-10",
+                        "startHour": 6,
+                        "endDate": "2024-07-11",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-10",
+                    "startHour": 6,
+                    "endDate": "2024-07-11",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                }
+            ],
+            "status": 4,
+            "description": "Lệnh sản xuất Panacetamol thuộc KHSX tháng 6/2024"
+        },
+        {
+            "code": "LSX202406004",
+            "startDate": "2024-06-30",
+            "endDate": "2024-07-11",
+            "startTurn": 1,
+            "endTurn": 2,
+            "quantity": 20000,
+            "manufacturingRouting": 1,
+            "workOrders": [
+                {
+                    "operationId": 1,
+                    "operation": "Nhập kho nguyên liệu",
+                    "mill": 1,
+                    "tasks": [{
+                        "responsible": 7,
+                        "machine": 7,
+                        "startDate": "2024-06-30",
+                        "startHour": 6,
+                        "endDate": "2024-07-01",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-06-30",
+                    "startHour": 6,
+                    "endDate": "2024-07-01",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 2,
+                    "operation": "Xay nguyên liệu",
+                    "mill": 2,
+                    "tasks": [{
+                        "responsible": 8,
+                        "machine": 2,
+                        "startDate": "2024-07-01",
+                        "startHour": 6,
+                        "endDate": "2024-07-02",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-01",
+                    "startHour": 6,
+                    "endDate": "2024-07-02",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 3,
+                    "operation": "Trộn nguyên liệu",
+                    "mill": 3,
+                    "tasks": [{
+                        "responsible": 9,
+                        "machine": 3,
+                        "startDate": "2024-07-02",
+                        "startHour": 6,
+                        "endDate": "2024-07-03",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-02",
+                    "startHour": 6,
+                    "endDate": "2024-07-03",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 4,
+                    "operation": "Sấy nguyên liệu",
+                    "mill": 4,
+                    "tasks": [{
+                        "responsible": 10,
+                        "machine": 4,
+                        "startDate": "2024-07-03",
+                        "startHour": 6,
+                        "endDate": "2024-07-04",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-03",
+                    "startHour": 6,
+                    "endDate": "2024-07-04",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 5,
+                    "operation": "Dập viên nén",
+                    "mill": 5,
+                    "tasks": [{
+                        "responsible": 11,
+                        "machine": 5,
+                        "startDate": "2024-07-04",
+                        "startHour": 6,
+                        "endDate": "2024-07-05",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-04",
+                    "startHour": 6,
+                    "endDate": "2024-07-05",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 6,
+                    "operation": "Đóng gói",
+                    "mill": 6,
+                    "tasks": [{
+                        "responsible": 12,
+                        "machine": 6,
+                        "startDate": "2024-07-05",
+                        "startHour": 6,
+                        "endDate": "2024-07-05",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-05",
+                    "startHour": 6,
+                    "endDate": "2024-07-06",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                }
+            ],
+            "status": 4,
+            "description": "Lệnh sản xuất Panacetamol thuộc KHSX tháng 6/2024"
+        },
+        {
+            "code": "LSX202406005",
+            "startDate": "2024-07-04",
+            "endDate": "2024-07-16",
+            "startTurn": 1,
+            "endTurn": 2,
+            "quantity": 20000,
+            "manufacturingRouting": 1,
+            "workOrders": [
+                {
+                    "operationId": 1,
+                    "operation": "Nhập kho nguyên liệu",
+                    "mill": 1,
+                    "tasks": [{
+                        "responsible": 7,
+                        "machine": 7,
+                        "startDate": "2024-07-04",
+                        "startHour": 6,
+                        "endDate": "2024-07-06",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-04",
+                    "startHour": 6,
+                    "endDate": "2024-07-06",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 2,
+                    "operation": "Xay nguyên liệu",
+                    "mill": 2,
+                    "tasks": [{
+                        "responsible": 8,
+                        "machine": 2,
+                        "startDate": "2024-07-06",
+                        "startHour": 6,
+                        "endDate": "2024-07-07",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-06",
+                    "startHour": 6,
+                    "endDate": "2024-07-07",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 3,
+                    "operation": "Trộn nguyên liệu",
+                    "mill": 3,
+                    "tasks": [{
+                        "responsible": 9,
+                        "machine": 3,
+                        "startDate": "2024-07-07",
+                        "startHour": 6,
+                        "endDate": "2024-07-09",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-07",
+                    "startHour": 6,
+                    "endDate": "2024-07-09",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 4,
+                    "operation": "Sấy nguyên liệu",
+                    "mill": 4,
+                    "tasks": [{
+                        "responsible": 10,
+                        "machine": 4,
+                        "startDate": "2024-07-09",
+                        "startHour": 6,
+                        "endDate": "2024-07-12",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-09",
+                    "startHour": 6,
+                    "endDate": "2024-07-12",
+                    "endHour": 6,
+                    "status": 2,
+                    "progress": 70
+                },
+                {
+                    "operationId": 5,
+                    "operation": "Dập viên nén",
+                    "mill": 5,
+                    "tasks": [{
+                        "responsible": 11,
+                        "machine": 5,
+                        "startDate": "2024-07-12",
+                        "startHour": 6,
+                        "endDate": "2024-07-14",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-12",
+                    "startHour": 6,
+                    "endDate": "2024-07-14",
+                    "endHour": 6,
+                    "status": 1,
+                    "progress": 0
+                },
+                {
+                    "operationId": 6,
+                    "operation": "Đóng gói",
+                    "mill": 6,
+                    "tasks": [{
+                        "responsible": 12,
+                        "machine": 6,
+                        "startDate": "2024-07-14",
+                        "startHour": 6,
+                        "endDate": "2024-07-16",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-14",
+                    "startHour": 6,
+                    "endDate": "2024-07-16",
+                    "endHour": 6,
+                    "status": 1,
+                    "progress": 0
+                }
+            ],
+            "status": 3,
+            "description": "Lệnh sản xuất Panacetamol thuộc KHSX tháng 6/2024"
+        }
+    ]
+}

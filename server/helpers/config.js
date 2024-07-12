@@ -829,6 +829,17 @@ const LINKS = [
     components: getComponentsInLink("/hr-list-certificate"),
   },
   {
+    url: "/hr-list-capacity",
+    description: "Danh sách bộ năng lực nhân viên",
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+    ],
+    components: getComponentsInLink("/hr-list-capacity")
+  },
+  {
     url: "/hr-search-for-package",
     description: "Tìm kiếm nhân sự gói thầu",
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
@@ -2514,8 +2525,8 @@ const LINKS = [
       ROOT_ROLES.SUPER_ADMIN.name,
       ROOT_ROLES.ADMIN.name,
       ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+      // ROOT_ROLES.DEPUTY_MANAGER.name,
+      // ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/tags-management"),
   },
@@ -2527,8 +2538,8 @@ const LINKS = [
       ROOT_ROLES.SUPER_ADMIN.name,
       ROOT_ROLES.ADMIN.name,
       ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
+      // ROOT_ROLES.DEPUTY_MANAGER.name,
+      // ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/project/project-details"),
   },
@@ -2680,7 +2691,12 @@ const LINKS = [
     url: "/manage-manufacturing-plan",
     description: "Quản lý kế hoạch sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,
-    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name, 
+      ROOT_ROLES.ADMIN.name, 
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.MANAGER.name
+    ],
     components: getComponentsInLink("/manage-manufacturing-plan"),
   },
   {
@@ -2720,8 +2736,25 @@ const LINKS = [
     url: "/analysis-manufacturing-performance",
     description: "Phân tích hiệu suất sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,
-    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name, 
+      ROOT_ROLES.ADMIN.name, 
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.MANAGER.name
+    ],
     components: getComponentsInLink("/analysis-manufacturing-performance"),
+  },
+  {
+    url: "/detail-analysis-manufacturing-performance",
+    description: "Phân tích chi tiết",
+    category: LINK_CATEGORY.MANUFACTURING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name, 
+      ROOT_ROLES.ADMIN.name, 
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.MANAGER.name
+    ],
+    components: getComponentsInLink("/detail-analysis-manufacturing-performance"),
   },
   {
     url: "/manage-manufacturing-works",

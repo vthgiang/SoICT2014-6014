@@ -8,313 +8,311 @@ import { manufacturingQualityInspectionActions } from '../../manufacturing-quali
 import { DialogModal, SelectBox } from '../../../../../common-components'
 
 const QualityControlForm = (props) => {
-	const { 
-		manufacturingCommand, 
-		manufacturingQualityCriteria, 
-		manufacturingQualityError,
-		commandId, 
-		code, 
-		translate 
-	} = props
-	const [inspectionNum, setInspectionNum] = useState(0)
-	const [passedNum, setPassedNum] = useState(0)
-	const [errorNum, setErrorNum] = useState(0)
-	const [criteria, setCriteria] = useState('1')
-	const [segment, setSegment] = useState('1')
-	const [finalResult, setFinalResult] = useState(1)
-	const [errorList, setErrorList] = useState([])
+  const { manufacturingCommand, manufacturingQualityCriteria, manufacturingQualityError, commandId, code, translate } = props
 
-	const handleAddError = () => {
-		setErrorList([...errorList, ''])
-	}
+  const [inspection, setInspection] = useState({
+    inspectionNum: 0,
+    passedNum: 0,
+    errorNum: 0,
+    criteria: '1',
+    operation: '1',
+    finalResult: 1,
+    errorList: []
+  })
+  const [errorList, setErrorList] = useState([])
 
-	const handleRemoveError = (index) => {
-		setErrorList(prev => prev.filter((_, i) => i !== index))
-	}
+  const getOperationArray = () => {
+    let operationArr = [
+      { value: '1', text: translate('manufacturing.command.choose_qc_operation') },
+      { value: '0', text: translate('manufacturing.command.oqc') }
+    ]
 
-	const getCriteriaArray = () => {
-		let criteriaArr = [{ value: '1', text: translate('manufacturing.command.choose_qc_criteria') }]
-		manufacturingQualityCriteria.listCriterias?.map(criteria => {
-			criteriaArr.push({ value: criteria._id, text: criteria.name })
-		})
-		return criteriaArr
-	}
+    manufacturingCommand.currentCommand.workOrders?.map((wo, index) => {
+      operationArr.push({
+        value: index,
+        text: wo.operation
+      })
+    })
 
-	const getSegmentArray = () => {
-		let segmentArr = [{ value: '1', text: translate('manufacturing.command.choose_qc_segment') }]
+    return operationArr
+  }
 
-		manufacturingCommand.currentCommand.workOrders?.map(wo => {
-			const inspection = manufacturingCommand.currentCommand
-				.inspections.find(ins => ins.workOrder == wo._id)
-			
-			if (!inspection) { // Chưa kiểm định
-				segmentArr.push({ value: wo._id, text: wo.operation })
-			}
-		})
-		
-		segmentArr.push({ value: '0', text: "Thành phẩm" })
-		return segmentArr
-	}
-	
-	const getFinalResultArr = () => {
-		let statusArr = []
-		statusArr.push({ value: 1, text: translate('manufacturing.command.qc_status.2.content') })
-		statusArr.push({ value: 2, text: translate('manufacturing.command.qc_status.3.content') })
+  const getCriteriaArray = () => {
+    let criteriaArr = [{ value: '1', text: translate('manufacturing.command.choose_qc_criteria') }]
+    manufacturingQualityCriteria.listCriterias?.map((criteria) => {
+      criteriaArr.push({ value: criteria._id, text: criteria.name })
+    })
 
-		return statusArr
-	}
+    return criteriaArr
+  }
 
-	const getErrorArray = () => {
-		let errorArr = []
-		manufacturingQualityError.listErrors.map(error => {
-			errorArr.push({ value: error._id, text: error.name })
-		})
-		return errorArr
-	}
+  const getFinalResultArr = () => {
+    const finalResultArr = [
+      { value: 1, text: translate('manufacturing.command.qc_status.2.content') },
+      { value: 2, text: translate('manufacturing.command.qc_status.3.content') }
+    ]
 
-	const handleInspectionNumChange = (e) => {
-		setInspectionNum(e.target.value)
-	}
+    return finalResultArr
+  }
 
-	const handlePassedNumChange = (e) => {
-		setPassedNum(e.target.value)
-	}
+  const getErrorArray = () => {
+    let errorArr = []
+    manufacturingQualityError.listErrors?.map((error) => {
+      errorArr.push({ value: error._id, text: error.name })
+    })
 
-	const handleErrorNumChange = (e) => {
-		setErrorNum(e.target.value)
-	}
+    return errorArr
+  }
 
-	const handleCriteriaChange = (value) => {
-		setCriteria(value[0])
-	}
+  const handleInspectionInputChange = (e) => {
+    const { name, value } = e.target
+    setInspection({ ...inspection, [name]: value })
+  }
 
-	const handleSegmentChange = (value) => {
-		setSegment(value[0])
-	}
+  const handleInspectionSelectChange = (name, value) => {
+    setInspection({ ...inspection, [name]: value })
+  }
 
-	const handleFinalResultChange = (value) => {
-		setFinalResult(value[0])
-	}
+  const handleAddError = () => {
+    setErrorList([...errorList, ''])
+  }
 
-	const handleErrorListChange = (value, index) => {
-		const newErrorList = [...errorList]
-		newErrorList[index] = value[0]
-		setErrorList(newErrorList)
-	}
+  const handleRemoveError = (index) => {
+    setErrorList((prev) => prev.filter((_, i) => i !== index))
+  }
 
-	const isFormValidated = () => {
-		if (!inspectionNum || !passedNum || !errorNum || !criteria || !segment || !finalResult) {
-			return false
-		}
-		return true
-	}
+  const isFormValidated = () => {
+    return true
+  }
 
-	const save = () => {
-		const userId = localStorage.getItem('userId')
-		const data = {
-			code,
-			manufacturingCommand: commandId,
-			workOrder: segment,
-			type: segment == '0'? 2 : 1,
-			responsible: userId,
-			criteria,
-			result: {
-				inspectionNum,
-				passedNum,
-				errorNum,
-				errorList,
-				final: finalResult
-			}
-		}
-		props.createManufacturingQualityInspection(data)
-	}
+  const save = () => {
+    const userId = localStorage.getItem('userId')
+    const data = {
+      code,
+      manufacturingCommand: commandId,
+      workOrder: inspection.operation,
+      type: inspection.operation == '0' ? 2 : 1,
+      responsible: userId,
+      criteria: inspection.criteria,
+      result: {
+        inspectionNum: inspection.inspectionNum,
+        passedNum: inspection.passedNum,
+        errorNum: inspection.errorNum,
+        errorList: inspection.errorList,
+        final: inspection.finalResult
+      }
+    }
 
-	useEffect(() => {
-		if (commandId) {
-			props.getDetailManufacturingCommand(commandId)
-			
-			const data = {
-				good: manufacturingCommand.currentCommand.good
-			}
-			
-			props.getAllManufacturingQualityCriterias(data)
-		}
-	}, [commandId])
+    const oqcData = {
+      qualityControlStaff: {
+        status: inspection.finalResult == 1 ? 2 : 3,
+        content: ''
+      }
+    }
 
-	useEffect(() => {
-		props.getAllManufacturingQualityErrors()
-	}, [])
+    if (inspection.operation == '0') {
+      props.handleEditCommand(commandId, oqcData)
+    }
 
-	return (
-		<>
-			<DialogModal
-				modalID='modal-quality-control'
-				isLoading={manufacturingCommand.isLoading}
-				formID='form-quality-control'
-				title={translate('manufacturing.command.quality_control_command')}
-				disableSubmit={!isFormValidated()}
-				msg_success={translate('manufacturing.command.edit_successfully')}
-				msg_failure={translate('manufacturing.command.edit_failed')}
-				func={save}
-				size={50}
-				maxWidth={500}
-			>
-				<form id='form-quality-control'>
-					<div className="row">
-						<div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<div className='form-group'>
-								<label>
-									{translate('manufacturing.command.code')}
-									<span className='text-red'>*</span>
-								</label>
-								<input type='text' value={code} className='form-control' disabled={true}></input>
-							</div>
-						</div>
-						<div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<div className='form-group'>
-								<label>
-									{translate('manufacturing.command.qc_criteria')}
-									<span className='text-red'>*</span>
-								</label>
-								<SelectBox
-									id={`select-criteria`}
-									className='form-control select2'
-									items={getCriteriaArray()}
-									value={criteria}
-									onChange={handleCriteriaChange}
-									style={{ width: '100%' }}
-									multiple={false}
-								/>
-							</div>
-						</div>
-						<div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<div className='form-group'>
-								<label>
-									{translate('manufacturing.command.qc_segment')}
-									<span className='text-red'>*</span>
-								</label>
-								<SelectBox
-									id={`select-segment`}
-									className='form-control select2'
-									items={getSegmentArray()}
-									value={segment}
-									onChange={handleSegmentChange}
-									style={{ width: '100%' }}
-									multiple={false}
-								/>
-							</div>
-						</div>
-						<div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-							<div className='form-group'>
-								<label>
-									{translate('manufacturing.command.inspection_num')}
-									<span className='text-red'>*</span>
-								</label>
-								<input type='number' className='form-control' value={inspectionNum} onChange={handleInspectionNumChange}></input>
-							</div>
-						</div>
-						<div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-							<div className='form-group'>
-								<label>
-									{translate('manufacturing.command.passed_num')}
-									<span className='text-red'>*</span>
-								</label>
-								<input type='number' className='form-control' value={passedNum} onChange={handlePassedNumChange}></input>
-							</div>
-						</div>
-						<div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-							<div className='form-group'>
-								<label>
-									{translate('manufacturing.command.error_num')}
-									<span className='text-red'>*</span>
-								</label>
-								<input type='number' className='form-control' value={errorNum} onChange={handleErrorNumChange}></input>
-							</div>
-						</div>
-						<div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-								<div className="form-group">
-									<label>
-										{translate('manufacturing.command.qc_result')}
-										<span className='text-red'>*</span>
-									</label>
-									<SelectBox
-										id={`select-final-result`}
-										className='form-control select2'
-										items={getFinalResultArr()}
-										value={finalResult}
-										onChange={handleFinalResultChange}
-										style={{ width: '100%' }}
-										multiple={false}
-									/>
-								</div>
-						</div>
-						<div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<div className='form-group'>
-								<label>
-									{translate('manufacturing.command.error_list')}
-								</label>
-								<table className='table table-hover table-striped table-bordered'>
-									<thead>
-										<tr>
-											<th>
-												<label>{translate('manufacturing.command.error_name')}</label>
-											</th>
-											<th style={{ width: '4rem' }} className='text-center'>
-												<a href='#add-manager' className='text-green' onClick={handleAddError}>
-													<i className='material-icons'>add_box</i>
-												</a>
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{errorList.map((_, index) => (
-											<tr key={index}>
-												<td>
-												<SelectBox
-													id={`select-error-${index}`}
-													className='form-control select2'
-													items={getErrorArray()}
-													style={{ width: '100%' }}
-													value={errorList[index]}
-													onChange={(value) => handleErrorListChange(value, index)}
-													multiple={false}
-												/>
-												</td>
-												<td>
-													<a
-														href='#delete-error'
-														className='text-red'
-														style={{ border: 'none' }}
-														onClick={() => handleRemoveError(index)}
-													>
-														<i className='fa fa-trash'></i>
-													</a>
-												</td>
+    props.createManufacturingQualityInspection(data)
+  }
 
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</form>
-			</DialogModal>
-		</>
-	)
+  useEffect(() => {
+    if (commandId) {
+      props.getDetailManufacturingCommand(commandId)
+
+      const data = {
+        good: manufacturingCommand.currentCommand.good
+      }
+
+      props.getAllManufacturingQualityCriterias(data)
+    }
+  }, [commandId])
+
+  useEffect(() => {
+    props.getAllManufacturingQualityErrors()
+  }, [])
+
+  return (
+    <>
+      <DialogModal
+        modalID='modal-quality-control'
+        isLoading={manufacturingCommand.isLoading}
+        formID='form-quality-control'
+        title={translate('manufacturing.command.quality_control_command')}
+        disableSubmit={!isFormValidated()}
+        msg_success={translate('manufacturing.command.edit_successfully')}
+        msg_failure={translate('manufacturing.command.edit_failed')}
+        func={save}
+        size={50}
+        maxWidth={500}
+      >
+        <form id='form-quality-control'>
+          <div className='row'>
+            <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+              <div className='form-group'>
+                <label>
+                  {translate('manufacturing.command.code')}
+                  <span className='text-red'>*</span>
+                </label>
+                <input type='text' value={code} className='form-control' disabled={true} />
+              </div>
+            </div>
+            <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+              <div className='form-group'>
+                <label>
+                  {translate('manufacturing.command.qc_criteria')}
+                  <span className='text-red'>*</span>
+                </label>
+                <SelectBox
+                  id={`select-criteria`}
+                  className='form-control select2'
+                  items={getCriteriaArray()}
+                  value={inspection.criteria}
+                  onChange={(value) => handleInspectionSelectChange('criteria', value[0])}
+                  style={{ width: '100%' }}
+                  multiple={false}
+                />
+              </div>
+            </div>
+            <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+              <div className='form-group'>
+                <label>
+                  {translate('manufacturing.command.qc_operation')}
+                  <span className='text-red'>*</span>
+                </label>
+                <SelectBox
+                  id={`select-operation`}
+                  className='form-control select2'
+                  items={getOperationArray()}
+                  // value={segment}
+                  // onChange={getOperationArray()}
+                  style={{ width: '100%' }}
+                  multiple={false}
+                />
+              </div>
+            </div>
+            <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
+              <div className='form-group'>
+                <label>
+                  {translate('manufacturing.command.inspection_num')}
+                  <span className='text-red'>*</span>
+                </label>
+                <input
+                  type='number'
+                  className='form-control'
+                  name='inspectionNum'
+                  value={inspection.inspectionNum}
+                  onChange={handleInspectionInputChange}
+                />
+              </div>
+            </div>
+            <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
+              <div className='form-group'>
+                <label>
+                  {translate('manufacturing.command.passed_num')}
+                  <span className='text-red'>*</span>
+                </label>
+                <input
+                  type='number'
+                  className='form-control'
+                  name='passedNum'
+                  value={inspection.passedNum}
+                  onChange={handleInspectionInputChange}
+                />
+              </div>
+            </div>
+            <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
+              <div className='form-group'>
+                <label>
+                  {translate('manufacturing.command.error_num')}
+                  <span className='text-red'>*</span>
+                </label>
+                <input
+                  type='number'
+                  className='form-control'
+                  name='errorNum'
+                  value={inspection.errorNum}
+                  onChange={handleInspectionInputChange}
+                />
+              </div>
+            </div>
+            <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
+              <div className='form-group'>
+                <label>
+                  {translate('manufacturing.command.qc_result')}
+                  <span className='text-red'>*</span>
+                </label>
+                <SelectBox
+                  id={`select-final-result`}
+                  className='form-control select2'
+                  items={getFinalResultArr()}
+                  value={inspection.finalResult}
+                  onChange={(value) => handleInspectionSelectChange('finalResult', value[0])}
+                  style={{ width: '100%' }}
+                  multiple={false}
+                />
+              </div>
+            </div>
+            <div className='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+              <div className='form-group'>
+                <label>{translate('manufacturing.command.error_list')}</label>
+                <table className='table table-hover table-striped table-bordered'>
+                  <thead>
+                    <tr>
+                      <th>
+                        <label>{translate('manufacturing.command.error_name')}</label>
+                      </th>
+                      <th style={{ width: '4rem' }} className='text-center'>
+                        <a href='#add-manager' className='text-green' onClick={handleAddError}>
+                          <i className='material-icons'>add_box</i>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {errorList.map((_, index) => (
+                      <tr key={index}>
+                        <td>
+                          <SelectBox
+                            id={`select-error-${index}`}
+                            className='form-control select2'
+                            items={getErrorArray()}
+                            style={{ width: '100%' }}
+                            value={errorList[index]}
+                            onChange={(value) => handleErrorListChange(value, index)}
+                            multiple={false}
+                          />
+                        </td>
+                        <td>
+                          <a href='#delete-error' className='text-red' style={{ border: 'none' }} onClick={() => handleRemoveError(index)}>
+                            <i className='fa fa-trash'></i>
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </form>
+      </DialogModal>
+    </>
+  )
 }
 
 function mapStateToProps(state) {
-	const { manufacturingCommand, manufacturingQualityCriteria, manufacturingQualityError } = state
-	return { manufacturingCommand, manufacturingQualityCriteria, manufacturingQualityError }
+  const { manufacturingCommand, manufacturingQualityCriteria, manufacturingQualityError } = state
+  return { manufacturingCommand, manufacturingQualityCriteria, manufacturingQualityError }
 }
 
 const mapDispatchToProps = {
-	getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand,
-	handleEditCommand: commandActions.handleEditCommand,
-	getAllManufacturingQualityCriterias: manufacturingQualityCriteriaActions.getAllManufacturingQualityCriterias,
-	getAllManufacturingQualityErrors: manufacturingQualityErrorActions.getAllManufacturingQualityErrors,
-	createManufacturingQualityInspection: manufacturingQualityInspectionActions.createManufacturingQualityInspection,
+  getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand,
+  handleEditCommand: commandActions.handleEditCommand,
+  getAllManufacturingQualityCriterias: manufacturingQualityCriteriaActions.getAllManufacturingQualityCriterias,
+  getAllManufacturingQualityErrors: manufacturingQualityErrorActions.getAllManufacturingQualityErrors,
+  createManufacturingQualityInspection: manufacturingQualityInspectionActions.createManufacturingQualityInspection
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QualityControlForm))

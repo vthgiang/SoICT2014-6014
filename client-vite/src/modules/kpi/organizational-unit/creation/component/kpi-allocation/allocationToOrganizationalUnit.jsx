@@ -428,7 +428,7 @@ function AllocationToOrganizationalUnit({ month, currentKPI }) {
 
       {step === 1 && <ConfigParameters handleStartAllocation={handleStartAllocation} />}
 
-      {step === 2 && <AllocationResult listUnitKpi={listUnitKpi} />}
+      {step === 2 && <AllocationResult listUnitKpi={listUnitKpi} month={month} />}
     </DialogModal>
   )
 }

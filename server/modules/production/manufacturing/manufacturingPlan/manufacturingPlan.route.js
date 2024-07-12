@@ -15,4 +15,7 @@ router.patch('/:id', auth, ManufacturingPlanController.editManufacturingPlan);
 // Lấy ra danh sách người dùng có quyền duyệt kế hoạch theo currentRole (Quản đốc nhà máy hiện tại)
 router.get('/get-approvers-of-plan/:id', auth, ManufacturingPlanController.getApproversOfPlan);
 
+// Tạo lịch sản xuất tự động
+router.post('/automatic-schedule', auth, ManufacturingPlanController.createAutomaticSchedule);
+
 module.exports = router;

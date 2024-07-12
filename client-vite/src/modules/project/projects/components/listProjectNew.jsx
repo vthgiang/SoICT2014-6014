@@ -41,6 +41,34 @@ function ListProjectNew(props) {
     data: []
   })
 
+  const genStatusProject = (project) => {
+    let status = project?.status
+    let isAssignmentOk = project?.proposals?.assignment
+
+    switch (status) {
+      case 'inprocess': 
+        return <span className="text-blue-500">{'Đang thực hiện'}</span>
+      case 'proposal':
+        if (isAssignmentOk) {
+          return <span className="text-green-500">{'Đã có kết quả phân bổ, chờ phân công'}</span>
+        }
+        else {
+          return <span className="text-red-500">{'Chưa có kết quả phân bổ, chờ phân bổ'}</span>
+        }
+      case 'wait_for_approval':
+        if (isAssignmentOk) {
+          return <span className="text-green-500">{'Đã có kết quả phân bổ, chờ phân công'}</span>
+        }
+        else {
+          return <span className="text-red-500">{'Chưa có kết quả phân bổ, chờ phân bổ'}</span>
+        }
+      case 'finished': 
+        return <span className="text-green-500">{'Hoàn thành'}</span>
+      case 'canceled': 
+        return <span className="text-red-500">{'Bị hủy'}</span>
+    }
+  }
+
   const { project, translate, user, assetsManager } = props
   const userId = getStorage('userId')
   const currentRole = getStorage('currentRole')
@@ -100,8 +128,7 @@ function ListProjectNew(props) {
                           href={`/project/project-proposal?id=${currentProjects[n]?._id}`}
                         > Link
                         </a>),
-          status: currentProjects[n]?.proposals?.assignment ? <span className="text-green-500">{'Đã có dự liệu phân bổ'}</span> : <span className="text-red-500">{'Chưa có dữ liệu phân bổ'}</span>,
-        
+          status: genStatusProject(currentProjects[n])
         }
 
         if (checkIfAbleToCRUDProject({ project, user, currentProjectId: currentProjects[n]._id })) {

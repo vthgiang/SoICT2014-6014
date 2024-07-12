@@ -31,39 +31,86 @@ const ManufacturingCommandSchema = new Schema({
     quantity: { // Số lượng
         type: Number
     },
-    workOrders: [{ // Danh sách công việc
+    manufacturingRouting: {
+        type: Schema.Types.ObjectId,
+        ref: "ManufacturingRouting"
+    },
+    workOrders: [{ // Danh sách lệnh công việc của các xưởng
+        operationId: { // Mã công đoạn tương ứng với operation id trong routing 
+            type: Number,
+        },
         operation: { // Công đoạn
             type: String,
             required: true
         },
-        manufacturingMill: { //  Lệnh được thực hiện ở xưởng nào
+        manufacturingMill: { // Xưởng sản xuất thực hiện 
             type: Schema.Types.ObjectId,
             ref: "ManufacturingMill"
         },
-        responsibles: [{ // Danh sách người thực hiện công việc
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        }],
-        machines: [{
-            type: Schema.Types.ObjectId,
-            ref: "Asset"
-        }],
-        startDate: { // Ngày bắt đầu
+        startDate: { // Ngày bắt đầu dự kiến
             type: Date
         },
-        startHour: { // Giờ bắt đầu
+        startHour: { // Giờ bắt đầu dự kiến
             type: Number
         },
-        endDate: { // Ngày kết thúc
+        endDate: { // Ngày kết thúc dự kiến
             type: Date
         },
-        endHour: { // Giờ kết thúc
+        endHour: { // Giờ kết thúc dự kiến
             type: Number
+        },
+        tasks: [{ // Công việc vận hành sản xuất
+            task: {
+                type: Schema.Types.ObjectId,
+                ref: "Task"
+            },
+            responsible: { // Người thực hiện
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            },
+            machine: { // Máy móc thực hiện
+                type: Schema.Types.ObjectId,
+                ref: "Asset"
+            },
+            startDate: { // Ngày bắt đầu dự kiến
+                type: Date
+            },
+            startHour: { // Giờ bắt đầu dự kiến
+                type: Number
+            },
+            endDate: { // Ngày kết thúc dự kiến
+                type: Date
+            },
+            endHour: { // Giờ kết thúc dự kiến
+                type: Number
+            },
+        }],
+        qualityControlTasks: [{ // Công việc kiểm định chất lượng
+            type: Schema.Types.ObjectId,
+            ref: "Task"
+        }],
+        status: { // Trạng thái: 1. Chờ thực hiện || 2. Đang thực hiện || 3. Đã hoàn thành || 4. Đã hủy
+            type: Number,
+            default: 1
+        },
+        progress: { // Tiến độ công đoạn
+            type: Number,
+            default: 0
+        },
+        qc_inspection: { // Phiếu kiểm định chất lượng công đoạn
+            type: Schema.Types.ObjectId,
+            ref: "ManufacturingQualityInspection"
         },
     }],
-    taskTemplate: {
-        type: Schema.Types.ObjectId,
-        ref: "TaskTemplate"
+    taskTemplates: {
+        responsible: { // Mẫu công việc của người thực hiện
+            type: Schema.Types.ObjectId,
+            ref: "TaskTemplate"
+        },
+        qualityControl: { // Mẫu công việc kiểm định chất lượng
+            type: Schema.Types.ObjectId,
+            ref: "TaskTemplate"
+        }
     },
     creator: { // Người tạo
         type: Schema.Types.ObjectId,
@@ -74,20 +121,20 @@ const ManufacturingCommandSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "User"
         },
-        status: { // Trạng thái kiểm định 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
-            type: Number,
+        status: { // status, content, time áp dụng cho kiểm định lô thành phẩm
+            type: Number, // Trạng thái qc: 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
             default: 1
         },
-        content: { // Nội dung kiểm định
+        content: { // Nội dung kiểm định lô sản phẩm
             type: String
         },
-        time: { // Thời gian phê duyệt
+        time: { // Thời gian phê duyệt kiểm định lỗ sản phẩm
             type: Date
+        },
+        qc_inspection: { // Phiếu kiểm định chất lượng thành phẩm 
+            type: Schema.Types.ObjectId,
+            ref: "ManufacturingQualityInspection"
         }
-    }],
-    inspections: [{ // Danh sách phiếu kiểm định
-        type: Schema.Types.ObjectId,
-        ref: "ManufacturingQualityInspection"
     }],
     accountables: [{ // Người giám sát lệnh
         type: Schema.Types.ObjectId,
@@ -103,7 +150,6 @@ const ManufacturingCommandSchema = new Schema({
     finishedProductQuantity: { // Số lượng thành phẩm
         type: Number
     },
-
     substandardProductQuantity: { // Số lượng phế phẩm
         type: Number
     },

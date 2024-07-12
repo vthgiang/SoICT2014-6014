@@ -1,0 +1,101 @@
+/* Widget Title */
+.widget_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 0.8rem;
+    font-size: 1.8em;
+    color: #333;
+}
+
+.widget_title i {
+    cursor: pointer;
+    font-size: 1.8rem;
+}
+
+/* Numeric Card */
+.single_value {
+    width: 100%;
+    height: 100%;
+    padding: 0.4rem;
+    border-radius: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card_content {
+    width: 100%;
+    font-size: 1rem;
+}
+
+.card_content-smaller {
+    font-size: 0.8rem;
+}
+
+.card_icon {
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 0.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card_icon i {
+    color: white;
+    font-size: 4em;
+}
+
+.card_value-number {
+    font-size: 2.4em;
+    font-weight: 600;
+}
+
+.card_value-trend {
+    font-size: 1.4em;
+    font-weight: 700;
+    display: inline-flex;
+    margin-left: 0.5em;
+}
+
+/* Daily Board */
+.board-view {
+    padding-top: 2rem;
+}
+
+.board-view .d-flex-center {
+    display: flex;
+    justify-content: center;
+    gap: 1px;
+    margin-bottom: 1px;
+}
+
+.date-item {
+    width: 3rem;
+    height: 2rem;
+    text-align: center;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+    line-height: 2rem;
+}
+
+.date-item.success {
+    background-color: #28a745;
+    color: white;
+}
+
+.date-item.warning {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.date-item.danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.date-item.default {
+    background-color: #e9ecef;
+    color: #333;
+}
