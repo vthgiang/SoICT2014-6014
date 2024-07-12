@@ -94,6 +94,7 @@ exports.getManufacturingKpiById = async (req, res) => {
 
 exports.editManufacturingKpi = async (req, res) => {
     try {
+        console.log(req.params.id)
         const id = req.params.id;
         const data = req.body;
         const manufacturingMetric = await ManufacturingMetricService.editManufacturingKpi(id, data, req.portal);

@@ -49,12 +49,6 @@ export function manufacturingMetric(state = initState, action) {
         isLoading: false,
         listKpis: [...state.listKpis, action.payload.manufacturingMetric]
       }
-    case manufacturingMetricConstants.GET_ALL_MANUFACTURING_KPIS_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        currentKpi: action.payload.manufacturingMetric
-        }
     case manufacturingMetricConstants.EDIT_MANUFACTURING_KPIS_SUCCESS:
       return {
         ...state,

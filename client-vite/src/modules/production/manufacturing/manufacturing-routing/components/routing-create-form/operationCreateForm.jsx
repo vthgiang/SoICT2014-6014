@@ -129,6 +129,16 @@ const OperationCreatForm = (props) => {
     return workerRole ? workerRole.name : ''
   }
 
+  const isFormValidated = () => {
+    if (operation.name === '' 
+        || operation.mill === '1'
+        || operation.resources.length === 0
+    ) {
+      return false
+    }
+    return true
+  }
+
   useEffect(() => {
     const getData = async () => {
       await props.getAllManufacturingWorks()
@@ -150,6 +160,7 @@ const OperationCreatForm = (props) => {
         isLoading={false}
         formID='form-create-new-operation'
         title={translate('manufacturing.routing.add_operation')}
+        disableSubmit={!isFormValidated()}
         msg_success=''
         msg_failure=''
         func={handleSave}

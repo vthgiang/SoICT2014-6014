@@ -20,6 +20,7 @@ const {
     ManufacturingQualityCriteria,
     ManufacturingQualityInspection,
     TaskTemplate,
+    Task,
 } = require('../models');
 require('dotenv').config();
 
@@ -377,21 +378,13 @@ const initManufacturing = async () => {
             status: 'ready_to_use',
             typeRegisterForUse: 3,
             description: 'Máy kiểm tra nguyên liệu',
-            detailInfo: [],
             readByRoles: [quanDocNhaMayDuocPham._id],
-            usageLogs: [],
-            maintainanceLogs: [],
-            incidentLogs: [],
             cost: 30000000,
             residualValue: 5000000,
             startDepreciation: new Date('2020-05-25'),
             usefulLife: 16,
             depreciationType: 'straight_line',
-            disposalDate: null,
             disposalType: '2',
-            disposalCost: null,
-            disposalDesc: '',
-            files: [],
         },
         {
             company: vnist._id,
@@ -416,21 +409,13 @@ const initManufacturing = async () => {
             status: 'ready_to_use',
             typeRegisterForUse: 3,
             description: 'Máy xay nguyên liệu',
-            detailInfo: [],
             readByRoles: [quanDocNhaMayDuocPham._id],
-            usageLogs: [],
-            maintainanceLogs: [],
-            incidentLogs: [],
             cost: 30000000,
             residualValue: 5000000,
             startDepreciation: new Date('2020-05-25'),
             usefulLife: 16,
             depreciationType: 'straight_line',
-            disposalDate: null,
             disposalType: '2',
-            disposalCost: null,
-            disposalDesc: '',
-            files: [],
         },
         {
             company: vnist._id,
@@ -455,21 +440,13 @@ const initManufacturing = async () => {
             status: 'ready_to_use',
             typeRegisterForUse: 3,
             description: 'Máy trộn nguyên liệu',
-            detailInfo: [],
             readByRoles: [quanDocNhaMayDuocPham._id],
-            usageLogs: [],
-            maintainanceLogs: [],
-            incidentLogs: [],
             cost: 30000000,
             residualValue: 5000000,
             startDepreciation: new Date('2020-05-25'),
             usefulLife: 16,
             depreciationType: 'straight_line',
-            disposalDate: null,
             disposalType: '2',
-            disposalCost: null,
-            disposalDesc: '',
-            files: [],
         },
         {
             company: vnist._id,
@@ -494,21 +471,13 @@ const initManufacturing = async () => {
             status: 'ready_to_use',
             typeRegisterForUse: 3,
             description: 'Máy nén thuốc viên',
-            detailInfo: [],
             readByRoles: [quanDocNhaMayDuocPham._id],
-            usageLogs: [],
-            maintainanceLogs: [],
-            incidentLogs: [],
             cost: 30000000,
             residualValue: 5000000,
             startDepreciation: new Date('2020-05-25'),
             usefulLife: 16,
             depreciationType: 'straight_line',
-            disposalDate: null,
             disposalType: '2',
-            disposalCost: null,
-            disposalDesc: '',
-            files: [],
         },
         {
             company: vnist._id,
@@ -533,21 +502,13 @@ const initManufacturing = async () => {
             status: 'ready_to_use',
             typeRegisterForUse: 3,
             description: 'Máy nén thuốc viên',
-            detailInfo: [],
             readByRoles: [quanDocNhaMayDuocPham._id],
-            usageLogs: [],
-            maintainanceLogs: [],
-            incidentLogs: [],
             cost: 30000000,
             residualValue: 5000000,
             startDepreciation: new Date('2020-05-25'),
             usefulLife: 16,
             depreciationType: 'straight_line',
-            disposalDate: null,
             disposalType: '2',
-            disposalCost: null,
-            disposalDesc: '',
-            files: [],
         },
         {
             company: vnist._id,
@@ -572,21 +533,13 @@ const initManufacturing = async () => {
             status: 'ready_to_use',
             typeRegisterForUse: 3,
             description: 'Máy nén thuốc viên',
-            detailInfo: [],
             readByRoles: [quanDocNhaMayDuocPham._id],
-            usageLogs: [],
-            maintainanceLogs: [],
-            incidentLogs: [],
             cost: 30000000,
             residualValue: 5000000,
             startDepreciation: new Date('2020-05-25'),
             usefulLife: 16,
             depreciationType: 'straight_line',
-            disposalDate: null,
             disposalType: '2',
-            disposalCost: null,
-            disposalDesc: '',
-            files: [],
         }
     ])
 
@@ -688,7 +641,7 @@ const initManufacturing = async () => {
                         }
                     ],
                     preOperation: 1,
-                    nextOperation: 3
+                    nextOperation: 4
                 },
                 {
                     id: 4,
@@ -918,6 +871,7 @@ const initManufacturing = async () => {
         good: listProduct[0],
         quantity: 20000,
         manufacturingRouting: manufacturingRoutings[command.manufacturingRouting - 1]._id,
+        approvers: [manufacturingUsers[0]._id],
         workOrders: command.workOrders.map((wo) => ({
             ...wo,
             manufacturingMill: manufacturingMills[wo.mill - 1],
@@ -942,16 +896,173 @@ const initManufacturing = async () => {
         manufacturingCommandData
     );
 
+    // 6.1. Khởi tạo dữ liệu công việc
+    const convertDateTime = (dateStr, hours) => {
+        const date = new Date(dateStr);
+        date.setHours(hours);
+        return date;
+    }
+    
+    for (const wo of manufacturingCommands[0].workOrders){
+        const quantity = manufacturingCommands[0].quantity;
+        const commandCode = manufacturingCommands[0].code;
+        for (const task of wo.tasks){
+            const randomRate = 0.9 + Math.random() * 0.1;
+            const taskData = {
+                organizationalUnit: nhaMayDuocPham._id,
+                creator: manufacturingUsers[0]._id,
+                code: `THSX-${commandCode}`,
+                name: `Thực hiện lệnh sản xuất ${commandCode}`,
+                startDate: convertDateTime(task.startDate, task.startHour),
+                endDate: convertDateTime(task.endDate, task.endHour),
+                status: 'finished',
+                taskTemplate: responsibleTaskTemplate._id,
+                level: 1,
+                responsibleEmployees: [task.responsible],
+                accountableEmployees: [wo.accountable],
+                consultedEmployees: [task.responsible],
+                informedEmployees: [task.responsible], 
+                evaluations: [],
+                progress: 100,
+                taskInformations: [
+                    {
+                        code: "p1",
+                        name: "Sản lượng thực tế",
+                        description: "",
+                        type: "number",
+                        value: quantity,
+                        extra: "",
+                    },
+                    {
+                        code: "p2",
+                        name: "Sản lượng đạt yêu cầu",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(quantity * randomRate),
+                        extra: "",
+                    },
+                    {
+                        code: "p3",
+                        name: "Sản lượng không đạt yêu cầu",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(quantity * (1 - randomRate)),
+                        extra: "",
+                    },
+                    {
+                        code: "p4",
+                        name: "Số lần kiểm tra tuân thủ quy trình",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(Math.random() * 5) + 5,
+                        extra: "",
+                    },
+                    {
+                        code: "p5",
+                        name: "Số lần không tuân thủ quy trình",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(Math.random() * 5),
+                        extra: "",
+                    },
+                    {
+                        code: "p6",
+                        name: "Thời gian dừng máy",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(Math.random() * 5),
+                        extra: "",
+                    },
+                    {
+                        code: "p7",
+                        name: "Thời gian rảnh rỗi",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(Math.random() * 5),
+                        extra: "",
+                    }
+                ]
+            }
+
+            const newTask = await Task(vnistDB).create(taskData);
+            task.task = newTask._id;
+        }
+
+        if (manufacturingCommands[0].qualityControlStaffs) {
+            qcStaffs = manufacturingCommands[0].qualityControlStaffs.map(x => x.staff);
+            const randomRate = 0.9 + Math.random() * 0.1;
+            const qcNum = quantity / 1000
+            const taskData = {
+                organizationalUnit: nhaMayDuocPham._id,
+                code: `KDCL-${commandCode}`,
+                creator: manufacturingUsers[0]._id,
+                name: `Thực hiện kiểm định chất lượng lệnh sản xuất ${manufacturingCommands[0].code}`,
+                startDate: convertDateTime(wo.startDate, wo.startHour),
+                endDate: convertDateTime(wo.endDate, wo.endHour),
+                status: 'finished',
+                taskTemplate: qualityControlTaskTemplate._id,
+                level: 1,
+                responsibleEmployees: qcStaffs,
+                accountableEmployees: qcStaffs,
+                consultedEmployees: qcStaffs,
+                informedEmployees: qcStaffs, 
+                evaluations: [],
+                progress: 100,
+                taskInformations: [
+                    {
+                        code: "p1",
+                        name: "Số lượng sản phẩm đã kiểm định",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(qcNum),
+                        extra: "",
+                    },
+                    {
+                        code: "p2",
+                        name: "Số lượng sản phẩm kiểm định lỗi",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(qcNum * randomRate),
+                        extra: "",
+                    },
+                    {
+                        code: "p3",
+                        name: "Số lượng sản phẩm kiểm định đạt yêu cầu",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(qcNum * (1 - randomRate)),
+                        extra: "",
+                    },
+                    {
+                        code: "p4",
+                        name: "Số lỗi mới được phát hiện",
+                        description: "",
+                        type: "number",
+                        value: Math.floor(Math.random() * 5),
+                        extra: "",
+                    }
+                ],
+            }
+
+            const newTask = await Task(vnistDB).create(taskData);
+            wo.qualityControlTasks.push(newTask._id);
+        }
+    }
+    await manufacturingCommands[0].save();
+
     const manufacturingPlan0 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[0]._id);
     manufacturingPlan0.manufacturingCommands = manufacturingCommands.map((command) => command._id);
     await manufacturingPlan0.save();
 
     // 8. Tạo dữ liệu lỗi sản phẩm
-    const manufacturingQualityErrorData = manufacturingData.errors.map((error) => ({
-        ...error,
-        reporter: manufacturingUsers[0]._id,
-        aql: 0.05,
-    }));
+    const manufacturingQualityErrorData = manufacturingData.errors.map((error) => {
+        const randomNum = Math.floor(Math.random() * 2) + 1
+        return {
+                ...error,
+                reporter: manufacturingUsers[manufacturingUsers.length - randomNum]._id,
+                aql: 0.05,
+        }
+    });
 
     const manufacturingQualityErrors = await ManufacturingQualityError(vnistDB)
         .insertMany(manufacturingQualityErrorData);
@@ -960,7 +1071,7 @@ const initManufacturing = async () => {
     const manufacturingQualityCriteriaData = manufacturingData.criterias.map((criteria) => ({
         ...criteria,
         goods: [listProduct[0]._id],
-        creator: manufacturingUsers[0]._id,
+        creator: manufacturingUsers[manufacturingUsers.length - 1]._id,
         status: 1,
     }));
 
@@ -969,14 +1080,18 @@ const initManufacturing = async () => {
     );
 
     // 10. Tạo dữ liệu tiêu chí kiểm định chất lượng
+    const getRandomErrors = (errors, count) => {
+        return errors.sort(() => 0.5 - Math.random()).slice(0, count);
+    }
+
     const manufacturingQualityInspectionData = manufacturingData.inspections.map((inspection) => ({
         ...inspection,
         manufacturingCommand: manufacturingCommands[0]._id,
-        responsible: manufacturingUsers[0]._id,
+        responsible: manufacturingUsers[manufacturingUsers.length - 1]._id,
         criteria: manufacturingQualityCriterias[0]._id,
         result: {
             ...inspection.result,
-            errorList: manufacturingQualityErrors.map((error) => error._id),
+            errorList: getRandomErrors(manufacturingQualityErrors, 2).map((error) => error._id),
         }
     }));
 

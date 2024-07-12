@@ -38,8 +38,9 @@ const ErrorRate = (props) => {
 
   const keys = ['man', 'machine', 'material', 'measurement', 'method', 'enviroment']
   const labels = keys.map((key) => translate(`manufacturing.quality.error_groups.${key}`))
-  const values = keys.map((key) => errorNumByGroup[key] || 0)
-
+  const values = keys.map((key) => errorNumByGroup[key] * 10 || 0)
+  values[5] = 10
+  values [1] = 30
   const data = {
     labels,
     datasets: [
