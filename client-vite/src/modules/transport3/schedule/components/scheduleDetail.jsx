@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import {withTranslate} from 'react-redux-multilingual'
 import {formatDate} from '@helpers/formatDate'
 import {DialogModal, ErrorLabel, SelectBox} from '@common-components'
@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from 'react-redux'
 function ScheduleDetail(props) {
   let dispatch = useDispatch()
   let ontimePredictResults = useSelector(state => state.T3schedule?.predictOntimeDeliveryResults)
-  let scheduleById = useSelector(state => state.T3schedule?.schedule?.schedule)
+  let scheduleById = useSelector(state => state.T3schedule.schedule?.schedule)
   let draftSchedule = useSelector(state => state.T3schedule?.draftSchedule) || [];
   draftSchedule = draftSchedule.filter(schedule => schedule.code === props.schedule?.code)
   let draftOptions = [
@@ -28,6 +28,15 @@ function ScheduleDetail(props) {
   }))
 
   const {schedule} = props
+
+  const ontimeDeliveryRate = useMemo(() => {
+    if (!scheduleById || !scheduleById.orders || scheduleById.orders.length === 0) return 'Đang lập lịch ...';
+    const ontimeOrders = scheduleById.orders.filter(order => order.estimatedOntime === 1).length;
+    const totalOrders = scheduleById.orders.length;
+    return ((ontimeOrders / totalOrders) * 100).toFixed(2) + '%';
+  }, [scheduleById]);
+
+  console.log(ontimeDeliveryRate)
 
   // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
   const orderStatus = {
@@ -123,7 +132,7 @@ function ScheduleDetail(props) {
                     <div className="d-flex justify-content-between align-items-center">
                       <div className="form-group">
                         <strong>Khả năng giao hàng đúng hạn:</strong>
-                        <span> {schedule.depot ? '90%' : 'Đang lập lịch ...'} </span>
+                        <span> {ontimeDeliveryRate} </span>
                       </div>
                       {schedule.depot && <div className="dropdown" style={{marginLeft: '20px'}}>
                         <button

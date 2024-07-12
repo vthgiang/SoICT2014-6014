@@ -67,7 +67,7 @@ function ManufacturingCommandManagementTable(props) {
       usercompanys.map((user) => {
         userArray.push({
           value: user._id,
-          text: user.name + ' - ' + user.email
+          text: user?.name + ' - ' + user?.email
         })
       })
     }
@@ -464,23 +464,23 @@ function ManufacturingCommandManagementTable(props) {
                     {command.approvers &&
                       command.approvers.map((x, index) => {
                         if (command.approvers.length === index + 1) {
-                          return x.approver.name
+                          return x.approver?.name
                         }
-                        return x.approver.name + ', '
+                        return x.approver?.name + ', '
                       })}
                   </td>
                   <td>
                     {command.qualityControlStaffs &&
                       command.qualityControlStaffs.map((staff, index) => {
-                        if (command.qualityControlStaffs.length === index + 1) return staff.staff.name
-                        return staff.staff.name + ', '
+                        if (command.qualityControlStaffs.length === index + 1) return staff.staff?.name
+                        return staff.staff?.name + ', '
                       })}
                   </td>
                   <td>
                     {command.accountables &&
                       command.accountables.map((acc, index) => {
-                        if (command.accountables.length === index + 1) return acc.name
-                        return acc.name + ', '
+                        if (command.accountables.length === index + 1) return acc?.name
+                        return acc?.name + ', '
                       })}
                   </td>
                   <td>
