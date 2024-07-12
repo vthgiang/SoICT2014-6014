@@ -220,3 +220,21 @@ exports.getAll3rdSchedule = async (portal, currentRole) => {
       }
     })
 }
+
+exports.updateStatusOrderSchedule = async (portal, data) => {
+  console.log(data)
+    let schedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({orders: {$elemMatch: {order: data.order}}});
+    schedule = schedule[0];
+    let orders = schedule.orders.map(order => {
+        if (order.order.toString() === data.order) {
+        order.status = data.status;
+        }
+        return order;
+    });
+    await Transport3Schedule(connect(DB_CONNECTION, portal)).findByIdAndUpdate(schedule._id, {
+        $set: {
+        orders: orders
+        }
+    });
+    return [];
+}

@@ -180,3 +180,19 @@ exports.getAll3rdSchedule = async (req, res) => {
     });
   }
 }
+
+exports.updateStatusOrderSchedule = async (req, res) => {
+  try {
+    console.log(req.body)
+    let schedule = await ScheduleService.updateStatusOrderSchedule(req.portal, req.body);
+    res.status(200).json({
+      schedule,
+      messages: ['Cập nhật trạng thái đơn hàng thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while updating status order schedule ${error}`);
+    res.status(400).json({
+      messages: ['Cập nhật trạng thái đơn hàng thất bại']
+    });
+  }
+}

@@ -4,6 +4,7 @@ const ScheduleController = require('./schedule.controller');
 const { auth } = require(`../../../middleware`);
 
 router.get('/schedule/me', auth, ScheduleController.getMySchedule);
+router.put('/schedule/update', auth, ScheduleController.updateStatusOrderSchedule);
 router.get('/schedule/draft', auth, ScheduleController.getDraftSchedule);
 router.post('/schedule/draft', auth, ScheduleController.setScheduleFromDraft);
 router.get('/schedule/:id', auth, ScheduleController.getScheduleById);
