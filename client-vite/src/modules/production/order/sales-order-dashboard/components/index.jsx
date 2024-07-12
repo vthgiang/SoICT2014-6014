@@ -27,7 +27,7 @@ function Dashboard(props) {
         </li>
         <li>
           <a href='#sales-order' data-toggle='tab' onClick={() => handleChangeType(2)}>
-            {'Phân tích doanh số'}
+            {'Phân tích dự báo'}
           </a>
         </li>
        

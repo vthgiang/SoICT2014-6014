@@ -1,14 +1,11 @@
 const {
   Transport3Order,
-  Stock,
-  Customer,
-  Good, Role
+  Role
 } = require('../../../models');
 
 const {
   connect
 } = require(`../../../helpers/dbHelper`);
-const mongoose = require('mongoose');
 // Tạo mới 1 vận đơn
 exports.createOrder = async (portal, data) => {
   if (data.transportType !== 3) {
@@ -35,14 +32,20 @@ exports.getAllOrder = async (portal, query, currentRole) => {
     _id: currentRole
   });
 
-  if(role[0].name !== 'Trưởng phòng vận chuyển' && role[0].name !== 'Nhân viên giám sát') {
+  if (role[0].name !== 'Trưởng phòng vận chuyển' && role[0].name !== 'Nhân viên giám sát') {
     return [];
   }
 
-  return await Transport3Order(connect(DB_CONNECTION, portal)).find(query)
+  let result = await Transport3Order(connect(DB_CONNECTION, portal)).find({})
     .populate('customer')
     .populate('stockIn')
     .populate('stockOut');
+
+  if (query.query) {
+    result = result.filter(x => x.code.toLowerCase().includes(query.query.toLowerCase()) || x.customer.name.toLowerCase().includes(query.query.toLowerCase()));
+  }
+
+  return result;
 }
 
 // Xoá 1 vận đơn
@@ -65,5 +68,24 @@ exports.updateOrder = async (portal, id, data) => {
     $set: data
   }, {
     new: true
+  });
+}
+
+// Duyệt vận đơn
+exports.approveOrder = async (portal, id) => {
+  return Transport3Order(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    $set: {
+      status: 2
+    }
+  }, {
+    new: true
+  });
+}
+
+// Xoá vận đơn chưa duyệt
+exports.deleteUnapprovedOrder = async (portal, id) => {
+  return Transport3Order(connect(DB_CONNECTION, portal)).findOneAndDelete({
+    _id: id,
+    status: 1
   });
 }

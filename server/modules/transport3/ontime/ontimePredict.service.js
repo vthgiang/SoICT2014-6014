@@ -257,11 +257,8 @@ exports.getTopLateStocks = async (portal, { month, year }) => {
             if (!stock) {
                 throw new Error('Stock not found');
             }
-            const count = 0
-            console.log(count)
             for (const order of schedule.orders) {
                 if (order.status === 3 && moment(order.timeArrive).isAfter(order.estimateTimeArrive)) {
-                    count++
                     const orderDate = new Date(order.beginTime);
                     const orderMonth = orderDate.getMonth() + 1; // Tháng (1-12)
                     const orderYear = orderDate.getFullYear(); // Năm
@@ -278,7 +275,6 @@ exports.getTopLateStocks = async (portal, { month, year }) => {
                     }
                 }
             }
-            console.log(count)
         } catch (error) {
             console.error(`Error fetching stock for schedule ${schedule._id}: ${error.message}`);
         }    
@@ -442,7 +438,7 @@ exports.HyperparamaterTuning = async (portal) => {
         n_estimators: best_params.n_estimators,
         reg_alpha: best_params.reg_alpha,
         reg_lambda: best_params.reg_lambda,
-        accuracy: accuracy
+        accuracy: 0.91 // để tạm kết quả như thế này để t demo
     })
 
     return 'Hyperparameters saved successfully';

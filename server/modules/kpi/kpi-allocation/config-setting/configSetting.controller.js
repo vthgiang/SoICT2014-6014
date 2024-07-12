@@ -87,9 +87,9 @@ const handleAssignKpiAndTask = async (request, response) => {
   try {
     const portal = request.portal;
     // const { email } = request.user;
-    const { responseServerOutput, responseInput, listUnitKpi } = request.body;
+    const { responseServerOutput, responseInput, listUnitKpi, month } = request.body;
 
-    await ConfigSettingService.handleStartAssignAllocation(portal, responseServerOutput, responseInput, request.user, listUnitKpi);
+    await ConfigSettingService.handleStartAssignAllocation(portal, responseServerOutput, responseInput, request.user, listUnitKpi, month);
 
     // Logger.info(email, `Assign task and kpi success`, portal);
     response.status(200).json({

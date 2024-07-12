@@ -22,7 +22,7 @@ const getAllSchedule = (query) => {
   )
 }
 
-const getScheduleById = (scheduleId) => {
+const getScheduleById = (scheduleId, query) => {
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/transport3/schedule/${scheduleId}`,
@@ -122,6 +122,45 @@ const setScheduleFromDraft = (data) => {
     'transport3.schedule'
   )
 }
+
+const deleteSchedule = (scheduleId) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/schedule/${scheduleId}`,
+      method: 'DELETE'
+    },
+    true,
+    true,
+    'transport3.schedule'
+  )
+}
+
+const getAll3rdPartySchedule = (query) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/3rdschedule`,
+      method: 'GET',
+      params: query
+    },
+    false,
+    true,
+    'transport3.schedule'
+  )
+}
+
+const create3rdPartySchedule = (data) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/3rdschedule`,
+      method: 'POST',
+      data
+    },
+    true,
+    true,
+    'transport3.schedule'
+  )
+}
+
 export {
   getAllSchedule,
   getScheduleById,
@@ -131,5 +170,8 @@ export {
   hyperparamaterTuning,
   getHyperparamter,
   getDraftSchedule,
-  setScheduleFromDraft
+  setScheduleFromDraft,
+  deleteSchedule,
+  getAll3rdPartySchedule,
+  create3rdPartySchedule
 }

@@ -14,7 +14,8 @@ const {
   Customer,
   Good,
   Employee,
-  Transport3DraftSchedule
+  Transport3DraftSchedule,
+  Transport3rd
 } = require('../models');
 
 require('dotenv').config();
@@ -51,6 +52,7 @@ const initTransport3Data = async () => {
     await db.dropCollection('transport3vehicles');
     await db.dropCollection('transport3issues');
     await db.dropCollection('transport3draftschedules');
+    await db.dropCollection('transport3rds');
   }
 
   const initModels = (db) => {
@@ -60,6 +62,7 @@ const initTransport3Data = async () => {
     Transport3Vehicle(db);
     Transport3Issue(db);
     Transport3DraftSchedule(db);
+    Transport3rd(db);
   };
 
   console.log('Xoá dữ liệu transport3 cũ và khởi tạo dữ liệu mới');
@@ -170,7 +173,6 @@ const initTransport3Data = async () => {
   // listTransport3Schedules = listTransport3Schedules.slice(0, 15);
 
   const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-  const currentTimestamp = Math.floor(Date.now() / 1000);
 
   await Transport3Schedule(vnistDB).create(
     listTransport3Schedules.slice(0, 40).map((schedule, index) => {
@@ -254,6 +256,20 @@ const initTransport3Data = async () => {
     })
   )
   console.log('Khởi tạo xong dữ liệu vấn đề');
+  /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU Đơn vận chuyển bên thứ 3
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+  await Transport3rd(vnistDB).create(
+    transport3Order.slice(0, 2).map((order, index) => {
+      return {
+        order: order._id,
+        order3rd: `SPX_${today}.1394${index + 10}`,
+        status: 1,
+      }
+    })
+  )
   process.exit(0);
 };
 

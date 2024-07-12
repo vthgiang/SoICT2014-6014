@@ -19,7 +19,7 @@ exports.confirmEmployeeTransport3 = async (req, res) => {
     const {portal} = req;
     const {employeeId} = req.params;
     await EmployeeService.confirmEmployeeTransport3(portal, employeeId);
-    res.status(200).json({message: `Confirm employee ${employeeId} success`});
+    res.status(200).json({messages: [`Confirm employee ${employeeId} success`]});
   } catch (error) {
     await Log.error(`Error at confirmEmployeeTransport3: ${error}`);
     res.status(500).json({error: error.message});
@@ -32,7 +32,7 @@ exports.removeEmployeeTransport3 = async (req, res) => {
     const {portal} = req;
     const {employeeId} = req.params;
     await EmployeeService.removeEmployeeTransport3(portal, employeeId);
-    res.status(200).json({message: `Remove employee ${employeeId} success`});
+    res.status(200).json({messages: [`Remove employee ${employeeId} success`]});
   } catch (error) {
     await Log.error(`Error at removeEmployeeTransport3: ${error}`);
     res.status(500).json({error: error.message});

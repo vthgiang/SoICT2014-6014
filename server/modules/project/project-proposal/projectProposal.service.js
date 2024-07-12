@@ -146,7 +146,7 @@ const getLastKPIAndAvailableEmpsInTasks = (tasks, allTasksInPast, employees) => 
           let kpiValue = 1
   
           // Nếu không có yêu cầu năng lực => Lấy năng lực thực hiện công việc tốt nhất trong quá khứ
-          let taskOfEmpInPast = allTasksInPast.filter((taskInPast) => taskInPast.assignee._id === employeeId && taskInPast.point !== KPI_FAIL)
+          let taskOfEmpInPast = allTasksInPast.filter((taskInPast) => taskInPast?.assignee === employeeId && taskInPast.point !== KPI_FAIL)
           if (taskOfEmpInPast && taskOfEmpInPast?.length) {
             kpiValue = taskOfEmpInPast.sort((a, b) => b.point - a.point)[0].point
           }
@@ -169,7 +169,7 @@ const getLastKPIAndAvailableEmpsInTasks = (tasks, allTasksInPast, employees) => 
 
           // console.log("listTaskMatching: ", listTaskMatching)
           // console.log("employeeId: ", employeeId)
-          let listTasksMatchingWithEmp = listTaskMatching.filter((item) => String(item.assignee) === String(employeeId))
+          let listTasksMatchingWithEmp = listTaskMatching.filter((item) => String(item?.assignee) === String(employeeId))
           // console.log("listTaskMatching: ", listTasksMatchingWithEmp)
           if (listTasksMatchingWithEmp && listTasksMatchingWithEmp?.length > 0) {
             listTasksMatchingWithEmp = listTasksMatchingWithEmp.sort((a, b) => {
@@ -391,16 +391,26 @@ exports.proposalForProject = async (portal, id, data) => {
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
 
-    const kpiInPast = getLastKPIAndAvailableEmpsInTasks(job.tasks, allTasksInPast, job.employees)
+    const kpiInPast = getLastKPIAndAvailableEmpsInTasks(job.tasks, allTasksInPast, job.employees)    
 
-    const allTasksOutOfProject = await Task(connect(DB_CONNECTION, portal)).find({
+    let allTasksOutOfProjectAll = await Task(connect(DB_CONNECTION, portal)).find({
       status: 'inprocess',
-      taskProject: { $ne: id }
+      taskProject: { $ne: id },
     }).select("_id code preceedingTasks name description tags point estimateNormalTime requireAssignee requireAsset kpiInTask taskKPIWeight assignee assets")
       .lean().exec()
     
-    // console.log("allTasksOutOfProject: ", allTasksOutOfProject?.length)
-    
+    let allTasksOutOfProject = allTasksOutOfProjectAll && allTasksOutOfProjectAll?.length ? allTasksOutOfProjectAll.filter((item) => {
+      let flag = false
+      for (let i = 0; i < job.employees?.length; i++) {
+        let employeeId = job.employees[i]?._id
+        if (String(item?.assignee) === String(employeeId)) {
+          flag = true
+          break
+        }
+      }
+      return flag
+    }) : []
+        
     // const DLHS_Arguments = initDLHS_Arguments()
     let initArguments = {}
     if (!algorithmParams) {
@@ -413,7 +423,7 @@ exports.proposalForProject = async (portal, id, data) => {
     const assetHasKPIWeight = 0.1
 
     // TODO: update params
-    const result = proposalForProjectWithAlgorithm(job, kpiInPast, allTasksOutOfProject, assetHasKPIWeight, algorithm, algorithmParams ? algorithmParams : initArguments) 
+    let result = proposalForProjectWithAlgorithm(job, kpiInPast, allTasksOutOfProject, assetHasKPIWeight, algorithm, algorithmParams ? algorithmParams : initArguments) 
 
     let kpiAssignment = result?.kpiAssignment
     let isCompleteProposal = true
@@ -472,6 +482,33 @@ exports.proposalForProject = async (portal, id, data) => {
         }
 
         task.estimateNormalCost = estimateTaskCost
+      }
+    }
+
+    // Check duplicate task
+    if (result?.assignment && result?.assignment?.length > 0) {
+      const resultAssignment = result?.assignment 
+      let falseDuplicate = 0
+      let taskInDuplicate = []
+      if (allTasksOutOfProject && allTasksOutOfProject?.length) {
+        resultAssignment.forEach((item) => {
+          const { task, assignee } = item
+          const { startDate, endDate } = task
+          let allTasksOutOfProjectWithEmp = allTasksOutOfProject.filter((item) =>
+            item?.assignee === assignee._id && new Date(item?.endDate) > new Date(startDate) && new Date(endDate) > new Date(item?.startDate)
+          )
+          if (allTasksOutOfProjectWithEmp && allTasksOutOfProjectWithEmp?.length) {
+            if (!taskInDuplicate || !taskInDuplicate.includes(task?._id)) {
+              falseDuplicate++
+              taskInDuplicate.push(task?._id)
+            }
+          }
+        })
+      }
+      result = {
+        ...result,
+        falseDuplicate: falseDuplicate,
+        taskInDuplicate: taskInDuplicate,
       }
     }
 
@@ -544,7 +581,7 @@ exports.assignForProjectFromProposal = async (portal, id) => {
       throw ['project_not_found'];
     }
 
-    if (!project?.proposals || !project?.proposals?.isComplete || !project?.proposals?.assignment || !project?.proposals?.assignment?.length) {
+    if (!project?.proposals || !project?.proposals?.assignment || !project?.proposals?.assignment?.length) {
       throw ['project_not_complete_proposal'];
     }
 

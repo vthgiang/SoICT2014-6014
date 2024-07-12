@@ -190,6 +190,7 @@ export default {
       list_major: 'Manage majors',
       list_career_position: 'Manage career position',
       list_certificate: 'Manage bidding certificates',
+      list_capacity: 'Manage employee capacity',
 
       // đấu thầu
       manage_bidding: 'Manage bidding',

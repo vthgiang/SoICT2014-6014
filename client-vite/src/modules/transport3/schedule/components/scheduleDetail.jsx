@@ -1,9 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import {withTranslate} from 'react-redux-multilingual'
-import {CrmCustomerActions} from '@modules/crm/customer/redux/actions'
-import {formatDate, formatToTimeZoneDate} from '@helpers/formatDate'
+import {formatDate} from '@helpers/formatDate'
 import {DialogModal, ErrorLabel, SelectBox} from '@common-components'
-import ValidationHelper from '@helpers/validationHelper'
 import '@modules/crm/customer/components/customer.css'
 import {MapContainer} from 'react-leaflet';
 import {StockActions} from '@modules/production/warehouse/stock-management/redux/actions.js';
@@ -12,10 +10,8 @@ import {useDispatch, useSelector} from 'react-redux'
 
 function ScheduleDetail(props) {
   let dispatch = useDispatch()
-  let initialState = {}
-  const [state, setState] = useState(initialState)
   let ontimePredictResults = useSelector(state => state.T3schedule?.predictOntimeDeliveryResults)
-  // let schedule = useSelector(state => state.T3schedule?.schedule)
+  let scheduleById = useSelector(state => state.T3schedule.schedule?.schedule)
   let draftSchedule = useSelector(state => state.T3schedule?.draftSchedule) || [];
   draftSchedule = draftSchedule.filter(schedule => schedule.code === props.schedule?.code)
   let draftOptions = [
@@ -33,11 +29,14 @@ function ScheduleDetail(props) {
 
   const {schedule} = props
 
-  const transportType = {
-    1: 'Giao hàng',
-    2: 'Nhận hàng',
-    3: 'Vận chuyển giữa kho'
-  }
+  const ontimeDeliveryRate = useMemo(() => {
+    if (!scheduleById || !scheduleById.orders || scheduleById.orders.length === 0) return 'Đang lập lịch ...';
+    const ontimeOrders = scheduleById.orders.filter(order => order.estimatedOntime === 1).length;
+    const totalOrders = scheduleById.orders.length;
+    return ((ontimeOrders / totalOrders) * 100).toFixed(2) + '%';
+  }, [scheduleById]);
+
+  console.log(ontimeDeliveryRate)
 
   // 1. Chưa giao hàng 2. Đang giao hàng 3. Đã giao hàng 4. Thất bại
   const orderStatus = {
@@ -62,12 +61,15 @@ function ScheduleDetail(props) {
 
   const handlePredictOntimeDelivery = (schedule) => {
     dispatch(ScheduleActions.predictOntimeDelivery(schedule._id))
+    if (ontimePredictResults) {
+      dispatch(ScheduleActions.getScheduleById(schedule?._id));
+    }
   };
 
   useEffect(() => {
     if (ontimePredictResults) {
       // Tải lại danh sách đơn hàng mới được dự báo
-      dispatch(ScheduleActions.getScheduleById(schedule?._id));
+      schedule && dispatch(ScheduleActions.getScheduleById(schedule?._id));
     }
   }, [ontimePredictResults, dispatch, schedule?._id]);
 
@@ -80,6 +82,7 @@ function ScheduleDetail(props) {
     }
     await dispatch(ScheduleActions.setScheduleFromDraft(data));
     await dispatch(ScheduleActions.getAllSchedule())
+    await dispatch(ScheduleActions.getScheduleById(schedule?._id));
   }
   return (
     <>
@@ -129,7 +132,7 @@ function ScheduleDetail(props) {
                     <div className="d-flex justify-content-between align-items-center">
                       <div className="form-group">
                         <strong>Khả năng giao hàng đúng hạn:</strong>
-                        <span> {schedule.depot ? '90%' : 'Đang lập lịch ...'} </span>
+                        <span> {ontimeDeliveryRate} </span>
                       </div>
                       {schedule.depot && <div className="dropdown" style={{marginLeft: '20px'}}>
                         <button
@@ -216,9 +219,9 @@ function ScheduleDetail(props) {
                         <td>{order.order.address}</td>
                         <td>{formatDate(order.order.createdAt)}</td>
                         <td>{formatDate(order.order.updatedAt)}</td>
-                        <td style={order.estimatedOntime === 1 ? {color: 'green'} :
-                          order.estimatedOntime === 0 ? {color: 'red'} : {color: 'black'}}>
-                          {displayOntimeStatus(order.estimatedOntime)}
+                        <td style={ scheduleById?.orders[index]?.estimatedOntime === 1 ? {color: 'green'} :
+                          scheduleById?.orders[index]?.estimatedOntime === 0 ? {color: 'red'} : {color: 'black'}}>
+                          {displayOntimeStatus(scheduleById?.orders[index]?.estimatedOntime)}
                         </td>
                         <td style={order.status === 4 ? {color: 'red'} :
                           order.status === 3 ? {color: 'green'} : {color: 'black'}}

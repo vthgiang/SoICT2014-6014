@@ -70,6 +70,51 @@ export function orders(state = initState, action) {
         ...state,
         isLoading: false
       }
+    case OrderConstants.APPROVE_ORDER_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case OrderConstants.APPROVE_ORDER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case OrderConstants.APPROVE_ORDER_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case OrderConstants.DELETE_ORDER_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case OrderConstants.DELETE_ORDER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case OrderConstants.DELETE_ORDER_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case OrderConstants.UPDATE_ORDER_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case OrderConstants.UPDATE_ORDER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case OrderConstants.UPDATE_ORDER_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
     default:
       return state
   }

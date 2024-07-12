@@ -1,4 +1,4 @@
-const RABBITMQ = 'amqp://guest:guest@rabbitmq:5672';
+const RABBITMQ = 'amqp://guest:guest@localhost:5672';
 
 const open = require('amqplib').connect(RABBITMQ);
 const q = 'task_service_queue';

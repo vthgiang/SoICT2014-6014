@@ -21,10 +21,9 @@ exports.getAllSchedule = async (req, res) => {
 
 exports.getScheduleById = async (req, res) => {
   try {
-    let {scheduleId} = req.params;
-    let schedule = await ScheduleService.getScheduleById(req.portal, scheduleId);
+    let schedule = await ScheduleService.getScheduleById(req.portal, req.params.id);
     res.status(200).json({
-      schedules,
+      schedule,
       messages: ['Lấy thông tin lịch trình thành công']
     });
   } catch (error) {
@@ -145,6 +144,55 @@ exports.setScheduleFromDraft = async (req, res) => {
     Log.error(`Error while setting schedule from draft ${error}`);
     res.status(400).json({
       messages: ['Tạo lịch trình từ bản nháp thất bại' + error]
+    });
+  }
+}
+
+
+exports.create3rdSchedule = async (req, res) => {
+  try {
+    let schedule = await ScheduleService.create3rdSchedule(req.portal, req.body);
+    res.status(200).json({
+      schedule,
+      messages: ['Tạo đơn cho bên thứ 3 thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while creating schedule ${error}`);
+    res.status(400).json({
+      messages: [`Tạo đơn cho bên thứ 3 thất bại ${error}`]
+    });
+  }
+}
+
+exports.getAll3rdSchedule = async (req, res) => {
+  try {
+    let schedules = await ScheduleService.getAll3rdSchedule(req.portal, req.currentRole);
+    res.status(200).json({
+      schedules,
+      messages: ['Lấy thông tin đơn cho bên thứ 3 thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while fetching all schedules ${error}`);
+    res.status(400).json({
+      messages: [
+        'Lấy thông tin đơn cho bên thứ 3 thất bại' + error
+      ]
+    });
+  }
+}
+
+exports.updateStatusOrderSchedule = async (req, res) => {
+  try {
+    console.log(req.body)
+    let schedule = await ScheduleService.updateStatusOrderSchedule(req.portal, req.body);
+    res.status(200).json({
+      schedule,
+      messages: ['Cập nhật trạng thái đơn hàng thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while updating status order schedule ${error}`);
+    res.status(400).json({
+      messages: ['Cập nhật trạng thái đơn hàng thất bại']
     });
   }
 }

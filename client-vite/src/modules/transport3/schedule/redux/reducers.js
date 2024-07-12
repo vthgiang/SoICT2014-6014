@@ -9,7 +9,8 @@ const initState = {
   listStocsWithLatLng: [],
   predictOntimeDeliveryResults: [],
   hyperparameters: [],
-  draftSchedule: []
+  draftSchedule: [],
+  list3rdPartySchedules: []
 }
 
 export function schedule(state = initState, action) {
@@ -173,6 +174,53 @@ export function schedule(state = initState, action) {
         ...state,
         isLoading: false
       }
+    case ScheduleConstants.DELETE_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.DELETE_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.DELETE_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.GET_3RD_PARTY_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.GET_3RD_PARTY_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        list3rdPartySchedules: action.payload
+      }
+    case ScheduleConstants.GET_3RD_PARTY_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.CREATE_3RD_PARTY_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case ScheduleConstants.CREATE_3RD_PARTY_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case ScheduleConstants.CREATE_3RD_PARTY_SCHEDULE_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
+
     default:
       return state
   }

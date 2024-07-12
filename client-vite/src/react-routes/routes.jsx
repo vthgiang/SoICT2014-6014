@@ -69,6 +69,7 @@ const CareerPosition = lazy(() => import('../modules/human-resource/career/compo
 const SearchKeyEmployee = lazy(() => import('../modules/human-resource/profile/employee-management/components/searchKeyEmployees'))
 const Certificate = lazy(() => import('../modules/human-resource/certificate/component'))
 const Major = lazy(() => import('../modules/human-resource/major/component'))
+const Capacity = lazy(() => import('../modules/human-resource/capacity/components'))
 const Contract = lazy(() => import('../modules/bidding/bidding-contract/component'))
 const BiddingPackagesManagement = lazy(() => import('../modules/bidding/bidding-package/biddingPackageManagement/components'))
 const BiddingPackageDetailPage = lazy(
@@ -255,6 +256,7 @@ const VehicleTransport3 = lazy(() => import('../modules/transport3/vehicle/compo
 const RouteTransport3 = lazy(() => import('../modules/transport3/route/components'))
 const IssueTransport3 = lazy(() => import('../modules/transport3/issue/components'))
 const ForecastOTD = lazy(() => import('../modules/transport3/schedule/components/forestcastModel/ontimeDeliveryPredict.jsx'))
+const thirdPartyTransport3 = lazy(() => import('../modules/transport3/schedule/components/thirdPartyLogisticsTable'))
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 const Project = lazy(() => import("../modules/project/projects/components/index"))
@@ -1522,6 +1524,26 @@ class Routes extends Component {
             pageName='list_major'
             layout={Layout}
             component={Major}
+          />
+
+          <PrivateRoute
+            isLoading={false}
+            key='list_capacity'
+            arrPage={[
+              { link: '/', name: 'home', icon: 'fa fa-home' },
+              {
+                link: '/hr-list-capacity',
+                name: 'list_capacity',
+                icon: 'fa fa-list-alt'
+              }
+            ]}
+            auth={auth}
+            exact
+            link='/hr-list-capacity'
+            path='/hr-list-capacity'
+            pageName='list_capacity'
+            layout={Layout}
+            component={Capacity}
           />
 
           <PrivateRoute
@@ -4113,7 +4135,7 @@ class Routes extends Component {
             path='/manage-transport3-partner'
             pageName='manage_transport3_partner'
             layout={Layout}
-            component={DashBoardtransport3Unit}
+            component={thirdPartyTransport3}
           />
 
           <PrivateRoute
