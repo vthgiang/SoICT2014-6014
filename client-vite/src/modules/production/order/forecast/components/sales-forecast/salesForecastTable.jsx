@@ -9,28 +9,22 @@ const SalesForecastTable = () => {
     const error = useSelector(state => state.forecasts.error);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [loading, setLoading] = useState(false);
     const [statusFilter, setStatusFilter] = useState('');
 
     useEffect(() => {
-        // Gọi API để lấy dữ liệu dự báo khi trang tải
         dispatch(forecastActions.getAllForecasts());
     }, [dispatch]);
 
     const handleForecastButtonClick = () => {
-        setLoading(true);
-        dispatch(forecastActions.createForecast()).finally(() => {
-            setLoading(false);
-        });
+        dispatch(forecastActions.createForecast());
     };
 
     const handleStatusFilterChange = (e) => {
         setStatusFilter(e.target.value);
-        setCurrentPage(1); // Reset về trang đầu tiên khi thay đổi bộ lọc
+        setCurrentPage(1);
     };
 
-    // Get current forecasts
-    const forecastsPerPage = 10; // Mặc định 10 sản phẩm trên mỗi trang
+    const forecastsPerPage = 10;
     const filteredForecasts = statusFilter
         ? forecasts.filter(forecast => {
             const status = forecast.totalForecastOrders < 20 ? 'Cần tiếp thị' : (forecast.totalForecastOrders > 160 ? 'Ưu tiên sản xuất' : 'Bình thường');
@@ -41,7 +35,6 @@ const SalesForecastTable = () => {
     const indexOfFirstForecast = indexOfLastForecast - forecastsPerPage;
     const currentForecasts = filteredForecasts.slice(indexOfFirstForecast, indexOfFirstForecast + forecastsPerPage);
 
-    // Change page
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
@@ -95,7 +88,7 @@ const SalesForecastTable = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {loading ? (
+                            {isLoading ? (
                                 <tr>
                                     <td colSpan="6" style={{ textAlign: 'center' }}>Đang tải dữ liệu...</td>
                                 </tr>
