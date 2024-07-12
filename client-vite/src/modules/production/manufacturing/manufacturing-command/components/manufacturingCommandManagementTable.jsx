@@ -66,8 +66,8 @@ function ManufacturingCommandManagementTable(props) {
     if (usercompanys) {
       usercompanys.map((user) => {
         userArray.push({
-          value: user._id,
-          text: user.name + ' - ' + user.email
+          value: user?._id,
+          text: user?.name + ' - ' + user.email
         })
       })
     }
@@ -186,7 +186,7 @@ function ManufacturingCommandManagementTable(props) {
   const checkRoleAccountables = (commands) => {
     const { accountables } = commands
     const userId = localStorage.getItem('userId')
-    let accoutableIds = accountables.map((x) => x._id)
+    let accoutableIds = accountables.map((x) => x?._id)
     if (accoutableIds.includes(userId)) {
       return true
     }
@@ -197,7 +197,7 @@ function ManufacturingCommandManagementTable(props) {
     const data = {
       status: 3
     }
-    props.handleEditCommand(command._id, data)
+    props.handleEditCommand(command?._id, data)
   }
 
   const handleEndCommand = async (command) => {
@@ -214,7 +214,7 @@ function ManufacturingCommandManagementTable(props) {
   const checkRoleQualityControl = (command) => {
     const { qualityControlStaffs } = command
     const userId = localStorage.getItem('userId')
-    let qcIds = qualityControlStaffs.map((x) => x.staff._id)
+    let qcIds = qualityControlStaffs.map((x) => x.staff?._id)
 
     if (qcIds.includes(userId)) {
       return true
@@ -225,7 +225,7 @@ function ManufacturingCommandManagementTable(props) {
   const findIndexOfStaff = (array, id) => {
     let result = -1
     array.forEach((element, index) => {
-      if (element.staff._id === id) {
+      if (element.staff?._id === id) {
         result = index
       }
     })
@@ -258,7 +258,7 @@ function ManufacturingCommandManagementTable(props) {
 
   const checkRoleCreator = (command) => {
     const userId = localStorage.getItem('userId')
-    if (userId === command.creator._id) {
+    if (userId === command.creator?._id) {
       return true
     }
     return false
@@ -268,13 +268,13 @@ function ManufacturingCommandManagementTable(props) {
     const data = {
       status: 5
     }
-    props.handleEditCommand(command._id, data)
+    props.handleEditCommand(command?._id, data)
   }
 
   const checkRoleApprovers = (command) => {
     const userId = localStorage.getItem('userId')
     const { approvers } = command
-    let approverIds = approvers.map((x) => x.approver._id)
+    let approverIds = approvers.map((x) => x.approver?._id)
     if (approverIds.includes(userId)) {
       return true
     }
@@ -296,7 +296,7 @@ function ManufacturingCommandManagementTable(props) {
       {state.command && <ManufacturingLotCreateForm command={state.command} code1={state.code1} code2={state.code2} />}
       {state.currentQCCommand && (
         <QualityControlForm
-          commandId={state.currentQCCommand._id}
+          commandId={state.currentQCCommand?._id}
           code={state.currentQCCommand.code}
         />
       )}
@@ -464,23 +464,23 @@ function ManufacturingCommandManagementTable(props) {
                     {command.approvers &&
                       command.approvers.map((x, index) => {
                         if (command.approvers.length === index + 1) {
-                          return x.approver.name
+                          return x.approver?.name
                         }
-                        return x.approver.name + ', '
+                        return x.approver?.name + ', '
                       })}
                   </td>
                   <td>
                     {command.qualityControlStaffs &&
                       command.qualityControlStaffs.map((staff, index) => {
-                        if (command.qualityControlStaffs.length === index + 1) return staff.staff.name
-                        return staff.staff.name + ', '
+                        if (command.qualityControlStaffs.length === index + 1) return staff.staff?.name
+                        return staff.staff?.name + ', '
                       })}
                   </td>
                   <td>
                     {command.accountables &&
                       command.accountables.map((acc, index) => {
-                        if (command.accountables.length === index + 1) return acc.name
-                        return acc.name + ', '
+                        if (command.accountables.length === index + 1) return acc?.name
+                        return acc?.name + ', '
                       })}
                   </td>
                   <td>
