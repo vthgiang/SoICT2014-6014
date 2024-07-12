@@ -11,6 +11,21 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+function formatToTimeZoneDate(stringDate) {
+    let dateArray = stringDate.split("-");
+    if (dateArray.length == 3) {
+        let day = dateArray[0];
+        let month = dateArray[1];
+        let year = dateArray[2];
+        return `${year}-${month}-${day}`
+    }
+    else if (dateArray.length == 2) {
+        let month = dateArray[0];
+        let year = dateArray[1];
+        return `${year}-${month}`
+    }
+}
+
 // lấy ra giá trị của element trong các task
 const getElementValueOfTasks = (tasks, elementCode) => {
     const now = new Date();
@@ -51,17 +66,14 @@ const getElementRecord = async (currentRole, portal, element) => {
     
     const manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
         .find({
+            'status': { $in: [3, 4] }, // 'Đang thực hiện', 'Đã hoàn thành
             'workOrders': {
                 $elemMatch: {
                     'manufacturingMill': {
                         $in: listMillIds
                     }
                 }
-            },
-            $or: [
-                {status: 2},
-                {status: 3}
-            ]
+            }
         })
         .populate([{
             path: 'workOrders.tasks.task',
@@ -163,8 +175,8 @@ const processKpiValue = async (data, portal) => {
 
     // tính toán trend của kpi của data point hiện tại so với data point trước đó
     if (kpiValues.length > 1) {
-        const currenKPIValue = kpiValues[values.length - 1]
-        const preKPIValue = kpiValues[values.length - 2]
+        const currenKPIValue = kpiValues[kpiValues.length - 1]
+        const preKPIValue = kpiValues[kpiValues.length - 2]
         trend.value = (currenKPIValue - preKPIValue) / preKPIValue * 100
         trend.direction = currenKPIValue > preKPIValue ? 'up' : 'down'
         trend.value = trend.value.toFixed(2)
@@ -210,9 +222,9 @@ exports.getAllManufacturingKpis = async (query, portal) => {
     return { manufacturingMetrics }
 }
 
-exports.getManufacturingKpiById = async (id, currentRole, portal) => {
+exports.getManufacturingKpiById = async (metricId, currentRole, portal) => {
     let metric = await ManufacturingMetric(connect(DB_CONNECTION, portal))
-        .findById(id)
+        .findById(metricId)
         .populate([{
             path: 'actions.responsibles',
             select: 'name'
@@ -224,7 +236,7 @@ exports.getManufacturingKpiById = async (id, currentRole, portal) => {
         period: 'day'
     }
     
-    const { labels, values, trend } = await processKpiValue(data, portal)
+    const { labels, kpiValues, trend } = await processKpiValue(data, portal)
 
     const manufacturingMetric = {
         _id: metric._id,
@@ -241,7 +253,7 @@ exports.getManufacturingKpiById = async (id, currentRole, portal) => {
         customize: metric.customize,
         widget: metric.widget,
         trend,
-        values,
+        values: kpiValues,
         labels
     }
 
@@ -293,8 +305,24 @@ exports.editManufacturingKpis = async (data, portal) => {
 exports.editManufacturingKpi = async (id, data, portal) => {
     let manufacturingMetric = await ManufacturingMetric(connect(DB_CONNECTION, portal))
         .findById(id)
+        .populate([{
+            path: 'actions.responsibles',
+            select: 'name'
+        }])
+    
+    if (data.action) {
+        manufacturingMetric.actions.push({
+            ...data.action,
+            startDate: formatToTimeZoneDate(data.action.startDate),
+            endDate: formatToTimeZoneDate(data.action.endDate),
+            milestones: data.action.milestones.map(milestone => ({
+                ...milestone,
+                time: formatToTimeZoneDate(milestone.time)
+            }))
+        })
+    
+    } 
 
-    manufacturingMetric.actions = data.actions ? data.actions : manufacturingMetric.actions
     manufacturingMetric.failureCauses = data.failureCauses ? data.failureCauses : manufacturingMetric.failureCauses
 
     await manufacturingMetric.save()

@@ -1,7 +1,7 @@
 {
     "users": [
         {
-            "name": "Nguyễn Văn An",
+            "name": "Nguyễn Văn Anh",
             "email": "nva.vnist.organic@gmail.com"
         },
         {
@@ -111,7 +111,7 @@
     ],
     "criterias": [
         {
-            "code": "TC202406002",
+            "code": "TCCD202406001",
             "name": "Tiêu chí kiểm định xay nguyên liệu",
             "operation": "Xay nguyên liệu",
             "checklist": [
@@ -139,7 +139,7 @@
             "status": 1
         },
         {
-            "code": "TC202406003",
+            "code": "TCCD202406002",
             "name": "Tiêu chí kiểm định trộn nguyên liệu",
             "operation": "Trộn nguyên liệu",
             "checklist": [
@@ -167,7 +167,7 @@
             "status": 1
         },
         {
-            "code": "TC202406004",
+            "code": "TCCD202406003",
             "name": "Tiêu chí kiểm định sấy nguyên liệu",
             "operation": "Sấy nguyên liệu",
             "checklist": [
@@ -195,7 +195,7 @@
             "status": 1
         },
         {
-            "code": "TC202406001",
+            "code": "TCCD202406004",
             "name": "Tiêu chí kiểm định nén thuốc viên",
             "operation": "Nén viên",
             "checklist": [
@@ -223,7 +223,7 @@
             "status": 1
         },
         {
-            "code": "TC29032024",
+            "code": "TCCD202406005",
             "name": "Tiêu chí kiểm định đóng gói sản phẩm",
             "operation": "Đóng gói",
             "checklist": [
@@ -241,7 +241,7 @@
             "status": 1
         },
         {
-            "code": "TC230032024",
+            "code": "TCTP202406006",
             "name": "Tiêu chí kiểm định thành phẩm",
             "operation": "Kiểm tra thành phẩm",
             "products": [
@@ -265,8 +265,8 @@
     ],
     "errors": [
         {
-            "code": "LSP25032024",
-            "group": "man",
+            "code": "LSP202406001",
+            "group": "measurement",
             "name": "Sai lệch hàm lượng hoạt chất",
             "description": "Hàm lượng hoạt chất trong sản phẩm không nằm trong phạm vi cho phép",
             "recognize": [
@@ -282,7 +282,7 @@
             "aql": 0.15
         },
         {
-            "code": "LSP26032024",
+            "code": "LSP202406002",
             "group": "man",
             "name": "Nhầm lẫn nguyên liệu",
             "description": "Các nguyên liệu bị nhầm trong cùng một nhóm",
@@ -299,7 +299,7 @@
             "created_at": "16/03/2024"
         },
         {
-            "code": "LSP27032024",
+            "code": "LSP202406003",
             "group": "machine",
             "name": "Vi sinh vật vượt quá giới hạn cho phép",
             "description": "Số lượng vi sinh vật trong sản phẩm cao hơn mức cho phép",
@@ -316,7 +316,7 @@
             "created_at": "16/03/2024"
         },
         {
-            "code": "LSP28032024",
+            "code": "LSP202406004",
             "group": "material",
             "name": "Bao bì bị rách, nứt",
             "description": "Bao bì sản phẩm không đảm bảo chất lượng",
@@ -332,7 +332,7 @@
             "created_at": "16/03/2024"
         },
         {
-            "code": "LSP30032024",
+            "code": "LSP202406005",
             "group": "material",
             "name": "Sản phẩm bị biến màu",
             "description": "Màu sắc của thuốc khác so với tiêu chuẩn",
@@ -349,8 +349,8 @@
             "created_at": "16/03/2024"
         },
         {
-            "code": "LSP31032024",
-            "group": "machine",
+            "code": "LSP202406006",
+            "group": "method",
             "name": "Viên thuốc bị nứt, vỡ",
             "description": "Viên thuốc không nguyên vẹn",
             "recognize": [
@@ -368,7 +368,7 @@
     ],
     "inspections": [
         {
-            "code": "PQC190302024",
+            "code": "PQC202406001",
             "workOder": 1,
             "type": 1,
             "result": {
@@ -379,7 +379,7 @@
             }
         },
         {
-            "code": "PQC200302024",
+            "code": "PQC202406002",
             "type": 1,
             "workOder": 2,
             "result": {
@@ -390,9 +390,52 @@
             }
         },
         {
-            "code": "PQC210302024",
+            "code": "PQC202406003",
             "type": 1,
             "workOder": 3,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 75,
+                "errorNum": 5,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406004",
+            "type": 1,
+            "workOder": 4,
+            "result": {
+                "inspectionNum": 60,
+                "passedNum": 58,
+                "errorNum": 2,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406005",
+            "type": 1,
+            "workOder": 5,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 72,
+                "errorNum": 8,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406006",
+            "type": 1,
+            "workOder": 6,
+            "result": {
+                "inspectionNum": 80,
+                "passedNum": 75,
+                "errorNum": 5,
+                "final": 1
+            }
+        },
+        {
+            "code": "PQC202406007",
+            "type": 2,
             "result": {
                 "inspectionNum": 80,
                 "passedNum": 75,
@@ -528,9 +571,9 @@
     ],
     "manufacturingCommands": [
         {
-            "code": "LSX202406001",
-            "startDate": "2024-06-10",
-            "endDate": "2024-06-20",
+            "code": "LSX202407001",
+            "startDate": "2024-07-01",
+            "endDate": "2024-07-11",
             "startTurn": 1,
             "endTurn": 2,
             "quantity": 20000,
@@ -541,17 +584,17 @@
                     "operation": "Nhập kho nguyên liệu",
                     "mill": 1,
                     "tasks": [{
-                        "responsible": 1,
+                        "responsible": 1 ,
                         "machine": 1,
-                        "startDate": "2024-06-10",
+                        "startDate": "2024-07-01",
                         "startHour": 6,
-                        "endDate": "2024-06-12",
-                        "endHour": 14
+                        "endDate": "2024-07-02",
+                        "endHour": 6
                     }],
-                    "startDate": "2024-06-10",
+                    "startDate": "2024-07-01",
                     "startHour": 6,
-                    "endDate": "2024-06-12",
-                    "endHour": 14,
+                    "endDate": "2024-07-02",
+                    "endHour": 6,
                     "status": 3,
                     "progress": 100
                 },
@@ -562,16 +605,16 @@
                     "tasks": [{
                         "responsible": 2,
                         "machine": 2,
-                        "startDate": "2024-06-12",
-                        "startHour": 14,
-                        "endDate": "2024-06-14",
-                        "endHour": 22
+                        "startDate": "2024-07-02",
+                        "startHour": 6,
+                        "endDate": "2024-07-03",
+                        "endHour": 6
                     }],
                     
-                    "startDate": "2024-06-12",
-                    "startHour": 14,
-                    "endDate": "2024-06-14",
-                    "endHour": 22,
+                    "startDate": "2024-07-02",
+                    "startHour": 6,
+                    "endDate": "2024-07-03",
+                    "endHour": 6,
                     "status": 3,
                     "progress": 100
                 },
@@ -582,15 +625,15 @@
                     "tasks": [{
                         "responsible": 3,
                         "machine": 3,
-                        "startDate": "2024-06-12",
-                        "startHour": 22,
-                        "endDate": "2024-06-14",
+                        "startDate": "2024-07-03",
+                        "startHour": 6,
+                        "endDate": "2024-07-04",
                         "endHour": 6
                     }],
                     
-                    "startDate": "2024-06-12",
-                    "startHour": 22,
-                    "endDate": "2024-06-14",
+                    "startDate": "2024-07-03",
+                    "startHour": 6,
+                    "endDate": "2024-07-04",
                     "endHour": 6,
                     "status": 3,
                     "progress": 100
@@ -602,15 +645,15 @@
                     "tasks": [{
                         "machine": 4,
                         "responsible": 4,
-                        "startDate": "2024-06-14",
-                        "startHour": 22,
-                        "endDate": "2024-06-16",
+                        "startDate": "2024-07-06",
+                        "startHour": 6,
+                        "endDate": "2024-07-08",
                         "endHour": 6
                     }],
                     
-                    "startDate": "2024-06-14",
-                    "startHour": 22,
-                    "endDate": "2024-06-16",
+                    "startDate": "2024-07-06",
+                    "startHour": 6,
+                    "endDate": "2024-07-08",
                     "endHour": 6,
                     "status": 3,
                     "progress": 100
@@ -622,16 +665,16 @@
                     "tasks": [{
                         "responsible": 5,
                         "machine": 5,
-                        "startDate": "2024-06-16",
+                        "startDate": "2024-07-08",
                         "startHour": 6,
-                        "endDate": "2024-06-18",
-                        "endHour": 14
+                        "endDate": "2024-07-10",
+                        "endHour": 6
                     }],
                     
-                    "startDate": "2024-06-16",
+                    "startDate": "2024-07-08",
                     "startHour": 6,
-                    "endDate": "2024-06-18",
-                    "endHour": 14,
+                    "endDate": "2024-07-10",
+                    "endHour": 6,
                     "status": 3,
                     "progress": 100
                 },
@@ -642,14 +685,14 @@
                     "tasks": [{
                         "responsible": 6,
                         "machine": 6,
-                        "startDate": "2024-06-18",
-                        "startHour": 14,
-                        "endDate": "2024-06-20",
+                        "startDate": "2024-07-10",
+                        "startHour": 6,
+                        "endDate": "2024-07-11",
                         "endHour": 6    
                     }],
-                    "startDate": "2024-06-18",
-                    "startHour": 14,
-                    "endDate": "2024-06-20",
+                    "startDate": "2024-07-10",
+                    "startHour": 6,
+                    "endDate": "2024-07-11",
                     "endHour": 6,
                     "status": 3,
                     "progress": 100
@@ -660,8 +703,8 @@
         },
         {
             "code": "LSX202406002",
-            "startDate": "2024-06-20",
-            "endDate": "2024-06-27",
+            "startDate": "2024-07-02",
+            "endDate": "2024-07-11",
             "startTurn": 1,
             "endTurn": 2,
             "quantity": 20000,
@@ -673,16 +716,16 @@
                     "mill": 1,
                     "tasks": [{
                         "responsible": 7,
-                        "machine": 1,
-                        "startDate": "2024-06-20",
+                        "machine": 7,
+                        "startDate": "2024-07-02",
                         "startHour": 6,
-                        "endDate": "2024-06-21",
-                        "endHour": 14
+                        "endDate": "2024-07-03",
+                        "endHour": 6
                     }],
-                    "startDate": "2024-06-20",
+                    "startDate": "2024-07-02",
                     "startHour": 6,
-                    "endDate": "2024-06-21",
-                    "endHour": 14,
+                    "endDate": "2024-07-03",
+                    "endHour": 6,
                     "status": 3,
                     "progress": 100
                 },
@@ -693,15 +736,15 @@
                     "tasks": [{
                         "responsible": 8,
                         "machine": 2,
-                        "startDate": "2024-06-21",
-                        "startHour": 14,
-                        "endDate": "2024-06-22",
-                        "endHour": 22
+                        "startDate": "2024-07-03",
+                        "startHour": 6,
+                        "endDate": "2024-07-04",
+                        "endHour": 6
                     }],
-                    "startDate": "2024-06-21",
-                    "startHour": 14,
-                    "endDate": "2024-06-22",
-                    "endHour": 22,
+                    "startDate": "2024-07-03",
+                    "startHour": 6,
+                    "endDate": "2024-07-04",
+                    "endHour": 6,
                     "status": 3,
                     "progress": 100
                 },
@@ -712,14 +755,14 @@
                     "tasks": [{
                         "responsible": 9,
                         "machine": 3,
-                        "startDate": "2024-06-22",
-                        "startHour": 22,
-                        "endDate": "2024-06-23",
+                        "startDate": "2024-07-04",
+                        "startHour": 6,
+                        "endDate": "2024-07-05",
                         "endHour": 6
                     }],
-                    "startDate": "2024-06-22",
-                    "startHour": 22,
-                    "endDate": "2024-06-23",
+                    "startDate": "2024-07-04",
+                    "startHour": 6,
+                    "endDate": "2024-07-05",
                     "endHour": 6,
                     "status": 3,
                     "progress": 100
@@ -731,14 +774,14 @@
                     "tasks": [{
                         "responsible": 10,
                         "machine": 4,
-                        "startDate": "2024-06-23",
-                        "startHour": 22,
-                        "endDate": "2024-06-25",
+                        "startDate": "2024-07-05",
+                        "startHour": 6,
+                        "endDate": "2024-07-06",
                         "endHour": 6
                     }],
-                    "startDate": "2024-06-23",
-                    "startHour": 22,
-                    "endDate": "2024-06-25",
+                    "startDate": "2024-07-05",
+                    "startHour": 6,
+                    "endDate": "2024-06-06",
                     "endHour": 6,
                     "status": 3,
                     "progress": 100
@@ -750,15 +793,15 @@
                     "tasks": [{
                         "responsible": 11,
                         "machine": 5,
-                        "startDate": "2024-06-25",
+                        "startDate": "2024-07-06",
                         "startHour": 6,
-                        "endDate": "2024-06-26",
-                        "endHour": 14
+                        "endDate": "2024-07-07",
+                        "endHour": 6
                     }],
-                    "startDate": "2024-06-25",
+                    "startDate": "2024-07-07",
                     "startHour": 6,
-                    "endDate": "2024-06-26",
-                    "endHour": 14,
+                    "endDate": "2024-07-09",
+                    "endHour": 6,
                     "status": 3,
                     "progress": 100
                 },
@@ -769,14 +812,14 @@
                     "tasks": [{
                         "responsible": 12,
                         "machine": 6,
-                        "startDate": "2024-06-26",
-                        "startHour": 14,
-                        "endDate": "2024-06-27",
+                        "startDate": "2024-07-09",
+                        "startHour": 6,
+                        "endDate": "2024-07-10",
                         "endHour": 6
                     }],
-                    "startDate": "2024-06-26",
-                    "startHour": 14,
-                    "endDate": "2024-06-27",
+                    "startDate": "2024-07-09",
+                    "startHour": 6,
+                    "endDate": "2024-07-10",
                     "endHour": 6,
                     "status": 3,
                     "progress": 100
@@ -787,273 +830,384 @@
         },
         {
             "code": "LSX202406003",
-            "startDate": "2024-06-20",
-            "endDate": "2024-06-27",
-            "startTurn": 2,
-            "endTurn": 3,
+            "startDate": "2024-07-02",
+            "endDate": "2024-07-11",
+            "startTurn": 1,
+            "endTurn": 2,
             "quantity": 20000,
-            "manufacturingRouting": 2,
+            "manufacturingRouting": 1,
             "workOrders": [
                 {
                     "operationId": 1,
                     "operation": "Nhập kho nguyên liệu",
                     "mill": 1,
                     "tasks": [{
-                        "responsible": 1,
-                        "machine": 1,
-                        "startDate": "2024-06-20",
-                        "startHour": 14,
-                        "endDate": "2024-06-21",
-                        "endHour": 22
-                    }],
-                    
-                    "startDate": "2024-06-20",
-                    "startHour": 14,
-                    "endDate": "2024-06-21",
-                    "endHour": 22,
-                    "status": 3,
-                    "progress": 100
-                },
-                {
-                    "operationId": 2,
-                    "operation": "Xay nguyên liệu",
-                    "mill": 2,
-                    "tasks": [{
-                        "responsible": 2,
-                        "machine": 2,
-                        "startDate": "2024-06-21",
-                        "startHour": 22,
-                        "endDate": "2024-06-22",
-                        "endHour": 6
-                    }],
-                    "startDate": "2024-06-21",
-                    "startHour": 22,
-                    "endDate": "2024-06-22",
-                    "endHour": 6,
-                    "status": 3,
-                    "progress": 100
-                },
-                {
-                    "operationId": 3,
-                    "operation": "Sấy nguyên liệu",
-                    "mill": 4,
-                    "tasks": [{
-                        "responsible": 4,
-                        "machine": 4,
-                        "startDate": "2024-06-23",
-                        "startHour": 14,
-                        "endDate": "2024-06-25",
-                        "endHour": 22
-                    }],
-                    "startDate": "2024-06-23",
-                    "startHour": 14,
-                    "endDate": "2024-06-25",
-                    "endHour": 22,
-                    "status": 3,
-                    "progress": 100
-                },
-                {
-                    "operationId": 4,
-                    "operation": "Đóng gói",
-                    "mill": 6,
-                    "tasks": [{
-                        "responsible": 6,
-                        "machine": 6,
-                        "startDate": "2024-06-26",
+                        "responsible": 7,
+                        "machine": 7,
+                        "startDate": "2024-07-03",
                         "startHour": 6,
-                        "endDate": "2024-06-27",
-                        "endHour": 12
-                    }],
-                    "startDate": "2024-06-26",
-                    "startHour": 6,
-                    "endDate": "2024-06-27",
-                    "endHour": 12,
-                    "status": 3,
-                    "progress": 100
-                }
-            ],
-            "status": 4,
-            "description": "Lệnh sản xuất đường ACK thuộc KHSX tháng 6/2024 tuần 3"
-        },
-        {
-            "code": "LSX202406004",
-            "startDate": "2024-06-25",
-            "endDate": "2024-06-29",
-            "startTurn": 2,
-            "endTurn": 3,
-            "quantity": 20000,
-            "manufacturingRouting": 2,
-            "workOrders": [
-                {
-                    "operationId": 1,
-                    "operation": "Nhập kho nguyên liệu",
-                    "mill": 1,
-                    "tasks": [{
-                        "responsible": 1,
-                        "machine": 1,
-                        "startDate": "2024-06-29",
-                        "startHour": 14,
-                        "endDate": "2024-07-02",
-                        "endHour": 22
-                    }],
-                    "startDate": "2024-06-29",
-                    "startHour": 14,
-                    "endDate": "2024-07-02",
-                    "endHour": 22,
-                    "status": 3,
-                    "progress": 100
-                },
-                {
-                    "operationId": 2,
-                    "operation": "Xay nguyên liệu",
-                    "mill": 2,
-                    "tasks": [{
-                        "responsible": 2,
-                        "machine": 1,
-                        "startDate": "2024-07-02",
-                        "startHour": 22,
                         "endDate": "2024-07-04",
                         "endHour": 6
                     }],
-                    
-                    "startDate": "2024-07-02",
-                    "startHour": 22,
+                    "startDate": "2024-07-03",
+                    "startHour": 6,
                     "endDate": "2024-07-04",
                     "endHour": 6,
                     "status": 3,
                     "progress": 100
                 },
                 {
-                    "operationId": 3,
-                    "operation": "Sấy nguyên liệu",
-                    "mill": 4,
+                    "operationId": 2,
+                    "operation": "Xay nguyên liệu",
+                    "mill": 2,
                     "tasks": [{
-                        "machine": 4,
-                        "responsible": 4,
+                        "responsible": 8,
+                        "machine": 2,
                         "startDate": "2024-07-04",
-                        "startHour": 14,
-                        "endDate": "2024-07-07",
-                        "endHour": 22
+                        "startHour": 6,
+                        "endDate": "2024-07-05",
+                        "endHour": 6
                     }],
-                    "startDate": "2024-06-27",
-                    "startHour": 14,
-                    "endDate": "2024-06-28",
-                    "endHour": 22,
-                    "status": 2,
-                    "progress": 70
+                    "startDate": "2024-07-04",
+                    "startHour": 6,
+                    "endDate": "2024-07-05",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 3,
+                    "operation": "Trộn nguyên liệu",
+                    "mill": 3,
+                    "tasks": [{
+                        "responsible": 9,
+                        "machine": 3,
+                        "startDate": "2024-07-05",
+                        "startHour": 6,
+                        "endDate": "2024-07-07",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-05",
+                    "startHour": 6,
+                    "endDate": "2024-07-07",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
                 },
                 {
                     "operationId": 4,
-                    "operation": "Đóng gói",
-                    "mill": 6,
+                    "operation": "Sấy nguyên liệu",
+                    "mill": 4,
                     "tasks": [{
-                        "responsible": 6,
-                        "machine": 6,
+                        "responsible": 10,
+                        "machine": 4,
                         "startDate": "2024-07-07",
                         "startHour": 6,
-                        "endDate": "2024-07-09",
-                        "endHour": 14
+                        "endDate": "2024-07-08",
+                        "endHour": 6
                     }],
                     "startDate": "2024-07-07",
                     "startHour": 6,
-                    "endDate": "2024-07-09",
-                    "endHour": 14,
-                    "status": 2,
-                    "progress": 0
+                    "endDate": "2024-06-08",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 5,
+                    "operation": "Dập viên nén",
+                    "mill": 5,
+                    "tasks": [{
+                        "responsible": 11,
+                        "machine": 5,
+                        "startDate": "2024-07-09",
+                        "startHour": 6,
+                        "endDate": "2024-07-10",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-09",
+                    "startHour": 6,
+                    "endDate": "2024-07-10",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 6,
+                    "operation": "Đóng gói",
+                    "mill": 6,
+                    "tasks": [{
+                        "responsible": 12,
+                        "machine": 6,
+                        "startDate": "2024-07-10",
+                        "startHour": 6,
+                        "endDate": "2024-07-11",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-10",
+                    "startHour": 6,
+                    "endDate": "2024-07-11",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
                 }
             ],
-            "status": 3,
-            "description": "Lệnh sản xuất đường ACK thuộc KHSX tháng 6/2024 tuần 4"
+            "status": 4,
+            "description": "Lệnh sản xuất Panacetamol thuộc KHSX tháng 6/2024"
         },
         {
-            "code": "LSX202407001",
-            "startDate": "2024-07-09",
-            "endDate": "2024-06-29",
-            "startTurn": 2,
-            "endTurn": 3,
+            "code": "LSX202406004",
+            "startDate": "2024-06-30",
+            "endDate": "2024-07-11",
+            "startTurn": 1,
+            "endTurn": 2,
             "quantity": 20000,
-            "manufacturingRouting": 2,
+            "manufacturingRouting": 1,
             "workOrders": [
                 {
                     "operationId": 1,
                     "operation": "Nhập kho nguyên liệu",
                     "mill": 1,
                     "tasks": [{
-                        "responsible": 1,
-                        "machine": 1,
-                        "startDate": "2024-07-09",
-                        "startHour": 14,
-                        "endDate": "2024-07-10",
-                        "endHour": 22
+                        "responsible": 7,
+                        "machine": 7,
+                        "startDate": "2024-06-30",
+                        "startHour": 6,
+                        "endDate": "2024-07-01",
+                        "endHour": 6
                     }],
-                    "startDate": "2024-07-09",
-                    "startHour": 14,
-                    "endDate": "2024-07-10",
-                    "endHour": 22,
-                    "status": 1,
-                    "progress": 0
+                    "startDate": "2024-06-30",
+                    "startHour": 6,
+                    "endDate": "2024-07-01",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
                 },
                 {
                     "operationId": 2,
                     "operation": "Xay nguyên liệu",
                     "mill": 2,
                     "tasks": [{
-                        "responsible": 2,
-                        "machine": 1,
-                        "startDate": "2024-07-10",
-                        "startHour": 22,
+                        "responsible": 8,
+                        "machine": 2,
+                        "startDate": "2024-07-01",
+                        "startHour": 6,
+                        "endDate": "2024-07-02",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-01",
+                    "startHour": 6,
+                    "endDate": "2024-07-02",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 3,
+                    "operation": "Trộn nguyên liệu",
+                    "mill": 3,
+                    "tasks": [{
+                        "responsible": 9,
+                        "machine": 3,
+                        "startDate": "2024-07-02",
+                        "startHour": 6,
+                        "endDate": "2024-07-03",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-02",
+                    "startHour": 6,
+                    "endDate": "2024-07-03",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 4,
+                    "operation": "Sấy nguyên liệu",
+                    "mill": 4,
+                    "tasks": [{
+                        "responsible": 10,
+                        "machine": 4,
+                        "startDate": "2024-07-03",
+                        "startHour": 6,
+                        "endDate": "2024-07-04",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-03",
+                    "startHour": 6,
+                    "endDate": "2024-07-04",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 5,
+                    "operation": "Dập viên nén",
+                    "mill": 5,
+                    "tasks": [{
+                        "responsible": 11,
+                        "machine": 5,
+                        "startDate": "2024-07-04",
+                        "startHour": 6,
+                        "endDate": "2024-07-05",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-04",
+                    "startHour": 6,
+                    "endDate": "2024-07-05",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 6,
+                    "operation": "Đóng gói",
+                    "mill": 6,
+                    "tasks": [{
+                        "responsible": 12,
+                        "machine": 6,
+                        "startDate": "2024-07-05",
+                        "startHour": 6,
+                        "endDate": "2024-07-05",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-05",
+                    "startHour": 6,
+                    "endDate": "2024-07-06",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                }
+            ],
+            "status": 4,
+            "description": "Lệnh sản xuất Panacetamol thuộc KHSX tháng 6/2024"
+        },
+        {
+            "code": "LSX202406005",
+            "startDate": "2024-07-04",
+            "endDate": "2024-07-16",
+            "startTurn": 1,
+            "endTurn": 2,
+            "quantity": 20000,
+            "manufacturingRouting": 1,
+            "workOrders": [
+                {
+                    "operationId": 1,
+                    "operation": "Nhập kho nguyên liệu",
+                    "mill": 1,
+                    "tasks": [{
+                        "responsible": 7,
+                        "machine": 7,
+                        "startDate": "2024-07-04",
+                        "startHour": 6,
+                        "endDate": "2024-07-06",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-04",
+                    "startHour": 6,
+                    "endDate": "2024-07-06",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 2,
+                    "operation": "Xay nguyên liệu",
+                    "mill": 2,
+                    "tasks": [{
+                        "responsible": 8,
+                        "machine": 2,
+                        "startDate": "2024-07-06",
+                        "startHour": 6,
+                        "endDate": "2024-07-07",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-06",
+                    "startHour": 6,
+                    "endDate": "2024-07-07",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 3,
+                    "operation": "Trộn nguyên liệu",
+                    "mill": 3,
+                    "tasks": [{
+                        "responsible": 9,
+                        "machine": 3,
+                        "startDate": "2024-07-07",
+                        "startHour": 6,
+                        "endDate": "2024-07-09",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-07",
+                    "startHour": 6,
+                    "endDate": "2024-07-09",
+                    "endHour": 6,
+                    "status": 3,
+                    "progress": 100
+                },
+                {
+                    "operationId": 4,
+                    "operation": "Sấy nguyên liệu",
+                    "mill": 4,
+                    "tasks": [{
+                        "responsible": 10,
+                        "machine": 4,
+                        "startDate": "2024-07-09",
+                        "startHour": 6,
                         "endDate": "2024-07-12",
                         "endHour": 6
                     }],
-                    
-                    "startDate": "2024-07-10",
-                    "startHour": 22,
+                    "startDate": "2024-07-09",
+                    "startHour": 6,
                     "endDate": "2024-07-12",
+                    "endHour": 6,
+                    "status": 2,
+                    "progress": 70
+                },
+                {
+                    "operationId": 5,
+                    "operation": "Dập viên nén",
+                    "mill": 5,
+                    "tasks": [{
+                        "responsible": 11,
+                        "machine": 5,
+                        "startDate": "2024-07-12",
+                        "startHour": 6,
+                        "endDate": "2024-07-14",
+                        "endHour": 6
+                    }],
+                    "startDate": "2024-07-12",
+                    "startHour": 6,
+                    "endDate": "2024-07-14",
                     "endHour": 6,
                     "status": 1,
                     "progress": 0
                 },
                 {
-                    "operationId": 3,
-                    "operation": "Sấy nguyên liệu",
-                    "mill": 4,
-                    "tasks": [{
-                        "machine": 4,
-                        "responsible": 4,
-                        "startDate": "2024-07-12",
-                        "startHour": 14,
-                        "endDate": "2024-07-14",
-                        "endHour": 22
-                    }],
-                    "startDate": "2024-06-27",
-                    "startHour": 14,
-                    "endDate": "2024-06-28",
-                    "endHour": 22,
-                    "status": 1,
-                    "progress": 0
-                },
-                {
-                    "operationId": 4,
+                    "operationId": 6,
                     "operation": "Đóng gói",
                     "mill": 6,
                     "tasks": [{
-                        "responsible": 6,
+                        "responsible": 12,
                         "machine": 6,
                         "startDate": "2024-07-14",
                         "startHour": 6,
                         "endDate": "2024-07-16",
-                        "endHour": 14
+                        "endHour": 6
                     }],
-                    "startDate": "2024-07-07",
+                    "startDate": "2024-07-14",
                     "startHour": 6,
-                    "endDate": "2024-07-09",
-                    "endHour": 14,
+                    "endDate": "2024-07-16",
+                    "endHour": 6,
                     "status": 1,
                     "progress": 0
                 }
             ],
-            "status": 1,
-            "description": "Lệnh sản xuất đường ACK thuộc KHSX tháng 7/2024 tuần 1"
+            "status": 3,
+            "description": "Lệnh sản xuất Panacetamol thuộc KHSX tháng 6/2024"
         }
     ]
 }

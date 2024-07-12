@@ -11,7 +11,7 @@ const WidgetTitle = ({
 }) => {
   return (
     <div className={styles.widget_title}>
-      <span><i class="fa fa-bar-chart"></i> {title}</span>
+      <span><i className="fa fa-bar-chart"></i> {title}</span>
       {editMode ? (
         <IconButton 
 					sx={{ color: '#dc3545' }} 

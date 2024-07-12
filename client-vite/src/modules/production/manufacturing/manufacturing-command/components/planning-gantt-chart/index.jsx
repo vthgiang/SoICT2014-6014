@@ -62,6 +62,7 @@ const PlanningGanttChart = (props) => {
         manufacturingMillId: wo.manufacturingMill._id,
         startTime: moment(wo.startDate, 'DD-MM-YYYY').add(wo.startHour, 'hour'),
         endTime: moment(wo.endDate, 'DD-MM-YYYY').add(wo.endHour, 'hour'),
+        progress: wo.progress,
         tasks: wo.tasks.map((task) => ({
           ...task,
           startDate: formatDate(task.startDate),
@@ -70,7 +71,7 @@ const PlanningGanttChart = (props) => {
         itemProps: {
           style: {
             color: '#000',
-            background: `linear-gradient(to right, #299cb4 ${wo.progress}%, #3db9d3 ${wo.progress}%)`
+            background: `linear-gradient(to right, rgba(61, 185, 211) ${wo.progress}%, rgba(61, 185, 211, 0.6) ${wo.progress}%)`
           }
         }
       }
@@ -80,13 +81,22 @@ const PlanningGanttChart = (props) => {
   const listWorkOrderByMachine = listWorkOrder.flatMap((wo) =>
     wo.tasks
       .filter((task) => task.machine)
-      .map((task) => ({
-        id: task._id,
-        name: wo.name,
-        startTime: moment(task.startDate, 'DD-MM-YYYY').add(task.startHour, 'hour'),
-        endTime: moment(task.endDate, 'DD-MM-YYYY').add(task.endHour, 'hour'),
-        machineId: task.machine._id
-      }))
+      .map((task) => {
+        const progress = task.task?.progress? task.task.progress : wo.progress
+        return {
+          id: task._id,
+          name: wo.name,
+          startTime: moment(task.startDate, 'DD-MM-YYYY').add(task.startHour, 'hour'),
+          endTime: moment(task.endDate, 'DD-MM-YYYY').add(task.endHour, 'hour'),
+          machineId: task.machine._id,
+          itemProps: {
+            style: {
+              color: '#000',
+              background: `linear-gradient(to right, rgba(255, 193, 7) ${progress}%, rgba(255, 293, 7, 0.6) ${progress}%)`
+            }
+          }
+        }
+      })
   )
 
   const listWorkOrderByEmployee = listWorkOrder.flatMap((wo) =>
@@ -94,12 +104,19 @@ const PlanningGanttChart = (props) => {
       .filter((task) => task.responsible)
       .map((task) => {
         if (task.responsible) {
+          const progress = task.task?.progress? task.task.progress : wo.progress
           return {
             id: task._id,
             name: wo.name,
             startTime: moment(task.startDate, 'DD-MM-YYYY').add(task.startHour, 'hour'),
             endTime: moment(task.endDate, 'DD-MM-YYYY').add(task.endHour, 'hour'),
-            employeeId: task.responsible._id
+            employeeId: task.responsible._id,
+            itemProps: {
+              style: {
+                color: '#000',
+                background: `linear-gradient(to right, rgba(253, 126, 20) ${progress}%, rgba(253, 126, 20, 0.6) ${progress}%)`
+              }
+            }
           }
         }
       })
