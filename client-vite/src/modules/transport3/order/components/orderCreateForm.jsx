@@ -418,6 +418,7 @@ function OrderCreateForm(props) {
                 transportType={transportType}
                 stockIn={stockIn}
                 stockOut={stockOut}
+                deliveryTime={deliveryTime}
                 //handle
                 handleCustomerChange={handleCustomerChange}
                 handleCustomerAddressChange={handleCustomerAddressChange}

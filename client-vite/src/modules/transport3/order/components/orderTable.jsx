@@ -167,8 +167,8 @@ function OrderTable(props) {
     dispatch(OrderActions.getAllOrder({query: state.codeQuery}));
   }
 
-  const handleDeleteOrder = (order) => {
-    dispatch(OrderActions.deleteOrder(order._id));
+  const handleDeleteOrder = (order_id) => {
+    dispatch(OrderActions.deleteOrder(order_id));
     dispatch(OrderActions.getAllOrder({query: state.codeQuery}));
   }
   return (
