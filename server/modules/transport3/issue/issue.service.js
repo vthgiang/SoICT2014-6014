@@ -17,7 +17,12 @@ exports.getIssues = async (portal, query, currentRole) => {
   }
 
   return Transport3Issue(connect(DB_CONNECTION, portal)).find(query)
-    .populate('schedule')
+    .populate({
+      path: 'schedule',
+      populate: {
+        path: 'employees'
+      }
+    })
     .populate('order')
     .populate('receiver_solve');
 }

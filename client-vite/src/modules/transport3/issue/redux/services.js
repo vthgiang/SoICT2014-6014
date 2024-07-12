@@ -8,10 +8,24 @@ const getIssues = () => {
     },
     false,
     true,
-    'transport3.issue'
+    ''
+  )
+}
+
+const addTo3rd = (data) => {
+  return sendRequest(
+    {
+      url: `${process.env.REACT_APP_SERVER}/transport3/3rdschedule`,
+      method: 'POST',
+      data
+    },
+    true,
+    true,
+    ''
   )
 }
 
 export const IssueServices = {
-  getIssues
+  getIssues,
+  addTo3rd
 }

@@ -1,6 +1,6 @@
 const {
   Transport3Schedule,
-  Stock, Role, Employee, Transport3Order, Transport3DraftSchedule, Transport3rd
+  Stock, Role, Employee, Transport3Order, Transport3DraftSchedule, Transport3rd, Transport3Issue
 } = require('../../../models');
 
 const {
@@ -180,11 +180,28 @@ exports.setScheduleFromDraft = async (portal, data) => {
 }
 
 exports.create3rdSchedule = async (portal, data) => {
-  let {order_id} = data;
-  return Transport3rd(connect(DB_CONNECTION, portal)).create({
+  let issue_id = data.issue._id;
+  let order_id = data.issue.order._id;
+  await Transport3Issue(connect(DB_CONNECTION, portal)).findByIdAndUpdate(issue_id, {
+    $set: {
+      status: 2
+    }
+  });
+
+  await Transport3rd(connect(DB_CONNECTION, portal)).create({
     order: order_id,
     status: 1
   })
+
+  let schedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({orders: {$elemMatch: {order: order_id}}});
+  schedule = schedule[0];
+  let orders = schedule.orders.filter(order => order.order.toString() !== order_id);
+  await Transport3Schedule(connect(DB_CONNECTION, portal)).findByIdAndUpdate(schedule._id, {
+    $set: {
+      orders: orders
+    }
+  });
+  return [];
 }
 
 exports.getAll3rdSchedule = async (portal, currentRole) => {
