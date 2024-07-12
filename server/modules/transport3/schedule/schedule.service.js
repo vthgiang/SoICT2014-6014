@@ -1,6 +1,6 @@
 const {
   Transport3Schedule,
-  Stock, Role, Employee, Transport3Order, Transport3DraftSchedule
+  Stock, Role, Employee, Transport3Order, Transport3DraftSchedule, Transport3rd, Transport3Issue
 } = require('../../../models');
 
 const {
@@ -177,4 +177,46 @@ exports.setScheduleFromDraft = async (portal, data) => {
     })
   }
   return [];
+}
+
+exports.create3rdSchedule = async (portal, data) => {
+  let issue_id = data.issue._id;
+  let order_id = data.issue.order._id;
+  await Transport3Issue(connect(DB_CONNECTION, portal)).findByIdAndUpdate(issue_id, {
+    $set: {
+      status: 2
+    }
+  });
+
+  await Transport3rd(connect(DB_CONNECTION, portal)).create({
+    order: order_id,
+    status: 1
+  })
+
+  let schedule = await Transport3Schedule(connect(DB_CONNECTION, portal)).find({orders: {$elemMatch: {order: order_id}}});
+  schedule = schedule[0];
+  let orders = schedule.orders.filter(order => order.order.toString() !== order_id);
+  await Transport3Schedule(connect(DB_CONNECTION, portal)).findByIdAndUpdate(schedule._id, {
+    $set: {
+      orders: orders
+    }
+  });
+  return [];
+}
+
+exports.getAll3rdSchedule = async (portal, currentRole) => {
+  let role = await Role(connect(DB_CONNECTION, portal)).find({
+    _id: currentRole
+  });
+
+  if (role[0].name !== 'Trưởng phòng vận chuyển' && role[0].name !== 'Nhân viên giám sát') {
+    return [];
+  }
+  return Transport3rd(connect(DB_CONNECTION, portal)).find({})
+    .populate({
+      path: 'order',
+      populate: {
+        path: 'customer'
+      }
+    })
 }

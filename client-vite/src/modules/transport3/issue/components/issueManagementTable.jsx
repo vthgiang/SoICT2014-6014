@@ -12,6 +12,7 @@ const IssueManagement = (props) => {
 
   const dispatch = useDispatch();
   const issues = useSelector(state => state.T3issue).issues;
+
   useEffect(() => {
     dispatch(IssueActions.getIssues());
   }, []);
@@ -37,7 +38,7 @@ const IssueManagement = (props) => {
 
   const columns = [
     'STT',
-    'Mã sự cố',
+    'Mã đơn',
     'Kiểu sự cố',
     'Mô tả',
     'Trạng thái',
@@ -45,7 +46,6 @@ const IssueManagement = (props) => {
     'Người yêu cầu',
     'Lịch trình',
     'Người xử lý',
-    'Hành động'
   ]
 
   const status = {
@@ -59,6 +59,11 @@ const IssueManagement = (props) => {
     2: 'Lỗi tuyến đường',
     3: 'Lỗi hàng hóa',
     4: 'Lỗi khác'
+  }
+
+  const addTo3rd = async (issue) => {
+    await dispatch(IssueActions.addTo3rd({issue}));
+    await dispatch(IssueActions.getIssues());
   }
 
   const {page, totalPages, perPage} = state;
@@ -113,14 +118,32 @@ const IssueManagement = (props) => {
               {issues.length > 0 ? issues.map((issue, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{issue.code}</td>
+                  <td>{issue.order.code}</td>
                   <td>{type[issue.type]}</td>
                   <td>{issue.reason}</td>
                   <td>{status[issue.status]}</td>
                   <td>{issue.description}</td>
-                  <td>{issue.schedule.employee[0].name}</td>
+                  <td>{issue.schedule.employees[0].fullName}</td>
                   <td>{issue.schedule.code}</td>
-                  <td>{issue.receiver_solve.name}</td>
+                  <td>{issue.receiver_solve ? issue.receiver_solve.fullName : 'Chưa có'}</td>
+                    <td>
+                        {/*Tao don thu 3, tu choi*/}
+                        <a
+                        className="edit text-yellow"
+                        style={{width: '5px'}}
+                        title="Tạo đơn cho bên thứ 3"
+                        onClick={() => addTo3rd(issue)}
+                        >
+                        <i className="material-icons">add</i>
+                        </a>
+                        <DeleteNotification
+                        content="Bạn có chắc chắn muốn từ chối yêu cầu này?"
+                        data={{
+                            id: issue._id,
+                            info: issue.code
+                        }}
+                        />
+                    </td>
                 </tr>
               )) : <tr>
                 <td colSpan={columns.length + 1}>

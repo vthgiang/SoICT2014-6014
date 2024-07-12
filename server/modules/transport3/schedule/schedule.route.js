@@ -12,5 +12,6 @@ router.delete('/schedule/:id', auth, ScheduleController.deleteSchedule);
 router.put('/schedule/:id', auth, ScheduleController.updateSchedule);
 router.get('/schedule/transporting', auth, ScheduleController.getOrdersTransporting);
 router.get('/schedule', auth, ScheduleController.getAllSchedule);
-
+router.get('/3rdschedule', auth, ScheduleController.getAll3rdSchedule);
+router.post('/3rdschedule', auth, ScheduleController.create3rdSchedule);
 module.exports = router;

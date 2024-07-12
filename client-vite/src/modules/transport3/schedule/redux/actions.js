@@ -153,6 +153,30 @@ const deleteSchedule = (scheduleId) => {
   }
 }
 
+const getAll3rdPartySchedule = (query) => {
+  return async (dispatch) => {
+    dispatch({ type: ScheduleConstants.GET_3RD_PARTY_SCHEDULE_REQUEST })
+    try {
+      const res = await ScheduleServices.getAll3rdPartySchedule(query)
+      dispatch({ type: ScheduleConstants.GET_3RD_PARTY_SCHEDULE_SUCCESS, payload: res.data })
+    } catch (error) {
+      dispatch({ type: ScheduleConstants.GET_3RD_PARTY_SCHEDULE_FAILURE })
+    }
+  }
+}
+
+const create3rdPartySchedule = (data) => {
+  return async (dispatch) => {
+    dispatch({ type: ScheduleConstants.CREATE_3RD_PARTY_SCHEDULE_REQUEST })
+    try {
+      const res = await ScheduleServices.create3rdPartySchedule(data)
+      dispatch({ type: ScheduleConstants.CREATE_3RD_PARTY_SCHEDULE_SUCCESS, payload: res.data })
+    } catch (error) {
+      dispatch({ type: ScheduleConstants.CREATE_3RD_PARTY_SCHEDULE_FAILURE })
+    }
+  }
+}
+
 export const ScheduleActions = {
   getAllSchedule,
   getScheduleById,
@@ -164,5 +188,7 @@ export const ScheduleActions = {
   getHyperparamter,
   getDraftSchedule,
   setScheduleFromDraft,
-  deleteSchedule
+  deleteSchedule,
+  getAll3rdPartySchedule,
+  create3rdPartySchedule
 }

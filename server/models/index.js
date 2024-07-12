@@ -228,6 +228,7 @@ module.exports = {
     Transport3Issue: require('./transport3/transport3Issue.model'),
     DeliverySchedule: require('./transportation/delivery-plan/deliverySchedule.model'),
     Transport3DraftSchedule: require('./transport3/transport3DraftSchedule.model'),
+    Transport3rd: require('./transport3/transport3rd.model'),
 
     // New Models
     Capacity: require('./human-resource/capacity.model'),

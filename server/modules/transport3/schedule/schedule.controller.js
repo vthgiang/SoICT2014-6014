@@ -147,3 +147,36 @@ exports.setScheduleFromDraft = async (req, res) => {
     });
   }
 }
+
+
+exports.create3rdSchedule = async (req, res) => {
+  try {
+    let schedule = await ScheduleService.create3rdSchedule(req.portal, req.body);
+    res.status(200).json({
+      schedule,
+      messages: ['Tạo đơn cho bên thứ 3 thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while creating schedule ${error}`);
+    res.status(400).json({
+      messages: [`Tạo đơn cho bên thứ 3 thất bại ${error}`]
+    });
+  }
+}
+
+exports.getAll3rdSchedule = async (req, res) => {
+  try {
+    let schedules = await ScheduleService.getAll3rdSchedule(req.portal, req.currentRole);
+    res.status(200).json({
+      schedules,
+      messages: ['Lấy thông tin đơn cho bên thứ 3 thành công']
+    });
+  } catch (error) {
+    Log.error(`Error while fetching all schedules ${error}`);
+    res.status(400).json({
+      messages: [
+        'Lấy thông tin đơn cho bên thứ 3 thất bại' + error
+      ]
+    });
+  }
+}

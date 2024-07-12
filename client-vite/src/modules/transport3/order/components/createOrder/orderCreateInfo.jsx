@@ -1,7 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {withTranslate} from 'react-redux-multilingual'
-import {SelectBox, ErrorLabel} from '@common-components'
+import {SelectBox, ErrorLabel, DatePicker} from '@common-components'
+import {formatDate} from '@helpers/formatDate.js';
 
 function OrderCreateInfo(props) {
   const getCustomerOptions = () => {
@@ -145,7 +146,11 @@ function OrderCreateInfo(props) {
                     Thời gian nhận hàng dự kiến
                     <span className="attention"> * </span>
                 </label>
-                <input type="datetime-local" className="form-control" onChange={handleDeliveryTimeChange}/>
+              <DatePicker
+                id={`create-order-delivery-time`}
+                value={props.deliveryTime ? formatDate(new Date(props.deliveryTime * 1000)) : '---'}
+                onChange={handleDeliveryTimeChange}
+              />
             </div>
             <div className="form-group">
               <div className="form-group">

@@ -23,6 +23,21 @@ export function issue(state = initState, action) {
         ...state,
         isLoading: false
       }
+    case IssueConstants.ADD_TO_3RD_PARTY_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case IssueConstants.ADD_TO_3RD_PARTY_SUCCESS:
+      return {
+        ...state,
+        isLoading: false
+      }
+    case IssueConstants.ADD_TO_3RD_PARTY_FAILURE:
+      return {
+        ...state,
+        isLoading: false
+      }
     default:
       return state
   }
