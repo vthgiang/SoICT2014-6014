@@ -64,7 +64,6 @@ function getManufacturingKpiById(query) {
 }
 
 function editManufacturingKpi(id, data) {
-  console.log(id)
   return sendRequest(
     {
       url: `${process.env.REACT_APP_SERVER}/manufacturing-metric/${id}`,

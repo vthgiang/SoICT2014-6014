@@ -82,31 +82,31 @@
         },
         {
             "name": "Phạm Thị Dung",
-            "email": "ptd.vnist@gmail.com"
+            "email": "ptd.vnist.organic@gmail.com"
         },
         {
             "name": "Hoàng Văn Em",
-            "email": "hve.vnist@gmail.com"
+            "email": "hve.vnist.organic@gmail.com"
         },
         {
             "name": "Ngô Thị Phương",
-            "email": "ntp.vnist@gmail.com"
+            "email": "ntp.vnist.organic@gmail.com"
         },
         {
             "name": "Đặng Văn Hùng",
-            "email": "dvh.vnist@gmail.com"
+            "email": "dvh.vnist.organic@gmail.com"
         },
         {
             "name": "Bùi Thị Hoa",
-            "email": "bth.vnist@gmail.com"
+            "email": "bth.vnist.organic@gmail.com"
         },
         {
             "name": "Nguyễn Văn Khánh",
-            "email": "khanh.vnist@gmail.com"
+            "email": "khanh.vnist.organic@gmail.com"
         },
         {
             "name": "Nguyễn Thị Lan",
-            "email": "lan.vnist@gmail.com"
+            "email": "lan.vnist.organic@gmail.com"
         }
     ],
     "criterias": [
@@ -716,7 +716,7 @@
                     "mill": 1,
                     "tasks": [{
                         "responsible": 7,
-                        "machine": 7,
+                        "machine": 1,
                         "startDate": "2024-07-02",
                         "startHour": 6,
                         "endDate": "2024-07-03",
@@ -843,7 +843,7 @@
                     "mill": 1,
                     "tasks": [{
                         "responsible": 7,
-                        "machine": 7,
+                        "machine": 1,
                         "startDate": "2024-07-03",
                         "startHour": 6,
                         "endDate": "2024-07-04",
@@ -970,7 +970,7 @@
                     "mill": 1,
                     "tasks": [{
                         "responsible": 7,
-                        "machine": 7,
+                        "machine": 1,
                         "startDate": "2024-06-30",
                         "startHour": 6,
                         "endDate": "2024-07-01",
@@ -1097,7 +1097,7 @@
                     "mill": 1,
                     "tasks": [{
                         "responsible": 7,
-                        "machine": 7,
+                        "machine": 1,
                         "startDate": "2024-07-04",
                         "startHour": 6,
                         "endDate": "2024-07-06",

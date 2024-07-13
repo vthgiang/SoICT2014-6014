@@ -1367,7 +1367,7 @@ function DetailTaskTab(props) {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <strong>Khối lượng công việc:</strong>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <span> {task && formatNumber(task.taskTarget)}</span>
+                  <span> {task?.taskTarget && formatNumber(task.taskTarget)}</span>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>

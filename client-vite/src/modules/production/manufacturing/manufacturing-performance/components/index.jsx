@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
@@ -18,24 +18,29 @@ const ManufacturingPerformance = (props) => {
 
   const [editMode, setEditMode] = useState(false)
   const [period, setPeriod] = useState('day')
-  const [monitoredKpis, setMonitoredKpis] = useState([])
+  const [newAddedKpis, setNewAddedKpis] = useState([])
+  const [layouts, setLayouts] = useState([])
   let history = useHistory()
 
   const gridCols = editMode ? { lg: 12, md: 12, sm: 12, xs: 8, xxs: 4 } : { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }
+  
+  const displayingKpis = manufacturingMetric.listKpis.filter((kpi) => kpi.dataGrid && Object.keys(kpi.dataGrid).length !== 0)
+  const monitoredKpis = displayingKpis.concat(newAddedKpis)
 
   const handleChangePeriod = (value) => {
     setPeriod(value)
   }
 
-  const handleDeleteMonitoredKpi = (id) => {
-    setMonitoredKpis(monitoredKpis.filter((kpi) => kpi._id !== id))
-  }
+  // const handleDeleteMonitoredKpi = (id) => {
+  //   setMonitoredKpis(monitoredKpis.filter((kpi) => kpi._id !== id))
+  // }
 
-  const handleAddMonitoredKpi = (kpi) => {
-    setMonitoredKpis([...monitoredKpis, kpi])
+  const handleDisplayKpi = (kpi) => {
+    setNewAddedKpis([...newAddedKpis, kpi])
   }
 
   const handleRedirectToDetail = (metricId) => {
+    localStorage.setItem('metricId', metricId)
     history.push({
       pathname: '/detail-analysis-manufacturing-performance',
       state: { metricId }
@@ -47,35 +52,36 @@ const ManufacturingPerformance = (props) => {
   }
 
   const handleLayoutChange = (layout, _) => {
-    const newMonitoredKpis = [...monitoredKpis]
-    newMonitoredKpis.forEach((kpi, index) => {
-      kpi.dataGrid = layout[index]
-    })
-
-    setMonitoredKpis([...newMonitoredKpis])
+    setLayouts(layout)
   }
 
   const handleSave = () => {
-    // lấy các element đang được monitoring và không được monitoring
-    const newListKpis = monitoredKpis.concat(
-      manufacturingMetric.listKpis.filter((item1) => !monitoredKpis.some((item2) => item2._id === item1._id))
-    )
-    setEditMode(false)
+    const nonMonitoredKpis = manufacturingMetric.listKpis.filter((kpi) => !kpi.dataGrid)
+    const monitoredKpis2 = monitoredKpis.map((kpi) => {
+      const layout = layouts.find((layout) => layout.i === kpi.dataGrid.i)
+      return { 
+        ...kpi, 
+        dataGrid: layout? layout : kpi.dataGrid
+      }
+    })
+
+    const newListKpis = [...nonMonitoredKpis, ...monitoredKpis2]
 
     props.editManufacturingKpis({ listKpis: newListKpis })
+
+    setEditMode(false)
   }
 
   useEffect(() => {
     const currentRole = localStorage.getItem('currentRole')
     props.getAllManufacturingKpis({ currentRole, period })
-
-    const initMonitoredKpis = manufacturingMetric.listKpis.filter((kpi) => kpi.dataGrid !== null)
-
-    setMonitoredKpis(initMonitoredKpis)
+        
   }, [period])
 
   useEffect(() => {
     const currentRole = localStorage.getItem('currentRole')
+
+    props.getAllManufacturingKpis({ currentRole, period: 'day' })
 
     props.getAllReportElements({ currentRole })
   }, [])
@@ -130,7 +136,7 @@ const ManufacturingPerformance = (props) => {
             </ResponsiveGridLayout>
           </div>
         )}
-        {editMode && <DashboardSidebar onAddMonitoredKpi={handleAddMonitoredKpi} listKpis={manufacturingMetric.listKpis} />}
+        {editMode && <DashboardSidebar onAddMonitoredKpi={handleDisplayKpi} listKpis={manufacturingMetric.listKpis} />}
       </div>
     </div>
   )

@@ -27,7 +27,8 @@ const QualityControlForm = (props) => {
       { value: '0', text: translate('manufacturing.command.oqc') }
     ]
 
-    manufacturingCommand.currentCommand.workOrders?.map((wo, index) => {
+    manufacturingCommand.currentCommand.workOrders?.filter(wo => wo.qc_inspection == null)
+    .map((wo, index) => {
       operationArr.push({
         value: index,
         text: wo.operation
@@ -75,6 +76,12 @@ const QualityControlForm = (props) => {
 
   const handleAddError = () => {
     setErrorList([...errorList, ''])
+  }
+
+  const handleErrorListChange = (value, index) => {
+    const newErrorList = [...errorList]
+    newErrorList[index] = value[0]
+    setErrorList(newErrorList)
   }
 
   const handleRemoveError = (index) => {
