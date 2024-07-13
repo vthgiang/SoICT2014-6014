@@ -53,7 +53,7 @@ exports.createManufacturingCommand = async (data, portal) => {
         manufacturingRouting: data.routing._id,
         creator: data.creator,
         workOrders: data.workOrders,
-        taskTemplate: data.taskTemplate? data.taskTemplate : null,
+        taskTemplates: data.taskTemplates? data.taskTemplates : null,
         approvers: data.approvers.map(x => {
             return {
                 approver: x,

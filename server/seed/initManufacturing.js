@@ -871,7 +871,10 @@ const initManufacturing = async () => {
         good: listProduct[0],
         quantity: 20000,
         manufacturingRouting: manufacturingRoutings[command.manufacturingRouting - 1]._id,
-        approvers: [manufacturingUsers[0]._id],
+        approvers: [{
+            approver: manufacturingUsers[0]._id,
+            approvedTime: new Date(command.startDate)
+        }],
         workOrders: command.workOrders.map((wo) => ({
             ...wo,
             manufacturingMill: manufacturingMills[wo.mill - 1],
@@ -919,7 +922,7 @@ const initManufacturing = async () => {
                 taskTemplate: responsibleTaskTemplate._id,
                 level: 1,
                 responsibleEmployees: [task.responsible],
-                accountableEmployees: [wo.accountable],
+                accountableEmployees: [manufacturingCommands[0].accountable],
                 consultedEmployees: [task.responsible],
                 informedEmployees: [task.responsible], 
                 evaluations: [],

@@ -61,11 +61,12 @@ const GanttChart = (props) => {
 
   const manufacturingMillId = listWorkOrder[0]?.manufacturingMillId
 
+  let count1 = 1
   const listWorkOrderByMachine = listWorkOrder.flatMap((wo) =>
     wo.tasks
       .filter((task) => task.machine)
       .map((task) => ({
-        id: task._id,
+        id: count1++,
         name: wo.name,
         startTime: moment(task.startDate, 'DD-MM-YYYY').add(task.startHour, 'hour'),
         endTime: moment(task.endDate, 'DD-MM-YYYY').add(task.endHour, 'hour'),
@@ -73,11 +74,12 @@ const GanttChart = (props) => {
       }))
   )
 
+  let count2 = 1
   const listWorkOrderByEmployee = listWorkOrder.flatMap((wo) =>
     wo.tasks
       .filter((task) => task.responsible)
       .map((task) => ({
-        id: task._id,
+        id: count2++,
         name: wo.name,
         startTime: moment(task.startDate, 'DD-MM-YYYY').add(task.startHour, 'hour'),
         endTime: moment(task.endDate, 'DD-MM-YYYY').add(task.endHour, 'hour'),
@@ -172,6 +174,8 @@ const GanttChart = (props) => {
         setItems(listWorkOrderByEmployee)
         setItemGroupKey('employeeId')
         setGroups(listEmployees)
+        console.log('listEmployees', listEmployees)
+        console.log('listWorkOrderByEmployee', listWorkOrderByEmployee)
         break
       case 'machine':
         setItems(listWorkOrderByMachine)

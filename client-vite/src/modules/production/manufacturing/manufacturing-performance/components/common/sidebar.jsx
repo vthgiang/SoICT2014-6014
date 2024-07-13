@@ -64,7 +64,7 @@ const DashboardSidebar = (props) => {
       dataGrid: {
         i: listKpis.length + 1,
         x: 0,
-        y: Infinity,
+        y: 99999,
         w: 6,
         h: 14
       }

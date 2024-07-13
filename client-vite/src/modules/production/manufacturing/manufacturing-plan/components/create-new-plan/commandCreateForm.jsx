@@ -91,7 +91,7 @@ const CommandCreateForm = (props) => {
   const handleTaskTemplateChange = (value, type) => {
     const taskTemplateId = value[0]
     const taskTemplates = {
-      ...command.taskTemplate,
+      ...command.taskTemplates,
       [type]: taskTemplateId
     }
     setCommand({ ...command, taskTemplates })
@@ -621,7 +621,7 @@ const CommandCreateForm = (props) => {
                     id={`select-task-template-responsible`}
                     className='form-control select2'
                     style={{ width: '100%' }}
-                    value={command.taskTemplate.responsible}
+                    value={command.taskTemplates.responsible}
                     items={getAllTaskTemplateArr()}
                     onChange={(value) => handleTaskTemplateChange(value, 'responsible')}
                     disabled={false}
@@ -639,7 +639,7 @@ const CommandCreateForm = (props) => {
                     id={`select-task-template-quality-control`}
                     className='form-control select2'
                     style={{ width: '100%' }}
-                    value={command.taskTemplate.qualityControl}
+                    value={command.taskTemplates.qualityControl}
                     items={getAllTaskTemplateArr()}
                     onChange={(value) => handleTaskTemplateChange(value, 'qualityControl')}
                     disabled={false}

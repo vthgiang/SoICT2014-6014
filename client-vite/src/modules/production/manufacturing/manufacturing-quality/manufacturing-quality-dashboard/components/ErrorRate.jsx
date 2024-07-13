@@ -3,7 +3,6 @@ import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler,
 import { Radar } from 'react-chartjs-2'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { keys } from 'lodash'
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend)
 
@@ -39,8 +38,9 @@ const ErrorRate = (props) => {
   const keys = ['man', 'machine', 'material', 'measurement', 'method', 'enviroment']
   const labels = keys.map((key) => translate(`manufacturing.quality.error_groups.${key}`))
   const values = keys.map((key) => errorNumByGroup[key] * 10 || 0)
-  values[5] = 10
-  values [1] = 30
+  const maxValues = Math.max(...values)
+
+  options.scales.r.ticks.stepSize = Math.ceil(maxValues / 5)
   const data = {
     labels,
     datasets: [

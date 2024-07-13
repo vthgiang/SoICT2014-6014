@@ -320,14 +320,21 @@ exports.editManufacturingKpi = async (id, data, portal) => {
                 time: formatToTimeZoneDate(milestone.time)
             }))
         })
-    
     } 
 
+    manufacturingMetric.actions = data.actions ? data.actions : manufacturingMetric.actions
     manufacturingMetric.failureCauses = data.failureCauses ? data.failureCauses : manufacturingMetric.failureCauses
 
     await manufacturingMetric.save()
 
-    return { manufacturingMetric }
+    const newManufacturingMetric = await ManufacturingMetric(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([{
+            path: 'actions.responsibles',
+            select: 'name'
+        }])
+
+    return { manufacturingMetric: newManufacturingMetric }
 }
 
 // lấy ra tất cả các phần tử báo cáo trong taskTemplate
@@ -340,7 +347,7 @@ exports.getAllReportElements = async (query, portal) => {
         })
     
     const reportElements = []
-    const taskType = ['responsible', 'accountable', 'qualityControl']
+    const taskType = ['responsible', 'qualityControl']
 
     taskTemplates.forEach((taskTemplate, index) => {
         const taskInformations = taskTemplate.taskInformations

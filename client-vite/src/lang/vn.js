@@ -7745,6 +7745,7 @@ export default {
         // Action table
         action_improvement: 'Hành động cải tiến',
         create_action: 'Tạo hành động cải tiến',
+        edit_action: 'Cập nhật tiến độ',
         create_action_failure: 'Tạo hành động cải tiến thành công',
         problem: 'Vấn đề',
         description: 'Mô tả',
@@ -7758,6 +7759,13 @@ export default {
         time: 'Thời gian',
         create_action_success: 'Tạo hành động cải tiến thành công',
         create_action_failure: 'Tạo hành động cải tiến thất bại',
+        edit_action_success: 'Chỉnh sửa hành động cải tiến thành công',
+        edit_action_failure: 'Chỉnh sửa hành động cải tiến thất bại',
+        status: 'Trạng thái',
+        progress: 'Tiến độ',
+        un_fulfilled: 'Chưa thực hiện', 
+        in_progress: 'Đang thực hiện',
+        completed: 'Đã hoàn thành',
 
         // notification
         noti_history: 'Lịch sử cảnh báo',
