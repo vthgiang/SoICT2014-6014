@@ -388,7 +388,7 @@ exports.createAutomaticSchedule = async (data, portal) => {
 
     const allCommands = [...approvedCommands, ...unapprovedCommands, ...newCommands]
 
-    const res = await axios.post(`http://localhost:8080/api/dxclan/production_schedule/`, {
+    const res = await axios.post(`${process.env.PYTHON_URL_SERVER}/api/dxclan/production_schedule/`, {
         commands: allCommands,
         workers
     })
