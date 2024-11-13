@@ -35,431 +35,439 @@ exports.authFunc = (checkPage = true) => {
              * - token cho phép người dùng dùng previlegeAPI
              */
 
-            const token = req.header("utk"); //JWT nhận từ người dùng
-            if (!token) throw ["access_denied_4001"];
-
-            /**
-             * Giải mã token gửi lên để check dữ liệu trong token
-             */
-            let verified;
-            try {
-                verified = await jwt.verify(token, process.env.TOKEN_SECRET);
-            } catch (error) {
-                throw ["access_denied_4002"];
-            }
-
-            req.user = verified;
-            req.token = token;
-            req.thirdParty = verified.thirdParty;
-            req.portal = req.thirdParty ? verified.portal : (!req.user.company
-                ? process.env.DB_NAME
-                : req.user.company.shortName);
-
-            /**
-             * Get requester tương ứng với User hoặc Service để phục vụ kiểm tra quyền truy cập theo cơ chế authorization và delegation mới
-             */
-            const requester = await Requester(connect(DB_CONNECTION, req.portal)).findOne({ refId: req.user._id });
-            
-            if (!requester) {
-                throw ["requester_not_found"];
-            }
-            /**
-             * Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
-             * Nếu được gọi từ bên thứ 3: thirdParty = true
-             */
-
-            if (!req.thirdParty) {
+            const bypass = ['/entity', '/object', '/policy', '/authorization', '/log'];
+            if (!bypass.includes(req.baseUrl)) {
+                const token = req.header("utk"); //JWT nhận từ người dùng
+                if (!token) throw ["access_denied_4001"];
+    
                 /**
-                 * 1. Trường hợp service được gọi từ ứng dụng dxclan
+                 * Giải mã token gửi lên để check dữ liệu trong token
                  */
-
-                // Kiểm tra xem token có nằm trong mảng tokens model User
-                if (req.user) {
-                    const user = await User(
-                        connect(DB_CONNECTION, req.portal)
-                    ).findById(req.user._id).select("tokens");
-                    let userParse = user.toObject();
-
-                    const checkToken = userParse?.tokens?.find(element => element === req.token);
-                    if (!checkToken)
-                        throw ['access_denied_4003']
+                let verified;
+                try {
+                    verified = await jwt.verify(token, process.env.TOKEN_SECRET);
+                } catch (error) {
+                    throw ["access_denied_4002"];
                 }
-
-                let crtp, crtr, fgp;
-
-                if (process.env.DEVELOPMENT === "true") {
-                    crtp = req.header("crtp");
-                    crtr = req.header("crtr");
-                    fgp = req.header("fgp");
-                } else {
-                    crtp = decryptMessage(req.header("crtp")); // trang hiện tại
-                    crtr = decryptMessage(req.header("crtr")); // role hiện tại
-                    fgp = decryptMessage(req.header("fgp")); // fingerprint
-                }
-
+    
+                req.user = verified;
+                req.token = token;
+                req.thirdParty = verified.thirdParty;
+                req.portal = req.thirdParty ? verified.portal : (!req.user.company
+                    ? process.env.DB_NAME
+                    : req.user.company.shortName);
+    
                 /**
-                 * Xác định db truy vấn cho request
+                 * Get requester tương ứng với User hoặc Service để phục vụ kiểm tra quyền truy cập theo cơ chế authorization và delegation mới
                  */
-                initModels(connect(DB_CONNECTION, req.portal), Models);
-
-                let dxapp_token = req.header('dxapp_token') ?? '';
-                if (crtp !== "/" && dxapp_token !== 'dxclan') {
-                    const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
-                    const currentRole = crtr; // role hiện tại của người dùng
-                    if (!ObjectId.isValid(currentRole)) {
-                        throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
+                const requester = await Requester(connect(DB_CONNECTION, req.portal)).findOne({ refId: req.user._id });
+                
+                if (!requester) {
+                    throw ["requester_not_found"];
+                }
+                /**
+                 * Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
+                 * Nếu được gọi từ bên thứ 3: thirdParty = true
+                 */
+    
+                if (!req.thirdParty) {
+                    /**
+                     * 1. Trường hợp service được gọi từ ứng dụng dxclan
+                     */
+    
+                    // Kiểm tra xem token có nằm trong mảng tokens model User
+                    if (req.user) {
+                        const user = await User(
+                            connect(DB_CONNECTION, req.portal)
+                        ).findById(req.user._id).select("tokens");
+                        let userParse = user.toObject();
+    
+                        const checkToken = userParse?.tokens?.find(element => element === req.token);
+                        if (!checkToken)
+                            throw ['access_denied_4003']
                     }
-                    req.currentRole = currentRole;
-
-                    const role = await Role(connect(DB_CONNECTION, req.portal))
-                        .findById(currentRole); //current role của người dùng
-                    if (role === null) throw ["role_invalid"];
-
+    
+                    let crtp, crtr, fgp;
+    
+                    if (process.env.DEVELOPMENT === "true") {
+                        crtp = req.header("crtp");
+                        crtr = req.header("crtr");
+                        fgp = req.header("fgp");
+                    } else {
+                        crtp = decryptMessage(req.header("crtp")); // trang hiện tại
+                        crtr = decryptMessage(req.header("crtr")); // role hiện tại
+                        fgp = decryptMessage(req.header("fgp")); // fingerprint
+                    }
+    
                     /**
-                     * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
-                     * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
-                     * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
+                     * Xác định db truy vấn cho request
                      */
-                    // if (verified.fingerprint !== fingerprint)
-                    //     throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
-
-                    /**
-                     * Kiểm tra xem current role có đúng với người dùng hay không?
-                     */
-                    const userId = req.user._id;
-                    const userrole = await UserRole(connect(DB_CONNECTION, req.portal)).findOne({ userId, roleId: role._id });
-                    if (userrole === null) throw ["user_role_invalid"];
-
-                    /**
-                     * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
-                     */
-                    /**
-                     * Riêng đối với system admin của hệ thống thì bỏ qua bước này
-                     */
-                    if (role.name !== "System Admin") {
-                        const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(req.user.company._id);
-                        if (!company.active) {
-                            //dịch vụ của công ty người dùng đã tạm dừng
-                            const resetUser = await User(
-                                connect(DB_CONNECTION, req.portal)
-                            ).findById(req.user._id);
-                            resetUser.tokens = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
-                            await resetUser.save();
-                            throw ["service_off"];
+                    initModels(connect(DB_CONNECTION, req.portal), Models);
+    
+                    let dxapp_token = req.header('dxapp_token') ?? '';
+                    if (crtp !== "/" && dxapp_token !== 'dxclan') {
+                        const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
+                        const currentRole = crtr; // role hiện tại của người dùng
+                        if (!ObjectId.isValid(currentRole)) {
+                            throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
                         }
-                    }
-
-                    /**
-                     * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
-                     * 1. Kiểm tra xem thông tin 
-                     * 2. Lấy đường link mà người dùng đã truy cập
-                     * 3. Kiểm tra xem người dùng có được cấp quyển truy cập/từ chối truy cập qua auhtorization policy hay không.
-                     *    - Nếu không có policy -> chuyển đến bước 4
-                     *    - Nếu policy deny -> báo lỗi truy cập
-                     *    - Nếu policy allow -> cho phép truy cập tiếp (bỏ qua bước 4)
-                     * 4. Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang
-                     *    - Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
-                     *    - Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
-                     * 5. Kiểm tra xem với trang truy cập là như trên thì trang này có được truy cập vào API này không
-                     */
-
-                    //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
-                    const url = crtp;
-                    const device = req.header("device");
-
-                    if (!device) {
-                        if (checkPage) {
-                            const link = role.name !== "System Admin" ?
-                                await Link(connect(DB_CONNECTION, req.portal)).findOne({ url, deleteSoft: false }) :
-                                await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
-
-                            if (link === null) throw ["url_invalid"];
-
-                            // Bước 3
-                            const resource = await Resource(connect(DB_CONNECTION, req.portal)).findOne({ refId: link._id, type: 'Link' });
-                            const dynamicAssignments = await this.getDynamicAssignments(req.portal, requester._id, resource._id);
-
-                            const activePolicies = AuthorizationPolicyService.filterActiveAuthorizationPolicies(dynamicAssignments).map(x => x.policyId);
-                            const validPolicies = await AuthorizationPolicyService.filterPoliciesSatisfiedRoleRequirement(req.portal, activePolicies, role);
-                            if (validPolicies.some(x => x.effect == 'Deny')) {
-                                // write authorization log
-                                const policy = validPolicies.find(x => x.effect == 'Deny');
-                                LoggingService.create(req.portal, requester._id, resource._id, 'Denied', policy?._id);
-                                throw ['page_access_denied']
+                        req.currentRole = currentRole;
+    
+                        const role = await Role(connect(DB_CONNECTION, req.portal))
+                            .findById(currentRole); //current role của người dùng
+                        if (role === null) throw ["role_invalid"];
+    
+                        /**
+                         * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
+                         * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
+                         * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
+                         */
+                        // if (verified.fingerprint !== fingerprint)
+                        //     throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
+    
+                        /**
+                         * Kiểm tra xem current role có đúng với người dùng hay không?
+                         */
+                        const userId = req.user._id;
+                        const userrole = await UserRole(connect(DB_CONNECTION, req.portal)).findOne({ userId, roleId: role._id });
+                        if (userrole === null) throw ["user_role_invalid"];
+    
+                        /**
+                         * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
+                         */
+                        /**
+                         * Riêng đối với system admin của hệ thống thì bỏ qua bước này
+                         */
+                        if (role.name !== "System Admin") {
+                            const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(req.user.company._id);
+                            if (!company.active) {
+                                //dịch vụ của công ty người dùng đã tạm dừng
+                                const resetUser = await User(
+                                    connect(DB_CONNECTION, req.portal)
+                                ).findById(req.user._id);
+                                resetUser.tokens = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
+                                await resetUser.save();
+                                throw ["service_off"];
                             }
-
-                            if (validPolicies.length == 0) {
-                                // Check delegation
-                                const validDelegations = DelegationPolicyService.filterActiveDelegations(dynamicAssignments).map(x => x.delegationId);
-
-                                if (validDelegations.length == 0) {
-                                    // Bước 4
-                                    const roleArr = [role._id].concat(role.parents);
-                                    const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
-                                        resourceId: link._id,
-                                        resourceType: "Link",
-                                        roleId: {
-                                            $in: roleArr,
-                                        }
-                                    });
-                                    if (!privilege) {
-                                        throw ["page_access_denied"];
-                                    }
-                                    // Kiểm tra nếu privilege có policy thì phải có policy map ở bên userrole thì mới được phép truy cập trang đó
-                                    // Nếu không tồn tại map thì không được truy cập
-                                    if (privilege.policies?.length > 0) {
-                                        if (userrole.policies?.length > 0) {
-                                            if (!privilege.policies.some(policy => userrole.policies.includes(policy))) throw ["page_access_denied"]
-                                        }
-                                        else throw ["page_access_denied"]
-                                    }
-                                    if (userrole.delegation) {
-        
-                                        // Nếu tồn tại ủy quyền đang hoạt động có endDate < now, re login
-        
-                                        const delegation = await Delegation(connect(DB_CONNECTION, req.portal)).findOne({ _id: userrole.delegation, status: 'activated', delegateType: "Role" })
-                                        if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
-                                            throw ["page_access_denied"]
-                                        }
-        
-        
-                                        // Log delegation truy cập trang
-                                        if (delegation) {
-                                            // Log nếu mỗi lần truy cập cách nhau > 5s
-                                            if ((!delegation.logs || delegation.logs.length == 0) || (delegation.logs.length > 0 && ((new Date()).getTime() - (new Date(delegation.logs[delegation.logs.length - 1].createdAt)).getTime()) / 1000 > 5)) {
-        
-                                                await Delegation(connect(DB_CONNECTION, req.portal)).updateOne({ _id: delegation._id }, {
-                                                    logs: [
-                                                        ...delegation.logs,
-                                                        {
-                                                            createdAt: new Date(),
-                                                            user: userId,
-                                                            content: link.url + " - " + link.description,
-                                                            time: new Date(),
-                                                            category: "page_access"
-                                                        }
-                                                    ]
-                                                })
+                        }
+    
+                        /**
+                         * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
+                         * 1. Kiểm tra xem thông tin 
+                         * 2. Lấy đường link mà người dùng đã truy cập
+                         * 3. Kiểm tra xem người dùng có được cấp quyển truy cập/từ chối truy cập qua auhtorization policy hay không.
+                         *    - Nếu không có policy -> chuyển đến bước 4
+                         *    - Nếu policy deny -> báo lỗi truy cập
+                         *    - Nếu policy allow -> cho phép truy cập tiếp (bỏ qua bước 4)
+                         * 4. Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang
+                         *    - Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
+                         *    - Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
+                         * 5. Kiểm tra xem với trang truy cập là như trên thì trang này có được truy cập vào API này không
+                         */
+    
+                        //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+                        const url = crtp;
+                        const device = req.header("device");
+    
+                        if (!device) {
+                            if (checkPage) {
+                                const link = role.name !== "System Admin" ?
+                                    await Link(connect(DB_CONNECTION, req.portal)).findOne({ url, deleteSoft: false }) :
+                                    await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
+    
+                                if (link === null) throw ["url_invalid"];
+    
+                                // Bước 3
+                                const resource = await Resource(connect(DB_CONNECTION, req.portal)).findOne({ refId: link._id, type: 'Link' });
+                                const dynamicAssignments = await this.getDynamicAssignments(req.portal, requester._id, resource._id);
+    
+                                const activePolicies = AuthorizationPolicyService.filterActiveAuthorizationPolicies(dynamicAssignments).map(x => x.policyId);
+                                const validPolicies = await AuthorizationPolicyService.filterPoliciesSatisfiedRoleRequirement(req.portal, activePolicies, role);
+                                if (validPolicies.some(x => x.effect == 'Deny')) {
+                                    // write authorization log
+                                    const policy = validPolicies.find(x => x.effect == 'Deny');
+                                    LoggingService.create(req.portal, requester._id, resource._id, 'Denied', policy?._id);
+                                    throw ['page_access_denied']
+                                }
+    
+                                if (validPolicies.length == 0) {
+                                    // Check delegation
+                                    const validDelegations = DelegationPolicyService.filterActiveDelegations(dynamicAssignments).map(x => x.delegationId);
+    
+                                    if (validDelegations.length == 0) {
+                                        // Bước 4
+                                        const roleArr = [role._id].concat(role.parents);
+                                        const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
+                                            resourceId: link._id,
+                                            resourceType: "Link",
+                                            roleId: {
+                                                $in: roleArr,
                                             }
-        
-        
+                                        });
+                                        if (!privilege) {
+                                            throw ["page_access_denied"];
                                         }
-        
-                                        if (privilege.delegations.length > 0) {
-                                            if (!privilege.delegations.some(delegation => userrole.delegation.toString() == delegation.toString())) {
+                                        // Kiểm tra nếu privilege có policy thì phải có policy map ở bên userrole thì mới được phép truy cập trang đó
+                                        // Nếu không tồn tại map thì không được truy cập
+                                        if (privilege.policies?.length > 0) {
+                                            if (userrole.policies?.length > 0) {
+                                                if (!privilege.policies.some(policy => userrole.policies.includes(policy))) throw ["page_access_denied"]
+                                            }
+                                            else throw ["page_access_denied"]
+                                        }
+                                        if (userrole.delegation) {
+            
+                                            // Nếu tồn tại ủy quyền đang hoạt động có endDate < now, re login
+            
+                                            const delegation = await Delegation(connect(DB_CONNECTION, req.portal)).findOne({ _id: userrole.delegation, status: 'activated', delegateType: "Role" })
+                                            if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
                                                 throw ["page_access_denied"]
                                             }
-        
-        
+            
+            
+                                            // Log delegation truy cập trang
+                                            if (delegation) {
+                                                // Log nếu mỗi lần truy cập cách nhau > 5s
+                                                if ((!delegation.logs || delegation.logs.length == 0) || (delegation.logs.length > 0 && ((new Date()).getTime() - (new Date(delegation.logs[delegation.logs.length - 1].createdAt)).getTime()) / 1000 > 5)) {
+            
+                                                    await Delegation(connect(DB_CONNECTION, req.portal)).updateOne({ _id: delegation._id }, {
+                                                        logs: [
+                                                            ...delegation.logs,
+                                                            {
+                                                                createdAt: new Date(),
+                                                                user: userId,
+                                                                content: link.url + " - " + link.description,
+                                                                time: new Date(),
+                                                                category: "page_access"
+                                                            }
+                                                        ]
+                                                    })
+                                                }
+            
+            
+                                            }
+            
+                                            if (privilege.delegations.length > 0) {
+                                                if (!privilege.delegations.some(delegation => userrole.delegation.toString() == delegation.toString())) {
+                                                    throw ["page_access_denied"]
+                                                }
+            
+            
+                                            }
                                         }
+            
+                                        // Nếu tồn tại ủy quyền chờ xác nhận có startDate < now, re login
+                                        const delegationPending = await Delegation(connect(DB_CONNECTION, req.portal)).find({ delegatee: req.user._id, status: 'pending', delegateType: "Role" })
+                                        delegationPending.every(delegation => {
+                                            if (delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
+                                                throw ["page_access_denied"]
+                                            }
+                                        })
+            
+                                        if (privilege === null) throw ["page_access_denied"];
                                     }
-        
-                                    // Nếu tồn tại ủy quyền chờ xác nhận có startDate < now, re login
-                                    const delegationPending = await Delegation(connect(DB_CONNECTION, req.portal)).find({ delegatee: req.user._id, status: 'pending', delegateType: "Role" })
-                                    delegationPending.every(delegation => {
-                                        if (delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
-                                            throw ["page_access_denied"]
-                                        }
-                                    })
-        
-                                    if (privilege === null) throw ["page_access_denied"];
+                                    else {
+                                        // write delegation logs
+                                        const delegations = await Delegation(connect(DB_CONNECTION, req.portal)).find({_id: {$in: validDelegations}});
+                                        delegations.forEach(async x => {
+                                            x.logs.push({
+                                                createdAt: new Date(),
+                                                requester: requester._id,
+                                                content: resource.name,
+                                                time: new Date(),
+                                                category: 'page_access'
+                                            });
+                                            return await x.save();
+                                        })
+                                    }
                                 }
                                 else {
-                                    // write delegation logs
-                                    const delegations = await Delegation(connect(DB_CONNECTION, req.portal)).find({_id: {$in: validDelegations}});
-                                    delegations.forEach(async x => {
-                                        x.logs.push({
-                                            createdAt: new Date(),
-                                            requester: requester._id,
-                                            content: resource.name,
-                                            time: new Date(),
-                                            category: 'page_access'
-                                        });
-                                        return await x.save();
-                                    })
+                                    // write authorization log
+                                    LoggingService.create(req.portal, requester._id, resource._id, 'Allowed', validPolicies[0]?._id);
                                 }
-                            }
-                            else {
-                                // write authorization log
-                                LoggingService.create(req.portal, requester._id, resource._id, 'Allowed', validPolicies[0]?._id);
-                            }
-
-                        }
-
-                        /**
-                        * Bước 5: Kiểm tra xem với trang truy cập là như trên thì trang này có được truy cập vào API này không:
-                        * 5.1. Kiểm tra xem người dùng có được cấp quyển truy cập/từ chối truy cập qua auhtorization policy hay không.
-                        *    - Nếu không có policy -> chuyển đến bước 5.2
-                        *    - Nếu policy deny -> báo lỗi truy cập
-                        *    - Nếu policy allow -> cho phép truy cập
-                        * 5.2. Kiểm tra xem link hiện tại có được quyền truy cập API này không (định nghĩa tại servicesPermission.js)
-                        */
-
-                        const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
-                        let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
-                            .findOne({
-                                path: apiCalled.toString(),
-                                method: req.method.toString()
-                            })
-                        // if (!systemApi) throw ['api_invalid']
-
-                        // Bước 5.1
-                        // Vì system api không được update đầy đủ nên tạm thời ko check authorization nếu system api = undefined
-                        if (systemApi) {
-                            const resource = await Resource(connect(DB_CONNECTION, req.portal)).findOne({ refId: systemApi._id });
-                            const dynamicAssignments = await this.getDynamicAssignments(req.portal, requester._id, resource._id);
-                            const activePolicies = AuthorizationPolicyService.filterActiveAuthorizationPolicies(dynamicAssignments).map(x => x.policyId);
-                            const validPolicies = await AuthorizationPolicyService.filterPoliciesSatisfiedRoleRequirement(req.portal, activePolicies, role);
-                            if (validPolicies.some(x => x.effect == 'Deny')) {
-                                // write authorization log
-                                const policy = validPolicies.find(x => x.effect == 'Deny');
-                                LoggingService.create(req.portal, requester._id, resource._id, 'Denied', policy?._id);
-                                throw ['api_permission_invalid']
+    
                             }
     
-                            // Không có policy
-                            if (validPolicies.length == 0) {
-                                // Check delegation
-                                const validDelegations = DelegationPolicyService.filterActiveDelegations(dynamicAssignments).map(x => x.delegationId);
-
-                                if (validDelegations.length == 0) {
-                                    // Bước 5.2
-                                    const perLink = links.find(l => l.url === url);
-                                    if (!perLink) throw ['url_invalid_permission']
-                                    if (perLink.apis[0] !== '@all') {
-                                        const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
-                                        if (!perAPI) throw ['api_permission_invalid'];
+                            /**
+                            * Bước 5: Kiểm tra xem với trang truy cập là như trên thì trang này có được truy cập vào API này không:
+                            * 5.1. Kiểm tra xem người dùng có được cấp quyển truy cập/từ chối truy cập qua auhtorization policy hay không.
+                            *    - Nếu không có policy -> chuyển đến bước 5.2
+                            *    - Nếu policy deny -> báo lỗi truy cập
+                            *    - Nếu policy allow -> cho phép truy cập
+                            * 5.2. Kiểm tra xem link hiện tại có được quyền truy cập API này không (định nghĩa tại servicesPermission.js)
+                            */
+    
+                            const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+                            let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+                                .findOne({
+                                    path: apiCalled.toString(),
+                                    method: req.method.toString()
+                                })
+                            // if (!systemApi) throw ['api_invalid']
+    
+                            // Bước 5.1
+                            // Vì system api không được update đầy đủ nên tạm thời ko check authorization nếu system api = undefined
+                            if (systemApi) {
+                                const resource = await Resource(connect(DB_CONNECTION, req.portal)).findOne({ refId: systemApi._id });
+                                const dynamicAssignments = await this.getDynamicAssignments(req.portal, requester._id, resource._id);
+                                const activePolicies = AuthorizationPolicyService.filterActiveAuthorizationPolicies(dynamicAssignments).map(x => x.policyId);
+                                const validPolicies = await AuthorizationPolicyService.filterPoliciesSatisfiedRoleRequirement(req.portal, activePolicies, role);
+                                if (validPolicies.some(x => x.effect == 'Deny')) {
+                                    // write authorization log
+                                    const policy = validPolicies.find(x => x.effect == 'Deny');
+                                    LoggingService.create(req.portal, requester._id, resource._id, 'Denied', policy?._id);
+                                    throw ['api_permission_invalid']
+                                }
+        
+                                // Không có policy
+                                if (validPolicies.length == 0) {
+                                    // Check delegation
+                                    const validDelegations = DelegationPolicyService.filterActiveDelegations(dynamicAssignments).map(x => x.delegationId);
+    
+                                    if (validDelegations.length == 0) {
+                                        // Bước 5.2
+                                        const perLink = links.find(l => l.url === url);
+                                        if (!perLink) throw ['url_invalid_permission']
+                                        if (perLink.apis[0] !== '@all') {
+                                            const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
+                                            if (!perAPI) throw ['api_permission_invalid'];
+                                        }
+                                    }
+                                    else {
+                                        // write delegation log
+                                        const delegations = await Delegation(connect(DB_CONNECTION, req.portal)).find({_id: {$in: validDelegations}});
+                                        delegations.forEach(async x => {
+                                            x.logs.push({
+                                                createdAt: new Date(),
+                                                requester: requester._id,
+                                                content: resource.name,
+                                                time: new Date(),
+                                                category: 'page_access'
+                                            });
+                                            return await x.save();
+                                        })
                                     }
                                 }
                                 else {
-                                    // write delegation log
-                                    const delegations = await Delegation(connect(DB_CONNECTION, req.portal)).find({_id: {$in: validDelegations}});
-                                    delegations.forEach(async x => {
-                                        x.logs.push({
-                                            createdAt: new Date(),
-                                            requester: requester._id,
-                                            content: resource.name,
-                                            time: new Date(),
-                                            category: 'page_access'
-                                        });
-                                        return await x.save();
-                                    })
+                                    // write authorization log
+                                    LoggingService.create(req.portal, requester._id, resource._id, 'Allowed', validPolicies[0]?._id);
                                 }
                             }
                             else {
-                                // write authorization log
-                                LoggingService.create(req.portal, requester._id, resource._id, 'Allowed', validPolicies[0]?._id);
-                            }
-                        }
-                        else {
-                            // Bước 5.2
-                            const perLink = links.find(l => l.url === url);
-                            if (!perLink) throw ['url_invalid_permission']
-                            if (perLink.apis[0] !== '@all') {
-                                const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
-                                if (!perAPI) throw ['api_permission_invalid'];
+                                // Bước 5.2
+                                const perLink = links.find(l => l.url === url);
+                                if (!perLink) throw ['url_invalid_permission']
+                                if (perLink.apis[0] !== '@all') {
+                                    const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
+                                    if (!perAPI) throw ['api_permission_invalid'];
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                /**
-                 * 2. Trường hợp service được gọi từ bên thứ 3
-                 */
-                console.log('### API ARE CALLED FROM THIRD PARTY');
-
-                // Kiểm tra xem token có nằm trong mảng tokens model Service
-                if (req.user) {
-                    const service = await Service(
-                        connect(DB_CONNECTION, req.portal)
-                    ).findById(req.user._id).select("tokens");
-                    let serviceParse = service.toObject();
-
-                    const checkToken = serviceParse?.tokens?.find(element => element === req.token);
-                    if (!checkToken)
-                        throw ['access_denied_4003']
-                }
-
-                const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
-
-                let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({
-                        path: apiCalled.toString(),
-                        method: req.method.toString()
-                    })
-                if (!systemApi) throw ['api_invalid'];
-
-                const resource = await Resource(connect(DB_CONNECTION, req.portal)).findOne({ refId: systemApi._id });
-                const dynamicAssignments = await this.getDynamicAssignments(req.portal, requester._id, resource._id);
-                const validPolicies = AuthorizationPolicyService.filterActiveAuthorizationPolicies(dynamicAssignments).map(x => x.policyId);
-                if (validPolicies.some(x => x.effect == 'Deny')) {
-                    // write authorization log
-                    const policy = validPolicies.find(x => x.effect == 'Deny');
-                    LoggingService.create(req.portal, requester._id, resource._id, 'Denied', policy?._id);
-                    throw ['api_permission_invalid'];
-                }
-
-                if (validPolicies.length == 0) {
-                    const validDelegations = DelegationPolicyService.filterActiveDelegations(dynamicAssignments).map(x => x.delegationId);
-                    if (validDelegations.length == 0){
+                } else {
+                    /**
+                     * 2. Trường hợp service được gọi từ bên thứ 3
+                     */
+                    console.log('### API ARE CALLED FROM THIRD PARTY');
+    
+                    // Kiểm tra xem token có nằm trong mảng tokens model Service
+                    if (req.user) {
+                        const service = await Service(
+                            connect(DB_CONNECTION, req.portal)
+                        ).findById(req.user._id).select("tokens");
+                        let serviceParse = service.toObject();
+    
+                        const checkToken = serviceParse?.tokens?.find(element => element === req.token);
+                        if (!checkToken)
+                            throw ['access_denied_4003']
+                    }
+    
+                    const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+    
+                    let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+                        .findOne({
+                            path: apiCalled.toString(),
+                            method: req.method.toString()
+                        })
+                    if (!systemApi) throw ['api_invalid'];
+    
+                    const resource = await Resource(connect(DB_CONNECTION, req.portal)).findOne({ refId: systemApi._id });
+                    const dynamicAssignments = await this.getDynamicAssignments(req.portal, requester._id, resource._id);
+                    const validPolicies = AuthorizationPolicyService.filterActiveAuthorizationPolicies(dynamicAssignments).map(x => x.policyId);
+                    if (validPolicies.some(x => x.effect == 'Deny')) {
+                        // write authorization log
+                        const policy = validPolicies.find(x => x.effect == 'Deny');
+                        LoggingService.create(req.portal, requester._id, resource._id, 'Denied', policy?._id);
                         throw ['api_permission_invalid'];
                     }
-
-                    // write delegation logs
-                    const delegations = await Delegation(connect(DB_CONNECTION, req.portal)).find({_id: {$in: validDelegations}});
-                    delegations.forEach(async x => {
-                        x.logs.push({
-                            createdAt: new Date(),
-                            requester: requester._id,
-                            content: resource.name,
-                            time: new Date(),
-                            category: 'page_access'
-                        });
-                        return await x.save();
-                    })
+    
+                    if (validPolicies.length == 0) {
+                        const validDelegations = DelegationPolicyService.filterActiveDelegations(dynamicAssignments).map(x => x.delegationId);
+                        if (validDelegations.length == 0){
+                            throw ['api_permission_invalid'];
+                        }
+    
+                        // write delegation logs
+                        const delegations = await Delegation(connect(DB_CONNECTION, req.portal)).find({_id: {$in: validDelegations}});
+                        delegations.forEach(async x => {
+                            x.logs.push({
+                                createdAt: new Date(),
+                                requester: requester._id,
+                                content: resource.name,
+                                time: new Date(),
+                                category: 'page_access'
+                            });
+                            return await x.save();
+                        })
+                    }
+                    else {
+                        // write authorization log
+                        LoggingService.create(req.portal, requester._id, resource._id, 'Allowed', validPolicies[0]?._id);
+                    }
+    
+                    // Kiểm tra quyền truy cập api của bên thứ 3
+                    // let privilegeApi = await PrivilegeApi(connect(DB_CONNECTION, req.portal))
+                    //     .findOne({
+                    //         token,
+                    //         // email: verified.email,
+                    //         apis: {
+                    //             $elemMatch: {
+                    //                 path: apiCalled.toString(),
+                    //                 method: req.method.toString()
+                    //             }
+                    //         },
+                    //         // company: verified.company,
+                    //         status: 3
+                    //     })
+    
+                    // if (!privilegeApi) {
+                    //     throw ['api_permission_invalid']
+                    // }
+    
+                    // Kiểm tra phân quyền api cho 1 cty
+                    // let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                    //     .findOne({
+                    //         apis: {
+                    //             $in: [systemApi?._id]
+                    //         },
+                    //         shortName: req.portal,
+                    //         // company: verified.company
+                    //     })
+    
+                    //     if (!apiInCompany) {
+                    //     throw ['api_permission_to_company_invalid']
+                    // };
+    
+                    req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                        .findOne({ company: verified.company });
+    
+                    console.log('### THIRD PARTY ARE AUTHORIZED');
                 }
-                else {
-                    // write authorization log
-                    LoggingService.create(req.portal, requester._id, resource._id, 'Allowed', validPolicies[0]?._id);
-                }
-
-                // Kiểm tra quyền truy cập api của bên thứ 3
-                // let privilegeApi = await PrivilegeApi(connect(DB_CONNECTION, req.portal))
-                //     .findOne({
-                //         token,
-                //         // email: verified.email,
-                //         apis: {
-                //             $elemMatch: {
-                //                 path: apiCalled.toString(),
-                //                 method: req.method.toString()
-                //             }
-                //         },
-                //         // company: verified.company,
-                //         status: 3
-                //     })
-
-                // if (!privilegeApi) {
-                //     throw ['api_permission_invalid']
-                // }
-
-                // Kiểm tra phân quyền api cho 1 cty
-                // let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                //     .findOne({
-                //         apis: {
-                //             $in: [systemApi?._id]
-                //         },
-                //         shortName: req.portal,
-                //         // company: verified.company
-                //     })
-
-                //     if (!apiInCompany) {
-                //     throw ['api_permission_to_company_invalid']
-                // };
-
-                req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({ company: verified.company });
-
-                console.log('### THIRD PARTY ARE AUTHORIZED');
+            }
+            else {
+                req.user = {};
+                req.user.email = 'ss';
+                req.portal = 'vnist';
             }
 
             next();

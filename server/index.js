@@ -43,6 +43,12 @@ router.use('/auth-service', require('./modules/auth-service/auth.route'));
 router.use('/requester', require('./modules/auth-service/requester/requester.route'));
 router.use('/resource', require('./modules/auth-service/resource/resource.route'));
 
+router.use('/entity', require('./modules/security/entity/entity.route'));
+router.use('/object', require('./modules/security/object/object.route'));
+router.use('/policy', require('./modules/security/policy/policy.route'));
+router.use('/authorization', require('./modules/security/auth/auth.route'));
+router.use('/log', require('./modules/security/log/logging.route'));
+
 router.use('/annualLeave', require('./modules/human-resource/annual-leave/annualLeave.route'));
 router.use('/commendation', require('./modules/human-resource/commendation/commendation.route'));
 router.use('/discipline', require('./modules/human-resource/discipline/discipline.route'));
@@ -85,7 +91,7 @@ router.use('/role', require('./modules/super-admin/role/role.route'));
 router.use('/component', require('./modules/super-admin/component/component.route'));
 router.use('/link', require('./modules/super-admin/link/link.route'));
 router.use('/attribute', require('./modules/super-admin/attribute/attribute.route'));
-router.use('/policy', require('./modules/super-admin/policy/policy.route'));
+// router.use('/policy', require('./modules/super-admin/policy/policy.route'));
 router.use('/api', require('./modules/super-admin/api/api.route'));
 router.use('/organizational-units', require('./modules/super-admin/organizational-unit/organizationalUnit.route'));
 

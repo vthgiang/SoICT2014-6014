@@ -32,6 +32,7 @@
     "init-sales-order": "node seed/initSalesOrder.js",
     "init-product": "node seed/initProduct.js",
     "sync-db-auth": "node seed/syncDBAuth.js",
+    "init-security-data": "node seed/initSecurityData.js",
     "init-customer": "node seed/initCustomer.js",
     "init-customer-marketing": "node seed/initCustomerMarketing.js",
     "init-manufacturing": "node seed/initManufacturing.js",
