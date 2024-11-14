@@ -83,7 +83,7 @@ services:
     # ports:
     #   - "6000:6000"
     env_file:
-      - ./micro-services/production-service/.env
+      - ./server/.env
     volumes:
       - ./micro-services/production-service:/app
       - ./micro-services/production-service/node_modules:/app/node_modules
@@ -96,7 +96,7 @@ services:
     # ports:
     #   - "6000:6000"
     env_file:
-      - ./micro-services/security-control-service/.env
+      - ./server/.env
     volumes:
       - ./micro-services/security-control-service:/app
       - ./micro-services/security-control-service/node_modules:/app/node_modules
