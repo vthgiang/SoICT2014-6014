@@ -5,11 +5,9 @@ const { auth } = require(`../../../middleware`);
 
 router.get('/policies', auth, PolicyController.getPolicies);
 router.get('/policies-all', auth, PolicyController.getAllPolicies);
-router.get('/policies/:id', auth, PolicyController.getPolicyById);
-router.get('/detail/:id', auth, PolicyController.getDetailedPolicyById);
 router.post('/policies', auth, PolicyController.createPolicy);
-router.patch('/policies/:id', auth, PolicyController.editPolicy);
-router.delete('/policies', auth, PolicyController.deletePolicies);
+
+router.delete('/policies/:id', auth, PolicyController.deletePolicy);
 
 module.exports = router;
 

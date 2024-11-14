@@ -148,9 +148,9 @@ exports.editPolicy = async (req, res) => {
 }
 
 // Xóa Ví dụ
-exports.deletePolicies = async (req, res) => {
+exports.deletePolicy = async (req, res) => {
     try {
-        let deletedPolicy = await PolicyService.deletePolicies(req.portal, req.body.policyIds);
+        let deletedPolicy = await PolicyService.deletePolicy(req.portal, req.params.id);
         if (deletedPolicy) {
             await Log.info(req.user.email, 'DELETED_POLICY', req.portal);
             res.status(200).json({

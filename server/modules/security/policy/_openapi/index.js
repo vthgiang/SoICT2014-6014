@@ -28,7 +28,7 @@ const openapi_policyRoute = {
                                         "properties": {
                                             "action": {
                                                 "type": "string",
-                                                "example": "read"
+                                                "example": "set_sale_target"
                                             },
                                             "entityConditions": {
                                                 "type": "array",
@@ -36,7 +36,7 @@ const openapi_policyRoute = {
                                                     "type": "object",
                                                     "properties": {
                                                         "key": { "type": "string", "example": "pos" },
-                                                        "value": { "type": "string", "example": "Sales Representative" },
+                                                        "value": { "type": "string", "example": "Sales Manager" },
                                                         "operation": { "type": "string", "example": "=" }
                                                     }
                                                 }
@@ -180,7 +180,144 @@ const openapi_policyRoute = {
                 }
             }
         }
+    },
+    "/policy/policies/{id}": {
+        "delete": {
+            "tags": ["Policy"],
+            "summary": "Delete a policy",
+            "description": "Delete a specific policy by its ID and return the details of the deleted policy.",
+            "operationId": "deletePolicy",
+            "parameters": [
+                {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "description": "The unique identifier of the policy to delete"
+                }
+            ],
+            "responses": {
+                "200": {
+                "description": "Policy successfully deleted",
+                "content": {
+                    "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "description": "Indicates if the deletion was successful"
+                        },
+                        "messages": {
+                            "type": "array",
+                            "items": {
+                            "type": "string"
+                            },
+                            "description": "Contains a list of messages regarding the deletion status"
+                        },
+                        "content": {
+                            "type": "object",
+                            "description": "The details of the deleted policy",
+                            "properties": {
+                            "authorizationRules": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                },
+                                "description": "List of Rule ObjectIds associated with the deleted policy"
+                            },
+                            "delegationRules": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                },
+                                "description": "List of delegation Rule ObjectIds associated with the deleted policy"
+                            },
+                            "_id": {
+                                "type": "string",
+                                "description": "The unique identifier of the deleted policy"
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "Name of the deleted policy"
+                            },
+                            "priority": {
+                                "type": "integer",
+                                "description": "Priority level of the deleted policy"
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Timestamp of when the policy was created"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Timestamp of the last update to the policy"
+                            },
+                            "__v": {
+                                "type": "integer",
+                                "description": "Internal version key"
+                            },
+                            "id": {
+                                "type": "string",
+                                "description": "The unique identifier of the deleted policy (redundant field with _id)"
+                            }
+                            }
+                        }
+                        }
+                    }
+                    }
+                }
+                },
+                "404": {
+                "description": "Policy not found",
+                "content": {
+                    "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                        "success": {
+                            "type": "boolean"
+                        },
+                        "messages": {
+                            "type": "array",
+                            "items": {
+                            "type": "string"
+                            },
+                            "description": "Describes the error message if policy is not found"
+                        }
+                        }
+                    }
+                    }
+                }
+                },
+                "500": {
+                "description": "Server error",
+                "content": {
+                    "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                        "success": {
+                            "type": "boolean"
+                        },
+                        "messages": {
+                            "type": "array",
+                            "items": {
+                            "type": "string"
+                            },
+                            "description": "Describes the error message if a server error occurs"
+                        }
+                        }
+                    }
+                    }
+                }
+                }
+            }
+        }
     }
-
 }
 module.exports = openapi_policyRoute;
