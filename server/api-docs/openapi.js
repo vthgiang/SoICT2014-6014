@@ -23,10 +23,10 @@ const openApiData = {
         contact: { email: "apiteam@swagger.io" }
     },
     servers: [
-        {
-            url: `http://localhost:8000`,
-            description: 'Localhost server'
-        },
+        // {
+        //     url: `http://localhost:8000`,
+        //     description: 'Localhost server'
+        // },
         {
             url: `http://103.166.185.48:8000`,
             description: 'Production server'
